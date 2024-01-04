@@ -2,8 +2,8 @@ package com.lihua.filter;
 
 import com.lihua.cache.RedisCache;
 import com.lihua.enums.SysBaseEnum;
-import com.lihua.system.entity.LoginUser;
-import com.lihua.utils.JwtUtil;
+import com.lihua.model.LoginUser;
+import com.lihua.utils.securityUtils.JwtUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -49,13 +49,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
      */
     private LoginUser getUserInfoByToken(String token) {
         try {
-            JwtUtil.verify(token);
+            JwtUtils.verify(token);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("非法token");
         }
 
-        String decode = JwtUtil.decode(token);
+        String decode = JwtUtils.decode(token);
         if (!StringUtils.hasText(decode)) {
             throw new RuntimeException("无效token");
         }

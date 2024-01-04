@@ -1,8 +1,8 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.lihua.system.entity.LoginUser;
-import com.lihua.system.entity.SysUser;
+import com.lihua.model.LoginUser;
+import com.lihua.model.SysUser;
 import com.lihua.system.mapper.SysUserMapper;
 import jakarta.annotation.Resource;
 import org.springframework.security.core.userdetails.UserDetails;

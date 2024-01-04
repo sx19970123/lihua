@@ -1,4 +1,4 @@
-package com.lihua.system.model;
+package com.lihua.model;
 
 import lombok.Data;
 

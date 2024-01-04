@@ -1,4 +1,4 @@
-package com.lihua.system.entity;
+package com.lihua.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.lihua.utils;
+package com.lihua.utils.securityUtils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -8,7 +8,7 @@ import static com.lihua.enums.SysBaseEnum.JWT_TOKEN_SECRET;
 /**
  * 简单 JWT 加密解密工具类
  */
-public class JwtUtil {
+public class JwtUtils {
 
     /**
      * 将一个字符串key 进行jwt 加密
