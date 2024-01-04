@@ -4,7 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5156ab31-cc24-4b5b-81c8-c998d4eac032" name="更改" comment="项目初始化" />
+    <list default="true" id="5156ab31-cc24-4b5b-81c8-c998d4eac032" name="更改" comment="项目初始化">
+      <change afterPath="$PROJECT_DIR$/lihua-admin/src/main/java/com/lihua/system/controller/TestController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/cache/RedisCache.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/config/LihuaConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/config/Token.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/enums/SysBaseEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/utils/JwtUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lihua-core/src/main/java/com/lihua/config/RedisConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lihua-core/src/main/java/com/lihua/filter/JwtAuthenticationTokenFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-admin/src/main/java/com/lihua/LiHuaApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-admin/src/main/java/com/lihua/LiHuaApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-admin/src/main/java/com/lihua/system/controller/SystemLoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-admin/src/main/java/com/lihua/system/controller/SystemLoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-admin/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-admin/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-common/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-common/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-core/src/main/java/com/lihua/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-core/src/main/java/com/lihua/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/entity/SysUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/entity/SysUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/SysUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/SysLoginService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/impl/SysUserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/impl/SysLoginServiceImpl.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,14 +56,25 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "deletionFromPopupRequiresConfirmation": "false",
     "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
     "jdk.selected.JAVA_MODULE": "17",
-    "last_opened_file_path": "/Users/shangxuan/项目/lihua",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/【lihua】lihua/lihua-common",
     "onboarding.tips.debug.path": "/Users/shangxuan/项目/lihua/lihua/src/main/java/com/lihua/Main.java",
     "project.structure.last.edited": "模块",
     "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+    "project.structure.side.proportion": "0.0",
+    "应用程序.JwtAuthenticationTokenFilter.executor": "Run",
+    "应用程序.JwtUtil.executor": "Run",
+    "应用程序.LiHuaApplication.executor": "Debug",
+    "应用程序.SysUser.executor": "Run"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\【lihua】lihua\lihua-common" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="LiHuaApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.lihua.LiHuaApplication" />
@@ -64,6 +94,13 @@
         <item itemvalue="应用程序.LiHuaApplication" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-17.0.9-corretto-17.0.9-8336523bb0d9-93b19daf" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
