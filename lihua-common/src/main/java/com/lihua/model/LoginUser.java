@@ -6,6 +6,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+
+/**
+ * 实现了 springsecurity 的 UserDetails
+ * 用于 springsecurity内部认证处理
+ */
 @Data
 @AllArgsConstructor
 public class LoginUser implements UserDetails {

@@ -4,23 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5156ab31-cc24-4b5b-81c8-c998d4eac032" name="更改" comment="项目初始化">
-      <change afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/utils/securityUtils/SecurityUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lihua-core/src/main/java/com/lihua/handle/GlobalResponseHandle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/SysAuthenticationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="5156ab31-cc24-4b5b-81c8-c998d4eac032" name="更改" comment="丰富登录接口">
+      <change afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/enums/AxiosResultCodeEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/model/AxiosResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/model/Wrap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/utils/json/JsonUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/utils/spring/SpringUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lihua-admin/src/main/java/com/lihua/system/controller/SystemLoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-admin/src/main/java/com/lihua/system/controller/SystemAuthenticationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-admin/src/main/java/com/lihua/system/controller/SystemAuthenticationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-admin/src/main/java/com/lihua/system/controller/SystemAuthenticationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lihua-admin/src/main/java/com/lihua/system/controller/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-admin/src/main/java/com/lihua/system/controller/TestController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/utils/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/utils/securityUtils/JwtUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/model/BaseEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/model/BaseEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/model/LoginUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/model/LoginUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/model/SysUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/model/SysUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/utils/securityUtils/JwtUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/utils/security/JwtUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/utils/securityUtils/SecurityUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/utils/security/SecurityUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lihua-core/src/main/java/com/lihua/filter/JwtAuthenticationTokenFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-core/src/main/java/com/lihua/filter/JwtAuthenticationTokenFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/entity/LoginUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/model/LoginUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/entity/SysUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/model/SysUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/mapper/SysUserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/mapper/SysUserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/model/BaseEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-common/src/main/java/com/lihua/model/BaseEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/SysLoginService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-core/src/main/java/com/lihua/handle/GlobalResponseHandle.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-core/src/main/java/com/lihua/handle/GlobalExceptionHandle.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/impl/LoginUserDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/impl/LoginUserDetailsServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/impl/SysLoginServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/impl/SysAuthenticationServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/impl/SysAuthenticationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/lihua-service/src/main/java/com/lihua/system/service/impl/SysAuthenticationServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,33 +48,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/【lihua】lihua/lihua-common&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/shangxuan/项目/lihua/lihua/src/main/java/com/lihua/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;应用程序.JwtAuthenticationTokenFilter.executor&quot;: &quot;Run&quot;,
-    &quot;应用程序.JwtUtil.executor&quot;: &quot;Run&quot;,
-    &quot;应用程序.LiHuaApplication.executor&quot;: &quot;Debug&quot;,
-    &quot;应用程序.SysUser.executor&quot;: &quot;Run&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "deletionFromPopupRequiresConfirmation": "false",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "jdk.selected.JAVA_MODULE": "17",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/【lihua】lihua/lihua-common",
+    "onboarding.tips.debug.path": "/Users/shangxuan/项目/lihua/lihua/src/main/java/com/lihua/Main.java",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "应用程序.JwtAuthenticationTokenFilter.executor": "Run",
+    "应用程序.JwtUtil.executor": "Run",
+    "应用程序.LiHuaApplication.executor": "Debug",
+    "应用程序.SpringUtils.executor": "Debug",
+    "应用程序.SysAuthenticationServiceImpl.executor": "Debug",
+    "应用程序.SysUser.executor": "Run"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\【lihua】lihua\lihua-common" />
     </key>
   </component>
-  <component name="RunManager" selected="应用程序.SysAuthenticationServiceImpl">
+  <component name="RunManager">
     <configuration name="LiHuaApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.lihua.LiHuaApplication" />
       <module name="lihua-admin" />
@@ -87,22 +90,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SysAuthenticationServiceImpl" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.lihua.system.service.impl.SysAuthenticationServiceImpl" />
-      <module name="lihua-service" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.lihua.system.service.impl.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="应用程序.SysAuthenticationServiceImpl" />
         <item itemvalue="应用程序.LiHuaApplication" />
       </list>
     </recent_temporary>

@@ -1,4 +1,4 @@
-package com.lihua.utils.securityUtils;
+package com.lihua.utils.security;
 
 import com.lihua.model.LoginUser;
 import com.lihua.model.SysUser;

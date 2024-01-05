@@ -1,4 +1,4 @@
-package com.lihua.utils.securityUtils;
+package com.lihua.utils.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

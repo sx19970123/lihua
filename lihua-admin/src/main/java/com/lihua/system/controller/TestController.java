@@ -1,19 +1,26 @@
 package com.lihua.system.controller;
 
-import com.lihua.model.LoginUser;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.lihua.model.AxiosResult;
+import com.lihua.model.SysUser;
+import com.lihua.utils.security.SecurityUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+
 @RestController
 @RequestMapping("test")
-public class TestController {
+public class TestController extends AxiosResult {
 
     @GetMapping("getLoginUser")
-    public LoginUser test() {
+    public String test() {
+        throw new RuntimeException("当前账户已过期");
+    }
 
-        LoginUser context = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return context;
+    @GetMapping("getLoginUser2")
+    public String test2() {
+        String username = SecurityUtils.getUsername();
+        return success(username);
     }
 }

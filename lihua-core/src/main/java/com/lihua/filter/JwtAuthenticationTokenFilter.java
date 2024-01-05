@@ -3,12 +3,13 @@ package com.lihua.filter;
 import com.lihua.cache.RedisCache;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.model.LoginUser;
-import com.lihua.utils.securityUtils.JwtUtils;
+import com.lihua.utils.security.JwtUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -47,12 +48,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
      * @param token
      * @return
      */
+    @SneakyThrows
     private LoginUser getUserInfoByToken(String token) {
         try {
             JwtUtils.verify(token);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("非法token");
         }
 
         String decode = JwtUtils.decode(token);

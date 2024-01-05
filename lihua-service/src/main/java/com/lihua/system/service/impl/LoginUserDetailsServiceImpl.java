@@ -20,9 +20,6 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
         QueryWrapper<SysUser> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(SysUser::getUsername,username);
         SysUser sysUser = sysUserMapper.selectOne(wrapper);
-        if (sysUser == null) {
-            throw new UsernameNotFoundException("用户名未找到");
-        }
         return new LoginUser(sysUser);
     }
 }

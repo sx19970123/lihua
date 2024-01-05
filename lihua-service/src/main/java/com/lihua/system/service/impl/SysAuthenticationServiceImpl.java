@@ -6,8 +6,8 @@ import com.lihua.enums.SysBaseEnum;
 import com.lihua.model.LoginUser;
 import com.lihua.model.SysUser;
 import com.lihua.system.service.SysAuthenticationService;
-import com.lihua.utils.securityUtils.JwtUtils;
-import com.lihua.utils.securityUtils.SecurityUtils;
+import com.lihua.utils.security.JwtUtils;
+import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,9 +29,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Override
     public String login(SysUser sysUser) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(sysUser.getUsername(), sysUser.getPassword()));
-        if (authenticate == null) {
-            throw new RuntimeException("登录失败");
-        }
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         loginUser.getSysUser().setPassword(null);
         // 将用户信息存放到redis
@@ -43,14 +40,5 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Override
     public void logout() {
         redisCache.delete(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + SecurityUtils.getUserId());
-    }
-
-    public static void main(String[] args) {
-        SysUser sysUser = new SysUser();
-        SysUser sysUser1 = new SysUser();
-        int i = System.identityHashCode(sysUser);
-        int i1 = System.identityHashCode(sysUser1);
-        System.out.println(i);
-        System.out.println(i1);
     }
 }

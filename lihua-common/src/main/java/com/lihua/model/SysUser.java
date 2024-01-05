@@ -7,6 +7,9 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
+/**
+ * 系统用户
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysUser extends BaseEntity {
