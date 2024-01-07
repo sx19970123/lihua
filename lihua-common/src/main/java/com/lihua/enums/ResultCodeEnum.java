@@ -8,12 +8,12 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum AxiosResultCodeEnum {
+public enum ResultCodeEnum {
 
     SUCCESS (200,"成功"),
     ERROR (500,"失败"),
     LOGIN_ERROR (501,"用户名或密码错误"),
-    ACCESS_ERROR (502,"权限不足");
+    ACCESS_ERROR (502,"访问权限不足");
 
 
     /**

@@ -17,4 +17,9 @@ public class LihuaConfig {
      */
     private Long expireTime;
 
+    /**
+     * 允许跨域最长时间
+     */
+    private Long corsMaxAge;
+
 }

@@ -18,12 +18,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
 <!--         web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

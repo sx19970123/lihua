@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@MapperScan("com.lihua.system.mapper")
+@MapperScan("com.lihua.*.mapper")
 @ComponentScan("com.lihua.*")
 public class LiHuaApplication {
     public static void main(String[] args) {

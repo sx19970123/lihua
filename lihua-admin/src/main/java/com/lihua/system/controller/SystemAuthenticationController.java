@@ -1,6 +1,6 @@
 package com.lihua.system.controller;
 
-import com.lihua.model.AxiosResult;
+import com.lihua.model.ControllerResult;
 import com.lihua.model.SysUser;
 import com.lihua.system.service.SysAuthenticationService;
 import jakarta.annotation.Resource;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("system")
-public class SystemAuthenticationController extends AxiosResult {
+public class SystemAuthenticationController extends ControllerResult {
     @Resource
     private SysAuthenticationService sysAuthenticationService;
 

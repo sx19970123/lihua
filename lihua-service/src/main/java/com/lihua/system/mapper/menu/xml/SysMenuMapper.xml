@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lihua.system.mapper.menu.SysMenuMapper">
+
+    <select id="selectPermsByUserId" resultType="java.lang.String">
+        SELECT
+            sys_menu.perms
+        FROM
+            sys_menu
+        INNER JOIN sys_role_menu ON sys_role_menu.menu_id = sys_menu.id
+        INNER JOIN sys_role ON sys_role.id = sys_role_menu.role_id
+        INNER JOIN sys_user_role ON sys_user_role.role_id = sys_role.id
+        WHERE
+            sys_user_role.user_id = #{userId}
+    </select>
+</mapper>

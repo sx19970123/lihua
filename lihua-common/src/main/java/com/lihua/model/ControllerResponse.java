@@ -1,7 +1,7 @@
 package com.lihua.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.lihua.enums.AxiosResultCodeEnum;
+import com.lihua.enums.ResultCodeEnum;
 import lombok.AllArgsConstructor;
 
 /**
@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class Wrap<T> {
+public class ControllerResponse<T> {
 
     /**
      * code 编码
@@ -35,7 +35,7 @@ public class Wrap<T> {
      * @return
      * @param <T>
      */
-    public static <T> Wrap wrap(AxiosResultCodeEnum resultCodeEnum, String msg, T data) {
-        return new Wrap<T>(resultCodeEnum.getCode(), msg, data);
+    public static <T> ControllerResponse wrap(ResultCodeEnum resultCodeEnum, String msg, T data) {
+        return new ControllerResponse<T>(resultCodeEnum.getCode(), msg, data);
     }
 }

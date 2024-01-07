@@ -2,6 +2,9 @@
 lihua:
   # 令牌过期时间（分钟）
   expireTime: 60
+  # 允许跨域的最长时间
+  corsMaxAge: 3600
+
 
 spring:
   # 数据源配置
@@ -31,3 +34,7 @@ spring:
           max-active: 100
           # 连接分配应该阻塞的最大时间
           max-wait: 2000
+
+mybatis-plus:
+  # 将 xml 放到 java 目录下
+  mapper-locations: classpath*:com/lihua/**/mapper/**/*.xml
