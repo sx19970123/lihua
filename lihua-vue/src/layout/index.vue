@@ -1,74 +1,31 @@
 <template>
-  <a-layout :style="{minHeight:'100vh'}">
-    <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
-      <div class="logo" style="height: 50px" />
-      <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
-        <a-menu-item key="1">
-          <user-outlined />
-          <span>nav 1</span>
-        </a-menu-item>
-        <a-menu-item key="2">
-          <video-camera-outlined />
-          <span>nav 2</span>
-        </a-menu-item>
-        <a-menu-item key="3">
-          <upload-outlined />
-          <span>nav 3</span>
-        </a-menu-item>
-      </a-menu>
+  <a-layout style="min-height: 100vh">
+<!--    侧边栏-->
+    <a-layout-sider>
+
     </a-layout-sider>
     <a-layout>
-      <a-layout-header style="background: #fff;">
-        <menu-unfold-outlined
-            v-if="collapsed"
-            class="trigger"
-            @click="() => (collapsed = !collapsed)"
-        />
-        <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
+<!--      页头-->
+      <a-layout-header :style="{background: '#fff'}">
+        <app-header/>
       </a-layout-header>
-      <a-layout-content
-          :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }"
-      >
-        Content
+
+<!--      内容-->
+      <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }">
+        <!--      tabBar-->
+        <app-tab-bar/>
       </a-layout-content>
+<!--      页脚-->
       <a-layout-footer>
-        Footer
+        <p>footer</p>
       </a-layout-footer>
     </a-layout>
   </a-layout>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
-import {
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-} from '@ant-design/icons-vue';
-const selectedKeys = ref<string[]>(['1']);
-const collapsed = ref<boolean>(false);
+
+import AppTabBar from "@/layout/components/AppTagsViews.vue";
+import AppHeader from "@/layout/components/AppHeader.vue";
 </script>
 <style>
-#components-layout-demo-custom-trigger .trigger {
-  font-size: 18px;
-  line-height: 64px;
-  padding: 0 24px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-#components-layout-demo-custom-trigger .trigger:hover {
-  color: #1890ff;
-}
-
-#components-layout-demo-custom-trigger .logo {
-  height: 32px;
-  background: rgba(255, 255, 255, 0.3);
-  margin: 16px;
-}
-
-.site-layout .site-layout-background {
-  background: #fff;
-}
 </style>
