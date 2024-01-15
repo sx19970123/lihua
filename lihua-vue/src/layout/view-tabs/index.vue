@@ -5,7 +5,7 @@
             size="small"
             hide-add
     >
-      <a-tab-pane :key="i" :closable="i !== 1" v-for="i in 30">
+      <a-tab-pane>
         <!--每个tab的下拉菜单-->
         <template #tab>
           <tab-pane-menu/>
