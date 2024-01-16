@@ -1,15 +1,33 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Layout from '@/layout/index.vue'
 
 const routers = [
   {
     path: '',
+    component: Layout,
     name: 'home',
-    component: () => import("@/views/index.vue")
+    children: [
+      {
+        path: 'index',
+        component: () => import("@/views/index.vue"),
+        name: 'Index'
+      }
+    ]
+  },
+  {
+    path: '/test',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import("@/views/Test.vue"),
+      }
+    ]
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: routers
 })
 

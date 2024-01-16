@@ -11,7 +11,10 @@
         <!--标签页-->
         <ViewTabs></ViewTabs>
       </a-layout-header>
-      <a-layout-content></a-layout-content>
+      <!--内容-->
+      <a-layout-content :style="{'margin-top': '48px'}">
+        <Content/>
+      </a-layout-content>
       <a-layout-footer></a-layout-footer>
     </a-layout>
   </a-layout>
@@ -22,7 +25,7 @@
 import Head from "@/layout/head/index.vue"
 import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
-
+import Content from "@/layout/content/index.vue"
 </script>
 
 <style scoped>

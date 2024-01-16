@@ -31,9 +31,7 @@ const handleClickMenu = ({item}) => {
   const {
     routerPath
   } = item
-  router.push({
-    path: routerPath
-  })
+  router.push(routerPath)
 }
 
 // 抛出菜单

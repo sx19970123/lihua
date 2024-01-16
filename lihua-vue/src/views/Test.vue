@@ -1,10 +1,10 @@
-<template>
-  系统首页
-</template>
-
 <script setup lang="ts">
 
 </script>
+
+<template>
+  测试组件
+</template>
 
 <style scoped>
 
