@@ -1,4 +1,4 @@
-package com.lihua.system.entity.menu;
+package com.lihua.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -26,7 +26,22 @@ public class SysMenu extends BaseEntity {
     /**
      * 菜单名称
      */
-    private String menuName;
+    private String label;
+
+    /**
+     * 鼠标悬浮内容展示
+     */
+    private String title;
+
+    /**
+     * 菜单类型 group、divider等
+     */
+    private String type;
+
+    /**
+     * 菜单/页面
+     */
+    private String menuType;
 
     /**
      * 路由地址
@@ -47,6 +62,11 @@ public class SysMenu extends BaseEntity {
      * 菜单状态(0正常、1停用)
      */
     private String status;
+
+    /**
+     * 菜单上禁用状态
+     */
+    private String disabled;
 
     /**
      * 权限标识符

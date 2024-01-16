@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lihua.system.mapper.SysMenuMapper">
+
+    <resultMap id="selectPermsByUserId" type="com.lihua.system.model.SysMenuVO">
+        <id column="id" property="id"/>
+        <result column="id" property="key"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="label" property="label"/>
+        <result column="title" property="title"/>
+        <result column="type" property="type"/>
+        <result column="router_path" property="routerPath"/>
+        <result column="component_path" property="componentPath"/>
+        <result column="disabled" property="disabled"/>
+        <result column="perms" property="perms"/>
+        <result column="icon" property="icon"/>
+    </resultMap>
+
+    <select id="selectPermsByUserId" resultMap="selectPermsByUserId">
+        SELECT
+            sys_menu.id,
+            sys_menu.parent_id,
+            sys_menu.label,
+            sys_menu.title,
+            sys_menu.type,
+            sys_menu.router_path,
+            sys_menu.component_path,
+            sys_menu.disabled,
+            sys_menu.perms,
+            sys_menu.icon
+        FROM
+        sys_menu
+            INNER JOIN sys_role_menu ON sys_role_menu.menu_id = sys_menu.id
+            INNER JOIN sys_role ON sys_role.id = sys_role_menu.role_id
+            INNER JOIN sys_user_role ON sys_user_role.role_id = sys_role.id
+        WHERE
+            sys_user_role.user_id = #{userId} order by sys_menu.sort desc
+    </select>
+</mapper>

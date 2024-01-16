@@ -1,4 +1,4 @@
-package com.lihua.system.entity.role;
+package com.lihua.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

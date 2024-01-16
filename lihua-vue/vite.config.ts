@@ -13,6 +13,18 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
+    },
+  },
+  server: {
+    port: 90,
+    host: true,
+    open: true,
+    proxy: {
+      '/dev-api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        rewrite: (p:string) => p.replace(/^\/dev-api/, '')
+      }
     }
   }
 })

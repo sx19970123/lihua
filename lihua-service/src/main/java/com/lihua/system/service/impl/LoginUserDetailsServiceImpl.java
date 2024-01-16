@@ -3,17 +3,19 @@ package com.lihua.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.model.LoginUser;
 import com.lihua.model.SysUser;
-import com.lihua.system.mapper.menu.SysMenuMapper;
-import com.lihua.system.mapper.user.SysUserMapper;
+import com.lihua.system.mapper.SysMenuMapper;
+import com.lihua.system.mapper.SysUserMapper;
+import com.lihua.system.model.SysMenuVO;
 import jakarta.annotation.Resource;
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LoginUserDetailsServiceImpl implements UserDetailsService {
@@ -32,7 +34,19 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("用户名未找到");
         }
         // 查询用户权限信息
-        List<String> authorities = sysMenuMapper.selectPermsByUserId(sysUser.getId());
-        return new LoginUser(sysUser, authorities);
+        List<SysMenuVO> menus = sysMenuMapper.selectPermsByUserId(sysUser.getId());
+        if (menus == null || menus.isEmpty()) {
+            throw new PermissionDeniedDataAccessException("请配置用户权限",null);
+        }
+        List<String> perms = menus.stream()
+                .map(SysMenuVO::getPerms)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+
+        if (perms.isEmpty()) {
+            throw new PermissionDeniedDataAccessException("请配置用户权限",null);
+        }
+        return new LoginUser(sysUser, perms);
     }
 }

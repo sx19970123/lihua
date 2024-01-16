@@ -1,4 +1,4 @@
-package com.lihua.system.mapper.user;
+package com.lihua.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lihua.model.SysUser;
