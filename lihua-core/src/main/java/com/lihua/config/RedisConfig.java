@@ -1,5 +1,6 @@
 package com.lihua.config;
 
+import com.lihua.constant.Constant;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -40,6 +41,6 @@ public class RedisConfig {
     public RedisLockRegistry redisLockRegistry(RedisConnectionFactory factory){
         // 1、锁的密钥前缀：REDIS-LOCK
         // 2、锁的过期时间：20秒
-        return new RedisLockRegistry(factory, "REDIS-LOCK",20000L);
+        return new RedisLockRegistry(factory, Constant.REDIS_LOCK.getCode(),20000L);
     }
 }

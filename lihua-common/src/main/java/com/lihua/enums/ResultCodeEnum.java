@@ -13,7 +13,9 @@ public enum ResultCodeEnum {
     SUCCESS (200,"成功"),
     ERROR (500,"失败"),
     LOGIN_ERROR (501,"用户名或密码错误"),
-    ACCESS_ERROR (502,"访问权限不足");
+    AUTHENTICATION_EXPIRED(502,"用户认证过期，请重新登陆"),
+    TOKEN_ERROR(503,"token解析异常"),
+    ACCESS_ERROR (504,"访问权限不足");
 
 
     /**

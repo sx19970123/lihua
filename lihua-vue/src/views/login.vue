@@ -21,9 +21,9 @@
 
 <script setup lang="ts">
 
-import { reactive } from "vue";
 import { useUserStore } from "@/stores/modules/user"
 import { useRouter } from 'vue-router'
+import { reactive } from "vue"
 const router = useRouter()
 
 const userLogin = () => {

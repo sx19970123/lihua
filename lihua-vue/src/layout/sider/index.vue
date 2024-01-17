@@ -4,12 +4,12 @@
       :items="menuItem"
       mode="inline"
       theme="dark"
-      @click="handleClickMenu"
+      @select="handleClickMenu"
   />
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue';
 import Logo from "@/layout/sider/components/Logo.vue";
 import { getMenuInfo } from "@/api/menu"
 import { useRouter } from 'vue-router'
@@ -27,9 +27,12 @@ const initMenu = () => {
 }
 
 // 处理点击菜单
-const handleClickMenu = ({item}) => {
-  router.push(item.routerPath)
+const handleClickMenu = ({item}:{item:any}) => {
+  if (item.routerPath) {
+    router.push(item.routerPath)
+  }
 }
+
 
 // 抛出菜单
 const { menuItem } = initMenu()
