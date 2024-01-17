@@ -1,14 +1,13 @@
 <template>
   <section>
     <router-view v-slot="{ Component, route}">
-      <div>{{console.log(Component)}}</div>
-      <transition>
+<!--      <transition>-->
         <keep-alive>
 
           <component :is="Component" :key="route.path"/>
 
         </keep-alive>
-      </transition>
+<!--      </transition>-->
     </router-view>
   </section>
 </template>

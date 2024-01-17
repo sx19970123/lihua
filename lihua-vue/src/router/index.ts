@@ -5,7 +5,6 @@ const routers = [
   {
     path: '',
     component: Layout,
-    name: 'home',
     children: [
       {
         path: 'index',
@@ -13,6 +12,11 @@ const routers = [
         name: 'Index'
       }
     ]
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import("@/views/Login.vue")
   },
   {
     path: '/test',

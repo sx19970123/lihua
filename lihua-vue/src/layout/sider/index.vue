@@ -19,7 +19,7 @@ const router = useRouter()
 const initMenu = () => {
   const menuItem = ref([])
   getMenuInfo().then((resp)=> {
-    menuItem.value = resp.data.data
+    menuItem.value = resp.data
   })
   return {
     menuItem
@@ -28,10 +28,7 @@ const initMenu = () => {
 
 // 处理点击菜单
 const handleClickMenu = ({item}) => {
-  const {
-    routerPath
-  } = item
-  router.push(routerPath)
+  router.push(item.routerPath)
 }
 
 // 抛出菜单
