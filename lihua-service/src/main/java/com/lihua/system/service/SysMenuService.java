@@ -1,6 +1,6 @@
 package com.lihua.system.service;
 
-import com.lihua.system.model.SysMenuVO;
+import com.lihua.model.SysMenuVO;
 
 import java.util.List;
 

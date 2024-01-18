@@ -1,14 +1,16 @@
 package com.lihua.utils.tree;
 
+import com.lihua.utils.string.StringUtils;
+
 import java.lang.reflect.Method;
 import java.util.*;
 
 public class TreeUtil {
 
-    private static String DEFAULT_ID = "Id";
-    private static String DEFAULT_PARENT_ID = "ParentId";
-    private static String DEFAULT_CHILDREN = "Children";
-    private static String DEFAULT_ROOT_VALUE = "0";
+    private static final String DEFAULT_ID = "Id";
+    private static final String DEFAULT_PARENT_ID = "ParentId";
+    private static final String DEFAULT_CHILDREN = "Children";
+    private static final String DEFAULT_ROOT_VALUE = "0";
 
     /**
      * 将 List<T> 构建为 树形结构 ，默认属性为 id parentId children 0
@@ -21,13 +23,27 @@ public class TreeUtil {
         return buildTree(list,DEFAULT_ID,DEFAULT_PARENT_ID,DEFAULT_CHILDREN,DEFAULT_ROOT_VALUE);
     }
 
-    public static <T,V> List<T> buildTree(List<T> list, String propKeyName,String propParentKeyName,V rootValue) {
-        return buildTree(list,propKeyName,propParentKeyName,DEFAULT_CHILDREN,rootValue);
-    }
-
 
     public static <T,V> List<T> buildTree(List<T> list,V rootValue) {
         return buildTree(list,DEFAULT_ID,DEFAULT_PARENT_ID,DEFAULT_CHILDREN,rootValue);
+    }
+    public static <T,V> List<T> buildTree(List<T> list, String propKeyName,String propParentKeyName) {
+        propKeyName = StringUtils.initialUpperCase(propKeyName);
+        propParentKeyName = StringUtils.initialUpperCase(propParentKeyName);
+        return build(list,propKeyName,propParentKeyName,DEFAULT_CHILDREN,DEFAULT_ROOT_VALUE);
+    }
+
+    public static <T,V> List<T> buildTree(List<T> list, String propKeyName,String propParentKeyName , V rootValue) {
+        propKeyName = StringUtils.initialUpperCase(propKeyName);
+        propParentKeyName = StringUtils.initialUpperCase(propParentKeyName);
+        return build(list,propKeyName,propParentKeyName,DEFAULT_CHILDREN,rootValue);
+    }
+
+    public static <T,V> List<T> buildTree(List<T> list, String propKeyName,String propParentKeyName,String propChildrenName , V rootValue) {
+        propKeyName = StringUtils.initialUpperCase(propKeyName);
+        propParentKeyName = StringUtils.initialUpperCase(propParentKeyName);
+        propChildrenName = StringUtils.initialUpperCase(propChildrenName);
+        return build(list,propKeyName,propParentKeyName,propChildrenName,rootValue);
     }
 
     /**
@@ -39,7 +55,7 @@ public class TreeUtil {
      * @param rootParentValue root 节点 pid的值
      * @return 树形结构集合
      */
-    public static <T,K,V> List<T> buildTree(List<T> list,
+    private static <T,K,V> List<T> build(List<T> list,
                                           String propKeyName,
                                           String propParentKeyName,
                                           String propChildrenName,

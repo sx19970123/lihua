@@ -67,7 +67,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             request.setAttribute(Constant.ERROR_MSG.getCode(),TOKEN_ERROR);
             throw new RuntimeException();
         }
-
-        return redisCache.getCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
+        LoginUser loginUser = (LoginUser) redisCache.getCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
+        return loginUser;
     }
 }

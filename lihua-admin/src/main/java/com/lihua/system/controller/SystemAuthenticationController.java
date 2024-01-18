@@ -1,7 +1,7 @@
 package com.lihua.system.controller;
 
 import com.lihua.model.ControllerResult;
-import com.lihua.model.SysUser;
+import com.lihua.entity.SysUser;
 import com.lihua.system.service.SysAuthenticationService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;

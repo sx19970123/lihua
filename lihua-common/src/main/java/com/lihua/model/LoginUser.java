@@ -1,6 +1,9 @@
 package com.lihua.model;
 
+import com.lihua.entity.SysRole;
+import com.lihua.entity.SysUser;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@Accessors(chain = true)
 public class LoginUser implements UserDetails {
 
     /**
@@ -32,6 +36,22 @@ public class LoginUser implements UserDetails {
      *  请求接口获取权限信息时直接将属性返回即可
      */
     private List<? extends GrantedAuthority> permissionList;
+
+    /**
+     * 用户的菜单信息（树）
+     */
+    private List<SysMenuVO> sysMenuTreeList;
+
+    /**
+     * 用户的菜单信息
+     */
+    private List<SysMenuVO> sysMenuList;
+
+    /**
+     * 用户角色信息
+     */
+    private List<SysRole> sysRoleList;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -71,7 +91,7 @@ public class LoginUser implements UserDetails {
         return true;
     }
 
-    public LoginUser(SysUser sysUser, List<String> authorities) {
+    public LoginUser(SysUser sysUser,List<String> authorities) {
         this.sysUser = sysUser;
         this.authorities = authorities;
     }

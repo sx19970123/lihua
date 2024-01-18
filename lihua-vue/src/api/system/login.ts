@@ -1,10 +1,10 @@
 import request from "@/utils/request";
-//
 interface LoginType {
     username: string,
     password: string,
     code?: string
 }
+// 用户登录
 export const login =  (username: string,
                       password: string,
                       code?: string) => {

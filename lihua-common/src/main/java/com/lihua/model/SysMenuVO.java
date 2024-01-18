@@ -1,11 +1,12 @@
-package com.lihua.system.model;
+package com.lihua.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class SysMenuVO {
+public class SysMenuVO implements Serializable {
 
     /**
      * 主键

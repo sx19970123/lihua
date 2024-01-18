@@ -1,5 +1,8 @@
 import { defineStore } from "pinia";
+
 import { login } from "@/api/system/login";
+import { getUserInfo } from "@/api/system/user";
+
 import token from "@/utils/token";
 const {getToken,setToken,removeToken} = token
 /**
@@ -15,8 +18,11 @@ interface UserStoreType {
     // 用户角色
     roles: Array<string>,
     // 用户权限
-    permissions: Array<string>
+    permissions: Array<string>,
+    // 用户全部信息
+    userInfo: object
 }
+
 
 export const useUserStore = defineStore('user', {
     state: ():UserStoreType => {
@@ -25,7 +31,8 @@ export const useUserStore = defineStore('user', {
             name: '',
             avatar: '',
             roles: [],
-            permissions: []
+            permissions: [],
+            userInfo: {}
         }
     },
     actions: {
@@ -43,8 +50,10 @@ export const useUserStore = defineStore('user', {
             })
         },
         // 获取用户信息
-        userInfo: () => {
-
+        getUserInfo () {
+            getUserInfo().then(resp => {
+                this.$state.userInfo = resp.data
+            })
         }
     },
     getters: {

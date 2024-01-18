@@ -1,7 +1,7 @@
 package com.lihua.system.service.impl;
 
 import com.lihua.system.mapper.SysMenuMapper;
-import com.lihua.system.model.SysMenuVO;
+import com.lihua.model.SysMenuVO;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.utils.security.SecurityUtils;
 import com.lihua.utils.tree.TreeUtil;

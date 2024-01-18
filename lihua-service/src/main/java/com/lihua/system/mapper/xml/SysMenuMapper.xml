@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lihua.system.mapper.SysMenuMapper">
 
-    <resultMap id="selectPermsByUserId" type="com.lihua.system.model.SysMenuVO">
+    <resultMap id="selectPermsByUserId" type="com.lihua.model.SysMenuVO">
         <id column="id" property="id"/>
         <result column="id" property="key"/>
         <result column="parent_id" property="parentId"/>

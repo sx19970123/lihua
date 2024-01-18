@@ -1,7 +1,7 @@
 package com.lihua.utils.security;
 
 import com.lihua.model.LoginUser;
-import com.lihua.model.SysUser;
+import com.lihua.entity.SysUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

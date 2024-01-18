@@ -2,10 +2,10 @@ package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.model.LoginUser;
-import com.lihua.model.SysUser;
+import com.lihua.entity.SysUser;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysUserMapper;
-import com.lihua.system.model.SysMenuVO;
+import com.lihua.model.SysMenuVO;
 import jakarta.annotation.Resource;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LoginUserDetailsServiceImpl implements UserDetailsService {
@@ -47,6 +46,8 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
         if (perms.isEmpty()) {
             throw new PermissionDeniedDataAccessException("请配置用户权限",null);
         }
-        return new LoginUser(sysUser, perms);
+
+        return new LoginUser(sysUser,perms);
     }
 }
+

@@ -1,6 +1,6 @@
 package com.lihua.system.service;
 
-import com.lihua.model.SysUser;
+import com.lihua.entity.SysUser;
 
 public interface SysAuthenticationService {
 
