@@ -12,12 +12,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("test")
 public class TestController extends ControllerResult {
-
-    @Resource
-    private SysMenuService sysMenuService;
-
-    @GetMapping
-    String test() {
-        return success(sysMenuService.selectSysMenuByLoginUser());
-    }
 }

@@ -43,9 +43,9 @@ public class LoginUser implements UserDetails {
     private List<SysMenuVO> sysMenuTreeList;
 
     /**
-     * 用户的菜单信息
+     * vue 路由
      */
-    private List<SysMenuVO> sysMenuList;
+    private List<RouteVO> routeLis;
 
     /**
      * 用户角色信息

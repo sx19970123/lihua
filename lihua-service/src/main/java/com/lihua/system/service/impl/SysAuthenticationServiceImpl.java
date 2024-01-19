@@ -6,10 +6,12 @@ import com.lihua.entity.SysRole;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.model.LoginUser;
 import com.lihua.entity.SysUser;
+import com.lihua.model.RouteVO;
 import com.lihua.model.SysMenuVO;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysAuthenticationService;
+import com.lihua.system.service.SysMenuService;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.SecurityUtils;
 import com.lihua.utils.tree.TreeUtil;
@@ -31,7 +33,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     private AuthenticationManager authenticationManager;
 
     @Resource
-    private SysMenuMapper sysMenuMapper;
+    private SysMenuService sysMenuService;
 
     @Resource
     private SysRoleMapper sysRoleMapper;
@@ -64,12 +66,12 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         // 隐藏密码
         loginUser.getSysUser().setPassword(null);
         // 菜单权限信息
-        List<SysMenuVO> sysMenuVOS = sysMenuMapper.selectPermsByUserId(id);
+        List<SysMenuVO> sysMenuVOS = sysMenuService.selectSysMenuByLoginUserId(id);
+        List<RouteVO> routeVOS = sysMenuService.initMetaRouteInfo(id);
         // 角色信息
         List<SysRole> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
-
-        loginUser.setSysMenuList(sysMenuVOS)
-                .setSysMenuTreeList(TreeUtil.buildTree(sysMenuVOS))
+        loginUser
+                .setSysMenuTreeList(sysMenuVOS)
                 .setSysRoleList(sysRoles);
 
         // 将用户信息存放到redis

@@ -15,9 +15,9 @@ interface UserStoreType {
     name: string,
     // 用户头像
     avatar: string,
-    // 用户角色
+    // 用户角色编码
     roles: Array<string>,
-    // 用户权限
+    // 用户权限字符串
     permissions: Array<string>,
     // 用户全部信息
     userInfo: object
@@ -51,8 +51,13 @@ export const useUserStore = defineStore('user', {
         },
         // 获取用户信息
         getUserInfo () {
-            getUserInfo().then(resp => {
-                this.$state.userInfo = resp.data
+            return new Promise((resolve, reject) => {
+                getUserInfo().then(resp => {
+                    this.$state.userInfo = resp.data
+                    resolve(resp.data)
+                }).catch(err => {
+                    reject(err)
+                })
             })
         }
     },

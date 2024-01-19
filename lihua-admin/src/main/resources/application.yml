@@ -38,3 +38,9 @@ spring:
 mybatis-plus:
   # 将 xml 放到 java 目录下
   mapper-locations: classpath*:com/lihua/**/mapper/**/*.xml
+
+# 日志配置
+logging:
+  level:
+    com.lihua: debug
+    org.springframework: warn

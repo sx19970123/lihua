@@ -1,5 +1,6 @@
 package com.lihua.system.service.impl;
 
+import com.lihua.model.RouteVO;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.model.SysMenuVO;
 import com.lihua.system.service.SysMenuService;
@@ -17,9 +18,17 @@ public class SysMenuServiceImpl implements SysMenuService {
     private SysMenuMapper sysMenuMapper;
 
     @Override
-    public List<SysMenuVO> selectSysMenuByLoginUser() {
-        String userId = SecurityUtils.getUserId();
+    public List<SysMenuVO> selectSysMenuByLoginUserId(String userId) {
         List<SysMenuVO> sysMenuVOS = sysMenuMapper.selectPermsByUserId(userId);
         return TreeUtil.buildTree(sysMenuVOS);
+    }
+
+    @Override
+    public List<RouteVO> initMetaRouteInfo(String userId) {
+        List<SysMenuVO> sysMenuVOS = sysMenuMapper.selectPermsByUserId(userId);
+        sysMenuMapper.selectPermsByUserId(userId);
+        sysMenuMapper.selectPermsByUserId(userId);
+
+        return null;
     }
 }
