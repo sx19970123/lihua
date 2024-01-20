@@ -64,6 +64,16 @@ public class SysMenuVO implements Serializable {
     private String perms;
 
     /**
+     * 不进行页面缓存(0缓存、1不缓存)
+     */
+    private String noCache;
+
+    /**
+     * 外链类型地址
+     */
+    private String linkPath;
+
+    /**
      * 子菜单
      */
     private List<SysMenuVO> children;

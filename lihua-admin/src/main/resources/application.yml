@@ -4,15 +4,19 @@ lihua:
   expireTime: 60
   # 允许跨域的最长时间
   corsMaxAge: 3600
-
+server:
+  port: 8080
 
 spring:
+  application:
+    name: lihua
+
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/lihua
     username: root
-    password: root
+    password: 123456
 
   # redis配置
   data:
@@ -34,6 +38,10 @@ spring:
           max-active: 100
           # 连接分配应该阻塞的最大时间
           max-wait: 2000
+  banner:
+    location: classpath:banner.txt
+    charset: UTF-8
+
 
 mybatis-plus:
   # 将 xml 放到 java 目录下
@@ -43,4 +51,4 @@ mybatis-plus:
 logging:
   level:
     com.lihua: debug
-    org.springframework: warn
+    org.springframework: info

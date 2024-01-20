@@ -50,6 +50,7 @@
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
                     <include>**/*.yml</include>
+                    <include>**/*.txt</include>
                 </includes>
             </resource>
             <resource>

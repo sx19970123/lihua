@@ -1,10 +1,13 @@
 package com.lihua.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.List;
 @Data
-public class RouteVO {
+@Accessors(chain = true)
+public class RouteVO implements Serializable {
 
     // 用于生成树形结构
     private String id;

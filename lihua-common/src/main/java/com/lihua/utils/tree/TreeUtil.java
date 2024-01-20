@@ -134,17 +134,16 @@ public class TreeUtil {
     /**
      * 通过反射调用set 方法
      */
-    private static <T,K,V> List<K> set(T item , String prop , V value) {
+    private static <T,V> void set(T item , String prop , V value) {
         Class<?> cls = item.getClass();
         for (Method method : cls.getMethods()) {
             if (method.getName().equals("set" + prop)) {
                 try {
-                    return (List<K>) method.invoke(item,value);
+                    method.invoke(item, value);
                 } catch (Exception e) {
                     throw new RuntimeException("TreeUtil 通过反射调用set方法发生异常");
                 }
             }
         }
-        return null;
     }
 }

@@ -40,9 +40,11 @@ export const useUserStore = defineStore('user', {
         login(username: string, password: string, code?: string)  {
             return new Promise((resolve, reject) => {
                 login(username,password,code).then(resp => {
-                    const token = resp.data
-                    setToken(token)
-                    this.$state.token = token
+                    if (resp.code === 200) {
+                        const token = resp.data
+                        setToken(token)
+                        this.$state.token = token
+                    }
                     resolve(resp)
                 }).catch(error => {
                     reject(error)

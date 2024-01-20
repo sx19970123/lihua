@@ -8,6 +8,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Objects;
+
 /**
  * 全局异常处理
  */
@@ -33,7 +35,8 @@ public class GlobalExceptionHandle extends ControllerResult {
      */
     @ExceptionHandler(AuthenticationException.class)
     public String handleAuthenticationException(Exception e) {
-        return error(ResultCodeEnum.LOGIN_ERROR);
+        e.printStackTrace();
+        return error(ResultCodeEnum.getByDefaultExceptionMessage(e.getMessage()));
     }
 
     /**
@@ -43,6 +46,7 @@ public class GlobalExceptionHandle extends ControllerResult {
      */
     @ExceptionHandler(AccessDeniedException.class)
     public String handleAccessDeniedException(Exception e) {
+        e.printStackTrace();
         return error(ResultCodeEnum.ACCESS_ERROR);
     }
 }

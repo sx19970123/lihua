@@ -20,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +42,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Resource
     private LihuaConfig lihuaConfig;
 
+    @Transactional
     @Override
     public String login(SysUser sysUser) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(sysUser.getUsername(), sysUser.getPassword()));
@@ -70,12 +72,13 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         List<RouteVO> routeVOS = sysMenuService.initMetaRouteInfo(id);
         // 角色信息
         List<SysRole> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
+
         loginUser
-                .setSysMenuTreeList(sysMenuVOS)
-                .setSysRoleList(sysRoles);
+            .setSysMenuTreeList(sysMenuVOS)
+            .setSysRoleList(sysRoles)
+            .setRouteLis(routeVOS);
 
         // 将用户信息存放到redis
         redisCache.setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getSysUser().getId(), loginUser, lihuaConfig.getExpireTime(), TimeUnit.MINUTES);
-
     }
 }

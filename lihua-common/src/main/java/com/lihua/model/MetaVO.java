@@ -1,9 +1,13 @@
 package com.lihua.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 @Data
-public class MetaVO {
+@Accessors(chain = true)
+public class MetaVO implements Serializable {
 
     // 导航标题
     private String label;
@@ -19,8 +23,5 @@ public class MetaVO {
 
     // 外联地址
     private String link;
-
-    // 是否展示面包屑
-    private boolean breadcrumb;
 
 }

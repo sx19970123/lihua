@@ -1,6 +1,7 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.LoginUser;
 import com.lihua.entity.SysUser;
 import com.lihua.system.mapper.SysMenuMapper;
@@ -35,7 +36,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
         // 查询用户权限信息
         List<SysMenuVO> menus = sysMenuMapper.selectPermsByUserId(sysUser.getId());
         if (menus == null || menus.isEmpty()) {
-            throw new PermissionDeniedDataAccessException("请配置用户权限",null);
+            throw new PermissionDeniedDataAccessException(ResultCodeEnum.getDefaultExceptionMessage(ResultCodeEnum.NO_ACCESS_ERROR) ,null);
         }
         List<String> perms = menus.stream()
                 .map(SysMenuVO::getPerms)
@@ -44,7 +45,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
                 .toList();
 
         if (perms.isEmpty()) {
-            throw new PermissionDeniedDataAccessException("请配置用户权限",null);
+            throw new PermissionDeniedDataAccessException(ResultCodeEnum.getDefaultExceptionMessage(ResultCodeEnum.NO_ACCESS_ERROR) ,null);
         }
 
         return new LoginUser(sysUser,perms);

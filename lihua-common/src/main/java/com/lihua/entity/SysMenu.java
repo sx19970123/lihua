@@ -88,4 +88,16 @@ public class SysMenu extends BaseEntity {
      */
     private String remark;
 
+
+    /**
+     * 不进行页面缓存(0缓存、1不缓存)
+     */
+    private String noCache;
+
+    /**
+     * 外链类型地址
+     */
+    private String linkPath;
+
+
 }
