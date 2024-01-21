@@ -2,6 +2,10 @@
   <a-row>
     <a-col :span="8">
       <a-card>
+        <SwapLeftOutlined />
+        <VerticalAlignBottomOutlined />
+        <CloseOutlined />
+        <PauseCircleTwoTone />
         <a-form :model="loginForm" @finish="login">
           <a-form-item label="username" name="username">
             <a-input v-model:value="loginForm.username"></a-input>
