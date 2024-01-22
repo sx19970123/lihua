@@ -1,6 +1,6 @@
 package com.lihua.system.service;
 
-import com.lihua.model.RouteVO;
+import com.lihua.model.RouterVO;
 import com.lihua.model.SysMenuVO;
 
 import java.util.List;
@@ -17,5 +17,5 @@ public interface SysMenuService {
      * 通过菜单数据生成 vue router 元数据
      * @return
      */
-    List<RouteVO> initMetaRouteInfo(String userId);
+    List<RouterVO> initMetaRouterInfo(String userId);
 }

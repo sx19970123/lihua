@@ -8,10 +8,9 @@
         <result column="parent_id" property="parentId"/>
         <result column="label" property="label"/>
         <result column="title" property="title"/>
-        <result column="type" property="type"/>
+        <result column="menu_type" property="menuType"/>
         <result column="router_path" property="routerPath"/>
         <result column="component_path" property="componentPath"/>
-        <result column="disabled" property="disabled"/>
         <result column="perms" property="perms"/>
         <result column="icon" property="icon"/>
         <result column="link_path" property="linkPath"/>
@@ -24,10 +23,9 @@
             sys_menu.parent_id,
             sys_menu.label,
             sys_menu.title,
-            sys_menu.type,
+            sys_menu.menu_type,
             sys_menu.router_path,
             sys_menu.component_path,
-            sys_menu.disabled,
             sys_menu.perms,
             sys_menu.icon,
             sys_menu.no_cache,

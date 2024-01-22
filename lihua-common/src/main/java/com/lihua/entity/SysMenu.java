@@ -34,11 +34,6 @@ public class SysMenu extends BaseEntity {
     private String title;
 
     /**
-     * 菜单类型 group、divider等
-     */
-    private String type;
-
-    /**
      * 菜单/页面
      */
     private String menuType;
@@ -62,11 +57,6 @@ public class SysMenu extends BaseEntity {
      * 菜单状态(0正常、1停用)
      */
     private String status;
-
-    /**
-     * 菜单上禁用状态
-     */
-    private String disabled;
 
     /**
      * 权限标识符

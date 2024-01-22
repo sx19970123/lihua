@@ -6,15 +6,12 @@ import com.lihua.entity.SysRole;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.model.LoginUser;
 import com.lihua.entity.SysUser;
-import com.lihua.model.RouteVO;
-import com.lihua.model.SysMenuVO;
-import com.lihua.system.mapper.SysMenuMapper;
+import com.lihua.model.RouterVO;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.SecurityUtils;
-import com.lihua.utils.tree.TreeUtil;
 import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -67,16 +64,13 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         String id = loginUser.getSysUser().getId();
         // 隐藏密码
         loginUser.getSysUser().setPassword(null);
-        // 菜单权限信息
-        List<SysMenuVO> sysMenuVOS = sysMenuService.selectSysMenuByLoginUserId(id);
-        List<RouteVO> routeVOS = sysMenuService.initMetaRouteInfo(id);
+        List<RouterVO> routerVOS = sysMenuService.initMetaRouterInfo(id);
         // 角色信息
         List<SysRole> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
 
         loginUser
-            .setSysMenuTreeList(sysMenuVOS)
             .setSysRoleList(sysRoles)
-            .setRouteLis(routeVOS);
+            .setRouterList(routerVOS);
 
         // 将用户信息存放到redis
         redisCache.setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getSysUser().getId(), loginUser, lihuaConfig.getExpireTime(), TimeUnit.MINUTES);

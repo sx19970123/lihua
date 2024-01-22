@@ -34,9 +34,9 @@ public class SysMenuVO implements Serializable {
     private String title;
 
     /**
-     * 菜单类型 group、divider等
+     * 菜单类型
      */
-    private String type;
+    private String menuType;
 
     /**
      * 路由地址
@@ -48,10 +48,6 @@ public class SysMenuVO implements Serializable {
      */
     private String componentPath;
 
-    /**
-     * 菜单上禁用状态
-     */
-    private String disabled;
 
     /**
      * 菜单图标

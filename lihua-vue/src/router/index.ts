@@ -38,7 +38,7 @@ interface MetaConfig {
     affix?: boolean
 }
 
-const routers:RouteConfig = [
+const routers = [
   {
     path: '',
     component: Layout,
@@ -74,3 +74,4 @@ const router = createRouter({
 })
 
 export default router
+

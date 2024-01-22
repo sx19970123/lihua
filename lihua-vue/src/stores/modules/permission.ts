@@ -12,11 +12,10 @@ export const usePermissionStore = defineStore('permission',{
     },
     actions: {
         // 初始化路由信息
-        initRouters(treeRouter) {
-            this.$state.sidebarRouters = treeRouter
-            this.$state.sidebarRouters = treeRouter
+        initRouters(routerList:any):void {
+            this.$state.sidebarRouters = routerList
+            this.$state.sidebarRouters = routerList
         }
-
     },
     getters: {
 

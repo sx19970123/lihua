@@ -21,9 +21,9 @@ router.beforeEach((to,from,next) => {
         if (Object.keys(userStore.userInfo).length === 0) {
             userStore.getUserInfo().then(resp => {
                 // 拉取用户信息之后初始化导航菜单路由信息
-                usePermission.initRouters(resp.sysMenuTreeList)
+                usePermission.initRouters(resp.routerList)
                 // 初始化动态路由
-                initDynamicRoutes(resp.sysMenuTreeList)
+                initDynamicRoutes(resp.routerList)
             })
         }
         next()
@@ -105,7 +105,6 @@ const initRoute = () => {
         router.addRoute({
 
         })
-        console.log("初始化动态路由:" ,resp)
     }
 
 
@@ -116,3 +115,6 @@ const initRoute = () => {
 }
 
 const {initDynamicRoutes , addDynamicRoutes} = initRoute()
+
+
+console.log("router=",router.options.routes)
