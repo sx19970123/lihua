@@ -96,7 +96,6 @@ const initRoute = () => {
             if (metaRoure.children !== null) {
                 recursionRoutes(metaRoure.children);
             }
-            console.log("metaRoure",metaRoure)
         })
     }
 

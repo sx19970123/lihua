@@ -16,7 +16,8 @@ public enum ResultCodeEnum {
     AUTHENTICATION_EXPIRED(502,"用户认证过期，请重新登陆"),
     TOKEN_ERROR(503,"token解析异常"),
     ACCESS_ERROR (504,"访问权限不足"),
-    NO_ACCESS_ERROR (505,"请联系管理员分配菜单");
+    NO_ACCESS_ERROR (505,"请联系管理员分配菜单"),
+    DB_ERROR(506,"数据库异常");
 
     /**
      * 状态码

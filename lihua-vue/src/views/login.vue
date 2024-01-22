@@ -1,11 +1,9 @@
 <template>
   <a-row>
+    <component is="StepBackwardOutlined"></component>
+    <StepBackwardOutlined/>
     <a-col :span="8">
       <a-card>
-        <SwapLeftOutlined />
-        <VerticalAlignBottomOutlined />
-        <CloseOutlined />
-        <PauseCircleTwoTone />
         <a-form :model="loginForm" @finish="login">
           <a-form-item label="username" name="username">
             <a-input v-model:value="loginForm.username"></a-input>
@@ -28,6 +26,8 @@
 import { useUserStore } from "@/stores/modules/user"
 import { useRouter } from 'vue-router'
 import { reactive } from "vue"
+import { message } from "ant-design-vue";
+
 const router = useRouter()
 
 const userLogin = () => {
@@ -43,8 +43,12 @@ const userLogin = () => {
 
   const login = () => {
     const userStore = useUserStore();
-    userStore.login(loginForm.username ,loginForm.password).then(() => {
-      router.push("/")
+    userStore.login(loginForm.username ,loginForm.password).then((resp) => {
+      if (resp.code === 200) {
+        router.push("/")
+      } else {
+        message.error(resp.msg)
+      }
     })
   }
 

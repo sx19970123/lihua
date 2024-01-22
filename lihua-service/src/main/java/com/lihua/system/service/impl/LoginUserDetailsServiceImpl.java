@@ -34,7 +34,13 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("用户名未找到");
         }
         // 查询用户权限信息
-        List<SysMenuVO> menus = sysMenuMapper.selectPermsByUserId(sysUser.getId());
+        List<SysMenuVO> menus = null;
+        try {
+            menus = sysMenuMapper.selectPermsByUserId(sysUser.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(ResultCodeEnum.getDefaultExceptionMessage(ResultCodeEnum.DB_ERROR));
+        }
         if (menus == null || menus.isEmpty()) {
             throw new PermissionDeniedDataAccessException(ResultCodeEnum.getDefaultExceptionMessage(ResultCodeEnum.NO_ACCESS_ERROR) ,null);
         }

@@ -1,31 +1,16 @@
 <template>
   <Logo/>
-  <a-menu
-      :items="sidebarRouters"
-      mode="inline"
-      theme="dark"
-      @select="handleClickMenu"
-  />
+      <a-menu theme="dark" mode="inline">
+        <Menu :data="data"/>
+      </a-menu>
 </template>
 
 <script setup lang="ts">
+
 import Logo from "@/layout/sider/components/Logo.vue";
+import Menu from "@/layout/sider/components/Menu.vue";
 import {usePermissionStore} from "@/stores/modules/permission";
-import { useRouter } from 'vue-router'
-import { computed } from "vue";
-
-const router = useRouter()
-const permissionStore = usePermissionStore()
-const sidebarRouters = computed(()=> permissionStore.$state.sidebarRouters)
-
-// 处理点击菜单
-const handleClickMenu = ({item}:{item:any}) => {
-  if (item.routerPath) {
-    router.push(item.routerPath)
-  }
-}
+import {computed} from "vue";
+const permission = usePermissionStore()
+const data = computed(() => permission.sidebarRouters)
 </script>
-
-<style scoped>
-
-</style>
