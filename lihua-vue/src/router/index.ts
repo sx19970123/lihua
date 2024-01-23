@@ -29,13 +29,15 @@ interface RouteConfig {
  * title：鼠标悬浮显示内容
  * icon：对应图标
  * affix：常驻固定顶部导航条
+ * menuShow：
  */
 interface MetaConfig {
     noCache?: boolean,
     label?: string,
     title?: string,
     icon?: string | Component,
-    affix?: boolean
+    affix?: boolean,
+    menuShow?: boolean
 }
 
 const routers = [
@@ -46,14 +48,17 @@ const routers = [
       {
         path: 'index',
         component: () => import("@/views/index.vue"),
-        name: 'Index'
+        name: 'Index',
+        meta: {label: '首页' ,icon: 'FastBackwardOutlined',menuShow: true}
       }
     ],
+    meta: { label: '首页' ,icon: 'FastBackwardOutlined',menuShow: true }
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import("@/views/login.vue")
+    component: () => import("@/views/login.vue"),
+     meta: {label: '登录' ,icon: 'FastBackwardOutlined',menuShow: true}
   },
   {
     path: '/test',

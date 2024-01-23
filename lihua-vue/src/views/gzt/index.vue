@@ -1,10 +1,12 @@
-<template>
-  系统首页
-</template>
-
 <script setup lang="ts">
 
 </script>
+
+<template>
+<div>
+  123123
+</div>
+</template>
 
 <style scoped>
 

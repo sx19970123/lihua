@@ -7,6 +7,7 @@ import com.lihua.enums.SysBaseEnum;
 import com.lihua.model.LoginUser;
 import com.lihua.entity.SysUser;
 import com.lihua.model.RouterVO;
+import com.lihua.model.SysMenuVO;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysMenuService;
@@ -64,13 +65,13 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         String id = loginUser.getSysUser().getId();
         // 隐藏密码
         loginUser.getSysUser().setPassword(null);
-        List<RouterVO> routerVOS = sysMenuService.initMetaRouterInfo(id);
+        List<SysMenuVO> sysMenuVOS = sysMenuService.selectSysMenuByLoginUserId(id);
         // 角色信息
         List<SysRole> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
 
         loginUser
-            .setSysRoleList(sysRoles)
-            .setRouterList(routerVOS);
+            .setSysMenuVOList(sysMenuVOS)
+            .setSysRoleList(sysRoles);
 
         // 将用户信息存放到redis
         redisCache.setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getSysUser().getId(), loginUser, lihuaConfig.getExpireTime(), TimeUnit.MINUTES);

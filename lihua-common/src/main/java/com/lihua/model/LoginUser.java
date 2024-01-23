@@ -38,9 +38,9 @@ public class LoginUser implements UserDetails {
     private List<? extends GrantedAuthority> permissionList;
 
     /**
-     * vue 路由
+     * 用户菜单信息
      */
-    private List<RouterVO> routerList;
+    private List<SysMenuVO> sysMenuVOList;
 
     /**
      * 用户角色信息
