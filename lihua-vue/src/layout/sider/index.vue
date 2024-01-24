@@ -14,7 +14,7 @@ import Logo from "@/layout/sider/components/Logo.vue";
 import Menu from "@/layout/sider/components/Menu.vue";
 import { usePermissionStore } from "@/stores/modules/permission";
 import { useRoute } from "vue-router";
-import { computed, reactive } from "vue";
+import {computed, reactive, watch} from "vue";
 const route = useRoute()
 // pinia 中获取菜单数据
 const permission = usePermissionStore()
@@ -23,5 +23,11 @@ const data = computed(() => permission.sidebarRouters)
 const state = reactive({
   selectedKeys: [route.path],
   openKeys: route.matched.map(r => r.path)
+})
+watch(()=> route.path,(value)=> {
+  state.selectedKeys = [value]
+})
+watch(()=> route.matched,(value)=> {
+  state.openKeys = value.map(r => r.path)
 })
 </script>
