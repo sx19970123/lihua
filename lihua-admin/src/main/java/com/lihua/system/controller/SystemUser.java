@@ -1,6 +1,6 @@
 package com.lihua.system.controller;
 
-import com.lihua.model.ControllerResult;
+import com.lihua.model.web.ControllerResult;
 import com.lihua.utils.security.SecurityUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

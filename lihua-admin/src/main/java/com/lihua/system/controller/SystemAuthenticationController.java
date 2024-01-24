@@ -1,7 +1,7 @@
 package com.lihua.system.controller;
 
-import com.lihua.model.ControllerResult;
-import com.lihua.entity.SysUser;
+import com.lihua.model.web.ControllerResult;
+import com.lihua.model.security.SysUserVO;
 import com.lihua.system.service.SysAuthenticationService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +13,8 @@ public class SystemAuthenticationController extends ControllerResult {
     private SysAuthenticationService sysAuthenticationService;
 
     @PostMapping("login")
-    public String login(@RequestBody SysUser sysUser) {
-        return success(sysAuthenticationService.login(sysUser));
+    public String login(@RequestBody SysUserVO sysUserVO) {
+        return success(sysAuthenticationService.login(sysUserVO));
     }
 
     @PostMapping("logout")

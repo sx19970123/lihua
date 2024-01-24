@@ -2,7 +2,7 @@ package com.lihua.handle;
 
 import com.lihua.constant.Constant;
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.ControllerResult;
+import com.lihua.model.web.ControllerResult;
 import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -2,19 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lihua.system.mapper.SysMenuMapper">
 
-    <resultMap id="selectPermsByUserId" type="com.lihua.model.SysMenuVO">
+    <resultMap id="selectPermsByUserId" type="com.lihua.model.security.RouterVO">
         <id column="id" property="id"/>
-        <result column="id" property="key"/>
         <result column="parent_id" property="parentId"/>
-        <result column="label" property="label"/>
-        <result column="title" property="title"/>
-        <result column="menu_type" property="menuType"/>
-        <result column="router_path" property="routerPath"/>
-        <result column="component_path" property="componentPath"/>
+        <result column="router_path" property="path"/>
         <result column="perms" property="perms"/>
-        <result column="icon" property="icon"/>
-        <result column="link_path" property="linkPath"/>
-        <result column="no_cache" property="noCache"/>
+        <result column="query" property="query"/>
+        <association property="meta" javaType="com.lihua.model.security.MetaVO">
+            <result column="label" property="label"/>
+            <result column="title" property="title"/>
+            <result column="icon" property="icon"/>
+            <result column="no_cache" property="noCache"/>
+            <result column="link_path" property="link"/>
+            <result column="router_path_key" property="key"/>
+        </association>
     </resultMap>
 
     <select id="selectPermsByUserId" resultMap="selectPermsByUserId">
@@ -29,8 +30,9 @@
             sys_menu.perms,
             sys_menu.icon,
             sys_menu.no_cache,
-            sys_menu.link_path
-
+            sys_menu.link_path,
+            sys_menu.router_path_key,
+            sys_menu.query
         FROM
         sys_menu
             INNER JOIN sys_role_menu ON sys_role_menu.menu_id = sys_menu.id

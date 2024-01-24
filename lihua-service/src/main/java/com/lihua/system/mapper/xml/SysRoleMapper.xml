@@ -3,15 +3,15 @@
 <mapper namespace="com.lihua.system.mapper.SysRoleMapper">
 
 
-    <select id="selectSysRoleByUserId" resultType="com.lihua.entity.SysRole">
+    <select id="selectSysRoleByUserId" resultType="com.lihua.model.security.SysRoleVO">
         SELECT
-            sys_role.id,
-            sys_role.name,
-            sys_role.code
+        sys_role.id,
+        sys_role.name,
+        sys_role.code
         FROM
-            sys_role
+        sys_role
         INNER JOIN sys_user_role ON sys_user_role.role_id = sys_role.id
         WHERE
-        sys_role.STATUS = '1' AND sys_role.del_flag = '1' and sys_user_role.user_id = #{userId}
+        sys_role.STATUS = '0' AND sys_role.del_flag = '0' and sys_user_role.user_id = #{userId}
     </select>
 </mapper>

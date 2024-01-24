@@ -1,7 +1,5 @@
-package com.lihua.model;
+package com.lihua.model.security;
 
-import com.lihua.entity.SysRole;
-import com.lihua.entity.SysUser;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +22,7 @@ public class LoginUser implements UserDetails {
     /**
      * 系统用户信息
      */
-    private SysUser sysUser;
+    private SysUserVO sysUserVO;
 
     /**
      * 权限集合
@@ -40,12 +38,12 @@ public class LoginUser implements UserDetails {
     /**
      * 用户菜单信息
      */
-    private List<SysMenuVO> sysMenuVOList;
+    private List<RouterVO> routerList;
 
     /**
      * 用户角色信息
      */
-    private List<SysRole> sysRoleList;
+    private List<SysRoleVO> sysRoleList;
 
 
     @Override
@@ -58,12 +56,12 @@ public class LoginUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return sysUser.getPassword();
+        return sysUserVO.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return sysUser.getUsername();
+        return sysUserVO.getUsername();
     }
 
     @Override
@@ -86,8 +84,8 @@ public class LoginUser implements UserDetails {
         return true;
     }
 
-    public LoginUser(SysUser sysUser,List<String> authorities) {
-        this.sysUser = sysUser;
+    public LoginUser(SysUserVO sysUserVO, List<String> authorities) {
+        this.sysUserVO = sysUserVO;
         this.authorities = authorities;
     }
 }

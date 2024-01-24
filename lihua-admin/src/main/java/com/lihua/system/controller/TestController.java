@@ -1,11 +1,6 @@
 package com.lihua.system.controller;
 
-import com.lihua.model.ControllerResult;
-import com.lihua.system.service.SysMenuService;
-import com.lihua.utils.security.SecurityUtils;
-import jakarta.annotation.Resource;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.lihua.model.web.ControllerResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

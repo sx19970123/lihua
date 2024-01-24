@@ -1,14 +1,12 @@
 package com.lihua.handle;
 
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.ControllerResult;
+import com.lihua.model.web.ControllerResult;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.Objects;
 
 /**
  * 全局异常处理

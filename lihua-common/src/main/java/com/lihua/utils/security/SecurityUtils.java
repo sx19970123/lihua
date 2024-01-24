@@ -1,7 +1,7 @@
 package com.lihua.utils.security;
 
-import com.lihua.model.LoginUser;
-import com.lihua.entity.SysUser;
+import com.lihua.model.security.LoginUser;
+import com.lihua.model.security.SysUserVO;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -30,8 +30,8 @@ public class SecurityUtils {
      * 获取当前登录用户信息
      * @return
      */
-    public static SysUser getSysUser() {
-        return getLoginUser().getSysUser();
+    public static SysUserVO getSysUser() {
+        return getLoginUser().getSysUserVO();
     }
 
     /**

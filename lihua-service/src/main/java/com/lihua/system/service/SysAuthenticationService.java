@@ -1,15 +1,15 @@
 package com.lihua.system.service;
 
-import com.lihua.entity.SysUser;
+import com.lihua.model.security.SysUserVO;
 
 public interface SysAuthenticationService {
 
     /**
      * 用户登陆
-     * @param sysUser
+     * @param sysUserVO
      * @return
      */
-    String login(SysUser sysUser);
+    String login(SysUserVO sysUserVO);
 
     /**
      * 用户登出

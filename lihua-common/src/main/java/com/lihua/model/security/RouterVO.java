@@ -1,4 +1,4 @@
-package com.lihua.model;
+package com.lihua.model.security;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -29,6 +29,9 @@ public class RouterVO implements Serializable {
 
     // 自定义的元数据
     private MetaVO meta;
+
+    // 用户权限标识
+    private String perms;
 
     // 子菜单 / 子页面
     private List<RouterVO> children;

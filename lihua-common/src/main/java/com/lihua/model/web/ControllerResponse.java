@@ -1,4 +1,4 @@
-package com.lihua.model;
+package com.lihua.model.web;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.lihua.enums.ResultCodeEnum;

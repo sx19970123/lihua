@@ -1,4 +1,4 @@
-package com.lihua.model;
+package com.lihua.model.security;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -19,9 +19,12 @@ public class MetaVO implements Serializable {
     private String icon;
 
     // keep-alive 缓存 默认false，设置为true 则不进行缓存
-    private boolean noCache;
+    private String noCache;
 
     // 外联地址
     private String link;
+
+    // page类型数据从父级到子节点的路由地址拼接
+    private String key;
 
 }

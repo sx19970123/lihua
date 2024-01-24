@@ -1,12 +1,12 @@
 package com.lihua.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.lihua.entity.SysMenu;
-import com.lihua.model.SysMenuVO;
+import com.lihua.model.security.RouterVO;
+import com.lihua.system.entity.SysMenu;
 
 import java.util.List;
 
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
-    List<SysMenuVO> selectPermsByUserId(String userId);
+    List<RouterVO> selectPermsByUserId(String userId);
 }

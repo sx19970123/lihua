@@ -2,12 +2,11 @@ package com.lihua.system.service.impl;
 
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
-import com.lihua.entity.SysRole;
+import com.lihua.model.security.RouterVO;
+import com.lihua.model.security.SysRoleVO;
 import com.lihua.enums.SysBaseEnum;
-import com.lihua.model.LoginUser;
-import com.lihua.entity.SysUser;
-import com.lihua.model.RouterVO;
-import com.lihua.model.SysMenuVO;
+import com.lihua.model.security.LoginUser;
+import com.lihua.model.security.SysUserVO;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysMenuService;
@@ -42,13 +41,13 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Transactional
     @Override
-    public String login(SysUser sysUser) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(sysUser.getUsername(), sysUser.getPassword()));
+    public String login(SysUserVO sysUserVO) {
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(sysUserVO.getUsername(), sysUserVO.getPassword()));
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         // 处理登录用户信息，将用户基本数据存入 LoginUser 后存入 redis
         handleLoginInfo(loginUser);
         // 根据username 生成jwt 返回
-        return JwtUtils.create(loginUser.getSysUser().getId());
+        return JwtUtils.create(loginUser.getSysUserVO().getId());
     }
 
     @Override
@@ -62,18 +61,18 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
      * @param loginUser
      */
     private void handleLoginInfo(LoginUser loginUser) {
-        String id = loginUser.getSysUser().getId();
+        String id = loginUser.getSysUserVO().getId();
         // 隐藏密码
-        loginUser.getSysUser().setPassword(null);
-        List<SysMenuVO> sysMenuVOS = sysMenuService.selectSysMenuByLoginUserId(id);
+        loginUser.getSysUserVO().setPassword(null);
+        List<RouterVO> routerVOList = sysMenuService.selectSysMenuByLoginUserId(id);
         // 角色信息
-        List<SysRole> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
+        List<SysRoleVO> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
 
         loginUser
-            .setSysMenuVOList(sysMenuVOS)
+            .setRouterList(routerVOList)
             .setSysRoleList(sysRoles);
 
         // 将用户信息存放到redis
-        redisCache.setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getSysUser().getId(), loginUser, lihuaConfig.getExpireTime(), TimeUnit.MINUTES);
+        redisCache.setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getSysUserVO().getId(), loginUser, lihuaConfig.getExpireTime(), TimeUnit.MINUTES);
     }
 }

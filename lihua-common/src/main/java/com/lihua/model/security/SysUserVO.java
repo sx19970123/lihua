@@ -1,4 +1,4 @@
-package com.lihua.entity;
+package com.lihua.model.security;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -13,11 +13,10 @@ import java.time.LocalDateTime;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysUser extends BaseEntity {
+public class SysUserVO extends BaseEntity {
     /**
      * 主键
      */
-    @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
     /**

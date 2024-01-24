@@ -1,4 +1,4 @@
-package com.lihua.model;
+package com.lihua.model.web;
 
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.utils.json.JsonUtils;
