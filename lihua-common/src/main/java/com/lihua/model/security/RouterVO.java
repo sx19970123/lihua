@@ -33,6 +33,13 @@ public class RouterVO implements Serializable {
     // 用户权限标识
     private String perms;
 
+    // 菜单/组件页面
+    private String type;
+
+    // page类型数据从父级到子节点的路由地址拼接
+    private String key;
+
+
     // 子菜单 / 子页面
     private List<RouterVO> children;
 

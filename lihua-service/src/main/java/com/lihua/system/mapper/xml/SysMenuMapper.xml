@@ -8,13 +8,15 @@
         <result column="router_path" property="path"/>
         <result column="perms" property="perms"/>
         <result column="query" property="query"/>
+        <result column="component_path" property="component"/>
+        <result column="menu_type" property="type"/>
+        <result column="router_path_key" property="key"/>
         <association property="meta" javaType="com.lihua.model.security.MetaVO">
             <result column="label" property="label"/>
             <result column="title" property="title"/>
             <result column="icon" property="icon"/>
             <result column="no_cache" property="noCache"/>
             <result column="link_path" property="link"/>
-            <result column="router_path_key" property="key"/>
         </association>
     </resultMap>
 

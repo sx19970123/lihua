@@ -46,30 +46,17 @@ const routers = [
     component: Layout,
     children: [
       {
-        path: 'index',
+        path: '/index',
         component: () => import("@/views/index.vue"),
-        name: 'Index',
-        meta: {label: '首页' ,icon: 'FastBackwardOutlined',menuShow: true}
+        meta: {label: '首页' ,icon: 'FastBackwardOutlined'}
       }
     ],
-    meta: { label: '首页' ,icon: 'FastBackwardOutlined',menuShow: true }
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import("@/views/login.vue"),
-     meta: {label: '登录' ,icon: 'FastBackwardOutlined',menuShow: true}
-  },
-  {
-    path: '/test',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'test',
-        component: () => import("@/views/test.vue"),
-      }
-    ]
+    hidden: true,
+    component: () => import("@/views/login.vue")
   }
 ]
 

@@ -23,8 +23,4 @@ public class MetaVO implements Serializable {
 
     // 外联地址
     private String link;
-
-    // page类型数据从父级到子节点的路由地址拼接
-    private String key;
-
 }
