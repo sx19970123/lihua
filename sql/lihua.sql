@@ -11,7 +11,7 @@
  Target Server Version : 80033 (8.0.33)
  File Encoding         : 65001
 
- Date: 24/01/2024 16:58:56
+ Date: 25/01/2024 16:52:42
 */
 
 SET NAMES utf8mb4;
@@ -160,5 +160,24 @@ CREATE TABLE `sys_user_role`  (
 -- Records of sys_user_role
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES ('1', '1');
+
+-- ----------------------------
+-- Table structure for sys_user_star_view
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_star_view`;
+CREATE TABLE `sys_user_star_view`  (
+  `user_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
+  `router_path_key` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '路由路径key',
+  `affix` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否固定（1固定，0不固定）',
+  `star` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否收藏（1收藏，0不收藏）',
+  PRIMARY KEY (`user_id`, `router_path_key`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户菜单收藏管理表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_user_star_view
+-- ----------------------------
+INSERT INTO `sys_user_star_view` VALUES ('1', '/bdy/gjbd', '1', '1');
+INSERT INTO `sys_user_star_view` VALUES ('1', '/lby/bzlb/lb/b', '1', '1');
+INSERT INTO `sys_user_star_view` VALUES ('1', '/ybp/jky/k', '1', '1');
 
 SET FOREIGN_KEY_CHECKS = 1;

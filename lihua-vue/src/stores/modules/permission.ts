@@ -1,19 +1,46 @@
 import { defineStore } from "pinia";
 import type { RouteRecordRaw } from "vue-router";
+import Layout from "@/layout/index.vue"
 
 
 export const usePermissionStore = defineStore('permission',{
     state: ()=> {
         const sidebarRouters: Array<any> = []
-        const viewTabsRouters: Array<any> = []
+        const viewTabs: Array<any> = []
         return {
             sidebarRouters,
-            viewTabsRouters
+            viewTabs
         }
     },
     actions: {
-        initMenu(metaRouterList: Array<any>, staticRoutes: readonly RouteRecordRaw[]):void {
+        initMenu(metaRouterList: Array<any>, staticRoutes: readonly RouteRecordRaw[]): void {
             this.$state.sidebarRouters = init(metaRouterList,staticRoutes)
+        },
+        initViewTab(starViewVOList: Array<any>, staticRoutes: readonly RouteRecordRaw[]): void {
+            // 过滤获取 Layout 为父级的静态路由
+            let layoutRoutes =  staticRoutes.filter(route => route.component === Layout)
+            // 生成 key
+            layoutRoutes = generateKey(layoutRoutes,'',false)
+            // 去除父级节点获取子路由组件
+            const hasKeyRoutComponentList: Array<any> = []
+            getChildren(layoutRoutes,hasKeyRoutComponentList)
+            // 根据定义的 viewTabSort 进行排序
+            hasKeyRoutComponentList.sort((a, b) => b.meta.viewTabSort - a.meta.viewTabSort)
+            // 生成viewTab对象
+            if (hasKeyRoutComponentList.length > 0) {
+                hasKeyRoutComponentList.forEach(route => {
+                    starViewVOList.unshift({
+                        label: route.meta.label,
+                        icon: route.meta.icon,
+                        affix: route.meta.affix,
+                        routerPathKey: route.key,
+                        star: false,
+                        static: true
+                    })
+                })
+            }
+
+            this.$state.viewTabs = starViewVOList
         }
     },
     getters: {
@@ -22,15 +49,21 @@ export const usePermissionStore = defineStore('permission',{
 })
 
 const init = (metaRouterList: Array<any>, staticRoutes: readonly RouteRecordRaw[]) => {
-    const staticRouters =  filterMenuRouter(staticRoutes as Array<any>,"")
+    const staticRouters = generateKey(staticRoutes as Array<any>,'',true)
     return handleOnlyChild(staticRouters).concat(metaRouterList)
 }
 /**
- * 处理 router/index 中静态路由，hidden属性为true的不进行列表展示，并指定key属性
+ * 处理 router/index 中静态路由，生成 key （路由path拼接）
  * @param routers
  */
-const filterMenuRouter = (routers: Array<any> ,key: string): Array<any> => {
-    const menuShowList = routers.filter(route => route.hidden !== true)
+const generateKey = (routers: Array<any>, key: string, filter: boolean): Array<any> => {
+    let menuShowList
+    if (filter) {
+        menuShowList = routers.filter(route => route.hidden !== true)
+    } else {
+        menuShowList = routers
+    }
+
     if (menuShowList.length > 0) {
         menuShowList.forEach(menuItem => {
             // 处理path
@@ -44,7 +77,7 @@ const filterMenuRouter = (routers: Array<any> ,key: string): Array<any> => {
             }
 
             if (menuItem.children && menuItem.children.length > 0) {
-                const child = filterMenuRouter(menuItem.children ,key)
+                const child = generateKey(menuItem.children, key, filter)
                 menuItem.children = child === null ? [] : child
             } else {
                 menuItem.children = null
@@ -96,4 +129,21 @@ const handleMenuKey = (allMenu: Array<any>,key: string): Array<any> => {
         })
     }
     return allMenu;
+}
+
+/**
+ * 获取最底层子节点
+ * @param staticRoutes
+ * @param arr
+ */
+const getChildren = (staticRoutes: Array<any>, arr: Array<any>):void => {
+    if (staticRoutes) {
+        staticRoutes.forEach(route => {
+            if (route.children && route.children.length > 0) {
+                getChildren(route.children,arr)
+            } else {
+                arr.push(route)
+            }
+        })
+    }
 }

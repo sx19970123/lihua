@@ -2,14 +2,12 @@ package com.lihua.system.service.impl;
 
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
-import com.lihua.model.security.RouterVO;
-import com.lihua.model.security.SysRoleVO;
+import com.lihua.model.security.*;
 import com.lihua.enums.SysBaseEnum;
-import com.lihua.model.security.LoginUser;
-import com.lihua.model.security.SysUserVO;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysMenuService;
+import com.lihua.system.service.SysUserStarViewService;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
@@ -35,6 +33,9 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Resource
     private SysRoleMapper sysRoleMapper;
+
+    @Resource
+    private SysUserStarViewService sysUserStarViewService;
 
     @Resource
     private LihuaConfig lihuaConfig;
@@ -64,13 +65,18 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         String id = loginUser.getSysUserVO().getId();
         // 隐藏密码
         loginUser.getSysUserVO().setPassword(null);
+
+        // 菜单router信息
         List<RouterVO> routerVOList = sysMenuService.selectSysMenuByLoginUserId(id);
         // 角色信息
         List<SysRoleVO> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
+        // 收藏/固定菜单
+        List<SysUserStarViewVO> starViewVOList = sysUserStarViewService.selectByUserId(id);
 
         loginUser
             .setRouterList(routerVOList)
-            .setSysRoleList(sysRoles);
+            .setSysRoleList(sysRoles)
+            .setStarViewVOList(starViewVOList);
 
         // 将用户信息存放到redis
         redisCache.setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getSysUserVO().getId(), loginUser, lihuaConfig.getExpireTime(), TimeUnit.MINUTES);

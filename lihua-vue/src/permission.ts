@@ -24,10 +24,13 @@ router.beforeEach((to,from,next) => {
         if (Object.keys(userStore.userInfo).length === 0) {
             userStore.getUserInfo().then((resp:any) => {
                 const metaRouterList =  resp.routerList
+                const staticRoutes = router.options.routes
                 // 初始化动态路由
                 initDynamicRouter(metaRouterList)
                 // 初始化用户菜单数据
-                usePermission.initMenu(metaRouterList,router.options.routes)
+                usePermission.initMenu(metaRouterList,staticRoutes)
+                // 初始化多菜单数据
+                usePermission.initViewTab(resp.starViewVOList,staticRoutes)
                 // hack方法 确保addRoutes已完成
                 next({...to,replace: true})
             }).catch(err => {

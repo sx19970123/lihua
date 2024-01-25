@@ -45,6 +45,11 @@ public class LoginUser implements UserDetails {
      */
     private List<SysRoleVO> sysRoleList;
 
+    /**
+     * view tags收藏记录表
+     */
+    private List<SysUserStarViewVO> starViewVOList;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

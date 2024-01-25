@@ -37,7 +37,7 @@ interface MetaConfig {
     title?: string,
     icon?: string | Component,
     affix?: boolean,
-    menuShow?: boolean
+    viewTabSort: number
 }
 
 const routers = [
@@ -48,7 +48,7 @@ const routers = [
       {
         path: '/index',
         component: () => import("@/views/index.vue"),
-        meta: {label: '首页' ,icon: 'FastBackwardOutlined'}
+        meta: { label: '首页', icon: 'FastBackwardOutlined', affix: true, viewTabSort: 1 }
       }
     ],
   },
