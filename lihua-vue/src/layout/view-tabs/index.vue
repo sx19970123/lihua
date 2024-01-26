@@ -11,7 +11,7 @@
       <a-tab-pane v-for="tab in activeTab" :key="tab.routerPathKey" :closable="!tab.affix">
         <!--每个tab的下拉菜单-->
         <template #tab>
-          <tab-pane-menu :data="tab"/>
+          <tab-pane-menu :tab="tab" :activeTabs="activeTab" @click-menu-tab="handleClickMenuTab"/>
         </template>
         <!--每个tab的关闭按钮-->
         <template #closeIcon>
@@ -84,19 +84,8 @@ const handleSelectTab = (key: string) => {
  * 否则判断是否为固定值，固定值切换到第一个，不是固定值切换到前一个
  * @param key
  */
-const handleSwitchTab = (key?: string | number) => {
-  if (typeof key === "string") {
-    router.push(key)
-  } else {
-    if (key !== 0) {
-      const tab = activeTab[key as number - 1]
-      if (!tab.affix) {
-        router.push(tab.routerPathKey)
-      } else {
-        router.push(activeTab[0].routerPathKey)
-      }
-    }
-  }
+const handleSwitchTab = (key: string) => {
+  routeSkip(activeTab.filter(tab => tab.routerPathKey === key)[0])
 }
 
 /**
@@ -108,19 +97,102 @@ const handleRemove = (key: string) => {
   if (index !== -1) {
     activeTab.splice(index, 1);
     if (route.path === key) {
-      handleSwitchTab(index)
+      handleNextRoute(index)
     }
   }
 };
 
+/**
+ * 处理关闭后需要跳转的下一个路由
+ * @param index 关闭标签的索引
+ */
+const handleNextRoute = (index: number) => {
+  // 关闭的第一个 tab,判断当前存在的 activeTab 还有没有，若存在，则跳转到下一个
+  if (index === 0 && activeTab.length !== 0) {
+    routeSkip(activeTab[0])
+    return
+  }
 
-// 监听路由变化，切换
+  const tab = activeTab[index - 1]
+  if (!tab.affix) {
+    routeSkip(tab)
+    return
+  }
+  routeSkip(activeTab[0])
+}
+
+/**
+ * 路由跳转
+ * @param tab
+ */
+const routeSkip = (tab:any) => {
+  const { routerPathKey , query } = tab
+  if (query) {
+    router.push({
+      path: routerPathKey,
+      query: {
+        ... JSON.parse(query)
+      }
+    })
+  } else {
+    router.push(routerPathKey)
+  }
+}
+
+/**
+ * 监听路由变化进行切换 tab
+ */
 watch(() => route.path,(value) => {
   handleSelectTab(value)
 })
 
-// 第一次加载标签
+/**
+ * 第一次进入组件选中 tab
+ */
 handleSelectTab(route.path);
+
+/**
+ * 处理点击右键菜单
+ * @param type
+ * @param tab
+ */
+const handleClickMenuTab = (type: string,tab: any) => {
+  console.log(type)
+  console.log(tab)
+}
+
+/**
+ * 刷新当前组件
+ */
+const reload = () => {
+
+}
+/**
+ * 关闭左侧标签
+ */
+const closeLeft = () => {
+
+}
+
+const closeRight = () => {
+
+}
+
+const closeOther = () => {
+
+}
+
+const closeAll = () => {
+
+}
+
+const star = () => {
+
+}
+
+const unStar = () => {
+
+}
 </script>
 
 <style scoped lang="less">
