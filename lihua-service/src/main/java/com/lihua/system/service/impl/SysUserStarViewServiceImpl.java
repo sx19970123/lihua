@@ -41,7 +41,8 @@ public class SysUserStarViewServiceImpl implements SysUserStarViewService {
                     sysUserStarViewVO
                             .setLabel(route.getMeta().getLabel())
                             .setIcon(route.getMeta().getIcon())
-                            .setRouterPathKey(route.getKey());
+                            .setRouterPathKey(route.getKey())
+                            .setQuery(route.getQuery());
                     // 判断是否进行收藏/固定
                     sysUserStarViews.forEach(star -> {
                         if (star.getRouterPathKey().equals(route.getKey())) {

@@ -11,9 +11,34 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 public class SysUserStarViewVO implements Serializable {
+    /**
+     * 页面名称
+     */
     private String label;
+
+    /**
+     * 图标
+     */
     private String icon;
+
+    /**
+     * 路由地址key
+     */
     private String routerPathKey;
+
+    /**
+     * 是否固定
+     */
     private boolean affix;
+
+    /**
+     * 是否收藏
+     */
     private boolean star;
+
+    /**
+     * 默认参数
+     */
+    private String query;
+
 }
