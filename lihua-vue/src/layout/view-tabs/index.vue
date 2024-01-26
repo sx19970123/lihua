@@ -6,21 +6,16 @@
             hide-add
             @edit="handleRemove"
             @change="handleSwitchTab"
-
     >
-      <a-tab-pane v-for="tab in activeTab" :key="tab.routerPathKey" :closable="!tab.affix">
+      <a-tab-pane v-for="(tab,index) in activeTab" :key="tab.routerPathKey" :closable="!tab.affix">
         <!--每个tab的下拉菜单-->
         <template #tab>
-          <tab-pane-menu :tab="tab" :activeTabs="activeTab" @click-menu-tab="handleClickMenuTab"/>
-        </template>
-        <!--每个tab的关闭按钮-->
-        <template #closeIcon>
-          <tab-pane-button/>
+          <tab-pane-menu :tab="tab" :index="index" :length="activeTab.length" :activeKey="activeKey"  @click-menu-tab="handleClickMenuTab"/>
         </template>
       </a-tab-pane>
       <!-- view-tabs 左侧空白-->
       <template #leftExtra>
-        <div style="width: 12px;"></div>
+        <div style="width: 8px;"></div>
       </template>
       <!--view-tabs 右侧下拉菜单-->
       <template #rightExtra>
@@ -61,7 +56,6 @@ const init = () => {
   }
 }
 const { activeTab, activeKey } = init()
-
 /**
  * 传入key，进行对应标签页反选。新页面新增tab页
  * @param key tab页 key
@@ -157,28 +151,80 @@ handleSelectTab(route.path);
  * @param tab
  */
 const handleClickMenuTab = (type: string,tab: any) => {
-  console.log(type)
   console.log(tab)
+  switch (type) {
+    case "reload": {
+      reload()
+      break
+    }
+    case "close-left": {
+      closeLeft(tab)
+      break
+    }
+    case "close-right": {
+      closeRight(tab)
+      break
+    }
+    case "close-other": {
+      closeOther()
+      break
+    }
+    case "star": {
+      star()
+      break
+    }
+    case "un-star": {
+      unStar()
+      break
+    }
+    case "affix": {
+      affix()
+      break
+    }
+    case "un-affix": {
+      unAffix()
+      break
+    }
+    default: {
+      console.error("错误的菜单类型")
+    }
+  }
 }
 
 /**
  * 刷新当前组件
  */
 const reload = () => {
-
+  router.replace({ path: route.path, params: route.params, query: route.query, force: true })
 }
 /**
  * 关闭左侧标签
  */
-const closeLeft = () => {
-
+const closeLeft = (tab: any) => {
+  const index = activeTab.indexOf(tab)
+  for (let i = 0; i < index; i++) {
+    if (!activeTab[i].affix) {
+      activeTab.splice(i, 1);
+    }
+  }
 }
-
-const closeRight = () => {
-
+/**
+ * 关闭右侧标签
+ * @param tab
+ */
+const closeRight = (tab: any) => {
+  const index = activeTab.indexOf(tab)
+  for (let i = activeTab.length - 1; i > index; i--) {
+    if (!activeTab[i].affix) {
+      activeTab.splice(i, 1);
+    }
+  }
 }
-
-const closeOther = () => {
+/**
+ * 关闭其其他标签
+ * @param tab
+ */
+const closeOther = (tab: any) => {
 
 }
 
@@ -193,6 +239,16 @@ const star = () => {
 const unStar = () => {
 
 }
+
+const affix = () => {
+
+}
+
+const unAffix = () => {
+
+}
+
+
 </script>
 
 <style scoped lang="less">

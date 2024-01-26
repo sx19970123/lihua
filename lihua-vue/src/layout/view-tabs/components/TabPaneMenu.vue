@@ -1,41 +1,44 @@
 <template>
   <a-dropdown :trigger="['contextmenu']">
-    <div>
-      <component :is="tagPane.tab.icon"/>
-      {{ tagPane.tab.label }}
-    </div>
-
+    <span>
+      <component :is="tabPane.tab.icon"/>
+      {{ tabPane.tab.label}}
+    </span>
     <template #overlay>
       <a-menu @click="send">
-        <a-menu-item key="reload">
+        <a-menu-item key="reload" :disabled="tabPane.tab.routerPathKey !== activeKey">
           <RedoOutlined />
           刷新页面
         </a-menu-item>
         <a-menu-divider/>
-        <a-menu-item key="close-left" :disabled="closeLeft">
+        <a-menu-item key="close-left" :disabled="tabPane.index === 0">
           <VerticalRightOutlined />
           关闭左侧
         </a-menu-item>
-        <a-menu-item key="close-right" :disabled="closeRight">
+        <a-menu-item key="close-right" :disabled="tabPane.index === length - 1">
           <VerticalLeftOutlined />
           关闭右侧
         </a-menu-item>
-        <a-menu-item key="close-other" :disabled="closeOther">
+        <a-menu-item key="close-other" :disabled="length === 1">
           <CloseCircleOutlined />
           关闭其他
         </a-menu-item>
-        <a-menu-item key="close-all" :disabled="closeAll">
-          <CloseOutlined />
-          全部关闭
-        </a-menu-item>
-        <a-menu-divider v-if="!tagPane.tab.static"/>
-        <a-menu-item key="star" v-if="!tagPane.tab.star && !tagPane.tab.static">
+        <a-menu-divider v-if="!tabPane.tab.static"/>
+        <a-menu-item key="star" v-if="!tabPane.tab.star && !tabPane.tab.static">
           <StarOutlined />
           添加收藏
         </a-menu-item>
-        <a-menu-item key="un-star" v-if="tagPane.tab.star && !tagPane.tab.static">
+        <a-menu-item key="un-star" v-if="tabPane.tab.star && !tabPane.tab.static">
           <StarFilled />
           取消收藏
+        </a-menu-item>
+        <a-menu-item key="affix" v-if="!tabPane.tab.affix && !tabPane.tab.static">
+          <LockOutlined />
+          固定页面
+        </a-menu-item>
+        <a-menu-item key="un-affix" v-if="tabPane.tab.affix && !tabPane.tab.static">
+          <UnlockOutlined />
+          取消固定
         </a-menu-item>
       </a-menu>
     </template>
@@ -43,37 +46,15 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch} from "vue";
 const emits = defineEmits(['clickMenuTab'])
-const tagPane = defineProps({
-  tab: null,
-  activeTabs: Array<any>
-})
-
-/**
- * 加载菜单元素显示状态
- */
-let closeLeft = ref(!tagPane.activeTabs?.indexOf(tagPane.tab))
-let closeRight = ref(tagPane.activeTabs?.indexOf(tagPane.tab) === tagPane.activeTabs?.length as number - 1)
-let closeOther = ref(tagPane.activeTabs?.length === 1)
-let closeAll = ref(tagPane.activeTabs?.length === 1)
-
-/**
- * 监听当前活动集合重新控制按钮
- */
-watch(() => tagPane.activeTabs, () => {
-   closeLeft = ref(!tagPane.activeTabs?.indexOf(tagPane.tab))
-   closeRight = ref(tagPane.activeTabs?.indexOf(tagPane.tab) === tagPane.activeTabs?.length as number - 1)
-   closeOther = ref(tagPane.activeTabs?.length === 1)
-   closeAll = ref(tagPane.activeTabs?.length === 1)
-},{ deep: true })
+const tabPane = defineProps(['tab','index','length','activeKey'])
 
 /**
  * 向父类抛出方法
  * @param key
  */
 const send = ({ key }: { key :string }) => {
-  emits('clickMenuTab', key, tagPane.tab)
+  emits('clickMenuTab', key, tabPane.tab)
 }
 
 </script>

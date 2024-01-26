@@ -4,11 +4,9 @@
 
 <template>
   <a-dropdown>
-    <div class="more-menu">
-      <span @click.prevent style="padding-left: 8px">
-         <svg focusable="false" class="" data-icon="ellipsis" width="1em" height="1em" fill="currentColor" aria-hidden="true" viewBox="64 64 896 896" style="transform: rotate(90deg);"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg>
-      </span>
-    </div>
+    <button class="ant-tabs-nav-more">
+      <MoreOutlined />
+    </button>
     <template #overlay>
       <a-menu>
         <a-menu-item>
@@ -22,9 +20,16 @@
   </a-dropdown>
 </template>
 
-<style scoped>
-.more-menu {
-  width: 40px;
+<style>
+.ant-tabs-nav-more {
+  margin-left: 2px !important;
   cursor: pointer;
+  border-radius: 6px
+}
+.ant-tabs-nav-more:hover {
+  margin-left: 2px !important;
+  background: #f7f7f7 !important;
+  cursor: pointer;
+  border-radius: 6px
 }
 </style>
