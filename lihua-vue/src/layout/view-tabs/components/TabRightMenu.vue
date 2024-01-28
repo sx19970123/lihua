@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <a-dropdown>
     <button class="ant-tabs-nav-more">
@@ -9,7 +5,7 @@
     </button>
     <template #overlay>
       <a-menu>
-        <a-menu-item>
+        <a-menu-item @click="showModal">
           最近的使用
         </a-menu-item>
         <a-menu-item>
@@ -18,8 +14,21 @@
       </a-menu>
     </template>
   </a-dropdown>
+  <a-modal v-model:open="open" title="Basic Modal" :mask-style="{'backdrop-filter':'blur(10px)'}">
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+  </a-modal>
 </template>
+<script setup lang="ts">
+import {ref} from "vue";
 
+const open = ref<boolean>(false);
+const showModal = () => {
+  open.value = true;
+};
+
+</script>
 <style>
 .ant-tabs-nav-more {
   margin-left: 2px !important;
