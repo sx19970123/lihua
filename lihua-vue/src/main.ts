@@ -9,6 +9,8 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
 // andv 图标
 import * as Icons from "@ant-design/icons-vue";
+import "@/assets/custom.css"
+
 const icons = Icons
 
 const app = createApp(App)

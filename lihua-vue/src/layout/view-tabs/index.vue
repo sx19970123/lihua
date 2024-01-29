@@ -19,19 +19,25 @@
       </template>
       <!--view-tabs 右侧下拉菜单-->
       <template #rightExtra>
-        <tab-right-menu/>
+        <tab-right-menu @click-menu-tab="handleClickMenuTab"/>
       </template>
     </a-tabs>
   </div>
+  <tab-recent-visit-modal :show="showRecentModal"
+                          :active-tabs="activeTab"
+                          @close-recent-modal="handleCloseRecentModal"
+                          @switch-tab="handleSwitchRecentTab"
+  />
 </template>
 
 <script lang="ts" setup>
 import TabPaneMenu from "@/layout/view-tabs/components/TabPaneMenu.vue";
-import TabPaneButton from "@/layout/view-tabs/components/TabPaneButton.vue";
 import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
+import TabRecentVisitModal from "@/layout/view-tabs/components/TabRecentVisitModal.vue";
 import { computed, reactive, ref, type UnwrapNestedRefs, watch } from "vue";
 import { usePermissionStore } from "@/stores/modules/permission";
 import { useRoute,useRouter } from "vue-router";
+import {format} from "@/utils/date";
 const permission = usePermissionStore()
 const route = useRoute()
 const router = useRouter()
@@ -44,6 +50,7 @@ const init = () => {
   // 当前活动的数据
   const activeTab: UnwrapNestedRefs<any[]> = reactive([])
   const activeKey = ref()
+  const showRecentModal = ref(false)
   // 初始化固定的数据
   allViewTags.value.forEach(tag => {
     if (tag.affix) {
@@ -52,10 +59,11 @@ const init = () => {
   })
   return {
     activeTab,
-    activeKey
+    activeKey,
+    showRecentModal
   }
 }
-const { activeTab, activeKey } = init()
+const { activeTab, activeKey , showRecentModal} = init()
 /**
  * 传入key，进行对应标签页反选。新页面新增tab页
  * @param key tab页 key
@@ -63,13 +71,16 @@ const { activeTab, activeKey } = init()
 const handleSelectTab = (key: string) => {
   // 是否在活动tab中存在，不存在调用新增方法
   const includes = activeTab.map(act => act.routerPathKey).includes(key)
-  if (!includes) {
-    allViewTags.value.forEach(tab => {
-      if (tab.routerPathKey === key) {
+  allViewTags.value.forEach(tab => {
+    if (tab.routerPathKey === key) {
+      // 添加到数组
+      if (!includes) {
         activeTab.push(tab)
       }
-    })
-  }
+      // 添加到缓存
+      handleAddTabCache(tab)
+    }
+  })
   activeKey.value = key
 }
 
@@ -134,6 +145,40 @@ const routeSkip = (tab:any) => {
 }
 
 /**
+ * 向 localStorage 中进行数据缓存
+ * @param tab
+ */
+const handleAddTabCache = (tab: any) => {
+  const recentTabs = localStorage.getItem('recent-tabs')
+  // 第一次新建缓存集合
+  if (recentTabs === null) {
+    localStorage.setItem('recent-tabs',JSON.stringify([
+      {
+        openTime: format(new Date(),'yyyy-MM-dd hh:mm'),
+        icon: tab.icon,
+        label: tab.label,
+        path: tab.routerPathKey
+      }
+    ]))
+  } else {
+    const hisArray = JSON.parse(recentTabs)
+    const index = hisArray.findIndex((his: any) => his.path === tab.routerPathKey)
+    // 删除已存在元素
+    if (index !== -1) {
+      hisArray.splice(index,1)
+    }
+    // 首插后存入缓存
+    hisArray.unshift({
+      openTime: format(new Date(),'yyyy-MM-dd hh:mm'),
+      icon: tab.icon,
+      label: tab.label,
+      path: tab.routerPathKey
+    })
+    localStorage.setItem('recent-tabs',JSON.stringify(hisArray))
+  }
+}
+
+/**
  * 监听路由变化进行切换 tab
  */
 watch(() => route.path,(value) => {
@@ -146,12 +191,11 @@ watch(() => route.path,(value) => {
 handleSelectTab(route.path);
 
 /**
- * 处理点击右键菜单
+ * 处理点击菜单操作
  * @param type
  * @param tab
  */
 const handleClickMenuTab = (type: string,tab: any) => {
-  console.log(tab)
   switch (type) {
     case "reload": {
       reload()
@@ -159,14 +203,29 @@ const handleClickMenuTab = (type: string,tab: any) => {
     }
     case "close-left": {
       closeLeft(tab)
+      routeSkip(tab)
       break
     }
     case "close-right": {
       closeRight(tab)
+      routeSkip(tab)
       break
     }
     case "close-other": {
-      closeOther()
+      closeOther(tab)
+      routeSkip(tab)
+      break
+    }
+    case "history": {
+      showRecentModal.value = true
+      console.log('history',type)
+      break
+    }
+    case "close-all": {
+      closeAll()
+      if (activeTab.length > 0) {
+        routeSkip(activeTab[0])
+      }
       break
     }
     case "star": {
@@ -225,13 +284,39 @@ const closeRight = (tab: any) => {
  * @param tab
  */
 const closeOther = (tab: any) => {
-
+  for (let i = activeTab.length - 1; i >= 0; i--) {
+    const t = activeTab[i];
+    if (!t.affix && t !== tab) {
+      activeTab.splice(i, 1);
+    }
+  }
 }
-
+/**
+ * 关闭全部标签
+ */
 const closeAll = () => {
-
+  for (let i = activeTab.length - 1; i >= 0; i--) {
+    const t = activeTab[i];
+    if (!t.affix) {
+      activeTab.splice(i, 1);
+    }
+  }
 }
-
+/**
+ * 关闭最近使用模态框
+ */
+const handleCloseRecentModal = () => {
+  showRecentModal.value = false
+}
+/**
+ * 处理切换选中的最近 tab
+ */
+const handleSwitchRecentTab = (key: string) => {
+ const targetTab = allViewTags.value.filter(tab => tab.routerPathKey === key)
+  if (targetTab) {
+    routeSkip(targetTab[0])
+  }
+}
 const star = () => {
 
 }
