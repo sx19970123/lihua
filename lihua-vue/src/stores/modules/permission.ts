@@ -41,6 +41,21 @@ export const usePermissionStore = defineStore('permission',{
             }
 
             this.$state.viewTabs = starViewVOList
+        },
+        updateViewTabAffix(routerPathKey: string, affix: boolean) {
+            this.$state.viewTabs.forEach(viewTab => {
+                if (viewTab.routerPathKey === routerPathKey) {
+                    viewTab.affix = affix
+
+                }
+            })
+        },
+        updateViewTabStar(routerPathKey: string, star: boolean) {
+            this.$state.viewTabs.forEach(viewTab => {
+                if (viewTab.routerPathKey === routerPathKey) {
+                    viewTab.star = star
+                }
+            })
         }
     },
     getters: {

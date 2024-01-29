@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
-public class SysUserStarViewVO implements Serializable {
+public class SysStarViewVO implements Serializable {
     /**
      * 页面名称
      */

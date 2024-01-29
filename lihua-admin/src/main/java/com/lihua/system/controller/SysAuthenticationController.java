@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("system")
-public class SystemAuthenticationController extends ControllerResult {
+public class SysAuthenticationController extends ControllerResult {
     @Resource
     private SysAuthenticationService sysAuthenticationService;
 

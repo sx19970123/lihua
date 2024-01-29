@@ -37,7 +37,8 @@ import TabRecentVisitModal from "@/layout/view-tabs/components/TabRecentVisitMod
 import { computed, reactive, ref, type UnwrapNestedRefs, watch } from "vue";
 import { usePermissionStore } from "@/stores/modules/permission";
 import { useRoute,useRouter } from "vue-router";
-import {format} from "@/utils/date";
+import { format } from "@/utils/date";
+import { starView } from "@/api/system/starView";
 const permission = usePermissionStore()
 const route = useRoute()
 const router = useRouter()
@@ -218,7 +219,6 @@ const handleClickMenuTab = (type: string,tab: any) => {
     }
     case "history": {
       showRecentModal.value = true
-      console.log('history',type)
       break
     }
     case "close-all": {
@@ -229,19 +229,19 @@ const handleClickMenuTab = (type: string,tab: any) => {
       break
     }
     case "star": {
-      star()
+      star(tab,true)
       break
     }
     case "un-star": {
-      unStar()
+      star(tab,false)
       break
     }
     case "affix": {
-      affix()
+      affix(tab,true)
       break
     }
     case "un-affix": {
-      unAffix()
+      affix(tab,false)
       break
     }
     default: {
@@ -317,20 +317,43 @@ const handleSwitchRecentTab = (key: string) => {
     routeSkip(targetTab[0])
   }
 }
-const star = () => {
-
+/**
+ * 添加/取消收藏
+ * @param tab
+ */
+const star = (tab: any, star: boolean) => {
+  starView(tab.routerPathKey,tab.affix ? '1' : '0','1').then(resp => {
+    if (resp.code === 200) {
+      permission.updateViewTabStar(tab.routerPathKey, star)
+    }
+  })
 }
+/**
+ * 添加/取消固定
+ * @param tab
+ * @param affix
+ */
+const affix = (tab: any, affix: boolean) => {
+  starView(tab.routerPathKey,'1',tab.star ? '1' : '0').then(resp => {
+    if (resp.code === 200) {
+      permission.updateViewTabAffix(tab.routerPathKey, affix)
 
-const unStar = () => {
+      const targetTab = activeTab.filter(actTab => actTab.routerPathKey === tab.routerPathKey)[0]
 
-}
+      // 固定页面情况下将该元素移动到前方
+      if (affix) {
+        const targetIndex = activeTab.filter(actTab => actTab.affix).length - 1
+        activeTab.splice(activeTab.indexOf(targetTab),1)
+        activeTab.splice(targetIndex,0,targetTab)
+      }
+      // 取消固定情况下将元素移动到后方
+      else {
+        activeTab.splice(activeTab.indexOf(targetTab),1)
+        activeTab.push(targetTab)
+      }
 
-const affix = () => {
-
-}
-
-const unAffix = () => {
-
+    }
+  })
 }
 
 

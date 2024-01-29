@@ -7,7 +7,7 @@ import com.lihua.enums.SysBaseEnum;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysMenuService;
-import com.lihua.system.service.SysUserStarViewService;
+import com.lihua.system.service.SysStarViewService;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
@@ -35,7 +35,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     private SysRoleMapper sysRoleMapper;
 
     @Resource
-    private SysUserStarViewService sysUserStarViewService;
+    private SysStarViewService sysStarViewService;
 
     @Resource
     private LihuaConfig lihuaConfig;
@@ -71,7 +71,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         // 角色信息
         List<SysRoleVO> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
         // 收藏/固定菜单
-        List<SysUserStarViewVO> starViewVOList = sysUserStarViewService.selectByUserId(id);
+        List<SysStarViewVO> starViewVOList = sysStarViewService.selectByUserId(id);
 
         loginUser
             .setRouterList(routerVOList)

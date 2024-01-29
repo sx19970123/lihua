@@ -1,18 +1,14 @@
 package com.lihua.system.entity;
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
  * 才对呢
  */
 @Data
-public class SysUserStarView {
+public class SysStarView {
     /**
      * 用户id
      */
-    @TableId(type = IdType.ASSIGN_ID)
     private String userId;
 
     /**

@@ -48,7 +48,7 @@ public class LoginUser implements UserDetails {
     /**
      * view tags收藏记录表
      */
-    private List<SysUserStarViewVO> starViewVOList;
+    private List<SysStarViewVO> starViewVOList;
 
 
     @Override
