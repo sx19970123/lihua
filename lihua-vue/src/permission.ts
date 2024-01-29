@@ -3,6 +3,7 @@ import NProgress from "nprogress"
 import 'nprogress/nprogress.css'
 import { useUserStore } from "@/stores/modules/user"
 import { usePermissionStore } from "@/stores/modules/permission";
+import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import Layout from "@/layout/index.vue";
 import MiddleView from "@/components/MiddleView/index.vue"
 import token from "@/utils/token"
@@ -20,6 +21,7 @@ router.beforeEach((to,from,next) => {
     if (getToken()) {
         const userStore = useUserStore()
         const usePermission = usePermissionStore()
+        const useViewTabs = useViewTabsStore()
         // 判断是否拉取了用户信息
         if (Object.keys(userStore.userInfo).length === 0) {
             userStore.getUserInfo().then((resp:any) => {
@@ -28,9 +30,9 @@ router.beforeEach((to,from,next) => {
                 // 初始化动态路由
                 initDynamicRouter(metaRouterList)
                 // 初始化用户菜单数据
-                usePermission.initMenu(metaRouterList,staticRoutes)
-                // 初始化多菜单数据
-                usePermission.initViewTab(resp.starViewVOList,staticRoutes)
+                usePermission.initMenu(metaRouterList, staticRoutes)
+                // 初始化totalViewTabs数据
+                useViewTabs.initTotalViewTabs(resp.starViewVOList, staticRoutes)
                 // hack方法 确保addRoutes已完成
                 next({...to,replace: true})
             }).catch(err => {

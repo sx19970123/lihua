@@ -1,5 +1,6 @@
 package com.lihua.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.model.security.LoginUser;
@@ -20,6 +21,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
 @Service
 public class SysStarViewServiceImpl implements SysStarViewService {
 
@@ -36,7 +40,15 @@ public class SysStarViewServiceImpl implements SysStarViewService {
 
         // 获取收藏菜单数据
         QueryWrapper<SysStarView> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(SysStarView::getUserId,userId);
+        queryWrapper.lambda().eq(SysStarView::getUserId,userId)
+                .in(SysStarView::getRouterPathKey,
+                        routerVOList
+                        .stream()
+                        .filter(routerVO -> "page".equals(routerVO.getType()))
+                        .map(RouterVO::getKey)
+                        .collect(Collectors.toSet())
+                ).and(wrapper -> wrapper.eq(SysStarView::getAffix,"1").or().eq(SysStarView::getStar,"1"));
+
         List<SysStarView> sysUserStarViews = sysUserStarViewMapper.selectList(queryWrapper);
 
         // 数据组合

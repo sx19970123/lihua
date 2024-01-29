@@ -1,66 +1,19 @@
 import { defineStore } from "pinia";
 import type { RouteRecordRaw } from "vue-router";
-import Layout from "@/layout/index.vue"
 
 
 export const usePermissionStore = defineStore('permission',{
     state: ()=> {
         const sidebarRouters: Array<any> = []
-        const viewTabs: Array<any> = []
         return {
-            sidebarRouters,
-            viewTabs
+            sidebarRouters
         }
     },
     actions: {
         initMenu(metaRouterList: Array<any>, staticRoutes: readonly RouteRecordRaw[]): void {
             this.$state.sidebarRouters = init(metaRouterList,staticRoutes)
-        },
-        initViewTab(starViewVOList: Array<any>, staticRoutes: readonly RouteRecordRaw[]): void {
-            // 过滤获取 Layout 为父级的静态路由
-            let layoutRoutes =  staticRoutes.filter(route => route.component === Layout)
-            // 生成 key
-            layoutRoutes = generateKey(layoutRoutes,'',false)
-            // 去除父级节点获取子路由组件
-            const hasKeyRoutComponentList: Array<any> = []
-            getChildren(layoutRoutes,hasKeyRoutComponentList)
-            // 根据定义的 viewTabSort 进行排序
-            hasKeyRoutComponentList.sort((a, b) => b.meta.viewTabSort - a.meta.viewTabSort)
-            // 生成viewTab对象
-            if (hasKeyRoutComponentList.length > 0) {
-                hasKeyRoutComponentList.forEach(route => {
-                    starViewVOList.unshift({
-                        label: route.meta.label,
-                        icon: route.meta.icon,
-                        affix: route.meta.affix,
-                        routerPathKey: route.key,
-                        star: false,
-                        static: true
-                    })
-                })
-            }
-
-            this.$state.viewTabs = starViewVOList
-        },
-        updateViewTabAffix(routerPathKey: string, affix: boolean) {
-            this.$state.viewTabs.forEach(viewTab => {
-                if (viewTab.routerPathKey === routerPathKey) {
-                    viewTab.affix = affix
-
-                }
-            })
-        },
-        updateViewTabStar(routerPathKey: string, star: boolean) {
-            this.$state.viewTabs.forEach(viewTab => {
-                if (viewTab.routerPathKey === routerPathKey) {
-                    viewTab.star = star
-                }
-            })
         }
     },
-    getters: {
-
-    }
 })
 
 const init = (metaRouterList: Array<any>, staticRoutes: readonly RouteRecordRaw[]) => {
@@ -117,48 +70,4 @@ const handleOnlyChild = (routers: Array<any>): Array<any> => {
         })
     }
     return array
-}
-
-/**
- * 将 path 组合为 key 供菜单使用
- * @param allMenu
- * @param key
- */
-const handleMenuKey = (allMenu: Array<any>,key: string): Array<any> => {
-    if (allMenu && allMenu.length > 0) {
-        allMenu.forEach(menu => {
-            // 处理path
-            menu.path = menu.path === null ? '' : menu.path
-            menu.path = menu.path.startsWith("/") ? menu.path.substring(1): menu.path
-            // 处理双层 / 的情况
-            if (key === '/') {
-                menu.key = '/' + menu.path
-            } else {
-                menu.key = key + '/' + menu.path
-            }
-            if (menu.children && menu.children.length > 0) {
-                handleMenuKey(menu.children,menu.key)
-            } else {
-                menu.children = null
-            }
-        })
-    }
-    return allMenu;
-}
-
-/**
- * 获取最底层子节点
- * @param staticRoutes
- * @param arr
- */
-const getChildren = (staticRoutes: Array<any>, arr: Array<any>):void => {
-    if (staticRoutes) {
-        staticRoutes.forEach(route => {
-            if (route.children && route.children.length > 0) {
-                getChildren(route.children,arr)
-            } else {
-                arr.push(route)
-            }
-        })
-    }
 }
