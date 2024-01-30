@@ -1,8 +1,7 @@
 package com.lihua.system.controller;
 
-import com.lihua.model.security.LoginUser;
 import com.lihua.model.web.ControllerResult;
-import com.lihua.utils.security.SecurityUtils;
+import com.lihua.utils.security.LoginUserContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +16,7 @@ public class SysUser extends ControllerResult {
      */
     @GetMapping("/info")
     public String getUserInfo() {
-        return success(SecurityUtils.getLoginUser());
+        return success(LoginUserContext.getLoginUser());
     }
 
 }

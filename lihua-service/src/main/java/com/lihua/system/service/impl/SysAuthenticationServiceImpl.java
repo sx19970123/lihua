@@ -9,7 +9,7 @@ import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.system.service.SysStarViewService;
 import com.lihua.utils.security.JwtUtils;
-import com.lihua.utils.security.SecurityUtils;
+import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,7 +53,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Override
     public void logout() {
-        redisCache.delete(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + SecurityUtils.getUserId());
+        redisCache.delete(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + LoginUserContext.getUserId());
     }
 
 

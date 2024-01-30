@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 /**
  * 获取当前登录用户工具类
  */
-public class SecurityUtils {
+public class LoginUserContext {
 
     /**
      * 获取当前登录用户 id

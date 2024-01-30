@@ -48,6 +48,11 @@
 <script setup lang="ts">
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import {useRoute, useRouter} from "vue-router";
+import {starView} from "@/api/system/starView";
+import { message } from "ant-design-vue";
+import { StarFilled , StarOutlined ,LockOutlined , UnlockOutlined} from '@ant-design/icons-vue';
+import {h} from "vue";
+
 const viewTabsStore = useViewTabsStore()
 const tabPane = defineProps(['tab','index'])
 const emit = defineEmits(['routeSkip'])
@@ -84,65 +89,67 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
       emit('routeSkip',tab)
       break
     }
-    // case "star": {
-    //   star(tab,true)
-    //   break
-    // }
-    // case "un-star": {
-    //   star(tab,false)
-    //   break
-    // }
-    // case "affix": {
-    //   affix(tab,true)
-    //   break
-    // }
-    // case "un-affix": {
-    //   affix(tab,false)
-    //   break
-    // }
+    case "star": {
+      starView(tab.routerPathKey,tab.affix ? '1' : '0','1').then(resp => {
+        if (resp.code === 200) {
+          viewTabsStore.replaceByKey(resp.data)
+          message.success({
+            content: () => '添加收藏',
+            icon: () => h( StarFilled ),
+          })
+        }
+      }).catch(() => {
+        message.error({
+          content: () => '添加收藏失败',
+          icon: () => h( StarFilled ),
+        })
+      })
+      break
+    }
+    case "un-star": {
+      starView(tab.routerPathKey,tab.affix ? '1' : '0','0').then(resp => {
+        if (resp.code === 200) {
+          viewTabsStore.replaceByKey(resp.data)
+          message.success({
+            content: () => '取消收藏',
+            icon: () => h( StarOutlined ),
+          })
+        }
+      }).catch(() => {
+        message.error({
+          content: () => '取消收藏失败',
+          icon: () => h( StarOutlined ),
+        })
+      })
+      break
+    }
+    case "affix": {
+      starView(tab.routerPathKey,'1',tab.star ? '1' : '0').then(resp => {
+        if (resp.code === 200) {
+          viewTabsStore.affix(resp.data)
+          message.success({
+            content: () => '固定页面',
+            icon: () => h( LockOutlined ),
+          })
+        }
+      })
+      break
+    }
+    case "un-affix": {
+      starView(tab.routerPathKey,'0',tab.star ? '1' : '0').then(resp => {
+        if (resp.code === 200) {
+          viewTabsStore.unAffix(resp.data)
+          message.success({
+            content: () => '取消固定',
+            icon: () => h( UnlockOutlined ),
+          })
+        }
+      })
+      break
+    }
     default: {
       console.error("错误的菜单类型")
     }
   }
 }
-
-// /**
-//  * 添加/取消收藏
-//  * @param tab
-//  */
-// const star = (tab: any, star: boolean) => {
-//   starView(tab.routerPathKey,tab.affix ? '1' : '0','1').then(resp => {
-//     if (resp.code === 200) {
-//       permission.updateViewTabStar(tab.routerPathKey, star)
-//     }
-//   })
-// }
-// /**
-//  * 添加/取消固定
-//  * @param tab
-//  * @param affix
-//  */
-// const affix = (tab: any, affix: boolean) => {
-//   starView(tab.routerPathKey,'1',tab.star ? '1' : '0').then(resp => {
-//     if (resp.code === 200) {
-//       permission.updateViewTabAffix(tab.routerPathKey, affix)
-//
-//       const targetTab = activeTab.filter(actTab => actTab.routerPathKey === tab.routerPathKey)[0]
-//
-//       // 固定页面情况下将该元素移动到前方
-//       if (affix) {
-//         const targetIndex = activeTab.filter(actTab => actTab.affix).length - 1
-//         activeTab.splice(activeTab.indexOf(targetTab),1)
-//         activeTab.splice(targetIndex,0,targetTab)
-//       }
-//       // 取消固定情况下将元素移动到后方
-//       else {
-//         activeTab.splice(activeTab.indexOf(targetTab),1)
-//         activeTab.push(targetTab)
-//       }
-//
-//     }
-//   })
-// }
-
 </script>

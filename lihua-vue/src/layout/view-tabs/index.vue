@@ -19,24 +19,20 @@
       </template>
       <!--view-tabs 右侧下拉菜单-->
       <template #rightExtra>
-        <tab-right-menu @click-menu-tab="handleClickMenuTab"/>
+        <tab-right-menu @route-skip="routeSkip"/>
       </template>
     </a-tabs>
   </div>
   <!--  最近打开-->
-  <tab-recent-visit-modal :active-tabs="activeTab"
-                          @close-recent-modal="handleCloseRecentModal"
-                          @switch-tab="handleSwitchRecentTab"
-  />
+  <tab-recent-visit-modal @route-skip="handleSwitchTab"/>
 </template>
 
 <script lang="ts" setup>
 import TabPaneMenu from "@/layout/view-tabs/components/TabPaneMenu.vue";
 import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
 import TabRecentVisitModal from "@/layout/view-tabs/components/TabRecentVisitModal.vue";
-import { computed, reactive, ref, type UnwrapNestedRefs, watch } from "vue";
+import { computed, watch } from "vue";
 import { useRoute,useRouter } from "vue-router";
-import { format } from "@/utils/date";
 import {useViewTabsStore} from "@/stores/modules/viewTabs";
 const viewTabsStore = useViewTabsStore()
 const route = useRoute()
@@ -72,8 +68,7 @@ watch(() => route.path,(value) => {
  * @param key
  */
 const handleSwitchTab = (key: string) => {
-  const tab = viewTabsStore.getTotalTabByKey(key)
-  routeSkip(tab)
+  routeSkip(viewTabsStore.getTotalTabByKey(key))
 }
 
 /**
@@ -91,7 +86,6 @@ const closeTab = (key: string) => {
     // 删除的不是第一个元素，跳转到前一个
     else {
       tab = viewTabsStore.getTabByIndex(index - 1)
-      console.log(tab)
     }
     // 返回元素不为空则跳转路由
     if (tab) {
@@ -119,24 +113,6 @@ const routeSkip = (tab:any) => {
     router.push(routerPathKey)
   }
 }
-
-// /**
-//  * 关闭最近使用模态框
-//  */
-// const handleCloseRecentModal = () => {
-//   showRecentModal.value = false
-// }
-// /**
-//  * 处理切换选中的最近 tab
-//  */
-// const handleSwitchRecentTab = (key: string) => {
-//  const targetTab = allViewTags.value.filter(tab => tab.routerPathKey === key)
-//   if (targetTab) {
-//     routeSkip(targetTab[0])
-//   }
-// }
-
-
 </script>
 
 <style scoped lang="less">

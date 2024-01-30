@@ -87,7 +87,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
         closeViewTab(key: string) {
             this.$state.viewTabs = this.$state.viewTabs.filter(viewTab => viewTab.routerPathKey !== key)
         },
-        // 关闭左边的标签
+        // 关闭左边
         closeLeft(key: string) {
             const index:number = this.getIndex(key)
             const viewTabs:any[] = this.$state.viewTabs
@@ -99,6 +99,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
             }
             this.$state.viewTabs = viewTabs.filter((tab:any) => !removeArray.includes(tab))
         },
+        // 关闭右边
         closeRight(key: string) {
             const index:number = this.getIndex(key)
             const viewTabs:any[] = this.$state.viewTabs
@@ -110,6 +111,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
             }
             this.$state.viewTabs = viewTabs.filter((tab:any) => !removeArray.includes(tab))
         },
+        // 关闭其他
         closeOther(key: string) {
             const index:number = this.getIndex(key)
             const viewTabs:any[] = this.$state.viewTabs
@@ -121,25 +123,37 @@ export const useViewTabsStore = defineStore('viewTabs',{
             }
             this.$state.viewTabs = viewTabs.filter((tab:any) => !removeArray.includes(tab))
         },
+        // 关闭全部
         closeAll() {
             this.$state.viewTabs = this.$state.viewTabs.filter(tab => tab.affix)
         },
-
-
-        updateViewTabAffix(routerPathKey: string, affix: boolean) {
-            this.$state.viewTabs.forEach(viewTab => {
-                if (viewTab.routerPathKey === routerPathKey) {
-                    viewTab.affix = affix
-
-                }
-            })
+        // 打开最近使用模态框
+        openRecentModal() {
+            this.$state.showRecentModal = true
         },
-        updateViewTabStar(routerPathKey: string, star: boolean) {
-            this.$state.viewTabs.forEach(viewTab => {
-                if (viewTab.routerPathKey === routerPathKey) {
-                    viewTab.star = star
-                }
-            })
+        // 关闭最近使用模态框
+        closeRecentModal() {
+            this.$state.showRecentModal = false
+        },
+        // 传入tab元素，与集合中的元素进行替换
+        replaceByKey(tab: any) {
+            const index = this.$state.viewTabs.findIndex(t => t.routerPathKey === tab.routerPathKey)
+            this.$state.viewTabs.splice(index,1, tab)
+        },
+        // 添加固定，固定到前排
+        affix(tab: any) {
+            const targetIndex = this.$state.viewTabs.filter(t => t.affix).length
+            const viewTabs = this.$state.viewTabs
+            const index = viewTabs.findIndex(t => t.routerPathKey === tab.routerPathKey)
+            viewTabs.splice(index,1)
+            this.$state.viewTabs.splice(targetIndex,0,tab)
+        },
+        // 取消固定，移动到最后
+        unAffix(tab: any) {
+            const viewTabs = this.$state.viewTabs
+            const index = viewTabs.findIndex(t => t.routerPathKey === tab.routerPathKey)
+            viewTabs.splice(index,1)
+            viewTabs.splice(viewTabs.length,0,tab)
         }
     }
 })

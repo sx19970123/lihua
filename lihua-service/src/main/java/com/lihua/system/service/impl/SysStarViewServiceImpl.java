@@ -1,27 +1,21 @@
 package com.lihua.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.lihua.model.security.LoginUser;
 import com.lihua.model.security.RouterVO;
 import com.lihua.model.security.SysStarViewVO;
-import com.lihua.model.security.SysUserVO;
 import com.lihua.system.entity.SysStarView;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysStarViewMapper;
 import com.lihua.system.service.SysStarViewService;
-import com.lihua.utils.security.SecurityUtils;
+import com.lihua.utils.security.LoginUserContext;
+import com.lihua.utils.security.LoginUserReset;
 import jakarta.annotation.Resource;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,10 +73,10 @@ public class SysStarViewServiceImpl implements SysStarViewService {
     }
 
     @Override
-    public String save(SysStarView sysStarView) {
+    public SysStarViewVO save(SysStarView sysStarView) {
         UpdateWrapper<SysStarView> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda()
-                .eq(SysStarView::getUserId, SecurityUtils.getUserId())
+                .eq(SysStarView::getUserId, LoginUserContext.getUserId())
                 .eq(SysStarView::getRouterPathKey,sysStarView.getRouterPathKey());
         boolean flag = true;
 
@@ -104,19 +98,22 @@ public class SysStarViewServiceImpl implements SysStarViewService {
         int update = sysUserStarViewMapper.update(updateWrapper);
 
         if (update == 0) {
-            sysStarView.setUserId(SecurityUtils.getUserId());
+            sysStarView.setUserId(LoginUserContext.getUserId());
             sysUserStarViewMapper.insert(sysStarView);
         }
 
-        // 更新 LoginUser 数据
-        List<SysStarViewVO> starViewVOList = SecurityUtils.getLoginUser().getStarViewVOList();
-        starViewVOList.forEach(sysStarViewVO -> {
-            if (sysStarViewVO.getRouterPathKey().equals(sysStarView.getRouterPathKey())) {
-                sysStarViewVO
-                        .setStar("1".equals(sysStarView.getStar()))
-                        .setAffix("1".equals(sysStarView.getAffix()));
+        // 重新设置loginUserContext
+        SysStarViewVO starView = null;
+        List<SysStarViewVO> starViewVOList = LoginUserContext.getLoginUser().getStarViewVOList();
+        for (SysStarViewVO starViewVO : starViewVOList) {
+            if (starViewVO.getRouterPathKey().equals(sysStarView.getRouterPathKey())) {
+                starViewVO.setAffix("1".equals(sysStarView.getAffix()))
+                        .setStar("1".equals(sysStarView.getStar()));
+                starView = starViewVO;
             }
-        });
-        return sysStarView.getRouterPathKey();
+        }
+        LoginUserReset.resetStarViewList(starViewVOList);
+
+        return starView;
     }
 }
