@@ -25,12 +25,14 @@
   </div>
   <!--  最近打开-->
   <tab-recent-visit-modal @route-skip="handleSwitchTab"/>
+  <tab-star-modal @route-skip="handleSwitchTab"/>
 </template>
 
 <script lang="ts" setup>
 import TabPaneMenu from "@/layout/view-tabs/components/TabPaneMenu.vue";
 import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
 import TabRecentVisitModal from "@/layout/view-tabs/components/TabRecentVisitModal.vue";
+import TabStarModal from "@/layout/view-tabs/components/TabStarModal.vue";
 import { computed, watch } from "vue";
 import { useRoute,useRouter } from "vue-router";
 import {useViewTabsStore} from "@/stores/modules/viewTabs";

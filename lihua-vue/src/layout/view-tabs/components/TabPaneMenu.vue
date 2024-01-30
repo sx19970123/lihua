@@ -51,7 +51,7 @@ import {useRoute, useRouter} from "vue-router";
 import {starView} from "@/api/system/starView";
 import { message } from "ant-design-vue";
 import { StarFilled , StarOutlined ,LockOutlined , UnlockOutlined} from '@ant-design/icons-vue';
-import {h} from "vue";
+import { h } from "vue";
 
 const viewTabsStore = useViewTabsStore()
 const tabPane = defineProps(['tab','index'])

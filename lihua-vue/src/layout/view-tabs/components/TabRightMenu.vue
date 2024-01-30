@@ -36,11 +36,16 @@ const handleClickMenuTab = ({ key }: { key :string }) => {
       viewTabsStore.openRecentModal()
       break
     }
+    case "star": {
+      viewTabsStore.openStarModal()
+      break
+    }
     case "close-all": {
       viewTabsStore.closeAll()
       if (viewTabsStore.viewTabs.length > 0) {
         emits('routeSkip',viewTabsStore.viewTabs[0])
       }
+      break
     }
   }
 

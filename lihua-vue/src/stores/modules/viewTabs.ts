@@ -5,14 +5,16 @@ import {format} from "@/utils/date";
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         const viewTabs: Array<any> = []
-        const TotalViewTabs: Array<any> = []
+        const totalViewTabs: Array<any> = []
         const activeKey: string = ''
         const showRecentModal: boolean = false
+        const showStarModal: boolean = false
         return {
             viewTabs,
-            TotalViewTabs,
+            totalViewTabs,
             activeKey,
-            showRecentModal
+            showRecentModal,
+            showStarModal
         }
     },
     actions: {
@@ -46,9 +48,9 @@ export const useViewTabsStore = defineStore('viewTabs',{
             }
 
             // 全量数据
-            this.$state.TotalViewTabs = starViewVOList
+            this.$state.totalViewTabs = starViewVOList
             // 默认显示数据
-            this.$state.viewTabs = this.$state.TotalViewTabs.filter(tab => tab.affix)
+            this.$state.viewTabs = this.$state.totalViewTabs.filter(tab => tab.affix)
         },
 
         // key值是否包含在ViewTabs之中
@@ -61,8 +63,8 @@ export const useViewTabsStore = defineStore('viewTabs',{
         },
         // 根据key在total中获取tab对象
         getTotalTabByKey(key: string): any {
-            const index = this.$state.TotalViewTabs.findIndex(tab => tab.routerPathKey === key)
-            return this.$state.TotalViewTabs[index]
+            const index = this.$state.totalViewTabs.findIndex(tab => tab.routerPathKey === key)
+            return this.$state.totalViewTabs[index]
         },
         // 根据索引获取元素
         getTabByIndex(index: number): any {
@@ -135,10 +137,22 @@ export const useViewTabsStore = defineStore('viewTabs',{
         closeRecentModal() {
             this.$state.showRecentModal = false
         },
+        // 打开收藏模态框
+        openStarModal() {
+            this.$state.showStarModal = true
+        },
+        // 关闭收藏模态框
+        closeStarModal() {
+            this.$state.showStarModal = false
+        },
         // 传入tab元素，与集合中的元素进行替换
         replaceByKey(tab: any) {
+            // 替换viewTabs
             const index = this.$state.viewTabs.findIndex(t => t.routerPathKey === tab.routerPathKey)
             this.$state.viewTabs.splice(index,1, tab)
+            // 替换totalViewTabs
+            const totalIndex = this.$state.totalViewTabs.findIndex(t => t.routerPathKey === tab.routerPathKey)
+            this.$state.totalViewTabs.splice(totalIndex,1, tab)
         },
         // 添加固定，固定到前排
         affix(tab: any) {

@@ -8,5 +8,5 @@ import java.util.List;
 public interface SysStarViewService {
     List<SysStarViewVO> selectByUserId(String userId);
 
-    String save(SysStarView sysStarView);
+    SysStarViewVO save(SysStarView sysStarView);
 }
