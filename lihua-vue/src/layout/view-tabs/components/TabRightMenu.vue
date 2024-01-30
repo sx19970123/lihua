@@ -10,7 +10,7 @@
           最近使用
         </a-menu-item>
         <a-menu-item class="more-tab-item" key="star">
-          <StarFilled />
+          <StarOutlined />
           收藏夹栏
         </a-menu-item>
         <a-menu-item class="more-tab-item" key="close-all">

@@ -5,6 +5,12 @@
            width="350px"
            :mask-style="{'backdrop-filter':'blur(3px)'}"
            >
+    <template #title>
+      <a-flex :gap="6" justify="left" align="center">
+        <StarOutlined /> <span style="font-size: 16px">收藏夹栏</span>
+      </a-flex>
+      <a-divider style="margin-bottom: 10px;margin-top: 10px" />
+    </template>
     <a-list class="scrollbar" :data-source="data" :bordered="false" size="small" :split="false" style="max-height: 550px">
       <template #renderItem="{ item }">
         <a-list-item class="list-item" @click="handleClickItem(item.routerPathKey)">

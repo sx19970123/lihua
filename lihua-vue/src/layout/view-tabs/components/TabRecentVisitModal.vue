@@ -5,7 +5,13 @@
            width="350px"
            :mask-style="{'backdrop-filter':'blur(3px)'}"
            >
-    <a-list class="scrollbar" :data-source="data" :bordered="false" size="small" :split="false" style="max-height: 550px">
+    <template #title>
+      <a-flex :gap="6" justify="left" align="center">
+        <FieldTimeOutlined /> <span style="font-size: 16px">最近使用</span>
+      </a-flex>
+      <a-divider style="margin-bottom: 10px;margin-top: 10px" />
+    </template>
+    <a-list class="scrollbar" :data-source="data" :bordered="false" size="small" :split="false" style="max-height: 550px;">
       <template #renderItem="{ item }">
         <a-list-item class="list-item" @click="handleClickItem(item.path)">
           <a-list-item-meta>
@@ -29,6 +35,7 @@
 import {ref, watch} from "vue";
 import {format} from "@/utils/date";
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
+import {StarFilled} from "@ant-design/icons-vue";
 const viewTabsStore = useViewTabsStore()
 const data = ref()
 
