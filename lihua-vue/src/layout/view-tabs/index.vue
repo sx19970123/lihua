@@ -1,5 +1,5 @@
 <template>
-  <div :style="{'background': '#fff'}">
+  <div :style="{'background': '#fff','width': '100%'}">
     <a-tabs :activeKey="activeKey"
             type="editable-card"
             size="small"

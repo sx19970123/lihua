@@ -1,33 +1,43 @@
 <template>
   <div class="logo">
-    <a-flex gap="middle" align="center" justify="center">
+    <a-flex gap="middle" align="center" justify="center" v-if="!permissionStore.collapsed">
       <div>
-        <a-avatar :size="32">
-          <template #icon>
-            <AntDesignOutlined />
-          </template>
+        <a-avatar :style="{ backgroundColor: '#f56a00'}">
+          LiHua
         </a-avatar>
       </div>
-      <div class="title" v-if="false">
-        <span>title</span>
+      <div class="title">
+        <span>LiHua Pro</span>
+      </div>
+    </a-flex>
+    <a-flex align="center" justify="center" v-else>
+      <div>
+        <a-avatar :style="{ backgroundColor: '#f56a00'}">
+          LiHua
+        </a-avatar>
       </div>
     </a-flex>
   </div>
 </template>
 
 <script setup lang="ts">
-import { AntDesignOutlined } from '@ant-design/icons-vue';
-// todo 通过 pinia 进行 logo 状态控制
-
+import { usePermissionStore } from "@/stores/modules/permission";
+const permissionStore = usePermissionStore()
 </script>
 
 <style scoped>
 .logo {
-  height: 48px;
+  height: 64px;
   padding: 16px;
   color: azure;
+  cursor: pointer;
   .title {
+    height: 32px;
+    overflow: hidden;
+    color: #fff;
+    font-weight: 600;
     font-size: 18px;
+    line-height: 32px;
   }
 }
 </style>

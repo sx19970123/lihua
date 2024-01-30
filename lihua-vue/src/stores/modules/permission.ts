@@ -5,13 +5,21 @@ import type { RouteRecordRaw } from "vue-router";
 export const usePermissionStore = defineStore('permission',{
     state: ()=> {
         const sidebarRouters: Array<any> = []
+        const collapsed: boolean = true
         return {
-            sidebarRouters
+            sidebarRouters,
+            collapsed
         }
     },
     actions: {
         initMenu(metaRouterList: Array<any>, staticRoutes: readonly RouteRecordRaw[]): void {
             this.$state.sidebarRouters = init(metaRouterList,staticRoutes)
+        },
+        openCollapsed() {
+            this.$state.collapsed = true
+        },
+        closeCollapsed() {
+            this.$state.collapsed = false
         }
     },
 })

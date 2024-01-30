@@ -14,7 +14,7 @@ import Logo from "@/layout/sider/components/Logo.vue";
 import Menu from "@/layout/sider/components/Menu.vue";
 import { usePermissionStore } from "@/stores/modules/permission";
 import { useRoute } from "vue-router";
-import {computed, reactive, watch} from "vue";
+import {computed, reactive, ref, watch} from "vue";
 const route = useRoute()
 // pinia 中获取菜单数据
 const permission = usePermissionStore()
