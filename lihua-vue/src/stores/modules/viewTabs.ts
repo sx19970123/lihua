@@ -1,18 +1,22 @@
 import { defineStore } from "pinia";
 import type {RouteRecordRaw} from "vue-router";
 import Layout from "@/layout/index.vue";
-import {format} from "@/utils/date";
+import { format } from "@/utils/date";
+import { useUserStore } from "@/stores/modules/user";
+
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         const viewTabs: Array<any> = []
         const totalViewTabs: Array<any> = []
         const activeKey: string = ''
+        const tabCacheKey: string = ''
         const showRecentModal: boolean = false
         const showStarModal: boolean = false
         return {
             viewTabs,
             totalViewTabs,
             activeKey,
+            tabCacheKey,
             showRecentModal,
             showStarModal
         }
@@ -168,6 +172,10 @@ export const useViewTabsStore = defineStore('viewTabs',{
             const index = viewTabs.findIndex(t => t.routerPathKey === tab.routerPathKey)
             viewTabs.splice(index,1)
             viewTabs.splice(viewTabs.length,0,tab)
+        },
+        // 设置缓存viewCache key
+        setViewCacheKey(username:string): void {
+            this.$state.tabCacheKey = 'recent-tabs-' + username
         }
     }
 })
@@ -229,10 +237,11 @@ const getChildren = (staticRoutes: Array<any>, arr: Array<any>):void => {
  * @param tab
  */
 const handleAddTabCache = (tab: any) => {
-    const recentTabs = localStorage.getItem('recent-tabs')
+    const viewTabStore =  useViewTabsStore()
+    const recentTabs = localStorage.getItem(viewTabStore.$state.tabCacheKey)
     // 第一次新建缓存集合
     if (recentTabs === null) {
-        localStorage.setItem('recent-tabs',JSON.stringify([
+        localStorage.setItem(viewTabStore.$state.tabCacheKey ,JSON.stringify([
             {
                 openTime: format(new Date(),'yyyy-MM-dd hh:mm'),
                 icon: tab.icon,
@@ -254,6 +263,6 @@ const handleAddTabCache = (tab: any) => {
             label: tab.label,
             path: tab.routerPathKey
         })
-        localStorage.setItem('recent-tabs',JSON.stringify(hisArray))
+        localStorage.setItem(viewTabStore.$state.tabCacheKey ,JSON.stringify(hisArray))
     }
 }

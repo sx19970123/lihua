@@ -1,11 +1,11 @@
 <template>
-  <div :style="{'background': '#fff','width': '100%'}">
     <a-tabs :activeKey="activeKey"
             type="editable-card"
             size="small"
             hide-add
             @edit="closeTab"
             @change="handleSwitchTab"
+            :style="{'background': background.bgColor}"
     >
       <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" :closable="!tab.affix">
         <!--每个tab的下拉菜单-->
@@ -15,14 +15,13 @@
       </a-tab-pane>
       <!-- view-tabs 左侧空白-->
       <template #leftExtra>
-        <div style="width: 8px;"></div>
+        <div style="width: 8px;border: none;"></div>
       </template>
       <!--view-tabs 右侧下拉菜单-->
       <template #rightExtra>
         <tab-right-menu @route-skip="routeSkip"/>
       </template>
     </a-tabs>
-  </div>
   <!--  最近打开-->
   <tab-recent-visit-modal @route-skip="handleSwitchTab"/>
   <tab-star-modal @route-skip="handleSwitchTab"/>
@@ -33,13 +32,13 @@ import TabPaneMenu from "@/layout/view-tabs/components/TabPaneMenu.vue";
 import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
 import TabRecentVisitModal from "@/layout/view-tabs/components/TabRecentVisitModal.vue";
 import TabStarModal from "@/layout/view-tabs/components/TabStarModal.vue";
-import { computed, watch } from "vue";
+import {computed, ref, watch} from "vue";
 import { useRoute,useRouter } from "vue-router";
 import {useViewTabsStore} from "@/stores/modules/viewTabs";
 const viewTabsStore = useViewTabsStore()
 const route = useRoute()
 const router = useRouter()
-
+const background = defineProps(['bgColor'])
 /**
  * 初始化数据及变量
  */
@@ -117,6 +116,5 @@ const routeSkip = (tab:any) => {
 }
 </script>
 
-<style scoped lang="less">
-
+<style scoped>
 </style>

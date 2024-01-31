@@ -9,10 +9,16 @@
           <FieldTimeOutlined />
           最近使用
         </a-menu-item>
-        <a-menu-item class="more-tab-item" key="star">
-          <StarOutlined />
-          收藏夹栏
-        </a-menu-item>
+        <a-sub-menu class="more-tab-item" key="star" style="width: 120px">
+          <template #title>
+            <span>
+              <StarOutlined />
+            收藏夹栏
+            </span>
+          </template>
+            <a-menu-item>5d menu item</a-menu-item>
+            <a-menu-item>6th menu item</a-menu-item>
+        </a-sub-menu>
         <a-menu-item class="more-tab-item" key="close-all">
           <CloseOutlined />
           关闭全部
@@ -54,12 +60,6 @@ const handleClickMenuTab = ({ key }: { key :string }) => {
 <style>
 .ant-tabs-nav-more {
   margin-left: 2px !important;
-  cursor: pointer;
-  border-radius: 6px
-}
-.ant-tabs-nav-more:hover {
-  margin-left: 2px !important;
-  background: #f7f7f7 !important;
   cursor: pointer;
   border-radius: 6px
 }

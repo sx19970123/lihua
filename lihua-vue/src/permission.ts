@@ -33,6 +33,7 @@ router.beforeEach((to,from,next) => {
                 usePermission.initMenu(metaRouterList, staticRoutes)
                 // 初始化totalViewTabs数据
                 useViewTabs.initTotalViewTabs(resp.starViewVOList, staticRoutes)
+                useViewTabs.setViewCacheKey(resp.username)
                 // hack方法 确保addRoutes已完成
                 next({...to,replace: true})
             }).catch(err => {

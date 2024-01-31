@@ -1,7 +1,7 @@
 <template>
-    <Logo/>
-    <a-menu theme="dark"
+    <a-menu theme="light"
             mode="inline"
+            style="border: none"
             v-model:selected-keys="state.selectedKeys"
             v-model:open-keys="state.openKeys"
     >
@@ -10,7 +10,6 @@
 </template>
 
 <script setup lang="ts">
-import Logo from "@/layout/sider/components/Logo.vue";
 import Menu from "@/layout/sider/components/Menu.vue";
 import { usePermissionStore } from "@/stores/modules/permission";
 import { useRoute } from "vue-router";

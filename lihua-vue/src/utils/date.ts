@@ -2,7 +2,17 @@ export const format = (data:Date,fmt:string): string => {
     return data.format(fmt);
 }
 
-
+/**
+ * 获取相对于date的时间日期
+ * @param date 某一日期
+ * @param fmt 日期格式
+ * @param offset 偏移量，+1就是一天后；-1就是前一天
+ */
+export const relativeDate = (date: Date, fmt: string, offset: number): string => {
+    const previousDay =  new Date(date)
+    previousDay.setDate(date.getDate() + offset)
+    return previousDay.format(fmt)
+}
 
 // Date 原型添加format 方法
 Date.prototype.format = function(fmt:string) {

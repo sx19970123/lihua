@@ -4,15 +4,15 @@ import { login } from "@/api/system/login";
 import { getUserInfo } from "@/api/system/user";
 
 import token from "@/utils/token";
-const {getToken,setToken,removeToken} = token
+const {setToken} = token
 /**
  * 定义 userStore 的用户信息
  */
 interface UserStoreType {
-    // 用户token
-    token: string,
     // 用户昵称
     name: string,
+    // 用户名
+    username:string,
     // 用户头像
     avatar: string,
     // 用户角色编码
@@ -26,13 +26,19 @@ interface UserStoreType {
 
 export const useUserStore = defineStore('user', {
     state: ():UserStoreType => {
+        const name: string = ''
+        const username: string = ''
+        const avatar: string = ''
+        const roles: Array<string> = []
+        const permissions: Array<string> = []
+        const userInfo:object = {}
         return {
-            token: '',
-            name: '',
-            avatar: '',
-            roles: [],
-            permissions: [],
-            userInfo: {}
+            name,
+            avatar,
+            username,
+            roles,
+            permissions,
+            userInfo
         }
     },
     actions: {
@@ -41,9 +47,7 @@ export const useUserStore = defineStore('user', {
             return new Promise((resolve, reject) => {
                 login(username,password,code).then((resp:any) => {
                     if (resp.code === 200) {
-                        const token = resp.data
-                        setToken(token)
-                        this.$state.token = token
+                        setToken( resp.data)
                     }
                     resolve(resp)
                 }).catch(error => {
@@ -56,6 +60,11 @@ export const useUserStore = defineStore('user', {
             return new Promise((resolve, reject) => {
                 getUserInfo().then(resp => {
                     this.$state.userInfo = resp.data
+                    this.$state.name = resp.data.name
+                    this.$state.avatar = resp.data.avatar
+                    this.$state.username = resp.data.username
+                    this.$state.roles = resp.data.roles
+                    this.$state.permissions = resp.data.permissions
                     resolve(resp.data)
                 }).catch(err => {
                     reject(err)

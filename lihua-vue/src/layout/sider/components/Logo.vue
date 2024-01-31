@@ -34,7 +34,8 @@ const permissionStore = usePermissionStore()
   .title {
     height: 32px;
     overflow: hidden;
-    color: #fff;
+    /**color: #fff;*/
+    color: #000;
     font-weight: 600;
     font-size: 18px;
     line-height: 32px;

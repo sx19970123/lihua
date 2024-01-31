@@ -16,15 +16,13 @@
         <a-list-item class="list-item" @click="handleClickItem(item.path)">
           <a-list-item-meta>
             <template #title>
-              <a href="javascript:void(0)">
-                <component :is="item.icon"/>
-                {{item.label}}
-              </a>
+                <a-button type="text">
+                  <component :is="item.icon"/>
+                  {{item.label}}
+                  {{ handleTime(item.openTime) }}
+                </a-button>
             </template>
           </a-list-item-meta>
-          <div>
-            {{ handleTime(item.openTime) }}
-          </div>
         </a-list-item>
       </template>
     </a-list >
@@ -33,9 +31,8 @@
 
 <script setup lang="ts">
 import {ref, watch} from "vue";
-import {format} from "@/utils/date";
+import {format, relativeDate} from "@/utils/date";
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
-import {StarFilled} from "@ant-design/icons-vue";
 const viewTabsStore = useViewTabsStore()
 const data = ref()
 
@@ -50,7 +47,7 @@ watch(() => viewTabsStore.viewTabs, (value) => {
  * 处理最近访问数据
  */
 const handleRecentList = (viewTabs:Array<any>) => {
-  const recentTabsJson = localStorage.getItem('recent-tabs')
+  const recentTabsJson = localStorage.getItem(viewTabsStore.$state.tabCacheKey)
   if (recentTabsJson) {
     const recentTabs =  JSON.parse(recentTabsJson)
     // 当前tab页有数据
@@ -73,6 +70,10 @@ const handleTime = (time: string) => {
   if (time) {
     if (time.substring(0, 10) === format(new Date(),'yyyy-MM-dd')) {
       return time.substring(11)
+    } else if (time.substring(0,10) === relativeDate(new Date(),'yyyy-MM-dd',-1)) {
+      return '昨天 ' + time.substring(11)
+    } else {
+      return time
     }
   }
 }
@@ -93,10 +94,3 @@ const handleClickItem = (key: string) => {
 
 </script>
 
-<style scoped>
-.list-item:hover {
-  background-color: #f7f7f7;
-  border-radius: 8px;
-  cursor: pointer;
-}
-</style>
