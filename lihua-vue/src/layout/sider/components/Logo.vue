@@ -6,9 +6,7 @@
           <span>LiHua</span>
         </a-avatar>
       </div>
-      <a-typography>
-        <a-typography-title class="title" ellipsis :level="4">LiHua Pro</a-typography-title>
-      </a-typography>
+        <a-typography-title class="title" content="LiHua Pro" ellipsis :level="4"/>
     </a-flex>
     <a-flex align="center" justify="center" v-else>
       <div>

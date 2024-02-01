@@ -10,15 +10,11 @@ export const useViewTabsStore = defineStore('viewTabs',{
         const totalViewTabs: Array<any> = []
         const activeKey: string = ''
         const tabCacheKey: string = ''
-        const showRecentModal: boolean = false
-        const showStarModal: boolean = false
         return {
             viewTabs,
             totalViewTabs,
             activeKey,
-            tabCacheKey,
-            showRecentModal,
-            showStarModal
+            tabCacheKey
         }
     },
     actions: {
@@ -132,22 +128,6 @@ export const useViewTabsStore = defineStore('viewTabs',{
         // 关闭全部
         closeAll() {
             this.$state.viewTabs = this.$state.viewTabs.filter(tab => tab.affix)
-        },
-        // 打开最近使用模态框
-        openRecentModal() {
-            this.$state.showRecentModal = true
-        },
-        // 关闭最近使用模态框
-        closeRecentModal() {
-            this.$state.showRecentModal = false
-        },
-        // 打开收藏模态框
-        openStarModal() {
-            this.$state.showStarModal = true
-        },
-        // 关闭收藏模态框
-        closeStarModal() {
-            this.$state.showStarModal = false
         },
         // 传入tab元素，与集合中的元素进行替换
         replaceByKey(tab: any) {

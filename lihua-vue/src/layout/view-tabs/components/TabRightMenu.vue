@@ -102,8 +102,14 @@ const handleClickMenuTab = ({ key }: { key :string }) => {
 /**
  * 处理最近访问记录
  */
+interface RecentDataType {
+  path: string,
+  icon?: string,
+  label: string,
+  openTime: string
+}
 // 监听访问记录变化
-const recentData = ref()
+const recentData = ref<[RecentDataType] | []>([])
 watch(() => viewTabsStore.viewTabs, (value) => {
   handleRecentList(value)
 },{ deep: true })

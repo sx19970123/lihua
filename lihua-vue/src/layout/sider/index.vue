@@ -1,7 +1,7 @@
 <template>
     <a-menu theme="light"
             mode="inline"
-            style="border: none"
+            style="border: none;"
             v-model:selected-keys="state.selectedKeys"
             v-model:open-keys="state.openKeys"
     >

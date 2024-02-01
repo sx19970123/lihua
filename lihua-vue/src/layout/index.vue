@@ -5,7 +5,9 @@
                     :trigger="null"
                     v-model:collapsed="permission.collapsed"
                     collapsible
-                    breakpoint="lg">
+                    breakpoint="lg"
+
+    >
       <Logo/>
       <!-- 侧边栏-->
       <Side/>
@@ -14,9 +16,10 @@
       <a-layout-header class="layout-header" :style="{'background': bgColor}">
         <!--页头-->
         <Head></Head>
+        <!--多标签页-->
+        <ViewTabs :bg-color="bgColor"/>
       </a-layout-header>
-      <!--多标签页-->
-      <ViewTabs :bg-color="bgColor"/>
+
       <a-layout-content class="layout-content">
         <!--内容-->
         <Content/>
@@ -39,7 +42,7 @@ import {useTheme} from "@/stores/modules/theme";
 const themeStore = useTheme()
 const permission = usePermissionStore()
 const bgColor = ref<string>('#fff')
-watch(() => themeStore.theme,(value) => {
+watch(() => themeStore.dataDark,(value) => {
   if (value === 'dark') {
     bgColor.value = '#141414'
   } else {
@@ -53,14 +56,12 @@ watch(() => themeStore.theme,(value) => {
   min-height: 100vh
 }
 .layout-header {
+  height: 110px;
   padding-left: 0px;
   padding-right: 0px;
 }
 .sider-height {
   height: 100vh;
 }
-.element {
-  box-shadow: 2px 0 8px rgba(29,35,41,.05);
-}
-
 </style>
+

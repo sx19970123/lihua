@@ -15,24 +15,19 @@
       </a-tab-pane>
       <!-- view-tabs 左侧空白-->
       <template #leftExtra>
-        <div style="width: 8px;border: none;"></div>
+        <div style="width: 8px;"></div>
       </template>
       <!--view-tabs 右侧下拉菜单-->
       <template #rightExtra>
         <tab-right-menu @route-skip="routeSkip"/>
       </template>
     </a-tabs>
-  <!--  最近打开-->
-  <tab-recent-visit-modal @route-skip="handleSwitchTab"/>
-  <tab-star-modal @route-skip="handleSwitchTab"/>
 </template>
 
 <script lang="ts" setup>
 import TabPaneMenu from "@/layout/view-tabs/components/TabPaneMenu.vue";
 import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
-import TabRecentVisitModal from "@/layout/view-tabs/components/TabRecentVisitModal.vue";
-import TabStarModal from "@/layout/view-tabs/components/TabStarModal.vue";
-import {computed, ref, watch} from "vue";
+import {computed, watch} from "vue";
 import { useRoute,useRouter } from "vue-router";
 import {useViewTabsStore} from "@/stores/modules/viewTabs";
 const viewTabsStore = useViewTabsStore()
