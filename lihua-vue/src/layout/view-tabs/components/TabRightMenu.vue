@@ -5,21 +5,59 @@
     </button>
     <template #overlay>
       <a-menu @click="handleClickMenuTab">
-        <a-menu-item class="more-tab-item" key="recent">
-          <FieldTimeOutlined />
-          最近使用
-        </a-menu-item>
-        <a-sub-menu class="more-tab-item" key="star" style="width: 120px">
+        <a-sub-menu class="menu-item-min-width" key="recent">
           <template #title>
-            <span>
+            <FieldTimeOutlined />
+            最近使用
+          </template>
+          <div class="scrollbar" v-if="recentData.length > 0" style="max-height: 400px">
+            <a-menu-item v-for="item in recentData" :key="item.path">
+              <template #icon>
+                <component :is="item.icon"/>
+              </template>
+              <a-flex :gap="40" align="space-between" justify="space-between" >
+                <span>
+                  {{item.label}}
+                </span>
+                <span>
+                  {{ handleTime(item.openTime) }}
+                </span>
+              </a-flex>
+            </a-menu-item>
+          </div>
+          <a-divider v-if="recentData.length > 0" style="margin: 0px"/>
+          <a-menu-item v-if="recentData.length > 0" key="clear-recent">
+            <div style="text-align: center">
+                 <ClearOutlined /> 清空最近使用
+            </div>
+          </a-menu-item>
+          <a-empty v-else>
+            <template #description>
+              <a-typography-text>暂无数据</a-typography-text>
+            </template>
+          </a-empty>
+        </a-sub-menu>
+        <a-sub-menu class="menu-item-min-width" key="star">
+          <template #title>
               <StarOutlined />
             收藏夹栏
-            </span>
           </template>
-            <a-menu-item>5d menu item</a-menu-item>
-            <a-menu-item>6th menu item</a-menu-item>
+          <div class="scrollbar" style="max-height: 400px" v-if="starData.length > 0">
+            <a-menu-item class="menu-item-min-width" v-for="item in starData" :key="item.routerPathKey">
+              <template #icon>
+                <component :is="item.icon"/>
+              </template>
+              {{item.label}}
+            </a-menu-item>
+          </div>
+          <a-empty v-else>
+            <template #description>
+              <a-typography-text>暂无数据</a-typography-text>
+            </template>
+          </a-empty>
         </a-sub-menu>
-        <a-menu-item class="more-tab-item" key="close-all">
+        <a-divider style="margin: 0px"/>
+        <a-menu-item class="menu-item-min-width" key="close-all">
           <CloseOutlined />
           关闭全部
         </a-menu-item>
@@ -29,23 +67,17 @@
 </template>
 <script setup lang="ts">
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
-
+import {ref, watch} from "vue";
+import {format, relativeDate} from "@/utils/date";
 const viewTabsStore = useViewTabsStore()
 const emits = defineEmits(['routeSkip'])
 /**
- * 通过父组件调用对应功能
+ * 处理点击菜单后执行功能
  * @param key
  */
 const handleClickMenuTab = ({ key }: { key :string }) => {
   switch (key) {
-    case "recent": {
-      viewTabsStore.openRecentModal()
-      break
-    }
-    case "star": {
-      viewTabsStore.openStarModal()
-      break
-    }
+    // 关闭全部
     case "close-all": {
       viewTabsStore.closeAll()
       if (viewTabsStore.viewTabs.length > 0) {
@@ -53,9 +85,78 @@ const handleClickMenuTab = ({ key }: { key :string }) => {
       }
       break
     }
+    // 清空最近使用
+    case "clear-recent": {
+      localStorage.removeItem(viewTabsStore.$state.tabCacheKey)
+      setTimeout(()=> {
+        recentData.value = []
+      },200)
+      break
+    }
+    default: {
+      emits('routeSkip', viewTabsStore.getTotalTabByKey(key))
+    }
   }
-
 }
+
+/**
+ * 处理最近访问记录
+ */
+// 监听访问记录变化
+const recentData = ref()
+watch(() => viewTabsStore.viewTabs, (value) => {
+  handleRecentList(value)
+},{ deep: true })
+
+// 根据监听结果进行数据处理
+const handleRecentList = (viewTabs:Array<any>) => {
+  const recentTabsJson = localStorage.getItem(viewTabsStore.$state.tabCacheKey)
+  if (recentTabsJson) {
+    const recentTabs =  JSON.parse(recentTabsJson)
+    // 当前tab页有数据
+    if (viewTabs && viewTabs.length > 0) {
+      const actPathList = viewTabs.map(tab => tab.routerPathKey)
+      recentData.value = recentTabs.filter((tab: any) => !actPathList.includes(tab.path))
+    } else {
+      recentData.value = recentTabs
+    }
+  }
+}
+// 第一次加载页面时的处理
+handleRecentList(viewTabsStore.viewTabs)
+
+/**
+ * 处理收藏夹
+ */
+// 鉴定收藏夹变化
+const starData = ref()
+watch(()=> viewTabsStore.totalViewTabs,(value)=> {
+  handleStarList(value)
+},{deep: true})
+
+// 根据监听结果进行数据处理
+const handleStarList = (totalViewTabs: Array<any>) => {
+  starData.value = totalViewTabs.filter((tab: any) => tab.star)
+}
+// 第一次加载页面时的处理
+handleStarList(viewTabsStore.totalViewTabs)
+
+/**
+ * 处理日期，当天隐藏日期
+ * @param time
+ */
+const handleTime = (time: string) => {
+  if (time) {
+    if (time.substring(0, 10) === format(new Date(),'yyyy-MM-dd')) {
+      return time.substring(11)
+    } else if (time.substring(0,10) === relativeDate(new Date(),'yyyy-MM-dd',-1)) {
+      return '昨天 ' + time.substring(11)
+    } else {
+      return time
+    }
+  }
+}
+
 </script>
 <style>
 .ant-tabs-nav-more {
@@ -63,7 +164,8 @@ const handleClickMenuTab = ({ key }: { key :string }) => {
   cursor: pointer;
   border-radius: 6px
 }
-.more-tab-item {
-  width: 100px
+
+.menu-item-min-width {
+  min-width: 120px;
 }
 </style>

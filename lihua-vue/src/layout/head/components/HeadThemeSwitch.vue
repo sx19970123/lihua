@@ -20,7 +20,7 @@ const bgColor = ref<string>('#2196F3')
 const changeTheme = (value) => {
   if (value) {
     useThemeStore.dark()
-    bgColor.value = "#141414"
+    bgColor.value = "#00008B"
   } else {
     useThemeStore.light()
     bgColor.value = "#2196F3"

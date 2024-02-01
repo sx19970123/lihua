@@ -3,7 +3,7 @@
       token: {},
       algorithm: type,
   }">
-    <router-view/>
+      <router-view/>
   </a-config-provider>
 
 </template>

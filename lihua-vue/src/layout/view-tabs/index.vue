@@ -101,7 +101,7 @@ const closeTab = (key: string) => {
  * 路由跳转
  * @param tab
  */
-const routeSkip = (tab:any) => {
+const routeSkip = (tab: any) => {
   const { routerPathKey , query } = tab
   if (query) {
     router.push({
