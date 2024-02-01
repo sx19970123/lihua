@@ -7,20 +7,21 @@
                     collapsible
                     breakpoint="lg"
 
+                    style="position: sticky;top: 0px"
     >
       <Logo/>
       <!-- 侧边栏-->
       <Side/>
     </a-layout-sider>
     <a-layout>
-      <a-layout-header class="layout-header" :style="{'background': bgColor}">
+      <a-layout-header class="layout-header" :style="{'background': bgColor}"  style="position: sticky;top: 0px">
         <!--页头-->
         <Head></Head>
-        <!--多标签页-->
         <ViewTabs :bg-color="bgColor"/>
       </a-layout-header>
 
-      <a-layout-content class="layout-content">
+
+      <a-layout-content>
         <!--内容-->
         <Content/>
       </a-layout-content>
@@ -49,6 +50,7 @@ watch(() => themeStore.dataDark,(value) => {
     bgColor.value = '#fff'
   }
 })
+
 </script>
 
 <style scoped>
@@ -56,7 +58,6 @@ watch(() => themeStore.dataDark,(value) => {
   min-height: 100vh
 }
 .layout-header {
-  height: 110px;
   padding-left: 0px;
   padding-right: 0px;
 }
