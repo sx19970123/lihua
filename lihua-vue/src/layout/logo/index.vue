@@ -1,8 +1,8 @@
 <template>
   <div class="logo">
-    <a-flex gap="middle" align="center" justify="center" v-if="!permissionStore.collapsed">
+    <a-flex gap="middle" align="center" justify="center" v-if="themeStore.layoutType === 'head-sider' || !permissionStore.collapsed">
       <div>
-        <a-avatar :style="{ backgroundColor: '#f56a00'}" :size="38">
+        <a-avatar :style="{ backgroundColor: '#f56a00'}">
           <span>LiHua</span>
         </a-avatar>
       </div>
@@ -20,14 +20,14 @@
 
 <script setup lang="ts">
 import { usePermissionStore } from "@/stores/modules/permission";
+import { useTheme } from "@/stores/modules/theme";
+
 const permissionStore = usePermissionStore()
+const themeStore = useTheme()
 </script>
 
 <style scoped>
 .logo {
-  height: 64px;
-  padding: 12px;
-  color: azure;
   cursor: pointer;
   .title {
     margin: 0;

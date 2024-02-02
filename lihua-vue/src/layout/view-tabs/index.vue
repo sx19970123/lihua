@@ -5,7 +5,6 @@
             hide-add
             @edit="closeTab"
             @change="handleSwitchTab"
-            :style="{'background': background.bgColor}"
     >
       <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" :closable="!tab.affix">
         <!--每个tab的下拉菜单-->
@@ -33,7 +32,6 @@ import {useViewTabsStore} from "@/stores/modules/viewTabs";
 const viewTabsStore = useViewTabsStore()
 const route = useRoute()
 const router = useRouter()
-const background = defineProps(['bgColor'])
 /**
  * 初始化数据及变量
  */

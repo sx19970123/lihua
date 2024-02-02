@@ -1,9 +1,9 @@
 <template>
-    <a-menu theme="light"
-            mode="inline"
-            style="border: none;"
+    <a-menu :theme="themeStore.siderTheme"
+            :mode="themeStore.siderMode"
             v-model:selected-keys="state.selectedKeys"
             v-model:open-keys="state.openKeys"
+            style="border: none;background: rgba(255,255,255,0)"
     >
       <Menu :data="data"/>
     </a-menu>
@@ -12,8 +12,10 @@
 <script setup lang="ts">
 import Menu from "@/layout/sider/components/Menu.vue";
 import { usePermissionStore } from "@/stores/modules/permission";
+import { useTheme } from "@/stores/modules/theme";
 import { useRoute } from "vue-router";
-import {computed, reactive, ref, watch} from "vue";
+import {computed, reactive, watch} from "vue";
+const themeStore = useTheme()
 const route = useRoute()
 // pinia 中获取菜单数据
 const permission = usePermissionStore()
