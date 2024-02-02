@@ -20,7 +20,7 @@ export const useTheme = defineStore('theme',{
         // 导航模式
         const siderMode: string = 'inline' //  horizontal
         // 主题配置
-        const headBackgroundColor: string = 'rgba(255,255,255,1)'
+        const headBackgroundColor: string = 'rgba(255,255,255,0.6)'
 
         const themeConfig = {
             token: {
@@ -50,6 +50,7 @@ export const useTheme = defineStore('theme',{
                 this.changeShowViewTags(false)
                 this.changeSiderMode('horizontal')
             } else {
+                this.changeShowViewTags(true)
                 this.changeSiderMode('inline')
             }
         },
@@ -81,9 +82,9 @@ export const useTheme = defineStore('theme',{
         changeGroundGlass(value: boolean) {
             this.$state.groundGlass = value
             if (this.$state.dataDark === 'light') {
-                this.changeHeadBackgroundColor('rgba(255,255,255,0.1)')
+                this.changeHeadBackgroundColor('rgba(255,255,255,0.6)')
             } else {
-                this.changeHeadBackgroundColor('rgba(0,0,0,0.1)')
+                this.changeHeadBackgroundColor('rgba(0,0,0,0.6)')
             }
         },
         // 修改固定头部

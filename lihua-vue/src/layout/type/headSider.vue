@@ -1,5 +1,5 @@
 <template>
-  <a-layout class="layout">
+  <a-layout>
     <a-layout-header class="layout-header" :style="{'background': themeStore.headBackgroundColor}">
       <a-flex align="center" justify="space-between">
         <Logo class="logo"/>
@@ -56,22 +56,10 @@ const permission = usePermissionStore()
   position: sticky;
   top: 64px;
   padding-top: 6px;
-  z-index: 1
+  z-index: 1;
+  backdrop-filter: blur(6px);
 }
 
-.head-collapsed {
-  position: absolute;
-  margin: 0px;
-  left: 180px;
-  top: 130px;
-  padding: 10px;
-  z-index: 10;
-}
-
-
-.layout {
-  min-height: 100vh;
-}
 .layout-header {
   position: fixed;
   width: 100%;
@@ -84,6 +72,7 @@ const permission = usePermissionStore()
   box-shadow: 2px 0 8px rgba(29,35,41,0.1);
 
 }
+
 .layout-sider {
   position: sticky;
   top: 0px;
@@ -93,6 +82,7 @@ const permission = usePermissionStore()
   box-shadow: 2px 0 8px rgba(29,35,41,0.1);
 
 }
+
 .sider-height {
   height: 100vh;
 }
