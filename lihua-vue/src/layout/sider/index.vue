@@ -1,12 +1,13 @@
 <template>
-    <a-menu :theme="themeStore.siderTheme"
-            :mode="themeStore.siderMode"
-            v-model:selected-keys="state.selectedKeys"
-            v-model:open-keys="state.openKeys"
-            style="border: none; background-color: rgba(255,255,255,0)"
-    >
-      <Menu :data="data"/>
-    </a-menu>
+  <a-menu :theme="themeStore.siderTheme"
+          :mode="themeStore.siderMode"
+          v-model:selected-keys="state.selectedKeys"
+          v-model:open-keys="state.openKeys"
+          :style="{ width: themeStore.siderWith + 'px'}"
+          style="border: none; background-color: rgba(255,255,255,0)"
+  >
+    <Menu :data="data"/>
+  </a-menu>
 </template>
 
 <script setup lang="ts">

@@ -31,6 +31,9 @@
         <a-radio value="dark">暗色</a-radio>
       </a-radio-group>
     </a-form-item>
+    <a-form-item label="导航栏宽度">
+      <a-slider v-model:value="themeStore.siderWith" :max="400" :min="200"></a-slider>
+    </a-form-item>
     <a-form-item label="毛玻璃效果">
       <a-switch v-model:checked="themeStore.groundGlass" @change="themeStore.changeGroundGlass"></a-switch>
     </a-form-item>

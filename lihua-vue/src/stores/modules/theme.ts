@@ -40,6 +40,9 @@ export const useThemeStore = defineStore('theme',{
         // 侧边颜色
         const siderTheme: string = 'light'
 
+        // 侧边宽度
+        const siderWith: number = 200
+
 
         const themeConfig = {
             token: {
@@ -58,6 +61,7 @@ export const useThemeStore = defineStore('theme',{
             layoutBackgroundColor,
             siderBackgroundColor,
             siderMode,
+            siderWith,
             themeConfig
         }
     },

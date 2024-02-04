@@ -12,6 +12,7 @@
       <a-layout-sider class="hsr-layout-sider sider-height scrollbar"
                       :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                       :theme="themeStore.siderTheme"
+                      :width="themeStore.siderWith"
                       v-model:collapsed="permission.collapsed"
                       collapsible
                       breakpoint="lg"

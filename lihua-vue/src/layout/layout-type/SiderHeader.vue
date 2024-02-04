@@ -4,8 +4,10 @@
                     :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                     :theme="themeStore.siderTheme"
                     :trigger="null"
+                    :width="themeStore.siderWith"
                     v-model:collapsed="permission.collapsed"
                     collapsible
+                    :collapsedWidth="0"
                     breakpoint="lg"
     >
       <Logo class="logo"/>
