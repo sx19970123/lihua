@@ -12,7 +12,6 @@
       <a-layout-sider class="mixed-layout-sider sider-height scrollbar"
                       :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                       :theme="themeStore.siderTheme"
-                      :trigger="null"
                       v-model:collapsed="permission.collapsed"
                       collapsible
                       breakpoint="lg"

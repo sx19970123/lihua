@@ -26,8 +26,6 @@
         <!--内容-->
         <Content/>
       </a-layout-content>
-      <!--页脚-->
-      <a-layout-footer></a-layout-footer>
     </a-layout>
   </a-layout>
 </template>

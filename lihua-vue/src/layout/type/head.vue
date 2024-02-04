@@ -14,12 +14,11 @@
     </a-layout-header>
     <!--多标签-->
     <ViewTabs class="top-view-tabs" v-if="themeStore.showViewTags" :style="{background: themeStore.layoutBackgroundColor}" style="padding-top: 6px"/>
-
     <a-layout-content>
       <!--内容-->
       <Content/>
     </a-layout-content>
-    </a-layout>
+  </a-layout>
 </template>
 
 <script setup lang="ts">
@@ -37,7 +36,6 @@ const themeStore = useTheme()
   padding-left: 16px;
   min-width: 200px;
 }
-
 .sider {
   width: 100%;
   padding-left: 64px;
