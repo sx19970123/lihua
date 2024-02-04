@@ -3,7 +3,7 @@
           :mode="themeStore.siderMode"
           v-model:selected-keys="state.selectedKeys"
           v-model:open-keys="state.openKeys"
-          :style="{ width: themeStore.siderWith + 'px'}"
+          :style="themeStore.layoutType === 'header' ? { width: themeStore.siderWith + 'px'} : ''"
           style="border: none; background-color: rgba(255,255,255,0)"
   >
     <Menu :data="data"/>
@@ -31,5 +31,8 @@ watch(()=> route.path,(value)=> {
 })
 watch(()=> route.matched,(value)=> {
   state.openKeys = value.map(r => r.path)
+})
+watch(() => permission.collapsed,(value) => {
+  value? themeStore.foldSiderWidth(): themeStore.unfoldSiderWidth()
 })
 </script>

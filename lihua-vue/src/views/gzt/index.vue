@@ -4,8 +4,8 @@
     <MenuFoldOutlined v-else />
   </a-button>
   <a-layout>
-    <a-layout-sider collapsible :width="themeStore.siderWith" :collapsedWidth="0">
-      <div :style="{ width: themeStore.siderWith + 'px'}">
+    <a-layout-sider collapsible :width="'400px'" >
+      <div style="width: 400px">
         <a-menu
             v-model:openKeys="state.openKeys"
             v-model:selectedKeys="state.selectedKeys"

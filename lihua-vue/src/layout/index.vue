@@ -8,7 +8,6 @@
 import HeaderSider from "@/layout/layout-type/HeaderSider.vue";
 import SiderHeader from "@/layout/layout-type/SiderHeader.vue";
 import HeaderContent from "@/layout/layout-type/HeaderContent.vue"
-
 import { useThemeStore } from "@/stores/modules/theme";
 const themeStore = useThemeStore()
 </script>

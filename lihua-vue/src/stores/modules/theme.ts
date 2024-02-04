@@ -43,6 +43,9 @@ export const useThemeStore = defineStore('theme',{
         // 侧边宽度
         const siderWith: number = 200
 
+        // 侧边宽度
+        const originSiderWith: number = 200
+
 
         const themeConfig = {
             token: {
@@ -62,6 +65,7 @@ export const useThemeStore = defineStore('theme',{
             siderBackgroundColor,
             siderMode,
             siderWith,
+            originSiderWith,
             themeConfig
         }
     },
@@ -167,6 +171,13 @@ export const useThemeStore = defineStore('theme',{
         // 修改html标签，标记当前颜色模式
         changeDocumentElement() {
             document.documentElement.setAttribute("data-dark",this.$state.dataDark ? 'dark' : 'light')
+        },
+        foldSiderWidth()  {
+            this.originSiderWith = this.siderWith
+            this.siderWith = 80
+        },
+        unfoldSiderWidth() {
+            this.siderWith = this.originSiderWith
         }
     },
 })

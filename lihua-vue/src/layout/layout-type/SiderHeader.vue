@@ -7,7 +7,6 @@
                     :width="themeStore.siderWith"
                     v-model:collapsed="permission.collapsed"
                     collapsible
-                    :collapsedWidth="0"
                     breakpoint="lg"
     >
       <Logo class="logo"/>
@@ -43,6 +42,7 @@ import {useThemeStore} from "@/stores/modules/theme";
 import HeadCollapsed from "@/layout/component/collapsed/index.vue";
 const themeStore = useThemeStore()
 const permission = usePermissionStore()
+
 </script>
 
 <style scoped>
