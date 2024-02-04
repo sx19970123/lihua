@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { theme } from "ant-design-vue";
 
-export const useTheme = defineStore('theme',{
+export const useThemeStore = defineStore('theme',{
     state() {
         /**
          * 暗色模式
@@ -14,7 +14,7 @@ export const useTheme = defineStore('theme',{
         /**
          * 布局类型
          */
-        const layoutType: string = 'sider-head'
+        const layoutType: string = 'sider-header'
 
         // 导航模式
         const siderMode: string = 'inline' //  horizontal
@@ -62,12 +62,14 @@ export const useTheme = defineStore('theme',{
         }
     },
     actions: {
-        /**
-         * 暗色亮色模式切换：
-         * 1. 修改头部/侧边栏背景颜色
-         * 2. 修改全局主题算法策略
-         * @param value
-         */
+        // 初始化样式
+        init() {
+            this.changeDataDark()
+            this.changeLayoutType()
+            this.changeShowViewTags(true)
+            this.changeAffixHead()
+        },
+        // 暗色模式
         changeDataDark() {
             this.changeDocumentElement()
             let backgroundColor: string = ''
@@ -96,11 +98,11 @@ export const useTheme = defineStore('theme',{
 
         },
 
-        // 修改布局类型
+        // 布局类型
         changeLayoutType() {
             const value = this.$state.layoutType
             // 顶部导航默认关闭多标签
-            if (value === 'head-only') {
+            if (value === 'header-content') {
                 this.changeShowViewTags(false)
                 this.changeSiderMode('horizontal')
             } else {
@@ -112,6 +114,7 @@ export const useTheme = defineStore('theme',{
         changeShowViewTags(value: boolean) {
             this.$state.showViewTags = value
         },
+        // 导航类型
         changeSiderMode(value: string) {
             this.$state.siderMode = value
         },

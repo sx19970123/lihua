@@ -12,10 +12,10 @@
 <script setup lang="ts">
 import Menu from "@/layout/sider/components/Menu.vue";
 import { usePermissionStore } from "@/stores/modules/permission";
-import { useTheme } from "@/stores/modules/theme";
+import { useThemeStore } from "@/stores/modules/theme";
 import { useRoute } from "vue-router";
 import {computed, reactive, watch} from "vue";
-const themeStore = useTheme()
+const themeStore = useThemeStore()
 const route = useRoute()
 // pinia 中获取菜单数据
 const permission = usePermissionStore()

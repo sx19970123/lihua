@@ -6,8 +6,8 @@
 </template>
 
 <script setup lang="ts">
-import { useTheme } from "@/stores/modules/theme"
-const themeStore = useTheme()
+import { useThemeStore } from "@/stores/modules/theme"
+const themeStore = useThemeStore()
 </script>
 
 <style>

@@ -1,13 +1,14 @@
 <template>
-  <side-layout v-if="themeStore.layoutType === 'sider-head' "/>
-  <mixed-layout v-if="themeStore.layoutType === 'head-sider'"/>
-  <head-layout v-if="themeStore.layoutType === 'head-only'"/>
+  <sider-header v-if="themeStore.layoutType === 'sider-header'"/>
+  <header-sider v-if="themeStore.layoutType === 'header-sider'"/>
+  <header-content v-if="themeStore.layoutType === 'header-content'"/>
 </template>
 
 <script setup lang="ts">
-import mixedLayout from "@/layout/type/mixed.vue";
-import sideLayout from "@/layout/type/side.vue";
-import headLayout from "@/layout/type/head.vue"
-import { useTheme } from "@/stores/modules/theme";
-const themeStore = useTheme()
+import HeaderSider from "@/layout/layout-type/HeaderSider.vue";
+import SiderHeader from "@/layout/layout-type/SiderHeader.vue";
+import HeaderContent from "@/layout/layout-type/HeaderContent.vue"
+
+import { useThemeStore } from "@/stores/modules/theme";
+const themeStore = useThemeStore()
 </script>

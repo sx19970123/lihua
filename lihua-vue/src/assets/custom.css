@@ -42,7 +42,7 @@
     侧边导航布局
  */
 [data-head-affix = affix] {
-    .side-layout-header {
+    .shr-layout-header {
         position: sticky;
         top: 0;
         z-index: 1;
@@ -52,45 +52,45 @@
     混合布局
  */
 [data-head-affix = affix] {
-    .mixed-layout-header {
+    .hsr-layout-header {
         position: fixed;
         width: 100%;
         z-index: 3;
         top: 0;
     }
-    .mixed-layout-sider {
+    .hsr-layout-sider {
         position: sticky;
-        padding-top: 64px;
+        padding-top: 48px;
         z-index: 2;
         top: 0;
         box-shadow: 2px 0 8px rgba(29,35,41,0.1);
     }
-    .mixed-view-tabs {
+    .hsr-view-tabs {
         position: sticky;
         z-index: 1;
         padding-top: 6px;
-        top: 64px;
+        top: 48px;
         backdrop-filter: blur(6px);
 
     }
-    .mixed-content {
-        margin-top: 64px;
+    .hsr-content {
+        margin-top: 48px;
     }
 
 }
 [data-head-affix = un-affix] {
-    .mixed-layout-header {
+    .hsr-layout-header {
         position: static;
         z-index: 2;
         top: 0;
     }
-    .mixed-layout-sider {
+    .hsr-layout-sider {
         position: sticky;
         z-index: 1;
         top: 0;
         box-shadow: 2px 0 8px rgba(29,35,41,0.1);
     }
-    .mixed-view-tabs {
+    .hsr-view-tabs {
         padding-top: 6px;
     }
 }
@@ -99,14 +99,14 @@
     顶部导航布局
  */
 [data-head-affix = affix] {
-    .top-layout-header {
+    .hct-layout-header {
         position: sticky;
         top: 0;
         z-index: 2;
     }
-    .top-view-tabs {
+    .hct-view-tabs {
         position: sticky;
-        top: 64px;
+        top: 48px;
         z-index: 1;
         backdrop-filter: blur(6px);
     }

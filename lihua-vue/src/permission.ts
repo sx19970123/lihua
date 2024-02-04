@@ -4,8 +4,9 @@ import 'nprogress/nprogress.css'
 import { useUserStore } from "@/stores/modules/user"
 import { usePermissionStore } from "@/stores/modules/permission";
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
+import { useThemeStore } from "@/stores/modules/theme";
 import Layout from "@/layout/index.vue";
-import MiddleView from "@/components/MiddleView/index.vue"
+import MiddleView from "@/components/middle-view/index.vue"
 import token from "@/utils/token"
 const { getToken } = token
 // 获取 views 下的所有 vue 组件
@@ -22,6 +23,7 @@ router.beforeEach((to,from,next) => {
         const userStore = useUserStore()
         const usePermission = usePermissionStore()
         const useViewTabs = useViewTabsStore()
+        const useTheme = useThemeStore()
         // 判断是否拉取了用户信息
         if (Object.keys(userStore.userInfo).length === 0) {
             userStore.getUserInfo().then((resp:any) => {
@@ -34,6 +36,7 @@ router.beforeEach((to,from,next) => {
                 // 初始化totalViewTabs数据
                 useViewTabs.initTotalViewTabs(resp.starViewVOList, staticRoutes)
                 useViewTabs.setViewCacheKey(resp.username)
+                useTheme.init()
                 // hack方法 确保addRoutes已完成
                 next({...to,replace: true})
             }).catch(err => {

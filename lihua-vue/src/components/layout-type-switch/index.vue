@@ -7,9 +7,9 @@
     <a-typography-title :level="5">导航模式</a-typography-title>
     <a-form-item>
       <a-radio-group v-model:value="themeStore.layoutType" @change="themeStore.changeLayoutType()">
-        <a-radio value="sider-head">侧边导航</a-radio>
-        <a-radio value="head-sider">混合导航</a-radio>
-        <a-radio value="head-only">顶部导航</a-radio>
+        <a-radio value="sider-header">侧边导航</a-radio>
+        <a-radio value="header-sider">混合导航</a-radio>
+        <a-radio value="header-content">顶部导航</a-radio>
       </a-radio-group>
     </a-form-item>
     <a-typography-title :level="5">样式主题</a-typography-title>
@@ -44,10 +44,10 @@
 
 </template>
 <script setup lang="ts">
-import HeadThemeSwitch from "@/components/LayoutTypeSwitch/component/HeadThemeSwitch.vue";
-import { useTheme } from "@/stores/modules/theme";
+import HeadThemeSwitch from "@/components/layout-type-switch/component/HeadThemeSwitch.vue";
+import { useThemeStore } from "@/stores/modules/theme";
 
-const themeStore = useTheme()
+const themeStore = useThemeStore()
 </script>
 <style scoped>
 

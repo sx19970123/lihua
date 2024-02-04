@@ -1,6 +1,6 @@
 <template>
   <a-layout>
-    <a-layout-header class="top-layout-header"
+    <a-layout-header class="hct-layout-header"
                      :style="themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''">
 
       <a-flex align="center" justify="space-between">
@@ -13,7 +13,7 @@
       </a-flex>
     </a-layout-header>
     <!--多标签-->
-    <ViewTabs class="top-view-tabs" v-if="themeStore.showViewTags" :style="{background: themeStore.layoutBackgroundColor}" style="padding-top: 6px"/>
+    <ViewTabs class="hct-view-tabs" v-if="themeStore.showViewTags" :style="{background: themeStore.layoutBackgroundColor}" style="padding-top: 6px"/>
     <a-layout-content>
       <!--内容-->
       <Content/>
@@ -26,9 +26,9 @@ import Head from "@/layout/head/index.vue"
 import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
-import Logo from "@/layout/logo/index.vue";
-import {useTheme} from "@/stores/modules/theme";
-const themeStore = useTheme()
+import Logo from "@/layout/component/logo/index.vue";
+import {useThemeStore} from "@/stores/modules/theme";
+const themeStore = useThemeStore()
 </script>
 
 <style scoped>
@@ -40,12 +40,13 @@ const themeStore = useTheme()
   width: 100%;
   padding-left: 64px;
 }
-.top-layout-header {
+.hct-layout-header {
   height: auto;
   padding-left: 0;
   padding-right: 0;
   backdrop-filter: blur(6px);
   box-shadow: 2px 0 8px rgba(29,35,41,0.1);
+  line-height: 48px;
 }
 </style>
 

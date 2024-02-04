@@ -1,12 +1,12 @@
 <template>
   <div class="logo">
-    <a-flex gap="middle" align="center" justify="center" v-if="themeStore.layoutType === 'head-sider' || !permissionStore.collapsed">
+    <a-flex gap="middle" align="center" justify="center" v-if="themeStore.layoutType === 'header-sider' || !permissionStore.collapsed">
       <div>
         <a-avatar :style="{ backgroundColor: '#f56a00'}">
           <span>LiHua</span>
         </a-avatar>
       </div>
-        <span v-if="!themeStore.dataDark && themeStore.siderTheme === 'dark' && themeStore.layoutType !== 'head-sider'" style="color: aliceblue;font-size: 20px">LiHua Pro</span>
+        <span v-if="!themeStore.dataDark && themeStore.siderTheme === 'dark' && themeStore.layoutType !== 'header-sider'" style="color: aliceblue;font-size: 20px">LiHua Pro</span>
         <a-typography-title v-else class="title" content="LiHua Pro" ellipsis :level="4"/>
     </a-flex>
     <a-flex align="center" justify="center" v-else>
@@ -21,10 +21,10 @@
 
 <script setup lang="ts">
 import { usePermissionStore } from "@/stores/modules/permission";
-import { useTheme } from "@/stores/modules/theme";
+import { useThemeStore } from "@/stores/modules/theme";
 
 const permissionStore = usePermissionStore()
-const themeStore = useTheme()
+const themeStore = useThemeStore()
 </script>
 
 <style scoped>
