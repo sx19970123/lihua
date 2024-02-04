@@ -35,7 +35,9 @@
 /**
     通用布局
  */
-
+.sider-height {
+    height: 100vh;
+}
 /**
     侧边导航布局
  */
@@ -48,14 +50,15 @@
     .mixed-layout-header {
         position: fixed;
         width: 100%;
-        z-index: 2;
+        z-index: 3;
         top: 0;
     }
     .mixed-layout-sider {
         position: sticky;
-        z-index: 1;
         padding-top: 64px;
+        z-index: 2;
         top: 0;
+        box-shadow: 2px 0 8px rgba(29,35,41,0.1);
     }
     .mixed-view-tabs {
         position: sticky;
@@ -64,6 +67,9 @@
         top: 64px;
         backdrop-filter: blur(6px);
 
+    }
+    .mixed-content {
+        margin-top: 64px;
     }
 
 }
@@ -75,8 +81,9 @@
     }
     .mixed-layout-sider {
         position: sticky;
-        top: 0;
         z-index: 1;
+        top: 0;
+        box-shadow: 2px 0 8px rgba(29,35,41,0.1);
     }
     .mixed-view-tabs {
         padding-top: 6px;

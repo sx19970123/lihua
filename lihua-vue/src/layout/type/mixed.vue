@@ -8,7 +8,7 @@
       </a-flex>
     </a-layout-header>
 
-    <a-layout style="position: sticky;top: 64px">
+    <a-layout>
       <a-layout-sider class="mixed-layout-sider sider-height scrollbar"
                       :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                       :theme="themeStore.siderTheme"
@@ -24,7 +24,7 @@
       <a-layout-content>
         <ViewTabs class="mixed-view-tabs" v-if="themeStore.showViewTags" :style="{'background': themeStore.layoutBackgroundColor}"/>
         <!--内容-->
-        <Content/>
+        <Content class="mixed-content"/>
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -57,10 +57,5 @@ const permission = usePermissionStore()
   box-shadow: 2px 0 8px rgba(29,35,41,0.1);
 }
 
-
-
-.sider-height {
-  height: 100vh;
-}
 </style>
 
