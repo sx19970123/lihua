@@ -6,7 +6,8 @@
           <span>LiHua</span>
         </a-avatar>
       </div>
-        <a-typography-title class="title" content="LiHua Pro" ellipsis :level="4"/>
+        <span v-if="!themeStore.dataDark && themeStore.siderTheme === 'dark' && themeStore.layoutType !== 'head-sider'" style="color: aliceblue;font-size: 20px">LiHua Pro</span>
+        <a-typography-title v-else class="title" content="LiHua Pro" ellipsis :level="4"/>
     </a-flex>
     <a-flex align="center" justify="center" v-else>
       <div>

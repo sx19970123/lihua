@@ -25,7 +25,7 @@
         <a-radio value="rgb(114, 46, 209)">酱紫</a-radio>
       </a-radio-group>
     </a-form-item>
-    <a-form-item label="侧边栏类型" v-if="!themeStore.dataDark">
+    <a-form-item label="导航栏颜色" v-if="!themeStore.dataDark">
       <a-radio-group v-model:value="themeStore.siderTheme" @change="themeStore.changeSiderTheme()">
         <a-radio value="light">亮色</a-radio>
         <a-radio value="dark">暗色</a-radio>

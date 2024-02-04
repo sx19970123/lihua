@@ -1,6 +1,8 @@
 <template>
   <a-layout>
-    <a-layout-header class="layout-header layout-head-affix" >
+    <a-layout-header class="top-layout-header"
+                     :style="themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''">
+
       <a-flex align="center" justify="space-between">
         <!--logo-->
         <Logo class="logo"/>
@@ -9,9 +11,9 @@
         <!--页头-->
         <Head></Head>
       </a-flex>
-      <!--多标签-->
-      <ViewTabs v-if="themeStore.showViewTags" style="padding-top: 6px"/>
     </a-layout-header>
+    <!--多标签-->
+    <ViewTabs class="top-view-tabs" v-if="themeStore.showViewTags" :style="{background: themeStore.layoutBackgroundColor}" style="padding-top: 6px"/>
 
     <a-layout-content>
       <!--内容-->
@@ -33,13 +35,14 @@ const themeStore = useTheme()
 <style scoped>
 .logo {
   padding-left: 16px;
+  min-width: 200px;
 }
 
 .sider {
   width: 100%;
   padding-left: 64px;
 }
-.layout-header {
+.top-layout-header {
   height: auto;
   padding-left: 0;
   padding-right: 0;

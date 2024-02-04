@@ -41,8 +41,13 @@
 /**
     侧边导航布局
  */
-
-
+[data-head-affix = affix] {
+    .side-layout-header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+}
 /**
     混合布局
  */
@@ -93,4 +98,16 @@
 /**
     顶部导航布局
  */
-
+[data-head-affix = affix] {
+    .top-layout-header {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+    .top-view-tabs {
+        position: sticky;
+        top: 64px;
+        z-index: 1;
+        backdrop-filter: blur(6px);
+    }
+}

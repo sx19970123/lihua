@@ -1,6 +1,6 @@
 <template>
-  <a-layout class="layout">
-    <a-layout-sider class="layout-sider sider-height scrollbar"
+  <a-layout style="min-height: 100vh">
+    <a-layout-sider class="side-layout-sider sider-height scrollbar"
                     :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                     :theme="themeStore.siderTheme"
                     :trigger="null"
@@ -13,7 +13,7 @@
       <Side/>
     </a-layout-sider>
     <a-layout>
-      <a-layout-header class="layout-header"
+      <a-layout-header class="side-layout-header"
                        :style="{'background': themeStore.layoutBackgroundColor}">
         <a-flex align="center" justify="space-between">
           <HeadCollapsed/>
@@ -46,25 +46,19 @@ const permission = usePermissionStore()
 </script>
 
 <style scoped>
-.layout {
-  min-height: 100vh;
-}
-.layout-header {
+.side-layout-header {
   height: auto;
   padding-left: 0;
   padding-right: 0;
   backdrop-filter: blur(6px);
   box-shadow: 2px 0 8px rgba(29,35,41,0.1);
 }
-.layout-sider {
+.side-layout-sider {
   position: sticky;
   top: 0px;
   z-index: 2;
   box-shadow: 2px 0 8px rgba(29,35,41,0.05);
   backdrop-filter: blur(6px);
-}
-.sider-height {
-  height: 100vh;
 }
 .logo {
   margin: 16px;
