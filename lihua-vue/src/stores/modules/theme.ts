@@ -3,24 +3,43 @@ import { theme } from "ant-design-vue";
 
 export const useTheme = defineStore('theme',{
     state() {
-        // 布局类型
-        const layoutType: string = 'head-sider'
-        // 显示多窗口页面
-        const showViewTags: boolean = true
-        // 暗色模式
-        const dataDark: string = 'light'
-        // 主要颜色
-        const colorPrimary: string = 'light'
-        // 侧边颜色
-        const siderTheme: string = 'light'
-        // 磨砂玻璃效果
-        const groundGlass: boolean = false
-        // 固定头部
-        const affixHead: boolean = true
+        /**
+         * 暗色模式
+         */
+        const dataDark: boolean = false
+
+        // 顶部栏背景颜色
+        const layoutBackgroundColor: string = 'rgba(255,255,255,1)'
+
+        /**
+         * 布局类型
+         */
+        const layoutType: string = 'sider-head'
+
         // 导航模式
         const siderMode: string = 'inline' //  horizontal
-        // 主题配置
-        const headBackgroundColor: string = 'rgba(255,255,255,0.6)'
+
+        /**
+         * 样式主题
+         */
+        // 主要颜色
+        const colorPrimary: string = 'rgb(22, 119, 255)'
+
+        // 侧边栏类型
+        const siderBackgroundColor: string = 'rgba(255,255,255,1)'
+
+        // 磨砂玻璃效果
+        const groundGlass: boolean = false
+
+        // 固定头部
+        const affixHead: boolean = true
+
+        // 显示多窗口标签
+        const showViewTags: boolean = true
+
+        // 侧边颜色
+        const siderTheme: string = 'light'
+
 
         const themeConfig = {
             token: {
@@ -36,15 +55,50 @@ export const useTheme = defineStore('theme',{
             siderTheme,
             groundGlass,
             affixHead,
-            headBackgroundColor,
+            layoutBackgroundColor,
+            siderBackgroundColor,
             siderMode,
             themeConfig
         }
     },
     actions: {
+        /**
+         * 暗色亮色模式切换：
+         * 1. 修改头部/侧边栏背景颜色
+         * 2. 修改全局主题算法策略
+         * @param value
+         */
+        changeDataDark() {
+            this.changeDocumentElement()
+            let backgroundColor: string = ''
+            // 暗色模式下，顶部颜色为黑色、侧边颜色为黑色，透明度根据磨砂效果控制
+            if (this.$state.dataDark) {
+                this.siderTheme = 'light'
+                if (this.$state.groundGlass) {
+                    backgroundColor = 'rgba(20,20,20,0.6)'
+                } else {
+                    backgroundColor = 'rgba(20,20,20,1)'
+                }
+                this.changeLayoutBackgroundColor(backgroundColor)
+                this.$state.siderBackgroundColor = this.$state.layoutBackgroundColor
+                this.$state.themeConfig.algorithm = theme.darkAlgorithm
+            }
+            // 亮色模式下，顶部颜色为白色、侧边颜色为白色
+            else {
+                if (this.$state.groundGlass) {
+                    backgroundColor = 'rgba(255,255,255,0.6)'
+                } else {
+                    backgroundColor = 'rgba(255,255,255,1)'
+                }
+                this.changeLayoutBackgroundColor(backgroundColor)
+                this.$state.themeConfig.algorithm = theme.defaultAlgorithm
+            }
+
+        },
+
         // 修改布局类型
-        changeLayoutType(value: string) {
-            this.$state.layoutType = value
+        changeLayoutType() {
+            const value = this.$state.layoutType
             // 顶部导航默认关闭多标签
             if (value === 'head-only') {
                 this.changeShowViewTags(false)
@@ -58,51 +112,54 @@ export const useTheme = defineStore('theme',{
         changeShowViewTags(value: boolean) {
             this.$state.showViewTags = value
         },
-        // 暗色/亮色模式切换
-        changeDataDark(value: string) {
-            this.$state.dataDark = value
-            this.changeDocumentElement()
-            if (value === 'light') {
-                this.changeHeadBackgroundColor('rgba(255,255,255,1)')
-                this.$state.themeConfig.algorithm = theme.defaultAlgorithm
-            } else {
-                this.changeHeadBackgroundColor('rgba(20,20,20,1)')
-                this.$state.themeConfig.algorithm = theme.darkAlgorithm
-            }
-        },
-        // 切换主要颜色
-        changeColorPrimary(value: string) {
-            this.$state.colorPrimary = value
-        },
-        // 修改侧边栏颜色
-        changeSiderTheme(value: string) {
-            this.$state.siderTheme = value
-        },
-        // 修改磨砂玻璃效果
-        changeGroundGlass(value: boolean) {
-            this.$state.groundGlass = value
-            if (this.$state.dataDark === 'light') {
-                this.changeHeadBackgroundColor('rgba(255,255,255,0.6)')
-            } else {
-                this.changeHeadBackgroundColor('rgba(0,0,0,0.6)')
-            }
-        },
-        // 修改固定头部
-        changeAffixHead(value: boolean) {
-            this.$state.affixHead = value
-        },
-        // 菜单模式
         changeSiderMode(value: string) {
             this.$state.siderMode = value
         },
+        // 切换主要颜色
+        changeColorPrimary() {
+            this.themeConfig.token.colorPrimary = this.$state.colorPrimary
+        },
+        // 修改侧边栏颜色
+        changeSiderTheme() {
+            if (this.$state.siderTheme === 'dark') {
+                this.siderBackgroundColor = 'rgba(20,20,20,1)'
+            } else {
+                this.siderBackgroundColor = 'rgba(255,255,255,1)'
+            }
+        },
+        // 修改磨砂玻璃效果
+        changeGroundGlass() {
+            if (this.$state.groundGlass) {
+                document.documentElement.setAttribute("data-ground-glass",'glass')
+                if (!this.$state.dataDark) {
+                    this.changeLayoutBackgroundColor('rgba(255,255,255,0.6)')
+                } else {
+                    this.changeLayoutBackgroundColor('rgba(20,20,20,0.6)')
+                }
+            } else {
+                document.documentElement.setAttribute("data-ground-glass",'no-glass')
+                if (!this.$state.dataDark) {
+                    this.changeLayoutBackgroundColor('rgba(255,255,255,1)')
+                } else {
+                    this.changeLayoutBackgroundColor('rgba(20,20,20,1)')
+                }
+            }
+        },
+        // 修改固定头部
+        changeAffixHead() {
+            if (this.$state.affixHead) {
+                document.documentElement.setAttribute("data-head-affix",'affix')
+            } else {
+                document.documentElement.setAttribute("data-head-affix",'un-affix')
+            }
+        },
         // 切换顶部栏背景颜色
-        changeHeadBackgroundColor(value: string) {
-            this.$state.headBackgroundColor = value
+        changeLayoutBackgroundColor(value: string) {
+            this.$state.layoutBackgroundColor = value
         },
         // 修改html标签，标记当前颜色模式
         changeDocumentElement() {
-            document.documentElement.setAttribute("data-dark",this.$state.dataDark)
-            document.documentElement.setAttribute("data-theme",this.$state.colorPrimary)
+            document.documentElement.setAttribute("data-dark",this.$state.dataDark ? 'dark' : 'light')
         }
     },
 })

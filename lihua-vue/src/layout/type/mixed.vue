@@ -1,6 +1,6 @@
 <template>
   <a-layout>
-    <a-layout-header class="layout-header" :style="{'background': themeStore.headBackgroundColor}">
+    <a-layout-header class="mixed-layout-header" :style="{'background': themeStore.layoutBackgroundColor}">
       <a-flex align="center" justify="space-between">
         <Logo class="logo"/>
         <!--页头-->
@@ -8,9 +8,9 @@
       </a-flex>
     </a-layout-header>
 
-    <a-layout style="position: sticky;">
-      <a-layout-sider class="layout-sider sider-height scrollbar"
-                      :style="{'background': themeStore.headBackgroundColor}"
+    <a-layout style="position: sticky;top: 64px">
+      <a-layout-sider class="mixed-layout-sider sider-height scrollbar"
+                      :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                       :theme="themeStore.siderTheme"
                       :trigger="null"
                       v-model:collapsed="permission.collapsed"
@@ -21,8 +21,8 @@
         <Side/>
       </a-layout-sider>
       <!--    菜单开合开关-->
-      <a-layout-content  style="padding-top: 64px">
-        <ViewTabs class="viewTabs" v-if="themeStore.showViewTags" :style="{'background': themeStore.headBackgroundColor}"/>
+      <a-layout-content>
+        <ViewTabs class="mixed-view-tabs" v-if="themeStore.showViewTags" :style="{'background': themeStore.layoutBackgroundColor}"/>
         <!--内容-->
         <Content/>
       </a-layout-content>
@@ -41,47 +41,23 @@ import {useTheme} from "@/stores/modules/theme";
 const themeStore = useTheme()
 const permission = usePermissionStore()
 
-
 </script>
 
 <style scoped>
 
 .logo {
-  padding: 0px;
-  padding-left: 16px
+  padding: 0 0 0 16px;
 }
 
-.viewTabs {
-  width: 100%;
-  position: sticky;
-  top: 64px;
-  padding-top: 6px;
-  z-index: 1;
-  backdrop-filter: blur(6px);
-}
-
-.layout-header {
-  position: fixed;
-  width: 100%;
-  top: 0px;
-  z-index: 2;
+.mixed-layout-header {
   height: auto;
-  padding-left: 0px;
-  padding-right: 0px;
+  padding-left: 0;
+  padding-right: 0;
   backdrop-filter: blur(6px);
   box-shadow: 2px 0 8px rgba(29,35,41,0.1);
-
 }
 
-.layout-sider {
-  position: sticky;
-  top: 0px;
-  z-index: 2;
-  padding-top: 70px;
-  backdrop-filter: blur(6px);
-  box-shadow: 2px 0 8px rgba(29,35,41,0.1);
 
-}
 
 .sider-height {
   height: 100vh;

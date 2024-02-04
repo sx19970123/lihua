@@ -1,4 +1,6 @@
-/* 滚动条 */
+/**
+    滚动条
+ */
 .scrollbar {
     overflow: auto;
 }
@@ -16,3 +18,72 @@
     background-color: transparent;
     border-radius: 10px;
 }
+
+/**
+    毛玻璃效果背景切换
+ */
+[data-ground-glass = glass] {
+    .ant-drawer-mask {
+        backdrop-filter: blur(6px) !important;
+    }
+}
+[data-ground-glass = un-glass] {
+    .ant-drawer-mask {
+        backdrop-filter: blur(0px) !important;
+    }
+}
+/**
+    通用布局
+ */
+
+/**
+    侧边导航布局
+ */
+
+
+/**
+    混合布局
+ */
+[data-head-affix = affix] {
+    .mixed-layout-header {
+        position: fixed;
+        width: 100%;
+        z-index: 2;
+        top: 0;
+    }
+    .mixed-layout-sider {
+        position: sticky;
+        z-index: 1;
+        padding-top: 64px;
+        top: 0;
+    }
+    .mixed-view-tabs {
+        position: sticky;
+        z-index: 1;
+        padding-top: 6px;
+        top: 64px;
+        backdrop-filter: blur(6px);
+
+    }
+
+}
+[data-head-affix = un-affix] {
+    .mixed-layout-header {
+        position: static;
+        z-index: 2;
+        top: 0;
+    }
+    .mixed-layout-sider {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    .mixed-view-tabs {
+        padding-top: 6px;
+    }
+}
+
+/**
+    顶部导航布局
+ */
+

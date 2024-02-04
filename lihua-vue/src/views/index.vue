@@ -241,7 +241,7 @@
 
 
 <script setup lang="ts">
-
+console.log("首页")
 </script>
 
 <style scoped>

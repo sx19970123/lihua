@@ -1,6 +1,6 @@
 <template>
   <a-layout>
-    <a-layout-header class="layout-header" :class="themeStore.affixHead ? 'layout-position' : ''" :style="{'background': themeStore.headBackgroundColor}">
+    <a-layout-header class="layout-header layout-head-affix" >
       <a-flex align="center" justify="space-between">
         <!--logo-->
         <Logo class="logo"/>
@@ -10,7 +10,7 @@
         <Head></Head>
       </a-flex>
       <!--多标签-->
-      <ViewTabs v-if="themeStore.showViewTags" style="padding-top: 6px" :style="{'background': themeStore.headBackgroundColor}"/>
+      <ViewTabs v-if="themeStore.showViewTags" style="padding-top: 6px"/>
     </a-layout-header>
 
     <a-layout-content>
@@ -28,7 +28,6 @@ import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
 import {useTheme} from "@/stores/modules/theme";
 const themeStore = useTheme()
-
 </script>
 
 <style scoped>
@@ -40,17 +39,12 @@ const themeStore = useTheme()
   width: 100%;
   padding-left: 64px;
 }
-
 .layout-header {
-  padding-left: 0px;
-  padding-right: 0px;
-  backdrop-filter: blur(6px);
-}
-.layout-position {
-  position: sticky;
-  top: 0px;
-  z-index: 1;
   height: auto;
+  padding-left: 0;
+  padding-right: 0;
+  backdrop-filter: blur(6px);
+  box-shadow: 2px 0 8px rgba(29,35,41,0.1);
 }
 </style>
 

@@ -3,7 +3,7 @@
             :mode="themeStore.siderMode"
             v-model:selected-keys="state.selectedKeys"
             v-model:open-keys="state.openKeys"
-            style="border: none;background: rgba(255,255,255,0)"
+            style="border: none; background-color: rgba(255,255,255,0)"
     >
       <Menu :data="data"/>
     </a-menu>

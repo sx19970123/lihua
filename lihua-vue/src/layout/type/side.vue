@@ -1,7 +1,7 @@
 <template>
   <a-layout class="layout">
     <a-layout-sider class="layout-sider sider-height scrollbar"
-                    :style="{'background': themeStore.headBackgroundColor}"
+                    :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                     :theme="themeStore.siderTheme"
                     :trigger="null"
                     v-model:collapsed="permission.collapsed"
@@ -14,8 +14,7 @@
     </a-layout-sider>
     <a-layout>
       <a-layout-header class="layout-header"
-                       :class="themeStore.affixHead ? 'layout-position' : ''"
-                       :style="{'background': themeStore.headBackgroundColor}">
+                       :style="{'background': themeStore.layoutBackgroundColor}">
         <a-flex align="center" justify="space-between">
           <HeadCollapsed/>
           <!--页头-->
@@ -44,8 +43,6 @@ import {useTheme} from "@/stores/modules/theme";
 import HeadCollapsed from "@/layout/collapsed/index.vue";
 const themeStore = useTheme()
 const permission = usePermissionStore()
-
-
 </script>
 
 <style scoped>
@@ -54,14 +51,10 @@ const permission = usePermissionStore()
 }
 .layout-header {
   height: auto;
-  padding-left: 0px;
-  padding-right: 0px;
+  padding-left: 0;
+  padding-right: 0;
   backdrop-filter: blur(6px);
-}
-.layout-position {
-  position: sticky;
-  top: 0px;
-  z-index: 1;
+  box-shadow: 2px 0 8px rgba(29,35,41,0.1);
 }
 .layout-sider {
   position: sticky;
@@ -69,8 +62,6 @@ const permission = usePermissionStore()
   z-index: 2;
   box-shadow: 2px 0 8px rgba(29,35,41,0.05);
   backdrop-filter: blur(6px);
-
-
 }
 .sider-height {
   height: 100vh;
