@@ -53,7 +53,7 @@ const generateKey = (routers: Array<any>, key: string, filter: boolean): Array<a
             }
 
             if (menuItem.children && menuItem.children.length > 0) {
-                const child = generateKey(menuItem.children, key, filter)
+                const child = generateKey(menuItem.children, menuItem.key, filter)
                 menuItem.children = child === null ? [] : child
             } else {
                 menuItem.children = null

@@ -185,7 +185,7 @@ const generateKey = (routers: Array<any>, key: string, filter: boolean): Array<a
             }
 
             if (menuItem.children && menuItem.children.length > 0) {
-                const child = generateKey(menuItem.children, key, filter)
+                const child = generateKey(menuItem.children, menuItem.key, filter)
                 menuItem.children = child === null ? [] : child
             } else {
                 menuItem.children = null
@@ -204,6 +204,9 @@ const getChildren = (staticRoutes: Array<any>, arr: Array<any>):void => {
     if (staticRoutes) {
         staticRoutes.forEach(route => {
             if (route.children && route.children.length > 0) {
+                if (route.component !== Layout) {
+                    arr.push(route)
+                }
                 getChildren(route.children,arr)
             } else {
                 arr.push(route)

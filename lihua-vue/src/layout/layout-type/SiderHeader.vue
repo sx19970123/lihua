@@ -16,11 +16,7 @@
     <a-layout>
       <a-layout-header class="shr-layout-header"
                        :style="{'background': themeStore.layoutBackgroundColor}">
-        <a-flex align="center" justify="space-between">
-          <HeadCollapsed/>
-          <!--页头-->
-          <Head></Head>
-        </a-flex>
+        <Head/>
         <ViewTabs  v-if="themeStore.showViewTags"/>
       </a-layout-header>
       <a-layout-content class="layout-content">
@@ -36,10 +32,9 @@ import Head from "@/layout/head/index.vue"
 import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
+import Logo from "@/layout/logo/index.vue";
 import { usePermissionStore } from "@/stores/modules/permission";
-import Logo from "@/layout/component/logo/index.vue";
 import {useThemeStore} from "@/stores/modules/theme";
-import HeadCollapsed from "@/layout/component/collapsed/index.vue";
 const themeStore = useThemeStore()
 const permission = usePermissionStore()
 

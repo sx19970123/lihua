@@ -1,7 +1,7 @@
 <template>
     <template v-for="item in routers.data">
 <!--      页面-->
-      <template v-if="item.children === null">
+      <template v-if="item.type !== 'menu' && (item.children === null || typeof item.component === 'function')">
         <a-menu-item :key="item.key" :title="item.meta ? item.meta.title : ''" :danger="item.danger">
           <template #icon>
             <component :is="item.meta ? item.meta.icon : ''"/>
@@ -31,6 +31,7 @@ interface MetaType {
   title?: string,
   icon?: string | Component,
   affix?: boolean,
+  type?: string,
   menuShow?: boolean
 }
 interface MenuType {
@@ -38,6 +39,7 @@ interface MenuType {
   meta: MetaType,
   component: Component | null,
   children: Array<MenuType> | null,
+  type: string | null,
   key: string,
   danger: boolean
 }

@@ -1,5 +1,7 @@
 <template>
   <div>
+    <router-link to="/gzt/gztzym">去ZYM</router-link>
+    <router-view></router-view>
     <div style="padding: 20px">
       <a-row :gutter="16">
         <a-col :span="8">

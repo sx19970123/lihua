@@ -1,17 +1,12 @@
 <template>
-  <a-flex class="head" align="center" :gap="8">
-    <layout-switch/>
-    <layout-switch/>
-    <layout-switch/>
+  <a-flex align="center" justify="space-between">
+    <left v-if="themeStore.layoutType === 'sider-header'"/>
+    <right/>
   </a-flex>
 </template>
 <script setup lang="ts">
-import LayoutSwitch from "@/layout/component/layout-switch/index.vue"
+import Left from "@/layout/head/components/Left.vue"
+import Right from "@/layout/head/components/Right.vue"
+import { useThemeStore } from "@/stores/modules/theme";
+const themeStore = useThemeStore()
 </script>
-
-<style scoped>
-.head {
-  padding-left: 16px;
-  padding-right: 16px;
-}
-</style>

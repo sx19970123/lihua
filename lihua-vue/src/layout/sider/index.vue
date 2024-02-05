@@ -21,17 +21,16 @@ const route = useRoute()
 // pinia 中获取菜单数据
 const permission = usePermissionStore()
 const data = computed(() => permission.sidebarRouters)
-// 菜单侧边栏回显
 const state = reactive({
-  selectedKeys: [route.path],
+  selectedKeys: route.matched.map(r => r.path),
   openKeys: route.matched.map(r => r.path)
 })
-watch(()=> route.path,(value)=> {
-  state.selectedKeys = [value]
-})
+// 导航回显
 watch(()=> route.matched,(value)=> {
+  state.selectedKeys = route.matched.map(r => r.path)
   state.openKeys = value.map(r => r.path)
 })
+// 收起/展开
 watch(() => permission.collapsed,(value) => {
   value? themeStore.foldSiderWidth(): themeStore.unfoldSiderWidth()
 })

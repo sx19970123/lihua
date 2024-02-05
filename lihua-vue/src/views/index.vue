@@ -1,5 +1,7 @@
 <template>
   <div>
+    <router-link to="/index/c">去C</router-link>
+    <router-view></router-view>
   <div style="padding: 20px">
     <a-row :gutter="16">
       <a-col :span="8">
@@ -243,7 +245,7 @@
 
 
 <script setup lang="ts">
-console.log("首页")
+
 </script>
 
 <style scoped>

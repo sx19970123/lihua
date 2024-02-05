@@ -26,7 +26,7 @@ import Head from "@/layout/head/index.vue"
 import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
-import Logo from "@/layout/component/logo/index.vue";
+import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/modules/theme";
 const themeStore = useThemeStore()
 </script>
