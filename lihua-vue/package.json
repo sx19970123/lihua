@@ -12,7 +12,7 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
-    "ant-design-vue": "4.1",
+    "ant-design-vue": "^4.1.2",
     "axios": "^1.6.2",
     "js-cookie": "^3.0.5",
     "nprogress": "^0.2.0",

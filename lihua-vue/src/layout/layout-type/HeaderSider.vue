@@ -24,7 +24,7 @@
       <a-layout-content>
         <ViewTabs class="hsr-view-tabs" v-if="themeStore.showViewTags" :style="{'background': themeStore.layoutBackgroundColor}"/>
         <!--内容-->
-        <Content class="hsr-content"/>
+        <Content class="hsr-content layout-content"/>
       </a-layout-content>
     </a-layout>
   </a-layout>

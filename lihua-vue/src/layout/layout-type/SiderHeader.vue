@@ -23,7 +23,7 @@
         </a-flex>
         <ViewTabs  v-if="themeStore.showViewTags"/>
       </a-layout-header>
-      <a-layout-content>
+      <a-layout-content class="layout-content">
         <!--内容-->
         <Content/>
       </a-layout-content>

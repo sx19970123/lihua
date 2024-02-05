@@ -1,0 +1,117 @@
+/**
+    zoom
+ */
+.zoom-enter-active {
+    transition: all 0.22s ease-in-out;
+}
+.zoom-leave-active {
+    transition: all 0.05s ease-out;
+}
+.zoom-enter-from {
+    transform: scale(99%);
+    opacity: 0;
+}
+.zoom-leave-to {
+    opacity: 0;
+}
+
+/**
+    淡入淡出
+ */
+.fade-enter-active {
+    transition: all 0.2s ease-in;
+}
+.fade-leave-active {
+    transition: all 0.2s ease-out;
+}
+.fade-enter-from {
+    opacity: 0;
+}
+.fade-leave-to {
+    opacity: 0;
+}
+
+/**
+    呼吸
+ */
+.breathe-enter-active {
+    transition: all 0.2s ease-in-out;
+}
+.breathe-leave-active {
+    transition: all 0.2s ease-out;
+}
+.breathe-leave-to,
+.breathe-enter-from {
+    transform: scale(99%);
+    opacity: 0;
+}
+
+/**
+    上升
+ */
+.top-enter-active {
+    transition: all 0.25s ease-in-out;
+}
+.top-leave-active {
+    transition: all 0.05s ease-out;
+}
+.top-leave-to {
+    opacity: 0;
+}
+.top-enter-from {
+    transform: translateY(10px);
+    opacity: 0;
+}
+
+
+/**
+    切换
+ */
+.down-enter-active {
+    transition: all 0.25s ease-in-out;
+}
+.down-leave-active {
+    transition: all 0.25s ease-out;
+}
+.down-leave-to {
+    transform: translateY(10px);
+    opacity: 0;
+}
+.down-enter-from {
+    transform: translateX(10px);
+    opacity: 0;
+}
+
+/**
+    交换
+ */
+.switch-enter-active {
+    transition: all 0.25s ease-in-out;
+}
+.switch-leave-active {
+    transition: all 0.25s ease-out;
+}
+.switch-leave-to,
+.switch-enter-from {
+    transform: translateX(10px);
+    opacity: 0;
+}
+
+
+/**
+   整活
+ */
+.trick-enter-active {
+    transition: all 1.5s ease-in-out;
+}
+.trick-leave-active {
+    transition: all 1s ease-in-out;
+}
+.trick-leave-to {
+    transform: translateX(500px) translateY(-1000px) translateZ(-1000px) scale(0.1) rotate(360deg);
+    opacity: 0;
+}
+.trick-enter-from {
+    transform: translateX(-500px) translateY(-1000px) translateZ(-1000px) scale(0.1) rotate(-360deg);
+    opacity: 0;
+}

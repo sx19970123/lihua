@@ -10,6 +10,11 @@ import { useThemeStore } from "@/stores/modules/theme"
 const themeStore = useThemeStore()
 </script>
 
-<style>
-
+<style lang="scss">
+#nprogress .bar {
+  background: var(--theme-color) !important; //自定义颜色
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px red, 0 0 5px red !important;
+}
 </style>

@@ -32,7 +32,7 @@
       </a-radio-group>
     </a-form-item>
     <a-form-item label="导航栏宽度">
-      <a-slider v-model:value="themeStore.siderWith" :max="400" :min="80"></a-slider>
+      <a-slider v-model:value="themeStore.siderWith" :max="400" :min="80" :step="10"></a-slider>
     </a-form-item>
     <a-form-item label="毛玻璃效果">
       <a-switch v-model:checked="themeStore.groundGlass" @change="themeStore.changeGroundGlass"></a-switch>
@@ -43,6 +43,17 @@
      <a-form-item label="快捷标签">
        <a-switch v-model:checked="themeStore.showViewTags"/>
      </a-form-item>
+    <a-form-item label="路由动画" v-model:value="themeStore.routeTransition">
+      <a-select>
+        <a-select-option value="zoom">变焦</a-select-option>
+        <a-select-option value="fade">淡入淡出</a-select-option>
+        <a-select-option value="breathe">呼吸</a-select-option>
+        <a-select-option value="top">上升</a-select-option>
+        <a-select-option value="down">切换</a-select-option>
+        <a-select-option value="switch">交换</a-select-option>
+        <a-select-option value="trick">整活</a-select-option>
+      </a-select>
+    </a-form-item>
   </a-form>
 
 </template>

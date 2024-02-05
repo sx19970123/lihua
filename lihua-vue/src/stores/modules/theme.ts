@@ -43,9 +43,11 @@ export const useThemeStore = defineStore('theme',{
         // 侧边宽度
         const siderWith: number = 200
 
-        // 侧边宽度
+        // 原侧边宽度，用于调整侧边栏时保存临时变量
         const originSiderWith: number = 200
 
+        // 切换路由时的过渡动画
+        const routeTransition: string = 'zoom'
 
         const themeConfig = {
             token: {
@@ -66,6 +68,7 @@ export const useThemeStore = defineStore('theme',{
             siderMode,
             siderWith,
             originSiderWith,
+            routeTransition,
             themeConfig
         }
     },
@@ -129,6 +132,7 @@ export const useThemeStore = defineStore('theme',{
         // 切换主要颜色
         changeColorPrimary() {
             this.themeConfig.token.colorPrimary = this.$state.colorPrimary
+            this.changeDocumentElement()
         },
         // 修改侧边栏颜色
         changeSiderTheme() {
@@ -171,11 +175,14 @@ export const useThemeStore = defineStore('theme',{
         // 修改html标签，标记当前颜色模式
         changeDocumentElement() {
             document.documentElement.setAttribute("data-dark",this.$state.dataDark ? 'dark' : 'light')
+            document.documentElement.setAttribute("data-color", this.$state.colorPrimary)
         },
+        // 折叠侧边栏
         foldSiderWidth()  {
             this.originSiderWith = this.siderWith
             this.siderWith = 80
         },
+        // 展开侧边栏
         unfoldSiderWidth() {
             this.siderWith = this.originSiderWith
         }

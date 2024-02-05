@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div style="padding: 20px">
     <a-row :gutter="16">
       <a-col :span="8">
@@ -235,6 +236,7 @@
     </a-col>
   </a-row>
 </div>
+  </div>
 </template>
 
 
