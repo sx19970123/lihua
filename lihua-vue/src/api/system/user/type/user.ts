@@ -1,7 +1,7 @@
-import type { RouterType } from "@/types/router"
-import type { RoleType } from "@/types/role"
-import type { StarViewType } from "@/types/starView"
-import type { AuthorType } from "@/types/author"
+import type { RouterType } from "@/api/system/user/type/router"
+import type { RoleType } from "@/api/system/user/type/role"
+import type { StarViewType } from "@/api/system/star-view/type/starView"
+import type { AuthorType } from "@/api/system/user/type/author"
 interface UserInfoType {
     accountNonExpired: boolean,
     accountNonLocked: boolean,

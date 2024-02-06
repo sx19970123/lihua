@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 
-import { login } from "@/api/system/login";
-import { getUserInfo } from "@/api/system/user";
+import { login } from "@/api/system/login/login";
+import { getUserInfo } from "@/api/system/user/user";
 
-import type { ResponseType } from "@/types/globalType";
-import type {UserInfoType} from "@/types/user";
+import type { ResponseType } from "@/api/type";
+import type { UserInfoType } from "@/api/system/user/type/user";
 
 import token from "@/utils/token";
 

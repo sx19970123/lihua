@@ -69,7 +69,7 @@
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import {ref, watch} from "vue";
 import {format, relativeDate} from "@/utils/date";
-import type {StarViewType} from "@/types/starView";
+import type {StarViewType} from "@/api/system/star-view/type/starView";
 const viewTabsStore = useViewTabsStore()
 const emits = defineEmits(['routeSkip'])
 /**

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { RouteRecordRaw } from "vue-router";
-import type {RouterType} from "@/types/router";
+import type {RouterType} from "@/api/system/user/type/router";
 
 
 export const usePermissionStore = defineStore('permission',{

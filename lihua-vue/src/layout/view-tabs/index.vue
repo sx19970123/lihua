@@ -29,7 +29,7 @@ import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
 import {computed, watch} from "vue";
 import { useRoute,useRouter } from "vue-router";
 import {useViewTabsStore} from "@/stores/modules/viewTabs";
-import type {StarViewType} from "@/types/starView";
+import type {StarViewType} from "@/api/system/star-view/type/starView";
 const viewTabsStore = useViewTabsStore()
 const route = useRoute()
 const router = useRouter()

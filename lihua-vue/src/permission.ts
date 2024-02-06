@@ -8,9 +8,9 @@ import { useThemeStore } from "@/stores/modules/theme";
 import Layout from "@/layout/index.vue";
 import MiddleView from "@/components/middle-view/index.vue"
 
-import type { ResponseType } from "@/types/globalType";
-import type { UserInfoType } from "@/types/user";
-import type {RouterType} from "@/types/router";
+import type { ResponseType } from "@/api/type";
+import type { UserInfoType } from "@/api/system/user/type/user";
+import type {RouterType} from "@/api/system/user/type/router";
 
 import token from "@/utils/token"
 const { getToken } = token

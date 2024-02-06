@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import type {RouteRecordRaw} from "vue-router";
 import Layout from "@/layout/index.vue";
 import { format } from "@/utils/date";
-import type { StarViewType,RecentType } from "@/types/starView"
+import type { StarViewType,RecentType } from "@/api/system/star-view/type/starView"
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         const viewTabs: Array<StarViewType> = []

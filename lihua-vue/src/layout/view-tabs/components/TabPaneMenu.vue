@@ -48,10 +48,12 @@
 <script setup lang="ts">
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import {useRoute, useRouter} from "vue-router";
-import {starView} from "@/api/system/starView";
+import { starView } from "@/api/system/star-view/starView";
 import { message } from "ant-design-vue";
 import { StarFilled , StarOutlined ,LockOutlined , UnlockOutlined} from '@ant-design/icons-vue';
 import { h } from "vue";
+import type { ResponseType } from "@/api/type";
+import type { StarViewType } from "@/api/system/star-view/type/starView";
 
 const viewTabsStore = useViewTabsStore()
 const tabPane = defineProps(['tab','index'])
@@ -90,7 +92,7 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
       break
     }
     case "star": {
-      starView(tab.routerPathKey,tab.affix ? '1' : '0','1').then(resp => {
+      starView(tab.routerPathKey,tab.affix ? '1' : '0','1').then((resp: ResponseType<StarViewType>) => {
         if (resp.code === 200) {
           viewTabsStore.replaceByKey(resp.data)
           message.success({
@@ -107,7 +109,7 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
       break
     }
     case "un-star": {
-      starView(tab.routerPathKey,tab.affix ? '1' : '0','0').then(resp => {
+      starView(tab.routerPathKey,tab.affix ? '1' : '0','0').then((resp: ResponseType<StarViewType>) => {
         if (resp.code === 200) {
           viewTabsStore.replaceByKey(resp.data)
           message.success({
@@ -124,7 +126,7 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
       break
     }
     case "affix": {
-      starView(tab.routerPathKey,'1',tab.star ? '1' : '0').then(resp => {
+      starView(tab.routerPathKey,'1',tab.star ? '1' : '0').then((resp: ResponseType<StarViewType>) => {
         if (resp.code === 200) {
           viewTabsStore.affix(resp.data)
           message.success({
@@ -136,7 +138,7 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
       break
     }
     case "un-affix": {
-      starView(tab.routerPathKey,'0',tab.star ? '1' : '0').then(resp => {
+      starView(tab.routerPathKey,'0',tab.star ? '1' : '0').then((resp: ResponseType<StarViewType>) => {
         if (resp.code === 200) {
           viewTabsStore.unAffix(resp.data)
           message.success({
