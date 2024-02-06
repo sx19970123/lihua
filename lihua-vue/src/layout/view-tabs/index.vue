@@ -55,6 +55,7 @@ const {viewTabs, activeKey} = init()
  * 监听路由变化进行切换 tab
  */
 watch(() => route.path,(value) => {
+  console.log(route?.meta)
   viewTabsStore.selectedViewTab(value,!route?.meta?.skip)
 })
 

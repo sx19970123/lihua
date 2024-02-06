@@ -1,7 +1,4 @@
-interface AuthorType {
+export interface AuthorType {
     authority: string | null
 }
 
-export {
-    AuthorType
-}

@@ -9,7 +9,7 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
 // andv 图标
 import * as Icons from "@ant-design/icons-vue";
-import "@/assets/css/index.scss"
+import "@/assets/css/index.css"
 
 const icons = Icons
 
@@ -20,7 +20,7 @@ app.use(router)
 app.use(Antd)
 
 for (const i in icons) {
-    app.component(i,(Icons)[i])
+    app.component(i,icons[i])
 }
 
 

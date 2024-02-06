@@ -2,7 +2,7 @@ import type { RouterType } from "@/api/system/user/type/router"
 import type { RoleType } from "@/api/system/user/type/role"
 import type { StarViewType } from "@/api/system/star-view/type/starView"
 import type { AuthorType } from "@/api/system/user/type/author"
-interface UserInfoType {
+export interface UserInfoType {
     accountNonExpired: boolean,
     accountNonLocked: boolean,
     credentialsNonExpired: boolean,
@@ -17,7 +17,7 @@ interface UserInfoType {
     username: string
 }
 
-interface SysUserVOType {
+export interface SysUserVOType {
     avatar: string | null,
     createId: string | null,
     createTime: string | null,
@@ -31,10 +31,4 @@ interface SysUserVOType {
     updateId: string | null,
     updateTime: string | null,
     username: string | null
-}
-
-
-export {
-    UserInfoType,
-    SysUserVOType
 }

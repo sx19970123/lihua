@@ -24,6 +24,6 @@ public class MetaVO implements Serializable {
     // 外联地址
     private String link;
 
-    // 不进行 view-tab及localStoryge缓存
-    private String skip;
+    // 不进行 view-tab及localStorage缓存
+    private Boolean skip;
 }

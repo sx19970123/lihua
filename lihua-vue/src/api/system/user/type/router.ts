@@ -1,4 +1,4 @@
-interface RouterType {
+export interface RouterType {
     children: Array<RouterType>,
     component: Function | string,
     id: string,
@@ -12,15 +12,11 @@ interface RouterType {
     type: string
 }
 
-interface MetaType {
+export interface MetaType {
     icon: string,
     label: string,
     link: string | null,
     noCache: boolean | null,
-    title: string
-}
-
-export {
-    RouterType,
-    MetaType
+    title: string,
+    skip: boolean
 }
