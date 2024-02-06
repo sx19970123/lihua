@@ -17,8 +17,6 @@ import { ref } from 'vue';
 import {useRoute,useRouter} from "vue-router";
 const route = useRoute()
 const router = useRouter()
-console.log(route)
-console.log(router)
 
 interface Route {
   path: string;

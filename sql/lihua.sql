@@ -11,7 +11,7 @@
  Target Server Version : 80033 (8.0.33)
  File Encoding         : 65001
 
- Date: 06/02/2024 09:13:56
+ Date: 06/02/2024 16:47:01
 */
 
 SET NAMES utf8mb4;
@@ -44,29 +44,30 @@ CREATE TABLE `sys_menu`  (
   `no_cache` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否缓存页面（0 缓存、1不缓存）',
   `link_path` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '外链类型页面地址',
   `query` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '路由携带的参数',
+  `skip` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否跳过view-tabs缓存（0跳过、1不跳过）',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统菜单权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
-INSERT INTO `sys_menu` VALUES ('031f293f02c84e4d9e27f866e18bc059', 'ea37b1ef262e4f86aa1dc5bbd43e62c4', '工作台的子页面', '工作台的子页面', 'page', 'gztzym', 'gzt/zym.vue', '/gzt/gztzym', NULL, '0', 'admin', 'StepBackwardOutlined', 1, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('05919353547b4f0887a9318ee73b832f', '19dd01c0806e4a0981d76d62f78d5552', '监控页', '监控页', 'menu', 'jky', '/system/menu/index.vue', '/ybp/jky', NULL, '0', 'admin', 'StepBackwardOutlined', 6, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('0fe0edb2374e4e99a4d3266fe1406557', '6dba376cc8a543109c30f484c240fd30', '基础表单', '基础表单', 'page', 'jcbd', 'jcbd/index.vue', '/bdy/jcbd', NULL, '0', 'admin', 'StepBackwardOutlined', 9, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('19dd01c0806e4a0981d76d62f78d5552', '0', '仪表盘', '仪表盘', 'menu', '/ybp', NULL, '/ybp', NULL, '0', 'admin', 'StepBackwardOutlined', 1, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('458c960671c34ef5a143d200b4f171ce', '0', '没子集的空目录', '没子集的空目录', 'menu', 'kml', NULL, '/kml', NULL, '0', 'admin', 'StepBackwardOutlined', 1, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('6dba376cc8a543109c30f484c240fd30', '0', '表单页', '表单页', 'menu', '/bdy', NULL, '/bdy', NULL, '0', 'admin', 'StepBackwardOutlined', 2, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('7b22134b42304cec8bb4c825ba75be47', '0', '列表页', '列表页', 'menu', '/lby', NULL, '/lby', NULL, '0', 'admin', 'StepBackwardOutlined', 3, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('80981da36e814adaa5c3c1648c4c1f62', 'dd8a7f5c42c74d3c86b6821c279654eb', '列表', '列表', 'menu', 'lb', NULL, '/lby/bzlb/lb', NULL, '0', 'admin', 'StepBackwardOutlined', 16, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('89428c4bd1d04e4bb149b10a2e576423', '7b22134b42304cec8bb4c825ba75be47', '卡片列表', '卡片列表', 'page', 'kplb', 'kplb/index.vue', '/lby/kplb', NULL, '0', 'admin', 'StepBackwardOutlined', 12, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('a702173a0cab492987d978497d689df5', '19dd01c0806e4a0981d76d62f78d5552', '欢迎页', '欢迎页', 'page', 'hyy', 'hyy/index.vue', '/ybp/hyy', NULL, '0', 'admin', 'StepBackwardOutlined', 7, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('bd71c2f6cc994ce89f665576daf7db77', '19dd01c0806e4a0981d76d62f78d5552', '分析页', '分析页', 'page', 'fxy', 'fxy/index.vue', '/ybp/fxy', NULL, '0', 'admin', 'StepBackwardOutlined', 8, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('c87da65bcaff4a418098ec647434eb08', '7b22134b42304cec8bb4c825ba75be47', '查询列表', '查询列表', 'page', 'cxlb', 'cxlb/index.vue', '/lby/cxlb', NULL, '0', 'admin', 'StepBackwardOutlined', 13, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('cc111dfbdfb2442aad2a397a89fbbbeb', '80981da36e814adaa5c3c1648c4c1f62', '表', '表', 'page', 'b', 'b/index.vue', '/lby/bzlb/lb/b', NULL, '0', 'admin', 'StepBackwardOutlined', 15, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('cfc9411130704e9ea1ae6ce3a5ef8581', '6dba376cc8a543109c30f484c240fd30', '高级表单', '高级表单', 'page', 'gjbd', 'gjbd/index.vue', '/bdy/gjbd', NULL, '0', 'admin', 'StepBackwardOutlined', 10, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('dd8a7f5c42c74d3c86b6821c279654eb', '7b22134b42304cec8bb4c825ba75be47', '标准列表', '标准列表', 'menu', 'bzlb', NULL, '/lby/bzlb', NULL, '0', 'admin', 'StepBackwardOutlined', 14, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('ea37b1ef262e4f86aa1dc5bbd43e62c4', '0', '工作台', '工作台', 'page', 'gzt', 'gzt/index.vue', '/gzt', NULL, '0', 'admin', 'StepBackwardOutlined', 4, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('eb8819f1cdca4d11bb2910a806f85d81', '05919353547b4f0887a9318ee73b832f', '控', '控', 'page', 'k', 'k/index.vue', '/ybp/jky/k', NULL, '0', 'admin', 'StepBackwardOutlined', 5, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
+INSERT INTO `sys_menu` VALUES ('031f293f02c84e4d9e27f866e18bc059', 'ea37b1ef262e4f86aa1dc5bbd43e62c4', '工作台的子页面', '工作台的子页面', 'page', 'gztzym', 'gzt/zym.vue', '/gzt/gztzym', NULL, '0', 'admin', 'StepBackwardOutlined', 1, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '0', NULL);
+INSERT INTO `sys_menu` VALUES ('05919353547b4f0887a9318ee73b832f', '19dd01c0806e4a0981d76d62f78d5552', '监控页', '监控页', 'menu', 'jky', '/system/menu/index.vue', '/ybp/jky', NULL, '0', 'admin', 'StepBackwardOutlined', 6, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('0fe0edb2374e4e99a4d3266fe1406557', '6dba376cc8a543109c30f484c240fd30', '基础表单', '基础表单', 'page', 'jcbd', 'jcbd/index.vue', '/bdy/jcbd', NULL, '0', 'admin', 'StepBackwardOutlined', 9, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('19dd01c0806e4a0981d76d62f78d5552', '0', '仪表盘', '仪表盘', 'menu', '/ybp', NULL, '/ybp', NULL, '0', 'admin', 'StepBackwardOutlined', 1, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('458c960671c34ef5a143d200b4f171ce', '0', '没子集的空目录', '没子集的空目录', 'menu', 'kml', NULL, '/kml', NULL, '0', 'admin', 'StepBackwardOutlined', 1, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('6dba376cc8a543109c30f484c240fd30', '0', '表单页', '表单页', 'menu', '/bdy', NULL, '/bdy', NULL, '0', 'admin', 'StepBackwardOutlined', 2, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('7b22134b42304cec8bb4c825ba75be47', '0', '列表页', '列表页', 'menu', '/lby', NULL, '/lby', NULL, '0', 'admin', 'StepBackwardOutlined', 3, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('80981da36e814adaa5c3c1648c4c1f62', 'dd8a7f5c42c74d3c86b6821c279654eb', '列表', '列表', 'menu', 'lb', NULL, '/lby/bzlb/lb', NULL, '0', 'admin', 'StepBackwardOutlined', 16, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('89428c4bd1d04e4bb149b10a2e576423', '7b22134b42304cec8bb4c825ba75be47', '卡片列表', '卡片列表', 'page', 'kplb', 'kplb/index.vue', '/lby/kplb', NULL, '0', 'admin', 'StepBackwardOutlined', 12, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('a702173a0cab492987d978497d689df5', '19dd01c0806e4a0981d76d62f78d5552', '欢迎页', '欢迎页', 'page', 'hyy', 'hyy/index.vue', '/ybp/hyy', NULL, '0', 'admin', 'StepBackwardOutlined', 7, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('bd71c2f6cc994ce89f665576daf7db77', '19dd01c0806e4a0981d76d62f78d5552', '分析页', '分析页', 'page', 'fxy', 'fxy/index.vue', '/ybp/fxy', NULL, '0', 'admin', 'StepBackwardOutlined', 8, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('c87da65bcaff4a418098ec647434eb08', '7b22134b42304cec8bb4c825ba75be47', '查询列表', '查询列表', 'page', 'cxlb', 'cxlb/index.vue', '/lby/cxlb', NULL, '0', 'admin', 'StepBackwardOutlined', 13, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('cc111dfbdfb2442aad2a397a89fbbbeb', '80981da36e814adaa5c3c1648c4c1f62', '表', '表', 'page', 'b', 'b/index.vue', '/lby/bzlb/lb/b', NULL, '0', 'admin', 'StepBackwardOutlined', 15, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('cfc9411130704e9ea1ae6ce3a5ef8581', '6dba376cc8a543109c30f484c240fd30', '高级表单', '高级表单', 'page', 'gjbd', 'gjbd/index.vue', '/bdy/gjbd', NULL, '0', 'admin', 'StepBackwardOutlined', 10, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('dd8a7f5c42c74d3c86b6821c279654eb', '7b22134b42304cec8bb4c825ba75be47', '标准列表', '标准列表', 'menu', 'bzlb', NULL, '/lby/bzlb', NULL, '0', 'admin', 'StepBackwardOutlined', 14, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('ea37b1ef262e4f86aa1dc5bbd43e62c4', '0', '工作台', '工作台', 'page', 'gzt', 'gzt/index.vue', '/gzt', NULL, '0', 'admin', 'StepBackwardOutlined', 4, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
+INSERT INTO `sys_menu` VALUES ('eb8819f1cdca4d11bb2910a806f85d81', '05919353547b4f0887a9318ee73b832f', '控', '控', 'page', 'k', 'k/index.vue', '/ybp/jky/k', NULL, '0', 'admin', 'StepBackwardOutlined', 5, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, '1', NULL);
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -141,7 +142,7 @@ CREATE TABLE `sys_star_view`  (
 INSERT INTO `sys_star_view` VALUES ('1', '/bdy/gjbd', '0', '0');
 INSERT INTO `sys_star_view` VALUES ('1', '/bdy/jcbd', '0', '0');
 INSERT INTO `sys_star_view` VALUES ('1', '/gzt', '0', '1');
-INSERT INTO `sys_star_view` VALUES ('1', '/gzt/gztzym', '1', '0');
+INSERT INTO `sys_star_view` VALUES ('1', '/gzt/gztzym', '0', '0');
 INSERT INTO `sys_star_view` VALUES ('1', '/lby/bzlb/lb/b', '0', '1');
 INSERT INTO `sys_star_view` VALUES ('1', '/lby/cxlb', '0', '1');
 INSERT INTO `sys_star_view` VALUES ('1', '/lby/kplb', '0', '0');

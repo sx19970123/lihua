@@ -39,7 +39,6 @@ public class RouterVO implements Serializable {
     // page类型数据从父级到子节点的路由地址拼接
     private String key;
 
-
     // 子菜单 / 子页面
     private List<RouterVO> children;
 

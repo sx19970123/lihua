@@ -4,7 +4,8 @@ interface StarViewType {
     label: string,
     routerPathKey?: string | null,
     star: boolean | null,
-    static?: boolean | null
+    static?: boolean | null,
+    skip?: boolean
 }
 
 interface RecentType {

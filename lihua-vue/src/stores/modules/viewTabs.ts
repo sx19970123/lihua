@@ -69,16 +69,18 @@ export const useViewTabsStore = defineStore('viewTabs',{
         getTabByIndex(index: number) {
             return this.$state.viewTabs[index]
         },
-        // 选中tab页
-        selectedViewTab(key: string) {
-            const tab = this.getTotalTabByKey(key)
-            // 包含
-            if (!this.isIncludeViewTabs(key)) {
-                this.addViewTab(tab)
+        // 选中tab页，skip跳过不进行view-tab 管理
+        selectedViewTab(key: string,skip: boolean) {
+            if (skip) {
+                const tab = this.getTotalTabByKey(key)
+                // 包含
+                if (!this.isIncludeViewTabs(key)) {
+                    this.addViewTab(tab)
+                }
+                this.$state.activeKey = key
+                // 缓存数据
+                handleAddTabCache(tab)
             }
-            this.$state.activeKey = key
-            // 缓存数据
-            handleAddTabCache(tab)
         },
         // 新开tab页
         addViewTab(tab: StarViewType) {

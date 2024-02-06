@@ -38,7 +38,7 @@ const router = useRouter()
  */
 const init = () => {
   // 默认选中当前
-  viewTabsStore.selectedViewTab(route.path)
+  viewTabsStore.selectedViewTab(route.path,!route?.meta?.skip)
   // 初始化数据
   const viewTabs = computed(() => viewTabsStore.viewTabs)
   // 选中tab页
@@ -55,7 +55,7 @@ const {viewTabs, activeKey} = init()
  * 监听路由变化进行切换 tab
  */
 watch(() => route.path,(value) => {
-  viewTabsStore.selectedViewTab(value)
+  viewTabsStore.selectedViewTab(value,!route?.meta?.skip)
 })
 
 /**

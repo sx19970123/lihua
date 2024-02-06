@@ -7,19 +7,20 @@ import type {Route} from "ant-design-vue/es/breadcrumb/Breadcrumb";
  * 定义路由配置对象
  */
 interface RouteConfig {
-    path: string,
-    component?: Component,
-    name?: string,
-    components?: { [name: string]: Component },
-    redirect?: string | Location | Function,
-    alias?: string | Array<string>,
-    children?: Array<RouteConfig>,
-    meta?: MetaConfig,
+  path: string,
+  component?: Component,
+  name?: string,
+  components?: { [name: string]: Component },
+  redirect?: string | Location | Function,
+  alias?: string | Array<string>,
+  children?: Array<RouteConfig>,
+  meta?: MetaConfig,
 
-    beforeEnter?: (to: Route, from: Route, next: Function) => void,
-    props?: boolean | Object | Function,
-    caseSensitive?: boolean,
-    pathToRegexpOptions?: Object
+  beforeEnter?: (to: Route, from: Route, next: Function) => void,
+  props?: boolean | Object | Function,
+  caseSensitive?: boolean,
+  pathToRegexpOptions?: Object,
+  hidden?: boolean
 }
 
 /**
@@ -32,15 +33,21 @@ interface RouteConfig {
  * menuShow：
  */
 interface MetaConfig {
-    noCache?: boolean,
-    label?: string,
-    title?: string,
-    icon?: string | Component,
-    affix?: boolean,
-    viewTabSort: number
+  noCache?: boolean,
+  label?: string,
+  title?: string,
+  icon?: string | Component,
+  affix?: boolean,
+  viewTabSort: number,
+  skip?: boolean
 }
 
-const routers:RouteConfig = [
+const routers = [
+  {
+    path: '',
+    redirect: '/index',
+    hidden: true,
+  },
   {
     path: '',
     component: Layout,
@@ -48,13 +55,13 @@ const routers:RouteConfig = [
       {
         path: '/index',
         component: () => import("@/views/index.vue"),
-          children: [
-              {
-                  path: 'c',
-                  component: () => import("@/views/index/c/index.vue"),
-                  meta: { label: '首页的孩子', icon: 'FastBackwardOutlined', affix: false, viewTabSort: 1 }
-              }
-          ],
+        children: [
+          {
+            path: 'c',
+            component: () => import("@/views/index/c/index.vue"),
+            meta: { label: '首页的孩子', icon: 'FastBackwardOutlined', affix: false, skip: true, viewTabSort: 1 }
+          }
+        ],
         meta: { label: '首页', icon: 'FastBackwardOutlined', affix: true, viewTabSort: 1 }
 
       }
@@ -65,7 +72,12 @@ const routers:RouteConfig = [
     name: 'Login',
     hidden: true,
     component: () => import("@/views/login.vue")
-  }
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    component: () => import("@/views/error/404.vue"),
+    hidden: true
+  },
 ]
 
 const router = createRouter({
