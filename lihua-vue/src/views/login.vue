@@ -45,7 +45,7 @@ const userLogin = () => {
     const userStore = useUserStore();
     userStore.login(loginForm.username ,loginForm.password).then((resp) => {
       if (resp.code === 200) {
-        router.push("/")
+        router.push("/index")
       } else {
         message.error(resp.msg)
       }

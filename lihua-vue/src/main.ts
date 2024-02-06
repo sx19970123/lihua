@@ -20,7 +20,7 @@ app.use(router)
 app.use(Antd)
 
 for (const i in icons) {
-    app.component(i,(Icons as any)[i])
+    app.component(i,(Icons)[i])
 }
 
 

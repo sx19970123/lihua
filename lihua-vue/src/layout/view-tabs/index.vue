@@ -29,6 +29,7 @@ import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
 import {computed, watch} from "vue";
 import { useRoute,useRouter } from "vue-router";
 import {useViewTabsStore} from "@/stores/modules/viewTabs";
+import type {StarViewType} from "@/types/starView";
 const viewTabsStore = useViewTabsStore()
 const route = useRoute()
 const router = useRouter()
@@ -94,7 +95,7 @@ const closeTab = (key: string) => {
  * 路由跳转
  * @param tab
  */
-const routeSkip = (tab: any) => {
+const routeSkip = (tab: StarViewType) => {
   const { routerPathKey , query } = tab
   if (query) {
     router.push({

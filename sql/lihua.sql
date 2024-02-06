@@ -11,7 +11,7 @@
  Target Server Version : 80033 (8.0.33)
  File Encoding         : 65001
 
- Date: 25/01/2024 16:52:42
+ Date: 06/02/2024 09:13:56
 */
 
 SET NAMES utf8mb4;
@@ -50,9 +50,11 @@ CREATE TABLE `sys_menu`  (
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
+INSERT INTO `sys_menu` VALUES ('031f293f02c84e4d9e27f866e18bc059', 'ea37b1ef262e4f86aa1dc5bbd43e62c4', '工作台的子页面', '工作台的子页面', 'page', 'gztzym', 'gzt/zym.vue', '/gzt/gztzym', NULL, '0', 'admin', 'StepBackwardOutlined', 1, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
 INSERT INTO `sys_menu` VALUES ('05919353547b4f0887a9318ee73b832f', '19dd01c0806e4a0981d76d62f78d5552', '监控页', '监控页', 'menu', 'jky', '/system/menu/index.vue', '/ybp/jky', NULL, '0', 'admin', 'StepBackwardOutlined', 6, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
 INSERT INTO `sys_menu` VALUES ('0fe0edb2374e4e99a4d3266fe1406557', '6dba376cc8a543109c30f484c240fd30', '基础表单', '基础表单', 'page', 'jcbd', 'jcbd/index.vue', '/bdy/jcbd', NULL, '0', 'admin', 'StepBackwardOutlined', 9, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
 INSERT INTO `sys_menu` VALUES ('19dd01c0806e4a0981d76d62f78d5552', '0', '仪表盘', '仪表盘', 'menu', '/ybp', NULL, '/ybp', NULL, '0', 'admin', 'StepBackwardOutlined', 1, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
+INSERT INTO `sys_menu` VALUES ('458c960671c34ef5a143d200b4f171ce', '0', '没子集的空目录', '没子集的空目录', 'menu', 'kml', NULL, '/kml', NULL, '0', 'admin', 'StepBackwardOutlined', 1, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
 INSERT INTO `sys_menu` VALUES ('6dba376cc8a543109c30f484c240fd30', '0', '表单页', '表单页', 'menu', '/bdy', NULL, '/bdy', NULL, '0', 'admin', 'StepBackwardOutlined', 2, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
 INSERT INTO `sys_menu` VALUES ('7b22134b42304cec8bb4c825ba75be47', '0', '列表页', '列表页', 'menu', '/lby', NULL, '/lby', NULL, '0', 'admin', 'StepBackwardOutlined', 3, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
 INSERT INTO `sys_menu` VALUES ('80981da36e814adaa5c3c1648c4c1f62', 'dd8a7f5c42c74d3c86b6821c279654eb', '列表', '列表', 'menu', 'lb', NULL, '/lby/bzlb/lb', NULL, '0', 'admin', 'StepBackwardOutlined', 16, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
@@ -102,9 +104,11 @@ CREATE TABLE `sys_role_menu`  (
 -- ----------------------------
 -- Records of sys_role_menu
 -- ----------------------------
+INSERT INTO `sys_role_menu` VALUES ('1', '031f293f02c84e4d9e27f866e18bc059');
 INSERT INTO `sys_role_menu` VALUES ('1', '05919353547b4f0887a9318ee73b832f');
 INSERT INTO `sys_role_menu` VALUES ('1', '0fe0edb2374e4e99a4d3266fe1406557');
 INSERT INTO `sys_role_menu` VALUES ('1', '19dd01c0806e4a0981d76d62f78d5552');
+INSERT INTO `sys_role_menu` VALUES ('1', '458c960671c34ef5a143d200b4f171ce');
 INSERT INTO `sys_role_menu` VALUES ('1', '6dba376cc8a543109c30f484c240fd30');
 INSERT INTO `sys_role_menu` VALUES ('1', '7b22134b42304cec8bb4c825ba75be47');
 INSERT INTO `sys_role_menu` VALUES ('1', '80981da36e814adaa5c3c1648c4c1f62');
@@ -118,6 +122,32 @@ INSERT INTO `sys_role_menu` VALUES ('1', 'dd8a7f5c42c74d3c86b6821c279654eb');
 INSERT INTO `sys_role_menu` VALUES ('1', 'ea37b1ef262e4f86aa1dc5bbd43e62c4');
 INSERT INTO `sys_role_menu` VALUES ('1', 'eb8819f1cdca4d11bb2910a806f85d81');
 INSERT INTO `sys_role_menu` VALUES ('1', 'f06e86400f074c1496be42fb22113c24');
+
+-- ----------------------------
+-- Table structure for sys_star_view
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_star_view`;
+CREATE TABLE `sys_star_view`  (
+  `user_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
+  `router_path_key` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '路由路径key',
+  `affix` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否固定（1固定，0不固定）',
+  `star` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否收藏（1收藏，0不收藏）',
+  PRIMARY KEY (`user_id`, `router_path_key`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户菜单收藏管理表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_star_view
+-- ----------------------------
+INSERT INTO `sys_star_view` VALUES ('1', '/bdy/gjbd', '0', '0');
+INSERT INTO `sys_star_view` VALUES ('1', '/bdy/jcbd', '0', '0');
+INSERT INTO `sys_star_view` VALUES ('1', '/gzt', '0', '1');
+INSERT INTO `sys_star_view` VALUES ('1', '/gzt/gztzym', '1', '0');
+INSERT INTO `sys_star_view` VALUES ('1', '/lby/bzlb/lb/b', '0', '1');
+INSERT INTO `sys_star_view` VALUES ('1', '/lby/cxlb', '0', '1');
+INSERT INTO `sys_star_view` VALUES ('1', '/lby/kplb', '0', '0');
+INSERT INTO `sys_star_view` VALUES ('1', '/ybp/fxy', '0', '0');
+INSERT INTO `sys_star_view` VALUES ('1', '/ybp/hyy', '0', '1');
+INSERT INTO `sys_star_view` VALUES ('1', '/ybp/jky/k', '0', '0');
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -160,24 +190,5 @@ CREATE TABLE `sys_user_role`  (
 -- Records of sys_user_role
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES ('1', '1');
-
--- ----------------------------
--- Table structure for sys_user_star_view
--- ----------------------------
-DROP TABLE IF EXISTS `sys_user_star_view`;
-CREATE TABLE `sys_user_star_view`  (
-  `user_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
-  `router_path_key` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '路由路径key',
-  `affix` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否固定（1固定，0不固定）',
-  `star` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否收藏（1收藏，0不收藏）',
-  PRIMARY KEY (`user_id`, `router_path_key`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户菜单收藏管理表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of sys_user_star_view
--- ----------------------------
-INSERT INTO `sys_user_star_view` VALUES ('1', '/bdy/gjbd', '1', '1');
-INSERT INTO `sys_user_star_view` VALUES ('1', '/lby/bzlb/lb/b', '1', '1');
-INSERT INTO `sys_user_star_view` VALUES ('1', '/ybp/jky/k', '1', '1');
 
 SET FOREIGN_KEY_CHECKS = 1;

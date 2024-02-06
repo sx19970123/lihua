@@ -3,8 +3,12 @@ import { defineStore } from "pinia";
 import { login } from "@/api/system/login";
 import { getUserInfo } from "@/api/system/user";
 
+import type { ResponseType } from "@/types/globalType";
+import type {UserInfoType} from "@/types/user";
+
 import token from "@/utils/token";
-const {setToken} = token
+
+const { setToken } = token
 /**
  * 定义 userStore 的用户信息
  */
@@ -45,9 +49,9 @@ export const useUserStore = defineStore('user', {
         // 用户登录
         login(username: string, password: string, code?: string)  {
             return new Promise((resolve, reject) => {
-                login(username,password,code).then((resp:any) => {
+                login(username,password,code).then((resp: ResponseType<string>) => {
                     if (resp.code === 200) {
-                        setToken( resp.data)
+                        setToken(resp.data)
                     }
                     resolve(resp)
                 }).catch(error => {
@@ -58,14 +62,14 @@ export const useUserStore = defineStore('user', {
         // 获取用户信息
         getUserInfo () {
             return new Promise((resolve, reject) => {
-                getUserInfo().then(resp => {
+                getUserInfo().then((resp: ResponseType<UserInfoType>) => {
                     this.$state.userInfo = resp.data
                     this.$state.name = resp.data.name
                     this.$state.avatar = resp.data.avatar
                     this.$state.username = resp.data.username
                     this.$state.roles = resp.data.roles
                     this.$state.permissions = resp.data.permissions
-                    resolve(resp.data)
+                    resolve(resp)
                 }).catch(err => {
                     reject(err)
                 })

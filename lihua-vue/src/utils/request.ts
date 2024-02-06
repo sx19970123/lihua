@@ -27,7 +27,6 @@ service.interceptors.response.use(resp => {
     if (data.code === 502 || data.code === 503) {
         removeToken()
     }
-
     return Promise.resolve(data);
 })
 

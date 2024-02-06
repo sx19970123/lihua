@@ -69,6 +69,7 @@
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import {ref, watch} from "vue";
 import {format, relativeDate} from "@/utils/date";
+import type {StarViewType} from "@/types/starView";
 const viewTabsStore = useViewTabsStore()
 const emits = defineEmits(['routeSkip'])
 /**
@@ -115,14 +116,14 @@ watch(() => viewTabsStore.viewTabs, (value) => {
 },{ deep: true })
 
 // 根据监听结果进行数据处理
-const handleRecentList = (viewTabs:Array<any>) => {
+const handleRecentList = (viewTabs:Array<StarViewType>) => {
   const recentTabsJson = localStorage.getItem(viewTabsStore.$state.tabCacheKey)
   if (recentTabsJson) {
     const recentTabs =  JSON.parse(recentTabsJson)
     // 当前tab页有数据
     if (viewTabs && viewTabs.length > 0) {
       const actPathList = viewTabs.map(tab => tab.routerPathKey)
-      recentData.value = recentTabs.filter((tab: any) => !actPathList.includes(tab.path))
+      recentData.value = recentTabs.filter((tab: StarViewType) => !actPathList.includes(tab.path))
     } else {
       recentData.value = recentTabs
     }
@@ -141,8 +142,8 @@ watch(()=> viewTabsStore.totalViewTabs,(value)=> {
 },{deep: true})
 
 // 根据监听结果进行数据处理
-const handleStarList = (totalViewTabs: Array<any>) => {
-  starData.value = totalViewTabs.filter((tab: any) => tab.star)
+const handleStarList = (totalViewTabs: Array<StarViewType>) => {
+  starData.value = totalViewTabs.filter((tab: StarViewType) => tab.star)
 }
 // 第一次加载页面时的处理
 handleStarList(viewTabsStore.totalViewTabs)

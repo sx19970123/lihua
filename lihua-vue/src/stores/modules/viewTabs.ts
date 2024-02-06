@@ -2,12 +2,11 @@ import { defineStore } from "pinia";
 import type {RouteRecordRaw} from "vue-router";
 import Layout from "@/layout/index.vue";
 import { format } from "@/utils/date";
-import { useUserStore } from "@/stores/modules/user";
-
+import type { StarViewType,RecentType } from "@/types/starView"
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
-        const viewTabs: Array<any> = []
-        const totalViewTabs: Array<any> = []
+        const viewTabs: Array<StarViewType> = []
+        const totalViewTabs: Array<StarViewType> = []
         const activeKey: string = ''
         const tabCacheKey: string = ''
         return {
@@ -23,13 +22,13 @@ export const useViewTabsStore = defineStore('viewTabs',{
          * @param starViewVOList
          * @param staticRoutes
          */
-        initTotalViewTabs(starViewVOList: Array<any>, staticRoutes: readonly RouteRecordRaw[]): void {
+        initTotalViewTabs(starViewVOList: Array<StarViewType>, staticRoutes: readonly RouteRecordRaw[]): void {
             // 过滤获取 Layout 为父级的静态路由
             let layoutRoutes =  staticRoutes.filter(route => route.component === Layout)
             // 生成 key
             layoutRoutes = generateKey(layoutRoutes,'',false)
             // 去除父级节点获取子路由组件
-            const hasKeyRoutComponentList: Array<any> = []
+            const hasKeyRoutComponentList: Array<StarViewType> = []
             getChildren(layoutRoutes,hasKeyRoutComponentList)
             // 根据定义的 viewTabSort 进行排序
             hasKeyRoutComponentList.sort((a, b) => b.meta.viewTabSort - a.meta.viewTabSort)
@@ -54,20 +53,20 @@ export const useViewTabsStore = defineStore('viewTabs',{
         },
 
         // key值是否包含在ViewTabs之中
-        isIncludeViewTabs(key: string): boolean {
+        isIncludeViewTabs(key: string) {
             return this.getIndex(key) !== -1
         },
         // 获取元素在数组中的索引值
-        getIndex(key: string): number {
+        getIndex(key: string) {
             return this.$state.viewTabs.findIndex(tab => tab.routerPathKey === key)
         },
         // 根据key在total中获取tab对象
-        getTotalTabByKey(key: string): any {
+        getTotalTabByKey(key: string) {
             const index = this.$state.totalViewTabs.findIndex(tab => tab.routerPathKey === key)
             return this.$state.totalViewTabs[index]
         },
         // 根据索引获取元素
-        getTabByIndex(index: number): any {
+        getTabByIndex(index: number) {
             return this.$state.viewTabs[index]
         },
         // 选中tab页
@@ -82,7 +81,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
             handleAddTabCache(tab)
         },
         // 新开tab页
-        addViewTab(tab: any) {
+        addViewTab(tab: StarViewType) {
             this.$state.viewTabs.push(tab)
         },
         // 关闭tab页
@@ -92,45 +91,45 @@ export const useViewTabsStore = defineStore('viewTabs',{
         // 关闭左边
         closeLeft(key: string) {
             const index:number = this.getIndex(key)
-            const viewTabs:any[] = this.$state.viewTabs
-            const removeArray:any[] = []
+            const viewTabs:StarViewType[] = this.$state.viewTabs
+            const removeArray:StarViewType[] = []
             for (let i = 0; i < index; i++) {
                 if (!viewTabs[i].affix) {
                     removeArray.push(viewTabs[i])
                 }
             }
-            this.$state.viewTabs = viewTabs.filter((tab:any) => !removeArray.includes(tab))
+            this.$state.viewTabs = viewTabs.filter((tab:StarViewType) => !removeArray.includes(tab))
         },
         // 关闭右边
         closeRight(key: string) {
             const index:number = this.getIndex(key)
-            const viewTabs:any[] = this.$state.viewTabs
-            const removeArray:any[] = []
+            const viewTabs:StarViewType[] = this.$state.viewTabs
+            const removeArray:StarViewType[] = []
             for (let i = index + 1; i < viewTabs.length; i++) {
                 if (!viewTabs[i].affix) {
                     removeArray.push(viewTabs[i])
                 }
             }
-            this.$state.viewTabs = viewTabs.filter((tab:any) => !removeArray.includes(tab))
+            this.$state.viewTabs = viewTabs.filter((tab:StarViewType) => !removeArray.includes(tab))
         },
         // 关闭其他
         closeOther(key: string) {
             const index:number = this.getIndex(key)
-            const viewTabs:any[] = this.$state.viewTabs
-            const removeArray:any[] = []
+            const viewTabs:StarViewType[] = this.$state.viewTabs
+            const removeArray:StarViewType[] = []
             for (let i = 0; i < viewTabs.length; i++) {
                 if (!viewTabs[i].affix && i !== index) {
                     removeArray.push(viewTabs[i])
                 }
             }
-            this.$state.viewTabs = viewTabs.filter((tab:any) => !removeArray.includes(tab))
+            this.$state.viewTabs = viewTabs.filter((tab:StarViewType) => !removeArray.includes(tab))
         },
         // 关闭全部
         closeAll() {
             this.$state.viewTabs = this.$state.viewTabs.filter(tab => tab.affix)
         },
         // 传入tab元素，与集合中的元素进行替换
-        replaceByKey(tab: any) {
+        replaceByKey(tab: StarViewType) {
             // 替换viewTabs
             const index = this.$state.viewTabs.findIndex(t => t.routerPathKey === tab.routerPathKey)
             this.$state.viewTabs.splice(index,1, tab)
@@ -139,7 +138,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
             this.$state.totalViewTabs.splice(totalIndex,1, tab)
         },
         // 添加固定，固定到前排
-        affix(tab: any) {
+        affix(tab: StarViewType) {
             const targetIndex = this.$state.viewTabs.filter(t => t.affix).length
             const viewTabs = this.$state.viewTabs
             const index = viewTabs.findIndex(t => t.routerPathKey === tab.routerPathKey)
@@ -147,7 +146,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
             this.$state.viewTabs.splice(targetIndex,0,tab)
         },
         // 取消固定，移动到最后
-        unAffix(tab: any) {
+        unAffix(tab: StarViewType) {
             const viewTabs = this.$state.viewTabs
             const index = viewTabs.findIndex(t => t.routerPathKey === tab.routerPathKey)
             viewTabs.splice(index,1)
@@ -164,8 +163,8 @@ export const useViewTabsStore = defineStore('viewTabs',{
  * 处理 router/index 中静态路由，生成 key （路由path拼接）
  * @param routers
  */
-const generateKey = (routers: Array<any>, key: string, filter: boolean): Array<any> => {
-    let menuShowList
+const generateKey = (routers:readonly RouteRecordRaw[], key: string, filter: boolean): Array<StarViewType> => {
+    let menuShowList: Array<StarViewType>
     if (filter) {
         menuShowList = routers.filter(route => route.hidden !== true)
     } else {
@@ -200,7 +199,7 @@ const generateKey = (routers: Array<any>, key: string, filter: boolean): Array<a
  * @param staticRoutes
  * @param arr
  */
-const getChildren = (staticRoutes: Array<any>, arr: Array<any>):void => {
+const getChildren = (staticRoutes: readonly RouteRecordRaw[], arr:  Array<StarViewType>): void => {
     if (staticRoutes) {
         staticRoutes.forEach(route => {
             if (route.children && route.children.length > 0) {
@@ -219,7 +218,7 @@ const getChildren = (staticRoutes: Array<any>, arr: Array<any>):void => {
  * 向 localStorage 中缓存
  * @param tab
  */
-const handleAddTabCache = (tab: any) => {
+const handleAddTabCache = (tab: StarViewType) => {
     const viewTabStore =  useViewTabsStore()
     const recentTabs = localStorage.getItem(viewTabStore.$state.tabCacheKey)
     // 第一次新建缓存集合
@@ -234,7 +233,7 @@ const handleAddTabCache = (tab: any) => {
         ]))
     } else {
         const hisArray = JSON.parse(recentTabs)
-        const index = hisArray.findIndex((his: any) => his.path === tab.routerPathKey)
+        const index = hisArray.findIndex((his: RecentType) => his.path === tab.routerPathKey)
         // 删除已存在元素
         if (index !== -1) {
             hisArray.splice(index,1)

@@ -14,7 +14,7 @@ interface RouteConfig {
     redirect?: string | Location | Function,
     alias?: string | Array<string>,
     children?: Array<RouteConfig>,
-    meta?: any,
+    meta?: MetaConfig,
 
     beforeEnter?: (to: Route, from: Route, next: Function) => void,
     props?: boolean | Object | Function,
@@ -40,7 +40,7 @@ interface MetaConfig {
     viewTabSort: number
 }
 
-const routers = [
+const routers:RouteConfig = [
   {
     path: '',
     component: Layout,

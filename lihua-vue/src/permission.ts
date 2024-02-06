@@ -7,6 +7,11 @@ import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import { useThemeStore } from "@/stores/modules/theme";
 import Layout from "@/layout/index.vue";
 import MiddleView from "@/components/middle-view/index.vue"
+
+import type { ResponseType } from "@/types/globalType";
+import type { UserInfoType } from "@/types/user";
+import type {RouterType} from "@/types/router";
+
 import token from "@/utils/token"
 const { getToken } = token
 // 获取 views 下的所有 vue 组件
@@ -26,16 +31,16 @@ router.beforeEach((to,from,next) => {
         const useTheme = useThemeStore()
         // 判断是否拉取了用户信息
         if (Object.keys(userStore.userInfo).length === 0) {
-            userStore.getUserInfo().then((resp:any) => {
-                const metaRouterList =  resp.routerList
+            userStore.getUserInfo().then((resp: ResponseType<UserInfoType>) => {
+                const metaRouterList = resp.data.routerList
                 const staticRoutes = router.options.routes
                 // 初始化动态路由
                 initDynamicRouter(metaRouterList)
                 // 初始化用户菜单数据
                 usePermission.initMenu(metaRouterList, staticRoutes)
                 // 初始化totalViewTabs数据
-                useViewTabs.initTotalViewTabs(resp.starViewVOList, staticRoutes)
-                useViewTabs.setViewCacheKey(resp.username)
+                useViewTabs.initTotalViewTabs(resp.data.starViewVOList, staticRoutes)
+                useViewTabs.setViewCacheKey(resp.data.username)
                 useTheme.init()
                 // hack方法 确保addRoutes已完成
                 next({...to,replace: true})
@@ -63,7 +68,7 @@ router.afterEach((to,from) => { NProgress.done() })
  * 初始化动态路由
  * @param metaRouterList
  */
-const initDynamicRouter = (metaRouterList: Array<any>): void => {
+const initDynamicRouter = (metaRouterList: Array<RouterType>): void => {
     // 处理各个层级 Component
     handleRouterComponent (metaRouterList)
     // 顶级无父组件目录、页面添加layout父级
@@ -88,7 +93,7 @@ const initDynamicRouter = (metaRouterList: Array<any>): void => {
  * 处理各个层级 Component
  * @param metaRouterList
  */
-const handleRouterComponent = (metaRouterList: Array<any>) => {
+const handleRouterComponent = (metaRouterList: Array<RouterType>) => {
     if (metaRouterList && metaRouterList.length > 0) {
         metaRouterList.forEach(route => {
             if (route.children && route.children.length > 0) {
@@ -115,7 +120,7 @@ const handleRouterComponent = (metaRouterList: Array<any>) => {
     }
 }
 
-const handleSetComponent = (route: any) => {
+const handleSetComponent = (route: RouterType) => {
     for (let path in modules) {
         const dir = path.split('views/')[1]
         if (dir === route.component) {

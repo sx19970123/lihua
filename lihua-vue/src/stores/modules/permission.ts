@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 import type { RouteRecordRaw } from "vue-router";
+import type {RouterType} from "@/types/router";
 
 
 export const usePermissionStore = defineStore('permission',{
     state: ()=> {
-        const sidebarRouters: Array<any> = []
+        const sidebarRouters: Array<RouterType> = []
         const collapsed: boolean = true
         return {
             sidebarRouters,
@@ -12,7 +13,7 @@ export const usePermissionStore = defineStore('permission',{
         }
     },
     actions: {
-        initMenu(metaRouterList: Array<any>, staticRoutes: readonly RouteRecordRaw[]): void {
+        initMenu(metaRouterList: Array<RouterType>, staticRoutes: readonly RouteRecordRaw[]): void {
             this.$state.sidebarRouters = init(metaRouterList,staticRoutes)
         },
         openCollapsed() {
@@ -24,16 +25,16 @@ export const usePermissionStore = defineStore('permission',{
     },
 })
 
-const init = (metaRouterList: Array<any>, staticRoutes: readonly RouteRecordRaw[]) => {
-    const staticRouters = generateKey(staticRoutes as Array<any>,'',true)
+const init = (metaRouterList: Array<RouterType>, staticRoutes: readonly RouteRecordRaw[]): Array<RouterType> => {
+    const staticRouters = generateKey(staticRoutes ,'',true)
     return handleOnlyChild(staticRouters).concat(metaRouterList)
 }
 /**
  * 处理 router/index 中静态路由，生成 key （路由path拼接）
  * @param routers
  */
-const generateKey = (routers: Array<any>, key: string, filter: boolean): Array<any> => {
-    let menuShowList
+const generateKey = (routers: readonly RouteRecordRaw[], key: string, filter: boolean): Array<RouterType> => {
+    let menuShowList: RouterType
     if (filter) {
         menuShowList = routers.filter(route => route.hidden !== true)
     } else {
@@ -66,8 +67,8 @@ const generateKey = (routers: Array<any>, key: string, filter: boolean): Array<a
 /**
  * 处理只有一个子节点的静态路由
  */
-const handleOnlyChild = (routers: Array<any>): Array<any> => {
-    const array:Array<any> = []
+const handleOnlyChild = (routers: Array<RouterType>): Array<RouterType> => {
+    const array:Array<RouterType> = []
     if (routers) {
         routers.forEach(menu => {
             if (menu.children && menu.children.length === 1) {
