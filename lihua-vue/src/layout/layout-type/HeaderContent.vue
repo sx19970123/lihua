@@ -46,7 +46,7 @@ const themeStore = useThemeStore()
   padding-right: 0;
   backdrop-filter: blur(6px);
   box-shadow: 2px 0 8px rgba(29,35,41,0.1);
-  line-height: 48px;
+  line-height: 64px;
 }
 </style>
 

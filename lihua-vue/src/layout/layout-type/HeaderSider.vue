@@ -46,7 +46,8 @@ const permission = usePermissionStore()
 <style scoped>
 
 .logo {
-  padding: 0 0 0 16px;
+  padding-left: 16px;
+  min-width: 200px;
 }
 
 .hsr-layout-header {

@@ -109,7 +109,7 @@
     }
     .hct-view-tabs {
         position: sticky;
-        top: 48px;
+        top: 64px;
         z-index: 1;
         backdrop-filter: blur(6px);
     }

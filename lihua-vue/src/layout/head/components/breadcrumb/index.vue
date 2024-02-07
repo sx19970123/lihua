@@ -1,56 +1,29 @@
 <template>
-  <div>
-    <a-breadcrumb :routes="routes">
-      <template #itemRender="{ route, paths }">
-        <span v-if="routes.indexOf(route) === routes.length - 1">
-          {{ route.breadcrumbName }}
-        </span>
-        <router-link v-else :to="`${basePath}/${paths.join('/')}`">
-          {{ route.breadcrumbName }}
-        </router-link>
-      </template>
+    <a-breadcrumb :routes="pageRoute" v-if="pageRoute.length > 1">
+        <template #itemRender="{route}">
+           <span v-if="pageRoute.indexOf(route) === pageRoute.length - 1">
+            {{ route.meta.label }}
+            </span>
+            <router-link v-else :to="route">
+              {{ route.meta.label }}
+            </router-link>
+        </template>
     </a-breadcrumb>
-  </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
+import {useRoute} from "vue-router";
+import Layout from "@/layout/index.vue"
+import MiddleView from "@/components/middle-view/index.vue"
+import {ref, watch} from "vue";
+const route = useRoute()
 
-interface Route {
-  path: string;
-  breadcrumbName: string;
-  children?: Array<{
-    path: string;
-    breadcrumbName: string;
-  }>;
-}
-const basePath = '/components/breadcrumb';
-const routes = ref<Route[]>([
-  {
-    path: 'index',
-    breadcrumbName: 'home',
-  },
-  {
-    path: 'first',
-    breadcrumbName: 'first',
-    children: [
-      {
-        path: '/general',
-        breadcrumbName: 'General',
-      },
-      {
-        path: '/layout',
-        breadcrumbName: 'Layout',
-      },
-      {
-        path: '/navigation',
-        breadcrumbName: 'Navigation',
-      },
-    ],
-  },
-  {
-    path: 'second',
-    breadcrumbName: 'second',
-  },
-]);
+// 初始化
+const pageRoute = ref(route.matched.filter(match => match.components?.default !== Layout && match.components?.default !== MiddleView));
+pageRoute.value.forEach(r => r.children = [])
+
+// 监听路由变化
+watch(() => route.matched,(value) => {
+  pageRoute.value = value.filter(match => match.components?.default !== Layout && match.components?.default !== MiddleView)
+  pageRoute.value.forEach(r => r.children = [])
+})
 </script>
-
