@@ -1,5 +1,6 @@
-import axios from "axios"
+import axios, {type AxiosRequestConfig, type AxiosResponse} from 'axios';
 import token from "@/utils/token"
+import type {ResponseType} from "@/api/type"
 const { getToken , removeToken } = token
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
@@ -21,14 +22,28 @@ service.interceptors.request.use(config => {
 })
 
 // 响应拦截器
-service.interceptors.response.use(resp => {
+service.interceptors.response.use((resp) => {
     const data = resp.data
+
     // token 失效或解析异常，删除缓存token
     if (data.code === 502 || data.code === 503) {
         removeToken()
     }
-    return Promise.resolve(data);
+
+    return resp;
 })
 
 
-export default service;
+// 数据返回统一封装样式
+export default (config: AxiosRequestConfig) => {
+    return new Promise<ResponseType<any> & Blob>((resolve, reject) => {
+        service
+          .request<ResponseType<any> & Blob>(config)
+          .then((response: AxiosResponse<ResponseType<any> & Blob>) => {
+              resolve(response.data)
+          })
+          .catch((err) => {
+              reject(err);
+          });
+    });
+};

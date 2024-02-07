@@ -13,6 +13,7 @@ import type { UserInfoType } from "@/api/system/user/type/user";
 import type {RouterType} from "@/api/system/user/type/router";
 
 import token from "@/utils/token"
+import type {RouteRecordRaw} from "vue-router";
 const { getToken } = token
 // 获取 views 下的所有 vue 组件
 const modules = import.meta.glob("./views/**/*.vue")
@@ -32,15 +33,15 @@ router.beforeEach((to,from,next) => {
         // 判断是否拉取了用户信息
         if (Object.keys(userStore.userInfo).length === 0) {
             userStore.getUserInfo().then((resp: ResponseType<UserInfoType>) => {
-                const metaRouterList = resp.data.routerList
+                const metaRouterList = resp.data?.routerList || []
                 const staticRoutes = router.options.routes
                 // 初始化动态路由
                 initDynamicRouter(metaRouterList)
                 // 初始化用户菜单数据
-                usePermission.initMenu(metaRouterList, staticRoutes)
+                usePermission.initMenu(metaRouterList, staticRoutes as any[])
                 // 初始化totalViewTabs数据
-                useViewTabs.initTotalViewTabs(resp.data.starViewVOList, staticRoutes)
-                useViewTabs.setViewCacheKey(resp.data.username)
+                useViewTabs.initTotalViewTabs(resp.data?.starViewVOList || [], staticRoutes as any[])
+                useViewTabs.setViewCacheKey(resp.data?.username || '')
                 useTheme.init()
                 // hack方法 确保addRoutes已完成
                 next({...to,replace: true})
@@ -76,15 +77,15 @@ const initDynamicRouter = (metaRouterList: Array<RouterType>): void => {
         const isPageType = route.type === 'page';
         const isMenuType = route.type === 'menu';
         if ((isPageType || (isMenuType && route.children === null)) && route.parentId === '0') {
-            const parentRoute = {
-                children: [route],
+            const parentRoute: RouteRecordRaw  = {
+                children: [route as any],
                 path: "/",
                 component: Layout,
                 name: route.name + "Parent"
             };
             router.addRoute(parentRoute);
         } else {
-            router.addRoute(route);
+            router.addRoute(route as any);
         }
     });
 }

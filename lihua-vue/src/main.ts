@@ -1,4 +1,5 @@
-import {createApp} from 'vue'
+import { createApp } from 'vue'
+import type { Component } from 'vue'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
@@ -10,8 +11,7 @@ import 'ant-design-vue/dist/reset.css';
 // andv 图标
 import * as Icons from "@ant-design/icons-vue";
 import "@/assets/css/index.css"
-
-const icons = Icons
+const icons:Record<string, Component> = Icons
 
 const app = createApp(App)
 

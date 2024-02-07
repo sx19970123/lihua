@@ -9,7 +9,8 @@ export interface RouterType {
     path: string,
     perms: string,
     query: string | null,
-    type: string
+    type: string,
+    danger: boolean
 }
 
 export interface MetaType {

@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import type { RouteRecordRaw } from "vue-router";
 import type {RouterType} from "@/api/system/user/type/router";
 
 
@@ -13,7 +12,7 @@ export const usePermissionStore = defineStore('permission',{
         }
     },
     actions: {
-        initMenu(metaRouterList: Array<RouterType>, staticRoutes: readonly RouteRecordRaw[]): void {
+        initMenu(metaRouterList: Array<RouterType>, staticRoutes: any[]): void {
             this.$state.sidebarRouters = init(metaRouterList,staticRoutes)
         },
         openCollapsed() {
@@ -25,7 +24,7 @@ export const usePermissionStore = defineStore('permission',{
     },
 })
 
-const init = (metaRouterList: Array<RouterType>, staticRoutes: readonly RouteRecordRaw[]): Array<RouterType> => {
+const init = (metaRouterList: Array<RouterType>, staticRoutes: any[]): Array<RouterType> => {
     const staticRouters = generateKey(staticRoutes ,'',true)
     return handleOnlyChild(staticRouters).concat(metaRouterList)
 }
@@ -33,8 +32,8 @@ const init = (metaRouterList: Array<RouterType>, staticRoutes: readonly RouteRec
  * 处理 router/index 中静态路由，生成 key （路由path拼接）
  * @param routers
  */
-const generateKey = (routers: readonly RouteRecordRaw[], key: string, filter: boolean): Array<RouterType> => {
-    let menuShowList: RouterType
+const generateKey = (routers: any[] , key: string, filter: boolean): Array<RouterType> => {
+    let menuShowList: Array<RouterType>
     if (filter) {
         menuShowList = routers.filter(route => route.hidden !== true)
     } else {
@@ -57,7 +56,7 @@ const generateKey = (routers: readonly RouteRecordRaw[], key: string, filter: bo
                 const child = generateKey(menuItem.children, menuItem.key, filter)
                 menuItem.children = child === null ? [] : child
             } else {
-                menuItem.children = null
+                menuItem.children = []
             }
         })
     }

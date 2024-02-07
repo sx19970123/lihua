@@ -1,13 +1,11 @@
 /**
  * 接收接口的返回值
  */
-interface ResponseType<T> {
+export type ResponseType<T> = {
     code: number;
     msg: string;
-    data?: T;
+    data: T;
 }
 
-export {
-    ResponseType
-}
+
 

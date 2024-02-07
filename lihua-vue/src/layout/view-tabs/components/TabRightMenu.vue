@@ -69,7 +69,7 @@
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import {ref, watch} from "vue";
 import {format, relativeDate} from "@/utils/date";
-import type {StarViewType} from "@/api/system/star-view/type/starView";
+import type {RecentType, StarViewType} from "@/api/system/star-view/type/starView";
 const viewTabsStore = useViewTabsStore()
 const emits = defineEmits(['routeSkip'])
 /**
@@ -123,7 +123,7 @@ const handleRecentList = (viewTabs:Array<StarViewType>) => {
     // 当前tab页有数据
     if (viewTabs && viewTabs.length > 0) {
       const actPathList = viewTabs.map(tab => tab.routerPathKey)
-      recentData.value = recentTabs.filter((tab: StarViewType) => !actPathList.includes(tab.path))
+      recentData.value = recentTabs.filter((tab:RecentType) => !actPathList.includes(tab.path))
     } else {
       recentData.value = recentTabs
     }
@@ -158,6 +158,8 @@ const handleTime = (time: string) => {
       return time.substring(11)
     } else if (time.substring(0,10) === relativeDate(new Date(),'yyyy-MM-dd',-1)) {
       return '昨天 ' + time.substring(11)
+    } else if (time.substring(0,10) === relativeDate(new Date(),'yyyy-MM-dd',-2)) {
+      return '前天 ' + time.substring(11)
     } else {
       return time
     }

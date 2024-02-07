@@ -75,7 +75,7 @@ const routers = [
   },
   {
     path: "/:pathMatch(.*)*",
-    component: () => import("@/views/error/404.vue"),
+    component: () => import("@/views/error/404/index.vue"),
     hidden: true
   },
 ]

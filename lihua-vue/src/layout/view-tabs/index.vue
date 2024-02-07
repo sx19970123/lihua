@@ -100,13 +100,13 @@ const routeSkip = (tab: StarViewType) => {
   const { routerPathKey , query } = tab
   if (query) {
     router.push({
-      path: routerPathKey,
+      path: routerPathKey as string,
       query: {
         ... JSON.parse(query)
       }
     })
   } else {
-    router.push(routerPathKey)
+    router.push(routerPathKey as string)
   }
 }
 </script>

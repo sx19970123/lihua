@@ -1,21 +1,18 @@
-interface StarViewType {
+export interface StarViewType {
     affix: boolean,
     icon: string | null,
     label: string,
-    routerPathKey?: string | null,
+    routerPathKey: string,
     star: boolean | null,
     static?: boolean | null,
-    skip?: boolean
+    skip?: boolean,
+    query: string
 }
 
-interface RecentType {
+export interface RecentType {
     openTime: string,
-    icon: string,
+    icon: string | null,
     label: string,
-    path: string
+    path?: string | null
 }
 
-export {
-    StarViewType,
-    RecentType
-}

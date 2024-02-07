@@ -6,3 +6,12 @@ export const getUserInfo = () => {
         method: 'get'
     })
 }
+
+
+export const getImage = () => {
+    return request({
+        url: '/image',
+        method: 'get',
+        responseType: 'blob'
+    })
+}

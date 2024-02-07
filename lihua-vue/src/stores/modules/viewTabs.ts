@@ -3,6 +3,7 @@ import type {RouteRecordRaw} from "vue-router";
 import Layout from "@/layout/index.vue";
 import { format } from "@/utils/date";
 import type { StarViewType,RecentType } from "@/api/system/star-view/type/starView"
+import type {RouterType} from "@/api/system/user/type/router";
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         const viewTabs: Array<StarViewType> = []
@@ -22,13 +23,13 @@ export const useViewTabsStore = defineStore('viewTabs',{
          * @param starViewVOList
          * @param staticRoutes
          */
-        initTotalViewTabs(starViewVOList: Array<StarViewType>, staticRoutes: readonly RouteRecordRaw[]): void {
+        initTotalViewTabs(starViewVOList: Array<StarViewType>, staticRoutes: any[]): void {
             // 过滤获取 Layout 为父级的静态路由
             let layoutRoutes =  staticRoutes.filter(route => route.component === Layout)
             // 生成 key
             layoutRoutes = generateKey(layoutRoutes,'',false)
             // 去除父级节点获取子路由组件
-            const hasKeyRoutComponentList: Array<StarViewType> = []
+            const hasKeyRoutComponentList: Array<any> = []
             getChildren(layoutRoutes,hasKeyRoutComponentList)
             // 根据定义的 viewTabSort 进行排序
             hasKeyRoutComponentList.sort((a, b) => b.meta.viewTabSort - a.meta.viewTabSort)
@@ -41,7 +42,8 @@ export const useViewTabsStore = defineStore('viewTabs',{
                         affix: route.meta.affix,
                         routerPathKey: route.key,
                         star: false,
-                        static: true
+                        static: true,
+                        query: route.meta.query
                     })
                 })
             }
@@ -165,8 +167,8 @@ export const useViewTabsStore = defineStore('viewTabs',{
  * 处理 router/index 中静态路由，生成 key （路由path拼接）
  * @param routers
  */
-const generateKey = (routers:readonly RouteRecordRaw[], key: string, filter: boolean): Array<StarViewType> => {
-    let menuShowList: Array<StarViewType>
+const generateKey = (routers: any[], key: string, filter: boolean): Array<RouterType> => {
+    let menuShowList: any[]
     if (filter) {
         menuShowList = routers.filter(route => route.hidden !== true)
     } else {
@@ -189,7 +191,7 @@ const generateKey = (routers:readonly RouteRecordRaw[], key: string, filter: boo
                 const child = generateKey(menuItem.children, menuItem.key, filter)
                 menuItem.children = child === null ? [] : child
             } else {
-                menuItem.children = null
+                menuItem.children = []
             }
         })
     }
@@ -201,7 +203,7 @@ const generateKey = (routers:readonly RouteRecordRaw[], key: string, filter: boo
  * @param staticRoutes
  * @param arr
  */
-const getChildren = (staticRoutes: readonly RouteRecordRaw[], arr:  Array<StarViewType>): void => {
+const getChildren = (staticRoutes: any[], arr:  Array<StarViewType>): void => {
     if (staticRoutes) {
         staticRoutes.forEach(route => {
             if (route.children && route.children.length > 0) {
@@ -234,7 +236,7 @@ const handleAddTabCache = (tab: StarViewType) => {
             }
         ]))
     } else {
-        const hisArray = JSON.parse(recentTabs)
+        const hisArray: Array<RecentType> = JSON.parse(recentTabs)
         const index = hisArray.findIndex((his: RecentType) => his.path === tab.routerPathKey)
         // 删除已存在元素
         if (index !== -1) {
