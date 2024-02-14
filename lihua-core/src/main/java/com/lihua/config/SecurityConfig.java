@@ -44,7 +44,6 @@ public class SecurityConfig {
         // 配置拦截请求
         http.authorizeHttpRequests(authorizeHttpRequestsCustomizer -> {
             authorizeHttpRequestsCustomizer
-                    .requestMatchers("/image").permitAll()
                     .requestMatchers("/system/login/**").permitAll()
                     .anyRequest().authenticated();
         });

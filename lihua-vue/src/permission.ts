@@ -31,7 +31,7 @@ router.beforeEach((to,from,next) => {
         const useViewTabs = useViewTabsStore()
         const useTheme = useThemeStore()
         // 判断是否拉取了用户信息
-        if (Object.keys(userStore.userInfo).length === 0) {
+        if (userStore.userInfo.id === null) {
             userStore.getUserInfo().then((resp: ResponseType<UserInfoType>) => {
                 const metaRouterList = resp.data?.routerList || []
                 const staticRoutes = router.options.routes

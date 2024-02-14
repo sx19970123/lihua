@@ -1,0 +1,105 @@
+<template>
+  <div>
+    <a-form layout="vertical">
+      <a-typography-title :level="5">暗色模式</a-typography-title>
+      <a-form-item>
+        <head-theme-switch/>
+      </a-form-item>
+      <a-divider/>
+      <a-typography-title :level="5">导航和顶栏</a-typography-title>
+      <a-form-item label="导航类型">
+        <nav-select v-model="themeStore.layoutType" @click="themeStore.changeLayoutType()"/>
+      </a-form-item>
+      <a-form-item label="导航宽度">
+        <a-slider v-model:value="themeStore.siderWith" dots :max="350" :min="80" :step="20" style="width: 230px" :disabled="themeStore.layoutType === 'header-content'"></a-slider>
+      </a-form-item>
+      <a-form-item label="固定头部">
+        <a-switch v-model:checked="themeStore.affixHead" @change="themeStore.changeAffixHead()"></a-switch>
+      </a-form-item>
+      <a-form-item label="多任务栏">
+        <a-switch v-model:checked="themeStore.showViewTags"/>
+      </a-form-item>
+      <a-divider/>
+      <a-typography-title :level="5">系统颜色</a-typography-title>
+      <a-form-item label="主题颜色">
+        <color-select v-model:items="colorList" v-model="themeStore.colorPrimary" @click="themeStore.changeColorPrimary()"/>
+      </a-form-item>
+      <a-form-item label="导航颜色">
+        <a-radio-group v-model:value="themeStore.siderTheme" @change="themeStore.changeSiderTheme()" :disabled="themeStore.dataDark">
+          <a-radio value="light">亮色</a-radio>
+          <a-radio value="dark">暗色</a-radio>
+        </a-radio-group>
+      </a-form-item>
+      <a-divider/>
+      <a-typography-title :level="5">其他设置</a-typography-title>
+      <a-form-item label="磨砂玻璃">
+        <a-switch v-model:checked="themeStore.groundGlass" @change="themeStore.changeGroundGlass"></a-switch>
+      </a-form-item>
+      <a-form-item label="切换动画">
+        <a-select style="width: 200px" v-model:value="themeStore.routeTransition">
+          <a-select-option value="zoom">变焦</a-select-option>
+          <a-select-option value="fade">淡入淡出</a-select-option>
+          <a-select-option value="breathe">呼吸</a-select-option>
+          <a-select-option value="top">上升</a-select-option>
+          <a-select-option value="down">切换</a-select-option>
+          <a-select-option value="switch">交换</a-select-option>
+          <a-select-option value="trick">整活</a-select-option>
+        </a-select>
+      </a-form-item>
+    </a-form>
+  </div>
+
+</template>
+<script setup lang="ts">
+import HeadThemeSwitch from "@/components/layout-type-switch/component/HeadThemeSwitch.vue";
+import ColorSelect from "@/components/color-select/index.vue"
+import NavSelect from "@/components/nav-select/index.vue"
+import { useThemeStore } from "@/stores/modules/theme";
+import {ref, watch} from "vue";
+
+const themeStore = useThemeStore()
+
+const colorList = ref<Array<{name: string,color: string}>>([
+  {
+    name: '拂晓蓝',
+    color: 'rgb(22, 119, 255)',
+  },
+  {
+    name: '薄暮',
+    color: 'rgb(245, 34, 45)',
+  },
+  {
+    name: '火山',
+    color: 'rgb(250, 84, 28)',
+  },
+  {
+    name: '日暮',
+    color: 'rgb(250, 173, 20)',
+  },
+  {
+    name: '明青',
+    color: 'rgb(19, 194, 194)',
+  },
+  {
+    name: '极光绿',
+    color: 'rgb(82, 196, 26)',
+  },
+  {
+    name: '极客蓝',
+    color: 'rgb(47, 84, 235)',
+  },
+  {
+    name: '酱紫',
+    color: 'rgb(114, 46, 209)',
+  },
+])
+
+const primaryColor = ref<string>('rgb(22, 119, 255)')
+
+watch(() => colorList,(value) => {
+  console.log("watch",value)
+},{deep: true})
+</script>
+<style scoped>
+
+</style>

@@ -4,6 +4,7 @@ import Layout from "@/layout/index.vue";
 import { format } from "@/utils/date";
 import type { StarViewType,RecentType } from "@/api/system/star-view/type/starView"
 import type {RouterType} from "@/api/system/user/type/router";
+import Login from "@/views/login.vue";
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         const viewTabs: Array<StarViewType> = []
@@ -75,13 +76,15 @@ export const useViewTabsStore = defineStore('viewTabs',{
         selectedViewTab(key: string,skip: boolean) {
             if (skip) {
                 const tab = this.getTotalTabByKey(key)
-                // 包含
-                if (!this.isIncludeViewTabs(key)) {
-                    this.addViewTab(tab)
+                if (tab) {
+                    // 包含
+                    if (!this.isIncludeViewTabs(key)) {
+                        this.addViewTab(tab)
+                    }
+                    this.$state.activeKey = key
+                    // 缓存数据
+                    handleAddTabCache(tab)
                 }
-                this.$state.activeKey = key
-                // 缓存数据
-                handleAddTabCache(tab)
             }
         },
         // 新开tab页

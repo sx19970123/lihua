@@ -37,8 +37,18 @@ const router = useRouter()
  * 初始化数据及变量
  */
 const init = () => {
-  // 默认选中当前
-  viewTabsStore.selectedViewTab(route.path,!route?.meta?.skip)
+  if (route?.meta?.skip) {
+    // 当前组件为跳过，默认选中其父组件
+    const unSkipList =  route.matched.filter(item => !item?.meta?.skip && item.path !== '/')
+    if (unSkipList) {
+      // 选中接收view-tabs托管的父组件
+      viewTabsStore.selectedViewTab(unSkipList[unSkipList.length - 1].path, true)
+    }
+  } else {
+    // 选中当前
+    viewTabsStore.selectedViewTab(route.path,false)
+  }
+
   // 初始化数据
   const viewTabs = computed(() => viewTabsStore.viewTabs)
   // 选中tab页
@@ -55,7 +65,6 @@ const {viewTabs, activeKey} = init()
  * 监听路由变化进行切换 tab
  */
 watch(() => route.path,(value) => {
-  console.log(route?.meta)
   viewTabsStore.selectedViewTab(value,!route?.meta?.skip)
 })
 

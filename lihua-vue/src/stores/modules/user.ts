@@ -4,7 +4,7 @@ import { login } from "@/api/system/login/login";
 import { getUserInfo } from "@/api/system/user/user";
 
 import type { ResponseType } from "@/api/type";
-import type { UserInfoType } from "@/api/system/user/type/user";
+import type {SysUserVOType, UserInfoType} from "@/api/system/user/type/user";
 
 import token from "@/utils/token";
 
@@ -24,7 +24,7 @@ interface UserStoreType {
     // 用户权限字符串
     permissions: Array<string | null>,
     // 用户全部信息
-    userInfo: object
+    userInfo: SysUserVOType
 }
 
 
@@ -35,7 +35,21 @@ export const useUserStore = defineStore('user', {
         const avatar: string = ''
         const roles: Array<string> = []
         const permissions: Array<string> = []
-        const userInfo:object = {}
+        const userInfo:SysUserVOType = {
+            avatar: null,
+            createId: null,
+            createTime: null,
+            gender: null,
+            id: null,
+            loginIp: null,
+            loginTime: null,
+            nickname: null,
+            password: null,
+            status: null,
+            updateId: null,
+            updateTime: null,
+            username: null
+        }
         return {
             name,
             avatar,

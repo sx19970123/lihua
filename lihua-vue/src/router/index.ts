@@ -68,6 +68,18 @@ const routers = [
     ],
   },
   {
+    path: '',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/user',
+        component: () => import("@/views/system/user/index.vue"),
+        meta: { label: '个人中心', icon: 'UserOutlined'},
+      }
+    ]
+  },
+  {
     path: '/login',
     name: 'Login',
     hidden: true,
