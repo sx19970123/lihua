@@ -30,5 +30,6 @@ export interface SysUserVOType {
     status: string | null,
     updateId: string | null,
     updateTime: string | null,
-    username: string | null
+    username: string | null,
+    theme: string | null
 }

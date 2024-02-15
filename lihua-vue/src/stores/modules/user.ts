@@ -1,12 +1,15 @@
 import { defineStore } from "pinia";
 
 import { login } from "@/api/system/login/login";
-import { getUserInfo } from "@/api/system/user/user";
+import {getUserInfo, saveTheme} from "@/api/system/user/user";
 
 import type { ResponseType } from "@/api/type";
 import type {SysUserVOType, UserInfoType} from "@/api/system/user/type/user";
 
 import token from "@/utils/token";
+import { message } from "ant-design-vue";
+import {h} from "vue";
+import { BgColorsOutlined } from "@ant-design/icons-vue";
 
 const { setToken } = token
 /**
@@ -48,7 +51,8 @@ export const useUserStore = defineStore('user', {
             status: null,
             updateId: null,
             updateTime: null,
-            username: null
+            username: null,
+            theme: null
         }
         return {
             name,
@@ -77,18 +81,36 @@ export const useUserStore = defineStore('user', {
         getUserInfo ():Promise<ResponseType<UserInfoType>> {
             return new Promise((resolve, reject) => {
                 getUserInfo().then((resp: ResponseType<UserInfoType>) => {
-                    const suerInfo = resp.data.sysUserVO
-                    this.$state.userInfo = suerInfo
-                    this.$state.name = suerInfo.nickname
-                    this.$state.avatar = suerInfo.avatar
-                    this.$state.username = suerInfo.username
-                    this.$state.roles = resp.data.sysRoleList.map(role => role.code)
-                    this.$state.permissions = resp.data.permissionList.map(permission => permission.authority)
-                    resolve(resp)
+                    if (resp.code === 200) {
+                        const suerInfo = resp.data.sysUserVO
+                        this.$state.userInfo = suerInfo
+                        this.$state.name = suerInfo.nickname
+                        this.$state.avatar = suerInfo.avatar
+                        this.$state.username = suerInfo.username
+                        this.$state.roles = resp.data.sysRoleList.map(role => role.code)
+                        this.$state.permissions = resp.data.permissionList.map(permission => permission.authority)
+                        resolve(resp)
+                    } else {
+                        reject(resp.msg)
+                    }
                 }).catch(err => {
                     reject(err)
                 })
             })
+        },
+        // 保存主题修改
+        saveTheme(themeJson: string) {
+            if (themeJson !== this.userInfo.theme) {
+                saveTheme(themeJson).then(resp => {
+                    if (resp.code === 200) {
+                        this.userInfo.theme = themeJson
+                        message.success({
+                            content: () => '样式已保存',
+                            icon: () => h( BgColorsOutlined ),
+                        })
+                    }
+                })
+            }
         }
     },
     getters: {

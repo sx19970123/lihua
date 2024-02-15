@@ -3,6 +3,7 @@ package com.lihua.filter;
 import com.lihua.cache.RedisCache;
 import com.lihua.constant.Constant;
 import com.lihua.enums.SysBaseEnum;
+import com.lihua.exception.security.InvalidTokenException;
 import com.lihua.model.security.LoginUser;
 import com.lihua.utils.security.JwtUtils;
 import jakarta.annotation.Resource;
@@ -18,8 +19,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.lihua.enums.ResultCodeEnum.AUTHENTICATION_EXPIRED;
-import static com.lihua.enums.ResultCodeEnum.TOKEN_ERROR;
 
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
@@ -31,18 +30,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader(Constant.TOKEN.getCode());
         if (StringUtils.hasText(token)) {
-            // 解析token 后从redis 获取用户信息
-            LoginUser loginUser = getUserInfoByToken(request,token);
-            if (loginUser == null) {
-                // 用户过期，将信息存入 request 由认证中心进行处理
-                request.setAttribute(Constant.ERROR_MSG.getCode(),AUTHENTICATION_EXPIRED);
+            LoginUser loginUser = getUserInfoByToken(token);
+            if (loginUser != null) {
+                // 将用户信息存入上下文
+                SecurityContextHolder
+                        .getContext()
+                        .setAuthentication(new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities()));
             }
-            // 用户信息存入 SecurityContextHolder
-            SecurityContextHolder
-                    .getContext()
-                    .setAuthentication(new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities()));
         }
-
         filterChain.doFilter(request,response);
     }
 
@@ -52,21 +47,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
      * @param token
      * @return
      */
-    private LoginUser getUserInfoByToken(HttpServletRequest request, String token) {
-        try {
-            JwtUtils.verify(token);
-        } catch (Exception e) {
-            request.setAttribute(Constant.ERROR_MSG.getCode(),TOKEN_ERROR);
-            e.printStackTrace();
-            throw new RuntimeException();
-        }
-
+    private LoginUser getUserInfoByToken(String token) {
+        JwtUtils.verify(token);
         String decode = JwtUtils.decode(token);
-        if (!StringUtils.hasText(decode)) {
-            request.setAttribute(Constant.ERROR_MSG.getCode(),TOKEN_ERROR);
-            throw new RuntimeException();
-        }
-        LoginUser loginUser = (LoginUser) redisCache.getCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
-        return loginUser;
+        return redisCache.getCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
     }
 }

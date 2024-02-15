@@ -8,45 +8,63 @@ export const useThemeStore = defineStore('theme',{
          */
         const dataDark: boolean = false
 
-        // 顶部栏背景颜色
-        const layoutBackgroundColor: string = 'rgba(255,255,255,1)'
-
         /**
-         * 布局类型
+         * 顶部栏背景颜色
+         */
+        const layoutBackgroundColor: string = 'rgba(255,255,255,1)'
+        /**
+         * 布局类型 sider-header / header-sider / header-content
          */
         const layoutType: string = 'sider-header'
 
-        // 导航模式
-        const siderMode: string = 'inline' //  horizontal
+        /**
+         * 导航模式 inline / horizontal
+         */
+        const siderMode: string = 'inline'
 
         /**
-         * 样式主题
+         * 主要颜色
          */
-        // 主要颜色
         const colorPrimary: string = 'rgb(22, 119, 255)'
 
-        // 侧边栏类型
+        /**
+         * 侧边栏背景颜色
+         */
         const siderBackgroundColor: string = 'rgba(255,255,255,1)'
 
-        // 磨砂玻璃效果
+        /**
+         * 磨砂玻璃效果
+         */
         const groundGlass: boolean = false
 
-        // 固定头部
+        /**
+         * 固定头部
+         */
         const affixHead: boolean = true
 
-        // 显示多窗口标签
+        /**
+         * 显示多窗口标签
+         */
         const showViewTags: boolean = true
 
-        // 侧边颜色
+        /**
+         * 侧边颜色 light / dark
+          */
         const siderTheme: string = 'light'
 
-        // 侧边宽度
+        /**
+         * 侧边宽度
+         */
         const siderWith: number = 200
 
-        // 原侧边宽度，用于调整侧边栏时保存临时变量
+        /**
+         * 原侧边宽度，用于调整侧边栏时保存临时变量
+         */
         const originSiderWith: number = 200
 
-        // 切换路由时的过渡动画
+        /**
+         * 切换路由时的过渡动画 zoom / fade / breathe / top / down / switch / trick
+         */
         const routeTransition: string = 'zoom'
 
         const themeConfig = {
@@ -74,11 +92,26 @@ export const useThemeStore = defineStore('theme',{
     },
     actions: {
         // 初始化样式
-        init() {
+        init(themeJson: string | null) {
+            this.initState(themeJson)
             this.changeDataDark()
             this.changeLayoutType()
-            this.changeShowViewTags(true)
             this.changeAffixHead()
+        },
+        // 通过json数据初始化state
+        initState(themeJson: string | null) {
+            if (!themeJson) {
+                return
+            }
+            let state = JSON.parse(themeJson);
+            for (let stateKey in state) {
+                for (let $stateKey in this.$state) {
+                    if (stateKey === $stateKey) {
+                        // 使用类型断言告诉 TypeScript $stateKey 是 $state 对象的一个键
+                        (this.$state as any)[$stateKey] = state[stateKey];
+                    }
+                }
+            }
         },
         // 暗色模式
         changeDataDark() {
@@ -108,16 +141,12 @@ export const useThemeStore = defineStore('theme',{
             }
 
         },
-
         // 布局类型
         changeLayoutType() {
-            const value = this.$state.layoutType
             // 顶部导航默认关闭多标签
-            if (value === 'header-content') {
-                this.changeShowViewTags(false)
+            if (this.$state.layoutType === 'header-content') {
                 this.changeSiderMode('horizontal')
             } else {
-                this.changeShowViewTags(true)
                 this.changeSiderMode('inline')
             }
         },

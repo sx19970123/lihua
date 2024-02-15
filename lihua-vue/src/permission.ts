@@ -41,11 +41,14 @@ router.beforeEach((to,from,next) => {
                 usePermission.initMenu(metaRouterList, staticRoutes as any[])
                 // 初始化totalViewTabs数据
                 useViewTabs.initTotalViewTabs(resp.data?.starViewVOList || [], staticRoutes as any[])
+                // 设置最近使用组件的缓存key值
                 useViewTabs.setViewCacheKey(resp.data?.username || '')
-                useTheme.init()
+                // 初始化系统主题
+                useTheme.init(resp.data.sysUserVO.theme)
                 // hack方法 确保addRoutes已完成
                 next({...to,replace: true})
             }).catch(err => {
+                console.error(err)
                 // todo 未来执行退出操作
             })
         } else {

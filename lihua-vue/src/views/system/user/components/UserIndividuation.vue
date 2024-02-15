@@ -20,7 +20,7 @@
         <nav-select v-model="themeStore.layoutType" @click="themeStore.changeLayoutType()"/>
       </a-form-item>
       <a-form-item label="导航宽度" v-if="themeStore.layoutType !== 'header-content'">
-        <a-slider v-model:value="themeStore.siderWith" dots :max="350" :min="80" :step="20" style="width: 230px"></a-slider>
+        <a-slider v-model:value="themeStore.siderWith" dots :max="400" :min="80" :step="20" style="width: 230px"></a-slider>
       </a-form-item>
       <a-form-item label="固定头部">
         <a-switch v-model:checked="themeStore.affixHead" @change="themeStore.changeAffixHead()"></a-switch>
@@ -55,11 +55,14 @@ import HeadThemeSwitch from "@/components/layout-type-switch/component/HeadTheme
 import ColorSelect from "@/components/color-select/index.vue"
 import NavSelect from "@/components/nav-type-select/index.vue"
 import NavColorSelect from "@/components/nav-color-select/index.vue"
+import { useUserStore } from "@/stores/modules/user";
 import { useThemeStore } from "@/stores/modules/theme";
-import {ref, watch} from "vue";
+import {onUnmounted, ref} from "vue";
 
 const themeStore = useThemeStore()
+const userStore = useUserStore()
 
+// 主题颜色
 const colorList = ref<Array<{name: string,color: string}>>([
   {
     name: '拂晓蓝',
@@ -94,6 +97,10 @@ const colorList = ref<Array<{name: string,color: string}>>([
     color: 'rgb(114, 46, 209)',
   },
 ])
+// 卸载组件时触发，保存用户修改的内容
+onUnmounted(()=> {
+  userStore.saveTheme(JSON.stringify(themeStore.$state));
+})
 </script>
 <style scoped>
 

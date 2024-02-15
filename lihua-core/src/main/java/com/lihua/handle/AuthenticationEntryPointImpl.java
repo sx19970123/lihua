@@ -20,11 +20,13 @@ import org.springframework.stereotype.Component;
 public class AuthenticationEntryPointImpl extends ControllerResult implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
-        Object errorMeg = request.getAttribute(Constant.ERROR_MSG.getCode());
-        if (errorMeg != null) {
-            WebUtils.renderJson(response, error((ResultCodeEnum) errorMeg));
-            return;
-        }
-        WebUtils.renderJson(response, error(ResultCodeEnum.LOGIN_ERROR));
+        authException.printStackTrace();
+//        System.out.println("用户未认证处理器");
+//        Object errorMeg = request.getAttribute(Constant.ERROR_MSG.getCode());
+//        if (errorMeg != null) {
+//            WebUtils.renderJson(response, error((ResultCodeEnum) errorMeg));
+//            return;
+//        }
+//        WebUtils.renderJson(response, error(ResultCodeEnum.LOGIN_ERROR));
     }
 }

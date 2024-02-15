@@ -7,6 +7,15 @@ export const getUserInfo = () => {
     })
 }
 
+export const saveTheme = (themeJson: string) => {
+    return request({
+        url: '/system2/user/theme',
+        data: {
+          theme: themeJson
+        },
+        method: 'post'
+    })
+}
 
 export const getImage = () => {
     return request({
