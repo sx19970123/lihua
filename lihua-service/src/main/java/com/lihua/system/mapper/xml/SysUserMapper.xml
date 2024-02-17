@@ -11,6 +11,7 @@
             nickname,
             avatar,
             gender,
+            theme,
             login_ip,
             login_time
         FROM

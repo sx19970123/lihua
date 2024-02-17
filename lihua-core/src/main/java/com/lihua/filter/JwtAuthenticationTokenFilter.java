@@ -4,6 +4,7 @@ import com.lihua.cache.RedisCache;
 import com.lihua.constant.Constant;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.security.InvalidTokenException;
+import com.lihua.exception.security.LoginExpiredException;
 import com.lihua.model.security.LoginUser;
 import com.lihua.utils.security.JwtUtils;
 import jakarta.annotation.Resource;
@@ -11,6 +12,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,7 @@ import java.io.IOException;
 
 
 @Component
+@Slf4j
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Resource
@@ -36,8 +39,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder
                         .getContext()
                         .setAuthentication(new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities()));
+            } else {
+                throw new LoginExpiredException("认证信息过期失效");
             }
         }
+
         filterChain.doFilter(request,response);
     }
 
@@ -48,8 +54,22 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
      * @return
      */
     private LoginUser getUserInfoByToken(String token) {
-        JwtUtils.verify(token);
+        try {
+            JwtUtils.verify(token);
+        } catch (Exception e) {
+            throw new InvalidTokenException("无效的token");
+        }
+
         String decode = JwtUtils.decode(token);
-        return redisCache.getCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
+        log.info("\n当前用户token为：{}\n解密后主键id为：{}", token, decode);
+
+        try {
+            return redisCache.getCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
+        } catch (Exception e) {
+            log.error("从redis获取LoginUser发生异常，请检查redis状态");
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

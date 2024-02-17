@@ -9,7 +9,7 @@ export const getUserInfo = () => {
 
 export const saveTheme = (themeJson: string) => {
     return request({
-        url: '/system2/user/theme',
+        url: '/system/user/theme',
         data: {
           theme: themeJson
         },

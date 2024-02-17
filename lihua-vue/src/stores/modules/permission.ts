@@ -12,12 +12,15 @@ export const usePermissionStore = defineStore('permission',{
         }
     },
     actions: {
+        // 加载菜单
         initMenu(metaRouterList: Array<RouterType>, staticRoutes: any[]): void {
             this.$state.sidebarRouters = init(metaRouterList,staticRoutes)
         },
+        // 展开菜单
         openCollapsed() {
             this.$state.collapsed = true
         },
+        // 折叠菜单
         closeCollapsed() {
             this.$state.collapsed = false
         }

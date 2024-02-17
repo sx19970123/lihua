@@ -71,7 +71,7 @@ import {ref, watch} from "vue";
 import {format, relativeDate} from "@/utils/date";
 import type {RecentType, StarViewType} from "@/api/system/star-view/type/starView";
 const viewTabsStore = useViewTabsStore()
-const emits = defineEmits(['routeSkip'])
+const emits = defineEmits(['routeSkip','cancelKeepAlive'])
 /**
  * 处理点击菜单后执行功能
  * @param key
@@ -80,7 +80,9 @@ const handleClickMenuTab = ({ key }: { key :string }) => {
   switch (key) {
     // 关闭全部
     case "close-all": {
-      viewTabsStore.closeAll()
+      const closeKeys = viewTabsStore.closeAll()
+      console.log(closeKeys)
+      emits('cancelKeepAlive',closeKeys)
       if (viewTabsStore.viewTabs.length > 0) {
         emits('routeSkip',viewTabsStore.viewTabs[0])
       }

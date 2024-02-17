@@ -1,4 +1,4 @@
-package com.lihua.model.security;
+package com.lihua.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -7,16 +7,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
-
-/**
- * 系统用户
- */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysUserVO extends BaseEntity {
+public class SysUser extends BaseEntity {
+
     /**
-     * 主键
+     * 用户id
      */
+    @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
     /**
@@ -30,7 +28,7 @@ public class SysUserVO extends BaseEntity {
     private String password;
 
     /**
-     * 用户名称
+     * 用户昵称
      */
     private String nickname;
 
@@ -40,7 +38,7 @@ public class SysUserVO extends BaseEntity {
     private String avatar;
 
     /**
-     * 性别
+     * 用户性别
      */
     private String gender;
 
@@ -55,13 +53,19 @@ public class SysUserVO extends BaseEntity {
     private String theme;
 
     /**
-     * 最后登陆IP地址
+     * 逻辑删除标志
+     */
+    private String delFlag;
+
+    /**
+     * 最后登陆ip
      */
     private String loginIp;
 
     /**
-     * 最后登录时间
+     * 最后登陆时间
      */
     private LocalDateTime loginTime;
+
 
 }

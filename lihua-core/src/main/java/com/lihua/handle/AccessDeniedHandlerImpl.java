@@ -21,7 +21,7 @@ import java.io.IOException;
 @Component
 public class AccessDeniedHandlerImpl extends ControllerResult implements AccessDeniedHandler {
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) {
         System.out.println("权限不足处理器");
         WebUtils.renderJson(response,error(ResultCodeEnum.ACCESS_ERROR));
     }

@@ -1,7 +1,10 @@
 import axios, {type AxiosRequestConfig, type AxiosResponse} from 'axios';
 import token from "@/utils/token"
 import type {ResponseType} from "@/api/type"
+import { useRouter } from "vue-router";
+
 const { getToken , removeToken } = token
+const router = useRouter()
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 const service = axios.create({
@@ -28,6 +31,7 @@ service.interceptors.response.use((resp) => {
     // token 失效或解析异常，删除缓存token
     if (data.code === 502 || data.code === 503) {
         removeToken()
+        router.push("/login")
     }
 
     return resp;

@@ -57,7 +57,7 @@ import type { StarViewType } from "@/api/system/star-view/type/starView";
 
 const viewTabsStore = useViewTabsStore()
 const tabPane = defineProps(['tab','index'])
-const emit = defineEmits(['routeSkip'])
+const emit = defineEmits(['routeSkip','cancelKeepAlive'])
 const route = useRoute()
 const router = useRouter()
 
@@ -71,7 +71,8 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
     case "close-left": {
       const actIndex = viewTabsStore.getIndex(viewTabsStore.activeKey)
       const index = viewTabsStore.getIndex(tab.routerPathKey)
-      viewTabsStore.closeLeft(tab.routerPathKey)
+      const closeKeys = viewTabsStore.closeLeft(tab.routerPathKey)
+      emit('cancelKeepAlive',closeKeys)
       if (actIndex < index) {
         emit('routeSkip',tab)
       }
@@ -80,14 +81,16 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
     case "close-right": {
       const actIndex = viewTabsStore.getIndex(viewTabsStore.activeKey)
       const index = viewTabsStore.getIndex(tab.routerPathKey)
-      viewTabsStore.closeRight(tab.routerPathKey)
+      const closeKeys = viewTabsStore.closeRight(tab.routerPathKey)
+      emit('cancelKeepAlive',closeKeys)
       if (actIndex > index) {
         emit('routeSkip',tab)
       }
       break
     }
     case "close-other": {
-      viewTabsStore.closeOther(tab.routerPathKey)
+      const closeKeys = viewTabsStore.closeOther(tab.routerPathKey)
+      emit('cancelKeepAlive',closeKeys)
       emit('routeSkip',tab)
       break
     }

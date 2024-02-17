@@ -11,6 +11,7 @@ import lombok.Getter;
 public enum ResultCodeEnum {
 
     SUCCESS (200,"成功"),
+    RESOURCE_NOT_FOUND_ERROR(404,"接口资源未找到"),
     ERROR (500,"业务异常"),
     LOGIN_ERROR (501,"用户名或密码错误"),
     AUTHENTICATION_EXPIRED(502,"用户认证过期，请重新登陆"),

@@ -18,8 +18,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -59,10 +57,13 @@ public class SecurityConfig {
         // 添加 jwt token 验证过滤器
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // 用户登陆失败/访问权限不足处理
         http.exceptionHandling(exceptionHandlingCustomizer -> exceptionHandlingCustomizer
+                // 未认证用户访问资源/认证信息过期失效处理器
                 .authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(accessDeniedHandler));
+                // 权限不足处理器
+                .accessDeniedHandler(accessDeniedHandler)
+
+        );
 
         return http.build();
     }

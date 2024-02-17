@@ -9,13 +9,15 @@ export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         const viewTabs: Array<StarViewType> = []
         const totalViewTabs: Array<StarViewType> = []
+        const componentAlive: Array<string> = []
         const activeKey: string = ''
         const tabCacheKey: string = ''
         return {
             viewTabs,
             totalViewTabs,
             activeKey,
-            tabCacheKey
+            tabCacheKey,
+            componentAlive
         }
     },
     actions: {
@@ -96,44 +98,49 @@ export const useViewTabsStore = defineStore('viewTabs',{
             this.$state.viewTabs = this.$state.viewTabs.filter(viewTab => viewTab.routerPathKey !== key)
         },
         // 关闭左边
-        closeLeft(key: string) {
+        closeLeft(key: string): Array<string> {
             const index:number = this.getIndex(key)
             const viewTabs:StarViewType[] = this.$state.viewTabs
-            const removeArray:StarViewType[] = []
+            const removeArray:string[] = []
             for (let i = 0; i < index; i++) {
                 if (!viewTabs[i].affix) {
-                    removeArray.push(viewTabs[i])
+                    removeArray.push(viewTabs[i].routerPathKey)
                 }
             }
-            this.$state.viewTabs = viewTabs.filter((tab:StarViewType) => !removeArray.includes(tab))
+            this.$state.viewTabs = viewTabs.filter((tab:StarViewType) => !removeArray.includes(tab.routerPathKey))
+            return removeArray
         },
         // 关闭右边
-        closeRight(key: string) {
+        closeRight(key: string): Array<string> {
             const index:number = this.getIndex(key)
             const viewTabs:StarViewType[] = this.$state.viewTabs
-            const removeArray:StarViewType[] = []
+            const removeArray:string[] = []
             for (let i = index + 1; i < viewTabs.length; i++) {
                 if (!viewTabs[i].affix) {
-                    removeArray.push(viewTabs[i])
+                    removeArray.push(viewTabs[i].routerPathKey)
                 }
             }
-            this.$state.viewTabs = viewTabs.filter((tab:StarViewType) => !removeArray.includes(tab))
+            this.$state.viewTabs = viewTabs.filter((tab:StarViewType) => !removeArray.includes(tab.routerPathKey))
+            return removeArray
         },
         // 关闭其他
-        closeOther(key: string) {
+        closeOther(key: string): Array<string> {
             const index:number = this.getIndex(key)
             const viewTabs:StarViewType[] = this.$state.viewTabs
-            const removeArray:StarViewType[] = []
+            const removeArray:string[] = []
             for (let i = 0; i < viewTabs.length; i++) {
                 if (!viewTabs[i].affix && i !== index) {
-                    removeArray.push(viewTabs[i])
+                    removeArray.push(viewTabs[i].routerPathKey)
                 }
             }
-            this.$state.viewTabs = viewTabs.filter((tab:StarViewType) => !removeArray.includes(tab))
+            this.$state.viewTabs = viewTabs.filter((tab:StarViewType) => !removeArray.includes(tab.routerPathKey))
+            return removeArray
         },
         // 关闭全部
-        closeAll() {
+        closeAll(): Array<string> {
+            const removeArray = this.$state.viewTabs.filter(tab => !tab.affix).map(tab => tab.routerPathKey)
             this.$state.viewTabs = this.$state.viewTabs.filter(tab => tab.affix)
+            return removeArray
         },
         // 传入tab元素，与集合中的元素进行替换
         replaceByKey(tab: StarViewType) {
@@ -162,6 +169,18 @@ export const useViewTabsStore = defineStore('viewTabs',{
         // 设置缓存viewCache key
         setViewCacheKey(username:string): void {
             this.$state.tabCacheKey = 'recent-tabs-' + username
+        },
+        // 设置组件缓存
+        setComponentsKeepAlive(componentName: string) {
+            if (!this.$state.componentAlive.includes(componentName)) {
+                this.$state.componentAlive.push(componentName)
+            }
+        },
+        // 删除组件缓存（index.vue的组件默认全部缓存）
+        removeComponentsKeepAlive(componentName: string) {
+            if (componentName !== 'index') {
+                this.$state.componentAlive = this.$state.componentAlive.filter(item => item !== componentName)
+            }
         }
     }
 })

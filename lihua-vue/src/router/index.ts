@@ -75,7 +75,7 @@ const routers = [
       {
         path: '/user',
         component: () => import("@/views/system/user/index.vue"),
-        meta: { label: '个人中心', icon: 'UserOutlined'},
+        meta: { label: '个人中心', icon: 'UserOutlined',noCache: false, componentName: 'index'},
       }
     ]
   },

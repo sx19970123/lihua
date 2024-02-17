@@ -1,14 +1,15 @@
 package com.lihua.handle;
 
-import com.lihua.constant.Constant;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.ControllerResult;
 import com.lihua.utils.web.WebUtils;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
  * 用户未认证处理器
@@ -18,15 +19,18 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AuthenticationEntryPointImpl extends ControllerResult implements AuthenticationEntryPoint {
+
+    @Resource
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
-        authException.printStackTrace();
-//        System.out.println("用户未认证处理器");
-//        Object errorMeg = request.getAttribute(Constant.ERROR_MSG.getCode());
-//        if (errorMeg != null) {
-//            WebUtils.renderJson(response, error((ResultCodeEnum) errorMeg));
-//            return;
-//        }
-//        WebUtils.renderJson(response, error(ResultCodeEnum.LOGIN_ERROR));
+        try {
+            requestMappingHandlerMapping.getHandler(request);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        WebUtils.renderJson(response, error(ResultCodeEnum.AUTHENTICATION_EXPIRED));
     }
 }

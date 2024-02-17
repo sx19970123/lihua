@@ -2,10 +2,12 @@ package com.lihua.handle;
 
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.security.InvalidTokenException;
+import com.lihua.exception.security.ResourceNotFoundException;
 import com.lihua.model.web.ControllerResult;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,30 +31,30 @@ public class GlobalExceptionHandle extends ControllerResult {
     }
 
     /**
-     * 用户登陆失败处理
+     * 处理用户登陆发生异常
      * @param e
      * @return
      */
-    @ExceptionHandler(AuthenticationException.class)
-    public String handleAuthenticationException(Exception e) {
-        e.printStackTrace();
-        return error(ResultCodeEnum.getByDefaultExceptionMessage(e.getMessage()));
-    }
-
-    /**
-     * 访问权限不足处理
-     * @param e
-     * @return
-     */
-    @ExceptionHandler(AccessDeniedException.class)
-    public String handleAccessDeniedException(Exception e) {
-        e.printStackTrace();
-        return error(ResultCodeEnum.ACCESS_ERROR);
-    }
-
     @ExceptionHandler(BadCredentialsException.class)
     public String handleInvalidTokenException(Exception e) {
         e.printStackTrace();
         return error(ResultCodeEnum.LOGIN_ERROR);
+    }
+
+    /**
+     * 处理请求拦截器在用户认证时发生的异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(InvalidTokenException.class)
+    public String handleInsufficientAuthenticationException(Exception e) {
+        e.printStackTrace();
+        return error(ResultCodeEnum.AUTHENTICATION_EXPIRED);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public String handleResourceNotFoundException(Exception e) {
+        e.printStackTrace();
+        return error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
     }
 }

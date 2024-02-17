@@ -9,7 +9,7 @@
       <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" :closable="!tab.affix">
         <!--每个tab的下拉菜单-->
         <template #tab>
-          <tab-pane-menu :tab="tab" :index="index" @route-skip="routeSkip"/>
+          <tab-pane-menu :tab="tab" :index="index" @route-skip="routeSkip" @cancel-keep-alive="cancelKeepAliveCache"/>
         </template>
       </a-tab-pane>
       <!-- view-tabs 左侧空白-->
@@ -18,7 +18,7 @@
       </template>
       <!--view-tabs 右侧下拉菜单-->
       <template #rightExtra>
-        <tab-right-menu @route-skip="routeSkip"/>
+        <tab-right-menu @route-skip="routeSkip" @cancel-keep-alive="cancelKeepAliveCache"/>
       </template>
     </a-tabs>
 </template>
@@ -30,6 +30,7 @@ import {computed, watch} from "vue";
 import { useRoute,useRouter } from "vue-router";
 import {useViewTabsStore} from "@/stores/modules/viewTabs";
 import type {StarViewType} from "@/api/system/star-view/type/starView";
+import {login} from "@/api/system/login/login";
 const viewTabsStore = useViewTabsStore()
 const route = useRoute()
 const router = useRouter()
@@ -65,7 +66,10 @@ const {viewTabs, activeKey} = init()
  * 监听路由变化进行切换 tab
  */
 watch(() => route.path,(value) => {
+  // 切换tab
   viewTabsStore.selectedViewTab(value,!route?.meta?.skip)
+  // 添加keepalive缓存
+  addKeepAliveCache()
 })
 
 /**
@@ -99,7 +103,31 @@ const closeTab = (key: string) => {
   }
   // 关闭标签
   viewTabsStore.closeViewTab(key)
+  // 卸载组件
+  cancelKeepAliveCache([key])
 };
+
+/**
+ * 添加keep-alive 缓存（当前路由）
+ */
+const addKeepAliveCache = () => {
+  if (!route?.meta?.noCache && route?.meta?.componentName) {
+    viewTabsStore.setComponentsKeepAlive(route?.meta?.componentName as string)
+  }
+}
+
+/**
+ * 取消keep-alive 缓存
+ * @param keys
+ */
+const cancelKeepAliveCache = (keys: Array<string>) => {
+  const closeTabRoutes = router.getRoutes().filter(route => keys.includes(route.path))
+  closeTabRoutes?.forEach(closeTabRoute => {
+    if (!closeTabRoute?.meta?.noCache && closeTabRoute?.meta?.componentName) {
+      viewTabsStore.removeComponentsKeepAlive(closeTabRoute?.meta?.componentName as string)
+    }
+  })
+}
 
 /**
  * 路由跳转

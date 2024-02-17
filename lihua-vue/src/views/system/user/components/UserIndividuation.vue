@@ -97,10 +97,13 @@ const colorList = ref<Array<{name: string,color: string}>>([
     color: 'rgb(114, 46, 209)',
   },
 ])
+
 // 卸载组件时触发，保存用户修改的内容
 onUnmounted(()=> {
   userStore.saveTheme(JSON.stringify(themeStore.$state));
 })
+
+
 </script>
 <style scoped>
 
