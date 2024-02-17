@@ -18,6 +18,20 @@ import java.util.concurrent.TimeUnit;
 public class LoginUserReset {
 
     /**
+     * 重新设置用户主题
+     * @param theme
+     */
+    public static void resetTheme(String theme) {
+        LoginUser loginUser = LoginUserContext.getLoginUser();
+        resetTheme(theme,loginUser);
+    }
+
+    public static void resetTheme(String theme, LoginUser loginUser) {
+        loginUser.getSysUserVO().setTheme(theme);
+        redisCache(loginUser);
+    }
+
+    /**
      * 重新设置权限集合
      * @param authorities
      */

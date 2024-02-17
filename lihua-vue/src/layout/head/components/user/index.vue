@@ -1,11 +1,13 @@
 <template>
   <a-dropdown>
-    <a-avatar :size="32" class="avatar">USER</a-avatar>
+    <div class="avatar header-right">
+      <a-avatar :size="32">USER</a-avatar>
+    </div>
     <template #overlay>
       <a-menu style="min-width: 220px" @click="handleClickMenu">
-        <a-menu-item disabled>
-          <a-flex align="center">
-            <a-avatar :size="40" class="avatar">USER</a-avatar>
+        <a-menu-item disabled style="cursor: default">
+          <a-flex align="center" :gap="12">
+            <a-avatar :size="40">USER</a-avatar>
             <a-flex vertical>
               <a-typography-text :copyable="{ tooltip: false }" strong>{{userStore.$state.name}}</a-typography-text>
               <a-typography-text :copyable="{ tooltip: false }">
@@ -21,16 +23,6 @@
           <UserOutlined />
           <span>个人中心</span>
         </a-menu-item>
-        <a-sub-menu key="user-switch">
-          <template #title>
-            <UserSwitchOutlined />
-            <span>切换账号</span>
-          </template>
-          <a-menu-item key="user-add">
-            <PlusOutlined />
-            <span>添加账号</span>
-          </a-menu-item>
-        </a-sub-menu>
         <a-menu-divider/>
         <a-menu-item danger key="logout">
           <LogoutOutlined />
@@ -66,19 +58,17 @@ const handleClickMenu = ({key}: {key: string}) => {
 const userInfo = () => {
   router.push('/user')
 }
-// 新增切换账号
-const userAdd = () => {
-
-}
 // 退出登陆
 const logout = () => {
 
 }
 </script>
 
-<style scoped>
-span {
-  margin-left: 8px;
+<style>
+.avatar {
+  padding-left: 12px;
+  padding-right: 12px;
+  border-radius: 3px;
+  cursor: pointer;
 }
 </style>
-

@@ -51,12 +51,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         return JwtUtils.create(loginUser.getSysUserVO().getId());
     }
 
-    @Override
-    public void logout() {
-        redisCache.delete(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + LoginUserContext.getUserId());
-    }
-
-
     /**
      * 根据业务需要，可将用户数据存入 LoginUser 业务中可直接获取使用
      * @param loginUser

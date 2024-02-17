@@ -17,9 +17,8 @@ import type {RouteRecordRaw} from "vue-router";
 const { getToken } = token
 // 获取 views 下的所有 vue 组件
 const modules = import.meta.glob("./views/**/*.vue")
-
 NProgress.configure({
-    showSpinner: false
+    showSpinner: true
 })
 
 // 路由前置守卫

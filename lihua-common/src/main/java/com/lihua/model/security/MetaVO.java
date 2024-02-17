@@ -19,7 +19,10 @@ public class MetaVO implements Serializable {
     private String icon;
 
     // keep-alive 缓存 默认false，设置为true 则不进行缓存
-    private String noCache;
+    private Boolean noCache;
+
+    // 组件名称
+    private String componentName;
 
     // 外联地址
     private String link;

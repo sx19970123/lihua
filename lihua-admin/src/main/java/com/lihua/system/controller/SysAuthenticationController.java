@@ -16,10 +16,4 @@ public class SysAuthenticationController extends ControllerResult {
     public String login(@RequestBody SysUserVO sysUserVO) {
         return success(sysAuthenticationService.login(sysUserVO));
     }
-
-    @PostMapping("logout")
-    public String logout() {
-        sysAuthenticationService.logout();
-        return success();
-    }
 }

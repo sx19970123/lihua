@@ -16,6 +16,7 @@
             <result column="title" property="title"/>
             <result column="icon" property="icon"/>
             <result column="no_cache" property="noCache"/>
+            <result column="component_name" property="componentName"/>
             <result column="link_path" property="link"/>
             <result column="skip" property="skip"/>
         </association>
@@ -30,12 +31,16 @@
             sys_menu.menu_type,
             sys_menu.router_path,
             sys_menu.component_path,
+            sys_menu.component_name,
             sys_menu.perms,
             sys_menu.icon,
-            sys_menu.no_cache,
             sys_menu.link_path,
             sys_menu.router_path_key,
             sys_menu.query,
+            CASE sys_menu.no_cache
+            WHEN '0' THEN TRUE
+            WHEN '1' THEN FALSE
+            END AS no_cache,
             CASE sys_menu.skip
                 WHEN '0' THEN TRUE
                 WHEN '1' THEN FALSE

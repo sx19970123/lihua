@@ -114,3 +114,18 @@
         backdrop-filter: blur(6px);
     }
 }
+
+/**
+    顶部右侧鼠标悬停修改背景颜色
+ */
+[data-dark = 'light'] {
+    .header-right:hover {
+        background: #f3f3f3;
+    }
+}
+
+[data-dark = 'dark'] {
+    .header-right:hover {
+        background: #292929;
+    }
+}

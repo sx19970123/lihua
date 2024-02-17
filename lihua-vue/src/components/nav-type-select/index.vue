@@ -29,8 +29,6 @@
 const props = defineProps<{
   modelValue: string
 }>()
-
-console.log(props.modelValue)
 const emits = defineEmits(['update:modelValue','click'])
 
 const handleClockNavType = (key: string) => {

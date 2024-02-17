@@ -57,6 +57,11 @@ public class SecurityConfig {
         // 添加 jwt token 验证过滤器
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
+        // 添加退出登陆处理器
+        http.logout(logoutCustomizer -> logoutCustomizer
+                .logoutUrl("/logout")
+                .logoutSuccessHandler());
+
         http.exceptionHandling(exceptionHandlingCustomizer -> exceptionHandlingCustomizer
                 // 未认证用户访问资源/认证信息过期失效处理器
                 .authenticationEntryPoint(authenticationEntryPoint)

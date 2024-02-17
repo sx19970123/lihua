@@ -6,11 +6,11 @@
     </span>
     <template #overlay>
       <a-menu @click="handleClickMenuTab">
-        <a-menu-item key="reload" :disabled="tabPane.tab.routerPathKey !== viewTabsStore.$state.activeKey">
+        <a-menu-item key="reload" v-if="false" :disabled="tabPane.tab.routerPathKey !== viewTabsStore.$state.activeKey">
           <RedoOutlined />
           刷新页面
         </a-menu-item>
-        <a-menu-divider/>
+        <a-menu-divider  v-if="false"/>
         <a-menu-item key="close-left" :disabled="tabPane.index === 0">
           <VerticalRightOutlined />
           关闭左侧

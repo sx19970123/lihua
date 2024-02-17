@@ -10,9 +10,4 @@ public interface SysAuthenticationService {
      * @return
      */
     String login(SysUserVO sysUserVO);
-
-    /**
-     * 用户登出
-     */
-    void logout();
 }

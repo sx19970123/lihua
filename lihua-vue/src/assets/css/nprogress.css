@@ -2,6 +2,10 @@
     #nprogress .bar {
         background: rgb(22, 119, 255) !important;
     }
+    #nprogress .spinner-icon {
+        border-top-color: rgb(22, 119, 255) !important;
+        border-left-color: rgb(22, 119, 255) !important;
+    }
     #nprogress .peg {
         box-shadow: 0 0 10px rgb(22, 119, 255), 0 0 5px rgb(22, 119, 255) !important;
     }
@@ -10,6 +14,10 @@
 [data-color = 'rgb(245, 34, 45)'] {
     #nprogress .bar {
         background: rgb(245, 34, 45) !important;
+    }
+    #nprogress .spinner-icon {
+        border-top-color: rgb(245, 34, 45) !important;
+        border-left-color: rgb(245, 34, 45) !important;
     }
     #nprogress .peg {
         box-shadow: 0 0 10px rgb(245, 34, 45), 0 0 5px rgb(245, 34, 45) !important;
@@ -20,6 +28,10 @@
     #nprogress .bar {
         background: rgb(250, 84, 28) !important;
     }
+    #nprogress .spinner-icon {
+        border-top-color: rgb(250, 84, 28) !important;
+        border-left-color: rgb(250, 84, 28) !important;
+    }
     #nprogress .peg {
         box-shadow: 0 0 10px rgb(250, 84, 28), 0 0 5px rgb(250, 84, 28) !important;
     }
@@ -28,6 +40,10 @@
 [data-color = 'rgb(250, 173, 20)'] {
     #nprogress .bar {
         background: rgb(250, 173, 20) !important;
+    }
+    #nprogress .spinner-icon {
+        border-top-color: rgb(250, 173, 20) !important;
+        border-left-color: rgb(250, 173, 20) !important;
     }
     #nprogress .peg {
         box-shadow: 0 0 10px rgb(250, 173, 20), 0 0 5px rgb(250, 173, 20) !important;
@@ -38,6 +54,10 @@
     #nprogress .bar {
         background: rgb(19, 194, 194) !important;
     }
+    #nprogress .spinner-icon {
+        border-top-color: rgb(19, 194, 194) !important;
+        border-left-color: rgb(19, 194, 194) !important;
+    }
     #nprogress .peg {
         box-shadow: 0 0 10px rgb(19, 194, 194), 0 0 5px rgb(19, 194, 194) !important;
     }
@@ -46,6 +66,10 @@
 [data-color = 'rgb(82, 196, 26)'] {
     #nprogress .bar {
         background: rgb(82, 196, 26) !important;
+    }
+    #nprogress .spinner-icon {
+        border-top-color: rgb(82, 196, 26) !important;
+        border-left-color: rgb(82, 196, 26) !important;
     }
     #nprogress .peg {
         box-shadow: 0 0 10px rgb(82, 196, 26), 0 0 5px rgb(82, 196, 26) !important;
@@ -56,6 +80,10 @@
     #nprogress .bar {
         background: rgb(47, 84, 235) !important;
     }
+    #nprogress .spinner-icon {
+        border-top-color: rgb(47, 84, 235) !important;
+        border-left-color: rgb(47, 84, 235) !important;
+    }
     #nprogress .peg {
         box-shadow: 0 0 10px rgb(47, 84, 235), 0 0 5px rgb(47, 84, 235) !important;
     }
@@ -65,7 +93,29 @@
     #nprogress .bar {
         background: rgb(114, 46, 209) !important;
     }
+    #nprogress .spinner-icon {
+        border-top-color: rgb(114, 46, 209) !important;
+        border-left-color: rgb(114, 46, 209) !important;
+    }
     #nprogress .peg {
         box-shadow: 0 0 10px rgb(114, 46, 209), 0 0 5px rgb(114, 46, 209) !important;
+    }
+}
+
+[layout-type = 'header-content'] {
+    #nprogress .spinner {
+        top: 22px !important;
+    }
+}
+
+[layout-type = 'sider-header'] {
+    #nprogress .spinner {
+        top: 14px !important;
+    }
+}
+
+[layout-type = 'header-sider'] {
+    #nprogress .spinner {
+        top: 14px !important;
     }
 }

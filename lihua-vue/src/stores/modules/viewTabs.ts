@@ -76,7 +76,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
         },
         // 选中tab页，skip跳过不进行view-tab 管理
         selectedViewTab(key: string,skip: boolean) {
-            if (skip) {
+            if (!skip) {
                 const tab = this.getTotalTabByKey(key)
                 if (tab) {
                     // 包含

@@ -93,7 +93,6 @@ export const useThemeStore = defineStore('theme',{
     actions: {
         // 初始化样式
         init(themeJson: string | null) {
-            console.log('themeJson=',themeJson)
             this.initState(themeJson)
             this.changeDataDark()
             this.changeLayoutType()
@@ -150,6 +149,8 @@ export const useThemeStore = defineStore('theme',{
             } else {
                 this.changeSiderMode('inline')
             }
+            // 修改页面标识
+            document.documentElement.setAttribute("layout-type", this.$state.layoutType)
         },
         // 显示多窗口页面
         changeShowViewTags(value: boolean) {

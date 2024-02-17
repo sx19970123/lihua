@@ -1,6 +1,6 @@
 <template>
   <div class="logo">
-    <a-flex gap="middle" align="center" justify="center" v-if="themeStore.layoutType === 'header-sider' || !permissionStore.collapsed">
+    <a-flex gap="middle" align="center" justify="center" v-if="themeStore.layoutType === 'header-sider' || themeStore.layoutType === 'header-content' || !permissionStore.collapsed">
       <div>
         <a-avatar :style="{ backgroundColor: '#f56a00'}">
           <span>LiHua</span>

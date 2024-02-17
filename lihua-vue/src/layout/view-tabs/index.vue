@@ -67,7 +67,7 @@ const {viewTabs, activeKey} = init()
  */
 watch(() => route.path,(value) => {
   // 切换tab
-  viewTabsStore.selectedViewTab(value,!route?.meta?.skip)
+  viewTabsStore.selectedViewTab(value,!!route?.meta?.skip)
   // 添加keepalive缓存
   addKeepAliveCache()
 })
