@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 /**
@@ -49,6 +50,11 @@ public class LoginUser implements UserDetails {
      * view tags收藏记录表
      */
     private List<SysStarViewVO> starViewVOList;
+
+    /**
+     * token 缓存过期时间
+     */
+    private LocalDateTime expirationTime;
 
 
     @Override

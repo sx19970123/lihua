@@ -34,8 +34,8 @@
 </template>
 
 <script setup lang="ts">
-import {useUserStore} from "@/stores/modules/user";
-import {useRouter} from "vue-router";
+import { useUserStore } from "@/stores/modules/user";
+import { useRouter } from "vue-router";
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -50,6 +50,7 @@ const handleClickMenu = ({key}: {key: string}) => {
       break
     }
     case 'logout': {
+      logout()
       break
     }
   }
@@ -60,7 +61,7 @@ const userInfo = () => {
 }
 // 退出登陆
 const logout = () => {
-
+  userStore.logout()
 }
 </script>
 

@@ -3,8 +3,7 @@ package com.lihua.filter;
 import com.lihua.constant.Constant;
 import com.lihua.exception.security.LoginExpiredException;
 import com.lihua.model.security.LoginUser;
-import com.lihua.token.TokenUserManager;
-import jakarta.annotation.Resource;
+import com.lihua.utils.security.LoginUserMgmt;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,15 +22,11 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
-    @Resource
-    private TokenUserManager tokenUserManager;
-
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader(Constant.TOKEN.getCode());
         if (StringUtils.hasText(token)) {
-            LoginUser loginUser = tokenUserManager.getUserInfoByToken(token);
+            LoginUser loginUser = LoginUserMgmt.getLoginUser(token);
             if (loginUser != null) {
                 // 将用户信息存入上下文
                 SecurityContextHolder

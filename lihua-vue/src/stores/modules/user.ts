@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-import { login } from "@/api/system/login/login";
+import {login, logout} from "@/api/system/login/login";
 import {getUserInfo, saveTheme} from "@/api/system/user/user";
 
 import type { ResponseType } from "@/api/type";
@@ -8,10 +8,11 @@ import type {SysUserVOType, UserInfoType} from "@/api/system/user/type/user";
 
 import token from "@/utils/token";
 import { message } from "ant-design-vue";
-import {h} from "vue";
+import { h } from "vue";
 import { BgColorsOutlined } from "@ant-design/icons-vue";
+import router from "@/router";
 
-const { setToken } = token
+const { setToken,removeToken } = token
 /**
  * 定义 userStore 的用户信息
  */
@@ -97,6 +98,38 @@ export const useUserStore = defineStore('user', {
                     reject(err)
                 })
             })
+        },
+        // 退出登陆
+        logout() {
+            logout().then(resp => {
+                this.clearUserInfo()
+            })
+        },
+        // 清空用户信息
+        clearUserInfo() {
+            this.$state.name = ''
+            this.$state.username = ''
+            this.$state.avatar = ''
+            this.$state.roles = []
+            this.$state.permissions = []
+            this.$state. userInfo = {
+                avatar: null,
+                createId: null,
+                createTime: null,
+                gender: null,
+                id: null,
+                loginIp: null,
+                loginTime: null,
+                nickname: null,
+                password: null,
+                status: null,
+                updateId: null,
+                updateTime: null,
+                username: null,
+                theme: null
+            }
+            removeToken()
+            router.push("/login")
         },
         // 保存主题修改
         saveTheme(themeJson: string) {

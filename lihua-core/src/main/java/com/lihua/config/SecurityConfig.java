@@ -3,6 +3,7 @@ package com.lihua.config;
 import com.lihua.filter.JwtAuthenticationTokenFilter;
 import com.lihua.handle.AccessDeniedHandlerImpl;
 import com.lihua.handle.AuthenticationEntryPointImpl;
+import com.lihua.handle.LogoutSuccessHandlerImpl;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,9 @@ public class SecurityConfig {
     private AccessDeniedHandlerImpl accessDeniedHandler;
 
     @Resource
+    private LogoutSuccessHandlerImpl logoutSuccessHandler;
+
+    @Resource
     private AuthenticationEntryPointImpl authenticationEntryPoint;
 
     @Bean
@@ -60,7 +64,7 @@ public class SecurityConfig {
         // 添加退出登陆处理器
         http.logout(logoutCustomizer -> logoutCustomizer
                 .logoutUrl("/logout")
-                .logoutSuccessHandler());
+                .logoutSuccessHandler(logoutSuccessHandler));
 
         http.exceptionHandling(exceptionHandlingCustomizer -> exceptionHandlingCustomizer
                 // 未认证用户访问资源/认证信息过期失效处理器

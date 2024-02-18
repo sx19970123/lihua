@@ -23,12 +23,12 @@ NProgress.configure({
 
 // 路由前置守卫
 router.beforeEach((to,from,next) => {
+    const userStore = useUserStore()
+    const usePermission = usePermissionStore()
+    const useViewTabs = useViewTabsStore()
+    const useTheme = useThemeStore()
     NProgress.start()
     if (getToken()) {
-        const userStore = useUserStore()
-        const usePermission = usePermissionStore()
-        const useViewTabs = useViewTabsStore()
-        const useTheme = useThemeStore()
         // 判断是否拉取了用户信息
         if (userStore.userInfo.id === null) {
             userStore.getUserInfo().then((resp: ResponseType<UserInfoType>) => {

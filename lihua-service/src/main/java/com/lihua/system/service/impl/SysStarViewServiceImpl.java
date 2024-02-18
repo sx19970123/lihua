@@ -2,6 +2,7 @@ package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.lihua.model.security.LoginUser;
 import com.lihua.model.security.RouterVO;
 import com.lihua.model.security.SysStarViewVO;
 import com.lihua.system.entity.SysStarView;
@@ -9,7 +10,7 @@ import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysStarViewMapper;
 import com.lihua.system.service.SysStarViewService;
 import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.security.LoginUserReset;
+import com.lihua.utils.security.LoginUserMgmt;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -104,16 +105,16 @@ public class SysStarViewServiceImpl implements SysStarViewService {
 
         // 重新设置loginUserContext
         SysStarViewVO starView = null;
-        List<SysStarViewVO> starViewVOList = LoginUserContext.getLoginUser().getStarViewVOList();
-        for (SysStarViewVO starViewVO : starViewVOList) {
+        LoginUser loginUser = LoginUserContext.getLoginUser();
+        for (SysStarViewVO starViewVO : loginUser.getStarViewVOList()) {
             if (starViewVO.getRouterPathKey().equals(sysStarView.getRouterPathKey())) {
                 starViewVO.setAffix("1".equals(sysStarView.getAffix()))
                         .setStar("1".equals(sysStarView.getStar()));
                 starView = starViewVO;
             }
         }
-        LoginUserReset.resetStarViewList(starViewVOList);
-
+        // 更新LoginUser缓存
+        LoginUserMgmt.setLoginUserCache(loginUser);
         return starView;
     }
 }

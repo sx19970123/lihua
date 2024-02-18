@@ -11,14 +11,17 @@ import lombok.Getter;
 public enum ResultCodeEnum {
 
     SUCCESS (200,"成功"),
-    RESOURCE_NOT_FOUND_ERROR(404,"接口资源未找到"),
+
+    AUTHENTICATION_EXPIRED(401,"请求未经授权，需要身份验证"),
+    TOKEN_ERROR(402,"token解析异常"),
+    ACCESS_ERROR (403,"访问权限不足"),
+    RESOURCE_NOT_FOUND_ERROR(404,"请求的资源不存在"),
+
     ERROR (500,"业务异常"),
     LOGIN_ERROR (501,"用户名或密码错误"),
-    AUTHENTICATION_EXPIRED(502,"用户认证过期，请重新登陆"),
-    TOKEN_ERROR(503,"token解析异常"),
-    ACCESS_ERROR (504,"访问权限不足"),
-    NO_ACCESS_ERROR (505,"请联系管理员分配菜单"),
-    DB_ERROR(506,"数据库异常");
+    NO_ACCESS_ERROR (502,"请联系管理员分配菜单"),
+    MAINTAIN_ERROR(503,"服务器维护中"),
+    DB_ERROR(504,"数据库异常");
 
     /**
      * 状态码

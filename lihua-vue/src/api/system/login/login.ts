@@ -19,3 +19,11 @@ export const login =  (username: string,
         data: data
     })
 }
+
+
+export const logout = () => {
+    return request({
+        url: "/logout",
+        method: 'post'
+    })
+}

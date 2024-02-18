@@ -10,6 +10,7 @@ import com.lihua.system.service.SysMenuService;
 import com.lihua.system.service.SysStarViewService;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.LoginUserContext;
+import com.lihua.utils.security.LoginUserMgmt;
 import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -72,7 +73,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             .setSysRoleList(sysRoles)
             .setStarViewVOList(starViewVOList);
 
-        // 将用户信息存放到redis
-        redisCache.setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getSysUserVO().getId(), loginUser, lihuaConfig.getExpireTime(), TimeUnit.MINUTES);
+        // 设置redis缓存
+        LoginUserMgmt.setLoginUserCache(loginUser);
     }
 }
