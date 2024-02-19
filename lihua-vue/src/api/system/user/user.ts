@@ -1,4 +1,5 @@
 import request from "@/utils/request";
+import type {UserInfo} from "@/api/system/user/type/user";
 
 export const getUserInfo = () => {
     return request({
@@ -17,10 +18,10 @@ export const saveTheme = (themeJson: string) => {
     })
 }
 
-export const getImage = () => {
+export const saveUserInfo = (userInfo: UserInfo) => {
     return request({
-        url: '/image',
-        method: 'get',
-        responseType: 'blob'
+        url: '/system/user/save',
+        data: userInfo,
+        method: 'post'
     })
 }

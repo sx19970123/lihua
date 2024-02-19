@@ -245,13 +245,7 @@
 
 
 <script setup lang="ts">
-import {getImage} from "@/api/system/user/user";
-import type {ResponseType} from "@/api/type"
 
-console.log("首页=")
-getImage().then((resp) => {
-
-})
 </script>
 
 <style scoped>

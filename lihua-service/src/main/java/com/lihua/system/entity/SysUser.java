@@ -67,5 +67,14 @@ public class SysUser extends BaseEntity {
      */
     private LocalDateTime loginTime;
 
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 手机号码
+     */
+    private String phoneNumber;
 
 }

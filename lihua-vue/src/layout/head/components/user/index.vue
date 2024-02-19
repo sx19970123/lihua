@@ -20,13 +20,23 @@
         </a-menu-item>
         <a-menu-divider/>
         <a-menu-item key="user-center">
-          <UserOutlined />
-          <span>个人中心</span>
+          <a-flex :gap="8">
+            <UserOutlined />
+            <span>个人中心</span>
+          </a-flex>
+        </a-menu-item>
+        <a-menu-item key="user-setting">
+          <a-flex :gap="8">
+            <SettingOutlined />
+            <span>个人设置</span>
+          </a-flex>
         </a-menu-item>
         <a-menu-divider/>
         <a-menu-item danger key="logout">
-          <LogoutOutlined />
-          <span>退出登陆</span>
+          <a-flex :gap="8">
+            <LogoutOutlined />
+            <span>退出登陆</span>
+          </a-flex>
         </a-menu-item>
       </a-menu>
     </template>

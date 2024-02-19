@@ -31,5 +31,15 @@ export interface SysUserVOType {
     updateId: string | null,
     updateTime: string | null,
     username: string | null,
-    theme: string | null
+    theme: string | null,
+    email: string | null,
+    phoneNumber: string | null
+}
+
+export interface UserInfo{
+    avatar: string | null,
+    nickname: string | null,
+    gender: string | null,
+    email: string | null,
+    phoneNumber: string | null
 }

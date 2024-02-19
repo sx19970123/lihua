@@ -28,7 +28,9 @@ public class AuthenticationEntryPointImpl extends ControllerResult implements Au
         try {
             requestMappingHandlerMapping.getHandler(request);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // throw new RuntimeException(e);
+            WebUtils.renderJson(response, error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR));
+            return;
         }
 
         WebUtils.renderJson(response, error(ResultCodeEnum.AUTHENTICATION_EXPIRED));

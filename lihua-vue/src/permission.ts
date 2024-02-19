@@ -48,6 +48,7 @@ router.beforeEach((to,from,next) => {
                 next({...to,replace: true})
             }).catch(err => {
                 console.error(err)
+                userStore.clearUserInfo()
                 // todo 未来执行退出操作
             })
         } else {

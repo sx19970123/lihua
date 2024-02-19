@@ -97,6 +97,7 @@ export const useThemeStore = defineStore('theme',{
             this.changeDataDark()
             this.changeLayoutType()
             this.changeAffixHead()
+            this.changeGroundGlass()
         },
         // 通过json数据初始化state
         initState(themeJson: string | null) {

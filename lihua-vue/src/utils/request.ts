@@ -1,11 +1,9 @@
 import axios, {type AxiosRequestConfig, type AxiosResponse} from 'axios';
 import token from "@/utils/token"
 import type {ResponseType} from "@/api/type"
-import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/modules/user";
 
 const { getToken } = token
-const router = useRouter()
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 const service = axios.create({
@@ -28,13 +26,11 @@ service.interceptors.request.use(config => {
 // 响应拦截器
 service.interceptors.response.use((resp) => {
     const data = resp.data
-
     // token 失效或解析异常，清空用户信息返回登陆
     if (data.code === 402 || data.code === 402 || data.code === 403) {
         const userStore = useUserStore()
         userStore.clearUserInfo()
     }
-
     return resp;
 })
 

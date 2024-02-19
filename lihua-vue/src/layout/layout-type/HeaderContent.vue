@@ -16,7 +16,7 @@
     <ViewTabs class="hct-view-tabs" v-if="themeStore.showViewTags" :style="{background: themeStore.layoutBackgroundColor}" style="padding-top: 6px"/>
     <a-layout-content>
       <!--内容-->
-      <Content class="layout-content"/>
+      <Content class="layout-content" :style="{'width': settings.contentWidth, 'margin-left': 'auto','margin-right': 'auto'}"/>
     </a-layout-content>
   </a-layout>
 </template>
@@ -27,6 +27,7 @@ import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
+import settings from "@/settings";
 import {useThemeStore} from "@/stores/modules/theme";
 const themeStore = useThemeStore()
 </script>

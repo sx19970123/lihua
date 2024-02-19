@@ -23,6 +23,11 @@ public class SysUserController extends ControllerResult {
         return success(LoginUserContext.getLoginUser());
     }
 
+    @PostMapping("save")
+    public String save(@RequestBody SysUser sysUser) {
+        return success();
+    }
+
     @PostMapping("theme")
     public String saveTheme(@RequestBody SysUser sysUser) {
         sysUserService.saveTheme(sysUser.getTheme());

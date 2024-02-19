@@ -5,7 +5,6 @@
          <a-col :span="4">
            <a-menu v-model:selectedKeys="selectedKeys" @click="handleChangeUserMenu" style="height: 100%">
              <a-menu-item key="Individuation"> 样式布局</a-menu-item>
-             <a-menu-item key="Info"> 个人信息</a-menu-item>
              <a-menu-item key="Basic"> 基础设置</a-menu-item>
              <a-menu-item key="Security"> 安全设置</a-menu-item>
            </a-menu>
@@ -21,9 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import Basic from './components/UserBasic.vue'
+import Basic from './components/UserBasicSetting.vue'
 import Individuation from './components/UserIndividuation.vue'
-import Info from './components/UserInfo.vue'
 import Security from './components/UserSecurity.vue'
 import {ref,markRaw} from "vue";
 import { useThemeStore } from "@/stores/modules/theme";
@@ -37,10 +35,6 @@ const allComponents = ref([
   {
     name: 'Individuation',
     com: markRaw(Individuation)
-  },
-  {
-    name: 'Info',
-    com: markRaw(Info)
   },
   {
     name: 'Security',
@@ -60,7 +54,3 @@ const handleChangeUserMenu = ({key}: {key: string}) => {
   })
 }
 </script>
-
-<style scoped>
-
-</style>
