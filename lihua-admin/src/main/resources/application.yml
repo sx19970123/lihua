@@ -4,6 +4,8 @@ lihua:
   expireTime: 60
   # 允许跨域的最长时间
   corsMaxAge: 3600
+  # 上传文件路径
+  uploadFilePath: '/Users/shangxuan/项目/upload/'
 server:
   port: 8080
 

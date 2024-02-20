@@ -22,4 +22,9 @@ public class LihuaConfig {
      */
     private Long corsMaxAge;
 
+    /**
+     * 上传文件路径
+     */
+    private String uploadFilePath;
+
 }

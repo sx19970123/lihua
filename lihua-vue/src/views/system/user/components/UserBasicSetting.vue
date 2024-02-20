@@ -8,7 +8,7 @@
     >
       <a-row :span="8 ">
         <a-form-item label="头像">
-          <avatar/>
+          <avatar v-model="userInfo.avatar"/>
         </a-form-item>
       </a-row>
       <a-form-item label="用户昵称" name="nickname">
@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import {useUserStore} from "@/stores/modules/user";
 import Avatar from "@/views/system/user/components/Avatar.vue";
 import type {Rule} from "ant-design-vue/es/form";
@@ -60,6 +60,10 @@ const init = () => {
     gender: userStore.userInfo.gender,
     email: userStore.userInfo.email,
     phoneNumber: userStore.userInfo.phoneNumber
+  })
+
+  watch(() => userInfo.avatar,(value) => {
+    userStore.avatar = value
   })
 
   const userRoles = reactive<Record<string,Rule[]> >({

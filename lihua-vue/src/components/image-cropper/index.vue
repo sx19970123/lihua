@@ -1,9 +1,9 @@
 <template>
   <div>
     <a-flex vertical :gap="8">
-      <div :style="{ height: '300px',width: '500px'}">
+      <div :style="{ height: props.height,width: props.wight}">
         <vue-cropper ref="cropper"
-                     :img="props.img"
+                     :img="img"
                      :outputSize="props.outputSize"
                      :outputType="props.outputType"
                      :info="props.info"
@@ -28,11 +28,23 @@
       </div>
       <div>
         <a-flex :gap="8" justify="center" align="center">
-          <a-button>上传</a-button>
-          <a-button><RedoOutlined /></a-button>
-          <a-button><UndoOutlined /></a-button>
-          <a-button><PlusOutlined /></a-button>
-          <a-button><MinusOutlined /></a-button>
+          <!--          文件上传-->
+          <a-upload
+              :showUploadList="false"
+              :max-count="1"
+              :customRequest="handleCustomRequest"
+              :beforeUpload="handleBeforeUpload"
+          >
+            <a-button> <upload-outlined/> 上 传</a-button>
+          </a-upload>
+          <!--          向左旋转-->
+          <a-button @click="rotateLeft"><UndoOutlined /></a-button>
+          <!--          向右旋转-->
+          <a-button @click="rotateRight"><RedoOutlined /></a-button>
+          <!--          放大-->
+          <a-button @click="changeScale(1)"><PlusOutlined /></a-button>
+          <!--          缩小-->
+          <a-button @click="changeScale(-1)"><MinusOutlined /></a-button>
         </a-flex>
       </div>
     </a-flex>
@@ -43,8 +55,11 @@
 <script setup lang="ts">
 import {VueCropper} from "vue-cropper";
 import 'vue-cropper/dist/index.css'
-import {defineProps} from 'vue';
-import type {CropperDataType} from "@/components/image/image-cropper/cropperTyoe";
+import {defineProps, getCurrentInstance, ref} from 'vue';
+import type {CropperDataType} from "@/components/image-cropper/cropperTyoe";
+import {message} from "ant-design-vue";
+// 获取vue-cropper实例进行方法调用
+const { proxy }  = getCurrentInstance() as any;
 
 const props = defineProps({
   // 裁剪图片的地址 url 地址, base64, blob
@@ -142,12 +157,42 @@ const props = defineProps({
     type: String,
     default: 'contain'
   },
+  wight: {
+    type: String,
+    default: '350px'
+  },
+  height: {
+    type: String,
+    default: '350px'
+  },
+  // v-modal:change
   change: {
     type: Object
   }
 });
 
+/**
+ * 上传的图片
+ */
+const img = ref<string>(props.img)
+
+/**
+ * 双向绑定
+ */
 const emit = defineEmits(['update:change'])
+
+/**
+ * 供父组件获取二进制文件
+ */
+defineExpose({
+  getBlob: () => {
+    return new Promise((resolve, reject)=> {
+      proxy.$refs.cropper.getCropBlob((data: Blob) => {
+        resolve(data)
+      })
+    })
+  }
+})
 
 /**
  * 变化裁剪框时回调
@@ -156,4 +201,46 @@ const emit = defineEmits(['update:change'])
 const handleRealTime = (data: CropperDataType) => {
   emit('update:change',data)
 }
+
+/**
+ * 上传前校验数据格式
+ * @param file
+ */
+const handleBeforeUpload = (file: File) => {
+  if (!file.type.startsWith('image')) {
+    message.warn("请上传图片类型文件")
+    return false
+  }
+}
+
+/**
+ * 上传成功后显示到编辑框
+ * @param file
+ */
+const handleCustomRequest = ({file}:{file: File}) => {
+  img.value = URL.createObjectURL(file)
+}
+
+/**
+ * 左旋转
+ */
+const rotateLeft = () => {
+  proxy.$refs.cropper.rotateLeft();
+}
+
+/**
+ * 右旋转
+ */
+const rotateRight = () => {
+  proxy.$refs.cropper.rotateRight();
+}
+
+/**
+ * 缩放
+ * @param scale
+ */
+const changeScale = (scale: number) => {
+  proxy.$refs.cropper.changeScale(scale);
+}
+
 </script>

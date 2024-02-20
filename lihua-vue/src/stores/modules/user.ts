@@ -86,7 +86,7 @@ export const useUserStore = defineStore('user', {
                         const suerInfo = resp.data.sysUserVO
                         this.$state.userInfo = suerInfo
                         this.$state.name = suerInfo.nickname
-                        this.$state.avatar = suerInfo.avatar
+                        this.$state.avatar = suerInfo.avatar ? suerInfo.avatar : JSON.stringify({"type":"image","color":"","path":"","text":"","icon":""})
                         this.$state.username = suerInfo.username
                         this.$state.roles = resp.data.sysRoleList.map(role => role.code)
                         this.$state.permissions = resp.data.permissionList.map(permission => permission.authority)

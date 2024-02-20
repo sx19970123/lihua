@@ -25,3 +25,24 @@ export const saveUserInfo = (userInfo: UserInfo) => {
         method: 'post'
     })
 }
+
+export const saveAvatarFile = (file: Blob) => {
+    const formData = new FormData()
+    formData.append('avatarFile',file)
+
+    return request({
+        url: '/system/user/avatar',
+        data: formData,
+        method: 'post',
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+}
+
+export const getImg = (path) => {
+    return request({
+        url: path,
+        method: 'get'
+    })
+}
