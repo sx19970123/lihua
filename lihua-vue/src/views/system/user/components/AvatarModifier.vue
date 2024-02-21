@@ -1,32 +1,33 @@
 <template>
   <div>
-    <a-row align="center" >
+    <a-row align="center" style="height: 64px">
       <sys-avatar class="modify"
                   :size="64"
-                  v-model:type="avatarType"
-                  v-model:value="avatarValue"
-                  v-model:background-color="avatarColor"
-                  v-model:url="url"
+                  :type="props.modelValue.type"
+                  :value="props.modelValue.value"
+                  :background-color="props.modelValue.backgroundColor"
+                  :url="props.modelValue.url"
+                  v-if="!open"
                   @click="open = !open"
       />
     </a-row>
 
-    <a-modal v-model:open="open" title="头像编辑" width="1000px">
+    <a-modal v-model:open="open" title="头像编辑" width="1000px" :maskClosable="false" :keyboard="false" :closable="false">
       <a-flex vertical align="center" :gap="24">
-<!--        avatarType 不是 image 时使用avatar预览-->
+        <!--        avatarType 不是 image 时使用avatar预览-->
         <a-avatar :size="150" :style="{background: avatarColor}" v-if="avatarType !== 'image'">
           <template v-if="avatarType === 'icon'" #icon>
-            <component v-if="avatarValue" :is="avatarValue"/>
+            <component v-if="avatarIcon" :is="avatarIcon"/>
           </template>
           <template v-if="avatarType === 'text'">
             <span style="font-size: 60px">
-              {{ avatarValue }}
+              {{ avatarText }}
             </span>
           </template>
         </a-avatar>
         <!--        avatarType 是 image 时使用cropper返回的html预览-->
         <div class="avatar-preview" v-else v-html="avatarImg.html"/>
-        <a-radio-group v-model:value="avatarType" @change="avatarValue = ''">
+        <a-radio-group v-model:value="avatarType">
           <a-radio value="image">图片</a-radio>
           <a-radio value="icon">图标</a-radio>
           <a-radio value="text">文本</a-radio>
@@ -34,21 +35,30 @@
         <!--        颜色选取-->
         <color-select v-model="avatarColor" v-if="avatarType !== 'image'" :items="avatarBackgroundColor"/>
         <!--        图标选取-->
-        <icon-select v-if="avatarType === 'icon'" v-model="avatarValue"/>
+        <icon-select v-if="avatarType === 'icon'" v-model="avatarIcon"/>
         <!--        文本编辑-->
-        <a-input v-if="avatarType === 'text'" v-model:value="avatarValue" style="width: 260px;" size="large"/>
+        <a-input v-if="avatarType === 'text'" v-model:value="avatarText" style="width: 260px;" size="large"/>
         <!--        头像编辑-->
         <image-cropper v-if="avatarType === 'image'"
                        ref="imageCropperRef"
                        v-model:change="avatarImg"
-                       :img="avatarValue"
+                       v-model="avatarUrl"
                        wight="900px"
-                       height="400px"
+                       height="350px"
                        :auto-crop-width="150"
                        :auto-crop-height="150" />
       </a-flex>
       <template #footer>
-        <a-button key="back" @click="open = false">关 闭</a-button>
+        <a-popconfirm
+            placement="topRight"
+            arrowPointAtCenter
+            title="关闭后配置不会保存，是否关闭？"
+            ok-text="关 闭"
+            cancel-text="取 消"
+            @confirm="confirmClose"
+        >
+          <a-button type="default" key="back">关 闭</a-button>
+        </a-popconfirm>
         <a-button key="submit" type="primary" @click="handleOk">确 认</a-button>
       </template>
     </a-modal>
@@ -62,34 +72,29 @@ import ImageCropper from "@/components/image-cropper/index.vue"
 import type {CropperDataType} from "@/components/image-cropper/cropperTyoe";
 import SysAvatar from "@/components/avatar/index.vue"
 import {uploadAvatar} from "@/api/system/file/file";
+import {useUserStore} from "@/stores/modules/user";
+
+const userStore = useUserStore()
 // 双向绑定值
-const props = defineProps({
-  type: {
-    type: String,
-    default: 'image'
-  },
-  backgroundColor: {
-    type: String,
-    default: ''
-  },
-  value: {
-    type: String,
-    default: ''
-  }
-})
+const props = defineProps(['modelValue'])
 // 双向绑定修改方法
-const emits = defineEmits(['update:type','update:backgroundColor','update:value'])
+const emits = defineEmits(['update:modelValue'])
 const init = () => {
   // 控制modal开关
   const open = ref<boolean>(false)
+  const modelValue = props.modelValue
   // 默认头像类型
-  const avatarType = ref<string>(props.type)
+  const avatarType = ref<string>(modelValue.type)
   // 默认头像背景颜色
-  const avatarColor = ref<string>(props.backgroundColor)
-  // 默认文本头像文本
-  const avatarValue = ref<string>(props.value)
+  const avatarColor = ref<string>(modelValue.backgroundColor)
+
   // 图片地址
-  const url = ref<string>()
+  const avatarUrl = ref<string>(modelValue.url)
+  // 图标
+  const avatarIcon = ref<string>(modelValue.value)
+  // 文本
+  const avatarText = ref<string>(modelValue.value)
+
   // 图片预览返回结果
   const avatarImg = ref<CropperDataType>({
     div: { height: "", width: "" },
@@ -104,7 +109,7 @@ const init = () => {
   const avatarBackgroundColor = ref<Array<{name: string,color: string}>>([
     {
       name: '薄雾灰',
-      color: '#bfbfbf',
+      color: 'rgb(191, 191, 191)',
     },
     {
       name: '拂晓蓝',
@@ -146,8 +151,9 @@ const init = () => {
     avatarColor,
     avatarImg,
     avatarBackgroundColor,
-    avatarValue,
-    url
+    avatarIcon,
+    avatarText,
+    avatarUrl
   }
 }
 const {
@@ -156,53 +162,69 @@ const {
   avatarColor,
   avatarImg,
   avatarBackgroundColor,
-  avatarValue,
-  url
+  avatarIcon,
+  avatarText,
+  avatarUrl
 } = init()
 
 // 头像选择ref
 const imageCropperRef = ref<InstanceType<typeof ImageCropper>>()
 
-// 处理函数
+/**
+ * 处理确认数据
+ */
 const handleOk = async () => {
   let updatedData = {};
-  switch (avatarType.value) {
-    case "image": {
-      const cropperInstance = imageCropperRef.value;
-      if (cropperInstance) {
-        const blob = await cropperInstance.getBlob();
-        if (blob != null) {
-          url.value = URL.createObjectURL(blob)
-          const resp = await uploadAvatar(blob);
-          if (resp.code === 200) {
-            updatedData = {
-              value: resp.data,
-              type: avatarType,
-              backgroundColor: avatarColor
-            };
-          } else {
-            console.error('头像上传异常');
-          }
-        } else {
-          console.error('获取blob数据为null');
+  try {
+    switch (avatarType.value) {
+      case "image": {
+        const cropperInstance = imageCropperRef.value;
+        if (!cropperInstance) {
+          throw new Error('未找到裁剪器实例');
         }
+        const blob = await cropperInstance.getBlob();
+        if (!blob) {
+          throw new Error('获取 blob 数据失败');
+        }
+        avatarUrl.value = URL.createObjectURL(blob);
+        const resp = await uploadAvatar(blob);
+        if (resp.code !== 200) {
+          throw new Error('头像上传失败');
+        }
+        updatedData = {
+          url: avatarUrl.value,
+          value: resp.data,
+          type: avatarType,
+          backgroundColor: avatarColor
+        };
+        break;
       }
-      break;
+      case "icon":
+      case "text": {
+        updatedData = {
+          url: avatarUrl.value,
+          value: avatarType.value === 'icon' ? avatarIcon : avatarText,
+          type: avatarType,
+          backgroundColor: avatarColor
+        };
+        break;
+      }
+      default:
+        throw new Error('未知的头像类型');
     }
-    case "icon":
-    case "text": {
-      updatedData = {
-        value: avatarValue,
-        type: avatarType,
-        backgroundColor: avatarColor
-      };
-      break;
-    }
+  } catch (error) {
+    console.error('处理头像时出错:', error.message);
   }
+  emits('update:modelValue', updatedData);
   open.value = false;
-  Object.entries(updatedData).forEach(([key, value]) => {
-    emits(`update:${key}`, value);
-  });
+};
+
+/**
+ * 关闭modal提示并还原初始头像
+ */
+const confirmClose = () => {
+  open.value = false;
+  emits('update:modelValue', userStore.avatar);
 };
 
 </script>

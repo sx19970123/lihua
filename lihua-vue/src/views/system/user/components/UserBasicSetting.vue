@@ -8,10 +8,7 @@
     >
       <a-row :span="8 ">
         <a-form-item label="头像">
-          <avatar-modifier
-              v-model:type="userInfo.avatar.type"
-              v-model:value="userInfo.avatar.value"
-              v-model:background-color="userInfo.avatar.backgroundColor"/>
+          <avatar-modifier v-model="userInfo.avatar"/>
         </a-form-item>
       </a-row>
       <a-form-item label="用户昵称" name="nickname">
@@ -44,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref, watch} from "vue";
+import {reactive, ref} from "vue";
 import {useUserStore} from "@/stores/modules/user";
 import AvatarModifier from "@/views/system/user/components/AvatarModifier.vue";
 import type {Rule} from "ant-design-vue/es/form";
@@ -89,8 +86,19 @@ const init = () => {
   }
 }
 
-const handleFinish = (values: UserInfo) => {
-  saveUserInfo(values).then(resp => {
+/**
+ * 保存用户信息
+ * @param values
+ */
+const handleFinish = (values:UserInfo) => {
+  saveUserInfo({
+    avatar: JSON.stringify(userInfo.avatar),
+    nickname: values.nickname,
+    gender: values.gender,
+    email: values.email,
+    phoneNumber: values.phoneNumber
+  }).then(resp => {
+    // 保存用户信息后
     console.log(resp)
   })
 }
@@ -112,7 +120,7 @@ const emailHandleSearch = (val: string) => {
   emailOptions.value = res;
 };
 
-const  { userInfo, userRoles}= init()
+const  {userInfo, userRoles}= init()
 
 
 </script>

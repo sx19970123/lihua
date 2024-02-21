@@ -12,12 +12,12 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, watch} from 'vue';
+import {defineProps} from 'vue';
 
 const { type, backgroundColor, value, size } = defineProps({
   type: {
     type: String,
-    default: 'image'
+    default: ''
   },
   backgroundColor: {
     type: String,
@@ -32,12 +32,12 @@ const { type, backgroundColor, value, size } = defineProps({
     default: 32
   },
   url: {
-    type: String
+    type: String,
+    default: ''
   }
 });
 
-defineEmits(['update:type', 'update:backgroundColor', 'update:value', 'update:size']);
-
+defineEmits(['update:type', 'update:backgroundColor', 'update:value', 'update:size', 'update:url']);
 </script>
 
 <style scoped>

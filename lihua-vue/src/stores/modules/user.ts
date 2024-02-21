@@ -4,13 +4,14 @@ import {login, logout} from "@/api/system/login/login";
 import {getUserInfo, saveTheme} from "@/api/system/user/user";
 
 import type { ResponseType } from "@/api/type";
-import type {Avatar, SysUserVOType, UserInfoType} from "@/api/system/user/type/user";
+import type {AvatarType, SysUserVOType, UserInfoType} from "@/api/system/user/type/user";
 
 import token from "@/utils/token";
 import { message } from "ant-design-vue";
 import { h } from "vue";
 import { BgColorsOutlined } from "@ant-design/icons-vue";
 import router from "@/router";
+import {imagePreview} from "@/api/system/file/file";
 
 const { setToken,removeToken } = token
 /**
@@ -22,7 +23,7 @@ interface UserStoreType {
     // 用户名
     username:string | null,
     // 用户头像
-    avatar: Avatar,
+    avatar: AvatarType,
     // 用户角色编码
     roles: Array<string | null>,
     // 用户权限字符串
@@ -36,11 +37,11 @@ export const useUserStore = defineStore('user', {
     state: ():UserStoreType => {
         const name: string | null = ''
         const username: string = ''
-        const avatar: string = ''
+        const avatar: AvatarType = {}
         const roles: Array<string> = []
         const permissions: Array<string> = []
         const userInfo:SysUserVOType = {
-            avatar: null,
+            avatar: {},
             createId: null,
             createTime: null,
             gender: null,
@@ -83,13 +84,14 @@ export const useUserStore = defineStore('user', {
             return new Promise((resolve, reject) => {
                 getUserInfo().then((resp: ResponseType<UserInfoType>) => {
                     if (resp.code === 200) {
-                        const suerInfo = resp.data.sysUserVO
-                        this.$state.userInfo = suerInfo
-                        this.$state.name = suerInfo.nickname
-                        this.$state.avatar = suerInfo.avatar ? JSON.parse(suerInfo.avatar) : {type: '',backgroundColor: '', value: ''}
-                        this.$state.username = suerInfo.username
+                        const userInfo = resp.data.sysUserVO
+                        this.$state.userInfo = userInfo
+                        this.$state.name = userInfo.nickname
+                        this.$state.avatar = userInfo.avatar ? JSON.parse(suerInfo.avatar) : {type: 'text', backgroundColor: 'rgb(191, 191, 191)', value: 'Yukino', url: ''}
+                        this.$state.username = userInfo.username
                         this.$state.roles = resp.data.sysRoleList.map(role => role.code)
                         this.$state.permissions = resp.data.permissionList.map(permission => permission.authority)
+                        this.handleAvatar()
                         resolve(resp)
                     } else {
                         reject(resp.msg)
@@ -142,6 +144,15 @@ export const useUserStore = defineStore('user', {
                             icon: () => h( BgColorsOutlined ),
                         })
                     }
+                })
+            }
+        },
+        // 处理头像
+        handleAvatar() {
+            const avatar = this.$state.avatar
+            if (avatar.type === 'image') {
+                imagePreview(avatar.value).then(resp => {
+                    avatar.url = URL.createObjectURL(resp)
                 })
             }
         }

@@ -20,6 +20,7 @@ export const uploadAvatar = (avatar: Blob) => {
 export const imagePreview = (fileName: string) => {
     return request({
         url: `system/file/imagePreview/${fileName}`,
-        method: 'get'
+        method: 'get',
+        responseType:'blob'
     })
 }

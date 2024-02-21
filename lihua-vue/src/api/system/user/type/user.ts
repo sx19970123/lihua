@@ -25,7 +25,7 @@ export interface UserInfoType {
  * store 用户信息
  */
 export interface SysUserVOType {
-    avatar: Avatar,
+    avatar: AvatarType,
     createId: string | null,
     createTime: string | null,
     gender: string | null,
@@ -47,7 +47,7 @@ export interface SysUserVOType {
  * 个人设置用户信息
  */
 export interface UserInfo {
-    avatar: Avatar,
+    avatar: AvatarType,
     nickname: string | null,
     gender: string | null,
     email: string | null,
@@ -57,11 +57,13 @@ export interface UserInfo {
 /**
  * 用户头像
  */
-export interface Avatar {
+export interface AvatarType {
     // 类型： image/icon/text
     type: string,
     // 头像背景颜色
     backgroundColor: string,
     // 头像值： image地址链接/icon组件名称/text文本
-    value: string
+    value: string,
+    // 图片地址
+    url: string
 }

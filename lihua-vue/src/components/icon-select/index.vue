@@ -5,7 +5,7 @@
       <a-segmented v-model:value="segmentedValue" :options="segmentedData"/>
     </a-flex>
 <!--    三种类型图标切换-->
-    <div style="max-height: 400px;" class="scrollbar">
+    <div style="max-height: 350px;" class="scrollbar">
       <a-flex :gap="8" wrap="wrap"  style="margin-top: 30px">
         <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-if="segmentedValue === '线框'" v-for="icon in outlinedIconList"  @click="clickIcon(icon)">
           <a-flex vertical align="center">

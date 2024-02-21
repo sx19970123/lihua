@@ -63,9 +63,8 @@ const { proxy }  = getCurrentInstance() as any;
 
 const props = defineProps({
   // 裁剪图片的地址 url 地址, base64, blob
-  img: {
-    type: String,
-    default: ''
+  modelValue: {
+    type: String
   },
   // 裁剪生成图片的质量
   outputSize: {
@@ -174,12 +173,11 @@ const props = defineProps({
 /**
  * 上传的图片
  */
-const img = ref<string>(props.img)
-
+const img = ref<string>(props.modelValue)
 /**
  * 双向绑定
  */
-const emit = defineEmits(['update:change'])
+const emit = defineEmits(['update:change','update:modelValue'])
 
 /**
  * 供父组件获取二进制文件
@@ -218,7 +216,9 @@ const handleBeforeUpload = (file: File) => {
  * @param file
  */
 const handleCustomRequest = ({file}:{file: File}) => {
-  img.value = URL.createObjectURL(file)
+  const url = URL.createObjectURL(file)
+  img.value = url
+  emit('update:modelValue',url)
 }
 
 /**
