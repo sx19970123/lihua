@@ -25,7 +25,7 @@ export interface UserInfoType {
  * store 用户信息
  */
 export interface SysUserVOType {
-    avatar: AvatarType,
+    avatar: string | null,
     createId: string | null,
     createTime: string | null,
     gender: string | null,

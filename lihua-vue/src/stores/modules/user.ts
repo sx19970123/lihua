@@ -37,11 +37,11 @@ export const useUserStore = defineStore('user', {
     state: ():UserStoreType => {
         const name: string | null = ''
         const username: string = ''
-        const avatar: AvatarType = {}
+        const avatar: AvatarType = {type: '', backgroundColor: '', value: '', url: ''}
         const roles: Array<string> = []
         const permissions: Array<string> = []
         const userInfo:SysUserVOType = {
-            avatar: {},
+            avatar: null,
             createId: null,
             createTime: null,
             gender: null,
@@ -54,7 +54,9 @@ export const useUserStore = defineStore('user', {
             updateId: null,
             updateTime: null,
             username: null,
-            theme: null
+            theme: null,
+            email: null,
+            phoneNumber: null
         }
         return {
             name,
@@ -87,7 +89,7 @@ export const useUserStore = defineStore('user', {
                         const userInfo = resp.data.sysUserVO
                         this.$state.userInfo = userInfo
                         this.$state.name = userInfo.nickname
-                        this.$state.avatar = userInfo.avatar ? JSON.parse(suerInfo.avatar) : {type: 'text', backgroundColor: 'rgb(191, 191, 191)', value: 'Yukino', url: ''}
+                        this.$state.avatar = userInfo.avatar ? JSON.parse(userInfo.avatar) : {type: 'text', backgroundColor: 'rgb(191, 191, 191)', value: userInfo.nickname, url: ''}
                         this.$state.username = userInfo.username
                         this.$state.roles = resp.data.sysRoleList.map(role => role.code)
                         this.$state.permissions = resp.data.permissionList.map(permission => permission.authority)
@@ -111,7 +113,7 @@ export const useUserStore = defineStore('user', {
         clearUserInfo() {
             this.$state.name = ''
             this.$state.username = ''
-            this.$state.avatar = ''
+            this.$state.avatar = {type: 'text', backgroundColor: 'rgb(191, 191, 191)', value: '', url: ''}
             this.$state.roles = []
             this.$state.permissions = []
             this.$state. userInfo = {
@@ -128,7 +130,9 @@ export const useUserStore = defineStore('user', {
                 updateId: null,
                 updateTime: null,
                 username: null,
-                theme: null
+                theme: null,
+                phoneNumber: null,
+                email: null
             }
             removeToken()
             router.push("/login")

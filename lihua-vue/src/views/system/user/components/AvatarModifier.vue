@@ -178,8 +178,8 @@ const handleOk = async () => {
         if (!blob) {
           throw new Error('获取 blob 数据失败');
         }
-        avatarUrl.value = URL.createObjectURL(blob);
-        const resp = await uploadAvatar(blob);
+        avatarUrl.value = URL.createObjectURL(blob as Blob);
+        const resp = await uploadAvatar(blob as Blob);
         if (resp.code !== 200) {
           throw new Error('头像上传失败');
         }
@@ -205,7 +205,7 @@ const handleOk = async () => {
         throw new Error('未知的头像类型');
     }
   } catch (error) {
-    console.error('处理头像时出错:', error.message);
+    console.error('处理头像时出错:', error);
   }
   emits('update:modelValue', updatedData);
   open.value = false;
