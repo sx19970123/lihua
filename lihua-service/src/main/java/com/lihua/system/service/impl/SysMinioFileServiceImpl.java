@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public class SysMinioFileServiceImpl implements SysFileService {
     @Override
-    public String upload(MultipartFile file) {
+    public String uploadAvatar(MultipartFile file) {
         return null;
     }
 
@@ -29,6 +29,11 @@ public class SysMinioFileServiceImpl implements SysFileService {
 
     @Override
     public byte[] imagePreview(String fileName) {
+        return null;
+    }
+
+    @Override
+    public String imagePreviewByPath(String fileName) {
         return null;
     }
 }

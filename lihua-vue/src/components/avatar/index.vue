@@ -1,37 +1,45 @@
 <template>
   <div>
-    <a-avatar class="modify" :size="props.size" :style="{background: color}" :src="type === 'image' ? path : ''">
+    <a-avatar class="modify" :size="size" :style="type !== 'image' ? {background: backgroundColor} : {}" :src="type === 'image' ? url : ''">
       <template v-if="type === 'icon'" #icon>
-        <component v-if="icon" :is="avatarIcon"/>
+        <component :is="value"/>
       </template>
       <template v-if="type === 'text'">
-        {{text}}
+        {{ value }}
       </template>
     </a-avatar>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import {defineProps, watch} from 'vue';
 
-const props = defineProps({
+const { type, backgroundColor, value, size } = defineProps({
+  type: {
+    type: String,
+    default: 'image'
+  },
+  backgroundColor: {
+    type: String,
+    default: ''
+  },
   value: {
-    type: String
+    type: String,
+    default: ''
   },
   size: {
     type: Number,
     default: 32
+  },
+  url: {
+    type: String
   }
-})
-const {type,color,path,text,icon} = ref<{
-  type: string,
-  color: string,
-  path: string,
-  text: string,
-  icon: string
-}>(JSON.parse(props.value))
+});
+
+defineEmits(['update:type', 'update:backgroundColor', 'update:value', 'update:size']);
+
 </script>
 
 <style scoped>
-
+/* 可以添加样式 */
 </style>

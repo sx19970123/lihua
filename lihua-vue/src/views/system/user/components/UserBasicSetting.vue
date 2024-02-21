@@ -8,7 +8,10 @@
     >
       <a-row :span="8 ">
         <a-form-item label="头像">
-          <avatar v-model="userInfo.avatar"/>
+          <avatar-modifier
+              v-model:type="userInfo.avatar.type"
+              v-model:value="userInfo.avatar.value"
+              v-model:background-color="userInfo.avatar.backgroundColor"/>
         </a-form-item>
       </a-row>
       <a-form-item label="用户昵称" name="nickname">
@@ -43,7 +46,7 @@
 <script setup lang="ts">
 import {reactive, ref, watch} from "vue";
 import {useUserStore} from "@/stores/modules/user";
-import Avatar from "@/views/system/user/components/Avatar.vue";
+import AvatarModifier from "@/views/system/user/components/AvatarModifier.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import type {UserInfo} from "@/api/system/user/type/user";
@@ -60,10 +63,6 @@ const init = () => {
     gender: userStore.userInfo.gender,
     email: userStore.userInfo.email,
     phoneNumber: userStore.userInfo.phoneNumber
-  })
-
-  watch(() => userInfo.avatar,(value) => {
-    userStore.avatar = value
   })
 
   const userRoles = reactive<Record<string,Rule[]> >({

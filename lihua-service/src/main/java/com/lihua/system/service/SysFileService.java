@@ -7,11 +7,11 @@ import java.util.List;
 public interface SysFileService {
 
     /**
-     * 文件单上传
+     * 用户头像上传
      * @param file
      * @return
      */
-    String upload(MultipartFile file);
+    String uploadAvatar(MultipartFile file);
 
     /**
      * 多文件上传
@@ -33,8 +33,15 @@ public interface SysFileService {
     void download(List<String> fileNames);
 
     /**
-     * 图片预览
+     * 图片预览，直接返回二进制文件
      * @param fileName
      */
     byte[] imagePreview(String fileName);
+
+    /**
+     * 图片预览，返回链接
+     * @param fileName
+     * @return
+     */
+    String imagePreviewByPath(String fileName);
 }
