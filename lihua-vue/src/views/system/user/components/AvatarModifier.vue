@@ -11,8 +11,8 @@
                   @click="open = !open"
       />
     </a-row>
-
-    <a-modal v-model:open="open" title="头像编辑" width="1000px" :maskClosable="false" :keyboard="false" :closable="false">
+<!--    :maskClosable="false" :keyboard="false" :closable="false"-->
+    <a-modal v-model:open="open" title="头像编辑" width="1000px" @cancel="close">
       <a-flex vertical align="center" :gap="24">
         <!--        avatarType 不是 image 时使用avatar预览-->
         <a-avatar :size="150" :style="{background: avatarColor}" v-if="avatarType !== 'image'">
@@ -49,16 +49,7 @@
                        :auto-crop-height="150" />
       </a-flex>
       <template #footer>
-        <a-popconfirm
-            placement="topRight"
-            arrowPointAtCenter
-            title="关闭后配置不会保存，是否关闭？"
-            ok-text="关 闭"
-            cancel-text="取 消"
-            @confirm="confirmClose"
-        >
-          <a-button type="default" key="back">关 闭</a-button>
-        </a-popconfirm>
+        <a-button type="default" key="back" @click="close">关 闭</a-button>
         <a-button key="submit" type="primary" @click="handleOk">确 认</a-button>
       </template>
     </a-modal>
@@ -73,6 +64,7 @@ import type {CropperDataType} from "@/components/image-cropper/cropperTyoe";
 import SysAvatar from "@/components/avatar/index.vue"
 import {uploadAvatar} from "@/api/system/file/file";
 import {useUserStore} from "@/stores/modules/user";
+import { Modal } from 'ant-design-vue';
 
 const userStore = useUserStore()
 // 双向绑定值
@@ -222,11 +214,22 @@ const handleOk = async () => {
 /**
  * 关闭modal提示并还原初始头像
  */
-const confirmClose = () => {
-  open.value = false;
-  emits('update:modelValue', userStore.avatar);
+const close = () => {
+  open.value = true;
+  showConfirm()
 };
-
+const showConfirm = () => {
+  Modal.confirm({
+    title: '提 示',
+    content: '关闭对话框后配置将不会应用，确认关闭？',
+    cancelText: '取 消',
+    okText: '关 闭',
+    onOk() {
+      emits('update:modelValue', userStore.avatar);
+      open.value = false;
+    }
+  });
+};
 </script>
 
 <style scoped>
