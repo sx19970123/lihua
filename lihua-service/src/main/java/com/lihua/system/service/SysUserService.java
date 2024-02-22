@@ -17,4 +17,11 @@ public interface SysUserService {
      * @return
      */
     String saveBasics(SysUser sysUser);
+
+    /**
+     * 修改密码
+     * @param newPassword
+     * @return
+     */
+    String updatePassword(String newPassword);
 }

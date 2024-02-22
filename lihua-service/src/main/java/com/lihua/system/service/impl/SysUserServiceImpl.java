@@ -11,6 +11,7 @@ import com.lihua.system.service.SysUserService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserMgmt;
+import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +55,24 @@ public class SysUserServiceImpl implements SysUserService {
             LoginUserMgmt.setLoginUserCache(loginUser);
         }
 
+        return sysUserVO.getId();
+    }
+
+    @Override
+    public String updatePassword(String newPassword) {
+        UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
+        LoginUser loginUser = LoginUserContext.getLoginUser();
+        SysUserVO sysUserVO = loginUser.getSysUserVO();
+        String password = SecurityUtils.encryptPassword(newPassword);
+        updateWrapper.lambda().eq(SysUser::getId,sysUserVO.getId())
+                .set(SysUser::getPassword, password)
+                .set(SysUser::getUpdateTime, LocalDateTime.now());
+
+        int update = sysUserMapper.update(updateWrapper);
+        if (update == 1) {
+            sysUserVO.setPassword(password);
+            LoginUserMgmt.setLoginUserCache(loginUser);
+        }
         return sysUserVO.getId();
     }
 

@@ -25,3 +25,14 @@ export const saveBasics = (userInfo: {avatar: string,nickname: string,gender:str
         method: 'post'
     })
 }
+
+export const updatePassword = (oldPassword: string,newPassword: string) => {
+    return request({
+        url: '/system/user/password',
+        params: {
+            oldPassword: oldPassword,
+            newPassword: newPassword
+        },
+        method: 'post'
+    })
+}

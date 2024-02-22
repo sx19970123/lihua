@@ -202,7 +202,7 @@ const handleOk = async () => {
       case "icon":
       case "text": {
         updatedData = {
-          url: avatarUrl.value,
+          url: '',
           value: avatarType.value === 'icon' ? avatarIcon.value : avatarText.value,
           type: avatarType.value,
           backgroundColor: avatarColor.value

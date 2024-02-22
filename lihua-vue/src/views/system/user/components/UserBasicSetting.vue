@@ -6,7 +6,7 @@
             @finish="handleFinish"
             @finishFailed="handleFinishFailed"
     >
-      <a-row :span="8 ">
+      <a-row :span="8">
         <a-form-item label="头像">
           <avatar-modifier v-model="userInfo.avatar"/>
         </a-form-item>
@@ -129,6 +129,6 @@ const  {userInfo, userRoles}= init()
 
 <style scoped>
 .form-item-width {
-  width: 330px;
+  width: 270px;
 }
 </style>

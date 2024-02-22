@@ -13,7 +13,9 @@
             gender,
             theme,
             login_ip,
-            login_time
+            login_time,
+            phone_number,
+            email
         FROM
             sys_user
         WHERE

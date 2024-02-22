@@ -1,5 +1,5 @@
 <template>
- <div>
+ <div class="layout">
      <a-card>
        <a-row>
          <a-col :span="4">
@@ -25,6 +25,7 @@ import Individuation from './components/UserIndividuation.vue'
 import Security from './components/UserSecurity.vue'
 import {ref,markRaw} from "vue";
 import { useThemeStore } from "@/stores/modules/theme";
+import settings from "@/settings";
 const themeStore = useThemeStore()
 // 注册子组件
 const allComponents = ref([
@@ -54,3 +55,12 @@ const handleChangeUserMenu = ({key}: {key: string}) => {
   })
 }
 </script>
+
+<style>
+[layout-type='header-content'] {
+  .layout {
+    max-width: 1000px;
+    margin: auto
+  }
+}
+</style>

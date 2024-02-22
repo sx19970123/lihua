@@ -58,9 +58,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
      */
     private void handleLoginInfo(LoginUser loginUser) {
         String id = loginUser.getSysUserVO().getId();
-        // 隐藏密码
-        loginUser.getSysUserVO().setPassword(null);
-
         // 菜单router信息
         List<RouterVO> routerVOList = sysMenuService.selectSysMenuByLoginUserId(id);
         // 角色信息
