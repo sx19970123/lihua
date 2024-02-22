@@ -1,13 +1,13 @@
 <template>
   <a-dropdown>
     <div class="avatar header-right">
-      <a-avatar :size="32">USER</a-avatar>
+      <user-avatar :size="32" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
     </div>
     <template #overlay>
       <a-menu style="min-width: 220px" @click="handleClickMenu">
         <a-menu-item disabled style="cursor: default">
           <a-flex align="center" :gap="12">
-            <a-avatar :size="40">USER</a-avatar>
+            <user-avatar :size="48" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
             <a-flex vertical>
               <a-typography-text :copyable="{ tooltip: false }" strong>{{userStore.$state.name}}</a-typography-text>
               <a-typography-text :copyable="{ tooltip: false }">
@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import UserAvatar from "@/components/user-avatar/index.vue"
 import { useUserStore } from "@/stores/modules/user";
 import { useRouter } from "vue-router";
 

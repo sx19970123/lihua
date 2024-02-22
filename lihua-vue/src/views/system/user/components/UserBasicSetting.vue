@@ -47,7 +47,7 @@ import AvatarModifier from "@/views/system/user/components/AvatarModifier.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import type {UserInfo} from "@/api/system/user/type/user";
-import {saveUserInfo} from "@/api/system/user/user";
+import {saveBasics} from "@/api/system/user/user";
 
 const userStore = useUserStore()
 
@@ -90,16 +90,18 @@ const init = () => {
  * 保存用户信息
  * @param values
  */
-const handleFinish = (values:UserInfo) => {
-  saveUserInfo({
+const handleFinish = (values: {nickname: string,gender:string,email:string,phoneNumber:string}) => {
+  saveBasics({
     avatar: JSON.stringify(userInfo.avatar),
     nickname: values.nickname,
     gender: values.gender,
     email: values.email,
     phoneNumber: values.phoneNumber
   }).then(resp => {
-    // 保存用户信息后
-    console.log(resp)
+    if (resp.code === 200){
+      message.success("保存成功")
+      userStore.getUserInfo()
+    }
   })
 }
 

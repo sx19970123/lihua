@@ -18,9 +18,9 @@ export const saveTheme = (themeJson: string) => {
     })
 }
 
-export const saveUserInfo = (userInfo: UserInfo) => {
+export const saveBasics = (userInfo: {avatar: string,nickname: string,gender:string,email:string,phoneNumber:string}) => {
     return request({
-        url: '/system/user/save',
+        url: '/system/user/basics',
         data: userInfo,
         method: 'post'
     })

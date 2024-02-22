@@ -11,7 +11,6 @@
                   @click="open = !open"
       />
     </a-row>
-<!--    :maskClosable="false" :keyboard="false" :closable="false"-->
     <a-modal v-model:open="open" title="头像编辑" width="1000px" @cancel="close">
       <a-flex vertical align="center" :gap="24">
         <!--        avatarType 不是 image 时使用avatar预览-->
@@ -56,15 +55,16 @@
   </div>
 </template>
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import ColorSelect from "@/components/color-select/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
 import ImageCropper from "@/components/image-cropper/index.vue"
 import type {CropperDataType} from "@/components/image-cropper/cropperTyoe";
-import SysAvatar from "@/components/avatar/index.vue"
+import SysAvatar from "@/components/user-avatar/index.vue"
 import {uploadAvatar} from "@/api/system/file/file";
 import {useUserStore} from "@/stores/modules/user";
-import { Modal } from 'ant-design-vue';
+import {message, Modal} from 'ant-design-vue';
+import type {AvatarType} from "@/api/system/user/type/user";
 
 const userStore = useUserStore()
 // 双向绑定值
@@ -83,9 +83,9 @@ const init = () => {
   // 图片地址
   const avatarUrl = ref<string>(modelValue.url)
   // 图标
-  const avatarIcon = ref<string>(modelValue.value)
+  const avatarIcon = ref<string>(modelValue.type === 'icon' ? modelValue.value : '')
   // 文本
-  const avatarText = ref<string>(modelValue.value)
+  const avatarText = ref<string>(modelValue.type === 'text' ? modelValue.value : '')
 
   // 图片预览返回结果
   const avatarImg = ref<CropperDataType>({
@@ -166,13 +166,21 @@ const imageCropperRef = ref<InstanceType<typeof ImageCropper>>()
  * 处理确认数据
  */
 const handleOk = async () => {
-  let updatedData = {};
+  let updatedData: AvatarType = {
+    type :'',
+    backgroundColor :'',
+    value :'',
+    url : ''
+  };
   try {
     switch (avatarType.value) {
       case "image": {
         const cropperInstance = imageCropperRef.value;
         if (!cropperInstance) {
           throw new Error('未找到裁剪器实例');
+        }
+        if (!avatarUrl.value) {
+          throw new Error('请上传头像');
         }
         const blob = await cropperInstance.getBlob();
         if (!blob) {
@@ -186,8 +194,8 @@ const handleOk = async () => {
         updatedData = {
           url: avatarUrl.value,
           value: resp.data,
-          type: avatarType,
-          backgroundColor: avatarColor
+          type: avatarType.value,
+          backgroundColor: avatarColor.value
         };
         break;
       }
@@ -195,9 +203,9 @@ const handleOk = async () => {
       case "text": {
         updatedData = {
           url: avatarUrl.value,
-          value: avatarType.value === 'icon' ? avatarIcon : avatarText,
-          type: avatarType,
-          backgroundColor: avatarColor
+          value: avatarType.value === 'icon' ? avatarIcon.value : avatarText.value,
+          type: avatarType.value,
+          backgroundColor: avatarColor.value
         };
         break;
       }
@@ -207,8 +215,21 @@ const handleOk = async () => {
   } catch (error) {
     console.error('处理头像时出错:', error);
   }
-  emits('update:modelValue', updatedData);
-  open.value = false;
+  if (updatedData.value) {
+    emits('update:modelValue', updatedData);
+    open.value = false;
+  } else {
+    if (avatarType.value === 'image') {
+      message.warn("请上传头像")
+    } else if (avatarType.value === 'text') {
+      message.warn("请编辑文本")
+    } else if (avatarType.value === 'icon') {
+      message.warn("请选择图标")
+    } else {
+      message.warn("请将头像编辑完整")
+    }
+
+  }
 };
 
 /**

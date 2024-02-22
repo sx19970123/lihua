@@ -1,7 +1,7 @@
 package com.lihua.exception;
 
 public class ServiceException extends RuntimeException {
-    public ServiceException() {
-        super();
+    public ServiceException(String message) {
+        super(message);
     }
 }

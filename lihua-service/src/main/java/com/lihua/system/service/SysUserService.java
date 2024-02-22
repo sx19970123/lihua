@@ -1,6 +1,20 @@
 package com.lihua.system.service;
 
+import com.lihua.system.entity.SysUser;
+
 public interface SysUserService {
 
-    void saveTheme(String theme);
+    /**
+     * 保存主题
+     * @param theme
+     * @return
+     */
+    String saveTheme(String theme);
+
+    /**
+     * 保存基础信息
+     * @param sysUser
+     * @return
+     */
+    String saveBasics(SysUser sysUser);
 }

@@ -1,6 +1,7 @@
 package com.lihua.handle;
 
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.exception.ServiceException;
 import com.lihua.exception.security.InvalidTokenException;
 import com.lihua.exception.security.ResourceNotFoundException;
 import com.lihua.model.web.ControllerResult;
@@ -26,6 +27,17 @@ public class GlobalExceptionHandle extends ControllerResult {
      */
     @ExceptionHandler(RuntimeException.class)
     public String handleRuntimeException(Exception e) {
+        e.printStackTrace();
+        return error(ResultCodeEnum.ERROR, e.getMessage());
+    }
+
+    /**
+     * 捕获全局 ServiceException 异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(ServiceException.class)
+    public String handleServiceException(Exception e) {
         e.printStackTrace();
         return error(ResultCodeEnum.ERROR, e.getMessage());
     }

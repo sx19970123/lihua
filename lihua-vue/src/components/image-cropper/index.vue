@@ -173,21 +173,20 @@ const props = defineProps({
 /**
  * 上传的图片
  */
-const img = ref<string>(props.modelValue)
+const img = ref<string>(props.modelValue as string)
 /**
  * 双向绑定
  */
 const emit = defineEmits(['update:change','update:modelValue'])
-
 /**
  * 供父组件获取二进制文件
  */
 defineExpose({
   getBlob: () => {
     return new Promise((resolve, reject)=> {
-      proxy.$refs.cropper.getCropBlob((data: Blob) => {
-        resolve(data)
-      })
+        proxy.$refs.cropper.getCropBlob((data: Blob) => {
+          resolve(data)
+        })
     })
   }
 })

@@ -23,14 +23,23 @@ public class SysUserController extends ControllerResult {
         return success(LoginUserContext.getLoginUser());
     }
 
-    @PostMapping("save")
-    public String save(@RequestBody SysUser sysUser) {
-        return success();
+    /**
+     * 保存基础信息
+     * @param sysUser
+     * @return
+     */
+    @PostMapping("basics")
+    public String saveBasics(@RequestBody SysUser sysUser) {
+        return success(sysUserService.saveBasics(sysUser));
     }
 
+    /**
+     * 保存主题
+     * @param sysUser
+     * @return
+     */
     @PostMapping("theme")
     public String saveTheme(@RequestBody SysUser sysUser) {
-        sysUserService.saveTheme(sysUser.getTheme());
-        return success();
+        return success(sysUserService.saveTheme(sysUser.getTheme()));
     }
 }
