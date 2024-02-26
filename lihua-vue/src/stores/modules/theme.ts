@@ -144,11 +144,14 @@ export const useThemeStore = defineStore('theme',{
         },
         // 布局类型
         changeLayoutType() {
-            // 顶部导航默认关闭多标签
             if (this.$state.layoutType === 'header-content') {
+                if (this.$state.siderTheme === 'dark') {
+                    document.documentElement.setAttribute("header-content-dark", "dark")
+                }
                 this.changeSiderMode('horizontal')
             } else {
                 this.changeSiderMode('inline')
+                document.documentElement.setAttribute("header-content-dark", "none")
             }
             // 修改页面标识
             document.documentElement.setAttribute("layout-type", this.$state.layoutType)
@@ -170,8 +173,12 @@ export const useThemeStore = defineStore('theme',{
         changeSiderTheme() {
             if (this.$state.siderTheme === 'dark') {
                 this.siderBackgroundColor = 'rgba(20,20,20,1)'
+                if (this.$state.layoutType === 'header-content') {
+                    document.documentElement.setAttribute("header-content-dark", "dark")
+                }
             } else {
                 this.siderBackgroundColor = 'rgba(255,255,255,1)'
+                document.documentElement.setAttribute("header-content-dark", "none")
             }
         },
         // 修改磨砂玻璃效果

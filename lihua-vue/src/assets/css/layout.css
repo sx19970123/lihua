@@ -124,7 +124,7 @@
 /**
     顶部右侧鼠标悬停修改背景颜色
  */
-[data-dark = 'light'] {
+[data-dark = 'light']{
     .header-right:hover {
         background: #f3f3f3;
     }
@@ -133,5 +133,13 @@
 [data-dark = 'dark'] {
     .header-right:hover {
         background: #292929;
+    }
+}
+/**
+    暗色风格顶部导航custom="dark"
+ */
+[header-content-dark = 'dark'] {
+    .header-right:hover {
+        background: #1a2c3d;
     }
 }

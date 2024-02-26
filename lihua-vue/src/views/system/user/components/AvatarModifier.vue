@@ -212,23 +212,25 @@ const handleOk = async () => {
       default:
         throw new Error('未知的头像类型');
     }
-  } catch (error) {
-    console.error('处理头像时出错:', error);
-  }
-  if (updatedData.value) {
-    emits('update:modelValue', updatedData);
-    open.value = false;
-  } else {
-    if (avatarType.value === 'image') {
-      message.warn("请上传头像")
-    } else if (avatarType.value === 'text') {
-      message.warn("请编辑文本")
-    } else if (avatarType.value === 'icon') {
-      message.warn("请选择图标")
-    } else {
-      message.warn("请将头像编辑完整")
-    }
 
+    if (updatedData.value) {
+      emits('update:modelValue', updatedData);
+      open.value = false;
+    } else {
+      if (avatarType.value === 'image') {
+        message.warn("请上传头像")
+      } else if (avatarType.value === 'text') {
+        message.warn("请编辑文本")
+      } else if (avatarType.value === 'icon') {
+        message.warn("请选择图标")
+      } else {
+        message.warn("请将头像编辑完整")
+      }
+
+    }
+  } catch (error) {
+    message.error("处理头像异常-" + error)
+    console.error('处理头像时出错:', error);
   }
 };
 

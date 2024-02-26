@@ -5,7 +5,8 @@ lihua:
   # 允许跨域的最长时间
   corsMaxAge: 3600
   # 上传文件路径
-  uploadFilePath: '/Users/shangxuan/项目/upload/'
+  #uploadFilePath: '/Users/shangxuan/项目/upload/'
+  uploadFilePath: 'E:\home'
 server:
   port: 8080
 
@@ -18,7 +19,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/lihua
     username: root
-    password: 123456
+    password: root
 
   # redis配置
   data:
