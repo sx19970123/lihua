@@ -37,6 +37,7 @@ public class SysUserServiceImpl implements SysUserService {
         updateWrapper.lambda()
                 .eq(SysUser::getId,sysUserVO.getId())
                 .set(SysUser::getAvatar,sysUser.getAvatar())
+                .set(SysUser::getNickname,sysUser.getNickname())
                 .set(SysUser::getPhoneNumber,sysUser.getPhoneNumber())
                 .set(SysUser::getEmail,sysUser.getEmail())
                 .set(SysUser::getGender,sysUser.getGender())
@@ -50,6 +51,7 @@ public class SysUserServiceImpl implements SysUserService {
             sysUserVO.setEmail(sysUser.getEmail());
             sysUserVO.setPhoneNumber(sysUser.getPhoneNumber());
             sysUserVO.setGender(sysUser.getGender());
+            sysUserVO.setNickname(sysUser.getNickname());
             LoginUser loginUser = LoginUserContext.getLoginUser();
             loginUser.setSysUserVO(sysUserVO);
             LoginUserMgmt.setLoginUserCache(loginUser);
