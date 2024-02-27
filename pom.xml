@@ -51,6 +51,7 @@
                     <include>**/*.xml</include>
                     <include>**/*.yml</include>
                     <include>**/*.txt</include>
+                    <include>META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</include>
                 </includes>
             </resource>
             <resource>

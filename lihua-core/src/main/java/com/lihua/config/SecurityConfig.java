@@ -46,7 +46,7 @@ public class SecurityConfig {
         // 配置拦截请求
         http.authorizeHttpRequests(authorizeHttpRequestsCustomizer -> {
             authorizeHttpRequestsCustomizer
-                    .requestMatchers("/system/login/**").permitAll()
+                    .requestMatchers("/system/login/**","/captcha/**").permitAll()
                     .anyRequest().authenticated();
         });
 
