@@ -5,13 +5,11 @@ import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
 import com.anji.captcha.util.StringUtils;
 import com.lihua.config.LihuaConfig;
+import com.lihua.model.web.ControllerResult;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 
 /**
  * 验证码请求controller，ajCaptcha 兼容 SpringBoot3 进行controller重写
@@ -26,11 +24,22 @@ public class CaptchaController {
     @Resource
     private LihuaConfig lihuaConfig;
 
-    public CaptchaController() {
+    /**
+     * 是否启用验证码
+     * @return
+     */
+    @GetMapping("enable")
+    public String enable() {
+        return ControllerResult.success(lihuaConfig.getEnableVerificationCode() != null && lihuaConfig.getEnableVerificationCode());
     }
 
-
-    @PostMapping({"/get"})
+    /**
+     * 获取验证码
+     * @param data
+     * @param request
+     * @return
+     */
+    @PostMapping({"get"})
     public ResponseModel get(@RequestBody CaptchaVO data, HttpServletRequest request) {
         System.out.println(lihuaConfig.getEnableVerificationCode());
         assert request.getRemoteHost() != null;
@@ -39,7 +48,13 @@ public class CaptchaController {
         return this.captchaService.get(data);
     }
 
-    @PostMapping({"/check"})
+    /**
+     * 校验验证码
+     * @param data
+     * @param request
+     * @return
+     */
+    @PostMapping({"check"})
     public ResponseModel check(@RequestBody CaptchaVO data, HttpServletRequest request) {
         data.setBrowserInfo(getRemoteId(request));
         return this.captchaService.check(data);

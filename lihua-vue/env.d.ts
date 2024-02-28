@@ -12,4 +12,6 @@ declare module 'js-cookie'
 
 declare module 'nprogress'
 
+declare module '@/components/verifition/index.vue'
+
 
