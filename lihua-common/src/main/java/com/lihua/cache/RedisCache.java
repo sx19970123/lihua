@@ -218,4 +218,14 @@ public class RedisCache {
     public Long delete(String... keys) {
         return redisTemplate.delete(List.of(keys));
     }
+
+    /**
+     * 指定 key 递增 val
+     * @param key
+     * @param val
+     * @return
+     */
+    public Long increment(String key, long val) {
+        return redisTemplate.opsForValue().increment(key,val);
+    }
 }

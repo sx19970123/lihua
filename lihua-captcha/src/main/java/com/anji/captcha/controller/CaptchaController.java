@@ -4,6 +4,8 @@ import com.anji.captcha.model.common.ResponseModel;
 import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
 import com.anji.captcha.util.StringUtils;
+import com.lihua.config.LihuaConfig;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,14 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping({"/captcha"})
 public class CaptchaController {
 
-    @Autowired
+    @Resource
     private CaptchaService captchaService;
+
+    @Resource
+    private LihuaConfig lihuaConfig;
 
     public CaptchaController() {
     }
 
+
     @PostMapping({"/get"})
     public ResponseModel get(@RequestBody CaptchaVO data, HttpServletRequest request) {
+        System.out.println(lihuaConfig.getEnableVerificationCode());
         assert request.getRemoteHost() != null;
 
         data.setBrowserInfo(getRemoteId(request));

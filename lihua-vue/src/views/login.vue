@@ -7,28 +7,24 @@
       </div>
       <div style="width: 50%">
         <transition name="card" mode="out-in">
-          <a-card class="login-card" v-if="show">
+          <a-card class="login-card" v-if="showCard">
             <transition name="form" mode="out-in">
-              <div style="margin: 32px" v-if="show1">
+              <div style="margin: 32px" v-if="showForm">
                   <div class="login-title" >
                     <a-typography-title>欢迎登陆狸花猫</a-typography-title>
                     <a-typography-text>没有账户？</a-typography-text>
                     <a-typography-link>立即注册 <RightOutlined /></a-typography-link>
                   </div>
-                  <a-form :model="loginForm" @finish="login">
+                  <a-form :model="loginForm" @finish="showVerify" :rules="loginRoles">
                     <a-form-item name="username">
-                      <a-input class="login-form-item" autocomplete="off" v-model:value="loginForm.username" placeholder="用户名" size="large"></a-input>
+                      <a-input class="login-form-item" autocomplete="off" v-model:value="loginForm.username" placeholder="用户名">
+                        <template #prefix><UserOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
+                      </a-input>
                     </a-form-item>
                     <a-form-item name="username">
-                      <a-input-password class="login-form-item" v-model:value="loginForm.password" placeholder="密码" size="large"></a-input-password>
-                    </a-form-item>
-                    <a-form-item name="username">
-                      <a-flex justify="space-between" :gap="8">
-                        <a-input class="login-form-item" v-model:value="loginForm.password" placeholder="验证码" size="large"></a-input>
-                        <div style="height: 48px;width: 240px;background: #f3f3f3;border-radius: 6px">
-
-                        </div>
-                      </a-flex>
+                      <a-input-password class="login-form-item" v-model:value="loginForm.password" placeholder="密码">
+                        <template #prefix><LockOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
+                      </a-input-password>
                     </a-form-item>
                     <a-form-item>
                       <a-flex justify="space-between">
@@ -37,23 +33,33 @@
                       </a-flex>
                     </a-form-item>
                     <a-form-item>
-                      <a-button html-type="submit" class="login-form-item" style="width: 100%">登录</a-button>
+                      <a-button html-type="submit" type="primary" class="login-form-item" style="width: 100%">登录</a-button>
                     </a-form-item>
                   </a-form>
-                    <a-divider plain>其他方式</a-divider>
-                    <a-flex justify="space-around">
-                      <a-button size="large" shape="circle"><WeiboCircleOutlined /></a-button>
-                      <a-button size="large" shape="circle"><WechatOutlined /></a-button>
-                      <a-button size="large" shape="circle"><AlipayCircleOutlined /></a-button>
-                      <a-button size="large" shape="circle"><QqOutlined /></a-button>
-                      <a-button size="large" shape="circle"><GitlabOutlined /></a-button>
-                    </a-flex>
+<!--                    <a-divider plain>其他方式</a-divider>-->
+<!--                    <a-flex justify="space-around">-->
+<!--                      <a-button size="large" shape="circle"><WeiboCircleOutlined /></a-button>-->
+<!--                      <a-button size="large" shape="circle"><WechatOutlined /></a-button>-->
+<!--                      <a-button size="large" shape="circle"><AlipayCircleOutlined /></a-button>-->
+<!--                      <a-button size="large" shape="circle"><QqOutlined /></a-button>-->
+<!--                      <a-button size="large" shape="circle"><GitlabOutlined /></a-button>-->
+<!--                    </a-flex>-->
               </div>
             </transition>
           </a-card>
         </transition>
       </div>
     </a-flex>
+    <!--    验证码-->
+    <transition name="verify" mode="out-in">
+      <verify
+          @success="login"
+          @error="loadVerify"
+          ref="verifyRef"
+          :captcha-type="captchaType"
+          :imgSize="{ width: '330px', height: '155px' }"
+      />
+    </transition>
   </a-flex>
 </template>
 
@@ -62,24 +68,31 @@ import { useUserStore } from "@/stores/modules/user"
 import { useRouter } from 'vue-router'
 import {reactive, ref} from "vue"
 import { message } from "ant-design-vue";
+import Verify from "@/components/verifition/index.vue";
+import type {Rule} from "ant-design-vue/es/form";
 
 const router = useRouter()
-const show = ref<boolean>(false)
-const show1 = ref<boolean>(false)
+const verifyRef = ref<InstanceType<typeof Verify>>()
+
+// 用户登录
 const userLogin = () => {
   interface LoginFormType {
     username: string ,
     password: string
   }
-
   const loginForm = reactive<LoginFormType>({
     username: '',
     password: ''
   })
+  const loginRoles:Record<string, Rule[]> = {
+    username: [ { required: true, message: '请输入账号', trigger: 'change' } ],
+    password: [ { required: true, message: '请输入密码', trigger: 'change' } ]
+  }
+  // 登录请求
+  const login = ({captchaVerification}: {captchaVerification: string}) => {
 
-  const login = () => {
     const userStore = useUserStore();
-    userStore.login(loginForm.username ,loginForm.password).then((resp) => {
+    userStore.login(loginForm.username ,loginForm.password, captchaVerification).then((resp) => {
       if (resp.code === 200) {
         router.push("/index")
       } else {
@@ -87,24 +100,56 @@ const userLogin = () => {
       }
     })
   }
-
   return {
     loginForm,
+    loginRoles,
     login
   }
 }
 
-const initCaptcha = () => {
-  
+// 验证码
+const captcha = () => {
+  const captchaType = ref<string>('blockPuzzle');
+  // 显示验证码
+  const showVerify = () => {
+    loadVerify()
+    verifyRef.value.show()
+  }
+  // 刷新验证模式
+  const loadVerify = () => {
+    if (Math.floor(Math.random() * 10) % 2 === 0 ) {
+      captchaType.value = 'blockPuzzle'
+    } else {
+      captchaType.value = 'clickWord'
+    }
+  }
+
+  return {
+    showVerify,
+    loadVerify,
+    captchaType
+  }
 }
 
-const {loginForm, login} = userLogin()
-setTimeout(() => {
-  show.value = true
-},10)
-setTimeout(() => {
-  show1.value = true
-},100)
+// 动画效果
+const transition = () => {
+  const showCard = ref<boolean>(false)
+  const showForm = ref<boolean>(false)
+  setTimeout(() => {
+    showCard.value = true
+  },10)
+  setTimeout(() => {
+    showForm.value = true
+  },100)
+  return {
+    showCard,
+    showForm
+  }
+}
+
+const {showCard, showForm} = transition()
+const {loginForm, loginRoles, login} = userLogin()
+const {showVerify,loadVerify,captchaType} = captcha()
 </script>
 
 <style>
@@ -134,7 +179,7 @@ setTimeout(() => {
 }
 .login-card {
   margin: 64px;
-  border-radius: 32px;
+  border-radius: 24px;
 }
 .login-title {
   margin-top: 32px;
@@ -158,6 +203,20 @@ setTimeout(() => {
 }
 .form-enter-from {
   transform: translateY(24px);
+  opacity: 0;
+}
+
+.verify-enter-active {
+  transition: all 0.3s ease-in-out;
+}
+.verify-enter-from {
+  transform: translateY(10px);
+  opacity: 0;
+}
+.verify-leave-active {
+  transition: all 0.25s ease-out;
+}
+.verify-leave-to {
   opacity: 0;
 }
 </style>

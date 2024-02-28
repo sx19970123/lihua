@@ -2,21 +2,22 @@ import request from "@/utils/request";
 interface LoginType {
     username: string,
     password: string,
-    code?: string
 }
 // 用户登录
 export const login =  (username: string,
                       password: string,
-                      code?: string) => {
+                       captchaVerification: string) => {
     const data: LoginType = {
         username,
-        password,
-        code
+        password
     }
     return request({
         url: '/system/login',
         method: 'post',
-        data: data
+        data: data,
+        params: {
+            captchaVerification: captchaVerification
+        }
     })
 }
 

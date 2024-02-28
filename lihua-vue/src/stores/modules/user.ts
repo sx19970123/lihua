@@ -69,9 +69,9 @@ export const useUserStore = defineStore('user', {
     },
     actions: {
         // 用户登录
-        login(username: string, password: string, code?: string)  {
+        login(username: string, password: string, captchaVerification: string)  {
             return new Promise((resolve, reject) => {
-                login(username,password,code).then((resp:ResponseType<string>) => {
+                login(username,password,captchaVerification).then((resp:ResponseType<string>) => {
                     if (resp.code === 200) {
                         setToken(resp.data)
                     }

@@ -27,4 +27,9 @@ public class LihuaConfig {
      */
     private String uploadFilePath;
 
+    /**
+     * 启用验证码
+     */
+    private Boolean enableVerificationCode;
+
 }
