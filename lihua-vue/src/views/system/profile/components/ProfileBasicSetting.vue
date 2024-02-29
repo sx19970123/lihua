@@ -43,11 +43,11 @@
 <script setup lang="ts">
 import {reactive, ref} from "vue";
 import {useUserStore} from "@/stores/modules/user";
-import AvatarModifier from "@/views/system/user/components/AvatarModifier.vue";
+import AvatarModifier from "@/views/system/profile/components/AvatarModifier.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
-import type {UserInfo} from "@/api/system/user/type/user";
-import {saveBasics} from "@/api/system/user/user";
+import type {UserInfo} from "@/api/system/profile/type/user";
+import {saveBasics} from "@/api/system/profile/profile";
 
 const userStore = useUserStore()
 

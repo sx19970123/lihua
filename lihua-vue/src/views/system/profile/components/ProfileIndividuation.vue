@@ -46,6 +46,9 @@
           <a-select-option value="trick">整活</a-select-option>
         </a-select>
       </a-form-item>
+      <a-form-item>
+        <a-button type="primary" @click="userStore.saveTheme(JSON.stringify(themeStore.$state))">提 交</a-button>
+      </a-form-item>
     </a-form>
   </div>
 
@@ -102,7 +105,6 @@ const colorList = ref<Array<{name: string,color: string}>>([
 onUnmounted(()=> {
   userStore.saveTheme(JSON.stringify(themeStore.$state));
 })
-
 
 </script>
 <style scoped>

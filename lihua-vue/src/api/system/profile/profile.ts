@@ -1,5 +1,4 @@
 import request from "@/utils/request";
-import type {UserInfo} from "@/api/system/user/type/user";
 
 export const getUserInfo = () => {
     return request({

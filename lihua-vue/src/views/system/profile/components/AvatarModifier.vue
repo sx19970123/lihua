@@ -64,7 +64,7 @@ import SysAvatar from "@/components/user-avatar/index.vue"
 import {uploadAvatar} from "@/api/system/file/file";
 import {useUserStore} from "@/stores/modules/user";
 import {message, Modal} from 'ant-design-vue';
-import type {AvatarType} from "@/api/system/user/type/user";
+import type {AvatarType} from "@/api/system/profile/type/user";
 
 const userStore = useUserStore()
 // 双向绑定值

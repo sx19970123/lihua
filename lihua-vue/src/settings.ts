@@ -1,3 +1,81 @@
+import { theme } from "ant-design-vue";
+
+/**
+ * 系统信息配置
+ */
 export default {
-    contentWidth: '1000px'
+    /**
+     * 暗色模式
+     */
+    dataDark: localStorage.getItem("dataDark") === 'dark',
+
+    /**
+     * 顶部栏背景颜色
+     */
+    layoutBackgroundColor: 'rgba(255,255,255,1)',
+
+    /**
+     * 布局类型 sider-header / header-sider / header-content
+     */
+    layoutType: 'sider-header',
+
+    /**
+     * 导航模式 inline / horizontal
+     */
+    siderMode: 'inline',
+
+    /**
+     * 主要颜色
+     */
+    colorPrimary: 'rgb(22, 119, 255)',
+
+    /**
+     * 侧边栏背景颜色
+     */
+    siderBackgroundColor: 'rgba(255,255,255,1)',
+
+    /**
+     * 磨砂玻璃效果
+     */
+    groundGlass: true,
+
+    /**
+     * 固定头部
+     */
+    affixHead: true,
+
+    /**
+     * 显示多窗口标签
+     */
+    showViewTags: true,
+
+    /**
+     * 侧边颜色 light / dark
+     */
+    siderTheme: 'light',
+
+    /**
+     * 侧边宽度
+     */
+    siderWith: 200,
+
+    /**
+     * 原侧边宽度，用于调整侧边栏时保存临时变量
+     */
+    originSiderWith: 200,
+
+    /**
+     * 切换路由时的过渡动画 zoom / fade / breathe / top / down / switch / trick
+     */
+    routeTransition: 'zoom',
+
+    /**
+     * ant 主题配置
+     */
+    themeConfig: {
+        token: {
+            colorPrimary: '#2196F3'
+        },
+        algorithm: theme.defaultAlgorithm
+    }
 }

@@ -1,7 +1,7 @@
-import type { RouterType } from "@/api/system/user/type/router"
-import type { RoleType } from "@/api/system/user/type/role"
+import type { RouterType } from "@/api/system/profile/type/router"
+import type { RoleType } from "@/api/system/profile/type/role"
 import type { StarViewType } from "@/api/system/star-view/type/starView"
-import type { AuthorType } from "@/api/system/user/type/author"
+import type { AuthorType } from "@/api/system/profile/type/author"
 
 /**
  * loginUser

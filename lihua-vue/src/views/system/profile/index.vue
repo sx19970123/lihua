@@ -20,12 +20,11 @@
 </template>
 
 <script setup lang="ts">
-import Basic from './components/UserBasicSetting.vue'
-import Individuation from './components/UserIndividuation.vue'
-import Security from './components/UserSecurity.vue'
+import Basic from './components/ProfileBasicSetting.vue'
+import Individuation from './components/ProfileIndividuation.vue'
+import Security from './components/ProfileSecurity.vue'
 import {ref,markRaw} from "vue";
 import { useThemeStore } from "@/stores/modules/theme";
-import settings from "@/settings";
 const themeStore = useThemeStore()
 // 注册子组件
 const allComponents = ref([

@@ -3,7 +3,7 @@ import type {RouteRecordRaw} from "vue-router";
 import Layout from "@/layout/index.vue";
 import { format } from "@/utils/date";
 import type { StarViewType,RecentType } from "@/api/system/star-view/type/starView"
-import type {RouterType} from "@/api/system/user/type/router";
+import type {RouterType} from "@/api/system/profile/type/router";
 import Login from "@/views/login.vue";
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {

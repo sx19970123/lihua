@@ -55,13 +55,6 @@ const routers = [
       {
         path: '/index',
         component: () => import("@/views/index.vue"),
-        children: [
-          {
-            path: 'c',
-            component: () => import("@/views/index/c/index.vue"),
-            meta: { label: '首页的孩子', icon: 'FastBackwardOutlined', affix: false, skip: true, viewTabSort: 1 }
-          }
-        ],
         meta: { label: '首页', icon: 'FastBackwardOutlined', affix: true, viewTabSort: 1 }
 
       }
@@ -74,7 +67,7 @@ const routers = [
     children: [
       {
         path: '/user',
-        component: () => import("@/views/system/user/index.vue"),
+        component: () => import("@/views/system/profile/index.vue"),
         meta: { label: '个人中心', icon: 'UserOutlined',noCache: false, componentName: 'index'},
       }
     ]

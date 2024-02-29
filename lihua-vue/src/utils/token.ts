@@ -51,7 +51,7 @@ const removePassword = () => {
 }
 
 const enableRememberMe = ():boolean => {
-    return Cookies.get(REMEMBER_ME_KEY)
+    return Cookies.get(REMEMBER_ME_KEY) === 'true' || Cookies.get(REMEMBER_ME_KEY)
 }
 
 // 记住我

@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 
 import {login, logout} from "@/api/system/login/login";
-import {getUserInfo, saveTheme} from "@/api/system/user/user";
+import {getUserInfo, saveTheme} from "@/api/system/profile/profile";
 
 import type { ResponseType } from "@/api/type";
-import type {AvatarType, SysUserVOType, UserInfoType} from "@/api/system/user/type/user";
+import type {AvatarType, SysUserVOType, UserInfoType} from "@/api/system/profile/type/user";
 
 import token from "@/utils/token";
 import { message } from "ant-design-vue";
@@ -148,6 +148,11 @@ export const useUserStore = defineStore('user', {
                             icon: () => h( BgColorsOutlined ),
                         })
                     }
+                })
+            } else {
+                message.success({
+                    content: () => '样式已保存',
+                    icon: () => h( BgColorsOutlined ),
                 })
             }
         },

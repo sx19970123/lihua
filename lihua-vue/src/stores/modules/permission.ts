@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type {RouterType} from "@/api/system/user/type/router";
+import type {RouterType} from "@/api/system/profile/type/router";
 
 
 export const usePermissionStore = defineStore('permission',{

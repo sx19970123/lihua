@@ -37,7 +37,7 @@
 
 import {reactive, ref} from "vue";
 import type {Rule} from "ant-design-vue/es/form";
-import {updatePassword} from "@/api/system/user/user";
+import {updatePassword} from "@/api/system/profile/profile";
 import {message} from "ant-design-vue";
 const passwordLevel = ref<number>(0)
 
@@ -106,14 +106,14 @@ const handleChange = () => {
   }
 }
 
-const handleFinish = (data: passwordType) => {
-  updatePassword(data.oldPassword,data.newPassword).then(resp => {
-    if (resp.code === 200) {
-      message.success("修改成功")
-    } else {
-      message.warn(resp.msg)
-    }
-  })
+const handleFinish = async (data: passwordType) => {
+  const resp = await updatePassword(data.oldPassword,data.newPassword)
+
+  if (resp.code === 200) {
+    message.success("修改成功")
+  } else {
+    message.warn(resp.msg)
+  }
 }
 
 </script>

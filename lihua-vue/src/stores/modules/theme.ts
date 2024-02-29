@@ -1,78 +1,79 @@
 import { defineStore } from "pinia";
 import { theme } from "ant-design-vue";
+import settings from "@/settings";
 
 export const useThemeStore = defineStore('theme',{
     state() {
         /**
          * 暗色模式
          */
-        const dataDark: boolean = false
+        const dataDark: boolean = settings.dataDark
 
         /**
          * 顶部栏背景颜色
          */
-        const layoutBackgroundColor: string = 'rgba(255,255,255,1)'
+        const layoutBackgroundColor: string = settings.siderBackgroundColor
+
         /**
          * 布局类型 sider-header / header-sider / header-content
          */
-        const layoutType: string = 'sider-header'
+        const layoutType: string = settings.layoutType
 
         /**
          * 导航模式 inline / horizontal
          */
-        const siderMode: string = 'inline'
+        const siderMode: string = settings.siderMode
 
         /**
          * 主要颜色
          */
-        const colorPrimary: string = 'rgb(22, 119, 255)'
+        const colorPrimary: string = settings.colorPrimary
 
         /**
          * 侧边栏背景颜色
          */
-        const siderBackgroundColor: string = 'rgba(255,255,255,1)'
+        const siderBackgroundColor: string = settings.layoutBackgroundColor
 
         /**
          * 磨砂玻璃效果
          */
-        const groundGlass: boolean = false
+        const groundGlass: boolean = settings.groundGlass
 
         /**
          * 固定头部
          */
-        const affixHead: boolean = true
+        const affixHead: boolean = settings.affixHead
 
         /**
          * 显示多窗口标签
          */
-        const showViewTags: boolean = true
+        const showViewTags: boolean = settings.showViewTags
 
         /**
          * 侧边颜色 light / dark
           */
-        const siderTheme: string = 'light'
+        const siderTheme: string = settings.siderTheme
 
         /**
          * 侧边宽度
          */
-        const siderWith: number = 200
+        const siderWith: number = settings.siderWith
 
         /**
          * 原侧边宽度，用于调整侧边栏时保存临时变量
          */
-        const originSiderWith: number = 200
+        const originSiderWith: number = settings.originSiderWith
 
         /**
          * 切换路由时的过渡动画 zoom / fade / breathe / top / down / switch / trick
          */
-        const routeTransition: string = 'zoom'
+        const routeTransition: string = settings.routeTransition
 
-        const themeConfig = {
-            token: {
-                colorPrimary: '#2196F3'
-            },
-            algorithm: theme.defaultAlgorithm
-        }
+        /**
+         * ant 主题配置
+         */
+        const themeConfig = settings.themeConfig
+
         return {
             layoutType,
             showViewTags,
@@ -113,6 +114,7 @@ export const useThemeStore = defineStore('theme',{
                     }
                 }
             }
+            this.$state.dataDark = localStorage.getItem("dataDark") === 'dark'
         },
         // 暗色模式
         changeDataDark() {
@@ -141,6 +143,7 @@ export const useThemeStore = defineStore('theme',{
                 this.$state.themeConfig.algorithm = theme.defaultAlgorithm
             }
 
+            localStorage.setItem('dataDark',this.$state.dataDark ? 'dark' : 'light')
         },
         // 布局类型
         changeLayoutType() {
@@ -215,6 +218,24 @@ export const useThemeStore = defineStore('theme',{
         changeDocumentElement() {
             document.documentElement.setAttribute("data-dark",this.$state.dataDark ? 'dark' : 'light')
             document.documentElement.setAttribute("data-color", this.$state.colorPrimary)
+        },
+        // 主题复原
+        resetState() {
+            this.$state.layoutType = settings.layoutType
+            this.$state.showViewTags = settings.showViewTags
+            this.$state.dataDark = settings.dataDark
+            this.$state.colorPrimary = settings.colorPrimary
+            this.$state.siderTheme = settings.siderTheme
+            this.$state.groundGlass = settings.groundGlass
+            this.$state.affixHead = settings.affixHead
+            this.$state.layoutBackgroundColor = settings.layoutBackgroundColor
+            this.$state.siderBackgroundColor = settings.siderBackgroundColor
+            this.$state.siderMode = settings.siderMode
+            this.$state.siderWith = settings.siderWith
+            this.$state.originSiderWith = settings.originSiderWith
+            this.$state.routeTransition = settings.routeTransition
+            this.$state.themeConfig = settings.themeConfig
+            this.changeDataDark()
         },
         // 折叠侧边栏
         foldSiderWidth()  {

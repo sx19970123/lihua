@@ -9,8 +9,8 @@ import Layout from "@/layout/index.vue";
 import MiddleView from "@/components/middle-view/index.vue"
 
 import type { ResponseType } from "@/api/type";
-import type { UserInfoType } from "@/api/system/user/type/user";
-import type {RouterType} from "@/api/system/user/type/router";
+import type { UserInfoType } from "@/api/system/profile/type/user";
+import type {RouterType} from "@/api/system/profile/type/router";
 
 import token from "@/utils/token"
 import type {RouteRecordRaw} from "vue-router";
@@ -56,6 +56,7 @@ router.beforeEach((to,from,next) => {
         }
 
     } else {
+        useTheme.resetState()
         if (to.fullPath !== "/login") {
             next("/login")
         } else {

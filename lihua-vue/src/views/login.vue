@@ -1,6 +1,5 @@
 <template>
   <a-flex class="login-background" justify="center" align="center">
-    <head-theme-switch class="head-theme-switch"/>
     <a-flex class="login-content" justify="space-around" align="center">
       <div style="width: 50%">
         <a-typography-title style="margin-top: 64px;margin-right: 64px;margin-left: 64px">狸花猫</a-typography-title>
@@ -34,7 +33,7 @@
                       </template>
                     </a-input>
                   </a-form-item>
-                  <a-form-item name="username" :validate-status="validateStatus" :help="statusMsg" hasFeedback>
+                  <a-form-item name="password" :validate-status="validateStatus" :help="statusMsg" hasFeedback>
                     <a-input-password class="login-form-item"
                                       v-model:value="loginForm.password"
                                       placeholder="密码"
@@ -81,6 +80,7 @@
           :imgSize="{ width: '330px', height: '155px' }"
       />
     </transition>
+    <head-theme-switch class="head-theme-switch"/>
   </a-flex>
 </template>
 
@@ -140,6 +140,7 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
       } else {
         token.forgetMe()
       }
+      message.success("登录成功")
       await router.push("/index");
       // 路由跳转完成后的后续逻辑可以放在这里
     } else {
@@ -232,7 +233,7 @@ const {showForm, showCard} = transition()
 .head-theme-switch {
   position: fixed;
   top: 16px;
-  right: 16px;
+  right: 24px;
 }
 
 .login-content {
