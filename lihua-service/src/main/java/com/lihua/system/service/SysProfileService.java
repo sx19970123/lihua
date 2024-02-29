@@ -2,7 +2,7 @@ package com.lihua.system.service;
 
 import com.lihua.system.entity.SysUser;
 
-public interface SysUserService {
+public interface SysProfileService {
 
     /**
      * 保存主题

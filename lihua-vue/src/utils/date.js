@@ -1,6 +1,6 @@
-export const format = (data:Date,fmt:string): string => {
+export const format = (data, fmt) => {
     return data.format(fmt);
-}
+};
 
 /**
  * 获取相对于date的时间日期
@@ -8,14 +8,14 @@ export const format = (data:Date,fmt:string): string => {
  * @param fmt 日期格式
  * @param offset 偏移量，+1就是一天后；-1就是前一天
  */
-export const relativeDate = (date: Date, fmt: string, offset: number): string => {
-    const previousDay =  new Date(date)
-    previousDay.setDate(date.getDate() + offset)
-    return previousDay.format(fmt)
-}
+export const relativeDate = (date, fmt, offset) => {
+    const previousDay =  new Date(date);
+    previousDay.setDate(date.getDate() + offset);
+    return previousDay.format(fmt);
+};
 
 // Date 原型添加format 方法
-Date.prototype.format = function(fmt:string) {
+Date.prototype.format = function(fmt) {
     let o = {
         "M+" : this.getMonth()+1,                 //月份
         "d+" : this.getDate(),                    //日
@@ -34,4 +34,4 @@ Date.prototype.format = function(fmt:string) {
         }
     }
     return fmt;
-}
+};

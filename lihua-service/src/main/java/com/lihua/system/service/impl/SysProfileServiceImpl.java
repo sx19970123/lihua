@@ -7,7 +7,7 @@ import com.lihua.model.security.LoginUser;
 import com.lihua.model.security.SysUserVO;
 import com.lihua.system.entity.SysUser;
 import com.lihua.system.mapper.SysUserMapper;
-import com.lihua.system.service.SysUserService;
+import com.lihua.system.service.SysProfileService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserMgmt;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class SysUserServiceImpl implements SysUserService {
+public class SysProfileServiceImpl implements SysProfileService {
 
     @Resource
     private SysUserMapper sysUserMapper;

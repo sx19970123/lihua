@@ -44,8 +44,6 @@ interface MenuType {
   danger: boolean
 }
 
-const routers = defineProps({
-  data: Array<MenuType>
-})
+const routers = defineProps(['data'])
 </script>
 

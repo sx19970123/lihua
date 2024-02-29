@@ -125,7 +125,13 @@ const handleRecentList = (viewTabs:Array<StarViewType>) => {
     // 当前tab页有数据
     if (viewTabs && viewTabs.length > 0) {
       const actPathList = viewTabs.map(tab => tab.routerPathKey)
-      recentData.value = recentTabs.filter((tab:RecentType) => !actPathList.includes(tab.path))
+      recentData.value = recentTabs.filter((tab:RecentType) => {
+        if (tab.path) {
+          return !actPathList.includes(tab.path)
+        } else {
+          return false
+        }
+      })
     } else {
       recentData.value = recentTabs
     }

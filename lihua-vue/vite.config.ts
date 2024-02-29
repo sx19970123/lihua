@@ -26,5 +26,17 @@ export default defineConfig({
         rewrite: (p:string) => p.replace(/^\/dev-api/, '')
       }
     }
+  },
+  build: {
+    outDir: 'dist', // 输出目录
+    target: 'esnext', // js格式
+    terserOptions: {
+      compress: {
+        drop_console: true, // 生产环境去掉 console
+        drop_debugger: true, // 生产环境去掉 debugger
+        dead_code: true // 删除无法访问的代码
+      },
+    },
+    chunkSizeWarningLimit: 2000 // 代码块超过2000 bytes时vite发出警告
   }
 })

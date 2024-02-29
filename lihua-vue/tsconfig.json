@@ -12,6 +12,7 @@
     }
   ],
   "compilerOptions": {
+    "allowJs": true,
     "composite": true,
     "noEmit": true,
     "module": "ESNext",

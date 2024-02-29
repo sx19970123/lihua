@@ -4,18 +4,18 @@ import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.web.ControllerResult;
 import com.lihua.system.entity.SysUser;
-import com.lihua.system.service.SysUserService;
+import com.lihua.system.service.SysProfileService;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("system/user")
-public class SysUserController extends ControllerResult {
+@RequestMapping("system/profile")
+public class SysProfileController extends ControllerResult {
 
     @Resource
-    private SysUserService sysUserService;
+    private SysProfileService sysProfileService;
 
     /**
      * 从 SecurityContextHolder 中获取用户信息返回
@@ -35,7 +35,7 @@ public class SysUserController extends ControllerResult {
      */
     @PostMapping("basics")
     public String saveBasics(@RequestBody SysUser sysUser) {
-        return success(sysUserService.saveBasics(sysUser));
+        return success(sysProfileService.saveBasics(sysUser));
     }
 
     /**
@@ -45,9 +45,15 @@ public class SysUserController extends ControllerResult {
      */
     @PostMapping("theme")
     public String saveTheme(@RequestBody SysUser sysUser) {
-        return success(sysUserService.saveTheme(sysUser.getTheme()));
+        return success(sysProfileService.saveTheme(sysUser.getTheme()));
     }
 
+    /**
+     * 修改密码
+     * @param oldPassword
+     * @param newPassword
+     * @return
+     */
     @PostMapping("password")
     public String updatePassword(String oldPassword, String newPassword) {
         if (!SecurityUtils.matchesPassword(oldPassword,LoginUserContext.getSysUser().getPassword())) {
@@ -57,6 +63,6 @@ public class SysUserController extends ControllerResult {
             return error(ResultCodeEnum.ERROR,"新密码不能与旧密码相同");
         }
 
-        return success(sysUserService.updatePassword(newPassword));
+        return success(sysProfileService.updatePassword(newPassword));
     }
 }
