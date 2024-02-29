@@ -24,9 +24,8 @@
         <div class="verify-move-block"
              @touchstart="start"
              @mousedown="start"
-             :style="{width: barSize.height, height: barSize.height, 'background-color': moveBlockBackgroundColor, left: moveBlockLeft, transition: transitionLeft}">
-          <i :class="['verify-icon iconfont', iconClass]"
-             :style="{color: iconColor}"></i>
+             :style="{width: barSize.height, height: barSize.height, left: moveBlockLeft, transition: transitionLeft}">
+          <i :class="['verify-icon iconfont', iconClass]"></i>
           <div v-if="type === '2'" class="verify-sub-block"
                :style="{'width':Math.floor(parseInt(setSize.imgWidth)*47/310)+ 'px',
                                   'height': setSize.imgHeight,

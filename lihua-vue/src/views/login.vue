@@ -1,5 +1,6 @@
 <template>
   <a-flex class="login-background" justify="center" align="center">
+    <head-theme-switch class="head-theme-switch"/>
     <a-flex class="login-content" justify="space-around" align="center">
       <div style="width: 50%">
         <a-typography-title style="margin-top: 64px;margin-right: 64px;margin-left: 64px">狸花猫</a-typography-title>
@@ -91,6 +92,7 @@ import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {enable} from "@/api/system/captcha/captcha";
+import HeadThemeSwitch from "@/components/layout-type-switch/component/HeadThemeSwitch.vue"
 import type {ResponseType} from "@/api/type";
 
 const router = useRouter()
@@ -205,8 +207,14 @@ const {showForm, showCard} = transition()
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.5);
   }
+}
+
+.head-theme-switch {
+  position: fixed;
+  top: 16px;
+  right: 16px;
 }
 
 .login-content {
