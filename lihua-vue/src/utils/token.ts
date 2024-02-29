@@ -1,9 +1,18 @@
 import Cookies from "js-cookie"
+import {encrypt,decrypt} from "./crypto"
+
 
 const TOKEN_KEY: string = "token"
 
+const USERNAME_KEY: string = "lihua_username"
+
+const PASSWORD_KEY: string = "lihua_password"
+
+const REMEMBER_ME_KEY: string = "lihua_rememberMe"
+
+// token
 const getToken = ():string => {
-    return Cookies.get(TOKEN_KEY);
+    return Cookies.get(TOKEN_KEY)
 }
 
 const setToken = (token: string):void => {
@@ -14,8 +23,65 @@ const removeToken = () => {
     Cookies.remove(TOKEN_KEY)
 }
 
+// username
+const getUsername = ():string => {
+    return Cookies.get(USERNAME_KEY)
+}
+
+const setUsername = (username:string):void => {
+    Cookies.set(USERNAME_KEY,username)
+}
+
+const removeUsername = () => {
+    Cookies.remove(USERNAME_KEY)
+}
+
+// password
+const getPassword = (): string => {
+    return decrypt(Cookies.get(PASSWORD_KEY))
+}
+
+const setPassword = (password:string): void => {
+
+    Cookies.set(PASSWORD_KEY,encrypt(password))
+}
+
+const removePassword = () => {
+    Cookies.remove(PASSWORD_KEY)
+}
+
+const enableRememberMe = ():boolean => {
+    return Cookies.get(REMEMBER_ME_KEY)
+}
+
+// 记住我
+const rememberMe = (username:string, password:string) => {
+    Cookies.set(REMEMBER_ME_KEY,true)
+    setUsername(username)
+    setPassword(password)
+}
+
+// 忘记我
+const forgetMe = () => {
+    Cookies.remove(REMEMBER_ME_KEY)
+    removeUsername()
+    removePassword()
+}
+
+// 获取账号密码
+const getUsernamePassword = () => {
+    return {
+        username: getUsername(),
+        password: getPassword()
+    }
+}
+
 export default {
     getToken,
     setToken,
-    removeToken
+    removeToken,
+    rememberMe,
+    forgetMe,
+    getUsernamePassword,
+    enableRememberMe
 }

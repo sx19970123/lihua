@@ -4,7 +4,7 @@
     <a-flex class="login-content" justify="space-around" align="center">
       <div style="width: 50%">
         <a-typography-title style="margin-top: 64px;margin-right: 64px;margin-left: 64px">狸花猫</a-typography-title>
-        <a-typography-title :level="2" style="margin-right: 64px;margin-left: 64px">基于SpringBoot 3.2 和 vue3.0的
+        <a-typography-title :level="2" style="margin-right: 64px;margin-left: 64px">基于SpringBoot 3.2 和 vue3.0 的
           后台管理系统
         </a-typography-title>
       </div>
@@ -14,9 +14,9 @@
             <transition name="form" mode="out-in">
               <div style="margin: 32px" v-if="showForm">
                 <div class="login-title">
-                  <a-typography-title>欢迎登陆狸花猫</a-typography-title>
-                  <a-typography-text>没有账户？</a-typography-text>
-                  <a-typography-link>立即注册
+                  <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
+                  <a-typography-text v-if="false">没有账户？</a-typography-text>
+                  <a-typography-link v-if="false">立即注册
                     <RightOutlined/>
                   </a-typography-link>
                 </div>
@@ -47,8 +47,8 @@
                   </a-form-item>
                   <a-form-item>
                     <a-flex justify="space-between">
-                      <a-checkbox>记住账号</a-checkbox>
-                      <a-typography-link>忘记密码</a-typography-link>
+                      <a-checkbox v-model:checked="rememberMe">记住账号</a-checkbox>
+                      <a-typography-link v-if="false">忘记密码</a-typography-link>
                     </a-flex>
                   </a-form-item>
                   <a-form-item>
@@ -56,14 +56,14 @@
                     </a-button>
                   </a-form-item>
                 </a-form>
-                <!--                    <a-divider plain>其他方式</a-divider>-->
-                <!--                    <a-flex justify="space-around">-->
-                <!--                      <a-button size="large" shape="circle"><WeiboCircleOutlined /></a-button>-->
-                <!--                      <a-button size="large" shape="circle"><WechatOutlined /></a-button>-->
-                <!--                      <a-button size="large" shape="circle"><AlipayCircleOutlined /></a-button>-->
-                <!--                      <a-button size="large" shape="circle"><QqOutlined /></a-button>-->
-                <!--                      <a-button size="large" shape="circle"><GitlabOutlined /></a-button>-->
-                <!--                    </a-flex>-->
+                <a-divider plain v-if="false">其他方式</a-divider>
+                <a-flex justify="space-around" v-if="false">
+                  <a-button size="large" shape="circle"><WeiboCircleOutlined /></a-button>
+                  <a-button size="large" shape="circle"><WechatOutlined /></a-button>
+                  <a-button size="large" shape="circle"><AlipayCircleOutlined /></a-button>
+                  <a-button size="large" shape="circle"><QqOutlined /></a-button>
+                  <a-button size="large" shape="circle"><GitlabOutlined /></a-button>
+                </a-flex>
               </div>
             </transition>
           </a-card>
@@ -92,11 +92,13 @@ import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {enable} from "@/api/system/captcha/captcha";
+import token from "@/utils/token"
 import HeadThemeSwitch from "@/components/layout-type-switch/component/HeadThemeSwitch.vue"
 import type {ResponseType} from "@/api/type";
 
 const router = useRouter()
 const verifyRef = ref<InstanceType<typeof Verify>>()
+const rememberMe = ref<boolean>(token.enableRememberMe())
 
 // 用户登录
 interface LoginFormType {
@@ -115,6 +117,17 @@ const loginRoles: Record<string, Rule[]> = {
   username: [{required: true, message: '请输入账号', trigger: 'change'}],
   password: [{required: true, message: '请输入密码', trigger: 'change'}]
 }
+
+// 启用记住账号后赋值账号密码
+const init = () => {
+  if (rememberMe.value) {
+    const usernamePassword = token.getUsernamePassword()
+    loginForm.username = usernamePassword.username
+    loginForm.password = usernamePassword.password
+  }
+}
+init()
+
 // 登录请求
 const login = async ({captchaVerification}: { captchaVerification: string }) => {
   try {
@@ -122,6 +135,11 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
     const resp = await userStore.login(loginForm.username, loginForm.password, captchaVerification);
     const {code, msg} = resp as ResponseType<string>;
     if (code === 200) {
+      if (rememberMe.value) {
+        token.rememberMe(loginForm.username, loginForm.password)
+      } else {
+        token.forgetMe()
+      }
       await router.push("/index");
       // 路由跳转完成后的后续逻辑可以放在这里
     } else {
