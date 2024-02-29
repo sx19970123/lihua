@@ -204,13 +204,12 @@ export default {
       } else {           //兼容移动端
         var x = e.touches[0].pageX;
       }
-      console.log(barArea);
       startLeft.value = Math.floor(x - barArea.value.getBoundingClientRect().left);
       startMoveTime.value = +new Date();    //开始滑动的时间
       if (isEnd.value == false) {
         text.value = ''
-        moveBlockBackgroundColor.value = '#337ab7'
-        leftBarBorderColor.value = '#337AB7'
+        moveBlockBackgroundColor.value = '#fff'
+        leftBarBorderColor.value = '#fff'
         iconColor.value = '#fff'
         e.stopPropagation();
         status.value = true;
@@ -234,9 +233,12 @@ export default {
         if (move_block_left <= 0) {
           move_block_left = parseInt(parseInt(blockSize.value.width) / 2);
         }
-        //拖动后小方块的left值
-        moveBlockLeft.value = (move_block_left - startLeft.value) + "px"
-        leftBarWidth.value = (move_block_left - startLeft.value) + "px"
+        // 无法向后拖动
+        if (move_block_left - startLeft.value > 0) {
+          //拖动后小方块的left值
+          moveBlockLeft.value = (move_block_left - startLeft.value) + "px"
+          leftBarWidth.value = (move_block_left - startLeft.value) + "px"
+        }
       }
     }
 

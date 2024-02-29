@@ -7,7 +7,7 @@
           后台管理系统
         </a-typography-title>
       </div>
-      <div style="width: 50%">
+      <div style="width: 50%;">
         <transition name="card" mode="out-in">
           <a-card class="login-card" v-if="showCard">
             <transition name="form" mode="out-in">
@@ -150,7 +150,10 @@ const enableCaptcha = ref<boolean>(false)
 const captchaType = ref<string>('blockPuzzle')
 // 随机加载滑块/点击验证码
 const loadVerify = () => {
-  captchaType.value = Math.random() < 0.5 ? 'blockPuzzle' : 'clickWord';
+  setTimeout(() => {
+    captchaType.value = Math.random() < 0.5 ? 'blockPuzzle' : 'clickWord';
+  },700)
+
 }
 // 显示验证码
 const showVerify = () => {

@@ -271,13 +271,13 @@ export default {
 /*滑动验证码*/
 .verify-bar-area {
   position: relative;
-  background: #FFFFFF;
+  background: #f3f3f3;
   text-align: center;
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
-  border: 1px solid #ddd;
-  -webkit-border-radius: 4px;
+  border: 0px solid #ddd;
+  -webkit-border-radius: 6px;
 }
 
 .verify-bar-area .verify-move-block {
@@ -290,11 +290,11 @@ export default {
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   box-shadow: 0 0 2px #888888;
-  -webkit-border-radius: 1px;
+  -webkit-border-radius: 4px;
 }
 
 .verify-bar-area .verify-move-block:hover {
-  background-color: #337ab7;
+  background-color: #FFFFFF;
   color: #FFFFFF;
 }
 
@@ -307,7 +307,8 @@ export default {
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
-  border: 1px solid #ddd;
+  margin: 1px;
+  border: 0px solid rgba(0,0,0,0);
 }
 
 .verify-img-panel {
