@@ -51,7 +51,11 @@
                     </a-flex>
                   </a-form-item>
                   <a-form-item>
-                    <a-button html-type="submit" type="primary" class="login-form-item" style="width: 100%">登录
+                    <a-button html-type="submit"
+                              type="primary"
+                              class="login-form-item"
+                              :loading="loginLoading"
+                              style="width: 100%">登录
                     </a-button>
                   </a-form-item>
                 </a-form>
@@ -112,6 +116,7 @@ const loginForm = reactive<LoginFormType>({
 })
 const validateStatus = ref<string>()
 const statusMsg = ref<string>()
+const loginLoading = ref<boolean>()
 
 const loginRoles: Record<string, Rule[]> = {
   username: [{required: true, message: '请输入账号', trigger: 'change'}],
@@ -130,6 +135,7 @@ init()
 
 // 登录请求
 const login = async ({captchaVerification}: { captchaVerification: string }) => {
+  loginLoading.value = true
   try {
     const userStore = useUserStore();
     const resp = await userStore.login(loginForm.username, loginForm.password, captchaVerification);
@@ -147,11 +153,12 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
       message.error(msg);
       validateStatus.value = 'error'
       statusMsg.value = msg
+      loginLoading.value = false
     }
   } catch (error) {
     console.error("登录失败:", error);
     // 处理登录失败的逻辑，例如显示错误提示
-
+    loginLoading.value = false
   }
 };
 const changeInput = () => {

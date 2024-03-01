@@ -1,4 +1,5 @@
 import {defineComponent, createApp, h, type CSSProperties} from "vue";
+import {useThemeStore} from "@/stores/modules/theme";
 import type { SpinConfig, SpinInstance } from "./type";
 import { Spin } from "ant-design-vue";
 
@@ -70,6 +71,7 @@ const resolveOptions = (options: SpinConfig): SpinConfig => {
 
 /** @name 处理样式 **/
 const addStyle = (instance: SpinInstance) => {
+  const themeStore = useThemeStore()
   const maskStyle: CSSProperties = {
     position: 'fixed',
     zIndex: 2000,
@@ -78,6 +80,7 @@ const addStyle = (instance: SpinInstance) => {
     bottom: 0,
     left: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.45)',
+    backdropFilter: themeStore.$state.groundGlass? 'blur(6px)' : 'blur(0px)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
