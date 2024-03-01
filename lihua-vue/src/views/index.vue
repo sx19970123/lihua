@@ -1,5 +1,5 @@
 <template>
-  <a-button @click="open">loading</a-button>
+  <a-button @click="open" v-hasRole="[123]">loading</a-button>
 </template>
 
 
