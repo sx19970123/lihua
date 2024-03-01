@@ -7,7 +7,7 @@ lihua:
   # 上传文件路径 mac windows 注意目录切换
   uploadFilePath: '/Users/shangxuan/项目/upload/'
   # 启用验证码
-  enableVerificationCode: false
+  enableVerificationCode: true
 server:
   port: 8080
 

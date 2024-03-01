@@ -42,7 +42,7 @@ public class LoginUserMgmt {
         }
 
         String decode = JwtUtils.decode(token);
-        log.info("\n当前用户token为：{}\n解密后主键id为：{}", token, decode);
+        log.debug("\n当前用户token为：{}\n解密后主键id为：{}", token, decode);
 
         try {
             return redisCache().getCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);

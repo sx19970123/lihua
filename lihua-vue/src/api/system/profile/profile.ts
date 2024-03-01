@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 
-export const getUserInfo = () => {
+export const getProfileInfo = () => {
     return request({
         url: '/system/profile/info',
         method: 'get'

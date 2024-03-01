@@ -1,17 +1,17 @@
 <template>
   <a-flex class="login-background" justify="center" align="center">
     <a-flex class="login-content" justify="space-around" align="center">
-      <div style="width: 50%">
+      <div class="slogan">
         <a-typography-title style="margin-top: 64px;margin-right: 64px;margin-left: 64px">狸花猫</a-typography-title>
         <a-typography-title :level="2" style="margin-right: 64px;margin-left: 64px">基于SpringBoot 3.2 和 vue3.0 的
           后台管理系统
         </a-typography-title>
       </div>
-      <div style="width: 50%;">
+      <div class="form">
         <transition name="card" mode="out-in">
           <a-card class="login-card" v-if="showCard">
             <transition name="form" mode="out-in">
-              <div style="margin: 32px" v-if="showForm">
+              <div style="margin: 16px" v-if="showForm">
                 <div class="login-title">
                   <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
                   <a-typography-text v-if="false">没有账户？</a-typography-text>
@@ -213,7 +213,7 @@ const {showForm, showCard} = transition()
   position: relative;
   width: 100%;
   height: 100vh;
-  background-image: url("../assets/login-bg.jpg");
+  background-image: url("../assets/img/login-bg.jpg");
   background-size: cover;
   background-position: center;
 }
@@ -228,6 +228,19 @@ const {showForm, showCard} = transition()
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
   }
+}
+
+@media screen and (max-width: 1000px) {
+  .slogan {
+    transition: all 0.8s ease-in-out;
+    display: none;
+    width: 0%
+  }
+}
+
+.form {
+  width: 50%;
+  min-width: 488px
 }
 
 .head-theme-switch {

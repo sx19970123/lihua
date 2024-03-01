@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 import {login, logout} from "@/api/system/login/login";
-import {getUserInfo, saveTheme} from "@/api/system/profile/profile";
+import {getProfileInfo, saveTheme} from "@/api/system/profile/profile";
 
 import type { ResponseType } from "@/api/type";
 import type {AvatarType, SysUserVOType, UserInfoType} from "@/api/system/profile/type/user";
@@ -84,7 +84,7 @@ export const useUserStore = defineStore('user', {
         // 获取用户信息
         getUserInfo ():Promise<ResponseType<UserInfoType>> {
             return new Promise((resolve, reject) => {
-                getUserInfo().then((resp: ResponseType<UserInfoType>) => {
+                getProfileInfo().then((resp: ResponseType<UserInfoType>) => {
                     if (resp.code === 200) {
                         const userInfo = resp.data.sysUserVO
                         this.$state.userInfo = userInfo
