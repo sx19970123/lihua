@@ -21,7 +21,10 @@ public enum ResultCodeEnum {
     LOGIN_ERROR (501,"用户名或密码错误"),
     NO_ACCESS_ERROR (502,"请联系管理员分配菜单"),
     MAINTAIN_ERROR(503,"服务器维护中"),
-    DB_ERROR(504,"数据库异常");
+    DB_ERROR(504,"数据库异常"),
+
+    PRIMARY_KEY_IS_EMPTY(505,"主键为空"),
+    PRIMARY_KEY_COLLECTION_IS_EMPTY(506,"集合元素为空");
 
     /**
      * 状态码

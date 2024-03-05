@@ -5,7 +5,7 @@ import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
 import com.anji.captcha.util.StringUtils;
 import com.lihua.config.LihuaConfig;
-import com.lihua.model.web.ControllerResult;
+import com.lihua.model.web.BaseController;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +30,7 @@ public class CaptchaController {
      */
     @GetMapping("enable")
     public String enable() {
-        return ControllerResult.success(lihuaConfig.getEnableVerificationCode() != null && lihuaConfig.getEnableVerificationCode());
+        return BaseController.success(lihuaConfig.getEnableVerificationCode() != null && lihuaConfig.getEnableVerificationCode());
     }
 
     /**

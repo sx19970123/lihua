@@ -1,15 +1,16 @@
 package com.lihua.system.controller;
 
-import com.lihua.model.web.ControllerResult;
+import com.lihua.model.web.BaseController;
 import com.lihua.system.service.SysFileService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("system/file")
-public class SysFileController extends ControllerResult {
+public class SysFileController extends BaseController {
 
     @Resource(name = "sysFileServiceImpl")
     private SysFileService sysFileService;
@@ -20,8 +21,9 @@ public class SysFileController extends ControllerResult {
         return success(fileName);
     }
 
+    @SneakyThrows
     @GetMapping("imagePreview/{fileName}")
     public void imagePreview(@PathVariable String fileName, HttpServletResponse response) {
-        fileSuccess(response, sysFileService.imagePreview(fileName));
+        imageFileSuccess(response, sysFileService.imagePreview(fileName));
     }
 }

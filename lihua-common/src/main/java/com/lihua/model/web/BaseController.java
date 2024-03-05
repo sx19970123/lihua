@@ -2,22 +2,24 @@ package com.lihua.model.web;
 
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.utils.json.JsonUtils;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
-import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.http.HttpResponse;
 
 import static com.lihua.enums.ResultCodeEnum.SUCCESS;
 
-public class ControllerResult {
+public class BaseController {
 
-    @SneakyThrows
-    public static void fileSuccess(HttpServletResponse response, byte[] buffer) {
-        response.setContentType("image/jpeg");
+
+    public static void imageFileSuccess(HttpServletResponse response, byte[] buffer) throws IOException {
+        fileSuccess(response,buffer,"image/jpeg");
+    }
+
+
+    public static void fileSuccess(HttpServletResponse response, byte[] buffer,String contentType) throws IOException {
+        response.setContentType(contentType);
         try (OutputStream out = response.getOutputStream()) {
             out.write(buffer);
         }

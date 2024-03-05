@@ -1,6 +1,7 @@
 package com.lihua.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;

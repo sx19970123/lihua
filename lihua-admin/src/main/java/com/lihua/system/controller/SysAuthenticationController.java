@@ -5,7 +5,7 @@ import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
 import com.lihua.config.LihuaConfig;
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.web.ControllerResult;
+import com.lihua.model.web.BaseController;
 import com.lihua.model.security.SysUserVO;
 import com.lihua.system.service.SysAuthenticationService;
 import jakarta.annotation.Resource;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("system")
-public class SysAuthenticationController extends ControllerResult {
+public class SysAuthenticationController extends BaseController {
     @Resource
     private SysAuthenticationService sysAuthenticationService;
 

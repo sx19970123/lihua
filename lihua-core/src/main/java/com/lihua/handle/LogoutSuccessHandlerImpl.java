@@ -2,7 +2,7 @@ package com.lihua.handle;
 
 import com.lihua.constant.Constant;
 import com.lihua.model.security.LoginUser;
-import com.lihua.model.web.ControllerResult;
+import com.lihua.model.web.BaseController;
 import com.lihua.utils.security.LoginUserMgmt;
 import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.ServletException;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class LogoutSuccessHandlerImpl extends ControllerResult implements LogoutSuccessHandler {
+public class LogoutSuccessHandlerImpl extends BaseController implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String token = request.getHeader(Constant.TOKEN.getCode());

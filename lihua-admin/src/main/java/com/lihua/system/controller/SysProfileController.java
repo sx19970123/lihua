@@ -2,7 +2,7 @@ package com.lihua.system.controller;
 
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.security.LoginUser;
-import com.lihua.model.web.ControllerResult;
+import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysUser;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.utils.security.LoginUserContext;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("system/profile")
-public class SysProfileController extends ControllerResult {
+public class SysProfileController extends BaseController {
 
     @Resource
     private SysProfileService sysProfileService;

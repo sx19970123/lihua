@@ -4,12 +4,9 @@ import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.exception.security.InvalidTokenException;
 import com.lihua.exception.security.ResourceNotFoundException;
-import com.lihua.model.web.ControllerResult;
+import com.lihua.model.web.BaseController;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @RestControllerAdvice
 @Configuration
-public class GlobalExceptionHandle extends ControllerResult {
+public class GlobalExceptionHandle extends BaseController {
 
     /**
      * 捕获全局 RuntimeException 异常

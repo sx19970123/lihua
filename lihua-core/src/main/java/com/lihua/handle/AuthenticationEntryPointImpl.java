@@ -1,7 +1,7 @@
 package com.lihua.handle;
 
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.web.ControllerResult;
+import com.lihua.model.web.BaseController;
 import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * 请在 GlobalExceptionHandle.handleAuthenticationException 进行配置
  */
 @Component
-public class AuthenticationEntryPointImpl extends ControllerResult implements AuthenticationEntryPoint {
+public class AuthenticationEntryPointImpl extends BaseController implements AuthenticationEntryPoint {
 
     @Resource
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
