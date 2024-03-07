@@ -11,11 +11,61 @@
  Target Server Version : 80200
  File Encoding         : 65001
 
- Date: 26/02/2024 17:49:14
+ Date: 08/03/2024 07:17:45
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for sys_dict_data
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dict_data`;
+CREATE TABLE `sys_dict_data` (
+  `id` varchar(60) NOT NULL COMMENT '主键ID',
+  `parent_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '父级字典id',
+  `dict_type_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '字典类型关联主键',
+  `label` varchar(30) DEFAULT NULL COMMENT '字典标签',
+  `value` varchar(30) DEFAULT NULL COMMENT '字典值',
+  `sort` int DEFAULT NULL COMMENT '排序',
+  `remark` varchar(200) DEFAULT NULL COMMENT '备注',
+  `del_flag` char(1) DEFAULT NULL COMMENT '逻辑删除标识',
+  `create_id` varchar(60) DEFAULT NULL COMMENT '创建人id',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_id` varchar(60) DEFAULT NULL COMMENT '最后一次更新人id',
+  `update_time` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='字典数据表';
+
+-- ----------------------------
+-- Records of sys_dict_data
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for sys_dict_type
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dict_type`;
+CREATE TABLE `sys_dict_type` (
+  `id` varchar(60) NOT NULL COMMENT '主键id',
+  `name` varchar(30) DEFAULT NULL COMMENT '字典类型名称',
+  `code` varchar(30) DEFAULT NULL COMMENT '字典类型编码',
+  `is_tree` char(1) DEFAULT NULL COMMENT '是否为树型字典',
+  `remark` varchar(200) DEFAULT NULL COMMENT '字典备注',
+  `create_id` varchar(60) DEFAULT NULL COMMENT '创建人id',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_id` varchar(60) DEFAULT NULL COMMENT '最后一次更新人id',
+  `update_time` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `del_flag` char(1) DEFAULT NULL COMMENT '逻辑删除标识',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='字典类型表';
+
+-- ----------------------------
+-- Records of sys_dict_type
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -149,7 +199,7 @@ CREATE TABLE `sys_star_view` (
 BEGIN;
 INSERT INTO `sys_star_view` (`user_id`, `router_path_key`, `affix`, `star`) VALUES ('1', '/bdy/gjbd', '0', '0');
 INSERT INTO `sys_star_view` (`user_id`, `router_path_key`, `affix`, `star`) VALUES ('1', '/bdy/jcbd', '0', '0');
-INSERT INTO `sys_star_view` (`user_id`, `router_path_key`, `affix`, `star`) VALUES ('1', '/gzt', '1', '1');
+INSERT INTO `sys_star_view` (`user_id`, `router_path_key`, `affix`, `star`) VALUES ('1', '/gzt', '0', '1');
 INSERT INTO `sys_star_view` (`user_id`, `router_path_key`, `affix`, `star`) VALUES ('1', '/gzt/gztzym', '0', '0');
 INSERT INTO `sys_star_view` (`user_id`, `router_path_key`, `affix`, `star`) VALUES ('1', '/lby/bzlb/lb/b', '0', '1');
 INSERT INTO `sys_star_view` (`user_id`, `router_path_key`, `affix`, `star`) VALUES ('1', '/lby/cxlb', '0', '1');
