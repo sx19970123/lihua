@@ -16,25 +16,6 @@
     border-radius: 6px;
 }
 
-/**
-    毛玻璃效果背景切换
- */
-[data-ground-glass = glass] {
-    .ant-drawer-mask {
-        backdrop-filter: blur(6px) !important;
-    }
-    .ant-modal-wrap {
-        backdrop-filter: blur(6px) !important;
-    }
-}
-[data-ground-glass = un-glass] {
-    .ant-drawer-mask {
-        backdrop-filter: blur(0px) !important;
-    }
-    .ant-modal-wrap {
-        backdrop-filter: blur(0px) !important;
-    }
-}
 
 /**
     通用布局

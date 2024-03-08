@@ -1,0 +1,6 @@
+/**
+    单行 form-item 下 label margin设置为0
+ */
+.form-item-single-line {
+    margin: 0;
+}

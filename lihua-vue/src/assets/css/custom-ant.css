@@ -1,0 +1,26 @@
+/**
+    modal/drawer 背景毛玻璃效果
+ */
+[data-ground-glass = glass] {
+    .ant-drawer-mask {
+        backdrop-filter: blur(6px) !important;
+    }
+    .ant-modal-wrap {
+        backdrop-filter: blur(6px) !important;
+    }
+}
+[data-ground-glass = un-glass] {
+    .ant-drawer-mask {
+        backdrop-filter: blur(0px) !important;
+    }
+    .ant-modal-wrap {
+        backdrop-filter: blur(0px) !important;
+    }
+}
+
+/**
+    table 页脚背景设置为白色
+ */
+.ant-table-footer {
+    background: #FFFFFF !important;
+}
