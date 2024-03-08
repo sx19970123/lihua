@@ -18,7 +18,7 @@ public class SysDictTypeController extends BaseController {
     @Resource
     private SysDictTypeService sysDictTypeService;
 
-    @GetMapping("page")
+    @PostMapping("page")
     public String findPage(@RequestBody SysDictTypeDTO dictTypeDTO) {
         return success(sysDictTypeService.findPage(dictTypeDTO));
     }
