@@ -1,10 +1,10 @@
 /* 布局相关 */
-@import "./layout.css";
+@import "layout.css";
 /* 组件切换动画 */
-@import "./transition.css";
+@import "transition.css";
 /* 路由切换进度条 */
-@import "./nprogress.css";
+@import "nprogress.css";
 /* 覆盖ant-design-vue 4 样式 */
-@import "./custom-ant.css";
+@import "overwrite-ant.css";
 /* 自定义通用css */
-@import "./custom.css";
+@import "custom.css";

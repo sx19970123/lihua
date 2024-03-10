@@ -21,6 +21,17 @@
 /**
     table 页脚背景设置为白色
  */
-.ant-table-footer {
-    background: #FFFFFF !important;
+[data-dark = 'light'] {
+    .ant-table-footer {
+        background: #FFFFFF !important;
+    }
+}
+[data-dark = 'dark'] {
+    .ant-table-footer {
+        background: #141414 !important;
+    }
+}
+
+.ant-table-wrapper .ant-table {
+    border-radius: 8px !important;
 }

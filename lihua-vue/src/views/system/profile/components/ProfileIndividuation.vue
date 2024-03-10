@@ -54,10 +54,11 @@
 
 </template>
 <script setup lang="ts">
-import HeadThemeSwitch from "@/components/layout-type-switch/component/HeadThemeSwitch.vue";
+import HeadThemeSwitch from "@/components/light-dark-switch/index.vue";
 import ColorSelect from "@/components/color-select/index.vue"
 import NavSelect from "@/components/nav-type-select/index.vue"
 import NavColorSelect from "@/components/nav-color-select/index.vue"
+import settings from "@/settings";
 import { useUserStore } from "@/stores/modules/user";
 import { useThemeStore } from "@/stores/modules/theme";
 import {onUnmounted, ref} from "vue";
@@ -66,40 +67,7 @@ const themeStore = useThemeStore()
 const userStore = useUserStore()
 
 // 主题颜色
-const colorList = ref<Array<{name: string,color: string}>>([
-  {
-    name: '拂晓蓝',
-    color: 'rgb(22, 119, 255)',
-  },
-  {
-    name: '薄暮',
-    color: 'rgb(245, 34, 45)',
-  },
-  {
-    name: '火山',
-    color: 'rgb(250, 84, 28)',
-  },
-  {
-    name: '日暮',
-    color: 'rgb(250, 173, 20)',
-  },
-  {
-    name: '明青',
-    color: 'rgb(19, 194, 194)',
-  },
-  {
-    name: '极光绿',
-    color: 'rgb(82, 196, 26)',
-  },
-  {
-    name: '极客蓝',
-    color: 'rgb(47, 84, 235)',
-  },
-  {
-    name: '酱紫',
-    color: 'rgb(114, 46, 209)',
-  },
-])
+const colorList = ref<Array<{name: string,color: string}>>(settings.colorOptions)
 
 // 卸载组件时触发，保存用户修改的内容
 onUnmounted(()=> {

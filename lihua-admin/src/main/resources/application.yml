@@ -7,7 +7,7 @@ lihua:
   # 上传文件路径 mac windows 注意目录切换
   uploadFilePath: '/Users/shangxuan/项目/upload/'
   # 启用验证码
-  enableVerificationCode: true
+  enableVerificationCode: false
 server:
   port: 8080
 
@@ -20,7 +20,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/lihua
     username: root
-    password: root
+    password: 123456
 
   # redis配置
   data:

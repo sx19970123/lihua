@@ -12,7 +12,7 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
 // andv 图标
 import * as Icons from "@ant-design/icons-vue";
-import "@/assets/css/index.css"
+import "@/static/css/index.css"
 const icons:Record<string, Component> = Icons
 
 const app = createApp(App)

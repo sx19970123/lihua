@@ -7,7 +7,9 @@ export default (app:App<Element>) => {
     // 排除当前文件
     if(path !== '../directive/index.ts') {
       modules[path]().then((mod:any) => {
-        mod.default(app)
+        if (mod && mod.default) {
+          mod.default(app)
+        }
       })
     }
   }

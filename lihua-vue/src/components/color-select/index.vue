@@ -41,7 +41,7 @@ const selectedColor = ({ color }: { color: string}) => {
   justify-content: center; /* 水平居中 */
   height: 20px;
   width: 20px;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   margin-right: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);

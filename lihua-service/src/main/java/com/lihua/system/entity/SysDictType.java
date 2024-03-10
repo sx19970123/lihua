@@ -41,4 +41,9 @@ public class SysDictType extends BaseEntity {
      * 逻辑删除标识
      */
     private String delFlag;
+
+    /**
+     * 字典类型状态
+     */
+    private String status;
 }

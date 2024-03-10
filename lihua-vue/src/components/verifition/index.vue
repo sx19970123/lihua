@@ -272,7 +272,7 @@ export default {
     text-align: center;
     box-sizing: content-box;
     border: 0px solid #666;
-    border-radius: 6px;
+    border-radius: 8px;
   }
 
   .verify-bar-area .verify-move-block {
@@ -283,7 +283,7 @@ export default {
     cursor: pointer;
     box-sizing: content-box;
     box-shadow: 0 0 2px #888888;
-    border-radius: 4px;
+    border-radius: 8px;
   }
 
   .verify-bar-area .verify-move-block:hover {
@@ -307,7 +307,7 @@ export default {
     box-sizing: content-box;
     border-top: 1px solid #666;
     border-bottom: 1px solid #666;
-    border-radius: 3px;
+    border-radius: 8px;
     position: relative;
   }
 
@@ -540,7 +540,7 @@ export default {
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   border: 0px solid #ddd;
-  -webkit-border-radius: 6px;
+  -webkit-border-radius: 8px;
 }
 
 .verify-bar-area .verify-move-block {
@@ -553,7 +553,7 @@ export default {
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   box-shadow: 0 0 2px #888888;
-  -webkit-border-radius: 4px;
+  -webkit-border-radius: 8px;
 }
 
 .verify-bar-area .verify-move-block:hover {
@@ -581,7 +581,7 @@ export default {
   box-sizing: content-box;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
-  border-radius: 3px;
+  border-radius: 8px;
   position: relative;
 }
 
@@ -704,7 +704,7 @@ export default {
   z-index: 9999;
   background-image: url("icon/refresh.svg");
   background-color: rgba(255,255,255,0.5);
-  border-radius: 3px;
+  border-radius: 8px;
   backdrop-filter: blur(10px);
   background-size: contain;
 }

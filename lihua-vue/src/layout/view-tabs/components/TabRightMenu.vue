@@ -179,7 +179,7 @@ const handleTime = (time: string) => {
 .ant-tabs-nav-more {
   margin-left: 2px !important;
   cursor: pointer;
-  border-radius: 6px
+  border-radius: 8px
 }
 
 .menu-item-min-width {

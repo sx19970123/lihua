@@ -1,0 +1,29 @@
+/* 使用自定义css 变量 --colorPrimary 实现颜色跟随主题 */
+#nprogress .bar {
+    background: var(--colorPrimary) !important;
+}
+#nprogress .spinner-icon {
+    border-top-color: var(--colorPrimary) !important;
+    border-left-color: var(--colorPrimary) !important;
+}
+#nprogress .peg {
+    box-shadow: 0 0 10px var(--colorPrimary), 0 0 5px var(--colorPrimary) !important;
+}
+
+[layout-type = 'header-content'] {
+    #nprogress .spinner {
+        top: 22px !important;
+    }
+}
+
+[layout-type = 'sider-header'] {
+    #nprogress .spinner {
+        top: 14px !important;
+    }
+}
+
+[layout-type = 'header-sider'] {
+    #nprogress .spinner {
+        top: 14px !important;
+    }
+}

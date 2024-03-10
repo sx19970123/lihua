@@ -97,7 +97,7 @@ import Verify from "@/components/verifition/index.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {enable} from "@/api/system/captcha/captcha";
 import token from "@/utils/token"
-import HeadThemeSwitch from "@/components/layout-type-switch/component/HeadThemeSwitch.vue"
+import HeadThemeSwitch from "@/components/light-dark-switch/index.vue"
 import type {ResponseType} from "@/api/type";
 
 const router = useRouter()
@@ -220,7 +220,7 @@ const {showForm, showCard} = transition()
   position: relative;
   width: 100%;
   height: 100vh;
-  background-image: url("../assets/img/login-bg.jpg");
+  background-image: url("../assets/images/login-bg.jpg");
   background-size: cover;
   background-position: center;
 }

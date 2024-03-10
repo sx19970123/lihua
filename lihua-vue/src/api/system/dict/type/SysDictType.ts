@@ -52,6 +52,11 @@ export interface SysDictType {
    * 更新时间。
    */
   updateTime: string;
+
+  /**
+   * 字典类型状态
+   */
+  status: string;
 }
 
 export interface SysDictTypeDTO {

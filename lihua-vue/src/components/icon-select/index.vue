@@ -76,14 +76,14 @@ const clickIcon = (icon: string) => {
 <style>
 .icon-group {
   padding: 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   width: 180px;
   height: 80px;
   transition: all 0.2s ease; /* 添加过渡效果 */
 }
 .icon-group:hover {
   padding: 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   width: 180px;
   height: 80px;
   cursor: pointer;
@@ -99,86 +99,14 @@ const clickIcon = (icon: string) => {
   transition: all 0.2s ease; /* 添加过渡效果 */
 }
 
-
-
-[data-color = 'rgb(22, 119, 255)'] {
-  .icon-group:hover {
-    background: rgb(22, 119, 255);
-  }
-  .icon-active {
-    background: rgb(22, 119, 255);
-    color: #ffffff;
-  }
+/* 使用自定义css 变量 --colorPrimary 实现颜色跟随主题 */
+.icon-group:hover {
+  background: var(--colorPrimary);
+}
+.icon-active {
+  background: var(--colorPrimary);
+  color: #ffffff;
 }
 
-[data-color = 'rgb(245, 34, 45)'] {
-  .icon-group:hover {
-    background: rgb(245, 34, 45);
-  }
-  .icon-active {
-    background: rgb(245, 34, 45);
-    color: #ffffff;
-  }
-}
-
-[data-color = 'rgb(250, 84, 28)'] {
-  .icon-group:hover {
-    background: rgb(250, 84, 28);
-  }
-  .icon-active {
-    background: rgb(250, 84, 28);
-    color: #ffffff;
-  }
-}
-
-[data-color = 'rgb(250, 173, 20)'] {
-  .icon-group:hover {
-    background: rgb(250, 173, 20);
-  }
-  .icon-active {
-    background: rgb(250, 173, 20);
-    color: #ffffff;
-  }
-}
-
-[data-color = 'rgb(19, 194, 194)'] {
-  .icon-group:hover {
-    background: rgb(19, 194, 194);
-  }
-  .icon-active {
-    background: rgb(19, 194, 194);
-    color: #ffffff;
-  }
-}
-
-[data-color = 'rgb(82, 196, 26)'] {
-  .icon-group:hover {
-    background: rgb(82, 196, 26);
-  }
-  .icon-active {
-    background: rgb(82, 196, 26);
-    color: #ffffff;
-  }
-}
-
-[data-color = 'rgb(47, 84, 235)'] {
-  .icon-group:hover {
-    background: rgb(47, 84, 235);
-  }
-  .icon-active {
-    background: rgb(47, 84, 235);
-    color: #ffffff;
-  }
-}
-
-[data-color = 'rgb(114, 46, 209)'] {
-  .icon-group:hover {
-    background: rgb(114, 46, 209);
-  }
-  .icon-active {
-    background: rgb(114, 46, 209);
-    color: #ffffff;
-  }
-}
 
 </style>

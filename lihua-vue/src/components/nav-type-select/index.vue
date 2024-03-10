@@ -53,7 +53,7 @@ const handleClockNavType = (key: string) => {
     width: 53px;
     height: 43px;
     background: #f3f3f3;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   }
@@ -104,7 +104,7 @@ const handleClockNavType = (key: string) => {
     width: 53px;
     height: 43px;
     background: #000000;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   }

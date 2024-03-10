@@ -55,7 +55,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {ref, watch} from "vue";
+import {ref} from "vue";
 import ColorSelect from "@/components/color-select/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
 import ImageCropper from "@/components/image-cropper/index.vue"
@@ -64,6 +64,7 @@ import SysAvatar from "@/components/user-avatar/index.vue"
 import {uploadAvatar} from "@/api/system/file/file";
 import {useUserStore} from "@/stores/modules/user";
 import {message, Modal} from 'ant-design-vue';
+import settings from "@/settings";
 import type {AvatarType} from "@/api/system/profile/type/user";
 
 const userStore = useUserStore()
@@ -98,44 +99,7 @@ const init = () => {
   })
 
   // 头像背景颜色定义
-  const avatarBackgroundColor = ref<Array<{name: string,color: string}>>([
-    {
-      name: '薄雾灰',
-      color: 'rgb(191, 191, 191)',
-    },
-    {
-      name: '拂晓蓝',
-      color: 'rgb(22, 119, 255)',
-    },
-    {
-      name: '薄暮',
-      color: 'rgb(245, 34, 45)',
-    },
-    {
-      name: '火山',
-      color: 'rgb(250, 84, 28)',
-    },
-    {
-      name: '日暮',
-      color: 'rgb(250, 173, 20)',
-    },
-    {
-      name: '明青',
-      color: 'rgb(19, 194, 194)',
-    },
-    {
-      name: '极光绿',
-      color: 'rgb(82, 196, 26)',
-    },
-    {
-      name: '极客蓝',
-      color: 'rgb(47, 84, 235)',
-    },
-    {
-      name: '酱紫',
-      color: 'rgb(114, 46, 209)',
-    },
-  ])
+  const avatarBackgroundColor = ref<Array<{name: string,color: string}>>(settings.colorOptions)
 
   return {
     open,

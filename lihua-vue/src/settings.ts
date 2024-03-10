@@ -30,6 +30,44 @@ export default {
     colorPrimary: 'rgb(22, 119, 255)',
 
     /**
+     * 主题颜色可选项
+     */
+    colorOptions: [
+        {
+            name: '拂晓蓝',
+            color: 'rgb(22, 119, 255)',
+        },
+        {
+            name: '薄暮',
+            color: 'rgb(245, 34, 45)',
+        },
+        {
+            name: '火山',
+            color: 'rgb(250, 84, 28)',
+        },
+        {
+            name: '日暮',
+            color: 'rgb(250, 173, 20)',
+        },
+        {
+            name: '明青',
+            color: 'rgb(19, 194, 194)',
+        },
+        {
+            name: '极光绿',
+            color: 'rgb(82, 196, 26)',
+        },
+        {
+            name: '极客蓝',
+            color: 'rgb(47, 84, 235)',
+        },
+        {
+            name: '酱紫',
+            color: 'rgb(114, 46, 209)',
+        }
+    ],
+
+    /**
      * 侧边栏背景颜色
      */
     siderBackgroundColor: 'rgba(255,255,255,1)',

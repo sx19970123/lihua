@@ -80,7 +80,7 @@ const logout = () => {
 .avatar {
   padding-left: 12px;
   padding-right: 12px;
-  border-radius: 3px;
+  border-radius: 8px;
   cursor: pointer;
 }
 </style>

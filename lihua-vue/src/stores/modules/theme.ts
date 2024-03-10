@@ -217,7 +217,7 @@ export const useThemeStore = defineStore('theme',{
         // 修改html标签，标记当前颜色模式
         changeDocumentElement() {
             document.documentElement.setAttribute("data-dark",this.$state.dataDark ? 'dark' : 'light')
-            document.documentElement.setAttribute("data-color", this.$state.colorPrimary)
+            document.documentElement.style.setProperty("--colorPrimary", this.$state.colorPrimary)
         },
         // 主题复原
         resetState() {
