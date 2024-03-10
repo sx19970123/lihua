@@ -1,10 +1,8 @@
 import { defineStore } from "pinia";
-import type {RouteRecordRaw} from "vue-router";
 import Layout from "@/layout/index.vue";
-import { format } from "@/utils/date";
 import type { StarViewType,RecentType } from "@/api/system/star-view/type/starView"
 import type {RouterType} from "@/api/system/profile/type/router";
-import Login from "@/views/login.vue";
+import dayjs from "dayjs";
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         const viewTabs: Array<StarViewType> = []
@@ -251,7 +249,7 @@ const handleAddTabCache = (tab: StarViewType) => {
     if (recentTabs === null) {
         localStorage.setItem(viewTabStore.$state.tabCacheKey ,JSON.stringify([
             {
-                openTime: format(new Date(),'yyyy-MM-dd hh:mm'),
+                openTime: dayjs().format('yyyy-MM-dd HH:mm'),
                 icon: tab.icon,
                 label: tab.label,
                 path: tab.routerPathKey
@@ -266,7 +264,7 @@ const handleAddTabCache = (tab: StarViewType) => {
         }
         // 首插后存入缓存
         hisArray.unshift({
-            openTime: format(new Date(),'yyyy-MM-dd hh:mm'),
+            openTime: dayjs().format('yyyy-MM-dd HH:mm'),
             icon: tab.icon,
             label: tab.label,
             path: tab.routerPathKey

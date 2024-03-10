@@ -16,6 +16,7 @@
     "ant-design-vue": "^4.1.2",
     "axios": "^1.6.7",
     "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.10",
     "js-cookie": "^3.0.5",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",

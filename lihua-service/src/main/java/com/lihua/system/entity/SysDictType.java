@@ -28,9 +28,9 @@ public class SysDictType extends BaseEntity {
     private String code;
 
     /**
-     * 是否为树型字典
+     * 字典类型
      */
-    private String isTree;
+    private String type;
 
     /**
      * 备注

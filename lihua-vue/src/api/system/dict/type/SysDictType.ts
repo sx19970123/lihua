@@ -6,57 +6,57 @@ export interface SysDictType {
   /**
    * SysDictType 的主键 id。
    */
-  id: string;
+  id?: string;
 
   /**
    * 字典类型名称。
    */
-  name: string;
+  name?: string;
 
   /**
    * 字典类型编码。
    */
-  code: string;
+  code?: string;
 
   /**
    * 表示字典类型是否为树结构。
    */
-  isTree: string;
+  type?: string;
 
   /**
    * 关于字典类型的额外备注或注释。
    */
-  remark: string;
+  remark?: string;
 
   /**
    * 字典类型的逻辑删除标识。
    */
-  delFlag: string;
+  delFlag?: string;
 
   /**
    * 创建人。
    */
-  createId: string;
+  createId?: string;
 
   /**
    * 创建时间。
    */
-  createTime: string;
+  createTime?: string;
 
   /**
    * 更新人。
    */
-  updateId: string;
+  updateId?: string;
 
   /**
    * 更新时间。
    */
-  updateTime: string;
+  updateTime?: string;
 
   /**
    * 字典类型状态
    */
-  status: string;
+  status?: string;
 }
 
 export interface SysDictTypeDTO {

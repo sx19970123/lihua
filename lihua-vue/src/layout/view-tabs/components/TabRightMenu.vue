@@ -68,8 +68,8 @@
 <script setup lang="ts">
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import {ref, watch} from "vue";
-import {format, relativeDate} from "@/utils/date";
 import type {RecentType, StarViewType} from "@/api/system/star-view/type/starView";
+import dayjs from "dayjs";
 const viewTabsStore = useViewTabsStore()
 const emits = defineEmits(['routeSkip','cancelKeepAlive'])
 /**
@@ -81,7 +81,6 @@ const handleClickMenuTab = ({ key }: { key :string }) => {
     // 关闭全部
     case "close-all": {
       const closeKeys = viewTabsStore.closeAll()
-      console.log(closeKeys)
       emits('cancelKeepAlive',closeKeys)
       if (viewTabsStore.viewTabs.length > 0) {
         emits('routeSkip',viewTabsStore.viewTabs[0])
@@ -162,18 +161,17 @@ handleStarList(viewTabsStore.totalViewTabs)
  */
 const handleTime = (time: string) => {
   if (time) {
-    if (time.substring(0, 10) === format(new Date(),'yyyy-MM-dd')) {
+    if (time.substring(0, 10) === dayjs().format('yyyy-MM-dd')) {
       return time.substring(11)
-    } else if (time.substring(0,10) === relativeDate(new Date(),'yyyy-MM-dd',-1)) {
+    } else if (time.substring(0,10) === dayjs().subtract(1,'day').format('yyyy-MM-dd')) {
       return '昨天 ' + time.substring(11)
-    } else if (time.substring(0,10) === relativeDate(new Date(),'yyyy-MM-dd',-2)) {
+    } else if (time.substring(0,10) === dayjs().subtract(2,'day').format('yyyy-MM-dd')) {
       return '前天 ' + time.substring(11)
     } else {
       return time
     }
   }
 }
-
 </script>
 <style>
 .ant-tabs-nav-more {

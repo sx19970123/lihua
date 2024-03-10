@@ -34,8 +34,14 @@
           </a-flex>
         </template>
         <template #bodyCell="{column,record}">
+          <template v-if="column.key === 'createTime'">
+            {{ dayjs(column[column.key]).format('YYYY-MM-DD HH:mm') }}
+          </template>
           <template v-if="column.key === 'action'">
             <a-button type="link" size="small"> <EditOutlined /> 编辑</a-button>
+            <a-divider type="vertical"/>
+            <a-button type="link" size="small"> <SettingOutlined /> 字典配置</a-button>
+            <a-divider type="vertical"/>
             <a-button type="link" danger size="small"> <DeleteOutlined /> 删除</a-button>
           </template>
         </template>
@@ -55,21 +61,32 @@
         </div>
       </template>
       <a-form layout="horizontal"
-              :label-col="{style: { width: '70px' }}"
+              :label-col="{style: { width: '80px' }}"
+              :rules="formRules"
               :colon="false"
       >
-        <a-form-item label="字典名称">
-          <a-input/>
+        <a-form-item label="字典名称" name="name">
+          <a-input placeholder="请输入字典名称" show-count :maxlength="30"/>
         </a-form-item>
-        <a-form-item label="字典编码">
-          <a-input/>
+        <a-form-item label="字典编码" name="code">
+          <a-input placeholder="请输入字典编码" show-count :maxlength="30"/>
+        </a-form-item>
+        <a-form-item label="字典类型">
+          <a-select style="width: 120px">
+            <a-select-option value="0">一般字典</a-select-option>
+            <a-select-option value="1">树型字典</a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item label="状态">
-          <a-radio>正常</a-radio>
-          <a-radio>停用</a-radio>
+          <a-flex justify="space-between">
+            <div>
+              <a-radio>正常</a-radio>
+              <a-radio>停用</a-radio>
+            </div>
+          </a-flex>
         </a-form-item>
         <a-form-item label="备注">
-          <a-textarea/>
+          <a-textarea :autosize="{ minRows: 4 }" placeholder="请输入字典备注" show-count :maxlength="200"/>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -77,11 +94,13 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref, type Ref, watch} from "vue";
+import {reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
 import type {ResponseType, PageResponseType } from "@/api/type"
-import type { ColumnsType, RowSelectionType } from 'ant-design-vue/es/table/interface';
+import type { ColumnsType } from 'ant-design-vue/es/table/interface';
 import {findPage} from "@/api/system/dict/dict";
+import dayjs from "dayjs";
+import type {Rule} from "ant-design-vue/es/form";
 
 // 初始化查询相关
 const initSearch = () => {
@@ -111,14 +130,14 @@ const initSearch = () => {
     },
     {
       title: '类型',
-      dataIndex: 'isTree',
+      dataIndex: 'type',
       align: 'center',
-      key: 'isTree'
+      key: 'type'
     },
     {
       title: '备注',
-      dataIndex: 'isTree',
-      key: 'isTree'
+      dataIndex: 'remark',
+      key: 'remark'
     },
     {
       title: '创建用户',
@@ -183,9 +202,20 @@ const initSave = () => {
     title: string, // 模态框标题
   }
 
+  const formRules: Record<string, Rule[]> = {
+    name: [
+        { required: true, message: '请输入字典名称', trigger: 'change' },
+        { max: 30, message: '字典名称长度最大为30字符', trigger: 'change' },
+    ],
+    code: [
+        { required: true, message: '请输入字典编码', trigger: 'change' },
+      { max: 30, message: '字典编码长度最大为30字符', trigger: 'change' },
+    ],
+  }
+
   const modalAction = reactive<modalActionType>( {
     open: false,
-    title: '新增'
+    title: ''
   })
 
   // 控制模态框开关
@@ -194,14 +224,20 @@ const initSave = () => {
     modalAction.title = title
   }
 
+  const dictTypeData = reactive<SysDictType>({
+    name: '',
+    code: '',
+    type: ''
+  })
 
   return {
     modalAction,
+    formRules,
     handleOpenModel
   }
 }
 
-const { modalAction,handleOpenModel } = initSave()
+const { modalAction,formRules,handleOpenModel } = initSave()
 
 
 
