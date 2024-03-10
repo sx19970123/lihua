@@ -22,7 +22,8 @@
     "pinia": "^2.1.7",
     "vue": "^3.3.11",
     "vue-cropper": "^1.0.9",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.2",

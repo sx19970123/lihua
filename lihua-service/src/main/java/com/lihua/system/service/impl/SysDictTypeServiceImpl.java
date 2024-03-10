@@ -36,7 +36,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
 
     @Override
     public String save(SysDictType sysDictType) {
-        if (StringUtils.hasText(sysDictType.getId())) {
+        if (!StringUtils.hasText(sysDictType.getId())) {
             return insert(sysDictType);
         }
         return updateById(sysDictType);

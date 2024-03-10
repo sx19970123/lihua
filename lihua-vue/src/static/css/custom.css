@@ -4,3 +4,20 @@
 .form-item-single-line {
     margin: 0;
 }
+/**
+    表格拖拽站位css
+ */
+.sortable-ghost {
+    opacity: 0.8; /* 拖动时降低透明度 */
+    background: var(--colorPrimary);
+}
+
+.sortable-chosen {
+    opacity: 0.8; /* 拖动时降低透明度 */
+    background: var(--colorPrimary);
+}
+
+.drag-item:hover,
+.drag-item:focus {
+    cursor: move; /* 设置鼠标样式为移动 */
+}
