@@ -3,7 +3,7 @@
     <a-flex vertical :gap="16">
       <!--    检索条件-->
       <a-card>
-        <a-form ref="queryForm">
+        <a-form ref="queryForm" :colon="false">
           <a-flex :gap="8" align="center">
             <a-form-item class="form-item-single-line" label="字典名称">
               <a-input v-model:value="dictTypeQuery.name" placeholder="请输入字典名称" allowClear/>
@@ -24,7 +24,9 @@
             </a-form-item>
             <a-form-item class="form-item-single-line">
               <a-button :loading="tableLoad" @click="resetPage">
-                <template #icon><RedoOutlined /></template>
+                <template #icon>
+                  <RedoOutlined />
+                </template>
                 重 置
               </a-button>
             </a-form-item>
@@ -76,7 +78,7 @@
               编辑
             </a-button>
             <a-divider type="vertical"/>
-            <a-button type="link" size="small">
+            <a-button type="link" size="small" @click="openDictConfig(record)">
               <template #icon>
                 <SettingOutlined />
               </template>
@@ -151,6 +153,9 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <a-drawer v-model:open="drawerAction.openDrawer" :title="drawerAction.title" size="large" style="background: #f5f5f5" >
+      <dict-data :type-id="drawerAction.typeId"/>
+    </a-drawer>
   </div>
 </template>
 
@@ -161,9 +166,9 @@ import type {ResponseType, PageResponseType } from "@/api/type"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
 import {deleteData, findById, findPage, save} from "@/api/system/dict/dict";
 import dayjs from "dayjs";
-import type {Dayjs} from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";
+import DictData from "./dictData/index.vue"
 // 列表查询相关
 const initSearch = () => {
   // 选中的数据id集合
@@ -223,7 +228,7 @@ const initSearch = () => {
       title: '操作',
       align: 'center',
       key: 'action',
-      width: '292px'
+      width: '294px'
     },
   ]
   // 查询条件定义
@@ -432,9 +437,34 @@ const initDelete = () => {
 }
 const {openDeletePopconfirm,openPopconfirm,closePopconfirm, handleDelete } = initDelete()
 
+const initDictConfig = () => {
+  type drawerAction = {
+    openDrawer: boolean,
+    title?: string,
+    typeId?: string
+  }
+  const drawerAction = reactive<drawerAction>({
+    openDrawer: false,
+    title: '',
+    typeId: ''
+  })
+  const openDictConfig = (dictType: SysDictType) => {
+    drawerAction.title = dictType.name
+    drawerAction.typeId = dictType.id
+    drawerAction.openDrawer = true
+  }
+
+  return {
+    drawerAction,
+    openDictConfig
+  }
+}
+const {drawerAction,openDictConfig} = initDictConfig()
 </script>
 
 <style>
-
+.ant-drawer-header {
+  background: #FFFFFF;
+}
 </style>
 
