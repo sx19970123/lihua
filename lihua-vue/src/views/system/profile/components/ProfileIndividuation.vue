@@ -20,7 +20,7 @@
         <nav-select v-model="themeStore.layoutType" @click="themeStore.changeLayoutType()"/>
       </a-form-item>
       <a-form-item label="导航宽度" v-if="themeStore.layoutType !== 'header-content'">
-        <a-slider v-model:value="themeStore.siderWith" dots :max="400" :min="80" :step="20" style="width: 230px"></a-slider>
+        <a-slider v-model:value="themeStore.siderWith" @change="themeStore.changeSiderWidth()" dots :max="400" :min="80" :step="20" style="width: 230px"></a-slider>
       </a-form-item>
       <a-form-item label="固定头部">
         <a-switch v-model:checked="themeStore.affixHead" @change="themeStore.changeAffixHead()"></a-switch>

@@ -37,7 +37,7 @@ public class SysDictTypeController extends BaseController {
     }
 
     @DeleteMapping
-    public String delete(List<String> ids) {
+    public String delete(@RequestBody List<String> ids) {
         if (ids == null || ids.isEmpty()) {
             return error(ResultCodeEnum.PRIMARY_KEY_COLLECTION_IS_EMPTY);
         }

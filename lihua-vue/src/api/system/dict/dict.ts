@@ -1,5 +1,6 @@
 import request from "@/utils/request";
 import type { SysDictTypeDTO } from "@/api/system/dict/type/SysDictType"
+import {markRaw} from "vue";
 
 /**
  * 列表页查询
@@ -43,6 +44,6 @@ export const deleteData = (ids: Array<string>) => {
   return request({
     url: 'system/dictType',
     method: 'delete',
-    params: ids
+    data: ids
   })
 }

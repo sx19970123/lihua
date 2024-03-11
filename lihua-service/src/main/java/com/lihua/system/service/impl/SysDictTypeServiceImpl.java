@@ -25,6 +25,20 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     public IPage<SysDictType> findPage(SysDictTypeDTO dictTypeDTO) {
         QueryWrapper<SysDictType> queryWrapper = new QueryWrapper<>();
         IPage<SysDictType> page = new Page<>(dictTypeDTO.getPageNum(), dictTypeDTO.getPageSize());
+
+        // 字典名称
+        if (StringUtils.hasText(dictTypeDTO.getName())) {
+            queryWrapper.lambda().like(SysDictType::getName,dictTypeDTO.getName());
+        }
+        // 字典编码
+        if (StringUtils.hasText(dictTypeDTO.getCode())) {
+            queryWrapper.lambda().like(SysDictType::getCode,dictTypeDTO.getCode());
+        }
+        // 创建时间
+        if (dictTypeDTO.getStartEndTime() != null && !dictTypeDTO.getStartEndTime().isEmpty()) {
+            queryWrapper.lambda().between(SysDictType::getCreateTime,dictTypeDTO.getStartEndTime().get(0),dictTypeDTO.getStartEndTime().get(1));
+        }
+
         sysDictTypeMapper.selectPage(page,queryWrapper);
         return page;
     }

@@ -1,3 +1,5 @@
+import type{ Dayjs } from "dayjs";
+
 /**
  * 表示一个 SysDictType 实体。
  * 此接口定义了 SysDictType 对象的结构。
@@ -72,14 +74,9 @@ export interface SysDictTypeDTO {
   code?: string;
 
   /**
-   * 创建开始时间。
+   * 开始结束时间
    */
-  createTimeStart?: string;
-
-  /**
-   * 创建结束时间。
-   */
-  createTimeEnd?: string;
+  startEndTime?: [Dayjs?, Dayjs?];
 
   /**
    * 当前页数

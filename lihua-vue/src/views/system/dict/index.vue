@@ -3,55 +3,107 @@
     <a-flex vertical :gap="16">
       <!--    检索条件-->
       <a-card>
-        <a-form>
-          <a-flex :gap="8" align="center" v-hasRole="[123]">
+        <a-form ref="queryForm">
+          <a-flex :gap="8" align="center">
             <a-form-item class="form-item-single-line" label="字典名称">
-              <a-input placeholder="请输入字典名称"/>
+              <a-input v-model:value="dictTypeQuery.name" placeholder="请输入字典名称" allowClear/>
             </a-form-item>
             <a-form-item class="form-item-single-line" label="字典编码">
-              <a-input placeholder="请输入字典编码"/>
+              <a-input  v-model:value="dictTypeQuery.code" placeholder="请输入字典编码" allowClear/>
+            </a-form-item>
+            <a-form-item class="form-item-single-line" label="创建时间">
+              <a-range-picker v-model:value="dictTypeQuery.startEndTime" allowClear/>
             </a-form-item>
             <a-form-item class="form-item-single-line">
-              <a-button type="primary" @click="getPageData"> <SearchOutlined /> 查 询</a-button>
+              <a-button type="primary" @click="initPage" :loading="tableLoad">
+                <template #icon>
+                  <SearchOutlined />
+                </template>
+                查 询
+              </a-button>
             </a-form-item>
             <a-form-item class="form-item-single-line">
-              <a-button> <RedoOutlined /> 重 置</a-button>
+              <a-button :loading="tableLoad" @click="resetPage">
+                <template #icon><RedoOutlined /></template>
+                重 置
+              </a-button>
             </a-form-item>
           </a-flex>
         </a-form>
       </a-card>
       <!--    列表页-->
       <a-table :data-source="dictTypeList"
-                v-dragTable="sortData"
                :columns="dictTypeColumn"
                :pagination="false"
+               :loading="tableLoad"
                :row-selection="dictTypeRowSelectionType"
                :rowKey="(item:SysDictType) => item.id"
       >
         <template #title>
           <a-flex :gap="8">
-            <a-button type="primary" @click="handleModelStatus('新增字典')"> <PlusOutlined /> 新 增</a-button>
-            <a-button danger><DeleteOutlined /> 删 除</a-button>
+            <a-button type="primary" @click="handleModelStatus('新增字典')">
+              <template #icon>
+                <PlusOutlined />
+              </template>
+              新 增
+            </a-button>
+            <a-popconfirm title="删除后不可恢复，是否删除？"
+                          :open="openDeletePopconfirm"
+                          ok-text="确 定"
+                          cancel-text="取 消"
+                          @confirm="handleDelete(undefined)"
+                          @cancel="closePopconfirm"
+            >
+              <a-button danger @click="openPopconfirm">
+                <template #icon>
+                  <DeleteOutlined />
+                </template>
+                删 除
+                <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
+              </a-button>
+            </a-popconfirm>
           </a-flex>
         </template>
         <template #bodyCell="{column,record}">
-          <template v-if="column.key === 'name'">
-            <a-flex :gap="16"><HolderOutlined class="drag-item"/> {{record[column.key]}}</a-flex>
-          </template>
           <template v-if="column.key === 'createTime'">
             {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
           </template>
           <template v-if="column.key === 'action'">
-            <a-button type="link" size="small"> <EditOutlined /> 编辑</a-button>
+            <a-button type="link" size="small" @click="getDictType(record.id)">
+              <template #icon>
+                <EditOutlined />
+              </template>
+              编辑
+            </a-button>
             <a-divider type="vertical"/>
-            <a-button type="link" size="small"> <SettingOutlined /> 字典配置</a-button>
+            <a-button type="link" size="small">
+              <template #icon>
+                <SettingOutlined />
+              </template>
+              字典配置
+            </a-button>
             <a-divider type="vertical"/>
-            <a-button type="link" danger size="small"> <DeleteOutlined /> 删除</a-button>
+            <a-popconfirm title="删除后不可恢复，是否删除？"
+                          ok-text="确 定"
+                          cancel-text="取 消"
+                          placement="bottomRight"
+                          @confirm="handleDelete(record.id)"
+            >
+              <a-button type="link" danger size="small">
+                <template #icon>
+                  <DeleteOutlined />
+                </template>
+                删除
+              </a-button>
+            </a-popconfirm>
           </template>
         </template>
         <template #footer>
           <a-flex justify="flex-end">
-            <a-pagination :total="dictTypeTotal" />
+            <a-pagination v-model:current="dictTypeQuery.pageNum"
+                          :total="dictTypeTotal"
+                          :show-total="(total:number) => `共 ${total} 条`"
+                          @change="queryPage"/>
           </a-flex>
         </template>
       </a-table>
@@ -103,21 +155,30 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref, watch} from "vue";
+import {reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
 import type {ResponseType, PageResponseType } from "@/api/type"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {findPage, save} from "@/api/system/dict/dict";
+import {deleteData, findById, findPage, save} from "@/api/system/dict/dict";
 import dayjs from "dayjs";
+import type {Dayjs} from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";
-
-// 初始化查询相关
+// 列表查询相关
 const initSearch = () => {
+  // 选中的数据id集合
+  const selectedIds = ref<Array<string>>([])
   // 列表勾选对象
   const dictTypeRowSelectionType = {
     columnWidth: '55px',
-    type: 'checkbox'
+    type: 'checkbox',
+    // 支持跨页勾选
+    preserveSelectedRowKeys: true,
+    // 指定选中id的数据集合，操作完后可手动清空
+    selectedRowKeys: selectedIds,
+    onChange: (ids: Array<string>) => {
+      selectedIds.value = ids
+    }
   }
   // 列表列定义
   const dictTypeColumn:ColumnsType = [
@@ -169,48 +230,70 @@ const initSearch = () => {
   const dictTypeQuery = ref<SysDictTypeDTO>({
     name: '',
     code: '',
-    createTimeStart: '',
-    createTimeEnd: '',
-    pageNum: 0,
-    pageSize: 0
+    startEndTime: [],
+    pageNum: 1,
+    pageSize: 10
   })
   // 总条数
   const dictTypeTotal = ref<number>()
   // 数据集对象
   const dictTypeList = ref<Array<SysDictType>>()
+  // 列表loading
+  const tableLoad = ref<boolean>(false)
 
-  // 分页查询数据
-  const getPageData = async () => {
+  // 重置查询
+  const resetPage = async () => {
+    dictTypeQuery.value = {
+      name: '',
+      code: '',
+      startEndTime: [],
+      pageNum: 1,
+      pageSize: 10
+    }
+    await initPage()
+  }
+  // 数据页码从1开始加载数据
+  const initPage = async () => {
+    dictTypeQuery.value.pageNum = 1
+    await queryPage()
+  }
+  // 查询数据
+  const queryPage = async () => {
+    tableLoad.value = true
     const resp:ResponseType<PageResponseType<SysDictType>> = await findPage(dictTypeQuery.value)
     if (resp.code === 200) {
       dictTypeList.value = resp.data.records
       dictTypeTotal.value = resp.data.total
     }
+    tableLoad.value = false
   }
-  getPageData()
+  initPage()
   return {
     dictTypeQuery,
     dictTypeTotal,
     dictTypeList,
     dictTypeColumn,
     dictTypeRowSelectionType,
-    getPageData
+    selectedIds,
+    tableLoad,
+    resetPage,
+    initPage,
+    queryPage
   }
 }
+const {dictTypeQuery,dictTypeTotal,dictTypeList,dictTypeColumn,dictTypeRowSelectionType,selectedIds,tableLoad,resetPage,initPage,queryPage} = initSearch()
 
-const {dictTypeQuery,dictTypeTotal,dictTypeList,dictTypeColumn,dictTypeRowSelectionType,getPageData} = initSearch()
-
-// 初始化新增/编辑/回显 相关
+// 数据保存相关
 const initSave = () => {
   // 定义表单ref
   const formRef = ref()
-
+  // modal 相关属性定义
   type modalActionType = {
     open: boolean, // 模态框开关
     saveLoading: boolean, // 点击保存按钮加载
     title: string, // 模态框标题
   }
-
+  // 表单验证
   const formRules: Record<string, Rule[]> = {
     name: [
         { required: true, message: '请输入字典名称', trigger: 'change' },
@@ -234,9 +317,11 @@ const initSave = () => {
     if (title) {
       modalAction.title = title
     }
+    if (modalAction.open) {
+      resetForm()
+    }
   }
 
-  // 保存的字典数据
   const dictTypeData = reactive<SysDictType>({
     id: '',
     name: '',
@@ -246,6 +331,7 @@ const initSave = () => {
     remark: ''
   })
 
+  // 保存方法
   const saveDictType = async () => {
     modalAction.saveLoading = true
     try {
@@ -254,7 +340,7 @@ const initSave = () => {
       if (resp.code === 200) {
         message.success(resp.msg)
         handleModelStatus()
-        await getPageData()
+        await initPage()
       } else {
         message.error(resp.msg)
       }
@@ -264,39 +350,87 @@ const initSave = () => {
     modalAction.saveLoading = false
   }
 
+  const getDictType = async (id: string) => {
+    const resp: ResponseType<SysDictType> = await findById(id)
+    if (resp.code === 200) {
+      handleModelStatus('编辑字典')
+      dictTypeData.id = resp.data.id
+      dictTypeData.name = resp.data.name
+      dictTypeData.code = resp.data.code
+      dictTypeData.type = resp.data.type
+      dictTypeData.status = resp.data.status
+      dictTypeData.remark = resp.data.remark
+    } else {
+      message.error(resp.msg)
+    }
+  }
+
+  const resetForm = () => {
+    dictTypeData.id = ''
+    dictTypeData.name = ''
+    dictTypeData.code = ''
+    dictTypeData.type =  '0'
+    dictTypeData.status = '0'
+    dictTypeData.remark = ''
+  }
+
   return {
     dictTypeData,
     modalAction,
     formRules,
     handleModelStatus,
     saveDictType,
+    getDictType,
     formRef
   }
 }
+const { dictTypeData,modalAction,formRules,handleModelStatus,saveDictType,getDictType,formRef } = initSave()
 
-const { dictTypeData,modalAction,formRules,handleModelStatus,saveDictType,formRef } = initSave()
-
-const saveSort = () => {
-  const updateSort = (value: Array<SysDictType>) => {
-    dictTypeList.value = value
+// 数据删除相关
+const initDelete = () => {
+  // 显示删除提示
+  const openDeletePopconfirm = ref<boolean>(false);
+  // 打开删除提示框
+  const openPopconfirm = () => {
+    if (selectedIds.value && selectedIds.value.length > 0) {
+      openDeletePopconfirm.value = true
+    } else {
+      message.warning("请勾选数据")
+    }
+  }
+  // 关闭删除提示框
+  const closePopconfirm = () => {
+    openDeletePopconfirm.value = false
+  }
+  // 删除方法
+  const handleDelete = async (id?:string) => {
+    if (id) {
+      selectedIds.value = [id]
+    }
+    if (selectedIds.value && selectedIds.value.length > 0) {
+      const resp = await deleteData(selectedIds.value)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        // 清空选中
+        selectedIds.value = []
+        closePopconfirm()
+        await initPage()
+      } else {
+        message.error(resp.msg)
+      }
+    } else {
+      message.warning("请勾选数据")
+    }
   }
 
-  const sortData = {
-    data: dictTypeList,
-    fun: updateSort
+  return{
+    openDeletePopconfirm,
+    openPopconfirm,
+    closePopconfirm,
+    handleDelete
   }
-  return {sortData}
 }
-
-const { sortData } = saveSort()
-
-
-// 关闭dialog时重置表单
-watch(() => modalAction.open, (value) => {
-  if (!value) {
-    formRef.value.resetFields();
-  }
-})
+const {openDeletePopconfirm,openPopconfirm,closePopconfirm, handleDelete } = initDelete()
 
 </script>
 

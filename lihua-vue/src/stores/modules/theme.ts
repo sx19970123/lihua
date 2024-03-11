@@ -167,6 +167,10 @@ export const useThemeStore = defineStore('theme',{
         changeSiderMode(value: string) {
             this.$state.siderMode = value
         },
+        // 修改导航宽度时同时修改原始值
+        changeSiderWidth() {
+          this.$state.originSiderWith = this.$state.siderWith
+        },
         // 切换主要颜色
         changeColorPrimary() {
             this.themeConfig.token.colorPrimary = this.$state.colorPrimary
