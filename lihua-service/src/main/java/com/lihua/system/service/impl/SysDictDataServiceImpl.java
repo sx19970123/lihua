@@ -26,11 +26,21 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     private RedisCache redisCache;
 
     @Override
-    public IPage<SysDictData> findPage(SysDictDataDTO dictDataDTO) {
+    public List<SysDictData> findList(SysDictDataDTO dictDataDTO) {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
-        IPage<SysDictData> ipage = new Page<>(dictDataDTO.getPageNum(), dictDataDTO.getPageSize());
-        sysDictDataMapper.selectPage(ipage,queryWrapper);
-        return ipage;
+        // 类型id
+        if (StringUtils.hasText(dictDataDTO.getDictTypeId())) {
+            queryWrapper.lambda().eq(SysDictData::getDictTypeId,dictDataDTO.getDictTypeId());
+        }
+        // 标签
+        if (StringUtils.hasText(dictDataDTO.getLabel())) {
+            queryWrapper.lambda().like(SysDictData::getLabel,dictDataDTO.getLabel());
+        }
+        // 值
+        if (StringUtils.hasText(dictDataDTO.getValue())) {
+            queryWrapper.lambda().like(SysDictData::getValue,dictDataDTO.getValue());
+        }
+        return sysDictDataMapper.selectList(queryWrapper);
     }
 
     @Override

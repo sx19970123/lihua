@@ -28,15 +28,21 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
 
         // 字典名称
         if (StringUtils.hasText(dictTypeDTO.getName())) {
-            queryWrapper.lambda().like(SysDictType::getName,dictTypeDTO.getName());
+            queryWrapper
+                    .lambda()
+                    .like(SysDictType::getName,dictTypeDTO.getName());
         }
         // 字典编码
         if (StringUtils.hasText(dictTypeDTO.getCode())) {
-            queryWrapper.lambda().like(SysDictType::getCode,dictTypeDTO.getCode());
+            queryWrapper
+                    .lambda()
+                    .like(SysDictType::getCode,dictTypeDTO.getCode());
         }
         // 创建时间
         if (dictTypeDTO.getStartEndTime() != null && !dictTypeDTO.getStartEndTime().isEmpty()) {
-            queryWrapper.lambda().between(SysDictType::getCreateTime,dictTypeDTO.getStartEndTime().get(0),dictTypeDTO.getStartEndTime().get(1));
+            queryWrapper
+                    .lambda()
+                    .between(SysDictType::getCreateTime,dictTypeDTO.getStartEndTime().get(0),dictTypeDTO.getStartEndTime().get(1));
         }
 
         sysDictTypeMapper.selectPage(page,queryWrapper);

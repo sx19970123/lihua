@@ -3,7 +3,7 @@
     <a-flex vertical :gap="16">
       <!--    检索条件-->
       <a-card>
-        <a-form ref="queryForm" :colon="false">
+        <a-form :colon="false">
           <a-flex :gap="8" align="center">
             <a-form-item class="form-item-single-line" label="字典名称">
               <a-input v-model:value="dictTypeQuery.name" placeholder="请输入字典名称" allowClear/>
@@ -34,84 +34,85 @@
         </a-form>
       </a-card>
       <!--    列表页-->
-      <a-table :data-source="dictTypeList"
-               :columns="dictTypeColumn"
-               :pagination="false"
-               :loading="tableLoad"
-               :row-selection="dictTypeRowSelectionType"
-               :rowKey="(item:SysDictType) => item.id"
-      >
-        <template #title>
-          <a-flex :gap="8">
-            <a-button type="primary" @click="handleModelStatus('新增字典')">
-              <template #icon>
-                <PlusOutlined />
-              </template>
-              新 增
-            </a-button>
-            <a-popconfirm title="删除后不可恢复，是否删除？"
-                          :open="openDeletePopconfirm"
-                          ok-text="确 定"
-                          cancel-text="取 消"
-                          @confirm="handleDelete(undefined)"
-                          @cancel="closePopconfirm"
-            >
-              <a-button danger @click="openPopconfirm">
+      <a-card :body-style="{padding: 0}">
+        <a-table :data-source="dictTypeList"
+                 :columns="dictTypeColumn"
+                 :pagination="false"
+                 :loading="tableLoad"
+                 :row-selection="dictTypeRowSelectionType"
+                 :rowKey="(item:SysDictType) => item.id"
+        >
+          <template #title>
+            <a-flex :gap="8">
+              <a-button type="primary" @click="handleModelStatus('新增字典')">
                 <template #icon>
-                  <DeleteOutlined />
+                  <PlusOutlined />
                 </template>
-                删 除
-                <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
+                新 增
               </a-button>
-            </a-popconfirm>
-          </a-flex>
-        </template>
-        <template #bodyCell="{column,record}">
-          <template v-if="column.key === 'createTime'">
-            {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
+              <a-popconfirm title="删除后不可恢复，是否删除？"
+                            :open="openDeletePopconfirm"
+                            ok-text="确 定"
+                            cancel-text="取 消"
+                            @confirm="handleDelete(undefined)"
+                            @cancel="closePopconfirm"
+              >
+                <a-button danger @click="openPopconfirm">
+                  <template #icon>
+                    <DeleteOutlined />
+                  </template>
+                  删 除
+                  <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
+                </a-button>
+              </a-popconfirm>
+            </a-flex>
           </template>
-          <template v-if="column.key === 'action'">
-            <a-button type="link" size="small" @click="getDictType(record.id)">
-              <template #icon>
-                <EditOutlined />
-              </template>
-              编辑
-            </a-button>
-            <a-divider type="vertical"/>
-            <a-button type="link" size="small" @click="openDictConfig(record)">
-              <template #icon>
-                <SettingOutlined />
-              </template>
-              字典配置
-            </a-button>
-            <a-divider type="vertical"/>
-            <a-popconfirm title="删除后不可恢复，是否删除？"
-                          ok-text="确 定"
-                          cancel-text="取 消"
-                          placement="bottomRight"
-                          @confirm="handleDelete(record.id)"
-            >
-              <a-button type="link" danger size="small">
+          <template #bodyCell="{column,record}">
+            <template v-if="column.key === 'createTime'">
+              {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
+            </template>
+            <template v-if="column.key === 'action'">
+              <a-button type="link" size="small" @click="getDictType(record.id)">
                 <template #icon>
-                  <DeleteOutlined />
+                  <EditOutlined />
                 </template>
-                删除
+                编辑
               </a-button>
-            </a-popconfirm>
+              <a-divider type="vertical"/>
+              <a-button type="link" size="small" @click="openDictConfig(record)">
+                <template #icon>
+                  <SettingOutlined />
+                </template>
+                字典配置
+              </a-button>
+              <a-divider type="vertical"/>
+              <a-popconfirm title="删除后不可恢复，是否删除？"
+                            ok-text="确 定"
+                            cancel-text="取 消"
+                            placement="bottomRight"
+                            @confirm="handleDelete(record.id)"
+              >
+                <a-button type="link" danger size="small">
+                  <template #icon>
+                    <DeleteOutlined />
+                  </template>
+                  删除
+                </a-button>
+              </a-popconfirm>
+            </template>
           </template>
-        </template>
-        <template #footer>
-          <a-flex justify="flex-end">
-            <a-pagination v-model:current="dictTypeQuery.pageNum"
-                          :total="dictTypeTotal"
-                          :show-total="(total:number) => `共 ${total} 条`"
-                          @change="queryPage"/>
-          </a-flex>
-        </template>
-      </a-table>
+          <template #footer>
+            <a-flex justify="flex-end">
+              <a-pagination v-model:current="dictTypeQuery.pageNum"
+                            :total="dictTypeTotal"
+                            :show-total="(total:number) => `共 ${total} 条`"
+                            @change="queryPage"/>
+            </a-flex>
+          </template>
+        </a-table>
+      </a-card>
     </a-flex>
-
-<!--    新增编辑对话框-->
+    <!--    新增编辑对话框-->
     <a-modal v-model:open="modalAction.open" ok-text="保 存"
              cancel-text="关 闭"
              :confirm-loading="modalAction.saveLoading"
@@ -153,8 +154,13 @@
         </a-form-item>
       </a-form>
     </a-modal>
-    <a-drawer v-model:open="drawerAction.openDrawer" :title="drawerAction.title" size="large" style="background: #f5f5f5" >
-      <dict-data :type-id="drawerAction.typeId"/>
+    <!--    字典配置抽屉-->
+    <a-drawer v-model:open="drawerAction.openDrawer"
+              size="large"
+              :destroyOnClose="true"
+              :title="drawerAction.title"
+              :body-style="{padding: '16px',background: '#f5f5f5'}">
+      <dict-data :type-id="drawerAction.typeId" />
     </a-drawer>
   </div>
 </template>
@@ -164,7 +170,7 @@ import {reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
 import type {ResponseType, PageResponseType } from "@/api/type"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {deleteData, findById, findPage, save} from "@/api/system/dict/dict";
+import {deleteData, findById, findPage, save} from "@/api/system/dict/dictType";
 import dayjs from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";
@@ -461,10 +467,3 @@ const initDictConfig = () => {
 }
 const {drawerAction,openDictConfig} = initDictConfig()
 </script>
-
-<style>
-.ant-drawer-header {
-  background: #FFFFFF;
-}
-</style>
-

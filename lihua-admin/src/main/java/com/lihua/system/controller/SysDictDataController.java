@@ -18,9 +18,12 @@ public class SysDictDataController extends BaseController {
     @Resource
     private SysDictDataService sysDictDataService;
 
-    @GetMapping("page")
-    public String findPage(@RequestBody SysDictDataDTO dictDataDTO) {
-        return success(sysDictDataService.findPage(dictDataDTO));
+    @PostMapping("list")
+    public String findListByTypeId(@RequestBody SysDictDataDTO dictDataDTO) {
+        if (!StringUtils.hasText(dictDataDTO.getDictTypeId())) {
+            return error(ResultCodeEnum.ERROR,"数据字典类型id为空");
+        }
+        return success(sysDictDataService.findList(dictDataDTO));
     }
 
     @GetMapping("/{id}")
@@ -37,7 +40,7 @@ public class SysDictDataController extends BaseController {
     }
 
     @DeleteMapping
-    public String delete(List<String> ids) {
+    public String delete(@RequestBody List<String> ids) {
         if (ids == null || ids.isEmpty()) {
             return error(ResultCodeEnum.PRIMARY_KEY_COLLECTION_IS_EMPTY);
         }

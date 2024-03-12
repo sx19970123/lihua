@@ -12,7 +12,7 @@ public interface SysDictDataService {
      * @param dictDataDTO
      * @return 列表数据
      */
-    IPage<SysDictData> findPage(SysDictDataDTO dictDataDTO);
+    List<SysDictData> findList(SysDictDataDTO dictDataDTO);
 
     /**
      * 根据id查询数据

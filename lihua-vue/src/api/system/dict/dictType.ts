@@ -1,6 +1,5 @@
 import request from "@/utils/request";
-import type { SysDictTypeDTO } from "@/api/system/dict/type/SysDictType"
-import {markRaw} from "vue";
+import type {SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
 
 /**
  * 列表页查询

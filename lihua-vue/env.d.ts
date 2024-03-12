@@ -28,3 +28,5 @@ declare module '@/components/verifition/index.vue'
 declare module 'vue-cropper'
 
 declare module 'sortablejs'
+
+declare module 'lodash-es'

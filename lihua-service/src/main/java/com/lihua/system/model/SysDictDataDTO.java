@@ -6,5 +6,8 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysDictDataDTO  extends BaseDTO {
+public class SysDictDataDTO extends BaseDTO {
+    private String dictTypeId;
+    private String label;
+    private String value;
 }
