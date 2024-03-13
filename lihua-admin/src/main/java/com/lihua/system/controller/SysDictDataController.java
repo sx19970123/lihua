@@ -39,6 +39,12 @@ public class SysDictDataController extends BaseController {
         return success(sysDictDataService.save(sysDictData));
     }
 
+    @PostMapping("sort")
+    public String saveSort(@RequestBody List<SysDictData> dictDataList) {
+        sysDictDataService.saveSort(dictDataList);
+        return success();
+    }
+
     @DeleteMapping
     public String delete(@RequestBody List<String> ids) {
         if (ids == null || ids.isEmpty()) {

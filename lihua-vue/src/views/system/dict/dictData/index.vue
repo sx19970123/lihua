@@ -29,9 +29,12 @@
       </a-form>
     </a-card>
     <a-card :body-style="{padding: 0}">
-      <a-table :columns="dictDataColumn"
+        <a-table :columns="dictDataColumn"
                :data-source="dictDataList"
+               :loading="tableLoading"
                :pagination="false"
+               :custom-row="customRow"
+               row-class-name="draggable-table-row"
         >
           <template #title>
             <a-button type="primary" >
@@ -55,7 +58,7 @@
                   allow-clear/>
               <template v-else>
                 <a-flex :gap="8">
-                  <HolderOutlined class="table-move-item" style="cursor: move"/>
+                  <HolderOutlined class="table-move-item"/>
                   {{ text }}
                 </a-flex>
               </template>
@@ -135,12 +138,11 @@
 <script setup lang="ts">
 // 接收父组件传入的typeId
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findList, save} from "@/api/system/dict/dictData";
-import {nextTick, onMounted, reactive, ref} from "vue";
+import {findList, save, saveSort} from "@/api/system/dict/dictData";
+import {reactive, ref} from "vue";
 import type { UnwrapRef } from 'vue';
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
-import SortTable from 'sortablejs'
 
 const props = defineProps<{
   typeId: string
@@ -175,24 +177,29 @@ const initSearch = () => {
   const dictDataQuery = ref<SysDictDataQueryType>({dictTypeId: props.typeId})
   // 定义查询出的列表集合
   const dictDataList = ref<Array<SysDictDataType>>()
+  // 定义列表加载
+  const tableLoading = ref<boolean>(false)
   // 查询列表
   const queryList = async () => {
+    tableLoading.value = true
     const resp =  await findList(dictDataQuery.value)
     if (resp.code === 200) {
       dictDataList.value = resp.data
     } else {
       message.error(resp.msg)
     }
+    tableLoading.value = false
   }
   queryList()
   return {
     dictDataQuery,
     dictDataColumn,
     dictDataList,
-    queryList
+    queryList,
+    tableLoading
   }
 }
-const {dictDataQuery, dictDataColumn, dictDataList, queryList} = initSearch()
+const {dictDataQuery, dictDataColumn, dictDataList, queryList, tableLoading} = initSearch()
 // 初始化保存
 const initSave = () => {
   const editableData:UnwrapRef<Record<string, SysDictDataType>> = reactive({})
@@ -268,38 +275,115 @@ const initSave = () => {
 const {editableData,handleEdit,handleCancel,handleSave} = initSave()
 // 初始化拖动
 const initDraggable = () => {
-  const init = () => {
-    const tbodyList = document.getElementsByClassName('ant-table-tbody')
-    if (tbodyList) {
-      const tbody = tbodyList[tbodyList.length - 1] as HTMLElement
-      const data = SortTable.create(tbody,{
-        draggable: '.ant-table-row',
-        sort: true,
-        animation: 150,
-        handle: ".table-move-item",
-        ghostClass: "sortable-ghost",
-        chosenClass: "sortable-chosen",
-        dragClass: "sortable-drag",
-        onEnd: ({newIndex, oldIndex}) => {
-          console.log(newIndex,oldIndex)
-        }
-      })
+  // 拖动排序
+  const sourceObj = ref({})
+  const targetObj = ref({})
+  let sourceIndex: number
+  let targetIndex: number
+  const customRow = (record: SysDictDataType, index: number) => {
+    const style = {
+      cursor: 'pointer'
+    }
+    // 鼠标移入
+    const onMouseenter = (event:MouseEvent) => {
+      // 兼容IE
+      const ev = event || window.event
+      if (ev && ev.target) {
+        const target = ev.target as HTMLElement
+        target.draggable = true
+      }
     }
 
-  }
-  init()
-}
+    // 开始拖拽
+    const onDragstart = (event:DragEvent) => {
+      const ev = event || window.event
+      ev.stopPropagation()
+      // 得到源目标数据
+      sourceObj.value = record
+      sourceIndex = index
+    }
+    // 拖动元素经过的元素
+    const onDragover = (event:DragEvent) => {
+      const ev = event || window.event
+      ev.preventDefault()
+      if (ev.dataTransfer) {
+        ev.dataTransfer.dropEffect = 'move'
+        ev.dataTransfer.effectAllowed = 'move'
+        targetIndex = index
+      }
+    }
+    // 拖动到达目标元素
+    const onDragenter = (event: Event) => {
+      const ev = event || window.event
+      ev.preventDefault()
+      const list = document.getElementsByClassName('draggable-table-row')
+      const node = document.getElementsByClassName('target')
 
-onMounted(() => {
-  initDraggable()
-})
+      if (node.length) {
+        node[0].classList.remove('target')
+      }
+      list[index].classList.add('target')
+    }
+    // 鼠标松开
+    const onDrop = (event: DragEvent) => {
+      const ev = event || window.event
+      ev.stopPropagation()
+      // 得到目标数据
+      targetObj.value = record
+      targetIndex = index
+      const node = document.getElementsByClassName('target')
+      if (node.length) {
+        node[0].classList.remove('target')
+      }
+      if (targetIndex === sourceIndex) return
+      // todo 接口未对接
+      if (dictDataList.value) {
+        dictDataList.value.splice(sourceIndex, 1)
+        dictDataList.value.splice(targetIndex, 0, sourceObj.value)
+
+      }
+    }
+    const onDragend = () => {
+      const node = document.getElementsByClassName('target')
+      if (node.length) {
+        node[0].classList.remove('target')
+      }
+    }
+    // 保存排序
+    const handleSaveSort = async () => {
+      // tableLoading.value = true
+      // const resp = await saveSort();
+      // if (resp.code === 200) {
+      //   message.success("排序成功")
+      // }
+      // tableLoading.value = false
+    }
+    return {
+      style,
+      onMouseenter,
+      onDragstart,
+      onDragover,
+      onDrop,
+      onDragenter,
+      onDragend
+    }
+  }
+  return {
+    customRow
+  }
+}
+const { customRow } = initDraggable()
 
 </script>
 
 <style>
+.ant-table-tbody > tr.target > td {
+  border-top: 2px var(--colorPrimary) solid !important;
+}
 .err-placeholder {
   .ant-input::placeholder {
     color: rgba(255, 77, 79, 0.7) !important;
   }
 }
 </style>
+

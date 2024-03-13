@@ -35,4 +35,9 @@ public interface SysDictDataService {
      */
     void deleteByIds(List<String> ids);
 
+    /**
+     * 保存排序
+     * @param dictDataList
+     */
+    void saveSort(List<SysDictData> dictDataList);
 }

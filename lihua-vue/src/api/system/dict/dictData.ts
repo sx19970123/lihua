@@ -21,6 +21,14 @@ export const save = (data: SysDictDataType) => {
   })
 }
 
+export const saveSort = (arr:Array<{id: string, sort: number}>) => {
+  return request({
+    url: 'system/dictData/sort',
+    method: 'post',
+    data: arr
+  })
+}
+
 
 /**
  * 删除数据
