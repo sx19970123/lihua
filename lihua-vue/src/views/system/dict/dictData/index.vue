@@ -29,53 +29,50 @@
       </a-form>
     </a-card>
     <a-card :body-style="{padding: 0}">
-      <a-table :columns="dictDataColumn" :data-source="dictDataList" :pagination="false">
-        <template #title>
-          <a-button type="primary" >
-            <template #icon>
-              <PlusOutlined />
-            </template>
-            新 增
-          </a-button>
-        </template>
-        <template #headerCell="{ column }">
-          <template v-if="column.key === 'label'">
-            <span style="color: #ff4d4f">*</span>
-            {{column.title}}
+      <a-table :columns="dictDataColumn"
+               :data-source="dictDataList"
+               :pagination="false"
+        >
+          <template #title>
+            <a-button type="primary" >
+              <template #icon>
+                <PlusOutlined />
+              </template>
+              新 增
+            </a-button>
           </template>
-          <template v-if="column.key === 'value'">
-            <span style="color: #ff4d4f">*</span>
-            {{column.title}}
-          </template>
-        </template>
-        <template #bodyCell="{column,text,record}">
-          <!--            可编辑内容-->
-          <!--          标签-->
-          <a-form :model="editableData[record.id]">
+
+          <template #bodyCell="{column,text,record}">
+            <!--            可编辑内容-->
+            <!--          标签-->
             <template v-if="'label' === column.dataIndex">
-              <a-form-item class="form-item-single-line" :rules="[{required: true,message: '请输入标签'}]" name="label">
-                <a-input v-if="editableData[record.id]"
-                         v-model:value="editableData[record.id].label"
-                         placeholder="请输入标签"
-                         allow-clear
-                         style="margin: -5px 0"/>
-                <template v-else>
+              <a-input
+                  v-if="editableData[record.id]"
+                  class="err-placeholder"
+                  placeholder="请输入标签"
+                  :status="editableData[record.id].label?'':'error'"
+                  v-model:value="editableData[record.id].label"
+                  allow-clear/>
+              <template v-else>
+                <a-flex :gap="8">
+                  <HolderOutlined class="table-move-item" style="cursor: move"/>
                   {{ text }}
-                </template>
-              </a-form-item>
+                </a-flex>
+              </template>
             </template>
             <!--          值-->
             <template v-if="'value' === column.dataIndex">
-              <a-form-item class="form-item-single-line">
-                <a-input v-if="editableData[record.id]"
-                         placeholder="请输入值"
-                         v-model:value="editableData[record.id].value"
-                         allow-clear
-                         style="margin: -5px 0"/>
-                <template v-else>
-                  {{ text }}
-                </template>
-              </a-form-item>
+              <a-input
+                  v-if="editableData[record.id]"
+                  class="err-placeholder"
+                  placeholder="请输入值"
+                  :status="editableData[record.id].value?'':'error'"
+                  v-model:value="editableData[record.id].value"
+                  allow-clear
+              />
+              <template v-else>
+                {{ text }}
+              </template>
             </template>
             <!--          备注-->
             <template v-if="'remark' === column.dataIndex">
@@ -84,54 +81,53 @@
                          placeholder="请输入备注"
                          v-model:value="editableData[record.id].remark"
                          allow-clear
-                         style="margin: -5px 0"/>
+                />
                 <template v-else>
                   {{ text }}
                 </template>
               </a-form-item>
             </template>
-          </a-form>
-          <template v-if="column.key === 'action'">
-<!--            编辑列-->
-            <template v-if="editableData[record.id]">
-              <a-button type="link" size="small" >
-                <template #icon>
-                  <CheckOutlined />
-                </template>
-                保存
-              </a-button>
-              <a-divider type="vertical"/>
-              <a-button type="link" size="small" danger>
-                <template #icon>
-                  <CloseOutlined />
-                </template>
-                取消
-              </a-button>
-            </template>
-            <template v-else>
-              <a-button type="link" size="small" @click="edit(record)">
-                <template #icon>
-                  <EditOutlined />
-                </template>
-                编辑
-              </a-button>
-              <a-divider type="vertical"/>
-              <a-popconfirm title="删除后不可恢复，是否删除？"
-                            ok-text="确 定"
-                            cancel-text="取 消"
-                            placement="bottomRight"
-              >
-                <a-button type="link" danger size="small">
+            <template v-if="column.key === 'action'">
+              <!--            编辑列-->
+              <template v-if="editableData[record.id]">
+                <a-button type="link" size="small" html-type="submit" @click="handleSave(record.id)">
                   <template #icon>
-                    <DeleteOutlined />
+                    <CheckOutlined />
                   </template>
-                  删除
+                  保存
                 </a-button>
-              </a-popconfirm>
+                <a-divider type="vertical"/>
+                <a-button type="link" size="small" danger @click="handleCancel(record.id)">
+                  <template #icon>
+                    <CloseOutlined />
+                  </template>
+                  取消
+                </a-button>
+              </template>
+              <template v-else>
+                <a-button type="link" size="small" @click="handleEdit(record)">
+                  <template #icon>
+                    <EditOutlined />
+                  </template>
+                  编辑
+                </a-button>
+                <a-divider type="vertical"/>
+                <a-popconfirm title="删除后不可恢复，是否删除？"
+                              ok-text="确 定"
+                              cancel-text="取 消"
+                              placement="bottomRight"
+                >
+                  <a-button type="link" danger size="small">
+                    <template #icon>
+                      <DeleteOutlined />
+                    </template>
+                    删除
+                  </a-button>
+                </a-popconfirm>
+              </template>
             </template>
           </template>
-        </template>
-      </a-table>
+        </a-table>
     </a-card>
   </a-flex>
 </template>
@@ -139,17 +135,17 @@
 <script setup lang="ts">
 // 接收父组件传入的typeId
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findList} from "@/api/system/dict/dictData";
-import {reactive, ref} from "vue";
+import {findList, save} from "@/api/system/dict/dictData";
+import {nextTick, onMounted, reactive, ref} from "vue";
 import type { UnwrapRef } from 'vue';
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
-
+import SortTable from 'sortablejs'
 
 const props = defineProps<{
   typeId: string
 }>()
-
+// 初始化查询
 const initSearch = () => {
   // 定义表头
   const dictDataColumn: ColumnsType = [
@@ -196,26 +192,114 @@ const initSearch = () => {
     queryList
   }
 }
-
 const {dictDataQuery, dictDataColumn, dictDataList, queryList} = initSearch()
-
+// 初始化保存
 const initSave = () => {
   const editableData:UnwrapRef<Record<string, SysDictDataType>> = reactive({})
-
-  const edit = (data: SysDictDataType) => {
+  // 处理点击编辑
+  const handleEdit = (data: SysDictDataType) => {
     if (data.id) {
       editableData[data.id] = cloneDeep(data)
     }
   }
+  // 处理点击取消
+  const handleCancel = (id: string) => {
+    if (editableData[id]) {
+      delete editableData[id]
+    }
+  }
+  // 处理数据保存
+  const handleSave = async (id: string) => {
+    // 检查编辑数据是否存在
+    if (!editableData[id]) {
+      message.error("没有可编辑的数据");
+      return;
+    }
+
+    const data = editableData[id];
+    const original = dictDataList.value?.find(item => item.id === id);
+
+    // 检查原始数据是否存在
+    if (!original) {
+      message.error("列表数据不存在");
+      return;
+    }
+
+    // 确保有有效的 label 和 value
+    if (!data?.label || !data?.value) {
+      message.error("无效的编辑数据");
+      return;
+    }
+
+    try {
+      // 尝试保存数据
+      const resp = await save(data);
+
+      // 检查响应状态
+      if (resp.code === 200) {
+        // 更新原始数据
+        original.label = data.label;
+        original.value = data.value;
+        original.remark = data.remark;
+
+        // 取消编辑状态
+        handleCancel(id);
+
+        // 显示成功消息
+        message.success(resp.msg);
+      } else {
+        // 显示错误信息
+        message.error(resp.msg);
+      }
+    } catch (e) {
+      // 捕获并处理错误
+      console.error(e);
+      message.error("保存数据时发生错误");
+    }
+  };
 
   return {
     editableData,
-    edit
+    handleEdit,
+    handleCancel,
+    handleSave
   }
 }
-const {editableData,edit} = initSave()
+const {editableData,handleEdit,handleCancel,handleSave} = initSave()
+// 初始化拖动
+const initDraggable = () => {
+  const init = () => {
+    const tbodyList = document.getElementsByClassName('ant-table-tbody')
+    if (tbodyList) {
+      const tbody = tbodyList[tbodyList.length - 1] as HTMLElement
+      const data = SortTable.create(tbody,{
+        draggable: '.ant-table-row',
+        sort: true,
+        animation: 150,
+        handle: ".table-move-item",
+        ghostClass: "sortable-ghost",
+        chosenClass: "sortable-chosen",
+        dragClass: "sortable-drag",
+        onEnd: ({newIndex, oldIndex}) => {
+          console.log(newIndex,oldIndex)
+        }
+      })
+    }
+
+  }
+  init()
+}
+
+onMounted(() => {
+  initDraggable()
+})
+
 </script>
 
-<style scoped>
-
+<style>
+.err-placeholder {
+  .ant-input::placeholder {
+    color: rgba(255, 77, 79, 0.7) !important;
+  }
+}
 </style>

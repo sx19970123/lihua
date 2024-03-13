@@ -57,9 +57,9 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     public String save(SysDictData sysDictData) {
         String id;
         if (StringUtils.hasText(sysDictData.getId())) {
-            id = insert(sysDictData);
-        } else {
             id = updateById(sysDictData);
+        } else {
+            id = insert(sysDictData);
         }
         // 更新缓存
         redisCache.setCacheObject(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + sysDictData.getId(),sysDictData);
