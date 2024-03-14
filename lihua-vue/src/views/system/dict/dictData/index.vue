@@ -40,13 +40,14 @@
       </a-form>
     </a-card>
     <a-card :body-style="{padding: 0}">
-        <a-table :columns="dictDataColumn"
-               :data-source="dictDataList"
-               :loading="tableLoading"
-               :pagination="false"
-               rowKey="id"
-               indentSize="20px"
-               row-class-name="draggable-table-row"
+        <a-table
+            :columns="dictDataColumn"
+            :data-source="dictDataList"
+            :loading="tableLoading"
+            :pagination="false"
+            v-model:expandedRowKeys="expandedRowKeys"
+            rowKey="id"
+            row-class-name="draggable-table-row"
         >
           <template #title>
             <a-button type="primary" @click="handleAdd">
@@ -154,7 +155,7 @@
                 </a-button>
                 <template v-if="props.type === '1'">
                   <a-divider type="vertical"/>
-                  <a-button type="link" size="small" @click="addChildren(record)">
+                  <a-button type="link" size="small" @click="handleAddChildren(record)">
                     <template #icon>
                       <VerticalAlignBottomOutlined />
                     </template>
@@ -187,7 +188,7 @@
 // 接收父组件传入的typeId
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {deleteData, findList, save} from "@/api/system/dict/dictData";
-import {reactive, ref} from "vue";
+import {nextTick, reactive, ref} from "vue";
 import type { UnwrapRef } from 'vue';
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
@@ -240,7 +241,9 @@ const initSearch = () => {
   // 定义查询条件对象
   const dictDataQuery = ref<SysDictDataQueryType>({dictTypeId: props.typeId,type: props.type})
   // 定义查询出的列表集合
-  const dictDataList = ref<Array<SysDictDataType>>()
+  const dictDataList = ref<Array<SysDictDataType>>([])
+  // 默认展开
+  const expandedRowKeys = ref<Array<string>>([])
   // 定义列表加载
   const tableLoading = ref<boolean>(false)
   // 查询列表
@@ -263,7 +266,6 @@ const initSearch = () => {
     dictDataQuery.value.status = undefined
     queryList()
   }
-
   queryList()
   return {
     dictDataQuery,
@@ -271,26 +273,54 @@ const initSearch = () => {
     dictDataList,
     queryList,
     resetList,
-    tableLoading
+    tableLoading,
+    expandedRowKeys
   }
 }
-const {dictDataQuery, dictDataColumn, dictDataList, queryList, resetList, tableLoading} = initSearch()
+const {dictDataQuery, dictDataColumn, dictDataList, queryList, resetList, tableLoading, expandedRowKeys} = initSearch()
 
-// 初始化保存
-const initSave = () => {
+// 初始化新增/新增子集
+const initAdd = () => {
+  // 编辑中数据
   const editableData:UnwrapRef<Record<string, SysDictDataType>> = reactive({})
 
   // 处理新增
-  const handleAdd = () => {
+  const handleAdd = async () => {
     // 新增默认数据
-    const item = {
-      id: 'add-' + dictDataList.value?.length,
+    const item: SysDictDataType = {
+      id: await generateTempId() as string,
       status: '0',
-      sort: dictDataList.value?.length? dictDataList.value?.length + 1 : 1,
+      sort: generateDefaultSort(dictDataList.value),
+      parentId: '0',
       dictTypeId: props.typeId
     }
-    dictDataList.value?.push(item)
+    // 添加到集合
+    dictDataList.value.push(item)
     handleEdit(item)
+    hiddenTreeIcon()
+  }
+
+  // 处理新增子集
+  const handleAddChildren = async (data: SysDictDataType) => {
+    if (!data.children) {
+      data.children = []
+    }
+
+    const item = {
+      id: await generateTempId() as string,
+      status: '0',
+      sort: generateDefaultSort(data.children),
+      dictTypeId: props.typeId,
+      parentId: data.id
+    }
+
+    data.children.push(item)
+    handleEdit(item)
+    // 展开数据
+    if (data.id) {
+      expandedRowKeys.value.push(data.id)
+    }
+    hiddenTreeIcon()
   }
 
   // 处理点击编辑
@@ -305,94 +335,124 @@ const initSave = () => {
     if (editableData[id]) {
       delete editableData[id]
     }
+
+    if (checkIsTempId(id)) {
+      dictDataList.value = dictDataList.value?.filter(item => item.id !== id)
+    }
+
+    showTreeIcon()
   }
 
-  // 处理数据保存
-  const handleSave = async (id: string) => {
-    // 检查编辑数据是否存在
-    if (!editableData[id]) {
-      message.error("没有可编辑的数据");
-      return;
+  // 生成临时序号
+  const generateDefaultSort = (list: Array<SysDictDataType>): number => {
+    if (!list) {
+      return 1
     }
 
-    const data = editableData[id];
-
-    // 确保有有效的 label 和 value
-    if (!data?.label || !data?.value) {
-      message.error("无效的编辑数据");
-      return;
+    const last = list[list.length - 1]
+    if (last && last.sort) {
+      return last.sort + 1
     }
 
-    try {
-      // 保存前处理数据
-      if (data.id && /^add-/.test(data.id)) {
-        data.id = undefined
+    return 1
+  }
+  // 生成临时id
+  const generateTempId = () => {
+    return new Promise((resolve) => {
+      setTimeout(() => { resolve('add-' + new Date().getTime()) },10)
+    })
+  }
+  // 检查是否为临时id
+  const checkIsTempId = (id: string): boolean => {
+    return /^add-/.test(id);
+  }
+
+  const hiddenTreeIcon = () => {
+    // dom 元素挂载完成执行
+    nextTick(() => {
+      const elements = document.getElementsByClassName('ant-table-row-expand-icon');
+      if (elements) {
+        for (let i = 0; i < elements.length; i++) {
+          const element = elements[i] as HTMLElement;
+          if (element) {
+            element.style.display = 'none';
+          }
+        }
       }
-      tableLoading.value = true
-      // 尝试保存数据
-      const resp = await save(data);
+    })
+  }
 
-      // 检查响应状态
-      if (resp.code === 200) {
-        // 取消编辑状态
-        handleCancel(id);
-        // 重新查询数据
-        await queryList()
-        // 显示成功消息
-        message.success(resp.msg);
-      } else {
-        // 显示错误信息
-        message.error(resp.msg);
+  const showTreeIcon = () => {
+    const elements = document.getElementsByClassName('ant-table-row-expand-icon');
+    if (elements) {
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i] as HTMLElement;
+        if (element) {
+          element.style.display = 'block';
+        }
       }
-      tableLoading.value = false
-    } catch (e) {
-      // 捕获并处理错误
-      console.error(e);
-      message.error("保存数据时发生错误");
     }
-  };
-
+  }
   return {
     editableData,
     handleAdd,
     handleEdit,
     handleCancel,
-    handleSave
+    checkIsTempId,
+    handleAddChildren
   }
 }
-const {editableData,handleAdd,handleEdit,handleCancel,handleSave} = initSave()
+const {editableData,handleAdd,handleEdit,handleCancel,checkIsTempId,handleAddChildren} = initAdd()
 
-// 初始化子数据
-const initChildren = () => {
-  // 添加子集
-  const addChildren = (data: SysDictDataType) => {
-    // 对象中没有children 的话，为 children 赋值
-    if (!data.children) {
-      data.children = []
-    }
-
-    const item = {
-      id: 'add-' + data.children?.length,
-      status: '0',
-      sort: data.children?.length? data.children?.length + 1 : 1,
-      dictTypeId: props.typeId,
-      parentId: data.id
-    }
-    data.children.push(item)
-    handleEdit(item)
+// 处理数据保存
+const handleSave = async (id: string) => {
+  // 检查编辑数据是否存在
+  if (!editableData[id]) {
+    message.error("没有可编辑的数据");
+    return;
   }
 
-  return {
-    addChildren
-  }
-}
+  const data = editableData[id];
 
-const {addChildren} = initChildren()
+  // 确保有有效的 label 和 value
+  if (!data?.label || !data?.value) {
+    message.error("无效的编辑数据");
+    return;
+  }
+
+  try {
+    // 保存前处理数据
+    if (data.id && /^add-/.test(data.id)) {
+      data.id = undefined
+    }
+    tableLoading.value = true
+    // 尝试保存数据
+    const resp = await save(data);
+
+    // 检查响应状态
+    if (resp.code === 200) {
+      // 取消编辑状态
+      handleCancel(id);
+      // 重新查询数据
+      await queryList()
+      // 显示成功消息
+      message.success(resp.msg);
+    } else {
+      // 显示错误信息
+      message.error(resp.msg);
+    }
+    tableLoading.value = false
+  } catch (e) {
+    // 捕获并处理错误
+    console.error(e);
+    message.error("保存数据时发生错误");
+  }
+};
 
 // 处理删除
 const handleDelete = async (id: string) => {
   // 新增未保存的id直接删除前端数据
-  if (/^add-/.test(id)) {
+  if (checkIsTempId(id)) {
     const list = dictDataList.value
     list?.splice(list?.findIndex(item => item.id === id),1)
     message.success("成功")
@@ -421,6 +481,9 @@ const handleDelete = async (id: string) => {
   .ant-input::placeholder {
     color: rgba(255, 77, 79, 0.7) !important;
   }
+}
+.hidden {
+  display: none !important;
 }
 </style>
 
