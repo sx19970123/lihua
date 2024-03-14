@@ -1,8 +1,12 @@
 package com.lihua.system.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.lihua.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -46,4 +50,15 @@ public class SysDictData extends BaseEntity {
      * 删除标识
      */
     private String delFlag;
+
+    /**
+     * 状态
+     */
+    private String status;
+
+    /**
+     * 子集
+     */
+    @TableField(exist = false)
+    private List<SysDictData> children;
 }

@@ -9,8 +9,17 @@
           <a-form-item class="form-item-single-line" label="值">
             <a-input v-model:value="dictDataQuery.value" allow-clear placeholder="请输入字典值"/>
           </a-form-item>
+          <a-form-item class="form-item-single-line" label="状态">
+            <a-select v-model:value="dictDataQuery.status" allow-clear placeholder="请选择状态">
+              <a-select-option value="0">正常</a-select-option>
+              <a-select-option value="1">停用</a-select-option>
+            </a-select>
+          </a-form-item>
           <a-form-item  class="form-item-single-line">
-            <a-button type="primary" @click="queryList">
+            <a-button type="primary"
+                      @click="queryList"
+                      :loading="tableLoading"
+            >
               <template #icon>
                 <SearchOutlined />
               </template>
@@ -18,7 +27,9 @@
             </a-button>
           </a-form-item>
           <a-form-item  class="form-item-single-line">
-            <a-button>
+            <a-button @click="resetList"
+                      :loading="tableLoading"
+            >
               <template #icon>
                 <RedoOutlined />
               </template>
@@ -33,11 +44,12 @@
                :data-source="dictDataList"
                :loading="tableLoading"
                :pagination="false"
-               :custom-row="customRow"
+               rowKey="id"
+               indentSize="20px"
                row-class-name="draggable-table-row"
         >
           <template #title>
-            <a-button type="primary" >
+            <a-button type="primary" @click="handleAdd">
               <template #icon>
                 <PlusOutlined />
               </template>
@@ -57,10 +69,7 @@
                   v-model:value="editableData[record.id].label"
                   allow-clear/>
               <template v-else>
-                <a-flex :gap="8">
-                  <HolderOutlined class="table-move-item"/>
-                  {{ text }}
-                </a-flex>
+                {{ text }}
               </template>
             </template>
             <!--          值-->
@@ -71,6 +80,35 @@
                   placeholder="请输入值"
                   :status="editableData[record.id].value?'':'error'"
                   v-model:value="editableData[record.id].value"
+                  allow-clear
+              />
+              <template v-else>
+                {{ text }}
+              </template>
+            </template>
+            <!--          状态-->
+            <template v-if="'status' === column.dataIndex">
+              <a-select v-if="editableData[record.id]"  v-model:value="editableData[record.id].status">
+                <a-select-option value="0">正常</a-select-option>
+                <a-select-option value="1">停用</a-select-option>
+              </a-select>
+              <template v-else>
+                <template v-if="record.status === '0'">
+                  <a-tag color="success">正常</a-tag>
+                </template>
+                <template v-if="record.status === '1'">
+                  <a-tag color="error">停用</a-tag>
+                </template>
+              </template>
+            </template>
+            <!--          排序-->
+            <template v-if="'sort' === column.dataIndex">
+              <a-input-number
+                  v-if="editableData[record.id]"
+                  class="err-placeholder"
+                  placeholder="请输入排序值"
+                  :status="editableData[record.id].sort?'':'error'"
+                  v-model:value="editableData[record.id].sort"
                   allow-clear
               />
               <template v-else>
@@ -114,11 +152,21 @@
                   </template>
                   编辑
                 </a-button>
+                <template v-if="props.type === '1'">
+                  <a-divider type="vertical"/>
+                  <a-button type="link" size="small" @click="addChildren(record)">
+                    <template #icon>
+                      <VerticalAlignBottomOutlined />
+                    </template>
+                    添加下级
+                  </a-button>
+                </template>
                 <a-divider type="vertical"/>
                 <a-popconfirm title="删除后不可恢复，是否删除？"
                               ok-text="确 定"
                               cancel-text="取 消"
                               placement="bottomRight"
+                              @confirm="handleDelete(record.id)"
                 >
                   <a-button type="link" danger size="small">
                     <template #icon>
@@ -138,15 +186,17 @@
 <script setup lang="ts">
 // 接收父组件传入的typeId
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findList, save, saveSort} from "@/api/system/dict/dictData";
+import {deleteData, findList, save} from "@/api/system/dict/dictData";
 import {reactive, ref} from "vue";
 import type { UnwrapRef } from 'vue';
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 
 const props = defineProps<{
-  typeId: string
+  typeId: string,
+  type: string
 }>()
+
 // 初始化查询
 const initSearch = () => {
   // 定义表头
@@ -162,6 +212,20 @@ const initSearch = () => {
       key: 'value'
     },
     {
+      title: '状态',
+      dataIndex: 'status',
+      align: 'center',
+      key: 'status',
+      width: '100px'
+    },
+    {
+      title: '排序',
+      dataIndex: 'sort',
+      align: 'center',
+      key: 'sort',
+      width: '100px'
+    },
+    {
       title: '备注',
       dataIndex: 'remark',
       key: 'remark'
@@ -170,11 +234,11 @@ const initSearch = () => {
       title: '操作',
       align: 'center',
       key: 'action',
-      width: '182px'
+      width: props.type === '1' ? '294px' : '182px'
     },
   ]
   // 定义查询条件对象
-  const dictDataQuery = ref<SysDictDataQueryType>({dictTypeId: props.typeId})
+  const dictDataQuery = ref<SysDictDataQueryType>({dictTypeId: props.typeId,type: props.type})
   // 定义查询出的列表集合
   const dictDataList = ref<Array<SysDictDataType>>()
   // 定义列表加载
@@ -182,7 +246,7 @@ const initSearch = () => {
   // 查询列表
   const queryList = async () => {
     tableLoading.value = true
-    const resp =  await findList(dictDataQuery.value)
+    const resp = await findList(dictDataQuery.value)
     if (resp.code === 200) {
       dictDataList.value = resp.data
     } else {
@@ -190,31 +254,59 @@ const initSearch = () => {
     }
     tableLoading.value = false
   }
+
+  // 重置列表查询
+  const resetList = () => {
+    dictDataQuery.value.dictTypeId = props.typeId
+    dictDataQuery.value.value = undefined
+    dictDataQuery.value.label = undefined
+    dictDataQuery.value.status = undefined
+    queryList()
+  }
+
   queryList()
   return {
     dictDataQuery,
     dictDataColumn,
     dictDataList,
     queryList,
+    resetList,
     tableLoading
   }
 }
-const {dictDataQuery, dictDataColumn, dictDataList, queryList, tableLoading} = initSearch()
+const {dictDataQuery, dictDataColumn, dictDataList, queryList, resetList, tableLoading} = initSearch()
+
 // 初始化保存
 const initSave = () => {
   const editableData:UnwrapRef<Record<string, SysDictDataType>> = reactive({})
+
+  // 处理新增
+  const handleAdd = () => {
+    // 新增默认数据
+    const item = {
+      id: 'add-' + dictDataList.value?.length,
+      status: '0',
+      sort: dictDataList.value?.length? dictDataList.value?.length + 1 : 1,
+      dictTypeId: props.typeId
+    }
+    dictDataList.value?.push(item)
+    handleEdit(item)
+  }
+
   // 处理点击编辑
   const handleEdit = (data: SysDictDataType) => {
     if (data.id) {
       editableData[data.id] = cloneDeep(data)
     }
   }
+
   // 处理点击取消
   const handleCancel = (id: string) => {
     if (editableData[id]) {
       delete editableData[id]
     }
   }
+
   // 处理数据保存
   const handleSave = async (id: string) => {
     // 检查编辑数据是否存在
@@ -224,13 +316,6 @@ const initSave = () => {
     }
 
     const data = editableData[id];
-    const original = dictDataList.value?.find(item => item.id === id);
-
-    // 检查原始数据是否存在
-    if (!original) {
-      message.error("列表数据不存在");
-      return;
-    }
 
     // 确保有有效的 label 和 value
     if (!data?.label || !data?.value) {
@@ -239,25 +324,27 @@ const initSave = () => {
     }
 
     try {
+      // 保存前处理数据
+      if (data.id && /^add-/.test(data.id)) {
+        data.id = undefined
+      }
+      tableLoading.value = true
       // 尝试保存数据
       const resp = await save(data);
 
       // 检查响应状态
       if (resp.code === 200) {
-        // 更新原始数据
-        original.label = data.label;
-        original.value = data.value;
-        original.remark = data.remark;
-
         // 取消编辑状态
         handleCancel(id);
-
+        // 重新查询数据
+        await queryList()
         // 显示成功消息
         message.success(resp.msg);
       } else {
         // 显示错误信息
         message.error(resp.msg);
       }
+      tableLoading.value = false
     } catch (e) {
       // 捕获并处理错误
       console.error(e);
@@ -267,112 +354,61 @@ const initSave = () => {
 
   return {
     editableData,
+    handleAdd,
     handleEdit,
     handleCancel,
     handleSave
   }
 }
-const {editableData,handleEdit,handleCancel,handleSave} = initSave()
-// 初始化拖动
-const initDraggable = () => {
-  // 拖动排序
-  const sourceObj = ref({})
-  const targetObj = ref({})
-  let sourceIndex: number
-  let targetIndex: number
-  const customRow = (record: SysDictDataType, index: number) => {
-    const style = {
-      cursor: 'pointer'
-    }
-    // 鼠标移入
-    const onMouseenter = (event:MouseEvent) => {
-      // 兼容IE
-      const ev = event || window.event
-      if (ev && ev.target) {
-        const target = ev.target as HTMLElement
-        target.draggable = true
-      }
+const {editableData,handleAdd,handleEdit,handleCancel,handleSave} = initSave()
+
+// 初始化子数据
+const initChildren = () => {
+  // 添加子集
+  const addChildren = (data: SysDictDataType) => {
+    // 对象中没有children 的话，为 children 赋值
+    if (!data.children) {
+      data.children = []
     }
 
-    // 开始拖拽
-    const onDragstart = (event:DragEvent) => {
-      const ev = event || window.event
-      ev.stopPropagation()
-      // 得到源目标数据
-      sourceObj.value = record
-      sourceIndex = index
+    const item = {
+      id: 'add-' + data.children?.length,
+      status: '0',
+      sort: data.children?.length? data.children?.length + 1 : 1,
+      dictTypeId: props.typeId,
+      parentId: data.id
     }
-    // 拖动元素经过的元素
-    const onDragover = (event:DragEvent) => {
-      const ev = event || window.event
-      ev.preventDefault()
-      if (ev.dataTransfer) {
-        ev.dataTransfer.dropEffect = 'move'
-        ev.dataTransfer.effectAllowed = 'move'
-        targetIndex = index
-      }
-    }
-    // 拖动到达目标元素
-    const onDragenter = (event: Event) => {
-      const ev = event || window.event
-      ev.preventDefault()
-      const list = document.getElementsByClassName('draggable-table-row')
-      const node = document.getElementsByClassName('target')
-
-      if (node.length) {
-        node[0].classList.remove('target')
-      }
-      list[index].classList.add('target')
-    }
-    // 鼠标松开
-    const onDrop = (event: DragEvent) => {
-      const ev = event || window.event
-      ev.stopPropagation()
-      // 得到目标数据
-      targetObj.value = record
-      targetIndex = index
-      const node = document.getElementsByClassName('target')
-      if (node.length) {
-        node[0].classList.remove('target')
-      }
-      if (targetIndex === sourceIndex) return
-      // todo 接口未对接
-      if (dictDataList.value) {
-        dictDataList.value.splice(sourceIndex, 1)
-        dictDataList.value.splice(targetIndex, 0, sourceObj.value)
-
-      }
-    }
-    const onDragend = () => {
-      const node = document.getElementsByClassName('target')
-      if (node.length) {
-        node[0].classList.remove('target')
-      }
-    }
-    // 保存排序
-    const handleSaveSort = async () => {
-      // tableLoading.value = true
-      // const resp = await saveSort();
-      // if (resp.code === 200) {
-      //   message.success("排序成功")
-      // }
-      // tableLoading.value = false
-    }
-    return {
-      style,
-      onMouseenter,
-      onDragstart,
-      onDragover,
-      onDrop,
-      onDragenter,
-      onDragend
-    }
+    data.children.push(item)
+    handleEdit(item)
   }
+
   return {
-    customRow
+    addChildren
   }
 }
-const { customRow } = initDraggable()
+
+const {addChildren} = initChildren()
+
+// 处理删除
+const handleDelete = async (id: string) => {
+  // 新增未保存的id直接删除前端数据
+  if (/^add-/.test(id)) {
+    const list = dictDataList.value
+    list?.splice(list?.findIndex(item => item.id === id),1)
+    message.success("成功")
+  } else {
+    tableLoading.value = true
+    // 其余数据从库中删除
+    const resp = await deleteData([id])
+    if (resp.code === 200) {
+      message.success(resp.msg)
+      await queryList()
+    } else {
+      message.error(resp.msg)
+    }
+    tableLoading.value = false
+  }
+}
 
 </script>
 
@@ -381,6 +417,7 @@ const { customRow } = initDraggable()
   border-top: 2px var(--colorPrimary) solid !important;
 }
 .err-placeholder {
+  .ant-input-number-input::placeholder,
   .ant-input::placeholder {
     color: rgba(255, 77, 79, 0.7) !important;
   }

@@ -38,6 +38,16 @@ interface SysDictDataType {
    * 删除标识
    */
   delFlag?: string;
+
+  /**
+   * 状态
+   */
+  status?: string;
+
+  /**
+   * 数据子集
+   */
+  children?: Array<SysDictDataType>
 }
 
 
@@ -56,4 +66,14 @@ interface SysDictDataQueryType {
    * 字典值
    */
   value?: string;
+
+  /**
+   * 状态
+   */
+  status?: string;
+
+  /**
+   * 类型
+   */
+  type?: string;
 }

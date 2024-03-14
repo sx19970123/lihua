@@ -1,11 +1,6 @@
 package com.lihua.system.service.impl;
 
-import com.baomidou.mybatisplus.core.batch.MybatisBatch;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.MybatisBatchUtils;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.cache.RedisCache;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.system.entity.SysDictData;
@@ -13,8 +8,8 @@ import com.lihua.system.mapper.SysDictDataMapper;
 import com.lihua.system.model.SysDictDataDTO;
 import com.lihua.system.service.SysDictDataService;
 import com.lihua.utils.security.LoginUserContext;
+import com.lihua.utils.tree.TreeUtil;
 import jakarta.annotation.Resource;
-import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -50,7 +45,14 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         }
         // 排序
         queryWrapper.lambda().orderByAsc(SysDictData::getSort);
-        return sysDictDataMapper.selectList(queryWrapper);
+        List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
+
+        // 树形结构需要构建子数据
+        if ("1".equals(dictDataDTO.getType())) {
+            return TreeUtil.buildTree(sysDictData);
+        }
+
+        return sysDictData;
     }
 
     @Override
@@ -80,12 +82,6 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     public void deleteByIds(List<String> ids) {
         sysDictDataMapper.deleteBatchIds(ids);
         ids.forEach(id -> redisCache.delete(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + id));
-    }
-
-    @Override
-    public void saveSort(List<SysDictData> dictDataList) {
-        MybatisBatch.Method<SysDictData> mapperMethod = new MybatisBatch.Method<>(SysDictDataMapper.class);
-        MybatisBatchUtils.execute(sqlSessionFactory, dictDataList, mapperMethod.updateById());
     }
 
     private String insert(SysDictData sysDictData) {

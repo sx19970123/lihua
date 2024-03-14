@@ -68,6 +68,14 @@
             </a-flex>
           </template>
           <template #bodyCell="{column,record}">
+            <template v-if="column.key === 'type'">
+              <template v-if="record.type === '0'">
+                一般字典
+              </template>
+              <template v-if="record.type === '1'">
+                树形字典
+              </template>
+            </template>
             <template v-if="column.key === 'createTime'">
               {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
             </template>
@@ -156,11 +164,11 @@
     </a-modal>
     <!--    字典配置抽屉-->
     <a-drawer v-model:open="drawerAction.openDrawer"
-              size="large"
+              :width="960"
               :destroyOnClose="true"
               :title="drawerAction.title"
-              :body-style="{padding: '16px',background: '#f5f5f5'}">
-      <dict-data :type-id="drawerAction.typeId" />
+              :body-style="{padding: '16px'}">
+      <dict-data :type-id="drawerAction.typeId" :type="drawerAction.type" />
     </a-drawer>
   </div>
 </template>
@@ -208,14 +216,12 @@ const initSearch = () => {
       dataIndex: 'status',
       align: 'center',
       key: 'status',
-      width: '100px'
     },
     {
       title: '类型',
       dataIndex: 'type',
       align: 'center',
       key: 'type',
-      width: '100px'
     },
     {
       title: '备注',
@@ -447,16 +453,19 @@ const initDictConfig = () => {
   type drawerAction = {
     openDrawer: boolean,
     title?: string,
-    typeId?: string
+    typeId?: string,
+    type?: string
   }
   const drawerAction = reactive<drawerAction>({
     openDrawer: false,
     title: '',
-    typeId: ''
+    typeId: '',
+    type: '',
   })
   const openDictConfig = (dictType: SysDictType) => {
     drawerAction.title = dictType.name
     drawerAction.typeId = dictType.id
+    drawerAction.type = dictType.type
     drawerAction.openDrawer = true
   }
 

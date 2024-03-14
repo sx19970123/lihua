@@ -27,6 +27,13 @@ export default defineConfig({
       }
     }
   },
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true
+      }
+    }
+  },
   build: {
     outDir: 'dist', // 输出目录
     target: 'esnext', // js格式
