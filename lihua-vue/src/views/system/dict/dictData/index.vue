@@ -297,7 +297,6 @@ const initAdd = () => {
     // 添加到集合
     dictDataList.value.push(item)
     handleEdit(item)
-    hiddenTreeIcon()
   }
 
   // 处理新增子集
@@ -320,7 +319,7 @@ const initAdd = () => {
     if (data.id) {
       expandedRowKeys.value.push(data.id)
     }
-    hiddenTreeIcon()
+
   }
 
   // 处理点击编辑
@@ -328,6 +327,7 @@ const initAdd = () => {
     if (data.id) {
       editableData[data.id] = cloneDeep(data)
     }
+    handleTreeIconFlex()
   }
 
   // 处理点击取消
@@ -367,15 +367,25 @@ const initAdd = () => {
     return /^add-/.test(id);
   }
 
-  const hiddenTreeIcon = () => {
+  const handleTreeIconFlex = () => {
     // dom 元素挂载完成执行
     nextTick(() => {
-      const elements = document.getElementsByClassName('ant-table-row-expand-icon');
-      if (elements) {
-        for (let i = 0; i < elements.length; i++) {
-          const element = elements[i] as HTMLElement;
-          if (element) {
-            element.style.display = 'none';
+      const iconElements = document.getElementsByClassName('ant-table-row-expand-icon');
+      const tdElements = document.getElementsByClassName('ant-table-cell-with-append');
+      if (iconElements) {
+        for (let i = 0; i < iconElements.length; i++) {
+          const icon = iconElements[i] as HTMLElement;
+          if (icon) {
+            icon.style.paddingRight = '15px';
+          }
+        }
+      }
+      if (tdElements) {
+        for (let i = 0; i < tdElements.length; i++) {
+          const td = tdElements[i] as HTMLElement;
+          if (td) {
+            td.style.display = 'flex';
+            td.style.alignItems = 'center';
           }
         }
       }
@@ -383,12 +393,22 @@ const initAdd = () => {
   }
 
   const showTreeIcon = () => {
-    const elements = document.getElementsByClassName('ant-table-row-expand-icon');
-    if (elements) {
-      for (let i = 0; i < elements.length; i++) {
-        const element = elements[i] as HTMLElement;
-        if (element) {
-          element.style.display = 'block';
+    const iconElements = document.getElementsByClassName('ant-table-row-expand-icon');
+    const tdElements = document.getElementsByClassName('ant-table-cell-with-append');
+    if (iconElements) {
+      for (let i = 0; i < iconElements.length; i++) {
+        const icon = iconElements[i] as HTMLElement;
+        if (icon) {
+          icon.style.paddingRight = '0px';
+        }
+      }
+    }
+    if (tdElements) {
+      for (let i = 0; i < tdElements.length; i++) {
+        const td = tdElements[i] as HTMLElement;
+        if (td) {
+          td.style.display = '';
+          td.style.alignItems = '';
         }
       }
     }
@@ -481,9 +501,6 @@ const handleDelete = async (id: string) => {
   .ant-input::placeholder {
     color: rgba(255, 77, 79, 0.7) !important;
   }
-}
-.hidden {
-  display: none !important;
 }
 </style>
 
