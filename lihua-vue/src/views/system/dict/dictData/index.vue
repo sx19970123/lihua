@@ -139,7 +139,7 @@
                   保存
                 </a-button>
                 <a-divider type="vertical"/>
-                <a-button type="link" size="small" danger @click="handleCancel(record.id)">
+                <a-button type="link" size="small" danger @click="handleCancel(record.id, true)">
                   <template #icon>
                     <CloseOutlined />
                   </template>
@@ -198,7 +198,7 @@ const props = defineProps<{
   type: string
 }>()
 
-// 初始化查询
+// 查询
 const initSearch = () => {
   // 定义表头
   const dictDataColumn: ColumnsType = [
@@ -279,7 +279,7 @@ const initSearch = () => {
 }
 const {dictDataQuery, dictDataColumn, dictDataList, queryList, resetList, tableLoading, expandedRowKeys} = initSearch()
 
-// 初始化新增/新增子集
+// 新增/新增下级
 const initAdd = () => {
   // 编辑中数据
   const editableData:UnwrapRef<Record<string, SysDictDataType>> = reactive({})
@@ -331,16 +331,18 @@ const initAdd = () => {
   }
 
   // 处理点击取消
-  const handleCancel = (id: string) => {
+  const handleCancel = (id: string,deleteData: boolean) => {
     if (editableData[id]) {
       delete editableData[id]
     }
 
-    if (checkIsTempId(id)) {
-      dictDataList.value = dictDataList.value?.filter(item => item.id !== id)
+    if (deleteData && checkIsTempId(id)) {
+      handleDelete(id)
     }
 
-    showTreeIcon()
+    if (Object.keys(editableData).length === 0) {
+      recoverTreeIcon()
+    }
   }
 
   // 生成临时序号
@@ -367,6 +369,7 @@ const initAdd = () => {
     return /^add-/.test(id);
   }
 
+  // 处理图标分为两行
   const handleTreeIconFlex = () => {
     // dom 元素挂载完成执行
     nextTick(() => {
@@ -391,8 +394,8 @@ const initAdd = () => {
       }
     })
   }
-
-  const showTreeIcon = () => {
+  // 恢复图标原样式
+  const recoverTreeIcon = () => {
     const iconElements = document.getElementsByClassName('ant-table-row-expand-icon');
     const tdElements = document.getElementsByClassName('ant-table-cell-with-append');
     if (iconElements) {
@@ -413,80 +416,170 @@ const initAdd = () => {
       }
     }
   }
+
+  const deepGetTarget = (id: string, list: SysDictDataType[]): SysDictDataType | undefined => {
+    for (const item of list) {
+      if (item.id === id) {
+        return item;
+      }
+      if (item.children && item.children.length > 0) {
+        const foundInChildren = deepGetTarget(id, item.children);
+        if (foundInChildren) {
+          return foundInChildren;
+        }
+      }
+    }
+    return undefined;
+  }
+
   return {
     editableData,
     handleAdd,
     handleEdit,
     handleCancel,
     checkIsTempId,
-    handleAddChildren
+    handleAddChildren,
+    deepGetTarget
   }
 }
-const {editableData,handleAdd,handleEdit,handleCancel,checkIsTempId,handleAddChildren} = initAdd()
-
-// 处理数据保存
-const handleSave = async (id: string) => {
-  // 检查编辑数据是否存在
-  if (!editableData[id]) {
-    message.error("没有可编辑的数据");
-    return;
-  }
-
-  const data = editableData[id];
-
-  // 确保有有效的 label 和 value
-  if (!data?.label || !data?.value) {
-    message.error("无效的编辑数据");
-    return;
-  }
-
-  try {
-    // 保存前处理数据
-    if (data.id && /^add-/.test(data.id)) {
-      data.id = undefined
+const {editableData,handleAdd,handleEdit,handleCancel,checkIsTempId,handleAddChildren,deepGetTarget} = initAdd()
+// 保存方法
+const initSave = () => {
+  // 保存数据
+  const handleSave = async (id: string) => {
+    // 检查是否存在可编辑的数据
+    if (!editableData[id]) {
+      message.error("没有可编辑的数据");
+      return;
     }
-    tableLoading.value = true
-    // 尝试保存数据
-    const resp = await save(data);
 
-    // 检查响应状态
-    if (resp.code === 200) {
-      // 取消编辑状态
-      handleCancel(id);
-      // 重新查询数据
-      await queryList()
-      // 显示成功消息
-      message.success(resp.msg);
-    } else {
-      // 显示错误信息
-      message.error(resp.msg);
+    const data = editableData[id];
+
+    // 确保有有效的 label 和 value
+    if (!data?.label || !data?.value || !data?.sort) {
+      message.error("请将数据填写完整");
+      return;
     }
-    tableLoading.value = false
-  } catch (e) {
-    // 捕获并处理错误
-    console.error(e);
-    message.error("保存数据时发生错误");
-  }
-};
 
-// 处理删除
-const handleDelete = async (id: string) => {
-  // 新增未保存的id直接删除前端数据
-  if (checkIsTempId(id)) {
+    try {
+      // 如果是临时ID，将其设置为undefined
+      if (data.id && checkIsTempId(data.id)) {
+        data.id = undefined;
+      }
+
+      tableLoading.value = true;
+
+      // 尝试保存数据
+      const resp = await save(data);
+
+      if (resp.code === 200) {
+        // 保存成功的处理
+        data.id = resp.data;
+        // 新增的数据保存到列表
+        handleDeepSave(id, dictDataList.value, data);
+        // 关闭编辑框
+        handleCancel(id,false)
+        handleSort(dictDataList.value)
+        message.success(resp.msg);
+      } else {
+        // 保存失败的处理
+        message.error(resp.msg);
+      }
+    } catch (error) {
+      // 错误处理
+      console.error(error);
+      message.error("保存数据时发生错误");
+    } finally {
+      tableLoading.value = false;
+    }
+  };
+
+  // 保存成功后不重新加载列表，而是修改列表中的数据
+  const handleDeepSave = (id: string, list: SysDictDataType[], data: SysDictDataType) => {
+    for (let item of list) {
+      if (item.id === id) {
+        for (let dataKey in data) {
+          (item as any)[dataKey] = (data as any)[dataKey];
+        }
+        // 匹配到了对应的项，不需要继续遍历其子项
+        return;
+      }
+      if (item.children && item.children.length > 0) {
+        // 使用类型断言告诉 TypeScript 对象的确切类型
+        handleDeepSave(id, item.children as SysDictDataType[], data);
+      }
+    }
+  };
+
+
+  return {
+    handleSave
+  }
+}
+const { handleSave } = initSave()
+// 删除方法
+const initDelete = () => {
+  // 处理删除
+  const handleDelete = async (id: string) => {
     const list = dictDataList.value
-    list?.splice(list?.findIndex(item => item.id === id),1)
-    message.success("成功")
-  } else {
-    tableLoading.value = true
-    // 其余数据从库中删除
-    const resp = await deleteData([id])
-    if (resp.code === 200) {
-      message.success(resp.msg)
-      await queryList()
+    // 新增未保存的id直接删除前端数据
+    if (checkIsTempId(id)) {
+      handleDeleteTableData(id,list)
+      message.success("成功")
     } else {
-      message.error(resp.msg)
+      // 其余数据从库中删除
+      const resp = await deleteData([id])
+      if (resp.code === 200) {
+        handleDeleteTableData(id,list)
+        message.success(resp.msg)
+      } else {
+        message.error(resp.msg)
+      }
     }
-    tableLoading.value = false
+    handleSort(list)
+  }
+
+  // 处理删除集合中的数据
+  const handleDeleteTableData = (id: string, list: SysDictDataType[]) => {
+    for (let i = 0; i < list.length; i++) {
+      const item = list[i];
+      if (item.id === id) {
+        list.splice(i, 1);
+        // i--; // 减小 i 因为数组长度已经减小了
+      } else if (item.children && item.children.length > 0) {
+        handleDeleteTableData(id, item.children);
+      }
+      // 递归回调如果没有子集的话设置子集为 undefined
+      if (item.children && item.children.length === 0) {
+        item.children = undefined;
+      }
+    }
+  };
+
+  return {
+    handleDelete
+  }
+}
+const { handleDelete } = initDelete()
+// 处理排序
+const handleSort = (list: SysDictDataType[]) => {
+  if (list) {
+    list.forEach(item => {
+      if (item.children && item.children.length > 0) {
+        handleSort(item.children);
+      }
+    })
+    list.sort((a, b) => {
+      if (a.sort !== undefined && b.sort !== undefined) {
+        return a.sort - b.sort;
+      } else if (a.sort === undefined && b.sort !== undefined) {
+        return 1; // a.sort 为 undefined，排到后面
+      } else if (a.sort !== undefined && b.sort === undefined) {
+        return -1; // b.sort 为 undefined，排到前面
+      } else {
+        return 0; // 两者都为 undefined，保持原有顺序
+      }
+    });
   }
 }
 

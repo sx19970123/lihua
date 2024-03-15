@@ -47,6 +47,7 @@ public class RedisCache {
         return (T) redisTemplate.opsForValue().get(key);
     }
 
+
     /**
      * 缓存list 集合对象
      * @param key

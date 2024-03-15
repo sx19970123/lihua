@@ -11,4 +11,5 @@ public class SysDictDataDTO extends BaseDTO {
     private String label;
     private String value;
     private String type;
+    private String status;
 }

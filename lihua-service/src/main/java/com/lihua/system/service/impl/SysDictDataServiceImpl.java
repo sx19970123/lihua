@@ -3,6 +3,7 @@ package com.lihua.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.cache.RedisCache;
 import com.lihua.enums.SysBaseEnum;
+import com.lihua.exception.ServiceException;
 import com.lihua.system.entity.SysDictData;
 import com.lihua.system.mapper.SysDictDataMapper;
 import com.lihua.system.model.SysDictDataDTO;
@@ -43,6 +44,10 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         if (StringUtils.hasText(dictDataDTO.getValue())) {
             queryWrapper.lambda().like(SysDictData::getValue,dictDataDTO.getValue());
         }
+        // 状态
+        if (StringUtils.hasText(dictDataDTO.getStatus())) {
+            queryWrapper.lambda().eq(SysDictData::getStatus,dictDataDTO.getStatus());
+        }
         // 排序
         queryWrapper.lambda().orderByAsc(SysDictData::getSort);
         List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
@@ -80,8 +85,12 @@ public class SysDictDataServiceImpl implements SysDictDataService {
 
     @Override
     public void deleteByIds(List<String> ids) {
-        sysDictDataMapper.deleteBatchIds(ids);
-        ids.forEach(id -> redisCache.delete(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + id));
+        if (hasChildren(ids)) {
+            sysDictDataMapper.deleteBatchIds(ids);
+            ids.forEach(id -> redisCache.delete(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + id));
+        } else {
+            throw new ServiceException("存在子集不允许删除");
+        }
     }
 
     private String insert(SysDictData sysDictData) {
@@ -98,4 +107,15 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         return sysDictData.getId();
     }
 
+    private boolean hasChildren(List<String> ids) {
+        String dictTypeId = findById(ids.get(0)).getDictTypeId();
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysDictData::getDictTypeId,dictTypeId);
+        List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
+
+
+
+
+        return false;
+    }
 }
