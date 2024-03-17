@@ -72,6 +72,9 @@ public class SysDictDataServiceImpl implements SysDictDataService {
 
     @Override
     public String save(SysDictData sysDictData) {
+        // 检查字典值是否重复
+        checkValue(sysDictData);
+
         String id;
         if (StringUtils.hasText(sysDictData.getId())) {
             id = updateById(sysDictData);
@@ -85,12 +88,9 @@ public class SysDictDataServiceImpl implements SysDictDataService {
 
     @Override
     public void deleteByIds(List<String> ids) {
-        if (hasChildren(ids)) {
-            sysDictDataMapper.deleteBatchIds(ids);
-            ids.forEach(id -> redisCache.delete(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + id));
-        } else {
-            throw new ServiceException("存在子集不允许删除");
-        }
+        checkChildren(ids);
+        sysDictDataMapper.deleteBatchIds(ids);
+        ids.forEach(id -> redisCache.delete(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + id));
     }
 
     private String insert(SysDictData sysDictData) {
@@ -107,15 +107,29 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         return sysDictData.getId();
     }
 
-    private boolean hasChildren(List<String> ids) {
-        String dictTypeId = findById(ids.get(0)).getDictTypeId();
+    private void checkChildren(List<String> ids) {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(SysDictData::getDictTypeId,dictTypeId);
-        List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
+        queryWrapper.lambda().in(SysDictData::getParentId,ids);
+        Long count = sysDictDataMapper.selectCount(queryWrapper);
+        if (count != 0) {
+            throw new ServiceException("存在子集不允许删除");
+        }
+    }
 
-
-
-
-        return false;
+    private void checkValue(SysDictData sysDictData) {
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(SysDictData::getValue,sysDictData.getValue())
+                .eq(SysDictData::getDictTypeId,sysDictData.getDictTypeId());
+        List<SysDictData> sysDictDataList = sysDictDataMapper.selectList(queryWrapper);
+        if (!sysDictDataList.isEmpty()) {
+            if (sysDictDataList.size() > 1) {
+                throw new ServiceException("当前字典值已存在");
+            } else {
+                if (!sysDictDataList.get(0).getId().equals(sysDictData.getId())) {
+                    throw new ServiceException("当前字典值已存在");
+                }
+            }
+        }
     }
 }

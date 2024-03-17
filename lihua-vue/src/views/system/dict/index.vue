@@ -164,10 +164,10 @@
     </a-modal>
     <!--    字典配置抽屉-->
     <a-drawer v-model:open="drawerAction.openDrawer"
-              :width="960"
+              :width="1120"
               :destroyOnClose="true"
               :title="drawerAction.title"
-              :body-style="{padding: '16px'}">
+              :body-style="{'padding-top': '0'}">
       <dict-data :type-id="drawerAction.typeId" :type="drawerAction.type" />
     </a-drawer>
   </div>

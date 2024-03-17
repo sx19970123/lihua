@@ -24,7 +24,9 @@ public enum ResultCodeEnum {
     DB_ERROR(504,"数据库异常"),
 
     PRIMARY_KEY_IS_EMPTY(505,"主键为空"),
-    PRIMARY_KEY_COLLECTION_IS_EMPTY(506,"集合元素为空");
+    PRIMARY_KEY_COLLECTION_IS_EMPTY(506,"集合元素为空"),
+
+    PARAMS_IS_EMPTY(507,"参数不存在");
 
     /**
      * 状态码

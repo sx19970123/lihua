@@ -57,6 +57,11 @@ public class SysDictData extends BaseEntity {
     private String status;
 
     /**
+     * 回显颜色
+     */
+    private String color;
+
+    /**
      * 子集
      */
     @TableField(exist = false)

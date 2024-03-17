@@ -3,9 +3,13 @@ package com.lihua.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lihua.exception.ServiceException;
+import com.lihua.system.entity.SysDictData;
 import com.lihua.system.entity.SysDictType;
+import com.lihua.system.mapper.SysDictDataMapper;
 import com.lihua.system.mapper.SysDictTypeMapper;
 import com.lihua.system.model.SysDictTypeDTO;
+import com.lihua.system.service.SysDictDataService;
 import com.lihua.system.service.SysDictTypeService;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
@@ -20,6 +24,10 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
 
     @Resource
     private SysDictTypeMapper sysDictTypeMapper;
+
+    @Resource
+    private SysDictDataMapper sysDictDataMapper;
+
 
     @Override
     public IPage<SysDictType> findPage(SysDictTypeDTO dictTypeDTO) {
@@ -56,6 +64,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
 
     @Override
     public String save(SysDictType sysDictType) {
+        checkCode(sysDictType.getId(),sysDictType.getCode());
         if (!StringUtils.hasText(sysDictType.getId())) {
             return insert(sysDictType);
         }
@@ -78,6 +87,31 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
 
     @Override
     public void deleteByIds(List<String> ids) {
+        checkDictData(ids);
         sysDictTypeMapper.deleteBatchIds(ids);
+    }
+
+    private void checkDictData(List<String> ids) {
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().in(SysDictData::getDictTypeId,ids);
+        Long count = sysDictDataMapper.selectCount(queryWrapper);
+        if (count > 0) {
+            throw new ServiceException("存在字典数据不允许删除");
+        }
+    }
+
+    private void checkCode(String id,String code) {
+        QueryWrapper<SysDictType> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysDictType::getCode,code);
+        List<SysDictType> sysDictTypes = sysDictTypeMapper.selectList(queryWrapper);
+        if (!sysDictTypes.isEmpty()) {
+            if (sysDictTypes.size() > 1) {
+                throw new ServiceException("当前字典类型编码已存在");
+            } else {
+                if (!sysDictTypes.get(0).getId().equals(id)) {
+                    throw new ServiceException("当前字典类型编码已存在");
+                }
+            }
+        }
     }
 }

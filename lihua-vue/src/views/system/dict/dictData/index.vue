@@ -1,6 +1,6 @@
 <template>
   <a-flex vertical :gap="16">
-    <a-card>
+    <a-card style="margin-top: 24px">
       <a-form :colon="false">
         <a-flex :gap="8" align="center" >
           <a-form-item class="form-item-single-line" label="标签">
@@ -47,7 +47,8 @@
             :pagination="false"
             v-model:expandedRowKeys="expandedRowKeys"
             rowKey="id"
-            row-class-name="draggable-table-row"
+            sticky
+            @resizeColumn="handleResizeColumn"
         >
           <template #title>
             <a-button type="primary" @click="handleAdd">
@@ -65,6 +66,7 @@
               <a-input
                   v-if="editableData[record.id]"
                   class="err-placeholder"
+                  :class="record.id"
                   placeholder="请输入标签"
                   :status="editableData[record.id].label?'':'error'"
                   v-model:value="editableData[record.id].label"
@@ -85,6 +87,19 @@
               />
               <template v-else>
                 {{ text }}
+              </template>
+            </template>
+            <!--          回显-->
+            <template v-if="'color' === column.dataIndex">
+              <a-select  v-if="editableData[record.id]" v-model:value="editableData[record.id].color">
+                <a-select-option value="default">默认</a-select-option>
+                <a-select-option value="processing">主要</a-select-option>
+                <a-select-option value="success">成功</a-select-option>
+                <a-select-option value="warning">警告</a-select-option>
+                <a-select-option value="error">错误</a-select-option>
+              </a-select>
+              <template v-else>
+                <a-tag :color="text">○</a-tag>
               </template>
             </template>
             <!--          状态-->
@@ -134,14 +149,14 @@
               <template v-if="editableData[record.id]">
                 <a-button type="link" size="small" html-type="submit" @click="handleSave(record.id)">
                   <template #icon>
-                    <CheckOutlined />
+
                   </template>
                   保存
                 </a-button>
                 <a-divider type="vertical"/>
                 <a-button type="link" size="small" danger @click="handleCancel(record.id, true)">
                   <template #icon>
-                    <CloseOutlined />
+
                   </template>
                   取消
                 </a-button>
@@ -149,16 +164,13 @@
               <template v-else>
                 <a-button type="link" size="small" @click="handleEdit(record)">
                   <template #icon>
-                    <EditOutlined />
+
                   </template>
                   编辑
                 </a-button>
                 <template v-if="props.type === '1'">
                   <a-divider type="vertical"/>
                   <a-button type="link" size="small" @click="handleAddChildren(record)">
-                    <template #icon>
-                      <VerticalAlignBottomOutlined />
-                    </template>
                     添加下级
                   </a-button>
                 </template>
@@ -170,9 +182,6 @@
                               @confirm="handleDelete(record.id)"
                 >
                   <a-button type="link" danger size="small">
-                    <template #icon>
-                      <DeleteOutlined />
-                    </template>
                     删除
                   </a-button>
                 </a-popconfirm>
@@ -201,30 +210,41 @@ const props = defineProps<{
 // 查询
 const initSearch = () => {
   // 定义表头
-  const dictDataColumn: ColumnsType = [
+  const dictDataColumn = ref<ColumnsType>([
     {
       title: '标签',
       dataIndex: 'label',
-      key: 'label'
+      key: 'label',
+      resizable: true,
+      width: 200,
+      maxWidth: 300,
+      minWidth: 150
     },
     {
       title: '值',
       dataIndex: 'value',
-      key: 'value'
+      key: 'value',
+    },
+    {
+      title: '回显',
+      dataIndex: 'color',
+      key: 'color',
+      align: 'center',
+      width: 100
     },
     {
       title: '状态',
       dataIndex: 'status',
       align: 'center',
       key: 'status',
-      width: '100px'
+      width: 100
     },
     {
       title: '排序',
       dataIndex: 'sort',
       align: 'center',
       key: 'sort',
-      width: '100px'
+      width: 106
     },
     {
       title: '备注',
@@ -235,9 +255,9 @@ const initSearch = () => {
       title: '操作',
       align: 'center',
       key: 'action',
-      width: props.type === '1' ? '294px' : '182px'
+      width: props.type === '1' ? 228 : 138
     },
-  ]
+  ])
   // 定义查询条件对象
   const dictDataQuery = ref<SysDictDataQueryType>({dictTypeId: props.typeId,type: props.type})
   // 定义查询出的列表集合
@@ -266,6 +286,10 @@ const initSearch = () => {
     dictDataQuery.value.status = undefined
     queryList()
   }
+
+  const handleResizeColumn = (w, col) => {
+    col.width = w;
+  }
   queryList()
   return {
     dictDataQuery,
@@ -274,10 +298,11 @@ const initSearch = () => {
     queryList,
     resetList,
     tableLoading,
-    expandedRowKeys
+    expandedRowKeys,
+    handleResizeColumn
   }
 }
-const {dictDataQuery, dictDataColumn, dictDataList, queryList, resetList, tableLoading, expandedRowKeys} = initSearch()
+const {dictDataQuery, dictDataColumn, dictDataList, queryList, resetList, tableLoading, expandedRowKeys,handleResizeColumn} = initSearch()
 
 // 新增/新增下级
 const initAdd = () => {
@@ -286,17 +311,22 @@ const initAdd = () => {
 
   // 处理新增
   const handleAdd = async () => {
+
+    const tempId = await generateTempId() as string
     // 新增默认数据
     const item: SysDictDataType = {
-      id: await generateTempId() as string,
+      id: tempId,
       status: '0',
       sort: generateDefaultSort(dictDataList.value),
       parentId: '0',
+      color: 'default',
       dictTypeId: props.typeId
     }
     // 添加到集合
     dictDataList.value.push(item)
     handleEdit(item)
+    // 自动滚动
+    await autoRoll(tempId)
   }
 
   // 处理新增子集
@@ -304,9 +334,9 @@ const initAdd = () => {
     if (!data.children) {
       data.children = []
     }
-
+    const tempId = await generateTempId() as string
     const item = {
-      id: await generateTempId() as string,
+      id: tempId,
       status: '0',
       sort: generateDefaultSort(data.children),
       dictTypeId: props.typeId,
@@ -319,7 +349,21 @@ const initAdd = () => {
     if (data.id) {
       expandedRowKeys.value.push(data.id)
     }
+    // 自动滚动
+    await autoRoll(tempId)
+  }
 
+  /**
+   * 点击新增自动滚动到执行输入框
+   * @param targetClass
+   */
+  const autoRoll = async (targetClass: string) => {
+    await nextTick(() => {
+      const doc = document.querySelector('.' + targetClass)
+      if (doc) {
+        doc.scrollIntoView({behavior: 'smooth',block: 'nearest'})
+      }
+    })
   }
 
   // 处理点击编辑

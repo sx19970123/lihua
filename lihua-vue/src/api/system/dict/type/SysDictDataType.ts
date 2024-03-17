@@ -45,9 +45,14 @@ interface SysDictDataType {
   status?: string;
 
   /**
+   * 回显颜色
+   */
+  color?: string;
+
+  /**
    * 数据子集
    */
-  children?: Array<SysDictDataType>
+  children?: Array<SysDictDataType>;
 }
 
 
