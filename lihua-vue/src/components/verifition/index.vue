@@ -705,7 +705,7 @@ export default {
   background-image: url("icon/refresh.svg");
   background-color: rgba(255,255,255,0.5);
   border-radius: 8px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: saturate(180%) blur(20px);
   background-size: contain;
 }
 </style>

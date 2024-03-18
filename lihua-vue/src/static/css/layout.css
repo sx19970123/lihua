@@ -60,7 +60,7 @@
         z-index: 1;
         padding-top: 6px;
         top: 48px;
-        backdrop-filter: blur(6px);
+        backdrop-filter: saturate(180%) blur(20px);
 
     }
     .hsr-content {
@@ -98,7 +98,7 @@
         position: sticky;
         top: 64px;
         z-index: 1;
-        backdrop-filter: blur(6px);
+        backdrop-filter: saturate(180%) blur(20px);
     }
 }
 
