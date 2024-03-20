@@ -11,7 +11,7 @@
  Target Server Version : 80033 (8.0.33)
  File Encoding         : 65001
 
- Date: 13/03/2024 17:04:48
+ Date: 20/03/2024 17:00:39
 */
 
 SET NAMES utf8mb4;
@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `sys_dict_data`;
 CREATE TABLE `sys_dict_data`  (
   `id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '主键ID',
   `parent_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '父级字典id',
-  `dict_type_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '字典类型关联主键',
+  `dict_type_code` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '字典类型编码',
   `label` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '字典标签',
   `value` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '字典值',
   `sort` int NULL DEFAULT NULL COMMENT '排序',
@@ -34,14 +34,47 @@ CREATE TABLE `sys_dict_data`  (
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   `update_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '最后一次更新人id',
   `update_time` datetime NULL DEFAULT NULL COMMENT '最后一次更新时间',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '状态',
+  `tag_style` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '标签的样式',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dict_data
 -- ----------------------------
-INSERT INTO `sys_dict_data` VALUES ('1', NULL, '1', '是', '0', 0, '系统选项是', NULL, NULL, NULL, '1', '2024-03-13 11:15:55');
-INSERT INTO `sys_dict_data` VALUES ('2', NULL, '1', '否', '1', 1, '系统选项2否', NULL, NULL, NULL, '1', '2024-03-13 11:13:33');
+INSERT INTO `sys_dict_data` VALUES ('1', '0', '1', '是', '0', 2, '系统选项是', NULL, NULL, NULL, '1', '2024-03-14 13:31:41', '1', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768153329837694977', '0', '1766758645678043137', '树形字典', 'tree', 1, NULL, NULL, '1', '2024-03-14 13:52:59', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768153331267952642', '0', '1766758645678043137', '一般字典', 'default', 2, NULL, NULL, '1', '2024-03-14 13:53:00', '1', '2024-03-14 13:59:21', '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768169289755815938', '1768153332689821697', '1766758645678043137', '其他2', 'o1', 1, NULL, NULL, '1', '2024-03-14 14:56:24', '1', '2024-03-14 15:27:38', '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768178926144090113', '1768169289755815938', '1766758645678043137', 'qita3', 'o3', 1, NULL, NULL, '1', '2024-03-14 15:34:42', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768445908919676929', '1768153332689821697', '1766758645678043137', '123', '312', 2, NULL, NULL, '1', '2024-03-15 09:15:35', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768446977636724738', '1768153332689821697', '1766758645678043137', '666', '666', 3, NULL, NULL, '1', '2024-03-15 09:19:50', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768511746280398850', '1768153331267952642', '1766758645678043137', '1', '1', 1, NULL, NULL, '1', '2024-03-15 13:37:12', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768512214658326529', '1768153331267952642', '1766758645678043137', '2', '2', 2, NULL, NULL, '1', '2024-03-15 13:39:04', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768512477536329729', '1768153331267952642', '1766758645678043137', '3', '3', 3, NULL, NULL, '1', '2024-03-15 13:40:07', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768514109091225601', '1768153331267952642', '1766758645678043137', '4', '4', 4, NULL, NULL, '1', '2024-03-15 13:46:36', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768521531268669442', '1768514109091225601', '1766758645678043137', '5', '5', 1, NULL, NULL, '1', '2024-03-15 14:16:05', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768521752086192130', '1768153331267952642', '1766758645678043137', '5', '5', 5, NULL, NULL, '1', '2024-03-15 14:16:58', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768521971699949570', '1768153331267952642', '1766758645678043137', '6', '6', 6, NULL, NULL, '1', '2024-03-15 14:17:50', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768522081397776385', '1768153331267952642', '1766758645678043137', '7', '7', 7, NULL, NULL, '1', '2024-03-15 14:18:16', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768522274612584449', '1768153331267952642', '1766758645678043137', '8', '8', 8, NULL, NULL, '1', '2024-03-15 14:19:02', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768522468615921666', '1768153331267952642', '1766758645678043137', '9', '9', 90, NULL, NULL, '1', '2024-03-15 14:19:49', NULL, NULL, '1', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768523041901780994', '1768153331267952642', '1766758645678043137', '10', '10', 913, NULL, NULL, '1', '2024-03-15 14:22:05', NULL, NULL, '1', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768523105671979010', '1768153331267952642', '1766758645678043137', '11', '11', 9141, NULL, NULL, '1', '2024-03-15 14:22:21', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768523826605727745', '1768153331267952642', '1766758645678043137', '12', '12', 9142, NULL, NULL, '1', '2024-03-15 14:25:13', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768524286381137922', '1768153329837694977', '1766758645678043137', '1', '1', 1, NULL, NULL, '1', '2024-03-15 14:27:02', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768524400394903553', '1768153329837694977', '1766758645678043137', '2', '2', 2, NULL, NULL, '1', '2024-03-15 14:27:29', NULL, NULL, '1', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768524459643641857', '1768153329837694977', '1766758645678043137', '3', '3', 3, NULL, NULL, '1', '2024-03-15 14:27:43', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768524632725790722', '1768153329837694977', '1766758645678043137', '4', '4', 4, NULL, NULL, '1', '2024-03-15 14:28:25', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768525031620878338', '1768153329837694977', '1766758645678043137', '5', '5', 55, NULL, NULL, '1', '2024-03-15 14:30:00', NULL, NULL, '1', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768525148650348545', '1768153329837694977', '1766758645678043137', '7', '7', 56, NULL, NULL, '1', '2024-03-15 14:30:28', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768525278619246593', '1768153329837694977', '1766758645678043137', '123', '123', 57, NULL, NULL, '1', '2024-03-15 14:30:59', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768525360294928385', '1768153329837694977', '1766758645678043137', '13123', '123123', 58, NULL, NULL, '1', '2024-03-15 14:31:18', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768525473704714241', '1768153329837694977', '1766758645678043137', '44', '44', 59, NULL, NULL, '1', '2024-03-15 14:31:45', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768525621910446081', '1768153329837694977', '1766758645678043137', '1', '1', 602, NULL, NULL, '1', '2024-03-15 14:32:21', NULL, NULL, '1', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1768553675202408450', '1768527062662258690', '1766758645678043137', '4', '4', 3, NULL, NULL, '1', '2024-03-15 16:23:49', NULL, NULL, '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1770356149437501442', '0', 'yes-no', '测试', 'test', 1, NULL, NULL, '1', '2024-03-20 15:46:12', '1', '2024-03-20 16:00:47', '0', 'default');
+INSERT INTO `sys_dict_data` VALUES ('2', '0', '1', '否', '1', 1, '系统选项2否', NULL, NULL, NULL, '1', '2024-03-15 16:30:56', '0', NULL);
 
 -- ----------------------------
 -- Table structure for sys_dict_type
@@ -65,8 +98,8 @@ CREATE TABLE `sys_dict_type`  (
 -- ----------------------------
 -- Records of sys_dict_type
 -- ----------------------------
-INSERT INTO `sys_dict_type` VALUES ('1', '系统是否', 'yes-no', '0', '系统是否', NULL, '2024-03-09 08:33:08', '1', '2024-03-11 10:16:28', NULL, '1');
-INSERT INTO `sys_dict_type` VALUES ('1766758645678043137', '字典类型', 'system_dict_type', '0', '系统字典类型', '1', '2024-03-10 17:31:01', NULL, NULL, NULL, '0');
+INSERT INTO `sys_dict_type` VALUES ('1', '系统是否', 'yes_no', '0', '系统是否', NULL, '2024-03-09 08:33:08', '1', '2024-03-20 16:58:51', NULL, '1');
+INSERT INTO `sys_dict_type` VALUES ('1770364821672742913', '字典测试', 'yes-no2', '0', '', '1', '2024-03-20 16:20:40', '1', '2024-03-20 16:20:49', NULL, '0');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -230,7 +263,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"url\":\"\",\"value\":\"PushpinOutlined\",\"type\":\"icon\",\"backgroundColor\":\"rgb(19, 194, 194)\"}', '1', '0', '{\"layoutType\":\"header-sider\",\"showViewTags\":true,\"dataDark\":false,\"colorPrimary\":\"rgb(47, 84, 235)\",\"siderTheme\":\"dark\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(20,20,20,1)\",\"siderMode\":\"inline\",\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"fade\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(47, 84, 235)\"}}}', '0', NULL, NULL, '1', '2024-03-12 08:45:09', NULL, NULL, '12321311@qq.com', '15523647831');
+INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"url\":\"\",\"value\":\"BgColorsOutlined\",\"type\":\"icon\",\"backgroundColor\":\"rgb(19, 194, 194)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"showViewTags\":true,\"dataDark\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"zoom\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(22, 119, 255)\"}}}', '0', NULL, NULL, '1', '2024-03-20 16:02:23', NULL, NULL, '12321311@qq.com', '15523647831');
 
 -- ----------------------------
 -- Table structure for sys_user_role
