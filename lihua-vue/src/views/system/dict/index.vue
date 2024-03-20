@@ -168,7 +168,7 @@
               :destroyOnClose="true"
               :title="drawerAction.title"
               :body-style="{'padding-top': '0'}">
-      <dict-data :type-id="drawerAction.typeId" :type="drawerAction.type" />
+      <dict-data :type-code="drawerAction.typeCode" :type="drawerAction.type" />
     </a-drawer>
   </div>
 </template>
@@ -183,6 +183,11 @@ import dayjs from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";
 import DictData from "./dictData/index.vue"
+import {initDict} from "@/utils/dict"
+const { yes_no } = initDict("yes_no")
+
+console.log(yes_no)
+
 // 列表查询相关
 const initSearch = () => {
   // 选中的数据id集合
@@ -453,18 +458,18 @@ const initDictConfig = () => {
   type drawerAction = {
     openDrawer: boolean,
     title?: string,
-    typeId?: string,
+    typeCode?: string,
     type?: string
   }
   const drawerAction = reactive<drawerAction>({
     openDrawer: false,
     title: '',
-    typeId: '',
+    typeCode: '',
     type: '',
   })
   const openDictConfig = (dictType: SysDictType) => {
     drawerAction.title = dictType.name
-    drawerAction.typeId = dictType.id
+    drawerAction.typeCode = dictType.code
     drawerAction.type = dictType.type
     drawerAction.openDrawer = true
   }

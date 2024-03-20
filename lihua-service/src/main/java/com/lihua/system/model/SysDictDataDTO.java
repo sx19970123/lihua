@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysDictDataDTO extends BaseDTO {
-    private String dictTypeId;
+    private String dictTypeCode;
     private String label;
     private String value;
     private String type;

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class SysDictDataServiceImpl implements SysDictDataService {
@@ -33,8 +34,8 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     public List<SysDictData> findList(SysDictDataDTO dictDataDTO) {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
         // 类型id
-        if (StringUtils.hasText(dictDataDTO.getDictTypeId())) {
-            queryWrapper.lambda().eq(SysDictData::getDictTypeId,dictDataDTO.getDictTypeId());
+        if (StringUtils.hasText(dictDataDTO.getDictTypeCode())) {
+            queryWrapper.lambda().eq(SysDictData::getDictTypeCode,dictDataDTO.getDictTypeCode());
         }
         // 标签
         if (StringUtils.hasText(dictDataDTO.getLabel())) {
@@ -61,13 +62,14 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     }
 
     @Override
-    public SysDictData findById(String id) {
-        Object cacheObject = redisCache.getCacheObject(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + id);
-        if (cacheObject == null) {
-            return sysDictDataMapper.selectById(id);
+    public List<SysDictData> findDictOptionList(String dictTypeCode) {
+        List<SysDictData> cacheList = redisCache.getCacheList(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
+
+        if (cacheList.isEmpty()) {
+            return new ArrayList<>();
         }
 
-        return (SysDictData) cacheObject;
+        return cacheList;
     }
 
     @Override
@@ -82,15 +84,46 @@ public class SysDictDataServiceImpl implements SysDictDataService {
             id = insert(sysDictData);
         }
         // 更新缓存
-        redisCache.setCacheObject(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + sysDictData.getId(),sysDictData);
+        resetCache(sysDictData.getDictTypeCode());
         return id;
     }
 
     @Override
     public void deleteByIds(List<String> ids) {
         checkChildren(ids);
+
+        // 删除数据库数据前先刷新redis 缓存
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .in(SysDictData::getId,ids)
+                .select(SysDictData::getDictTypeCode);
+        List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
+        if (!sysDictData.isEmpty()) {
+            sysDictData.forEach(data -> {
+                resetCache(data.getDictTypeCode());
+            });
+        }
+
+        // 删除数据
         sysDictDataMapper.deleteBatchIds(ids);
-        ids.forEach(id -> redisCache.delete(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + id));
+    }
+
+    @Override
+    public void resetCache(String dictTypeCode) {
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(SysDictData::getDictTypeCode,dictTypeCode)
+                .eq(SysDictData::getStatus,"0")
+                .eq(SysDictData::getDelFlag,"0");
+
+        List<SysDictData> activityList = sysDictDataMapper.selectList(queryWrapper);
+
+        // 数据为空时删除redis 缓存
+        if (activityList.isEmpty()) {
+            redisCache.delete(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
+        } else {
+            redisCache.setCacheList(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode,activityList);
+        }
     }
 
     private String insert(SysDictData sysDictData) {
@@ -120,7 +153,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .eq(SysDictData::getValue,sysDictData.getValue())
-                .eq(SysDictData::getDictTypeId,sysDictData.getDictTypeId());
+                .eq(SysDictData::getDictTypeCode,sysDictData.getDictTypeCode());
         List<SysDictData> sysDictDataList = sysDictDataMapper.selectList(queryWrapper);
         if (!sysDictDataList.isEmpty()) {
             if (sysDictDataList.size() > 1) {

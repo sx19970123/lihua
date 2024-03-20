@@ -1,6 +1,5 @@
 package com.lihua.system.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.system.entity.SysDictData;
 import com.lihua.system.model.SysDictDataDTO;
 
@@ -15,11 +14,11 @@ public interface SysDictDataService {
     List<SysDictData> findList(SysDictDataDTO dictDataDTO);
 
     /**
-     * 根据id查询数据
-     * @param id
+     * 获取字典数据option
+     * @param dictTypeCode
      * @return
      */
-    SysDictData findById(String id);
+    List<SysDictData> findDictOptionList(String dictTypeCode);
 
     /**
      * 保存方法
@@ -34,4 +33,10 @@ public interface SysDictDataService {
      * @return
      */
     void deleteByIds(List<String> ids);
+
+    /**
+     * 重置缓存
+     * @param dictTypeCode
+     */
+    void resetCache(String dictTypeCode);
 }

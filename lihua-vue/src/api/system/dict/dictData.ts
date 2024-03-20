@@ -32,3 +32,14 @@ export const deleteData = (ids: Array<string>) => {
   })
 
 }
+
+/**
+ * 根据字典类型编码获取字典数据
+ * @param dictTypeCode
+ */
+export const getDictDataOption = (dictTypeCode: string) => {
+  return request({
+    url: 'system/dictData/option/' + dictTypeCode,
+    method: 'get'
+  })
+}

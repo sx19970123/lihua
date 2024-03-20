@@ -1,6 +1,7 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
@@ -9,15 +10,15 @@ import com.lihua.system.entity.SysDictType;
 import com.lihua.system.mapper.SysDictDataMapper;
 import com.lihua.system.mapper.SysDictTypeMapper;
 import com.lihua.system.model.SysDictTypeDTO;
-import com.lihua.system.service.SysDictDataService;
 import com.lihua.system.service.SysDictTypeService;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class SysDictTypeServiceImpl implements SysDictTypeService {
@@ -63,11 +64,13 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     }
 
     @Override
+    @Transactional
     public String save(SysDictType sysDictType) {
         checkCode(sysDictType.getId(),sysDictType.getCode());
         if (!StringUtils.hasText(sysDictType.getId())) {
             return insert(sysDictType);
         }
+
         return updateById(sysDictType);
     }
 
@@ -82,6 +85,18 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
         sysDictType.setUpdateId(LoginUserContext.getUserId());
         sysDictType.setUpdateTime(LocalDateTime.now());
         sysDictTypeMapper.updateById(sysDictType);
+
+        // 字典类型更新时更新字典数据的 dict_type_code
+        List<String> dataIds = sysDictDataMapper.selectDataIdsByTypeIds(Collections.singletonList(sysDictType.getId()));
+        if (!dataIds.isEmpty()) {
+            UpdateWrapper<SysDictData> updateWrapper = new UpdateWrapper<>();
+            updateWrapper
+                    .lambda()
+                    .set(SysDictData::getDictTypeCode,sysDictType.getCode())
+                    .in(SysDictData::getId,dataIds);
+            sysDictDataMapper.update(updateWrapper);
+        }
+
         return sysDictType.getId();
     }
 
@@ -92,10 +107,8 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     }
 
     private void checkDictData(List<String> ids) {
-        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().in(SysDictData::getDictTypeId,ids);
-        Long count = sysDictDataMapper.selectCount(queryWrapper);
-        if (count > 0) {
+        List<String> dictDataIds = sysDictDataMapper.selectDataIdsByTypeIds(ids);
+        if (!dictDataIds.isEmpty()) {
             throw new ServiceException("存在字典数据不允许删除");
         }
     }

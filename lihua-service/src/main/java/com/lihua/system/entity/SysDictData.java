@@ -24,7 +24,7 @@ public class SysDictData extends BaseEntity {
     /**
      * 字典类型id
      */
-    private String dictTypeId;
+    private String dictTypeCode;
 
     /**
      * 字典标签
@@ -57,9 +57,9 @@ public class SysDictData extends BaseEntity {
     private String status;
 
     /**
-     * 回显颜色
+     * tag 字典回显样式
      */
-    private String color;
+    private String tagStyle;
 
     /**
      * 子集

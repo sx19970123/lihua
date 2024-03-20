@@ -91,7 +91,7 @@
             </template>
             <!--          回显-->
             <template v-if="'color' === column.dataIndex">
-              <a-select  v-if="editableData[record.id]" v-model:value="editableData[record.id].color">
+              <a-select  v-if="editableData[record.id]" v-model:value="editableData[record.id].tagStyle">
                 <a-select-option value="default">默认</a-select-option>
                 <a-select-option value="processing">主要</a-select-option>
                 <a-select-option value="success">成功</a-select-option>
@@ -203,7 +203,7 @@ import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 
 const props = defineProps<{
-  typeId: string,
+  typeCode: string,
   type: string
 }>()
 
@@ -226,9 +226,9 @@ const initSearch = () => {
       key: 'value',
     },
     {
-      title: '回显',
-      dataIndex: 'color',
-      key: 'color',
+      title: '样式',
+      dataIndex: 'tagStyle',
+      key: 'tagStyle',
       align: 'center',
       width: 100
     },
@@ -259,7 +259,7 @@ const initSearch = () => {
     },
   ])
   // 定义查询条件对象
-  const dictDataQuery = ref<SysDictDataQueryType>({dictTypeId: props.typeId,type: props.type})
+  const dictDataQuery = ref<SysDictDataQueryType>({dictTypeCode: props.typeCode,type: props.type})
   // 定义查询出的列表集合
   const dictDataList = ref<Array<SysDictDataType>>([])
   // 默认展开
@@ -280,14 +280,14 @@ const initSearch = () => {
 
   // 重置列表查询
   const resetList = () => {
-    dictDataQuery.value.dictTypeId = props.typeId
+    dictDataQuery.value.dictTypeCode = props.typeCode
     dictDataQuery.value.value = undefined
     dictDataQuery.value.label = undefined
     dictDataQuery.value.status = undefined
     queryList()
   }
 
-  const handleResizeColumn = (w, col) => {
+  const handleResizeColumn = (w: number, col: { width: number }) => {
     col.width = w;
   }
   queryList()
@@ -319,8 +319,8 @@ const initAdd = () => {
       status: '0',
       sort: generateDefaultSort(dictDataList.value),
       parentId: '0',
-      color: 'default',
-      dictTypeId: props.typeId
+      tagStyle: 'default',
+      dictTypeCode: props.typeCode
     }
     // 添加到集合
     dictDataList.value.push(item)
@@ -339,7 +339,7 @@ const initAdd = () => {
       id: tempId,
       status: '0',
       sort: generateDefaultSort(data.children),
-      dictTypeId: props.typeId,
+      dictTypeCode: props.typeCode,
       parentId: data.id
     }
 
@@ -413,24 +413,16 @@ const initAdd = () => {
     return /^add-/.test(id);
   }
 
-  // 处理图标分为两行
+  // 解决在树形表格编辑下，input框分行的问题
   const handleTreeIconFlex = () => {
     // dom 元素挂载完成执行
     nextTick(() => {
-      const iconElements = document.getElementsByClassName('ant-table-row-expand-icon');
       const tdElements = document.getElementsByClassName('ant-table-cell-with-append');
-      if (iconElements) {
-        for (let i = 0; i < iconElements.length; i++) {
-          const icon = iconElements[i] as HTMLElement;
-          if (icon) {
-            icon.style.paddingRight = '15px';
-          }
-        }
-      }
       if (tdElements) {
         for (let i = 0; i < tdElements.length; i++) {
           const td = tdElements[i] as HTMLElement;
-          if (td) {
+          const errClassList = td.getElementsByClassName("ant-input-affix-wrapper-status-error")
+          if (errClassList.length > 0) {
             td.style.display = 'flex';
             td.style.alignItems = 'center';
           }
@@ -438,22 +430,14 @@ const initAdd = () => {
       }
     })
   }
-  // 恢复图标原样式
+  // 编辑完成后，恢复原有样式
   const recoverTreeIcon = () => {
-    const iconElements = document.getElementsByClassName('ant-table-row-expand-icon');
     const tdElements = document.getElementsByClassName('ant-table-cell-with-append');
-    if (iconElements) {
-      for (let i = 0; i < iconElements.length; i++) {
-        const icon = iconElements[i] as HTMLElement;
-        if (icon) {
-          icon.style.paddingRight = '0px';
-        }
-      }
-    }
     if (tdElements) {
       for (let i = 0; i < tdElements.length; i++) {
         const td = tdElements[i] as HTMLElement;
-        if (td) {
+        const errClassList = td.getElementsByClassName("ant-input-affix-wrapper-status-error")
+        if (errClassList.length > 0) {
           td.style.display = '';
           td.style.alignItems = '';
         }
@@ -629,6 +613,7 @@ const handleSort = (list: SysDictDataType[]) => {
 
 </script>
 
+<!--suppress CssUnresolvedCustomProperty -->
 <style>
 .ant-table-tbody > tr.target > td {
   border-top: 2px var(--colorPrimary) solid !important;

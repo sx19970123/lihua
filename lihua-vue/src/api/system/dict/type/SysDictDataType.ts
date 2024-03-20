@@ -10,9 +10,9 @@ interface SysDictDataType {
   parentId?: string;
 
   /**
-   * 字典类型id
+   * 字典类型编码
    */
-  dictTypeId?: string;
+  dictTypeCode?: string;
 
   /**
    * 字典标签
@@ -47,7 +47,7 @@ interface SysDictDataType {
   /**
    * 回显颜色
    */
-  color?: string;
+  tagStyle?: string;
 
   /**
    * 数据子集
@@ -58,9 +58,9 @@ interface SysDictDataType {
 
 interface SysDictDataQueryType {
   /**
-   * 字典类型id
+   * 字典类型编码
    */
-  dictTypeId: string;
+  dictTypeCode: string;
 
   /**
    * 字典标签

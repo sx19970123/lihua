@@ -19,19 +19,16 @@ public class SysDictDataController extends BaseController {
     private SysDictDataService sysDictDataService;
 
     @PostMapping("list")
-    public String findListByTypeId(@RequestBody SysDictDataDTO dictDataDTO) {
-        if (!StringUtils.hasText(dictDataDTO.getDictTypeId())) {
+    public String findListByTypeCode(@RequestBody SysDictDataDTO dictDataDTO) {
+        if (!StringUtils.hasText(dictDataDTO.getDictTypeCode())) {
             return error(ResultCodeEnum.ERROR,"数据字典类型id为空");
         }
         return success(sysDictDataService.findList(dictDataDTO));
     }
 
-    @GetMapping("/{id}")
-    public String findById(@PathVariable("id") String id) {
-        if (!StringUtils.hasText(id)) {
-            return error(ResultCodeEnum.PRIMARY_KEY_IS_EMPTY);
-        }
-        return success(sysDictDataService.findById(id));
+    @GetMapping("option/{dictTypeCode}")
+    public String findDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
+        return success(sysDictDataService.findDictOptionList(dictTypeCode));
     }
 
     @PostMapping
@@ -42,7 +39,7 @@ public class SysDictDataController extends BaseController {
         if (!StringUtils.hasText(sysDictData.getLabel())) {
             return error(ResultCodeEnum.PARAMS_IS_EMPTY,"字典标签不存在");
         }
-        if (!StringUtils.hasText(sysDictData.getDictTypeId())) {
+        if (!StringUtils.hasText(sysDictData.getDictTypeCode())) {
             return error(ResultCodeEnum.PARAMS_IS_EMPTY,"字典类型不存在");
         }
         if (sysDictData.getSort() == null) {
