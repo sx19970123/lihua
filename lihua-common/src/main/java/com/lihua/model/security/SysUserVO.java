@@ -1,7 +1,5 @@
 package com.lihua.model.security;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.lihua.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

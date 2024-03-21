@@ -9,6 +9,9 @@ public enum SysBaseEnum {
      */
     LOGIN_USER_REDIS_PREFIX("REDIS_CACHE_LOGIN_USER:"),
 
+    /**
+     * redis缓存字典数据前缀
+     */
     DICT_DATA_REDIS_PREFIX("REDIS_CACHe_DICT_DATA:"),
     /**
      * JWT 密钥

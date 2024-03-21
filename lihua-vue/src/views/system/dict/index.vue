@@ -174,7 +174,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, reactive, ref} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
 import type {ResponseType, PageResponseType } from "@/api/type"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
@@ -183,13 +183,11 @@ import dayjs from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";
 import DictData from "./dictData/index.vue"
-import {initDict} from "@/utils/dict"
+import {initDict} from "@/utils/dict";
 
-// 在组件中的合适位置调用initDict函数
-onMounted(async () => {
-  const {yes_no} = await initDict("yes_no")
-  console.log(yes_no[0][0])
-});
+const { yes_no } = initDict("yes_no")
+
+console.log('yes_no',yes_no)
 
 // 列表查询相关
 const initSearch = () => {

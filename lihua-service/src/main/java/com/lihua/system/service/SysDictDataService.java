@@ -1,5 +1,6 @@
 package com.lihua.system.service;
 
+import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.system.entity.SysDictData;
 import com.lihua.system.model.SysDictDataDTO;
 
@@ -18,7 +19,7 @@ public interface SysDictDataService {
      * @param dictTypeCode
      * @return
      */
-    List<SysDictData> findDictOptionList(String dictTypeCode);
+    List<SysDictDataVO> findDictOptionList(String dictTypeCode);
 
     /**
      * 保存方法

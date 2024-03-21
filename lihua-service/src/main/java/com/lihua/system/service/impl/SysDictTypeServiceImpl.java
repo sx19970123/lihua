@@ -10,6 +10,7 @@ import com.lihua.system.entity.SysDictType;
 import com.lihua.system.mapper.SysDictDataMapper;
 import com.lihua.system.mapper.SysDictTypeMapper;
 import com.lihua.system.model.SysDictTypeDTO;
+import com.lihua.system.service.SysDictDataService;
 import com.lihua.system.service.SysDictTypeService;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
@@ -28,6 +29,9 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
 
     @Resource
     private SysDictDataMapper sysDictDataMapper;
+
+    @Resource
+    private SysDictDataService sysDictDataService;
 
 
     @Override
@@ -96,6 +100,8 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
                     .in(SysDictData::getId,dataIds);
             sysDictDataMapper.update(updateWrapper);
         }
+        // 更新缓存
+        sysDictDataService.resetCache(sysDictType.getCode());
 
         return sysDictType.getId();
     }

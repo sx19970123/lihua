@@ -1,12 +1,13 @@
 package com.lihua.utils.tree;
 
-import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.string.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
+/**
+ * 通用构建树方法，大数据量性能不佳，慎用
+ */
 public class TreeUtil {
 
     private static final String DEFAULT_ID = "Id";

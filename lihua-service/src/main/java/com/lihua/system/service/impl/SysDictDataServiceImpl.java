@@ -4,14 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.cache.RedisCache;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.ServiceException;
+import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.system.entity.SysDictData;
 import com.lihua.system.mapper.SysDictDataMapper;
 import com.lihua.system.model.SysDictDataDTO;
 import com.lihua.system.service.SysDictDataService;
+import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtil;
 import jakarta.annotation.Resource;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -62,14 +65,13 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     }
 
     @Override
-    public List<SysDictData> findDictOptionList(String dictTypeCode) {
-        List<SysDictData> cacheList = redisCache.getCacheList(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
-
-        if (cacheList.isEmpty()) {
+    public List<SysDictDataVO> findDictOptionList(String dictTypeCode) {
+        List<SysDictDataVO> dictData = DictUtils.getDictData(dictTypeCode);
+        if (dictData.isEmpty()) {
             return new ArrayList<>();
         }
 
-        return cacheList;
+        return TreeUtil.buildTree(dictData);
     }
 
     @Override
@@ -120,9 +122,15 @@ public class SysDictDataServiceImpl implements SysDictDataService {
 
         // 数据为空时删除redis 缓存
         if (activityList.isEmpty()) {
-            redisCache.delete(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
+            DictUtils.removeDictCache(dictTypeCode);
         } else {
-            redisCache.setCacheList(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode,activityList);
+            List<SysDictDataVO> list = new ArrayList<>();
+            activityList.forEach(item -> {
+                SysDictDataVO sysDictDataVO = new SysDictDataVO();
+                BeanUtils.copyProperties(item,sysDictDataVO);
+                list.add(sysDictDataVO);
+            });
+            DictUtils.setDictCache(dictTypeCode,list);
         }
     }
 
