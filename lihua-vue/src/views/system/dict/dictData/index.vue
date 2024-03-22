@@ -90,13 +90,9 @@
               </template>
             </template>
             <!--          回显-->
-            <template v-if="'color' === column.dataIndex">
+            <template v-if="'tagStyle' === column.dataIndex">
               <a-select  v-if="editableData[record.id]" v-model:value="editableData[record.id].tagStyle">
-                <a-select-option value="default">默认</a-select-option>
-                <a-select-option value="processing">主要</a-select-option>
-                <a-select-option value="success">成功</a-select-option>
-                <a-select-option value="warning">警告</a-select-option>
-                <a-select-option value="error">错误</a-select-option>
+                <a-select-option :value="item.value" v-for="item in sys_dict_tag_style">{{item.label}}</a-select-option>
               </a-select>
               <template v-else>
                 <a-tag :color="text">○</a-tag>
@@ -105,8 +101,7 @@
             <!--          状态-->
             <template v-if="'status' === column.dataIndex">
               <a-select v-if="editableData[record.id]"  v-model:value="editableData[record.id].status">
-                <a-select-option value="0">正常</a-select-option>
-                <a-select-option value="1">停用</a-select-option>
+                <a-select-option :value="item.value" v-for="item in sys_status">{{item.label}}</a-select-option>
               </a-select>
               <template v-else>
                 <template v-if="record.status === '0'">
@@ -201,11 +196,14 @@ import {nextTick, reactive, ref} from "vue";
 import type { UnwrapRef } from 'vue';
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
+import {initDict} from "@/utils/dict";
 
 const props = defineProps<{
   typeCode: string,
   type: string
 }>()
+
+const {sys_status,sys_dict_tag_style} = initDict("sys_status","sys_dict_tag_style")
 
 // 查询
 const initSearch = () => {

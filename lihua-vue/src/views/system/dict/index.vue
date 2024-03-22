@@ -147,14 +147,12 @@
         </a-form-item>
         <a-form-item label="字典类型">
           <a-select style="width: 120px" v-model:value="dictTypeData.type">
-            <a-select-option value="0">一般字典</a-select-option>
-            <a-select-option value="1">树型字典</a-select-option>
+            <a-select-option :value="item.value" v-for="item in sys_dict_type">{{item.label}}</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="状态">
           <a-radio-group v-model:value="dictTypeData.status">
-            <a-radio value="0">正常</a-radio>
-            <a-radio value="1">停用</a-radio>
+            <a-radio :value="item.value" v-for="item in sys_status">{{item.label}}</a-radio>
           </a-radio-group>
         </a-form-item>
         <a-form-item label="备注" name="remark">
@@ -174,7 +172,7 @@
 </template>
 
 <script setup lang="ts">
-import {getCurrentInstance, onMounted, reactive, ref} from "vue";
+import {reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
 import type {ResponseType, PageResponseType } from "@/api/type"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
@@ -185,10 +183,7 @@ import { message } from "ant-design-vue";
 import DictData from "./dictData/index.vue"
 import {initDict} from "@/utils/dict";
 
-const { yes_no } = initDict("yes_no")
-
-console.log('yes_no',yes_no)
-
+const { sys_status,sys_dict_type } = initDict("sys_status","sys_dict_type")
 // 列表查询相关
 const initSearch = () => {
   // 选中的数据id集合
@@ -210,23 +205,27 @@ const initSearch = () => {
     {
       title: '名称',
       dataIndex: 'name',
+      ellipsis: true,
       key: 'name'
     },
     {
       title: '编码',
       dataIndex: 'code',
+      ellipsis: true,
       key: 'code'
     },
     {
       title: '状态',
       dataIndex: 'status',
       align: 'center',
+      ellipsis: true,
       key: 'status',
     },
     {
       title: '类型',
       dataIndex: 'type',
       align: 'center',
+      ellipsis: true,
       key: 'type',
     },
     {
@@ -240,6 +239,7 @@ const initSearch = () => {
       dataIndex: 'createTime',
       align: 'center',
       key: 'createTime',
+      ellipsis: true,
       width: '180px'
     },
     {

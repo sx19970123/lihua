@@ -56,7 +56,7 @@ public class RedisCache {
      * @param <T>
      */
     public <T> Long setCacheList(String key,List<T> value) {
-        Long count = redisTemplate.opsForList().rightPushAll(key, value);
+        Long count = redisTemplate.opsForList().rightPush(key, value);
         return count == null ? 0 : count;
     }
 
