@@ -20,7 +20,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/lihua
     username: root
-    password: root
+    password: 123456
 
   # redis配置
   data:
@@ -48,8 +48,17 @@ spring:
 
 
 mybatis-plus:
+  global-config:
+    db-config:
+      # 逻辑删除对应字段
+      logic-delete-field: delFlag
+      # 逻辑删除后的字段对应值
+      logic-delete-value: 1
+      # 逻辑删除前的字段对应值
+      logic-not-delete-value: 0
   # 将 xml 放到 java 目录下
   mapper-locations: classpath*:com/lihua/**/mapper/**/*.xml
+
 
 # 日志配置
 logging:

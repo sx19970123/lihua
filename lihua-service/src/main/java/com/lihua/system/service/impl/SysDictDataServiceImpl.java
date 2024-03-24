@@ -1,8 +1,8 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.cache.RedisCache;
-import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.system.entity.SysDictData;
@@ -67,8 +67,14 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     @Override
     public List<SysDictDataVO> findDictOptionList(String dictTypeCode) {
         List<SysDictDataVO> dictData = DictUtils.getDictData(dictTypeCode);
-        if (dictData.isEmpty()) {
-            return new ArrayList<>();
+        if (dictData == null || dictData.isEmpty()) {
+            Integer i = resetCache(dictTypeCode);
+            if (i == 0) {
+                return new ArrayList<>();
+            } else {
+                findDictOptionList(dictTypeCode);
+            }
+
         }
 
         return TreeUtil.buildTree(dictData);
@@ -91,8 +97,29 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     }
 
     @Override
+    public void updateDataTypeCode(String oldTypeCode, String newTypeCode) {
+        UpdateWrapper<SysDictData> updateWrapper = new UpdateWrapper<>();
+        updateWrapper
+                .lambda()
+                .set(SysDictData::getDictTypeCode,newTypeCode)
+                .set(SysDictData::getUpdateId,LoginUserContext.getUserId())
+                .set(SysDictData::getUpdateTime,LocalDateTime.now())
+                .eq(SysDictData::getDictTypeCode,oldTypeCode);
+        sysDictDataMapper.update(updateWrapper);
+        // 缓存新数据 删除旧缓存
+        resetCache(newTypeCode);
+        DictUtils.removeDictCache(oldTypeCode);
+    }
+
+    @Override
+    public List<String> typeIdsToDataIds(List<String> ids) {
+        return sysDictDataMapper.selectDataIdsByTypeIds(ids);
+    }
+
+    @Override
     public void deleteByIds(List<String> ids) {
         checkChildren(ids);
+        checkStatus(ids);
 
         // 删除数据库数据前先刷新redis 缓存
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
@@ -110,13 +137,14 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         sysDictDataMapper.deleteBatchIds(ids);
     }
 
-    @Override
-    public void resetCache(String dictTypeCode) {
+    private Integer resetCache(String dictTypeCode) {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
+                .select(SysDictData::getId,SysDictData::getLabel,SysDictData::getValue,SysDictData::getParentId,SysDictData::getTagStyle,SysDictData::getDictTypeCode)
                 .eq(SysDictData::getDictTypeCode,dictTypeCode)
                 .eq(SysDictData::getStatus,"0")
-                .eq(SysDictData::getDelFlag,"0");
+                .eq(SysDictData::getDelFlag,"0")
+                .orderByAsc(SysDictData::getSort);
 
         List<SysDictData> activityList = sysDictDataMapper.selectList(queryWrapper);
 
@@ -132,10 +160,14 @@ public class SysDictDataServiceImpl implements SysDictDataService {
             });
             DictUtils.setDictCache(dictTypeCode,list);
         }
+
+        // 返回本次缓存的数据数量
+        return activityList.size();
     }
 
     private String insert(SysDictData sysDictData) {
         sysDictData.setCreateId(LoginUserContext.getUserId());
+        sysDictData.setDelFlag("0");
         sysDictData.setCreateTime(LocalDateTime.now());
         sysDictDataMapper.insert(sysDictData);
         return sysDictData.getId();
@@ -154,6 +186,16 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         Long count = sysDictDataMapper.selectCount(queryWrapper);
         if (count != 0) {
             throw new ServiceException("存在子集不允许删除");
+        }
+    }
+
+    private void checkStatus(List<String> ids) {
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().in(SysDictData::getId,ids)
+                .eq(SysDictData::getStatus,"0");
+        Long count = sysDictDataMapper.selectCount(queryWrapper);
+        if (count != 0) {
+            throw new ServiceException("字典数据状态正常不允许删除");
         }
     }
 

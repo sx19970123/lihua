@@ -29,15 +29,23 @@ public interface SysDictDataService {
     String save(SysDictData sysDictData);
 
     /**
+     * 字典类型 type 更新时，同时更新字典数据对应的 code
+     * @param oldTypeCode
+     * @param newTypeCode
+     */
+    void updateDataTypeCode(String oldTypeCode,String newTypeCode);
+
+    /**
+     * 通过字典类型ids 获取对应的 字典数据ids
+     * @param ids
+     * @return
+     */
+    List<String> typeIdsToDataIds(List<String> ids);
+
+    /**
      * 批量删除数据
      * @param ids
      * @return
      */
     void deleteByIds(List<String> ids);
-
-    /**
-     * 重置缓存
-     * @param dictTypeCode
-     */
-    void resetCache(String dictTypeCode);
 }

@@ -14,5 +14,6 @@
                 #{id}
             </foreach>
             )
+            AND del_flag = '0'
     </select>
 </mapper>

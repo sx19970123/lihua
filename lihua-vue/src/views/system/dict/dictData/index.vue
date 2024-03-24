@@ -92,10 +92,12 @@
             <!--          回显-->
             <template v-if="'tagStyle' === column.dataIndex">
               <a-select  v-if="editableData[record.id]" v-model:value="editableData[record.id].tagStyle">
-                <a-select-option :value="item.value" v-for="item in sys_dict_tag_style">{{item.label}}</a-select-option>
+                <a-select-option :value="item.value" v-for="item in sys_dict_tag_style">
+                  <a-tag :color="item.value" :bordered="false">{{item.label}}</a-tag>
+                </a-select-option>
               </a-select>
               <template v-else>
-                <a-tag :color="text">○</a-tag>
+                <dict-tag :dict-data-value="text" :dict-data-option="sys_dict_tag_style"/>
               </template>
             </template>
             <!--          状态-->
@@ -143,9 +145,6 @@
               <!--            编辑列-->
               <template v-if="editableData[record.id]">
                 <a-button type="link" size="small" html-type="submit" @click="handleSave(record.id)">
-                  <template #icon>
-
-                  </template>
                   保存
                 </a-button>
                 <a-divider type="vertical"/>
@@ -158,9 +157,6 @@
               </template>
               <template v-else>
                 <a-button type="link" size="small" @click="handleEdit(record)">
-                  <template #icon>
-
-                  </template>
                   编辑
                 </a-button>
                 <template v-if="props.type === '1'">
@@ -197,6 +193,7 @@ import type { UnwrapRef } from 'vue';
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import {initDict} from "@/utils/dict";
+import dictTag from "@/components/dict-tag/index.vue"
 
 const props = defineProps<{
   typeCode: string,
@@ -228,7 +225,7 @@ const initSearch = () => {
       dataIndex: 'tagStyle',
       key: 'tagStyle',
       align: 'center',
-      width: 100
+      width: 110
     },
     {
       title: '状态',
@@ -320,6 +317,8 @@ const initAdd = () => {
       tagStyle: 'default',
       dictTypeCode: props.typeCode
     }
+
+    console.log(dictDataList)
     // 添加到集合
     dictDataList.value.push(item)
     handleEdit(item)
@@ -369,7 +368,7 @@ const initAdd = () => {
     if (data.id) {
       editableData[data.id] = cloneDeep(data)
     }
-    handleTreeIconFlex()
+    handleTreeIconFlex(data.id)
   }
 
   // 处理点击取消
@@ -383,7 +382,7 @@ const initAdd = () => {
     }
 
     if (Object.keys(editableData).length === 0) {
-      recoverTreeIcon()
+      recoverTreeIcon(id)
     }
   }
 
@@ -412,50 +411,43 @@ const initAdd = () => {
   }
 
   // 解决在树形表格编辑下，input框分行的问题
-  const handleTreeIconFlex = () => {
+  const handleTreeIconFlex = (id: string) => {
     // dom 元素挂载完成执行
     nextTick(() => {
       const tdElements = document.getElementsByClassName('ant-table-cell-with-append');
       if (tdElements) {
         for (let i = 0; i < tdElements.length; i++) {
           const td = tdElements[i] as HTMLElement;
-          const errClassList = td.getElementsByClassName("ant-input-affix-wrapper-status-error")
-          if (errClassList.length > 0) {
+          const targetClassList = td.getElementsByClassName(id)
+          const btnList = td.getElementsByTagName("button")
+          if (targetClassList.length > 0) {
             td.style.display = 'flex';
             td.style.alignItems = 'center';
+          }
+          if (btnList && btnList.length == 1) {
+            btnList[0].style.paddingRight = '15px'
           }
         }
       }
     })
   }
   // 编辑完成后，恢复原有样式
-  const recoverTreeIcon = () => {
+  const recoverTreeIcon = (id:string) => {
     const tdElements = document.getElementsByClassName('ant-table-cell-with-append');
     if (tdElements) {
       for (let i = 0; i < tdElements.length; i++) {
         const td = tdElements[i] as HTMLElement;
-        const errClassList = td.getElementsByClassName("ant-input-affix-wrapper-status-error")
-        if (errClassList.length > 0) {
+        const targetClassList = td.getElementsByClassName(id)
+        const btnList = td.getElementsByTagName("button")
+        if (targetClassList.length > 0) {
           td.style.display = '';
           td.style.alignItems = '';
         }
-      }
-    }
-  }
-
-  const deepGetTarget = (id: string, list: SysDictDataType[]): SysDictDataType | undefined => {
-    for (const item of list) {
-      if (item.id === id) {
-        return item;
-      }
-      if (item.children && item.children.length > 0) {
-        const foundInChildren = deepGetTarget(id, item.children);
-        if (foundInChildren) {
-          return foundInChildren;
+        if (btnList && btnList.length == 1) {
+          btnList[0].style.paddingRight = '0'
         }
       }
     }
-    return undefined;
   }
 
   return {
@@ -464,11 +456,10 @@ const initAdd = () => {
     handleEdit,
     handleCancel,
     checkIsTempId,
-    handleAddChildren,
-    deepGetTarget
+    handleAddChildren
   }
 }
-const {editableData,handleAdd,handleEdit,handleCancel,checkIsTempId,handleAddChildren,deepGetTarget} = initAdd()
+const {editableData,handleAdd,handleEdit,handleCancel,checkIsTempId,handleAddChildren} = initAdd()
 // 保存方法
 const initSave = () => {
   // 保存数据

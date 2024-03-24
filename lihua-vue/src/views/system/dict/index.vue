@@ -69,12 +69,10 @@
           </template>
           <template #bodyCell="{column,record}">
             <template v-if="column.key === 'type'">
-              <template v-if="record.type === '0'">
-                一般字典
-              </template>
-              <template v-if="record.type === '1'">
-                树形字典
-              </template>
+              <dict-tag :dict-data-option="sys_dict_type" :dict-data-value="record[column.key]"/>
+            </template>
+            <template v-if="column.key === 'status'">
+              <dict-tag :dict-data-option="sys_status" :dict-data-value="record[column.key]"/>
             </template>
             <template v-if="column.key === 'createTime'">
               {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
@@ -166,7 +164,7 @@
               :destroyOnClose="true"
               :title="drawerAction.title"
               :body-style="{'padding-top': '0'}">
-      <dict-data :type-code="drawerAction.typeCode" :type="drawerAction.type" />
+      <dict-data :type-code="drawerAction.typeCode" :type="drawerAction.type"/>
     </a-drawer>
   </div>
 </template>
@@ -181,9 +179,12 @@ import dayjs from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";
 import DictData from "./dictData/index.vue"
-import {initDict} from "@/utils/dict";
+import { initDict } from "@/utils/dict";
+import DictTag from "@/components/dict-tag/index.vue"
 
 const { sys_status,sys_dict_type } = initDict("sys_status","sys_dict_type")
+
+
 // 列表查询相关
 const initSearch = () => {
   // 选中的数据id集合
@@ -324,7 +325,8 @@ const initSave = () => {
     ],
     code: [
         { required: true, message: '请输入字典编码', trigger: 'change' },
-      { max: 30, message: '字典编码长度最大为30字符', trigger: 'change' },
+        { max: 30, message: '字典编码长度最大为30字符', trigger: 'change' },
+        { pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/, message: '字典编码支持字母、数字、下划线，并且不能以数字开头', trigger: 'change' },
     ],
   }
 

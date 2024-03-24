@@ -28,9 +28,6 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     private SysDictTypeMapper sysDictTypeMapper;
 
     @Resource
-    private SysDictDataMapper sysDictDataMapper;
-
-    @Resource
     private SysDictDataService sysDictDataService;
 
 
@@ -81,27 +78,21 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     private String insert(SysDictType sysDictType) {
         sysDictType.setCreateId(LoginUserContext.getUserId());
         sysDictType.setCreateTime(LocalDateTime.now());
+        sysDictType.setDelFlag("0");
         sysDictTypeMapper.insert(sysDictType);
         return sysDictType.getId();
     }
 
     private String updateById(SysDictType sysDictType) {
+        // 从数据库中查询旧数据，验证code是否有修改
+        SysDictType oldDictType = sysDictTypeMapper.selectById(sysDictType.getId());
         sysDictType.setUpdateId(LoginUserContext.getUserId());
         sysDictType.setUpdateTime(LocalDateTime.now());
         sysDictTypeMapper.updateById(sysDictType);
-
-        // 字典类型更新时更新字典数据的 dict_type_code
-        List<String> dataIds = sysDictDataMapper.selectDataIdsByTypeIds(Collections.singletonList(sysDictType.getId()));
-        if (!dataIds.isEmpty()) {
-            UpdateWrapper<SysDictData> updateWrapper = new UpdateWrapper<>();
-            updateWrapper
-                    .lambda()
-                    .set(SysDictData::getDictTypeCode,sysDictType.getCode())
-                    .in(SysDictData::getId,dataIds);
-            sysDictDataMapper.update(updateWrapper);
+        // 当code发生修改，更新dictData表中对应的DictTypeCode值
+        if (!oldDictType.getCode().equals(sysDictType.getCode())) {
+            sysDictDataService.updateDataTypeCode(oldDictType.getCode(),sysDictType.getCode());
         }
-        // 更新缓存
-        sysDictDataService.resetCache(sysDictType.getCode());
 
         return sysDictType.getId();
     }
@@ -109,13 +100,24 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     @Override
     public void deleteByIds(List<String> ids) {
         checkDictData(ids);
+        checkStatus(ids);
         sysDictTypeMapper.deleteBatchIds(ids);
     }
 
     private void checkDictData(List<String> ids) {
-        List<String> dictDataIds = sysDictDataMapper.selectDataIdsByTypeIds(ids);
+        List<String> dictDataIds = sysDictDataService.typeIdsToDataIds(ids);
         if (!dictDataIds.isEmpty()) {
             throw new ServiceException("存在字典数据不允许删除");
+        }
+    }
+
+    private void checkStatus(List<String> ids) {
+        QueryWrapper<SysDictType> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().in(SysDictType::getId,ids)
+                .eq(SysDictType::getStatus,"0");
+        Long count = sysDictTypeMapper.selectCount(queryWrapper);
+        if (count != 0) {
+            throw new ServiceException("字典状态正常不允许删除");
         }
     }
 

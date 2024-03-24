@@ -65,7 +65,7 @@ public class TreeUtil {
                                           V rootParentValue) {
 
         if (list == null || list.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
 
         Map<K, List<T>> map = new HashMap<>();

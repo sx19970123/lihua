@@ -1,7 +1,7 @@
 // 初始化组件中需要的字典数据
 import { useDictStore } from "@/stores/modules/dict";
 import {getDictDataOption} from "@/api/system/dict/dictData";
-import {ref, toRefs} from "vue";
+import {type Ref, ref, toRefs} from "vue";
 
 export const initDict = (...dictTypeCodes: string[]) => {
   let resDictOption = ref<any>({})
@@ -24,4 +24,31 @@ export const initDict = (...dictTypeCodes: string[]) => {
     })
     return toRefs(resDictOption.value)
   })()
+}
+
+export const getLabel = (dictDataOption: Ref<any>, dictDataValue: string) => {
+  console.log(dictDataOption)
+  const data = getDictDataObject(dictDataOption.value,dictDataValue)
+  if (data) {
+    return data.label
+  }
+  console.error("获取字典标签异常")
+}
+
+export const getDictDataObject = (option: Array<any>, dictDataValue: string) => {
+  return deepGetData(option,dictDataValue)
+}
+
+const deepGetData = (arg: Array<any>,dictDataValue: string) : any => {
+  for (let i = 0; i < arg.length; i++) {
+    const item = arg[i]
+    if (item.value === dictDataValue) {
+      return item
+    } else {
+      if (item.children) {
+        return deepGetData(item.children,dictDataValue)
+      }
+    }
+  }
+  return null
 }
