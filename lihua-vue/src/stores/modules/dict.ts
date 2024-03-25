@@ -1,10 +1,9 @@
 import { defineStore } from "pinia";
 
 
-export const useDictStore = defineStore('', {
+export const useDictStore = defineStore('dict', {
   state: () => {
     const dictMap: Map<string,Array<SysDictDataType>> = new Map();
-
     return {
       dictMap
     }

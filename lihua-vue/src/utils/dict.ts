@@ -4,8 +4,8 @@ import {getDictDataOption} from "@/api/system/dict/dictData";
 import {type Ref, ref, toRefs} from "vue";
 
 export const initDict = (...dictTypeCodes: string[]) => {
-  let resDictOption = ref<any>({})
-  const dictStore = useDictStore()
+  let resDictOption= ref<any>({})
+  const dictStore= useDictStore()
   return (() => {
     dictTypeCodes.forEach(code => {
       resDictOption.value[code] = []
@@ -24,6 +24,18 @@ export const initDict = (...dictTypeCodes: string[]) => {
     })
     return toRefs(resDictOption.value)
   })()
+}
+
+export const reLoadDict = (code: string) => {
+  return new Promise((resolve, reject) => {
+    const dictStore= useDictStore()
+    getDictDataOption(code).then(resp => {
+      if (resp.code === 200) {
+        dictStore.setDict(code,resp.data)
+        resolve(resp.data)
+      }
+    })
+  })
 }
 
 export const getLabel = (dictDataOption: Ref<any>, dictDataValue: string) => {

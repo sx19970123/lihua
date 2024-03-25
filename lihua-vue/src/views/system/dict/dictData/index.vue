@@ -84,18 +84,26 @@
                   :status="editableData[record.id].value?'':'error'"
                   v-model:value="editableData[record.id].value"
                   allow-clear
+                  @change="() => { if (editableData[record.id].dictTypeCode === 'sys_dict_tag_style') editableData[record.id].tagStyle = editableData[record.id].value }"
               />
+              <!--当编辑字典为标签样式时，调用change方法，设置tagStyle值为value-->
               <template v-else>
                 {{ text }}
               </template>
             </template>
-            <!--          回显-->
+            <!--          标签样式-->
             <template v-if="'tagStyle' === column.dataIndex">
-              <a-select  v-if="editableData[record.id]" v-model:value="editableData[record.id].tagStyle">
-                <a-select-option :value="item.value" v-for="item in sys_dict_tag_style">
-                  <a-tag :color="item.value" :bordered="false">{{item.label}}</a-tag>
-                </a-select-option>
-              </a-select>
+              <!--当编辑字典为标签样式时，不展示选择框，进行标签样式预览-->
+              <template v-if="editableData[record.id] && editableData[record.id].dictTypeCode === 'sys_dict_tag_style'">
+                <a-tag :color="editableData[record.id].value">{{editableData[record.id].label}}</a-tag>
+              </template>
+              <template v-else-if="editableData[record.id] && editableData[record.id].dictTypeCode !== 'sys_dict_tag_style'">
+                <a-select v-model:value="editableData[record.id].tagStyle">
+                  <a-select-option :value="item.value" v-for="item in sys_dict_tag_style">
+                    <a-tag :color="item.value" :bordered="false">{{item.label}}</a-tag>
+                  </a-select-option>
+                </a-select>
+              </template>
               <template v-else>
                 <dict-tag :dict-data-value="text" :dict-data-option="sys_dict_tag_style"/>
               </template>
@@ -192,7 +200,7 @@ import {nextTick, reactive, ref} from "vue";
 import type { UnwrapRef } from 'vue';
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
-import {initDict} from "@/utils/dict";
+import {initDict, reLoadDict} from "@/utils/dict";
 import dictTag from "@/components/dict-tag/index.vue"
 
 const props = defineProps<{
@@ -306,7 +314,6 @@ const initAdd = () => {
 
   // 处理新增
   const handleAdd = async () => {
-
     const tempId = await generateTempId() as string
     // 新增默认数据
     const item: SysDictDataType = {
@@ -317,8 +324,6 @@ const initAdd = () => {
       tagStyle: 'default',
       dictTypeCode: props.typeCode
     }
-
-    console.log(dictDataList)
     // 添加到集合
     dictDataList.value.push(item)
     handleEdit(item)
@@ -367,8 +372,8 @@ const initAdd = () => {
   const handleEdit = (data: SysDictDataType) => {
     if (data.id) {
       editableData[data.id] = cloneDeep(data)
+      handleTreeIconFlex(data.id)
     }
-    handleTreeIconFlex(data.id)
   }
 
   // 处理点击取消
@@ -477,6 +482,10 @@ const initSave = () => {
       message.error("请将数据填写完整");
       return;
     }
+    if (!data?.dictTypeCode) {
+      message.error("数据类型编码为空");
+      return;
+    }
 
     try {
       // 如果是临时ID，将其设置为undefined
@@ -496,7 +505,10 @@ const initSave = () => {
         handleDeepSave(id, dictDataList.value, data);
         // 关闭编辑框
         handleCancel(id,false)
+        // 重新排序
         handleSort(dictDataList.value)
+        // 重载字典数据
+        handleReloadDictData(data.dictTypeCode)
         message.success(resp.msg);
       } else {
         // 保存失败的处理
@@ -510,6 +522,15 @@ const initSave = () => {
       tableLoading.value = false;
     }
   };
+
+  // 保存时，当修改的字典数据为当前用到的字典数据（sys_dict_tag_style）时，重新加载字典数据
+  const handleReloadDictData = (dictTypeCode: string) => {
+    if (dictTypeCode === "sys_dict_tag_style") {
+      reLoadDict(dictTypeCode).then(resp => {
+        sys_dict_tag_style.value = resp
+      })
+    }
+  }
 
   // 保存成功后不重新加载列表，而是修改列表中的数据
   const handleDeepSave = (id: string, list: SysDictDataType[], data: SysDictDataType) => {

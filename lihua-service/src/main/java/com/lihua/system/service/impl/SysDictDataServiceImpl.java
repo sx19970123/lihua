@@ -82,6 +82,8 @@ public class SysDictDataServiceImpl implements SysDictDataService {
 
     @Override
     public String save(SysDictData sysDictData) {
+        // 系统状态不允许修改
+        checkSysStatus(sysDictData);
         // 检查字典值是否重复
         checkValue(sysDictData);
 
@@ -127,6 +129,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
                 .in(SysDictData::getId,ids)
                 .select(SysDictData::getDictTypeCode);
         List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
+
         if (!sysDictData.isEmpty()) {
             sysDictData.forEach(data -> {
                 resetCache(data.getDictTypeCode());
@@ -213,6 +216,13 @@ public class SysDictDataServiceImpl implements SysDictDataService {
                     throw new ServiceException("当前字典值已存在");
                 }
             }
+        }
+    }
+
+    // 系统状态标签不允许修改
+    private void checkSysStatus(SysDictData sysDictData) {
+        if ("sys_status".equals(sysDictData.getDictTypeCode())) {
+            throw new ServiceException("系统状态不允许修改");
         }
     }
 }
