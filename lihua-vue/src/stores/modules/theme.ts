@@ -142,7 +142,7 @@ export const useThemeStore = defineStore('theme',{
                 this.changeLayoutBackgroundColor(backgroundColor)
                 this.$state.themeConfig.algorithm = theme.defaultAlgorithm
             }
-
+            this.changeSiderTheme()
             localStorage.setItem('dataDark',this.$state.dataDark ? 'dark' : 'light')
         },
         // 布局类型

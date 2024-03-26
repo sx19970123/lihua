@@ -1,5 +1,6 @@
 <template>
   <a-flex align="center" style="margin-right: 16px">
+      <windows-change/>
       <language/>
       <user/>
   </a-flex>
@@ -7,4 +8,5 @@
 <script setup lang="ts">
 import User from "@/layout/head/components/user/index.vue"
 import Language from "@/layout/head/components/language/index.vue"
+import WindowsChange from "@/layout/head/components/window-change/index.vue"
 </script>

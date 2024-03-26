@@ -39,7 +39,8 @@
 <script setup lang="ts">
 import {type Component, reactive, ref} from "vue";
 import * as Icons from "@ant-design/icons-vue";
-const modules = import.meta.glob("../../static/icon/**/*.svg")
+// 读取icon目录下图标
+const modules = import.meta.glob("../icon/**/*.vue")
 
 const icons: Record<string, Component> = Icons
 // 三种图标类型集合
@@ -52,12 +53,6 @@ const twoToneIconList = ref<string[]>([])
 // 自定义
 const customIconLIst = ref<string[]>([])
 
-for (let path in modules) {
-  const match = path.match(/\/([^/]+)\.svg$/)
-  if (match) {
-    customIconLIst.value.push(match[1])
-  }
-}
 
 // 图标类型筛选
 const segmentedData = reactive(['线框','实底','双色','自定义']);
@@ -81,6 +76,13 @@ for (let iconKey in icons) {
   }
   if (iconKey.endsWith('TwoTone')) {
     twoToneIconList.value.push(iconKey)
+  }
+}
+// 初始化自定义图标集合
+for (let path in modules) {
+  const match = path.match(/\/([^/]+)\.vue$/)
+  if (match) {
+    customIconLIst.value.push(match[1])
   }
 }
 

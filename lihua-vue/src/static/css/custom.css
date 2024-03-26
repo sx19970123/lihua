@@ -4,3 +4,24 @@
 .form-item-single-line {
     margin: 0;
 }
+
+/**
+    根据主题颜色改变图标颜色
+ */
+[data-dark = 'light']{
+    .icon-default-color {
+        color: #292929;
+    }
+}
+
+[data-dark = 'dark'] {
+    .icon-default-color {
+        color: #f3f3f3;
+    }
+}
+
+[header-content-dark = 'dark'] {
+    .icon-default-color {
+        color: #f3f3f3;
+    }
+}
