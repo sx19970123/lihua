@@ -25,6 +25,12 @@
             <div>{{icon}}</div>
           </a-flex>
         </div>
+        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-if="segmentedValue === '自定义'" v-for="icon in customIconLIst"  @click="clickIcon(icon)">
+          <a-flex vertical align="center">
+            <component class="icon-size" :is="icon"/>
+            <div>{{icon}}</div>
+          </a-flex>
+        </div>
       </a-flex>
     </div>
   </div>
@@ -33,6 +39,8 @@
 <script setup lang="ts">
 import {type Component, reactive, ref} from "vue";
 import * as Icons from "@ant-design/icons-vue";
+const modules = import.meta.glob("../../static/icon/**/*.svg")
+
 const icons: Record<string, Component> = Icons
 // 三种图标类型集合
 // 实底
@@ -41,9 +49,18 @@ const filledIconList = ref<string[]>([])
 const outlinedIconList = ref<string[]>([])
 // 双色
 const twoToneIconList = ref<string[]>([])
+// 自定义
+const customIconLIst = ref<string[]>([])
+
+for (let path in modules) {
+  const match = path.match(/\/([^/]+)\.svg$/)
+  if (match) {
+    customIconLIst.value.push(match[1])
+  }
+}
 
 // 图标类型筛选
-const segmentedData = reactive(['线框','实底','双色']);
+const segmentedData = reactive(['线框','实底','双色','自定义']);
 const segmentedValue = ref(segmentedData[0]);
 
 // v-modal

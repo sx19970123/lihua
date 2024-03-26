@@ -5,6 +5,10 @@ import { theme } from "ant-design-vue";
  */
 export default {
     /**
+     * 默认语言
+     */
+    defaultLocalLanguage: 'zh_CN',
+    /**
      * 暗色模式
      */
     dataDark: localStorage.getItem("dataDark") === 'dark',

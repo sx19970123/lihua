@@ -8,6 +8,7 @@
 import { useThemeStore } from "@/stores/modules/theme"
 const themeStore = useThemeStore()
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
+import enUS from 'ant-design-vue/es/locale/en_US';
 import {ref} from "vue";
 import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';

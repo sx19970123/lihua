@@ -1,6 +1,6 @@
 <template>
   <a-dropdown>
-    <div class="avatar header-right">
+    <div class="header-right-item header-right">
       <user-avatar :size="32" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
     </div>
     <template #overlay>
@@ -75,12 +75,3 @@ const logout = () => {
   userStore.logout()
 }
 </script>
-
-<style>
-.avatar {
-  padding-left: 12px;
-  padding-right: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-</style>

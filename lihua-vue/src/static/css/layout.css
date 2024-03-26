@@ -27,6 +27,13 @@
     margin: 16px;
 }
 
+.header-right-item {
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 /**
     侧边导航布局
  */
