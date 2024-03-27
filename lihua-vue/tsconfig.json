@@ -17,6 +17,7 @@
     "noEmit": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
     "types": ["vite/client"],
     "baseUrl": ".",
     "paths": {

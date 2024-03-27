@@ -7,17 +7,17 @@
             @finishFailed="handleFinishFailed"
     >
       <a-row :span="8">
-        <a-form-item label="头像">
+        <a-form-item :label="$t('profile.avatar')">
           <avatar-modifier v-model="userInfo.avatar"/>
         </a-form-item>
       </a-row>
-      <a-form-item label="用户昵称" name="nickname">
+      <a-form-item :label="$t('profile.nickName')" name="nickname">
         <a-input class="form-item-width" v-model:value="userInfo.nickname" allow-clear show-count/>
       </a-form-item>
-      <a-form-item label="手机号码" name="phoneNumber">
+      <a-form-item :label="$t('profile.phoneNumber')" name="phoneNumber">
         <a-input class="form-item-width" v-model:value="userInfo.phoneNumber" allow-clear/>
       </a-form-item>
-      <a-form-item label="电子邮箱" name="email" ref="email">
+      <a-form-item :label="$t('profile.email')"  name="email" ref="email">
         <a-auto-complete class="form-item-width" v-model:value="userInfo.email" @search="emailHandleSearch" :options="emailOptions" allow-clear>
           <template #option="{ value: val }">
             {{ val.split('@')[0] }} @
@@ -25,7 +25,7 @@
           </template>
         </a-auto-complete>
       </a-form-item>
-      <a-form-item label="性别" name="gender">
+      <a-form-item :label="$t('profile.gender')" name="gender">
         <a-radio-group v-model:value="userInfo.gender">
           <a-radio value="1" >男</a-radio>
           <a-radio value="0">女</a-radio>
@@ -33,7 +33,7 @@
       </a-form-item>
       <a-form-item>
         <a-flex :gap="16">
-          <a-button type="primary" html-type="submit">提 交</a-button>
+          <a-button type="primary" html-type="submit">{{$t('global.submit')}}</a-button>
         </a-flex>
       </a-form-item>
     </a-form>
@@ -48,6 +48,7 @@ import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import type {UserInfo} from "@/api/system/profile/type/user";
 import {saveBasics} from "@/api/system/profile/profile";
+import {t} from "@/utils/i18n/index.ts"
 
 const userStore = useUserStore()
 
@@ -64,7 +65,7 @@ const init = () => {
 
   const userRoles = reactive<Record<string,Rule[]> >({
     nickname: [
-      { required: true , message: '用户昵称不能为空'},
+      { required: true , message: t('profile.roleNickNameRequired')},
       { max: 20 , message: '用户昵称最大20字符'}
     ],
     gender: [

@@ -1,14 +1,9 @@
 <template>
   <div>
     <a-button @click="open" v-hasRole="[123]">loading</a-button>
-    <VideoCameraOutlined />
-    <I18n/>
-    <SendOutlined />
-<!--    <i18n/>-->
     <template v-for="item in 't1,t1-1,t1-1-1'.split(',')">
       <dict-tag :dict-data-option="tree_test" :dict-data-value="item" root-tree-node-prefix=""/>
     </template>
-
   </div>
 </template>
 

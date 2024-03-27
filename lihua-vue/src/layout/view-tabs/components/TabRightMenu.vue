@@ -8,7 +8,7 @@
         <a-sub-menu class="menu-item-min-width" key="recent">
           <template #title>
             <FieldTimeOutlined />
-            最近使用
+            {{$t('viewTab.recentUse')}}
           </template>
           <div class="scrollbar" v-if="recentData.length > 0" style="max-height: 400px">
             <a-menu-item v-for="item in recentData" :key="item.path">
@@ -28,19 +28,20 @@
           <a-divider v-if="recentData.length > 0" style="margin: 0px"/>
           <a-menu-item v-if="recentData.length > 0" key="clear-recent" danger>
             <div style="text-align: center">
-                 <ClearOutlined /> 清空最近使用
+                 <ClearOutlined />
+              {{$t('viewTab.clearRecentUse')}}
             </div>
           </a-menu-item>
           <a-empty v-else>
             <template #description>
-              <a-typography-text>暂无数据</a-typography-text>
+              <a-typography-text>{{$t('global.noData')}}</a-typography-text>
             </template>
           </a-empty>
         </a-sub-menu>
         <a-sub-menu class="menu-item-min-width" key="star">
           <template #title>
               <StarOutlined />
-            收藏夹栏
+            {{$t('viewTab.star')}}
           </template>
           <div class="scrollbar" style="max-height: 400px" v-if="starData.length > 0">
             <a-menu-item class="menu-item-min-width" v-for="item in starData" :key="item.routerPathKey">
@@ -52,14 +53,14 @@
           </div>
           <a-empty v-else>
             <template #description>
-              <a-typography-text>暂无数据</a-typography-text>
+              <a-typography-text>{{$t('global.noData')}}</a-typography-text>
             </template>
           </a-empty>
         </a-sub-menu>
         <a-divider style="margin: 0px"/>
         <a-menu-item class="menu-item-min-width" key="close-all" danger>
           <CloseOutlined />
-          关闭全部
+          {{$t('viewTab.closeAll')}}
         </a-menu-item>
       </a-menu>
     </template>
@@ -181,6 +182,6 @@ const handleTime = (time: string) => {
 }
 
 .menu-item-min-width {
-  min-width: 120px;
+  min-width: 160px;
 }
 </style>

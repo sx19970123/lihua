@@ -6,14 +6,31 @@
 
 <script setup lang="ts">
 import { useThemeStore } from "@/stores/modules/theme"
-const themeStore = useThemeStore()
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import enUS from 'ant-design-vue/es/locale/en_US';
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
-// 设置组件中文
-dayjs.locale(zhCN.locale)
+
+const themeStore = useThemeStore()
+
+
+// 国际化配置
 const local = ref(zhCN)
+const lang = localStorage.getItem("language")
+console.log(lang)
+// 设置组件中文
+watch(() => lang, (value) => {
+  if (value === 'cn') {
+    dayjs.locale(zhCN.locale)
+    local.value = zhCN
+  }
+  if (value === 'en') {
+    dayjs.locale(enUS.locale)
+    local.value = enUS
+  }
+},{
+  deep: true
+})
 
 </script>

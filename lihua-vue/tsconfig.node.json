@@ -12,6 +12,7 @@
     "composite": true,
     "noEmit": true,
     "module": "ESNext",
+    "allowImportingTsExtensions": true,
     "moduleResolution": "Bundler",
     "types": ["node"],
     "baseUrl": ".",
