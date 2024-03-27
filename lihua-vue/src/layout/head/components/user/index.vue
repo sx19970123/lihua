@@ -22,20 +22,20 @@
         <a-menu-item key="user-center">
           <a-flex :gap="8">
             <UserOutlined />
-            <span>{{$t('profile.center')}}</span>
+            <span>个人中心</span>
           </a-flex>
         </a-menu-item>
-        <a-menu-item key="user-setting" v-if="false">
+        <a-menu-item key="user-setting">
           <a-flex :gap="8">
             <SettingOutlined />
-            <span>{{$t('profile.setting')}}</span>
+            <span>个人设置</span>
           </a-flex>
         </a-menu-item>
         <a-menu-divider/>
         <a-menu-item danger key="logout">
           <a-flex :gap="8">
             <LogoutOutlined />
-            <span>{{$t('global.logout')}}</span>
+            <span>退出登陆</span>
           </a-flex>
         </a-menu-item>
       </a-menu>

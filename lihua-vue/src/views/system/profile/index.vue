@@ -4,9 +4,9 @@
        <a-row>
          <a-col :span="4">
            <a-menu v-model:selectedKeys="selectedKeys" @click="handleChangeUserMenu" style="height: 100%">
-             <a-menu-item key="Individuation">{{$t('profile.individuation')}}</a-menu-item>
-             <a-menu-item key="Basic">{{$t('profile.basic')}}</a-menu-item>
-             <a-menu-item key="Security">{{$t('profile.security')}}</a-menu-item>
+             <a-menu-item key="Individuation"> 样式布局</a-menu-item>
+             <a-menu-item key="Basic"> 基础设置</a-menu-item>
+             <a-menu-item key="Security"> 安全设置</a-menu-item>
            </a-menu>
          </a-col>
          <a-col :span="20">

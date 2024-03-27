@@ -2,40 +2,40 @@
   <div>
     <a-form layout="vertical">
       <!-- 主题设置 -->
-      <a-typography-title :level="5">{{$t('profile.theme')}}</a-typography-title>
+      <a-typography-title :level="5">主题设置</a-typography-title>
       <a-form-item>
         <head-theme-switch/>
       </a-form-item>
-      <a-form-item :label="$t('profile.themeColor')">
+      <a-form-item label="主题颜色">
         <color-select v-model:items="colorList" v-model="themeStore.colorPrimary" @click="themeStore.changeColorPrimary()"/>
       </a-form-item>
-      <a-form-item :label="$t('profile.navigationColor')" v-if="!themeStore.dataDark">
+      <a-form-item label="导航颜色" v-if="!themeStore.dataDark">
         <nav-color-select v-model="themeStore.siderTheme" @click="themeStore.changeSiderTheme()"/>
       </a-form-item>
       <a-divider/>
 
       <!-- 布局设置 -->
-      <a-typography-title :level="5">{{$t('profile.layout')}}</a-typography-title>
-      <a-form-item :label="$t('profile.navigationType')">
+      <a-typography-title :level="5">布局设置</a-typography-title>
+      <a-form-item label="导航类型">
         <nav-select v-model="themeStore.layoutType" @click="themeStore.changeLayoutType()"/>
       </a-form-item>
-      <a-form-item :label="$t('profile.navigationWidth')" v-if="themeStore.layoutType !== 'header-content'">
+      <a-form-item label="导航宽度" v-if="themeStore.layoutType !== 'header-content'">
         <a-slider v-model:value="themeStore.siderWith" @change="themeStore.changeSiderWidth()" dots :max="400" :min="80" :step="20" style="width: 230px"></a-slider>
       </a-form-item>
-      <a-form-item :label="$t('profile.fixedHeader')">
+      <a-form-item label="固定头部">
         <a-switch v-model:checked="themeStore.affixHead" @change="themeStore.changeAffixHead()"></a-switch>
       </a-form-item>
-      <a-form-item :label="$t('profile.viewTags')">
+      <a-form-item label="多任务栏">
         <a-switch v-model:checked="themeStore.showViewTags"/>
       </a-form-item>
       <a-divider/>
 
       <!-- 其他设置 -->
-      <a-typography-title :level="5">{{$t('profile.other')}}</a-typography-title>
-      <a-form-item :label="$t('profile.glass')">
+      <a-typography-title :level="5">其他设置</a-typography-title>
+      <a-form-item label="磨砂玻璃">
         <a-switch v-model:checked="themeStore.groundGlass" @change="themeStore.changeGroundGlass"></a-switch>
       </a-form-item>
-      <a-form-item :label="$t('profile.animation')">
+      <a-form-item label="切换动画">
         <a-select style="width: 200px" v-model:value="themeStore.routeTransition">
           <a-select-option value="zoom">变焦</a-select-option>
           <a-select-option value="fade">淡入淡出</a-select-option>
@@ -47,7 +47,7 @@
         </a-select>
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" @click="userStore.saveTheme(JSON.stringify(themeStore.$state))">{{$t('global.submit')}}</a-button>
+        <a-button type="primary" @click="userStore.saveTheme(JSON.stringify(themeStore.$state))">提 交</a-button>
       </a-form-item>
     </a-form>
   </div>

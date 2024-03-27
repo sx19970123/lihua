@@ -18,19 +18,13 @@ const themeStore = useThemeStore()
 // 国际化配置
 const local = ref(zhCN)
 const lang = localStorage.getItem("language")
-console.log(lang)
-// 设置组件中文
-watch(() => lang, (value) => {
-  if (value === 'cn') {
-    dayjs.locale(zhCN.locale)
-    local.value = zhCN
-  }
-  if (value === 'en') {
-    dayjs.locale(enUS.locale)
-    local.value = enUS
-  }
-},{
-  deep: true
-})
+if (lang === 'cn') {
+  dayjs.locale(zhCN.locale)
+  local.value = zhCN
+}
+if (lang === 'en') {
+  dayjs.locale(enUS.locale)
+  local.value = enUS
+}
 
 </script>

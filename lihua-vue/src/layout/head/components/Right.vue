@@ -1,7 +1,7 @@
 <template>
   <a-flex align="center" style="margin-right: 16px">
+      <language v-if="false"/>
       <windows-change/>
-      <language/>
       <user/>
   </a-flex>
 </template>

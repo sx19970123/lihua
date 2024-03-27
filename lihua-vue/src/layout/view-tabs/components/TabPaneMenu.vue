@@ -8,37 +8,37 @@
       <a-menu @click="handleClickMenuTab">
         <a-menu-item key="reload" v-if="false" :disabled="tabPane.tab.routerPathKey !== viewTabsStore.$state.activeKey">
           <RedoOutlined />
-          {{$t('viewTab.reloadPage')}}
+          刷新页面
         </a-menu-item>
         <a-menu-divider  v-if="false"/>
         <a-menu-item key="close-left" :disabled="tabPane.index === 0">
           <VerticalRightOutlined />
-          {{$t('viewTab.closeLeft')}}
+          关闭左侧
         </a-menu-item>
         <a-menu-item key="close-right" :disabled="tabPane.index === viewTabsStore.viewTabs.length - 1">
           <VerticalLeftOutlined />
-          {{$t('viewTab.closeRight')}}
+          关闭右侧
         </a-menu-item>
         <a-menu-item key="close-other" :disabled="viewTabsStore.viewTabs.length === 1">
           <CloseCircleOutlined />
-          {{$t('viewTab.closeOther')}}
+          关闭其他
         </a-menu-item>
         <a-menu-divider v-if="!tabPane.tab.static"/>
         <a-menu-item key="star" v-if="!tabPane.tab.star && !tabPane.tab.static">
           <StarOutlined />
-          {{$t('viewTab.addStar')}}
+          添加收藏
         </a-menu-item>
         <a-menu-item key="un-star" v-if="tabPane.tab.star && !tabPane.tab.static">
           <StarFilled />
-          {{$t('viewTab.cancelStar')}}
+          取消收藏
         </a-menu-item>
         <a-menu-item key="affix" v-if="!tabPane.tab.affix && !tabPane.tab.static">
           <LockOutlined />
-          {{$t('viewTab.fixedPage')}}
+          固定页面
         </a-menu-item>
         <a-menu-item key="un-affix" v-if="tabPane.tab.affix && !tabPane.tab.static">
           <UnlockOutlined />
-          {{$t('viewTab.cancelFixed')}}
+          取消固定
         </a-menu-item>
       </a-menu>
     </template>

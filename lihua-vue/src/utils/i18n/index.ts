@@ -19,7 +19,7 @@ export function changeLanguage(language: string) {
   location.reload()
 }
 
-
+// ts中调用翻译
 export function t(code: string) {
   return i18n.global.t(code)
 }
