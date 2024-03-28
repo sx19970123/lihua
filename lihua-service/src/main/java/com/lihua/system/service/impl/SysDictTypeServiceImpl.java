@@ -1,13 +1,10 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
-import com.lihua.system.entity.SysDictData;
 import com.lihua.system.entity.SysDictType;
-import com.lihua.system.mapper.SysDictDataMapper;
 import com.lihua.system.mapper.SysDictTypeMapper;
 import com.lihua.system.model.SysDictTypeDTO;
 import com.lihua.system.service.SysDictDataService;

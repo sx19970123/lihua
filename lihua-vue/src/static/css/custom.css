@@ -25,3 +25,12 @@
         color: #f3f3f3;
     }
 }
+/**
+    顶部导航模式下，使用该css可使内容居中
+ */
+[layout-type='header-content'] {
+    .header-content-center {
+        max-width: 1000px;
+        margin: auto
+    }
+}

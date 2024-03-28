@@ -17,7 +17,7 @@ const themeStore = useThemeStore()
 
 // 国际化配置
 const local = ref(zhCN)
-const lang = localStorage.getItem("language")
+const lang = localStorage.getItem("language") || 'cn'
 if (lang === 'cn') {
   dayjs.locale(zhCN.locale)
   local.value = zhCN

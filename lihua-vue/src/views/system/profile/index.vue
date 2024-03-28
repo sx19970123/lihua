@@ -1,5 +1,5 @@
 <template>
- <div class="layout">
+ <div class="header-content-center">
      <a-card>
        <a-row>
          <a-col :span="4">
@@ -56,10 +56,5 @@ const handleChangeUserMenu = ({key}: {key: string}) => {
 </script>
 
 <style>
-[layout-type='header-content'] {
-  .layout {
-    max-width: 1000px;
-    margin: auto
-  }
-}
+
 </style>
