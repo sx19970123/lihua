@@ -262,7 +262,7 @@ const initSearch = () => {
     },
   ])
   // 定义查询条件对象
-  const dictDataQuery = ref<SysDictDataQueryType>({dictTypeCode: props.typeCode,type: props.type})
+  const dictDataQuery = ref<SysDictDataTypeDTO>({dictTypeCode: props.typeCode,type: props.type})
   // 定义查询出的列表集合
   const dictDataList = ref<Array<SysDictDataType>>([])
   // 默认展开

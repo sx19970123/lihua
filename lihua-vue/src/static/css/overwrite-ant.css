@@ -2,19 +2,26 @@
     modal/drawer 背景毛玻璃效果
  */
 [data-ground-glass = glass] {
+    /*抽屉背景虚化*/
     .ant-drawer-mask {
         backdrop-filter: saturate(180%) blur(6px) !important;
     }
+    /*模态框背景虚化*/
     .ant-modal-wrap {
         backdrop-filter: saturate(180%) blur(6px) !important;
     }
-}
-[data-ground-glass = un-glass] {
-    .ant-drawer-mask {
-        backdrop-filter: blur(0px) !important;
+    /*表头虚化*/
+    .ant-table-cell {
+        background: rgba(255,255,255,0.3) !important;
+        backdrop-filter: saturate(180%) blur(20px) !important;
     }
-    .ant-modal-wrap {
-        backdrop-filter: blur(0px) !important;
+    .ant-table-sticky-holder {
+        background: rgba(0,0,0,0) !important;
+    }
+    /*选项卡选中项目虚化*/
+    .ant-tabs-tab-active {
+        background: rgba(255,255,255,0.3) !important;
+        border-bottom-color: rgba(255,255,255,1) !important;
     }
 }
 

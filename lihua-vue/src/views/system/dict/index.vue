@@ -41,6 +41,7 @@
                  :loading="tableLoad"
                  :row-selection="dictTypeRowSelectionType"
                  :rowKey="(item:SysDictType) => item.id"
+                 :sticky="{ offsetHeader: themeStore.$state.layoutType === 'header-content' ? 118 : 102 }"
         >
           <template #title>
             <a-flex :gap="8">
@@ -181,7 +182,8 @@ import { message } from "ant-design-vue";
 import DictData from "./dictData/index.vue"
 import { initDict } from "@/utils/dict";
 import DictTag from "@/components/dict-tag/index.vue"
-
+import {useThemeStore} from "@/stores/modules/theme.ts";
+const themeStore = useThemeStore()
 const { sys_status,sys_dict_type } = initDict("sys_status","sys_dict_type")
 
 

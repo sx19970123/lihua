@@ -8,11 +8,13 @@ import com.lihua.system.entity.SysMenu;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.model.SysMenuDTO;
 import com.lihua.system.service.SysMenuService;
+import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,9 +24,8 @@ public class SysMenuServiceImpl implements SysMenuService {
     private SysMenuMapper sysMenuMapper;
 
     @Override
-    public IPage<SysMenu> findPage(SysMenuDTO sysMenuDTO) {
+    public List<SysMenu> findList(SysMenuDTO sysMenuDTO) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
-        IPage<SysMenu> ipage = new Page<>(sysMenuDTO.getPageNum(), sysMenuDTO.getPageSize());
 
         if (StringUtils.hasText(sysMenuDTO.getLabel())) {
             queryWrapper.lambda().like(SysMenu::getLabel,sysMenuDTO.getLabel());
@@ -34,23 +35,44 @@ public class SysMenuServiceImpl implements SysMenuService {
             queryWrapper.lambda().eq(SysMenu::getLabel,sysMenuDTO.getStatus());
         }
 
-        sysMenuMapper.selectPage(ipage,queryWrapper);
-        return ipage;
+        List<SysMenu> sysMenus = sysMenuMapper.selectList(queryWrapper);
+
+        // 构建树形结构
+        return TreeUtil.buildTree(sysMenus);
     }
 
     @Override
     public SysMenu findById(String menuId) {
-        return null;
+        return sysMenuMapper.selectById(menuId);
     }
 
     @Override
     public String save(SysMenu sysMenu) {
-        return null;
+        // 菜单id为 null，执行insert
+        if (!StringUtils.hasText(sysMenu.getId())) {
+           return insert(sysMenu);
+        }
+        return update(sysMenu);
+    }
+
+    private String insert(SysMenu sysMenu) {
+        sysMenu.setCreateId(LoginUserContext.getUserId());
+        sysMenu.setCreateTime(LocalDateTime.now());
+        sysMenu.setDelFlag("0");
+        sysMenuMapper.insert(sysMenu);
+        return sysMenu.getId();
+    }
+
+    private String update(SysMenu sysMenu) {
+        sysMenu.setUpdateId(LoginUserContext.getUserId());
+        sysMenu.setUpdateTime(LocalDateTime.now());
+        sysMenuMapper.updateById(sysMenu);
+        return sysMenu.getId();
     }
 
     @Override
     public void deleteByIds(List<String> ids) {
-
+        sysMenuMapper.deleteBatchIds(ids);
     }
 
     @Override

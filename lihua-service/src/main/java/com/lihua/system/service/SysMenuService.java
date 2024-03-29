@@ -1,6 +1,5 @@
 package com.lihua.system.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.model.security.RouterVO;
 import com.lihua.system.entity.SysMenu;
 import com.lihua.system.model.SysMenuDTO;
@@ -15,7 +14,7 @@ public interface SysMenuService {
      * @param sysMenuDTO
      * @return
      */
-    IPage<SysMenu> findPage(SysMenuDTO sysMenuDTO);
+    List<SysMenu> findList(SysMenuDTO sysMenuDTO);
 
     /**
      * 根据id查询菜单
@@ -31,6 +30,10 @@ public interface SysMenuService {
      */
     String save(SysMenu sysMenu);
 
+    /**
+     * 根据 id 集合删除元素
+     * @param ids
+     */
     void deleteByIds(List<String> ids);
 
 

@@ -1,0 +1,49 @@
+package com.lihua.system.controller;
+
+import com.lihua.enums.ResultCodeEnum;
+import com.lihua.model.web.BaseController;
+import com.lihua.system.entity.SysMenu;
+import com.lihua.system.model.SysMenuDTO;
+import com.lihua.system.service.SysMenuService;
+import jakarta.annotation.Resource;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("sys/menu")
+public class SysMenuController extends BaseController {
+
+    @Resource
+    private SysMenuService sysMenuService;
+
+    @PostMapping("list")
+    public String findList(@RequestBody SysMenuDTO sysMenuDTO) {
+        return success(sysMenuService.findList(sysMenuDTO));
+    }
+
+
+    @GetMapping("/{id}")
+    public String findById(@PathVariable("id") String id) {
+        if (!StringUtils.hasText(id)) {
+            return error(ResultCodeEnum.PRIMARY_KEY_IS_EMPTY);
+        }
+
+        return success(sysMenuService.findById(id));
+    }
+
+    @PostMapping
+    public String save(SysMenu sysMenu) {
+        return success(sysMenuService.save(sysMenu));
+    }
+
+    @DeleteMapping
+    public String deleteByIds(@RequestBody List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return error(ResultCodeEnum.PRIMARY_KEY_COLLECTION_IS_EMPTY);
+        }
+        sysMenuService.deleteByIds(ids);
+        return success();
+    }
+}

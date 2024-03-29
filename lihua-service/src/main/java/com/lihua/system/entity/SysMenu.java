@@ -1,10 +1,13 @@
 package com.lihua.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.lihua.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * 系统菜单权限表
@@ -89,5 +92,10 @@ public class SysMenu extends BaseEntity {
      */
     private String linkPath;
 
+    /**
+     * 子元素
+     */
+    @TableField(exist = false)
+    private List<SysMenu> children;
 
 }

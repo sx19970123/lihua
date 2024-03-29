@@ -56,7 +56,7 @@ interface SysDictDataType {
 }
 
 
-interface SysDictDataQueryType {
+interface SysDictDataTypeDTO {
   /**
    * 字典类型编码
    */
