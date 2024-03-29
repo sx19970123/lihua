@@ -249,7 +249,7 @@ const initSearch = () => {
       title: '操作',
       align: 'center',
       key: 'action',
-      width: '294px'
+      width: '300px'
     },
   ]
   // 查询条件定义

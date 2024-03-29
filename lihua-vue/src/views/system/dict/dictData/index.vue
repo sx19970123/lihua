@@ -258,7 +258,7 @@ const initSearch = () => {
       title: '操作',
       align: 'center',
       key: 'action',
-      width: props.type === '1' ? 228 : 138
+      width: props.type === '1' ? 238 : 148
     },
   ])
   // 定义查询条件对象

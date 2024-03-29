@@ -68,6 +68,7 @@
         padding-top: 6px;
         top: 48px;
         backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
 
     }
     .hsr-content {
@@ -106,6 +107,7 @@
         top: 64px;
         z-index: 1;
         backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
     }
 }
 

@@ -2,27 +2,51 @@
     modal/drawer 背景毛玻璃效果
  */
 [data-ground-glass = glass] {
-    /*抽屉背景虚化*/
+    /* 抽屉背景虚化 */
     .ant-drawer-mask {
         backdrop-filter: saturate(180%) blur(6px) !important;
+        -webkit-backdrop-filter: saturate(180%) blur(6px) !important;
     }
-    /*模态框背景虚化*/
+    /* 模态框背景虚化 */
     .ant-modal-wrap {
         backdrop-filter: saturate(180%) blur(6px) !important;
+        -webkit-backdrop-filter: saturate(180%) blur(6px) !important;
     }
-    /*表头虚化*/
-    .ant-table-cell {
-        background: rgba(255,255,255,0.3) !important;
-        backdrop-filter: saturate(180%) blur(20px) !important;
-    }
-    .ant-table-sticky-holder {
-        background: rgba(0,0,0,0) !important;
-    }
-    /*选项卡选中项目虚化*/
+    /* 选项卡选中项目虚化 */
     .ant-tabs-tab-active {
-        background: rgba(255,255,255,0.3) !important;
-        border-bottom-color: rgba(255,255,255,1) !important;
+        background: rgba(250, 250, 252, 0) !important;
+        border-bottom-color: rgba(250, 250, 252, 0) !important;
     }
+    /*------macos下会造成巨大卡顿，暂不启用------*/
+    /*表头虚化*/
+    /*.ant-table-cell {*/
+    /*    background: rgba(255,255,255,0.3) !important;*/
+    /*    backdrop-filter: saturate(180%) blur(20px) !important;*/
+    /*    -webkit-backdrop-filter: saturate(180%) blur(20px);*/
+    /*}*/
+    /*.ant-table-sticky-holder {*/
+    /*    background: rgba(0,0,0,0) !important;*/
+    /*}*/
+
+    /*------chrome下效果不理想，暂不启用------*/
+    /* popover 虚化 */
+    /*.ant-popover-inner {*/
+    /*    background: rgba(255,255,255,0) !important;*/
+    /*    -webkit-backdrop-filter: blur(20px) !important;*/
+    /*    backdrop-filter: blur(20px) !important;*/
+    /*}*/
+    /* dropdown 虚化 */
+    /*.ant-dropdown-menu-sub {*/
+    /*    background: rgba(255,255,255,0) !important;*/
+    /*    -webkit-backdrop-filter: saturate(180%) blur(20px) !important;*/
+    /*    backdrop-filter: blur(20px) !important;*/
+    /*}*/
+    /* dropdown 虚化 */
+    /*.ant-dropdown-menu-root {*/
+    /*    background: rgba(255,255,255,0) !important;*/
+    /*    -webkit-backdrop-filter: saturate(180%) blur(20px) !important;*/
+    /*    backdrop-filter: saturate(180%) blur(20px) !important;*/
+    /*}*/
 }
 
 /**

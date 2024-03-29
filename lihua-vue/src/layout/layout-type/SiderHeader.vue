@@ -46,6 +46,7 @@ const permission = usePermissionStore()
   padding-left: 0;
   padding-right: 0;
   backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
   box-shadow: 2px 0 8px rgba(29,35,41,0.1);
   line-height: 48px;
 }
@@ -55,6 +56,7 @@ const permission = usePermissionStore()
   z-index: 2;
   box-shadow: 2px 0 8px rgba(29,35,41,0.05);
   backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 .logo {
   margin: 16px;

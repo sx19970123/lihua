@@ -705,6 +705,7 @@ export default {
   background-color: rgba(255,255,255,0.5);
   border-radius: 8px;
   backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
   background-size: contain;
 }
 </style>

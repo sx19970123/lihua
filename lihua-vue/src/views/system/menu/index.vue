@@ -36,7 +36,9 @@
                  :data-source="menuList"
                  :pagination="false"
                  row-key="id"
-                 v-model:expanded-row-keys="expandedRowKeys">
+                 v-model:expanded-row-keys="expandedRowKeys"
+                 :scroll="{ y: 500 }"
+        >
           <template #title>
             <a-flex :gap="8">
               <a-button type="primary">
@@ -84,9 +86,9 @@
               <a-divider type="vertical"/>
               <a-button type="link" size="small">
                 <template #icon>
-                  <EnterOutlined />
+                  <PlusOutlined />
                 </template>
-                添加下级
+                新增下级
               </a-button>
               <a-divider type="vertical"/>
               <a-popconfirm title="删除后不可恢复，是否删除？"
@@ -169,7 +171,7 @@ const initSearch = () => {
       title: '操作',
       align: 'center',
       key: 'action',
-      width: '294px'
+      width: '300px'
     }
   ]
   // 筛选条件
