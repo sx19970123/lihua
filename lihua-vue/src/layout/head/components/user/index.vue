@@ -9,9 +9,13 @@
           <a-flex align="center" :gap="12">
             <user-avatar :size="48" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
             <a-flex vertical>
-              <a-typography-text :copyable="{ tooltip: false }" strong>{{userStore.$state.name}}</a-typography-text>
+              <a-typography-text :copyable="{ tooltip: false }" strong>
+                <a-tooltip placement="bottom" title="用户昵称">
+                  {{userStore.$state.name}}
+                </a-tooltip>
+              </a-typography-text>
               <a-typography-text :copyable="{ tooltip: false }">
-                <a-tooltip placement="bottom" title="用户唯一id">
+                <a-tooltip placement="bottom" title="用户uid">
                   {{userStore.$state.userInfo.id}}
                 </a-tooltip>
               </a-typography-text>
@@ -25,10 +29,10 @@
             <span>个人中心</span>
           </a-flex>
         </a-menu-item>
-        <a-menu-item key="user-setting">
+        <a-menu-item key="user-data-update">
           <a-flex :gap="8">
-            <SettingOutlined />
-            <span>个人设置</span>
+            <CloudSyncOutlined />
+            <span>数据更新</span>
           </a-flex>
         </a-menu-item>
         <a-menu-divider/>
@@ -47,6 +51,7 @@
 import UserAvatar from "@/components/user-avatar/index.vue"
 import { useUserStore } from "@/stores/modules/user";
 import { useRouter } from "vue-router";
+import {message} from "ant-design-vue";
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -57,7 +62,8 @@ const handleClickMenu = ({key}: {key: string}) => {
       userInfo()
       break
     }
-    case 'user-add': {
+    case 'user-data-update': {
+      message.success("更新成功")
       break
     }
     case 'logout': {

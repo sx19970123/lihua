@@ -264,7 +264,7 @@ const handleAddTabCache = (tab: StarViewType) => {
         }
         // 首插后存入缓存
         hisArray.unshift({
-            openTime: dayjs().format('yyyy-MM-dd HH:mm'),
+            openTime: dayjs().format('YYYY-MM-DD HH:mm'),
             icon: tab.icon,
             label: tab.label,
             path: tab.routerPathKey

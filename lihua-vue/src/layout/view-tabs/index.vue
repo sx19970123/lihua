@@ -30,7 +30,6 @@ import {computed, watch} from "vue";
 import { useRoute,useRouter } from "vue-router";
 import {useViewTabsStore} from "@/stores/modules/viewTabs";
 import type {StarViewType} from "@/api/system/star-view/type/starView";
-import {login} from "@/api/system/login/login";
 const viewTabsStore = useViewTabsStore()
 const route = useRoute()
 const router = useRouter()

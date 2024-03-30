@@ -161,11 +161,11 @@ handleStarList(viewTabsStore.totalViewTabs)
  */
 const handleTime = (time: string) => {
   if (time) {
-    if (time.substring(0, 10) === dayjs().format('yyyy-MM-dd')) {
-      return time.substring(11)
-    } else if (time.substring(0,10) === dayjs().subtract(1,'day').format('yyyy-MM-dd')) {
+    if (time.substring(0, 10) === dayjs().format('YYYY-MM-DD')) {
+      return '今天 ' + time.substring(11)
+    } else if (time.substring(0,10) === dayjs().subtract(1,'day').format('YYYY-MM-DD')) {
       return '昨天 ' + time.substring(11)
-    } else if (time.substring(0,10) === dayjs().subtract(2,'day').format('yyyy-MM-dd')) {
+    } else if (time.substring(0,10) === dayjs().subtract(2,'day').format('YYYY-MM-DD')) {
       return '前天 ' + time.substring(11)
     } else {
       return time

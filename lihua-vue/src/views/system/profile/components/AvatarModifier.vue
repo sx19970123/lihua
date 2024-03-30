@@ -34,7 +34,7 @@
         <!--        颜色选取-->
         <color-select v-model="avatarColor" v-if="avatarType !== 'image'" :items="avatarBackgroundColor"/>
         <!--        图标选取-->
-        <icon-select v-if="avatarType === 'icon'" v-model="avatarIcon"/>
+        <icon-select v-if="avatarType === 'icon'" v-model="avatarIcon" size="large"/>
         <!--        文本编辑-->
         <a-input v-if="avatarType === 'text'" v-model:value="avatarText" style="width: 260px;" size="large"/>
         <!--        头像编辑-->

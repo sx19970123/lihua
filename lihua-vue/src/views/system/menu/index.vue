@@ -41,7 +41,7 @@
         >
           <template #title>
             <a-flex :gap="8">
-              <a-button type="primary">
+              <a-button type="primary" @click="handleOpenModal">
                 <template #icon>
                   <PlusOutlined />
                 </template>
@@ -108,6 +108,112 @@
         </a-table>
       </a-card>
     </a-flex>
+
+    <a-modal v-model:open="openSaveModal">
+      <template #title>
+        <div style="margin-bottom: 24px">
+          <a-typography-title :level="4">新增菜单</a-typography-title>
+        </div>
+      </template>
+      <a-form :model="sysMenu" :colon="false" :label-col="{ span : 4 }">
+        <a-form-item label="菜单类型">
+          <a-radio-group v-model:value="sysMenu.menuType">
+            <a-radio-button v-for="item in sys_menu_type" :value="item.value">{{item.label}}</a-radio-button>
+          </a-radio-group>
+        </a-form-item>
+        <a-form-item label="上级目录" :wrapper-col="{span: 16}">
+          <a-tree-select/>
+        </a-form-item>
+        <a-form-item label="菜单名称" :wrapper-col="{span: 16}">
+          <a-input/>
+        </a-form-item>
+        <a-form-item label="路由地址" v-if="sysMenu.menuType === 'directory' || sysMenu.menuType === 'page'" :wrapper-col="{span: 16}">
+          <a-input/>
+        </a-form-item>
+        <a-form-item label="组件路径" v-if="sysMenu.menuType === 'page'" :wrapper-col="{span: 16}">
+          <a-input/>
+        </a-form-item>
+        <a-form-item label="链接地址" :wrapper-col="{span: 16}" v-if="sysMenu.menuType === 'link'">
+          <a-textarea/>
+        </a-form-item>
+        <a-form-item label="权限标识" v-if="sysMenu.menuType === 'permi'" :wrapper-col="{span: 16}">
+          <a-input/>
+        </a-form-item>
+        <a-form-item label="菜单图标" v-if="sysMenu.menuType !== 'permi'" :wrapper-col="{span: 16}">
+          <a-popover placement="top" trigger="click" arrow-point-at-center>
+            <template #content>
+              <icon-select width="350px" size="small"/>
+            </template>
+            <a-button style="width: 90px">
+              <template #icon>
+                <component :is="sysMenu.icon" v-if="sysMenu.icon"/>
+              </template>
+              <a-typography v-if="!sysMenu.icon">icon</a-typography>
+            </a-button>
+          </a-popover>
+        </a-form-item>
+        <a-form-item label="显示排序">
+          <a-input-number/>
+        </a-form-item>
+<!--        隐藏二级-->
+        <a-button @click="moreSetting = !moreSetting" type="link">
+          <span v-if="!moreSetting">
+            更多<CaretDownOutlined/>
+          </span>
+          <span v-else>
+            收起<CaretUpOutlined/>
+          </span>
+        </a-button>
+        <div v-if="moreSetting">
+          <a-form-item label="菜单描述" v-if="sysMenu.menuType === 'page' && false" :wrapper-col="{span: 17}">
+            <a-input/>
+          </a-form-item>
+          <a-form-item label="路由参数" v-if="sysMenu.menuType === 'page'" :wrapper-col="{span: 17}">
+            <a-input/>
+          </a-form-item>
+          <a-row>
+            <a-col :span="12">
+              <a-form-item label="菜单状态" :label-col="{span: 8}">
+                <a-radio-group>
+                  <a-radio>正常</a-radio>
+                  <a-radio>停用</a-radio>
+                </a-radio-group>
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item label="显示菜单" v-if="sysMenu.menuType !== 'permi'" :label-col="{span: 8}">
+                <a-radio-group>
+                  <a-radio>是</a-radio>
+                  <a-radio>否</a-radio>
+                </a-radio-group>
+              </a-form-item>
+            </a-col>
+          </a-row>
+
+          <a-row v-if="sysMenu.menuType === 'page'">
+            <a-col :span="12">
+              <a-form-item label="多任务栏" :label-col="{span: 8}">
+                <a-radio-group>
+                  <a-radio>是</a-radio>
+                  <a-radio>否</a-radio>
+                </a-radio-group>
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item label="是否缓存" :label-col="{span: 8}">
+                <a-radio-group>
+                  <a-radio>是</a-radio>
+                  <a-radio>否</a-radio>
+                </a-radio-group>
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-form-item label="备注" :wrapper-col="{span: 17}">
+            <a-textarea/>
+          </a-form-item>
+        </div>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
@@ -116,9 +222,10 @@
 // 列表查询相关
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
 import {findList} from "@/api/system/menu/menu.ts";
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
+import IconSelect from "@/components/icon-select/index.vue"
 import {flattenTreeData} from "@/utils/tree.ts"
 const  {sys_menu_type,sys_status} = initDict("sys_menu_type","sys_status")
 const initSearch = () => {
@@ -210,8 +317,24 @@ const initSearch = () => {
 const { menuColumn,menuQuery,menuList,expandedRowKeys,handleExpanded } = initSearch()
 // 数据保存相关
 const initSave = () => {
-
+  const sysMenu = reactive<SysMenu>({
+    menuType: 'directory'
+  })
+  const moreSetting = ref<boolean>(false)
+  // 模态框展开关闭
+  const openSaveModal = ref<boolean>(false)
+  // 控制模态框展开关闭
+  const handleOpenModal = (menuId?: string) => {
+    openSaveModal.value = true
+  }
+  return {
+    openSaveModal,
+    moreSetting,
+    handleOpenModal,
+    sysMenu
+  }
 }
+const {openSaveModal,sysMenu,moreSetting,handleOpenModal} = initSave()
 // 数据删除相关
 const initDelete = () => {
 
