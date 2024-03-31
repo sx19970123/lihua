@@ -62,7 +62,7 @@ const segmentedData = reactive(['线框','实底','双色','自定义']);
 const segmentedValue = ref(segmentedData[0]);
 
 // v-modal
-const emits = defineEmits(['update:modelValue'])
+const emits = defineEmits(['update:modelValue','click'])
 
 const props = defineProps({
   modelValue: {
@@ -109,6 +109,7 @@ for (let path in modules) {
 // v-modal 双向绑定
 const clickIcon = (icon: string) => {
   emits('update:modelValue',icon)
+  emits('click')
 }
 
 </script>
@@ -119,14 +120,14 @@ const clickIcon = (icon: string) => {
     padding: 4px;
     border-radius: 8px;
     width: 60px;
-    height: 36px;
+    height: 32px;
     transition: all 0.2s ease;
   }
   .icon-group:hover {
     padding: 6px;
     border-radius: 8px;
     width: 60px;
-    height: 36px;
+    height: 32px;
     cursor: pointer;
     color: #ffffff;
     transition: all 0.2s ease;

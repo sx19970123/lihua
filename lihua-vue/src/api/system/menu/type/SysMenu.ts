@@ -61,6 +61,26 @@ interface SysMenu {
   linkPath?: string;
 
   /**
+   * 链接打开方式
+   */
+  linkOpenType?: string;
+
+  /**
+   * 排序
+   */
+  sort?: number;
+
+  /**
+   * 跳过 view-tag 管理
+   */
+  skip?: string;
+
+  /**
+   * 路由参数
+   */
+  query?: string;
+
+  /**
    * 子元素
    */
   children?: Array<SysMenu>

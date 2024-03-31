@@ -105,7 +105,7 @@
                 </a-select>
               </template>
               <template v-else>
-                <dict-tag :dict-data-value="text" :dict-data-option="sys_dict_tag_style"/>
+                <dict-tag :dict-data-value="text" :dict-data-option="sys_dict_tag_style" :style="{'margin-right': 0}"/>
               </template>
             </template>
             <!--          状态-->
@@ -114,12 +114,7 @@
                 <a-select-option :value="item.value" v-for="item in sys_status">{{item.label}}</a-select-option>
               </a-select>
               <template v-else>
-                <template v-if="record.status === '0'">
-                  <a-tag color="success">正常</a-tag>
-                </template>
-                <template v-if="record.status === '1'">
-                  <a-tag color="error">停用</a-tag>
-                </template>
+                <dict-tag :dict-data-value="text" :dict-data-option="sys_status" :style="{'margin-right': 0}"/>
               </template>
             </template>
             <!--          排序-->

@@ -93,6 +93,16 @@ public class SysMenu extends BaseEntity {
     private String linkPath;
 
     /**
+     * 链接打开方式
+     */
+    private String linkOpenType;
+
+    /**
+     * 排序
+     */
+    private Integer sort;
+
+    /**
      * 子元素
      */
     @TableField(exist = false)

@@ -70,10 +70,10 @@
           </template>
           <template #bodyCell="{column,record}">
             <template v-if="column.key === 'type'">
-              <dict-tag :dict-data-option="sys_dict_type" :dict-data-value="record[column.key]"/>
+              <dict-tag :dict-data-option="sys_dict_type" :dict-data-value="record[column.key]" :style="{'margin-right': 0}"/>
             </template>
             <template v-if="column.key === 'status'">
-              <dict-tag :dict-data-option="sys_status" :dict-data-value="record[column.key]"/>
+              <dict-tag :dict-data-option="sys_status" :dict-data-value="record[column.key]" :style="{'margin-right': 0}"/>
             </template>
             <template v-if="column.key === 'createTime'">
               {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
@@ -120,13 +120,14 @@
       </a-card>
     </a-flex>
     <!--    新增编辑对话框-->
-    <a-modal v-model:open="modalAction.open" ok-text="保 存"
+    <a-modal v-model:open="modalActive.open"
+             ok-text="保 存"
              cancel-text="关 闭"
-             :confirm-loading="modalAction.saveLoading"
+             :confirm-loading="modalActive.saveLoading"
              @ok="saveDictType">
       <template #title>
         <div style="margin-bottom: 24px">
-          <a-typography-title :level="4">{{modalAction.title}}</a-typography-title>
+          <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
         </div>
       </template>
       <a-form layout="horizontal"
@@ -183,6 +184,7 @@ import DictData from "./dictData/index.vue"
 import { initDict } from "@/utils/dict";
 import DictTag from "@/components/dict-tag/index.vue"
 import {useThemeStore} from "@/stores/modules/theme.ts";
+import type { TableRowSelection} from "ant-design-vue/lib/table/interface";
 const themeStore = useThemeStore()
 const { sys_status,sys_dict_type } = initDict("sys_status","sys_dict_type")
 
@@ -192,7 +194,7 @@ const initSearch = () => {
   // 选中的数据id集合
   const selectedIds = ref<Array<string>>([])
   // 列表勾选对象
-  const dictTypeRowSelectionType = {
+  const dictTypeRowSelectionType:TableRowSelection = {
     columnWidth: '55px',
     type: 'checkbox',
     // 支持跨页勾选
@@ -313,12 +315,6 @@ const {dictTypeQuery,dictTypeTotal,dictTypeList,dictTypeColumn,dictTypeRowSelect
 const initSave = () => {
   // 定义表单ref
   const formRef = ref()
-  // modal 相关属性定义
-  type modalActionType = {
-    open: boolean, // 模态框开关
-    saveLoading: boolean, // 点击保存按钮加载
-    title: string, // 模态框标题
-  }
   // 表单验证
   const formRules: Record<string, Rule[]> = {
     name: [
@@ -331,8 +327,13 @@ const initSave = () => {
         { pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/, message: '字典编码支持字母、数字、下划线，并且不能以数字开头', trigger: 'change' },
     ],
   }
-
-  const modalAction = reactive<modalActionType>( {
+  // modal 相关属性定义
+  type modalActiveType = {
+    open: boolean, // 模态框开关
+    saveLoading: boolean, // 点击保存按钮加载
+    title: string, // 模态框标题
+  }
+  const modalActive = reactive<modalActiveType>( {
     open: false,
     saveLoading: false,
     title: ''
@@ -340,27 +341,23 @@ const initSave = () => {
 
   // 控制模态框开关
   const handleModelStatus = (title?: string) => {
-    modalAction.open = !modalAction.open
+    modalActive.open = !modalActive.open
     if (title) {
-      modalAction.title = title
+      modalActive.title = title
     }
-    if (modalAction.open) {
+    if (modalActive.open) {
       resetForm()
     }
   }
 
   const dictTypeData = reactive<SysDictType>({
-    id: '',
-    name: '',
-    code: '',
     type: '0',
-    status: '0',
-    remark: ''
+    status: '0'
   })
 
   // 保存方法
   const saveDictType = async () => {
-    modalAction.saveLoading = true
+    modalActive.saveLoading = true
     try {
       await formRef.value.validate()
       const resp = await save(dictTypeData)
@@ -374,7 +371,7 @@ const initSave = () => {
     } catch (e) {
       console.error(e)
     }
-    modalAction.saveLoading = false
+    modalActive.saveLoading = false
   }
 
   const getDictType = async (id: string) => {
@@ -393,17 +390,17 @@ const initSave = () => {
   }
 
   const resetForm = () => {
-    dictTypeData.id = ''
-    dictTypeData.name = ''
-    dictTypeData.code = ''
+    dictTypeData.id = undefined
+    dictTypeData.name = undefined
+    dictTypeData.code = undefined
     dictTypeData.type =  '0'
     dictTypeData.status = '0'
-    dictTypeData.remark = ''
+    dictTypeData.remark = undefined
   }
 
   return {
     dictTypeData,
-    modalAction,
+    modalActive,
     formRules,
     handleModelStatus,
     saveDictType,
@@ -411,7 +408,7 @@ const initSave = () => {
     formRef
   }
 }
-const { dictTypeData,modalAction,formRules,handleModelStatus,saveDictType,getDictType,formRef } = initSave()
+const { dictTypeData,modalActive,formRules,handleModelStatus,saveDictType,getDictType,formRef } = initSave()
 
 // 数据删除相关
 const initDelete = () => {

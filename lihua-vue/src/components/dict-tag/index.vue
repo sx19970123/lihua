@@ -2,6 +2,7 @@
   <template v-for="item in props.dictDataOption">
 <!--    label标签-->
     <a-tag v-if="item.value === props.dictDataValue"
+           :style="props.style"
            :color="item.tagStyle"
            :bordered="props.bordered">
       <template v-if="props.fullTreeNode">
@@ -56,6 +57,10 @@ const props = defineProps({
   bordered: {
     type: Boolean,
     default: true
+  },
+  style: {
+    type: Object,
+    default: {}
   },
   // 展示树型结构全路径
   fullTreeNode: {
