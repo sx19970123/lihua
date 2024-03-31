@@ -48,9 +48,9 @@
  * VerifyPoints
  * @description 点选
  * */
-import {resetSize, _code_chars, _code_color1, _code_color2} from '../utils/util.js'
-import {aesEncrypt} from "../utils/ase.js"
-import {reqGet, reqCheck} from "../api/index.js"
+import {resetSize, _code_chars, _code_color1, _code_color2} from '../utils/util.ts'
+import {aesEncrypt} from "../utils/ase.ts"
+import {reqGet, reqCheck} from "../api/index.ts"
 import {computed, onMounted, reactive, ref, watch, nextTick, toRefs, watchEffect, getCurrentInstance} from 'vue';
 
 export default {
