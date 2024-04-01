@@ -35,7 +35,6 @@
         <a-table :columns="menuColumn"
                  :data-source="menuList"
                  :pagination="false"
-                 :row-selection="menuRowSelection"
                  row-key="id"
                  v-model:expanded-row-keys="expandedRowKeys"
                  :scroll="{ y: 500 }"
@@ -54,13 +53,6 @@
                     <PickUp v-else/>
                   </template>
                   {{!expandedRowKeys.length ? '展 开' : '折 叠'}}
-              </a-button>
-              <a-button danger>
-                <template #icon>
-                  <DeleteOutlined />
-                </template>
-                删 除
-                <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
               </a-button>
             </a-flex>
           </template>
@@ -175,15 +167,15 @@
           </a-radio-group>
         </a-form-item>
 <!--        隐藏二级-->
-        <a-button @click="moreSetting = !moreSetting" type="link">
-          <span v-if="!moreSetting">
+        <a-button @click="modalActive.moreSetting = !modalActive.moreSetting" type="link">
+          <span v-if="!modalActive.moreSetting">
             更多<CaretDownOutlined/>
           </span>
           <span v-else>
             收起<CaretUpOutlined/>
           </span>
         </a-button>
-        <div v-if="moreSetting">
+        <div v-if="modalActive.moreSetting">
           <a-form-item label="菜单描述" name="title" v-if="sysMenu.menuType === 'page' && false" :wrapper-col="{span: 17}">
             <a-input v-model:value="sysMenu.title"/>
           </a-form-item>
@@ -242,21 +234,9 @@ import DictTag from "@/components/dict-tag/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
 import {flattenTreeData} from "@/utils/tree.ts"
 import type {Rule} from "ant-design-vue/es/form";
-import {message, type TreeSelectProps} from "ant-design-vue";
-import type {TableRowSelection} from "ant-design-vue/lib/table/interface";
+import {message} from "ant-design-vue";
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {
-  // 选中的数据id集合
-  const selectedIds = ref<Array<string>>([])
-  const menuRowSelection:TableRowSelection = {
-    columnWidth: '55px',
-    type: 'checkbox',
-    checkStrictly: false, // 多选父子关联
-    selectedRowKeys: selectedIds,
-    onChange: (ids: Array<string>) => {
-      selectedIds.value = ids
-    }
-  }
   // 列表列集合
   const menuColumn:ColumnsType = [
     {
@@ -316,7 +296,7 @@ const initSearch = () => {
   const menuQuery = ref<SysMenu>({})
   // 列表元素
   const menuList = ref<Array<SysMenu>>([])
-  const parentMenuTree = ref<TreeSelectProps<SysMenu>>([])
+  const parentMenuTree = ref<Array<SysMenu>>([])
   // 默认展开的行
   const expandedRowKeys = ref<Array<string>>([])
   // 查询列表
@@ -344,19 +324,17 @@ const initSearch = () => {
   initList()
 
   return {
-    menuRowSelection,
     menuColumn,
     menuQuery,
     menuList,
     expandedRowKeys,
     parentMenuTree,
-    selectedIds,
     handleExpanded,
   }
 }
 
 
-const {menuRowSelection, menuColumn,menuQuery,menuList,expandedRowKeys,parentMenuTree,selectedIds,handleExpanded } = initSearch()
+const { menuColumn,menuQuery,menuList,expandedRowKeys,parentMenuTree,handleExpanded } = initSearch()
 // 数据保存相关
 const initSave = () => {
   // 保存的menu对象

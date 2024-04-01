@@ -184,7 +184,6 @@ import DictData from "./dictData/index.vue"
 import { initDict } from "@/utils/dict";
 import DictTag from "@/components/dict-tag/index.vue"
 import {useThemeStore} from "@/stores/modules/theme.ts";
-import type { TableRowSelection} from "ant-design-vue/lib/table/interface";
 const themeStore = useThemeStore()
 const { sys_status,sys_dict_type } = initDict("sys_status","sys_dict_type")
 
@@ -194,7 +193,7 @@ const initSearch = () => {
   // 选中的数据id集合
   const selectedIds = ref<Array<string>>([])
   // 列表勾选对象
-  const dictTypeRowSelectionType:TableRowSelection = {
+  const dictTypeRowSelectionType = {
     columnWidth: '55px',
     type: 'checkbox',
     // 支持跨页勾选
