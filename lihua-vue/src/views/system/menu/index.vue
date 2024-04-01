@@ -1,18 +1,20 @@
 <template>
   <div>
     <a-flex vertical :gap="16">
-<!--      检索条件-->
+      <!--      检索条件-->
       <a-card>
-        <a-form :colon="false">
-          <a-flex :gap="8" align="center">
-            <a-form-item class="form-item-single-line" label="菜单名称">
-              <a-input placeholder="请输入菜单名称" allowClear/>
+        <a-form :colon="false" :model="menuQuery">
+          <a-space size="small">
+            <a-form-item class="form-item-single-line" label="菜单名称" name="label">
+              <a-input placeholder="请输入菜单名称" v-model:value="menuQuery.label" allow-clear/>
             </a-form-item>
-            <a-form-item class="form-item-single-line" label="菜单状态">
-              <a-input placeholder="请输入菜单名称" allowClear/>
+            <a-form-item class="form-item-single-line" label="菜单状态" name="status">
+              <a-select style="width: 100px;" placeholder="请选择" v-model:value="menuQuery.status" allow-clear>
+                <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
+              </a-select>
             </a-form-item>
             <a-form-item class="form-item-single-line">
-              <a-button type="primary">
+              <a-button type="primary" @click="initList" :loading="tableLoad">
                 <template #icon>
                   <SearchOutlined />
                 </template>
@@ -20,24 +22,24 @@
               </a-button>
             </a-form-item>
             <a-form-item class="form-item-single-line">
-              <a-button>
+              <a-button @click="resetList" :loading="tableLoad">
                 <template #icon>
                   <RedoOutlined />
                 </template>
                 重 置
               </a-button>
             </a-form-item>
-          </a-flex>
+          </a-space>
         </a-form>
       </a-card>
-<!--      列表-->
-      <a-card :body-style="{padding: 0}">
+      <!--      列表-->
+      <a-card :body-style="{ padding: 0 }">
         <a-table :columns="menuColumn"
                  :data-source="menuList"
                  :pagination="false"
                  row-key="id"
                  v-model:expanded-row-keys="expandedRowKeys"
-                 :scroll="{ y: 500 }"
+                 :loading="tableLoad"
         >
           <template #title>
             <a-flex :gap="8">
@@ -48,28 +50,28 @@
                 新 增
               </a-button>
               <a-button type="primary" @click="handleExpanded">
-                  <template #icon>
-                    <Unfold v-if="expandedRowKeys.length === 0"/>
-                    <PickUp v-else/>
-                  </template>
-                  {{!expandedRowKeys.length ? '展 开' : '折 叠'}}
+                <template #icon>
+                  <Unfold v-if="expandedRowKeys.length === 0"/>
+                  <PickUp v-else/>
+                </template>
+                {{!expandedRowKeys.length ? '展 开' : '折 叠'}}
               </a-button>
             </a-flex>
           </template>
           <template #bodyCell = "{column,text,record}">
-<!--            图标-->
+            <!--            图标-->
             <template v-if="column.key === 'icon'">
               <component :is="text"/>
             </template>
-<!--            类型-->
+            <!--            类型-->
             <template v-if="column.key === 'menuType'">
               <dict-tag :dict-data-value="text" :dict-data-option="sys_menu_type" :style="{'margin-right': 0}"/>
             </template>
-<!--            状态-->
+            <!--            状态-->
             <template v-if="column.key === 'status'">
               <dict-tag :dict-data-value="text" :dict-data-option="sys_status" :style="{'margin-right': 0}"/>
             </template>
-<!--            操作-->
+            <!--            操作-->
             <template v-if="column.key === 'action'">
               <a-button type="link" size="small" @click="getMenu(record.id)">
                 <template #icon>
@@ -89,6 +91,7 @@
                             ok-text="确 定"
                             cancel-text="取 消"
                             placement="bottomRight"
+                            @confirm="handleDelete(record.id)"
               >
                 <a-button type="link" danger size="small">
                   <template #icon>
@@ -102,7 +105,7 @@
         </a-table>
       </a-card>
     </a-flex>
-<!--    模态框-->
+    <!--    模态框-->
     <a-modal v-model:open="modalActive.open"
              ok-text="保 存"
              cancel-text="关 闭"
@@ -151,11 +154,18 @@
           <a-input-number v-model:value="sysMenu.sort" style="width: 120px;" placeholder="升序排列"/>
         </a-form-item>
         <a-form-item label="菜单图标" name="icon" v-if="sysMenu.menuType !== 'perms'" :wrapper-col="{span: 16}">
-          <a-popover trigger="click" v-model:open="modalActive.openIconSelect">
+          <a-popover trigger="click"
+                     destroyTooltipOnHide
+                     v-model:open="modalActive.openIconSelect"
+          >
             <template #content>
-              <icon-select width="350px" max-height="300px" size="small" v-model="sysMenu.icon" @click="modalActive.openIconSelect = false"/>
+              <icon-select width="350px"
+                           max-height="300px"
+                           size="small"
+                           v-model="sysMenu.icon"
+                           @click="modalActive.openIconSelect = false"/>
             </template>
-            <a-button :aria-readonly="true">
+            <a-button>
               <component :is="sysMenu.icon" v-if="sysMenu.icon"/>
               <a-typography v-else class="icon-btn-placeholder-style">点击选择图标</a-typography>
             </a-button>
@@ -166,7 +176,7 @@
             <a-radio v-for="item in sys_link_menu_open_type" :value="item.value">{{item.label}}</a-radio>
           </a-radio-group>
         </a-form-item>
-<!--        隐藏二级-->
+        <!--        隐藏二级-->
         <a-button @click="modalActive.moreSetting = !modalActive.moreSetting" type="link">
           <span v-if="!modalActive.moreSetting">
             更多<CaretDownOutlined/>
@@ -227,8 +237,8 @@
 
 // 列表查询相关
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {findById, findList} from "@/api/system/menu/menu.ts";
-import {reactive, ref} from "vue";
+import {deleteByIds, findById, findList, save} from "@/api/system/menu/menu.ts";
+import {reactive, ref, watch} from "vue";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
@@ -299,8 +309,11 @@ const initSearch = () => {
   const parentMenuTree = ref<Array<SysMenu>>([])
   // 默认展开的行
   const expandedRowKeys = ref<Array<string>>([])
+  // 列表加载中loading
+  const tableLoad = ref<boolean>(false)
   // 查询列表
   const initList = async () => {
+    tableLoad.value = true
     const resp = await findList(menuQuery.value)
     // 列表数据
     menuList.value = resp.data
@@ -310,7 +323,14 @@ const initSearch = () => {
       id: '0',
       children: menuList.value
     }]
+    tableLoad.value = false
   }
+
+  const resetList = async () => {
+    menuQuery.value = {}
+    await initList()
+  }
+
   // 展开折叠
   const handleExpanded = () => {
     if (expandedRowKeys.value.length == 0) {
@@ -329,12 +349,15 @@ const initSearch = () => {
     menuList,
     expandedRowKeys,
     parentMenuTree,
+    tableLoad,
     handleExpanded,
+    initList,
+    resetList
   }
 }
 
 
-const { menuColumn,menuQuery,menuList,expandedRowKeys,parentMenuTree,handleExpanded } = initSearch()
+const { menuColumn,menuQuery,menuList,expandedRowKeys,parentMenuTree,tableLoad,handleExpanded,initList,resetList } = initSearch()
 // 数据保存相关
 const initSave = () => {
   // 保存的menu对象
@@ -397,7 +420,7 @@ const initSave = () => {
       resetForm()
     }
   }
-
+  // 根据id获取菜单数据
   const getMenu = async (id:string) => {
     const resp = await findById(id)
     if (resp.code === 200) {
@@ -407,12 +430,11 @@ const initSave = () => {
       message.error(resp.msg)
     }
   }
-
+  // 新增下级
   const addChildren = (pid: string) => {
     handleModelStatus('新增菜单')
     sysMenu.value.parentId = pid
   }
-
   // 重置表单
   const resetForm = () => {
     sysMenu.value = {
@@ -425,11 +447,12 @@ const initSave = () => {
       skip: '0'
     }
   }
+
   // 保存菜单
   const saveMenu = async () => {
     await formRef.value.validate()
-    console.log(sysMenu)
-
+    const resp = await save(sysMenu.value)
+    console.log(resp)
   }
   return {
     modalActive,
@@ -443,9 +466,16 @@ const initSave = () => {
   }
 }
 const {modalActive,sysMenu,menuRules,formRef,getMenu,handleModelStatus,addChildren,saveMenu} = initSave()
-// 数据删除相关
-const initDelete = () => {
 
+// 数据删除相关
+const handleDelete = async (id: string) => {
+  const resp = await deleteByIds([id])
+  if (resp.code === 200) {
+    message.success(resp.msg)
+    await initList()
+  } else {
+    message.error(resp.msg)
+  }
 }
 </script>
 

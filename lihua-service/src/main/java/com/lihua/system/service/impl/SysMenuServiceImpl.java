@@ -1,8 +1,7 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lihua.exception.ServiceException;
 import com.lihua.model.security.RouterVO;
 import com.lihua.system.entity.SysMenu;
 import com.lihua.system.mapper.SysMenuMapper;
@@ -32,7 +31,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
 
         if (StringUtils.hasText(sysMenuDTO.getStatus())) {
-            queryWrapper.lambda().eq(SysMenu::getLabel,sysMenuDTO.getStatus());
+            queryWrapper.lambda().eq(SysMenu::getStatus,sysMenuDTO.getStatus());
         }
 
         List<SysMenu> sysMenus = sysMenuMapper.selectList(queryWrapper);
@@ -72,6 +71,7 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public void deleteByIds(List<String> ids) {
+        checkChildren(ids);
         sysMenuMapper.deleteBatchIds(ids);
     }
 
@@ -81,5 +81,20 @@ public class SysMenuServiceImpl implements SysMenuService {
         // 设置name属性
         sysMenuVOS.forEach(item -> item.setName(com.lihua.utils.string.StringUtils.initialUpperCase(item.getPath().replaceFirst("/",""))));
         return TreeUtil.buildTree(sysMenuVOS);
+    }
+
+    /**
+     * 验证删除数据是否有未删除的子集
+     * @param ids
+     */
+    private void checkChildren(List<String> ids) {
+        QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().in(SysMenu::getParentId,ids)
+                .eq(SysMenu::getDelFlag,"0");
+        Long count = sysMenuMapper.selectCount(queryWrapper);
+
+        if (count != 0) {
+            throw new ServiceException("存在子集不允许删除");
+        }
     }
 }

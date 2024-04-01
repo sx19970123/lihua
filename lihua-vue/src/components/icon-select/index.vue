@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import {type Component, computed, type PropType, reactive, ref} from "vue";
+import {type Component, computed, onMounted, type PropType, reactive, ref} from "vue";
 import * as Icons from "@ant-design/icons-vue";
 
 // 读取icon目录下图标
@@ -62,7 +62,7 @@ const segmentedData = reactive(['线框','实底','双色','自定义']);
 const segmentedValue = ref(segmentedData[0]);
 
 // v-modal
-const emits = defineEmits(['update:modelValue','click'])
+const emits = defineEmits(['update:modelValue','click','loadComplete'])
 
 const props = defineProps({
   modelValue: {
@@ -111,7 +111,10 @@ const clickIcon = (icon: string) => {
   emits('update:modelValue',icon)
   emits('click')
 }
-
+// 组件初始化完成
+onMounted(() => {
+  emits('loadComplete')
+})
 </script>
 <style>
 /* 小 */

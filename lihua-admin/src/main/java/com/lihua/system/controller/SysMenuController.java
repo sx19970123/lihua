@@ -34,7 +34,7 @@ public class SysMenuController extends BaseController {
     }
 
     @PostMapping
-    public String save(SysMenu sysMenu) {
+    public String save(@RequestBody SysMenu sysMenu) {
         return success(sysMenuService.save(sysMenu));
     }
 

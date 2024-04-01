@@ -185,7 +185,10 @@ public class SysDictDataServiceImpl implements SysDictDataService {
 
     private void checkChildren(List<String> ids) {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().in(SysDictData::getParentId,ids);
+        queryWrapper
+                .lambda()
+                .in(SysDictData::getParentId,ids)
+                .eq(SysDictData::getDelFlag,"0");
         Long count = sysDictDataMapper.selectCount(queryWrapper);
         if (count != 0) {
             throw new ServiceException("存在子集不允许删除");
@@ -195,7 +198,8 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     private void checkStatus(List<String> ids) {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().in(SysDictData::getId,ids)
-                .eq(SysDictData::getStatus,"0");
+                .eq(SysDictData::getStatus,"0")
+                .eq(SysDictData::getDelFlag,"0");
         Long count = sysDictDataMapper.selectCount(queryWrapper);
         if (count != 0) {
             throw new ServiceException("字典数据状态正常不允许删除");
