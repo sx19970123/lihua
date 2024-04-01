@@ -110,7 +110,6 @@ const closeTab = (key: string) => {
  * 添加keep-alive 缓存（当前路由）
  */
 const addKeepAliveCache = () => {
-  console.log(!route?.meta?.noCache)
   if (!route?.meta?.noCache && route?.meta?.componentName) {
     viewTabsStore.setComponentsKeepAlive(route?.meta?.componentName as string)
   }

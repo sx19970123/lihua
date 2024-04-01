@@ -242,7 +242,7 @@ import {reactive, ref, watch} from "vue";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
-import {flattenTreeData} from "@/utils/tree.ts"
+import {findAncestorsOfNodeInTree, findParentData, flattenTreeData} from "@/utils/tree.ts"
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
@@ -452,8 +452,14 @@ const initSave = () => {
   const saveMenu = async () => {
     await formRef.value.validate()
     const resp = await save(sysMenu.value)
-    console.log(resp)
+    message.success(resp.msg)
+    if (resp.code === 200) {
+      await initList()
+    }
   }
+
+
+
   return {
     modalActive,
     formRef,

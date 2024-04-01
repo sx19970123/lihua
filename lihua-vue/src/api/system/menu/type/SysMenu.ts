@@ -24,6 +24,10 @@ interface SysMenu {
    */
   routerPath?: string;
   /**
+   * page类型数据从父级到子节点的路由地址拼接
+   */
+  routerPathKey?: string;
+  /**
    * 组建路径
    */
   componentPath?: string;

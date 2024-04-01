@@ -97,4 +97,11 @@ public class SysMenuServiceImpl implements SysMenuService {
             throw new ServiceException("存在子集不允许删除");
         }
     }
+
+    // 构建前端用到的树型结构，同时生成routerPathKey
+    private void generateSysMenuTree(List<RouterVO> sysMenuVOS) {
+//        sysMenuVOS.forEach(item -> {
+//            if (item.getId())
+//        });
+    }
 }
