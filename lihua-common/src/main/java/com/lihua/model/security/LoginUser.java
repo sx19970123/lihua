@@ -49,7 +49,7 @@ public class LoginUser implements UserDetails {
     /**
      * view tags收藏记录表
      */
-    private List<SysStarViewVO> starViewVOList;
+    private List<SysViewTabVO> starViewVOList;
 
     /**
      * token 缓存过期时间

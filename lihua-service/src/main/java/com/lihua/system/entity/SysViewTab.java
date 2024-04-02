@@ -5,7 +5,7 @@ import lombok.Data;
  * 才对呢
  */
 @Data
-public class SysStarView {
+public class SysViewTab {
     /**
      * 用户id
      */
@@ -14,7 +14,7 @@ public class SysStarView {
     /**
      * 路由key
      */
-    private String routerPathKey;
+    private String menuId;
 
     /**
      * 是否固定

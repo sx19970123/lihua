@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.security.RouterVO;
-import com.lihua.model.security.SysStarViewVO;
-import com.lihua.system.entity.SysStarView;
+import com.lihua.model.security.SysViewTabVO;
+import com.lihua.system.entity.SysViewTab;
 import com.lihua.system.mapper.SysMenuMapper;
-import com.lihua.system.mapper.SysStarViewMapper;
-import com.lihua.system.service.SysStarViewService;
+import com.lihua.system.mapper.SysViewTabMapper;
+import com.lihua.system.service.SysViewTabService;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserMgmt;
 import jakarta.annotation.Resource;
@@ -20,75 +20,74 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class SysStarViewServiceImpl implements SysStarViewService {
+public class SysViewTabServiceImpl implements SysViewTabService {
 
     @Resource
     private SysMenuMapper sysMenuMapper;
 
     @Resource
-    private SysStarViewMapper sysUserStarViewMapper;
+    private SysViewTabMapper sysUserStarViewMapper;
 
     @Override
-    public List<SysStarViewVO> selectByUserId(String userId) {
+    public List<SysViewTabVO> selectByUserId(String userId) {
         // 获取当前用户菜单数据
         List<RouterVO> routerVOList = sysMenuMapper.selectPermsByUserId(userId);
 
         // 获取收藏菜单数据
-        QueryWrapper<SysStarView> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(SysStarView::getUserId,userId)
-                .in(SysStarView::getRouterPathKey,
+        QueryWrapper<SysViewTab> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysViewTab::getUserId,userId)
+                .in(SysViewTab::getUserId,
                         routerVOList
                         .stream()
                         .filter(routerVO -> "page".equals(routerVO.getType()))
-                        .map(RouterVO::getKey)
+                        .map(RouterVO::getId)
                         .collect(Collectors.toSet())
-                ).and(wrapper -> wrapper.eq(SysStarView::getAffix,"1").or().eq(SysStarView::getStar,"1"));
+                ).and(wrapper -> wrapper.eq(SysViewTab::getAffix,"1").or().eq(SysViewTab::getStar,"1"));
 
-        List<SysStarView> sysUserStarViews = sysUserStarViewMapper.selectList(queryWrapper);
+        List<SysViewTab> sysUserStarViews = sysUserStarViewMapper.selectList(queryWrapper);
 
         // 数据组合
-        List<SysStarViewVO> viewVOS = new ArrayList<>();
+        List<SysViewTabVO> viewVOS = new ArrayList<>();
         routerVOList
                 .stream()
                 .filter(route -> "page".equals(route.getType()))
                 .forEach(route -> {
-                    SysStarViewVO sysUserStarViewVO = new SysStarViewVO();
-                    sysUserStarViewVO
+                    SysViewTabVO sysViewTabVO = new SysViewTabVO();
+                    sysViewTabVO
                             .setLabel(route.getMeta().getLabel())
                             .setIcon(route.getMeta().getIcon())
                             .setRouterPathKey(route.getKey())
-                            .setQuery(route.getQuery());
+                            .setQuery(route.getQuery())
+                            .setMenuId(route.getId());
                     // 判断是否进行收藏/固定
                     sysUserStarViews.forEach(star -> {
-                        if (star.getRouterPathKey().equals(route.getKey())) {
-                            sysUserStarViewVO
-                                    .setStar("1".equals(star.getStar()))
-                                    .setAffix("1".equals(star.getAffix()));
+                        if (star.getMenuId().equals(route.getId())) {
+                            sysViewTabVO.setStar("1".equals(star.getStar())).setAffix("1".equals(star.getAffix()));
                         }
                     });
 
-                    viewVOS.add(sysUserStarViewVO);
+                    viewVOS.add(sysViewTabVO);
                 });
 
         return viewVOS;
     }
 
     @Override
-    public SysStarViewVO save(SysStarView sysStarView) {
-        UpdateWrapper<SysStarView> updateWrapper = new UpdateWrapper<>();
+    public SysViewTabVO save(SysViewTab sysStarView) {
+        UpdateWrapper<SysViewTab> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda()
-                .eq(SysStarView::getUserId, LoginUserContext.getUserId())
-                .eq(SysStarView::getRouterPathKey,sysStarView.getRouterPathKey());
+                .eq(SysViewTab::getUserId, LoginUserContext.getUserId())
+                .eq(SysViewTab::getMenuId,sysStarView.getMenuId());
         boolean flag = true;
 
         if (StringUtils.hasText(sysStarView.getAffix())) {
             flag = false;
-            updateWrapper.lambda().set(SysStarView::getAffix,sysStarView.getAffix());
+            updateWrapper.lambda().set(SysViewTab::getAffix,sysStarView.getAffix());
         }
 
         if (StringUtils.hasText(sysStarView.getStar())) {
             flag = false;
-            updateWrapper.lambda().set(SysStarView::getStar,sysStarView.getStar());
+            updateWrapper.lambda().set(SysViewTab::getStar,sysStarView.getStar());
         }
 
         if (flag) {
@@ -104,10 +103,10 @@ public class SysStarViewServiceImpl implements SysStarViewService {
         }
 
         // 重新设置loginUserContext
-        SysStarViewVO starView = null;
+        SysViewTabVO starView = null;
         LoginUser loginUser = LoginUserContext.getLoginUser();
-        for (SysStarViewVO starViewVO : loginUser.getStarViewVOList()) {
-            if (starViewVO.getRouterPathKey().equals(sysStarView.getRouterPathKey())) {
+        for (SysViewTabVO starViewVO : loginUser.getStarViewVOList()) {
+            if (starViewVO.getMenuId().equals(sysStarView.getMenuId())) {
                 starViewVO.setAffix("1".equals(sysStarView.getAffix()))
                         .setStar("1".equals(sysStarView.getStar()));
                 starView = starViewVO;

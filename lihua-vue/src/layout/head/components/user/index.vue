@@ -53,7 +53,7 @@ import { useUserStore } from "@/stores/modules/user";
 import { useRouter } from "vue-router";
 import {message} from "ant-design-vue";
 import {reloadData} from "@/api/system/login/login.ts";
-import {reloadLoginUser} from "@/utils/permission.ts";
+import {reloadLoginUser} from "@/utils/user.ts";
 
 const userStore = useUserStore()
 const router = useRouter()

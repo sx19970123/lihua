@@ -6,15 +6,20 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * 收藏 view tags 表
+ * 收藏 view tag 表
  */
 @Data
 @Accessors(chain = true)
-public class SysStarViewVO implements Serializable {
+public class SysViewTabVO implements Serializable {
     /**
      * 页面名称
      */
     private String label;
+
+    /**
+     * 菜单id
+     */
+    private String menuId;
 
     /**
      * 图标

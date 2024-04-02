@@ -25,6 +25,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
          * @param staticRoutes
          */
         initTotalViewTabs(starViewVOList: Array<StarViewType>, staticRoutes: any[]): void {
+            console.log("starViewVOList",starViewVOList)
             // 过滤获取 Layout 为父级的静态路由
             let layoutRoutes =  staticRoutes.filter(route => route.component === Layout)
             // 生成 key

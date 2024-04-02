@@ -3,13 +3,11 @@ package com.lihua.system.service.impl;
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
 import com.lihua.model.security.*;
-import com.lihua.enums.SysBaseEnum;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysMenuService;
-import com.lihua.system.service.SysStarViewService;
+import com.lihua.system.service.SysViewTabService;
 import com.lihua.utils.security.JwtUtils;
-import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserMgmt;
 import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,7 +34,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     private SysRoleMapper sysRoleMapper;
 
     @Resource
-    private SysStarViewService sysStarViewService;
+    private SysViewTabService sysViewTabService;
 
     @Resource
     private LihuaConfig lihuaConfig;
@@ -64,14 +62,29 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         // 角色信息
         List<SysRoleVO> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
         // 收藏/固定菜单
-        List<SysStarViewVO> starViewVOList = sysStarViewService.selectByUserId(id);
+        List<SysViewTabVO> viewTabVOS = sysViewTabService.selectByUserId(id);
+        // 收藏固定菜单赋值 routerPathKey
+        handleSetViewTabKey(viewTabVOS,routerVOList);
 
         loginUser
             .setRouterList(routerVOList)
             .setSysRoleList(sysRoles)
-            .setStarViewVOList(starViewVOList);
+            .setStarViewVOList(viewTabVOS);
 
         // 设置redis缓存
         LoginUserMgmt.setLoginUserCache(loginUser);
+    }
+
+    private void handleSetViewTabKey(List<SysViewTabVO> viewTabVOS,List<RouterVO> routerVOList) {
+        routerVOList.forEach(item -> {
+            if (item.getChildren() != null && !item.getChildren().isEmpty()) {
+                handleSetViewTabKey(viewTabVOS,item.getChildren());
+                viewTabVOS.forEach(tab -> {
+                    if (item.getId().equals(tab.getMenuId())) {
+                        tab.setRouterPathKey(item.getKey());
+                    }
+                });
+            }
+        });
     }
 }
