@@ -52,11 +52,6 @@ public class SysMenu extends BaseEntity {
     private String componentPath;
 
     /**
-     * page类型数据从父级到子节点的路由地址拼接（前端导航使用）
-     */
-    private String routerPathKey;
-
-    /**
      * 是否显示（0显示、1隐藏）
      */
     private String visible;

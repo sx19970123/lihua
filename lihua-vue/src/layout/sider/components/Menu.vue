@@ -1,7 +1,7 @@
 <template>
     <template v-for="item in routers.data">
 <!--      页面-->
-      <template v-if="item.type !== 'menu' && (item.children === null || typeof item.component === 'function')">
+      <template v-if="item.type !== 'directory' && (item.children === null || typeof item.component === 'function')">
         <a-menu-item :key="item.key" :title="item.meta ? item.meta.title : ''" :danger="item.danger">
           <template #icon>
             <component :is="item.meta ? item.meta.icon : ''"/>

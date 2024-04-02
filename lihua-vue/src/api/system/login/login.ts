@@ -28,3 +28,10 @@ export const logout = () => {
         method: 'post'
     })
 }
+
+export const reloadData = () => {
+    return request({
+        url: '/system/reloadData',
+        method: 'post'
+    })
+}

@@ -38,7 +38,7 @@ public interface SysMenuService {
 
 
     /**
-     * 通过用户 id 获取菜单信息
+     * 用户登录时通过 id获取用户菜单信息
      * @return
      */
     List<RouterVO> selectSysMenuByLoginUserId(String userId);

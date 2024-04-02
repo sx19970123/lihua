@@ -61,7 +61,7 @@ const routers = [
     ],
   },
   {
-    path: '',
+    path: '/',
     component: Layout,
     hidden: true,
     children: [

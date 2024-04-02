@@ -6,7 +6,7 @@ import request from "@/utils/request";
  */
 export const findList = (data:SysMenu) => {
   return request({
-    url: 'sys/menu/list',
+    url: 'system/menu/list',
     method: 'post',
     data: data
   })
@@ -18,7 +18,7 @@ export const findList = (data:SysMenu) => {
  */
 export const findById = (id: string) => {
   return request({
-    url: 'sys/menu/' + id,
+    url: 'system/menu/' + id,
     method: 'get'
   })
 }
@@ -29,7 +29,7 @@ export const findById = (id: string) => {
  */
 export const save = (data:SysMenu) => {
   return request({
-    url: 'sys/menu',
+    url: 'system/menu',
     method: 'post',
     data: data
   })
@@ -41,7 +41,7 @@ export const save = (data:SysMenu) => {
  */
 export const deleteByIds = (ids: Array<string>) => {
   return request({
-    url: 'sys/menu',
+    url: 'system/menu',
     method: 'delete',
     data: ids
   })

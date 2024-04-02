@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("sys/menu")
+@RequestMapping("system/menu")
 public class SysMenuController extends BaseController {
 
     @Resource

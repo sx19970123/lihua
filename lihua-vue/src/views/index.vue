@@ -13,10 +13,9 @@
 <script setup lang="ts">
 import spin from "@/components/spin";
 import { LoadingOutlined } from '@ant-design/icons-vue';
-import {h} from "vue";
+import {h, onMounted} from "vue";
 import dictTag from "@/components/dict-tag/index.vue"
 import {initDict} from "@/utils/dict";
-
 
 const {tree_test} = initDict("tree_test")
 

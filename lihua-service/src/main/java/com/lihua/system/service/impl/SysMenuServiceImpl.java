@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -80,7 +82,27 @@ public class SysMenuServiceImpl implements SysMenuService {
         List<RouterVO> sysMenuVOS = sysMenuMapper.selectPermsByUserId(userId);
         // 设置name属性
         sysMenuVOS.forEach(item -> item.setName(com.lihua.utils.string.StringUtils.initialUpperCase(item.getPath().replaceFirst("/",""))));
-        return TreeUtil.buildTree(sysMenuVOS);
+        List<RouterVO> routerVOList = TreeUtil.buildTree(sysMenuVOS);
+        // 设置层级key
+        handleRouterPathKey(routerVOList, null);
+        return routerVOList;
+    }
+    // 处理 routerPathKey
+    private void handleRouterPathKey(List<RouterVO> routerVOList,String parentKey) {
+        for (RouterVO item : routerVOList) {
+            String key = item.getPath().startsWith("/") ? item.getPath() : "/" + item.getPath();
+            // 根据菜单层级关系设置key
+            if ("0".equals(item.getParentId())) {
+                item.setKey(key);
+            } else if (parentKey != null){
+                item.setKey(parentKey + key);
+            }
+            item.setPath(item.getKey());
+            // 存在子集继续递归
+            if (item.getChildren() != null && !item.getChildren().isEmpty()) {
+               handleRouterPathKey(item.getChildren(),item.getKey());
+            }
+        }
     }
 
     /**
@@ -98,10 +120,4 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
     }
 
-    // 构建前端用到的树型结构，同时生成routerPathKey
-    private void generateSysMenuTree(List<RouterVO> sysMenuVOS) {
-//        sysMenuVOS.forEach(item -> {
-//            if (item.getId())
-//        });
-    }
 }

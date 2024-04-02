@@ -10,7 +10,6 @@
         <result column="query" property="query"/>
         <result column="component_path" property="component"/>
         <result column="menu_type" property="type"/>
-        <result column="router_path_key" property="key"/>
         <association property="meta" javaType="com.lihua.model.security.MetaVO">
             <result column="label" property="label"/>
             <result column="title" property="title"/>
@@ -35,7 +34,6 @@
             sys_menu.perms,
             sys_menu.icon,
             sys_menu.link_path,
-            sys_menu.router_path_key,
             sys_menu.query,
             CASE sys_menu.no_cache
             WHEN '0' THEN TRUE

@@ -28,9 +28,9 @@ export const findAncestorsOfNodeInTree = <T> (tree: Array<T>,
                                               key: string,
                                               children: string = 'children',
                                               id: string = 'id',
-                                              pId:string = 'parentId'): string => {
+                                              pId:string = 'parentId') => {
   for (let i = 0; i < tree.length; i++) {
-    const item = tree[i]
+    const item:any = tree[i]
     if (item[id] !== key) {
       if (item[children] && item[children].length > 0) {
         const pKey = findAncestorsOfNodeInTree(item[children],resultList,key,children,id,pId)

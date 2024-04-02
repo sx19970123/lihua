@@ -455,9 +455,9 @@ const initSave = () => {
     message.success(resp.msg)
     if (resp.code === 200) {
       await initList()
+      modalActive.open = false
     }
   }
-
 
 
   return {

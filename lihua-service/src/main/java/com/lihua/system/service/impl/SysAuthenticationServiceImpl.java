@@ -47,7 +47,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(sysUserVO.getUsername(), sysUserVO.getPassword()));
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         // 处理登录用户信息，将用户基本数据存入 LoginUser 后存入 redis
-        handleLoginInfo(loginUser);
+        cacheUserLoginDetails(loginUser);
         // 根据username 生成jwt 返回
         return JwtUtils.create(loginUser.getSysUserVO().getId());
     }
@@ -56,7 +56,8 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
      * 根据业务需要，可将用户数据存入 LoginUser 业务中可直接获取使用
      * @param loginUser
      */
-    private void handleLoginInfo(LoginUser loginUser) {
+    @Override
+    public void cacheUserLoginDetails(LoginUser loginUser) {
         String id = loginUser.getSysUserVO().getId();
         // 菜单router信息
         List<RouterVO> routerVOList = sysMenuService.selectSysMenuByLoginUserId(id);

@@ -52,18 +52,22 @@ import UserAvatar from "@/components/user-avatar/index.vue"
 import { useUserStore } from "@/stores/modules/user";
 import { useRouter } from "vue-router";
 import {message} from "ant-design-vue";
+import {reloadData} from "@/api/system/login/login.ts";
+import {reloadLoginUser} from "@/utils/permission.ts";
 
 const userStore = useUserStore()
 const router = useRouter()
 // 处理点击个人中心按钮
-const handleClickMenu = ({key}: {key: string}) => {
+const handleClickMenu = async ({key}: {key: string}) => {
   switch (key) {
     case 'user-center': {
       userInfo()
       break
     }
     case 'user-data-update': {
-      message.success("更新成功")
+      const resp = await reloadData()
+      await reloadLoginUser()
+      message.success(resp.msg)
       break
     }
     case 'logout': {
