@@ -75,9 +75,9 @@ interface SysMenu {
   sort?: number;
 
   /**
-   * 跳过 view-tag 管理
+   * 跳过 view-tab 管理
    */
-  skip?: string;
+  viewTab?: string;
 
   /**
    * 路由参数

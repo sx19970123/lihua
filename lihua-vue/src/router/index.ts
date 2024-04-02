@@ -39,7 +39,7 @@ interface MetaConfig {
   icon?: string | Component,
   affix?: boolean,
   viewTabSort: number,
-  skip?: boolean
+  viewTab?: boolean
 }
 
 const routers = [
@@ -55,7 +55,7 @@ const routers = [
       {
         path: '/index',
         component: () => import("@/views/index.vue"),
-        meta: { label: '首页', icon: 'FastBackwardOutlined', affix: true, viewTabSort: 1 }
+        meta: { label: '首页', icon: 'FastBackwardOutlined', affix: true, viewTabSort: 1,viewTab: true }
 
       }
     ],
@@ -68,7 +68,7 @@ const routers = [
       {
         path: '/user',
         component: () => import("@/views/system/profile/index.vue"),
-        meta: { label: '个人中心', icon: 'UserOutlined',noCache: false, componentName: 'index'},
+        meta: { label: '个人中心', icon: 'UserOutlined',noCache: false, componentName: 'index',viewTab: true },
       }
     ]
   },

@@ -26,7 +26,7 @@
         <a-switch v-model:checked="themeStore.affixHead" @change="themeStore.changeAffixHead()"></a-switch>
       </a-form-item>
       <a-form-item label="多任务栏">
-        <a-switch v-model:checked="themeStore.showViewTags"/>
+        <a-switch v-model:checked="themeStore.showViewTabs"/>
       </a-form-item>
       <a-divider/>
 

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import Layout from "@/layout/index.vue";
-import type { StarViewType,RecentType } from "@/api/system/star-view/type/starView"
+import type { StarViewType,RecentType } from "@/api/system/view-tab/type/SysViewTab.ts"
 import type {RouterType} from "@/api/system/profile/type/router";
 import dayjs from "dayjs";
 export const useViewTabsStore = defineStore('viewTabs',{
@@ -25,7 +25,6 @@ export const useViewTabsStore = defineStore('viewTabs',{
          * @param staticRoutes
          */
         initTotalViewTabs(starViewVOList: Array<StarViewType>, staticRoutes: any[]): void {
-            console.log("starViewVOList",starViewVOList)
             // 过滤获取 Layout 为父级的静态路由
             let layoutRoutes =  staticRoutes.filter(route => route.component === Layout)
             // 生成 key
@@ -74,8 +73,8 @@ export const useViewTabsStore = defineStore('viewTabs',{
             return this.$state.viewTabs[index]
         },
         // 选中tab页，skip跳过不进行view-tab 管理
-        selectedViewTab(key: string,skip: boolean) {
-            if (!skip) {
+        selectedViewTab(key: string,viewTab: boolean) {
+            if (viewTab) {
                 const tab = this.getTotalTabByKey(key)
                 if (tab) {
                     // 包含
@@ -250,7 +249,7 @@ const handleAddTabCache = (tab: StarViewType) => {
     if (recentTabs === null) {
         localStorage.setItem(viewTabStore.$state.tabCacheKey ,JSON.stringify([
             {
-                openTime: dayjs().format('yyyy-MM-dd HH:mm'),
+                openTime: dayjs().format('YYYY-MM-DD HH:mm'),
                 icon: tab.icon,
                 label: tab.label,
                 path: tab.routerPathKey

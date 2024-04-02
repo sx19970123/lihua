@@ -19,7 +19,6 @@ export const reloadLoginUser = () => {
   const usePermission = usePermissionStore()
   const useViewTabs = useViewTabsStore()
   const useTheme = useThemeStore()
-
   return new Promise((resolve, reject) => {
     userStore.getUserInfo().then((resp: ResponseType<UserInfoType>) => {
       const metaRouterList = resp.data?.routerList || []
@@ -34,7 +33,6 @@ export const reloadLoginUser = () => {
       useViewTabs.setViewCacheKey(resp.data?.username || '')
       // 初始化系统主题
       useTheme.init(resp.data.sysUserVO.theme)
-
       resolve('load success')
     }).catch(err => {
       reject(err)

@@ -22,7 +22,7 @@
       </a-layout-sider>
       <!--    菜单开合开关-->
       <a-layout-content>
-        <ViewTabs class="hsr-view-tabs" v-if="themeStore.showViewTags" :style="{'background': themeStore.layoutBackgroundColor}"/>
+        <ViewTabs class="hsr-view-tabs" v-if="themeStore.showViewTabs" :style="{'background': themeStore.layoutBackgroundColor}"/>
         <!--内容-->
         <Content class="hsr-content layout-content"/>
       </a-layout-content>

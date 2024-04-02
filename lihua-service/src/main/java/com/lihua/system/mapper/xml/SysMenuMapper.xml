@@ -17,7 +17,7 @@
             <result column="no_cache" property="noCache"/>
             <result column="component_name" property="componentName"/>
             <result column="link_path" property="link"/>
-            <result column="skip" property="skip"/>
+            <result column="view_tab" property="viewTab"/>
         </association>
     </resultMap>
 
@@ -39,10 +39,10 @@
             WHEN '0' THEN TRUE
             WHEN '1' THEN FALSE
             END AS no_cache,
-            CASE sys_menu.skip
+            CASE sys_menu.view_tab
                 WHEN '0' THEN TRUE
                 WHEN '1' THEN FALSE
-            END AS skip
+            END AS view_tab
         FROM
         sys_menu
             INNER JOIN sys_role_menu ON sys_role_menu.menu_id = sys_menu.id

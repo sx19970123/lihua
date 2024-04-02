@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("system/viewTag")
-public class SysStarViewController extends BaseController {
+@RequestMapping("system/viewTab")
+public class SysViewTabController extends BaseController {
 
     @Resource
     private SysViewTabService sysViewTabService;

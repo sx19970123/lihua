@@ -63,7 +63,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         List<SysRoleVO> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
         // 收藏/固定菜单
         List<SysViewTabVO> viewTabVOS = sysViewTabService.selectByUserId(id);
-        // 收藏固定菜单赋值 routerPathKey
+        // viewTab赋值routerPathKey
         handleSetViewTabKey(viewTabVOS,routerVOList);
 
         loginUser
@@ -76,15 +76,16 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     }
 
     private void handleSetViewTabKey(List<SysViewTabVO> viewTabVOS,List<RouterVO> routerVOList) {
-        routerVOList.forEach(item -> {
-            if (item.getChildren() != null && !item.getChildren().isEmpty()) {
-                handleSetViewTabKey(viewTabVOS,item.getChildren());
-                viewTabVOS.forEach(tab -> {
-                    if (item.getId().equals(tab.getMenuId())) {
-                        tab.setRouterPathKey(item.getKey());
-                    }
-                });
-            }
+        viewTabVOS.forEach(tab -> {
+            routerVOList.forEach(item -> {
+                if (item.getId().equals(tab.getMenuId())) {
+                    tab.setRouterPathKey(item.getKey());
+                }
+                if (item.getChildren() != null && !item.getChildren().isEmpty()) {
+                    handleSetViewTabKey(viewTabVOS,item.getChildren());
+                }
+            });
         });
+
     }
 }

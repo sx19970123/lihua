@@ -7,7 +7,7 @@ export default {
     /**
      * 默认语言
      */
-    defaultLocalLanguage: 'zh_CN',
+    defaultLocalLanguage: 'cn',
     /**
      * 暗色模式
      */
@@ -89,7 +89,7 @@ export default {
     /**
      * 显示多窗口标签
      */
-    showViewTags: true,
+    showViewTabs: true,
 
     /**
      * 侧边颜色 light / dark

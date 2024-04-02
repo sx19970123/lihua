@@ -13,7 +13,7 @@
       </a-flex>
     </a-layout-header>
     <!--多标签-->
-    <ViewTabs class="hct-view-tabs" v-if="themeStore.showViewTags" :style="{background: themeStore.layoutBackgroundColor}" style="padding-top: 6px"/>
+    <ViewTabs class="hct-view-tabs" v-if="themeStore.showViewTabs" :style="{background: themeStore.layoutBackgroundColor}" style="padding-top: 6px"/>
     <a-layout-content>
       <!--内容-->
       <Content class="layout-content"/>

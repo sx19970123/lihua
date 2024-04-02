@@ -42,6 +42,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
         if (routerVOList == null || routerVOList.isEmpty()) {
             throw new PermissionDeniedDataAccessException(ResultCodeEnum.getDefaultExceptionMessage(ResultCodeEnum.NO_ACCESS_ERROR) ,null);
         }
+        // 过滤出用户权限信息
         List<String> perms = routerVOList.stream()
                 .map(RouterVO::getPerms)
                 .filter(StringUtils::hasText)

@@ -50,13 +50,15 @@
 <script setup lang="ts">
 import UserAvatar from "@/components/user-avatar/index.vue"
 import { useUserStore } from "@/stores/modules/user";
-import { useRouter } from "vue-router";
+import { useRouter,useRoute } from "vue-router";
 import {message} from "ant-design-vue";
 import {reloadData} from "@/api/system/login/login.ts";
 import {reloadLoginUser} from "@/utils/user.ts";
+import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
 
 const userStore = useUserStore()
 const router = useRouter()
+const route = useRoute()
 // 处理点击个人中心按钮
 const handleClickMenu = async ({key}: {key: string}) => {
   switch (key) {
@@ -66,13 +68,38 @@ const handleClickMenu = async ({key}: {key: string}) => {
     }
     case 'user-data-update': {
       const resp = await reloadData()
-      await reloadLoginUser()
-      message.success(resp.msg)
+      if (resp.code === 200) {
+        reloadLoginUser()
+            .then(() => {
+              // 重新加载ViewTag，逻辑与ViewTag组件内相同
+              initViewTag()
+              message.success(resp.msg)
+            })
+            .catch((err) => message.error('拉取用户信息失败：' + err))
+      } else {
+        message.error(resp.msg)
+      }
       break
     }
     case 'logout': {
       logout()
       break
+    }
+  }
+}
+// 重新加载ViewTag
+const initViewTag = () => {
+  const viewTabsStore = useViewTabsStore()
+  if (route?.meta?.viewTab) {
+    viewTabsStore.selectedViewTab(route.path,route?.meta?.viewTab)
+  }
+  // 跳过标签管理
+  else {
+    // 当前组件为跳过，默认选中其父组件
+    const unSkipList =  route.matched.filter(item => item?.meta?.viewTab && item.path !== '/')
+    if (unSkipList && unSkipList.length > 0) {
+      // 选中接收view-tabs托管的父组件
+      viewTabsStore.selectedViewTab(unSkipList[unSkipList.length - 1].path, route?.meta?.viewTab)
     }
   }
 }

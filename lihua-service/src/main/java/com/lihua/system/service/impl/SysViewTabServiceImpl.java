@@ -36,7 +36,7 @@ public class SysViewTabServiceImpl implements SysViewTabService {
         // 获取收藏菜单数据
         QueryWrapper<SysViewTab> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(SysViewTab::getUserId,userId)
-                .in(SysViewTab::getUserId,
+                .in(SysViewTab::getMenuId,
                         routerVOList
                         .stream()
                         .filter(routerVO -> "page".equals(routerVO.getType()))
@@ -62,7 +62,9 @@ public class SysViewTabServiceImpl implements SysViewTabService {
                     // 判断是否进行收藏/固定
                     sysUserStarViews.forEach(star -> {
                         if (star.getMenuId().equals(route.getId())) {
-                            sysViewTabVO.setStar("1".equals(star.getStar())).setAffix("1".equals(star.getAffix()));
+                            sysViewTabVO
+                                    .setStar("1".equals(star.getStar()))
+                                    .setAffix("1".equals(star.getAffix()));
                         }
                     });
 

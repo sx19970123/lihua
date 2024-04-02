@@ -47,7 +47,7 @@ export const useThemeStore = defineStore('theme',{
         /**
          * 显示多窗口标签
          */
-        const showViewTags: boolean = settings.showViewTags
+        const showViewTabs: boolean = settings.showViewTabs
 
         /**
          * 侧边颜色 light / dark
@@ -76,7 +76,7 @@ export const useThemeStore = defineStore('theme',{
 
         return {
             layoutType,
-            showViewTags,
+            showViewTabs,
             dataDark,
             colorPrimary,
             siderTheme,
@@ -160,8 +160,8 @@ export const useThemeStore = defineStore('theme',{
             document.documentElement.setAttribute("layout-type", this.$state.layoutType)
         },
         // 显示多窗口页面
-        changeShowViewTags(value: boolean) {
-            this.$state.showViewTags = value
+        changeShowViewTabs(value: boolean) {
+            this.$state.showViewTabs = value
         },
         // 导航类型
         changeSiderMode(value: string) {
@@ -226,7 +226,7 @@ export const useThemeStore = defineStore('theme',{
         // 主题复原
         resetState() {
             this.$state.layoutType = settings.layoutType
-            this.$state.showViewTags = settings.showViewTags
+            this.$state.showViewTabs = settings.showViewTabs
             this.$state.dataDark = settings.dataDark
             this.$state.colorPrimary = settings.colorPrimary
             this.$state.siderTheme = settings.siderTheme

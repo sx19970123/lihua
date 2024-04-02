@@ -68,7 +68,7 @@
 <script setup lang="ts">
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import {ref, watch} from "vue";
-import type {RecentType, StarViewType} from "@/api/system/star-view/type/starView";
+import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import dayjs from "dayjs";
 const viewTabsStore = useViewTabsStore()
 const emits = defineEmits(['routeSkip','cancelKeepAlive'])

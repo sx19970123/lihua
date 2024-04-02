@@ -29,7 +29,7 @@ import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
 import {computed, watch} from "vue";
 import { useRoute,useRouter } from "vue-router";
 import {useViewTabsStore} from "@/stores/modules/viewTabs";
-import type {StarViewType} from "@/api/system/star-view/type/starView";
+import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 const viewTabsStore = useViewTabsStore()
 const route = useRoute()
 const router = useRouter()
@@ -37,16 +37,18 @@ const router = useRouter()
  * 初始化数据及变量
  */
 const init = () => {
-  if (route?.meta?.skip) {
+  // 通过viewTab进行标签管理
+  if (route?.meta?.viewTab) {
+    viewTabsStore.selectedViewTab(route.path,route?.meta?.viewTab)
+  }
+  // 跳过标签管理
+  else {
     // 当前组件为跳过，默认选中其父组件
-    const unSkipList =  route.matched.filter(item => !item?.meta?.skip && item.path !== '/')
-    if (unSkipList) {
+    const unSkipList =  route.matched.filter(item => item?.meta?.viewTab && item.path !== '/')
+    if (unSkipList && unSkipList.length > 0) {
       // 选中接收view-tabs托管的父组件
-      viewTabsStore.selectedViewTab(unSkipList[unSkipList.length - 1].path, true)
+      viewTabsStore.selectedViewTab(unSkipList[unSkipList.length - 1].path, route?.meta?.viewTab)
     }
-  } else {
-    // 选中当前
-    viewTabsStore.selectedViewTab(route.path,false)
   }
 
   // 初始化数据
@@ -66,7 +68,7 @@ const {viewTabs, activeKey} = init()
  */
 watch(() => route.path,(value) => {
   // 切换tab
-  viewTabsStore.selectedViewTab(value,!!route?.meta?.skip)
+  viewTabsStore.selectedViewTab(value,route?.meta?.viewTab)
   // 添加keepalive缓存
   addKeepAliveCache()
 })

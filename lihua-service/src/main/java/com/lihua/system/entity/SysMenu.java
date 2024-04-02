@@ -103,6 +103,11 @@ public class SysMenu extends BaseEntity {
     private Integer sort;
 
     /**
+     * 展示在viewTab
+     */
+    private String viewTab;
+
+    /**
      * 子元素
      */
     @TableField(exist = false)

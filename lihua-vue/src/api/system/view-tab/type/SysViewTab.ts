@@ -5,7 +5,7 @@ export interface StarViewType {
     routerPathKey: string,
     star: boolean | null,
     static?: boolean | null,
-    skip?: boolean,
+    viewTab?: boolean,
     query: string
 }
 

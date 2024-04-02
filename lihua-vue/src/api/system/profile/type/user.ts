@@ -1,6 +1,6 @@
 import type { RouterType } from "@/api/system/profile/type/router"
 import type { RoleType } from "@/api/system/profile/type/role"
-import type { StarViewType } from "@/api/system/star-view/type/starView"
+import type { StarViewType } from "@/api/system/view-tab/type/SysViewTab.ts"
 import type { AuthorType } from "@/api/system/profile/type/author"
 
 /**

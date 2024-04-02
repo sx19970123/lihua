@@ -17,7 +17,7 @@
       <a-layout-header class="shr-layout-header"
                        :style="{'background': themeStore.layoutBackgroundColor}">
         <Head/>
-        <ViewTabs  v-if="themeStore.showViewTags"/>
+        <ViewTabs  v-if="themeStore.showViewTabs"/>
       </a-layout-header>
       <a-layout-content class="layout-content">
         <!--内容-->
