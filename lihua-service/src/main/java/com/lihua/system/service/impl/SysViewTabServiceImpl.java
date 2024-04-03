@@ -39,7 +39,7 @@ public class SysViewTabServiceImpl implements SysViewTabService {
                 .in(SysViewTab::getMenuId,
                         routerVOList
                         .stream()
-                        .filter(routerVO -> "page".equals(routerVO.getType()))
+                        .filter(routerVO -> "page".equals(routerVO.getType()) || "link".equals(routerVO.getType()))
                         .map(RouterVO::getId)
                         .collect(Collectors.toSet())
                 ).and(wrapper -> wrapper.eq(SysViewTab::getAffix,"1").or().eq(SysViewTab::getStar,"1"));
@@ -50,7 +50,7 @@ public class SysViewTabServiceImpl implements SysViewTabService {
         List<SysViewTabVO> viewVOS = new ArrayList<>();
         routerVOList
                 .stream()
-                .filter(route -> "page".equals(route.getType()))
+                .filter(route -> "page".equals(route.getType()) || "link".equals(route.getType()))
                 .forEach(route -> {
                     SysViewTabVO sysViewTabVO = new SysViewTabVO();
                     sysViewTabVO
@@ -107,7 +107,7 @@ public class SysViewTabServiceImpl implements SysViewTabService {
         // 重新设置loginUserContext
         SysViewTabVO starView = null;
         LoginUser loginUser = LoginUserContext.getLoginUser();
-        for (SysViewTabVO starViewVO : loginUser.getStarViewVOList()) {
+        for (SysViewTabVO starViewVO : loginUser.getViewTabVOList()) {
             if (starViewVO.getMenuId().equals(sysStarView.getMenuId())) {
                 starViewVO.setAffix("1".equals(sysStarView.getAffix()))
                         .setStar("1".equals(sysStarView.getStar()));

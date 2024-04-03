@@ -1,6 +1,4 @@
-/**
-    滚动条
- */
+/* 滚动条 */
 .scrollbar {
     overflow: auto;
 }
@@ -17,11 +15,24 @@
 }
 
 
-/**
-    通用布局
- */
-.sider-height {
-    height: 100vh;
+/* 根据不同样式布局，设置最小的显示窗口高度 */
+[layout-type=header-content][view-tabs=show] .layout-content {
+    min-height: calc(100vh - (64px + 60px + 16px + 16px));
+}
+[layout-type=header-content][view-tabs=hide] .layout-content {
+    min-height: calc(100vh - (64px + 16px + 16px));
+}
+[layout-type=header-sider][view-tabs=show] .layout-content {
+    min-height: calc(100vh - (48px + 60px + 16px + 16px));
+}
+[layout-type=header-sider][view-tabs=hide] .layout-content {
+    min-height: calc(100vh - (48px + 16px + 16px));
+}
+[layout-type=sider-header][view-tabs=show] .layout-content {
+    min-height: calc(100vh - (48px + 60px + 16px + 16px));
+}
+[layout-type=sider-header][view-tabs=hide] .layout-content {
+    min-height: calc(100vh - (48px + 16px + 16px));
 }
 .layout-content {
     margin: 16px;
@@ -34,9 +45,7 @@
     cursor: pointer;
 }
 
-/**
-    侧边导航布局
- */
+/** 侧边导航布局 */
 [data-head-affix = affix] {
     .shr-layout-header {
         position: sticky;
@@ -45,9 +54,7 @@
     }
 }
 
-/**
-    混合布局
- */
+/** 混合布局 */
 [data-head-affix = affix] {
     .hsr-layout-header {
         position: fixed;
@@ -58,6 +65,7 @@
     .hsr-layout-sider {
         position: sticky;
         padding-top: 48px;
+        height: calc(100vh - 48px);
         z-index: 2;
         top: 0;
         box-shadow: 2px 0 8px rgba(29,35,41,0.1);
@@ -74,8 +82,8 @@
     .hsr-content {
         margin-top: 64px;
     }
-
 }
+
 [data-head-affix = un-affix] {
     .hsr-layout-header {
         position: static;
@@ -84,6 +92,7 @@
     }
     .hsr-layout-sider {
         position: sticky;
+        height: calc(100vh - 48px);
         z-index: 1;
         top: 0;
         box-shadow: 2px 0 8px rgba(29,35,41,0.1);
@@ -93,9 +102,7 @@
     }
 }
 
-/**
-    顶部导航布局
- */
+/** 顶部导航布局 */
 [data-head-affix = affix] {
     .hct-layout-header {
         position: sticky;
@@ -111,9 +118,7 @@
     }
 }
 
-/**
-    顶部右侧鼠标悬停修改背景颜色
- */
+/** 顶部右侧鼠标悬停修改背景颜色 */
 [data-dark = 'light']{
     .header-right:hover {
         background: #f3f3f3;
@@ -125,11 +130,10 @@
         background: #292929;
     }
 }
-/**
-    暗色风格顶部导航custom="dark"
- */
+/** 暗色风格顶部导航custom="dark"  */
 [header-content-dark = 'dark'] {
     .header-right:hover {
         background: #1a2c3d;
     }
 }
+

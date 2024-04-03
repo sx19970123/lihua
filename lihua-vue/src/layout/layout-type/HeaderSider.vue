@@ -9,7 +9,7 @@
     </a-layout-header>
 
     <a-layout>
-      <a-layout-sider class="hsr-layout-sider sider-height scrollbar"
+      <a-layout-sider class="hsr-layout-sider scrollbar"
                       :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                       :theme="themeStore.siderTheme"
                       :width="themeStore.siderWith"

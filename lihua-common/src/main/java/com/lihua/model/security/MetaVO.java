@@ -27,6 +27,12 @@ public class MetaVO implements Serializable {
     // 外联地址
     private String link;
 
+    // 外链打开方式
+    private String linkOpenType;
+
     // 在viewTab中展示
     private Boolean viewTab;
+
+    // 菜单类型
+    private String menuType;
 }

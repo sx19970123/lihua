@@ -99,6 +99,7 @@ export const useThemeStore = defineStore('theme',{
             this.changeLayoutType()
             this.changeAffixHead()
             this.changeGroundGlass()
+            this.changeShowViewTabs()
         },
         // 通过json数据初始化state
         initState(themeJson: string | null) {
@@ -160,8 +161,13 @@ export const useThemeStore = defineStore('theme',{
             document.documentElement.setAttribute("layout-type", this.$state.layoutType)
         },
         // 显示多窗口页面
-        changeShowViewTabs(value: boolean) {
-            this.$state.showViewTabs = value
+        changeShowViewTabs() {
+            const viewTabs = this.$state.showViewTabs
+            if (viewTabs) {
+                document.documentElement.setAttribute("view-tabs", "show")
+            } else {
+                document.documentElement.setAttribute("view-tabs", "hide")
+            }
         },
         // 导航类型
         changeSiderMode(value: string) {

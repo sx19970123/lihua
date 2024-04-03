@@ -21,10 +21,10 @@ export const useViewTabsStore = defineStore('viewTabs',{
     actions: {
         /**
          * 数据初始化
-         * @param starViewVOList
+         * @param viewTabVOList
          * @param staticRoutes
          */
-        initTotalViewTabs(starViewVOList: Array<StarViewType>, staticRoutes: any[]): void {
+        initTotalViewTabs(viewTabVOList: Array<StarViewType>, staticRoutes: any[]): void {
             // 过滤获取 Layout 为父级的静态路由
             let layoutRoutes =  staticRoutes.filter(route => route.component === Layout)
             // 生成 key
@@ -37,7 +37,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
             // 生成viewTab对象
             if (hasKeyRoutComponentList.length > 0) {
                 hasKeyRoutComponentList.forEach(route => {
-                    starViewVOList.unshift({
+                    viewTabVOList.unshift({
                         label: route.meta.label,
                         icon: route.meta.icon,
                         affix: route.meta.affix,
@@ -50,7 +50,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
             }
 
             // 全量数据
-            this.$state.totalViewTabs = starViewVOList
+            this.$state.totalViewTabs = viewTabVOList
             // 默认显示数据
             this.$state.viewTabs = this.$state.totalViewTabs.filter(tab => tab.affix)
         },

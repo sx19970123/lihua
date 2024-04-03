@@ -69,7 +69,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         loginUser
             .setRouterList(routerVOList)
             .setSysRoleList(sysRoles)
-            .setStarViewVOList(viewTabVOS);
+            .setViewTabVOList(viewTabVOS);
 
         // 设置redis缓存
         LoginUserMgmt.setLoginUserCache(loginUser);

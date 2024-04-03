@@ -138,7 +138,7 @@
         <a-form-item label="菜单名称" :wrapper-col="{span: 16}" name="label">
           <a-input v-model:value="sysMenu.label" placeholder="请输入菜单名称" :maxlength="30" allowClear/>
         </a-form-item>
-        <a-form-item label="路由地址" name="routerPath" v-if="sysMenu.menuType === 'directory' || sysMenu.menuType === 'page'" :wrapper-col="{span: 16}">
+        <a-form-item label="路由地址" name="routerPath" v-if="sysMenu.menuType !== 'perms'" :wrapper-col="{span: 16}">
           <a-input v-model:value="sysMenu.routerPath" placeholder="浏览器地址栏访问的路由地址" :maxlength="100" allowClear/>
         </a-form-item>
         <a-form-item label="组件路径" name="componentPath" v-if="sysMenu.menuType === 'page'" :wrapper-col="{span: 16}">
@@ -205,16 +205,17 @@
               </a-form-item>
             </a-col>
           </a-row>
-          <a-row v-if="sysMenu.menuType === 'page'">
+          <a-row>
             <a-col :span="12">
-              <a-form-item label="多任务栏" name="skip" :label-col="{span: 8}">
-                <a-radio-group v-model:value="sysMenu.skip">
+              <a-form-item label="多任务栏" name="skip" :label-col="{span: 8}"
+                           v-if="sysMenu.menuType === 'page' || (sysMenu.menuType === 'link' && sysMenu.linkOpenType === 'inner')">
+                <a-radio-group v-model:value="sysMenu.viewTab">
                   <a-radio v-for="item in sys_whether" :value="item.value">{{item.label}}</a-radio>
                 </a-radio-group>
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="是否缓存" name="noCache" :label-col="{span: 8}">
+              <a-form-item label="是否缓存" name="noCache" :label-col="{span: 8}"  v-if="sysMenu.menuType === 'page'">
                 <a-radio-group v-model:value="sysMenu.noCache">
                   <a-radio v-for="item in sys_whether" :value="item.value">{{item.label}}</a-radio>
                 </a-radio-group>
@@ -222,7 +223,7 @@
             </a-col>
           </a-row>
           <a-form-item label="路由参数" name="query" v-if="sysMenu.menuType === 'page'" :wrapper-col="{span: 17}">
-            <a-textarea placeholder="访问路由的默认参数，格式为json字符串" v-model="sysMenu.query" :rows="1" :maxlength="100" allowClear/>
+            <a-textarea placeholder="访问路由的默认参数，格式为json字符串" v-model:value="sysMenu.query" :rows="1" :maxlength="100" allowClear/>
           </a-form-item>
           <a-form-item label="备注" name="remark" :wrapper-col="{span: 17}">
             <a-textarea :maxlength="500" :rows="2" v-model="sysMenu.remark" allowClear placeholder="请输入备注信息"/>
@@ -238,11 +239,11 @@
 // 列表查询相关
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
 import {deleteByIds, findById, findList, save} from "@/api/system/menu/menu.ts";
-import {reactive, ref, watch} from "vue";
+import {reactive, ref} from "vue";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
-import {findAncestorsOfNodeInTree, findParentData, flattenTreeData} from "@/utils/tree.ts"
+import { flattenTreeData} from "@/utils/tree.ts"
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
@@ -369,7 +370,7 @@ const initSave = () => {
     ],
     routerPath: [
       { required: true, message: '请输入路由地址',trigger: 'change' },
-      { pattern: /^(?!.*\/{2})[A-Za-z0-9_/-]*$/, message: '请输入正确的路由地址',trigger: 'change' }
+      { pattern: /^\/(?!.*\/{2})[A-Za-z0-9_/-]*$/, message: '请输入正确的路由地址，需以/开头',trigger: 'change' }
     ],
     sort: [
       { required: true, message: '请输入显示顺序',trigger: 'change' }
@@ -378,7 +379,6 @@ const initSave = () => {
       { required: true, message: '请输入组件路径',trigger: 'change' },
       { pattern: /^[A-Za-z0-9]+(?:[./][A-Za-z0-9]+)*\.vue$/,message: '请输入正确的组件路径',trigger: 'change' }
     ],
-
     linkPath: [
       { required: true, message: '请输入链接地址',trigger: 'change' },
       { pattern: /^https?:\/\//, message: '请输入链接地址',trigger: 'change' }
@@ -386,6 +386,19 @@ const initSave = () => {
     perms: [
       { required: true, message: '请输入权限标识',trigger: 'change' },
       { pattern: /^[A-Za-z0-9:]*$/, message: '请输入正确的权限标识',trigger: 'change' }
+    ],
+    query: [
+      { validator: (rule: any,value: string,callback:Function) => {
+          try {
+            if (value) {
+              JSON.parse(value)
+            }
+          } catch (e) {
+            callback(new Error("请输入正确的json数据"))
+          }
+          callback()
+        } ,trigger: 'blur'
+      }
     ]
   }
 
@@ -444,7 +457,7 @@ const initSave = () => {
       status: '0',
       linkOpenType: 'inner',
       parentId: '0',
-      skip: '0'
+      viewTab: '0'
     }
   }
 

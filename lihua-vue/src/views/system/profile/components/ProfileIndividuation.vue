@@ -7,26 +7,26 @@
         <head-theme-switch/>
       </a-form-item>
       <a-form-item label="主题颜色">
-        <color-select v-model:items="colorList" v-model="themeStore.colorPrimary" @click="themeStore.changeColorPrimary()"/>
+        <color-select v-model:items="colorList" v-model="themeStore.colorPrimary" @click="themeStore.changeColorPrimary"/>
       </a-form-item>
       <a-form-item label="导航颜色" v-if="!themeStore.dataDark">
-        <nav-color-select v-model="themeStore.siderTheme" @click="themeStore.changeSiderTheme()"/>
+        <nav-color-select v-model="themeStore.siderTheme" @click="themeStore.changeSiderTheme"/>
       </a-form-item>
       <a-divider/>
 
       <!-- 布局设置 -->
       <a-typography-title :level="5">布局设置</a-typography-title>
       <a-form-item label="导航类型">
-        <nav-select v-model="themeStore.layoutType" @click="themeStore.changeLayoutType()"/>
+        <nav-select v-model="themeStore.layoutType" @click="themeStore.changeLayoutType"/>
       </a-form-item>
       <a-form-item label="导航宽度" v-if="themeStore.layoutType !== 'header-content'">
-        <a-slider v-model:value="themeStore.siderWith" @change="themeStore.changeSiderWidth()" dots :max="400" :min="80" :step="20" style="width: 230px"></a-slider>
+        <a-slider v-model:value="themeStore.siderWith" @change="themeStore.changeSiderWidth" dots :max="400" :min="80" :step="20" style="width: 230px"></a-slider>
       </a-form-item>
       <a-form-item label="固定头部">
-        <a-switch v-model:checked="themeStore.affixHead" @change="themeStore.changeAffixHead()"></a-switch>
+        <a-switch v-model:checked="themeStore.affixHead" @change="themeStore.changeAffixHead"></a-switch>
       </a-form-item>
       <a-form-item label="多任务栏">
-        <a-switch v-model:checked="themeStore.showViewTabs"/>
+        <a-switch v-model:checked="themeStore.showViewTabs" @change="themeStore.changeShowViewTabs"/>
       </a-form-item>
       <a-divider/>
 

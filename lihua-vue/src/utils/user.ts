@@ -2,6 +2,7 @@ import type {ResponseType} from "@/api/type.ts";
 import type {UserInfoType} from "@/api/system/profile/type/user.ts";
 import Layout from "@/layout/index.vue";
 import MiddleView from "@/components/middle-view/index.vue"
+import IFrame from "@/components/iframe/index.vue";
 
 import router from "@/router";
 import {useUserStore} from "@/stores/modules/user.ts";
@@ -28,7 +29,7 @@ export const reloadLoginUser = () => {
       // 初始化用户菜单数据
       usePermission.initMenu(metaRouterList, staticRoutes as any[])
       // 初始化totalViewTabs数据
-      useViewTabs.initTotalViewTabs(resp.data?.starViewVOList || [], staticRoutes as any[])
+      useViewTabs.initTotalViewTabs(resp.data?.viewTabVOList || [], staticRoutes as any[])
       // 设置最近使用组件的缓存key值
       useViewTabs.setViewCacheKey(resp.data?.username || '')
       // 初始化系统主题
@@ -76,6 +77,8 @@ const handleRouterComponent = (metaRouterList: Array<RouterType>) => {
         // 页面下有子页面的情况
         if (route.type === 'page') {
           handleSetComponent(route)
+        } else if (route.type === 'link') {
+          route.component = IFrame
         } else {
           // 顶级节点
           if (route.parentId === '0') {
@@ -90,7 +93,12 @@ const handleRouterComponent = (metaRouterList: Array<RouterType>) => {
       }
       // 页面组件设置 component
       else {
-        handleSetComponent(route)
+        if (route.type === 'link') {
+          route.component = IFrame
+        } else {
+          handleSetComponent(route)
+        }
+
       }
     })
   }

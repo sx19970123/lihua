@@ -18,6 +18,8 @@
             <result column="component_name" property="componentName"/>
             <result column="link_path" property="link"/>
             <result column="view_tab" property="viewTab"/>
+            <result column="menu_type" property="menuType"/>
+            <result column="link_open_type" property="linkOpenType"/>
         </association>
     </resultMap>
 
@@ -35,6 +37,8 @@
             sys_menu.icon,
             sys_menu.link_path,
             sys_menu.query,
+            sys_menu.menu_type,
+            sys_menu.link_open_type,
             CASE sys_menu.no_cache
             WHEN '0' THEN TRUE
             WHEN '1' THEN FALSE

@@ -39,7 +39,8 @@ interface MetaConfig {
   icon?: string | Component,
   affix?: boolean,
   viewTabSort: number,
-  viewTab?: boolean
+  viewTab?: boolean,
+  menuType?: string
 }
 
 const routers = [

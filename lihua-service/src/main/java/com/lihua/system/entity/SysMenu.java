@@ -108,6 +108,11 @@ public class SysMenu extends BaseEntity {
     private String viewTab;
 
     /**
+     * 路由
+     */
+    private String query;
+
+    /**
      * 子元素
      */
     @TableField(exist = false)

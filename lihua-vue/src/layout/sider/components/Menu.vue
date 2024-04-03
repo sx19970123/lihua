@@ -1,12 +1,24 @@
 <template>
-    <template v-for="item in routers.data">
+    <template v-for="item in props.data">
 <!--      页面-->
       <template v-if="item.type !== 'directory' && (item.children === null || typeof item.component === 'function')">
         <a-menu-item :key="item.key" :title="item.meta ? item.meta.title : ''" :danger="item.danger">
+          <!--图标-->
           <template #icon>
             <component :is="item.meta ? item.meta.icon : ''"/>
           </template>
-          <router-link :to="item.key">
+          <!--外部链接-->
+          <a-typography-link v-if="item.type === 'link' && item.meta.linkOpenType === 'new-page'"
+                             target="_blank"
+                             :href="item.meta.link"
+          >
+            {{item.meta ? item.meta.label : ''}}
+          </a-typography-link>
+          <!--内部组件-->
+          <router-link v-else :to="{
+            path: item.key,
+            query: item.query? JSON.parse(item.query): {}
+          }">
             {{item.meta ? item.meta.label : ''}}
           </router-link>
         </a-menu-item>
@@ -14,6 +26,7 @@
 <!--    菜单-->
       <template v-else>
         <a-sub-menu :title="item.meta? item.meta.label : ''" :key="item.key">
+          <!--图标-->
           <template #icon>
             <component :is="item.meta? item.meta.icon : ''"/>
           </template>
@@ -23,27 +36,6 @@
     </template>
 </template>
 <script lang="ts" setup>
-import type {Component} from "vue";
-
-interface MetaType {
-  noCache?: boolean,
-  label?: string,
-  title?: string,
-  icon?: string | Component,
-  affix?: boolean,
-  type?: string,
-  menuShow?: boolean
-}
-interface MenuType {
-  path: string | null,
-  meta: MetaType,
-  component: Component | null,
-  children: Array<MenuType> | null,
-  type: string | null,
-  key: string,
-  danger: boolean
-}
-
-const routers = defineProps(['data'])
+const props = defineProps(['data'])
 </script>
 

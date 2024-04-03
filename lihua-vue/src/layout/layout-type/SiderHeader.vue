@@ -1,6 +1,6 @@
 <template>
   <a-layout style="min-height: 100vh">
-    <a-layout-sider class="shr-layout-sider sider-height scrollbar"
+    <a-layout-sider class="shr-layout-sider scrollbar"
                     :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                     :theme="themeStore.siderTheme"
                     :trigger="null"
@@ -52,6 +52,7 @@ const permission = usePermissionStore()
 }
 .shr-layout-sider {
   position: sticky;
+  height: 100vh;
   top: 0px;
   z-index: 2;
   box-shadow: 2px 0 8px rgba(29,35,41,0.05);
@@ -59,6 +60,7 @@ const permission = usePermissionStore()
   -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 .logo {
+  position: sticky;
   margin: 16px;
 }
 </style>

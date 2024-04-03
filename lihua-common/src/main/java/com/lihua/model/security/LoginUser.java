@@ -47,9 +47,9 @@ public class LoginUser implements UserDetails {
     private List<SysRoleVO> sysRoleList;
 
     /**
-     * view tags收藏记录表
+     * view_tabs 集合
      */
-    private List<SysViewTabVO> starViewVOList;
+    private List<SysViewTabVO> viewTabVOList;
 
     /**
      * token 缓存过期时间

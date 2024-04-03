@@ -39,7 +39,7 @@ const router = useRouter()
 const init = () => {
   // 通过viewTab进行标签管理
   if (route?.meta?.viewTab) {
-    viewTabsStore.selectedViewTab(route.path,route?.meta?.viewTab)
+    viewTabsStore.selectedViewTab(route.path,route?.meta?.viewTab as boolean)
   }
   // 跳过标签管理
   else {
@@ -47,7 +47,7 @@ const init = () => {
     const unSkipList =  route.matched.filter(item => item?.meta?.viewTab && item.path !== '/')
     if (unSkipList && unSkipList.length > 0) {
       // 选中接收view-tabs托管的父组件
-      viewTabsStore.selectedViewTab(unSkipList[unSkipList.length - 1].path, route?.meta?.viewTab)
+      viewTabsStore.selectedViewTab(unSkipList[unSkipList.length - 1].path, route?.meta?.viewTab as boolean)
     }
   }
 
@@ -68,7 +68,7 @@ const {viewTabs, activeKey} = init()
  */
 watch(() => route.path,(value) => {
   // 切换tab
-  viewTabsStore.selectedViewTab(value,route?.meta?.viewTab)
+  viewTabsStore.selectedViewTab(value,route?.meta?.viewTab as boolean)
   // 添加keepalive缓存
   addKeepAliveCache()
 })
@@ -139,9 +139,7 @@ const routeSkip = (tab: StarViewType) => {
   if (query) {
     router.push({
       path: routerPathKey as string,
-      query: {
-        ... JSON.parse(query)
-      }
+      query: JSON.parse(query)
     })
   } else {
     router.push(routerPathKey as string)
