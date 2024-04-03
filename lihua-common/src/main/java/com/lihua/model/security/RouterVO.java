@@ -27,9 +27,6 @@ public class RouterVO implements Serializable {
     // 默认的 query 参数
     private String query;
 
-    // 自定义的元数据
-    private MetaVO meta;
-
     // 用户权限标识
     private String perms;
 
@@ -38,6 +35,9 @@ public class RouterVO implements Serializable {
 
     // page类型数据从父级到子节点的路由地址拼接
     private String key;
+
+    // 自定义的元数据
+    private MetaVO meta;
 
     // 子菜单 / 子页面
     private List<RouterVO> children;
