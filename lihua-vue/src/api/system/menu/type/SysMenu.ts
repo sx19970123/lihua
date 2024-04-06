@@ -56,9 +56,9 @@ interface SysMenu {
    */
   remark?: string;
   /**
-   * 不进行页面缓存(0缓存、1不缓存)
+   * 页面缓存(0缓存、1不缓存)
    */
-  noCache?: string;
+  cache?: string;
   /**
    * 外链类型地址
    */

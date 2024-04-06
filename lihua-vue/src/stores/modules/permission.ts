@@ -28,23 +28,16 @@ export const usePermissionStore = defineStore('permission',{
 })
 
 const init = (metaRouterList: Array<RouterType>, staticRoutes: any[]): Array<RouterType> => {
-    const staticRouters = generateKey(staticRoutes ,'',true)
+    const staticRouters = generateKey(staticRoutes ,'')
     return handleOnlyChild(staticRouters).concat(metaRouterList)
 }
 /**
  * 处理 router/index 中静态路由，生成 key （路由path拼接）
  * @param routers
  */
-const generateKey = (routers: any[] , key: string, filter: boolean): Array<RouterType> => {
-    let menuShowList: Array<RouterType>
-    if (filter) {
-        menuShowList = routers.filter(route => route.hidden !== true)
-    } else {
-        menuShowList = routers
-    }
-
-    if (menuShowList.length > 0) {
-        menuShowList.forEach(menuItem => {
+const generateKey = (routers: any[] , key: string): Array<RouterType> => {
+    if (routers.length > 0) {
+        routers.forEach(menuItem => {
             // 处理path
             menuItem.path = menuItem.path === null ? '' : menuItem.path
             menuItem.path = menuItem.path.startsWith("/") ? menuItem.path.substring(1): menuItem.path
@@ -56,14 +49,14 @@ const generateKey = (routers: any[] , key: string, filter: boolean): Array<Route
             }
 
             if (menuItem.children && menuItem.children.length > 0) {
-                const child = generateKey(menuItem.children, menuItem.key, filter)
+                const child = generateKey(menuItem.children, menuItem.key)
                 menuItem.children = child === null ? [] : child
             } else {
                 menuItem.children = []
             }
         })
     }
-    return menuShowList
+    return routers
 }
 
 /**

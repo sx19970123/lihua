@@ -18,9 +18,6 @@ public class MetaVO implements Serializable {
     // 导航图标
     private String icon;
 
-    // keep-alive 缓存 默认false，设置为true 则不进行缓存
-    private Boolean noCache;
-
     // 组件名称
     private String componentName;
 
@@ -30,9 +27,15 @@ public class MetaVO implements Serializable {
     // 外链打开方式
     private String linkOpenType;
 
+    // 菜单类型
+    private String menuType;
+
     // 在viewTab中展示
     private Boolean viewTab;
 
-    // 菜单类型
-    private String menuType;
+    // 菜单显示
+    private Boolean visible;
+
+    // keep-alive 缓存 默认false，设置为true 则不进行缓存
+    private Boolean cache;
 }

@@ -17,7 +17,8 @@ export interface MetaType {
     icon: string,
     label: string,
     link: string | null,
-    noCache: boolean | null,
+    cache: boolean | null,
     title: string,
-    skip: boolean
+    skip: boolean,
+    linkOpenType: string
 }

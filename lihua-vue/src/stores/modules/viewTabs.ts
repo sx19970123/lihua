@@ -28,7 +28,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
             // 过滤获取 Layout 为父级的静态路由
             let layoutRoutes =  staticRoutes.filter(route => route.component === Layout)
             // 生成 key
-            layoutRoutes = generateKey(layoutRoutes,'',false)
+            layoutRoutes = generateKey(layoutRoutes,'')
             // 去除父级节点获取子路由组件
             const hasKeyRoutComponentList: Array<any> = []
             getChildren(layoutRoutes,hasKeyRoutComponentList)
@@ -187,16 +187,9 @@ export const useViewTabsStore = defineStore('viewTabs',{
  * 处理 router/index 中静态路由，生成 key （路由path拼接）
  * @param routers
  */
-const generateKey = (routers: any[], key: string, filter: boolean): Array<RouterType> => {
-    let menuShowList: any[]
-    if (filter) {
-        menuShowList = routers.filter(route => route.hidden !== true)
-    } else {
-        menuShowList = routers
-    }
-
-    if (menuShowList.length > 0) {
-        menuShowList.forEach(menuItem => {
+const generateKey = (routers: any[], key: string): Array<RouterType> => {
+    if (routers.length > 0) {
+        routers.forEach(menuItem => {
             // 处理path
             menuItem.path = menuItem.path === null ? '' : menuItem.path
             menuItem.path = menuItem.path.startsWith("/") ? menuItem.path.substring(1): menuItem.path
@@ -208,14 +201,14 @@ const generateKey = (routers: any[], key: string, filter: boolean): Array<Router
             }
 
             if (menuItem.children && menuItem.children.length > 0) {
-                const child = generateKey(menuItem.children, menuItem.key, filter)
+                const child = generateKey(menuItem.children, menuItem.key)
                 menuItem.children = child === null ? [] : child
             } else {
                 menuItem.children = []
             }
         })
     }
-    return menuShowList
+    return routers
 }
 
 /**

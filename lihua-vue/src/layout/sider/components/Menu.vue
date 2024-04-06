@@ -2,7 +2,9 @@
     <template v-for="item in props.data">
 <!--      页面-->
       <template v-if="item.type !== 'directory' && (item.children === null || typeof item.component === 'function')">
-        <a-menu-item :key="item.key" :title="item.meta ? item.meta.title : ''" :danger="item.danger">
+        <a-menu-item :key="item.key"
+                     :title="item.meta ? item.meta.title : ''" :danger="item.danger"
+                     v-if="item.meta?.visible && item.meta?.visible !== false">
           <!--图标-->
           <template #icon>
             <component :is="item.meta ? item.meta.icon : ''"/>
@@ -25,7 +27,10 @@
       </template>
 <!--    菜单-->
       <template v-else>
-        <a-sub-menu :title="item.meta? item.meta.label : ''" :key="item.key">
+        <a-sub-menu :title="item.meta? item.meta.label : ''"
+                    :key="item.key"
+                    v-if="item.meta?.visible && item.meta?.visible !== false"
+        >
           <!--图标-->
           <template #icon>
             <component :is="item.meta? item.meta.icon : ''"/>
@@ -37,5 +42,6 @@
 </template>
 <script lang="ts" setup>
 const props = defineProps(['data'])
+console.log(props.data)
 </script>
 

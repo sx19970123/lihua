@@ -14,47 +14,62 @@
             <result column="label" property="label"/>
             <result column="title" property="title"/>
             <result column="icon" property="icon"/>
-            <result column="no_cache" property="noCache"/>
+            <result column="cache" property="cache"/>
             <result column="component_name" property="componentName"/>
             <result column="link_path" property="link"/>
             <result column="view_tab" property="viewTab"/>
             <result column="menu_type" property="menuType"/>
+            <result column="visible" property="visible"/>
             <result column="link_open_type" property="linkOpenType"/>
         </association>
     </resultMap>
 
     <select id="selectPermsByUserId" resultMap="selectPermsByUserId">
         SELECT
-            sys_menu.id,
-            sys_menu.parent_id,
-            sys_menu.label,
-            sys_menu.title,
-            sys_menu.menu_type,
-            sys_menu.router_path,
-            sys_menu.component_path,
-            sys_menu.component_name,
-            sys_menu.perms,
-            sys_menu.icon,
-            sys_menu.link_path,
-            sys_menu.query,
-            sys_menu.menu_type,
-            sys_menu.link_open_type,
-            CASE sys_menu.no_cache
-            WHEN '0' THEN TRUE
-            WHEN '1' THEN FALSE
-            END AS no_cache,
-            CASE sys_menu.view_tab
-                WHEN '0' THEN TRUE
-                WHEN '1' THEN FALSE
-            END AS view_tab
+        sys_menu.id,
+        sys_menu.parent_id,
+        sys_menu.label,
+        sys_menu.title,
+        sys_menu.menu_type,
+        sys_menu.router_path,
+        sys_menu.component_path,
+        sys_menu.component_name,
+        sys_menu.perms,
+        sys_menu.icon,
+        sys_menu.link_path,
+        sys_menu.QUERY,
+        sys_menu.menu_type,
+        sys_menu.link_open_type,
+        CASE
+        sys_menu.visible
+        WHEN '0' THEN
+        TRUE
+        WHEN '1' THEN
+        FALSE
+        END AS visible,
+        CASE
+        sys_menu.CACHE
+        WHEN '0' THEN
+        TRUE
+        WHEN '1' THEN
+        FALSE
+        END AS CACHE,
+        CASE
+        sys_menu.view_tab
+        WHEN '0' THEN
+        TRUE
+        WHEN '1' THEN
+        FALSE
+        END AS view_tab
         FROM
         sys_menu
-            INNER JOIN sys_role_menu ON sys_role_menu.menu_id = sys_menu.id
-            INNER JOIN sys_role ON sys_role.id = sys_role_menu.role_id
-            INNER JOIN sys_user_role ON sys_user_role.role_id = sys_role.id
+        INNER JOIN sys_role_menu ON sys_role_menu.menu_id = sys_menu.id
+        INNER JOIN sys_role ON sys_role.id = sys_role_menu.role_id
+        INNER JOIN sys_user_role ON sys_user_role.role_id = sys_role.id
         WHERE
-            sys_user_role.user_id = #{userId} AND sys_menu.status = '0' AND sys_menu.del_flag = '0'
+        sys_user_role.user_id = #{userId} AND sys_menu.status = '0' AND sys_menu.del_flag = '0'
+
         ORDER BY
-        sys_menu.sort DESC
+        sys_menu.sort
     </select>
 </mapper>

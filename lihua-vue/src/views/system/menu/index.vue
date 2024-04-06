@@ -133,7 +133,12 @@
                          tree-node-filter-prop="label"
                          v-model:value="sysMenu.parentId"
                          show-search
-          />
+          >
+            <template #title="{ value: val, label, menuType }">
+              {{label}}
+              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :bordered="false"/>
+            </template>
+          </a-tree-select>
         </a-form-item>
         <a-form-item label="菜单名称" :wrapper-col="{span: 16}" name="label">
           <a-input v-model:value="sysMenu.label" placeholder="请输入菜单名称" :maxlength="30" allowClear/>
@@ -215,8 +220,8 @@
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="是否缓存" name="noCache" :label-col="{span: 8}"  v-if="sysMenu.menuType === 'page'">
-                <a-radio-group v-model:value="sysMenu.noCache">
+              <a-form-item label="是否缓存" name="cache" :label-col="{span: 8}"  v-if="sysMenu.menuType === 'page'">
+                <a-radio-group v-model:value="sysMenu.cache">
                   <a-radio v-for="item in sys_whether" :value="item.value">{{item.label}}</a-radio>
                 </a-radio-group>
               </a-form-item>
@@ -246,6 +251,7 @@ import IconSelect from "@/components/icon-select/index.vue"
 import { flattenTreeData} from "@/utils/tree.ts"
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
+import { cloneDeep } from 'lodash-es';
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {
   // 列表列集合
@@ -318,18 +324,41 @@ const initSearch = () => {
     const resp = await findList(menuQuery.value)
     // 列表数据
     menuList.value = resp.data
+    initTreeData()
+    tableLoad.value = false
+  }
+
+  // 重置表单
+  const resetList = async () => {
+    menuQuery.value = {}
+    await initList()
+  }
+
+  // 加载菜单树
+  const initTreeData = () => {
+    // 深拷贝数据
+    const menuTree = cloneDeep(menuList.value)
+    // 过滤不需要的数据（只保留菜单和页面）
+    handleMenuTree(menuTree)
     // 表单树
     parentMenuTree.value = [{
       label: '根节点',
       id: '0',
-      children: menuList.value
+      menuType: 'directory',
+      children: menuTree
     }]
-    tableLoad.value = false
   }
 
-  const resetList = async () => {
-    menuQuery.value = {}
-    await initList()
+  // 处理menu树形选择
+  const handleMenuTree = (menuTree: Array<SysMenu>) => {
+    // 过滤最外层
+    menuTree = menuTree.filter(tree => tree.menuType !== 'link' && tree.menuType !== 'perms')
+    menuTree.forEach(item => {
+      if (item.children && item.children.length > 0) {
+        item.children = item.children.filter(tree => tree.menuType !== 'link' && tree.menuType !== 'perms')
+        handleMenuTree(item.children)
+      }
+    })
   }
 
   // 展开折叠
@@ -453,7 +482,7 @@ const initSave = () => {
     sysMenu.value = {
       menuType: 'directory',
       visible: '0',
-      noCache: '0',
+      cache: '0',
       status: '0',
       linkOpenType: 'inner',
       parentId: '0',
@@ -471,7 +500,6 @@ const initSave = () => {
       modalActive.open = false
     }
   }
-
 
   return {
     modalActive,
