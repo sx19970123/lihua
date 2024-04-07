@@ -66,3 +66,10 @@
 .ant-table-wrapper .ant-table {
     border-radius: 8px !important;
 }
+
+/**
+    侧边风格2导航添加阴影效果
+ */
+.ant-layout-sider-trigger {
+    box-shadow: 2px 0 8px rgba(29,35,41,0.1);
+}

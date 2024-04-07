@@ -20,6 +20,10 @@ export const useDictStore = defineStore('dict', {
     // 设置字典
     setDict(key: string, value: Array<SysDictDataType>) {
       this.$state.dictMap.set(key,value)
+    },
+    // 清空字典
+    clearDict() {
+      this.$state.dictMap.clear()
     }
   }
 })

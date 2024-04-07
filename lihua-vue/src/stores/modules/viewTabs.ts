@@ -179,6 +179,10 @@ export const useViewTabsStore = defineStore('viewTabs',{
             if (componentName !== 'index') {
                 this.$state.componentAlive = this.$state.componentAlive.filter(item => item !== componentName)
             }
+        },
+        // 清空组件缓存
+        clearComponentsKeepAlive() {
+            this.$state.componentAlive = []
         }
     }
 })
