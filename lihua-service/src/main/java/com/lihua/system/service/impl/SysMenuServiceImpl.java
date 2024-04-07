@@ -78,10 +78,9 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public List<RouterVO> selectSysMenuByLoginUserId(String userId) {
         List<RouterVO> sysMenuVOS = sysMenuMapper.selectPermsByUserId(userId);
-        // 设置name属性
-        sysMenuVOS.forEach(item -> item.setName(com.lihua.utils.string.StringUtils.initialUpperCase(item.getPath().replaceFirst("/",""))));
+        // 递归构建树
         List<RouterVO> routerVOList = TreeUtil.buildTree(sysMenuVOS);
-        // 设置层级key
+        // 设置层级key，再通过key设置path 和 组件name
         handleRouterPathKey(routerVOList, null);
         return routerVOList;
     }
@@ -95,7 +94,18 @@ public class SysMenuServiceImpl implements SysMenuService {
             } else if (parentKey != null){
                 item.setKey(parentKey + key);
             }
-            item.setPath(item.getKey());
+            String fullKey = item.getKey();
+            // 设置path
+            item.setPath(fullKey);
+            // 设置组件name
+            String[] keyWords = fullKey.split("/");
+            StringBuilder name = new StringBuilder();
+            for (String word : keyWords) {
+                String upperCaseWord = com.lihua.utils.string.StringUtils.initialUpperCase(word);
+                name.append(upperCaseWord);
+            }
+
+            item.setName(name.toString());
             // 存在子集继续递归
             if (item.getChildren() != null && !item.getChildren().isEmpty()) {
                handleRouterPathKey(item.getChildren(),item.getKey());
