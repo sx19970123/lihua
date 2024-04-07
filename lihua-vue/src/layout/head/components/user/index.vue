@@ -73,7 +73,7 @@ const handleClickMenu = async ({key}: {key: string}) => {
             .then(() => {
               // 重新加载ViewTag，逻辑与ViewTag组件内相同
               initViewTag()
-              message.success(resp.msg)
+              message.success(resp.msg + ' 【当有内部权限更新时，请重新登陆！】')
             })
             .catch((err) => message.error('拉取用户信息失败：' + err))
       } else {

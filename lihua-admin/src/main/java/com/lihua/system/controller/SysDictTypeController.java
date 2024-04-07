@@ -23,7 +23,7 @@ public class SysDictTypeController extends BaseController {
         return success(sysDictTypeService.findPage(dictTypeDTO));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
         if (!StringUtils.hasText(id)) {
             return error(ResultCodeEnum.PRIMARY_KEY_IS_EMPTY);

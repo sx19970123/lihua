@@ -24,7 +24,7 @@ public class SysMenuController extends BaseController {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
         if (!StringUtils.hasText(id)) {
             return error(ResultCodeEnum.PRIMARY_KEY_IS_EMPTY);

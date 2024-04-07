@@ -1,8 +1,8 @@
 <template>
   <div>
-    <a-flex vertical :gap="16">
+    <a-flex vertical :gap="16" v-hasPermission="['system:menu:list']">
       <!--      检索条件-->
-      <a-card>
+      <a-card :style="{border: 'none'}">
         <a-form :colon="false" :model="menuQuery">
           <a-space size="small">
             <a-form-item class="form-item-single-line" label="菜单名称" name="label">
@@ -33,17 +33,17 @@
         </a-form>
       </a-card>
       <!--      列表-->
-      <a-card :body-style="{ padding: 0 }">
-        <a-table :columns="menuColumn"
-                 :data-source="menuList"
-                 :pagination="false"
-                 row-key="id"
-                 v-model:expanded-row-keys="expandedRowKeys"
-                 :loading="tableLoad"
+      <a-table
+          :columns="menuColumn"
+          :data-source="menuList"
+          :pagination="false"
+          row-key="id"
+          v-model:expanded-row-keys="expandedRowKeys"
+          :loading="tableLoad"
         >
           <template #title>
             <a-flex :gap="8">
-              <a-button type="primary" @click="handleModelStatus('新增菜单')">
+              <a-button type="primary" @click="addMenu" v-hasPermission="['system:menu:save']">
                 <template #icon>
                   <PlusOutlined />
                 </template>
@@ -73,14 +73,19 @@
             </template>
             <!--            操作-->
             <template v-if="column.key === 'action'">
-              <a-button type="link" size="small" @click="getMenu(record.id)">
+              <a-button type="link" size="small" @click="getMenu(record.id)" v-hasPermission="['system:menu:save']">
                 <template #icon>
                   <EditOutlined />
                 </template>
                 编辑
               </a-button>
               <a-divider type="vertical"/>
-              <a-button type="link" size="small" @click="addChildren(record.id)" :disabled="record.menuType === 'link' || record.menuType === 'perms'">
+              <a-button type="link"
+                        size="small"
+                        @click="addChildren(record)"
+                        :disabled="record.menuType === 'link' || record.menuType === 'perms'"
+                        v-hasPermission="['system:menu:save']"
+              >
                 <template #icon>
                   <PlusOutlined />
                 </template>
@@ -93,7 +98,7 @@
                             placement="bottomRight"
                             @confirm="handleDelete(record.id)"
               >
-                <a-button type="link" danger size="small">
+                <a-button type="link" danger size="small" v-hasPermission="['system:menu:delete']">
                   <template #icon>
                     <DeleteOutlined />
                   </template>
@@ -103,7 +108,6 @@
             </template>
           </template>
         </a-table>
-      </a-card>
     </a-flex>
     <!--    模态框-->
     <a-modal v-model:open="modalActive.open"
@@ -450,7 +454,7 @@ const initSave = () => {
   // 表单
   const formRef = ref()
 
-  // 打开模态框
+  // 打开模态框（打开modal时会重制表单，应在方法最开始调用）
   const handleModelStatus = (title?: string) => {
     modalActive.open = !modalActive.open
     if (title) {
@@ -472,10 +476,43 @@ const initSave = () => {
       message.error(resp.msg)
     }
   }
-  // 新增下级
-  const addChildren = (pid: string) => {
+  // 新增菜单
+  const addMenu = () => {
     handleModelStatus('新增菜单')
-    sysMenu.value.parentId = pid
+    sysMenu.value.parentId = '0'
+    sysMenu.value.menuType = 'directory'
+    const sorts = menuList.value.map(item => item.sort)
+    if (sorts && sorts.length > 0) {
+      const max = Math.max(...sorts as number[])
+      sysMenu.value.sort = max + 1
+    } else {
+      sysMenu.value.sort = 1
+    }
+  }
+  // 新增下级
+  const addChildren = (parent: SysMenu) => {
+    handleModelStatus('新增菜单')
+
+    sysMenu.value.parentId = parent.id
+    // 父级为菜单时，默认下级类型为页面
+    if (parent.menuType === 'directory') {
+      sysMenu.value.menuType = 'page'
+    }
+    // 父级为页面时，默认下级为权限
+    else if (parent.menuType === 'page') {
+      sysMenu.value.menuType = 'perms'
+    }
+    // 默认下级排序为最大值 + 1
+    if (parent.children) {
+      const sorts = parent.children.map(item => item.sort)
+      if (sorts && sorts.length > 0) {
+        const max = Math.max(...sorts as number[])
+        sysMenu.value.sort = max + 1
+      }
+    } else {
+      sysMenu.value.sort = 1
+    }
+
   }
   // 重置表单
   const resetForm = () => {
@@ -507,12 +544,12 @@ const initSave = () => {
     menuRules,
     sysMenu,
     getMenu,
-    handleModelStatus,
+    addMenu,
     addChildren,
     saveMenu
   }
 }
-const {modalActive,sysMenu,menuRules,formRef,getMenu,handleModelStatus,addChildren,saveMenu} = initSave()
+const {modalActive,sysMenu,menuRules,formRef,getMenu,addMenu,addChildren,saveMenu} = initSave()
 
 // 数据删除相关
 const handleDelete = async (id: string) => {

@@ -1,6 +1,6 @@
 <template>
   <a-flex vertical :gap="16">
-    <a-card style="margin-top: 24px">
+    <a-card style="margin-top: 24px;">
       <a-form :colon="false">
         <a-flex :gap="8" align="center" >
           <a-form-item class="form-item-single-line" label="标签">
@@ -39,7 +39,7 @@
         </a-flex>
       </a-form>
     </a-card>
-    <a-card :body-style="{padding: 0}">
+    <a-card :body-style="{padding: 0}" :style="{'border-bottom': 'none'}">
         <a-table
             :columns="dictDataColumn"
             :data-source="dictDataList"

@@ -15,7 +15,7 @@ public class RouterVO implements Serializable {
     // 用于生成树形结构
     private String parentId;
 
-    // 组件名称（默认为组件路径首字母大写）
+    // 组件名称（默认为组件路由地址大驼峰）
     private String name;
 
     // 路由地址

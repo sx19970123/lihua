@@ -1,8 +1,8 @@
 <template>
   <div>
-    <a-flex vertical :gap="16">
+    <a-flex vertical :gap="16" v-hasPermission="['system:dict:list']">
       <!--    检索条件-->
-      <a-card>
+      <a-card :style="{border: 'none'}">
         <a-form :colon="false">
           <a-flex :gap="8" align="center">
             <a-form-item class="form-item-single-line" label="字典名称">
@@ -34,90 +34,88 @@
         </a-form>
       </a-card>
       <!--    列表页-->
-      <a-card :body-style="{padding: 0}">
-        <a-table :data-source="dictTypeList"
-                 :columns="dictTypeColumn"
-                 :pagination="false"
-                 :loading="tableLoad"
-                 :row-selection="dictTypeRowSelectionType"
-                 :rowKey="(item:SysDictType) => item.id"
-                 :sticky="{ offsetHeader: themeStore.$state.layoutType === 'header-content' ? 118 : 102 }"
-        >
-          <template #title>
-            <a-flex :gap="8">
-              <a-button type="primary" @click="handleModelStatus('新增字典')">
+      <a-table :data-source="dictTypeList"
+               :columns="dictTypeColumn"
+               :pagination="false"
+               :loading="tableLoad"
+               :row-selection="dictTypeRowSelectionType"
+               :rowKey="(item:SysDictType) => item.id"
+               :sticky="{ offsetHeader: themeStore.$state.layoutType === 'header-content' ? 118 : 102 }"
+      >
+        <template #title>
+          <a-flex :gap="8">
+            <a-button type="primary" @click="handleModelStatus('新增字典')" v-hasPermission="['system:dict:save']">
+              <template #icon>
+                <PlusOutlined />
+              </template>
+              新 增
+            </a-button>
+            <a-popconfirm title="删除后不可恢复，是否删除？"
+                          :open="openDeletePopconfirm"
+                          ok-text="确 定"
+                          cancel-text="取 消"
+                          @confirm="handleDelete(undefined)"
+                          @cancel="closePopconfirm"
+            >
+              <a-button danger @click="openPopconfirm">
                 <template #icon>
-                  <PlusOutlined />
+                  <DeleteOutlined />
                 </template>
-                新 增
+                删 除
+                <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
               </a-button>
-              <a-popconfirm title="删除后不可恢复，是否删除？"
-                            :open="openDeletePopconfirm"
-                            ok-text="确 定"
-                            cancel-text="取 消"
-                            @confirm="handleDelete(undefined)"
-                            @cancel="closePopconfirm"
-              >
-                <a-button danger @click="openPopconfirm">
-                  <template #icon>
-                    <DeleteOutlined />
-                  </template>
-                  删 除
-                  <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
-                </a-button>
-              </a-popconfirm>
-            </a-flex>
+            </a-popconfirm>
+          </a-flex>
+        </template>
+        <template #bodyCell="{column,record}">
+          <template v-if="column.key === 'type'">
+            <dict-tag :dict-data-option="sys_dict_type" :dict-data-value="record[column.key]" :style="{'margin-right': 0}"/>
           </template>
-          <template #bodyCell="{column,record}">
-            <template v-if="column.key === 'type'">
-              <dict-tag :dict-data-option="sys_dict_type" :dict-data-value="record[column.key]" :style="{'margin-right': 0}"/>
-            </template>
-            <template v-if="column.key === 'status'">
-              <dict-tag :dict-data-option="sys_status" :dict-data-value="record[column.key]" :style="{'margin-right': 0}"/>
-            </template>
-            <template v-if="column.key === 'createTime'">
-              {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
-            </template>
-            <template v-if="column.key === 'action'">
-              <a-button type="link" size="small" @click="getDictType(record.id)">
+          <template v-if="column.key === 'status'">
+            <dict-tag :dict-data-option="sys_status" :dict-data-value="record[column.key]" :style="{'margin-right': 0}"/>
+          </template>
+          <template v-if="column.key === 'createTime'">
+            {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
+          </template>
+          <template v-if="column.key === 'action'">
+            <a-button type="link" size="small" @click="getDictType(record.id)" v-hasPermission="['system:dict:save']">
+              <template #icon>
+                <EditOutlined />
+              </template>
+              编辑
+            </a-button>
+            <a-divider type="vertical"/>
+            <a-button type="link" size="small" @click="openDictConfig(record)" v-hasPermission="['system:dict:config']">
+              <template #icon>
+                <SettingOutlined />
+              </template>
+              字典配置
+            </a-button>
+            <a-divider type="vertical"/>
+            <a-popconfirm title="删除后不可恢复，是否删除？"
+                          ok-text="确 定"
+                          cancel-text="取 消"
+                          placement="bottomRight"
+                          @confirm="handleDelete(record.id)"
+            >
+              <a-button type="link" danger size="small" v-hasPermission="['system:dict:delete']">
                 <template #icon>
-                  <EditOutlined />
+                  <DeleteOutlined />
                 </template>
-                编辑
+                删除
               </a-button>
-              <a-divider type="vertical"/>
-              <a-button type="link" size="small" @click="openDictConfig(record)">
-                <template #icon>
-                  <SettingOutlined />
-                </template>
-                字典配置
-              </a-button>
-              <a-divider type="vertical"/>
-              <a-popconfirm title="删除后不可恢复，是否删除？"
-                            ok-text="确 定"
-                            cancel-text="取 消"
-                            placement="bottomRight"
-                            @confirm="handleDelete(record.id)"
-              >
-                <a-button type="link" danger size="small">
-                  <template #icon>
-                    <DeleteOutlined />
-                  </template>
-                  删除
-                </a-button>
-              </a-popconfirm>
-            </template>
+            </a-popconfirm>
           </template>
-          <template #footer>
-            <a-flex justify="flex-end">
-              <a-pagination v-model:current="dictTypeQuery.pageNum"
-                            :total="dictTypeTotal"
-                            :show-total="(total:number) => `共 ${total} 条`"
-                            @change="queryPage"/>
-            </a-flex>
-          </template>
-        </a-table>
-      </a-card>
+        </template>
+        <template #footer>
+          <a-flex justify="flex-end">
+            <a-pagination v-model:current="dictTypeQuery.pageNum"
+                          :total="dictTypeTotal"
+                          :show-total="(total:number) => `共 ${total} 条`"
+                          @change="queryPage"/>
+          </a-flex>
+        </template>
+      </a-table>
     </a-flex>
     <!--    新增编辑对话框-->
     <a-modal v-model:open="modalActive.open"
@@ -459,8 +457,8 @@ const initDictConfig = () => {
   type drawerAction = {
     openDrawer: boolean,
     title?: string,
-    typeCode?: string,
-    type?: string
+    typeCode: string,
+    type: string
   }
   const drawerAction = reactive<drawerAction>({
     openDrawer: false,
@@ -470,9 +468,13 @@ const initDictConfig = () => {
   })
   const openDictConfig = (dictType: SysDictType) => {
     drawerAction.title = dictType.name
-    drawerAction.typeCode = dictType.code
-    drawerAction.type = dictType.type
     drawerAction.openDrawer = true
+    if (dictType.code) {
+      drawerAction.typeCode = dictType.code
+    }
+    if (dictType.type) {
+      drawerAction.type = dictType.type
+    }
   }
 
   return {

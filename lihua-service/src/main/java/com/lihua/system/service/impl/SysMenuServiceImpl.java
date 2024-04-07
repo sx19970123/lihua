@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SysMenuServiceImpl implements SysMenuService {
@@ -47,6 +48,9 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public String save(SysMenu sysMenu) {
+        sysMenu.setTitle(sysMenu.getLabel());
+        sysMenu.setPerms(StringUtils.hasText(sysMenu.getPerms()) ? sysMenu.getPerms() : sysMenu.getMenuType());
+
         // 菜单id为 null，执行insert
         if (!StringUtils.hasText(sysMenu.getId())) {
            return insert(sysMenu);
@@ -78,6 +82,8 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public List<RouterVO> selectSysMenuByLoginUserId(String userId) {
         List<RouterVO> sysMenuVOS = sysMenuMapper.selectPermsByUserId(userId);
+        // 不需要权限数据
+        sysMenuVOS = sysMenuVOS.stream().filter(vo -> !vo.getType().equals("perms")).collect(Collectors.toList());
         // 递归构建树
         List<RouterVO> routerVOList = TreeUtil.buildTree(sysMenuVOS);
         // 设置层级key，再通过key设置path 和 组件name
