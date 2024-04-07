@@ -28,8 +28,11 @@ export const usePermissionStore = defineStore('permission',{
 })
 
 const init = (metaRouterList: Array<RouterType>, staticRoutes: any[]): Array<RouterType> => {
-    const staticRouters = generateKey(staticRoutes ,'')
-    return handleOnlyChild(staticRouters).concat(metaRouterList)
+    const routers = handleMenuShowFilter(staticRoutes)
+    if (routers) {
+        return generateKey(routers ,'').concat(metaRouterList)
+    }
+    return []
 }
 /**
  * 处理 router/index 中静态路由，生成 key （路由path拼接）
@@ -60,18 +63,32 @@ const generateKey = (routers: any[] , key: string): Array<RouterType> => {
 }
 
 /**
- * 处理只有一个子节点的静态路由
+ * 过滤要在菜单显示的路由
  */
-const handleOnlyChild = (routers: Array<RouterType>): Array<RouterType> => {
-    const array:Array<RouterType> = []
-    if (routers) {
-        routers.forEach(menu => {
-            if (menu.children && menu.children.length === 1) {
-                array.push(menu.children[0])
+const handleMenuShowFilter = (staticRoutes: any[]) => {
+    if (staticRoutes && staticRoutes.length > 0) {
+        // 其他静态路由
+        const filteredRoutes:any[] = staticRoutes.filter(item => item?.meta?.visible && item.path !== '')
+        // 根节点为''并且有子节点的静态路由，当只有一个子节点的visible为true时，在菜单栏只显示页面
+        const indexRoutes:any[] = staticRoutes.filter(item => item.path === '' && item.children && item.children.length > 0)
+        // 用来保存单个页面的集合
+        const singleRoutes:any[] = []
+
+        indexRoutes.forEach(item => {
+            const chiVisible = item.children.filter((chi:any) => chi?.meta?.visible)
+            if (chiVisible.length === 1) {
+                singleRoutes.unshift(chiVisible[0])
             } else {
-                array.push(menu)
+                singleRoutes.unshift(item)
             }
         })
+
+        if (singleRoutes.length > 0) {
+            singleRoutes.forEach(item => {
+                filteredRoutes.unshift(item)
+            })
+        }
+
+        return filteredRoutes;
     }
-    return array
 }

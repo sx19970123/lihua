@@ -91,7 +91,7 @@ const handleClickMenu = async ({key}: {key: string}) => {
 const initViewTag = () => {
   const viewTabsStore = useViewTabsStore()
   if (route?.meta?.viewTab) {
-    viewTabsStore.selectedViewTab(route.path,route?.meta?.viewTab)
+    viewTabsStore.selectedViewTab(route.path,route?.meta?.viewTab as boolean)
   }
   // 跳过标签管理
   else {
@@ -99,13 +99,13 @@ const initViewTag = () => {
     const unSkipList =  route.matched.filter(item => item?.meta?.viewTab && item.path !== '/')
     if (unSkipList && unSkipList.length > 0) {
       // 选中接收view-tabs托管的父组件
-      viewTabsStore.selectedViewTab(unSkipList[unSkipList.length - 1].path, route?.meta?.viewTab)
+      viewTabsStore.selectedViewTab(unSkipList[unSkipList.length - 1].path, route?.meta?.viewTab as boolean)
     }
   }
 }
 // 跳转至个人中心
 const userInfo = () => {
-  router.push('/user')
+  router.push('/profile')
 }
 // 退出登陆
 const logout = () => {

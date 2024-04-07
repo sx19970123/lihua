@@ -112,7 +112,7 @@ const closeTab = (key: string) => {
  * 添加keep-alive 缓存（当前路由）
  */
 const addKeepAliveCache = () => {
-  if (!route?.meta?.noCache && route?.meta?.componentName) {
+  if (route?.meta?.cache && route?.meta?.componentName) {
     viewTabsStore.setComponentsKeepAlive(route?.meta?.componentName as string)
   }
 }
@@ -124,7 +124,7 @@ const addKeepAliveCache = () => {
 const cancelKeepAliveCache = (keys: Array<string>) => {
   const closeTabRoutes = router.getRoutes().filter(route => keys.includes(route.path))
   closeTabRoutes?.forEach(closeTabRoute => {
-    if (!closeTabRoute?.meta?.noCache && closeTabRoute?.meta?.componentName) {
+    if (closeTabRoute?.meta?.cache && closeTabRoute?.meta?.componentName) {
       viewTabsStore.removeComponentsKeepAlive(closeTabRoute?.meta?.componentName as string)
     }
   })

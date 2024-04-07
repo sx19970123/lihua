@@ -50,13 +50,14 @@ const initDynamicRouter = (metaRouterList: Array<RouterType>): void => {
   handleRouterComponent (metaRouterList)
   // 顶级无父组件目录、页面添加layout父级
   metaRouterList.forEach(route => {
-    const isPageType = route.type === 'page' && route.children === null;
+    const isRoot =  route.parentId === '0' &&  ( route.children === null || route.children.length === 0)
+    const isPageType = route.type === 'page';
     const isMenuType = route.type === 'directory';
     const isLinkType = route.type === 'link' && route.meta.linkOpenType === 'inner';
-    if ((isPageType || isLinkType || isMenuType) && route.parentId === '0') {
+    if ((isPageType || isLinkType || isMenuType) && isRoot) {
       const parentRoute: RouteRecordRaw  = {
         children: [route as any],
-        path: "/",
+        path: "",
         component: Layout,
         name: route.name + "Parent"
       };
@@ -99,7 +100,6 @@ const handleRouterComponent = (metaRouterList: Array<RouterType>) => {
         } else {
           handleSetComponent(route)
         }
-
       }
     })
   }

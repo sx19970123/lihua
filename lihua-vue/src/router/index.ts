@@ -9,17 +9,22 @@ import Layout from '@/layout/index.vue'
  * icon..................................................菜单图标，详见 https://antdv.com/components/icon-cn 自定义图标：@/components/icon
  * viewTab...............................................在viewTab显示:true(默认) false
  * affix.................................................在viewTab固定:true false(默认)
- * viewTabSort...........................................viewTab固定下排序
+ * viewTabSort...........................................固定viewTab下的标签排序
  * cache.................................................缓存页面，需配置router的name属性:true false(默认)
  */
-
 const routers = [
+  // 重定向到首页
+  {
+    path: '',
+    alias:['/','/root','/home'],
+    redirect: '/index'
+  },
   {
     path: '',
     component: Layout,
     meta: { visible: true },
     children: [
-        //  首页
+        // 首页
       {
         path: '/index',
         component: () => import("@/views/index.vue"),
@@ -34,12 +39,12 @@ const routers = [
       },
         // 个人中心
       {
-        path: '/user',
+        path: '/profile',
         component: () => import("@/views/system/profile/index.vue"),
         meta: {
           label: '个人中心',
           icon: 'UserOutlined',
-          noCache: false,
+          cache: false,
           affix: false,
           viewTab: true,
           visible: false
@@ -47,13 +52,13 @@ const routers = [
       }
     ],
   },
-  //   login
+  // login
   {
     path: '/login',
     name: 'Login',
     component: () => import("@/views/login.vue")
   },
-  //   404
+  // 404
   {
     path: "/:pathMatch(.*)*",
     component: () => import("@/views/error/404/index.vue"),
