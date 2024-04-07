@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * 用户访问权限不足处理
  *
  * 因配置了全局异常处理
- * 请在 GlobalExceptionHandle.handleAccessDeniedException 进行配置
+ * 请在 GlobalExceptionHandle.handleRuntimeException 进行配置
  */
 @Component
 public class AccessDeniedHandlerImpl extends BaseController implements AccessDeniedHandler {

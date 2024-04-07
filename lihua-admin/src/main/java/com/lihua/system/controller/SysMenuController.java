@@ -6,6 +6,7 @@ import com.lihua.system.entity.SysMenu;
 import com.lihua.system.model.SysMenuDTO;
 import com.lihua.system.service.SysMenuService;
 import jakarta.annotation.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +19,13 @@ public class SysMenuController extends BaseController {
     @Resource
     private SysMenuService sysMenuService;
 
+    @PreAuthorize("hasAuthority('system:menu:list')")
     @PostMapping("list")
     public String findList(@RequestBody SysMenuDTO sysMenuDTO) {
         return success(sysMenuService.findList(sysMenuDTO));
     }
 
-
+    @PreAuthorize("hasRole('ROLE_admin1')")
     @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
         if (!StringUtils.hasText(id)) {
