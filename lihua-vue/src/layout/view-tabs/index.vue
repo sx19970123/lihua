@@ -37,25 +37,11 @@ const router = useRouter()
  * 初始化数据及变量
  */
 const init = () => {
-  // 通过viewTab进行标签管理
-  if (route?.meta?.viewTab) {
-    viewTabsStore.selectedViewTab(route.path,route?.meta?.viewTab as boolean)
-  }
-  // 跳过标签管理
-  else {
-    // 当前组件为跳过，默认选中其父组件
-    const unSkipList =  route.matched.filter(item => item?.meta?.viewTab && item.path !== '/')
-    if (unSkipList && unSkipList.length > 0) {
-      // 选中接收view-tabs托管的父组件
-      viewTabsStore.selectedViewTab(unSkipList[unSkipList.length - 1].path, route?.meta?.viewTab as boolean)
-    }
-  }
-
+  viewTabsStore.init(route)
   // 初始化数据
   const viewTabs = computed(() => viewTabsStore.viewTabs)
   // 选中tab页
   const activeKey = computed(() => viewTabsStore.activeKey)
-
   return {
     viewTabs,
     activeKey
@@ -112,8 +98,8 @@ const closeTab = (key: string) => {
  * 添加keep-alive 缓存（当前路由）
  */
 const addKeepAliveCache = () => {
-  if (route?.meta?.cache && route?.meta?.componentName) {
-    viewTabsStore.setComponentsKeepAlive(route?.meta?.componentName as string)
+  if (route?.meta?.cache && route?.name) {
+    viewTabsStore.setComponentsKeepAlive(route?.name as string)
   }
 }
 

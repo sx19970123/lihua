@@ -3,8 +3,8 @@
     <router-view v-slot="{ Component, route}">
       <!-- zoom： 变焦 fade：淡入淡出 breathe：呼吸 top：上升 down：切换 switch：交换 trick：整活  -->
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <keep-alive :include = useViewTabs.$state.componentAlive>
-          <component :is="Component" :key="route.path"/>
+        <keep-alive :include = viewTabsStore.$state.componentAlive>
+          <component :is="Component" :key="route.path + viewTabsStore.$state.contentComponentKey"/>
         </keep-alive>
       </transition>
     </router-view>
@@ -16,5 +16,5 @@ import { useThemeStore } from "@/stores/modules/theme";
 import { useViewTabsStore} from "@/stores/modules/viewTabs";
 
 const themeStore = useThemeStore()
-const useViewTabs = useViewTabsStore()
+const viewTabsStore = useViewTabsStore()
 </script>

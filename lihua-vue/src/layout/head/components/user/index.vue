@@ -55,6 +55,7 @@ import {message} from "ant-design-vue";
 import {reloadData} from "@/api/system/login/login.ts";
 import {reloadLoginUser} from "@/utils/user.ts";
 import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
+const viewTabsStore = useViewTabsStore()
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -71,10 +72,10 @@ const handleClickMenu = async ({key}: {key: string}) => {
       if (resp.code === 200) {
         reloadLoginUser()
             .then(() => {
-              // 重新加载ViewTag，逻辑与ViewTag组件内相同
-              initViewTag()
-              message.success(resp.msg)
-              router.push('/system/menu')
+              // 重新加载ViewTag
+              viewTabsStore.init(route)
+              // 重新生成key
+              viewTabsStore.regenerateComponentKey()
             })
             .catch((err) => message.error('拉取用户信息失败：' + err))
       } else {
@@ -88,22 +89,7 @@ const handleClickMenu = async ({key}: {key: string}) => {
     }
   }
 }
-// 重新加载ViewTag
-const initViewTag = () => {
-  const viewTabsStore = useViewTabsStore()
-  if (route?.meta?.viewTab) {
-    viewTabsStore.selectedViewTab(route.path,route?.meta?.viewTab as boolean)
-  }
-  // 跳过标签管理
-  else {
-    // 当前组件为跳过，默认选中其父组件
-    const unSkipList =  route.matched.filter(item => item?.meta?.viewTab && item.path !== '/')
-    if (unSkipList && unSkipList.length > 0) {
-      // 选中接收view-tabs托管的父组件
-      viewTabsStore.selectedViewTab(unSkipList[unSkipList.length - 1].path, route?.meta?.viewTab as boolean)
-    }
-  }
-}
+
 // 跳转至个人中心
 const userInfo = () => {
   router.push('/profile')

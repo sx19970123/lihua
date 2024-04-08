@@ -13,7 +13,7 @@ NProgress.configure({
 // 路由前置守卫
 router.beforeEach((to,from,next) => {
     const userStore = useUserStore()
-    const useTheme = useThemeStore()
+    const themeStore = useThemeStore()
     NProgress.start()
     if (getToken()) {
         // 判断是否拉取了用户信息
@@ -29,7 +29,7 @@ router.beforeEach((to,from,next) => {
             next()
         }
     } else {
-        useTheme.resetState()
+        themeStore.resetState()
         if (to.fullPath !== "/login") {
             next("/login")
         } else {

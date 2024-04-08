@@ -18,10 +18,10 @@ const modules = import.meta.glob("../views/**/*.vue")
 // 重新加载用户数据和store
 export const reloadLoginUser = () => {
   const userStore = useUserStore()
-  const usePermission = usePermissionStore()
-  const useViewTabs = useViewTabsStore()
-  const useTheme = useThemeStore()
-  const useDict = useDictStore()
+  const permissionStore = usePermissionStore()
+  const viewTabsStore = useViewTabsStore()
+  const themeStore = useThemeStore()
+  const dictStore = useDictStore()
   return new Promise((resolve, reject) => {
     userStore.getUserInfo().then((resp: ResponseType<UserInfoType>) => {
       const metaRouterList = resp.data?.routerList || []
@@ -29,17 +29,17 @@ export const reloadLoginUser = () => {
       // 初始化动态路由
       initDynamicRouter(metaRouterList)
       // 初始化用户菜单数据
-      usePermission.initMenu(metaRouterList, staticRoutes as any[])
+      permissionStore.initMenu(metaRouterList, staticRoutes as any[])
       // 初始化totalViewTabs数据
-      useViewTabs.initTotalViewTabs(resp.data?.viewTabVOList || [], staticRoutes as any[])
+      viewTabsStore.initTotalViewTabs(resp.data?.viewTabVOList || [], staticRoutes as any[])
       // 设置最近使用组件的缓存key值
-      useViewTabs.setViewCacheKey(resp.data?.username || '')
+      viewTabsStore.setViewCacheKey(resp.data?.username || '')
       // 初始化系统主题
-      useTheme.init(resp.data.sysUserVO.theme)
+      themeStore.init(resp.data.sysUserVO.theme)
       // 清空字典store
-      useDict.clearDict()
+      dictStore.clearDict()
       // 清空组件keep-alive
-      useViewTabs.clearComponentsKeepAlive()
+      viewTabsStore.clearComponentsKeepAlive()
 
       resolve('load success')
     }).catch(err => {

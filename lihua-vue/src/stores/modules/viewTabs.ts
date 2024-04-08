@@ -3,19 +3,29 @@ import Layout from "@/layout/index.vue";
 import type { StarViewType,RecentType } from "@/api/system/view-tab/type/SysViewTab.ts"
 import type {RouterType} from "@/api/system/profile/type/router";
 import dayjs from "dayjs";
+import type {RouteLocationNormalizedLoaded} from "vue-router";
+import { uuid } from "@/utils/idHelper.ts";
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
+        // viewTab 标签页数组
         const viewTabs: Array<StarViewType> = []
+        // 全部的viewTab
         const totalViewTabs: Array<StarViewType> = []
+        // 缓存组件名集合
         const componentAlive: Array<string> = []
+        // 当前标签页key
         const activeKey: string = ''
+        // 最近使用缓存key
         const tabCacheKey: string = ''
+        // layout中content组件key值，修改以重新加载组件
+        const contentComponentKey: string = ''
         return {
             viewTabs,
             totalViewTabs,
             activeKey,
             tabCacheKey,
-            componentAlive
+            componentAlive,
+            contentComponentKey
         }
     },
     actions: {
@@ -54,7 +64,22 @@ export const useViewTabsStore = defineStore('viewTabs',{
             // 默认显示数据
             this.$state.viewTabs = this.$state.totalViewTabs.filter(tab => tab.affix)
         },
-
+        // 根据路由信息加载viewTag
+        init(route: RouteLocationNormalizedLoaded) {
+            // 通过viewTab进行标签管理
+            if (route?.meta?.viewTab) {
+                this.selectedViewTab(route.path,route?.meta?.viewTab as boolean)
+            }
+            // 跳过标签管理
+            else {
+                // 当前组件为跳过，默认选中其父组件
+                const unSkipList =  route.matched.filter(item => item?.meta?.viewTab && item.path !== '/')
+                if (unSkipList && unSkipList.length > 0) {
+                    // 选中接收view-tabs托管的父组件
+                    this.selectedViewTab(unSkipList[unSkipList.length - 1].path, route?.meta?.viewTab as boolean)
+                }
+            }
+        },
         // key值是否包含在ViewTabs之中
         isIncludeViewTabs(key: string) {
             return this.getIndex(key) !== -1
@@ -183,6 +208,11 @@ export const useViewTabsStore = defineStore('viewTabs',{
         // 清空组件缓存
         clearComponentsKeepAlive() {
             this.$state.componentAlive = []
+        },
+        // 重新生成 contentComponentKey
+        regenerateComponentKey() {
+            // 生成一个随机的 UUID
+            this.$state.contentComponentKey = uuid()
         }
     }
 })
