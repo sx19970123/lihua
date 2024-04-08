@@ -110,8 +110,8 @@ const addKeepAliveCache = () => {
 const cancelKeepAliveCache = (keys: Array<string>) => {
   const closeTabRoutes = router.getRoutes().filter(route => keys.includes(route.path))
   closeTabRoutes?.forEach(closeTabRoute => {
-    if (closeTabRoute?.meta?.cache && closeTabRoute?.meta?.componentName) {
-      viewTabsStore.removeComponentsKeepAlive(closeTabRoute?.meta?.componentName as string)
+    if (closeTabRoute?.meta?.cache && closeTabRoute?.name) {
+      viewTabsStore.removeComponentsKeepAlive(closeTabRoute?.name as string)
     }
   })
 }

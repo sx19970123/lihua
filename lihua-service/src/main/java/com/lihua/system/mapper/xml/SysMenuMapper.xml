@@ -15,7 +15,6 @@
             <result column="title" property="title"/>
             <result column="icon" property="icon"/>
             <result column="cache" property="cache"/>
-            <result column="component_name" property="componentName"/>
             <result column="link_path" property="link"/>
             <result column="view_tab" property="viewTab"/>
             <result column="menu_type" property="menuType"/>
@@ -33,7 +32,6 @@
         sys_menu.menu_type,
         sys_menu.router_path,
         sys_menu.component_path,
-        sys_menu.component_name,
         sys_menu.perms,
         sys_menu.icon,
         sys_menu.link_path,

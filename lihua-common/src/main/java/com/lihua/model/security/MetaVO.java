@@ -18,9 +18,6 @@ public class MetaVO implements Serializable {
     // 导航图标
     private String icon;
 
-    // 组件名称
-    private String componentName;
-
     // 外联地址
     private String link;
 

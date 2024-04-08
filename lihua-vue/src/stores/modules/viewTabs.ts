@@ -194,16 +194,16 @@ export const useViewTabsStore = defineStore('viewTabs',{
             this.$state.tabCacheKey = 'recent-tabs-' + username
         },
         // 设置组件缓存
-        setComponentsKeepAlive(componentName: string) {
-            if (!this.$state.componentAlive.includes(componentName)) {
-                this.$state.componentAlive.push(componentName)
+        setComponentsKeepAlive(name: string) {
+            this.$state.componentAlive.push('index')
+            if (!this.$state.componentAlive.includes(name)) {
+                this.$state.componentAlive.push(name)
             }
         },
-        // 删除组件缓存（index.vue的组件默认全部缓存）
-        removeComponentsKeepAlive(componentName: string) {
-            if (componentName !== 'index') {
-                this.$state.componentAlive = this.$state.componentAlive.filter(item => item !== componentName)
-            }
+        // 删除组件缓存
+        removeComponentsKeepAlive(name: string) {
+            console.log('删除组件',name)
+            this.$state.componentAlive = this.$state.componentAlive.filter(item => item !== name)
         },
         // 清空组件缓存
         clearComponentsKeepAlive() {
