@@ -3,6 +3,7 @@ package com.lihua.system.service.impl;
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
 import com.lihua.model.security.*;
+import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysMenuService;
@@ -15,7 +16,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +38,9 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Resource
     private SysViewTabService sysViewTabService;
+
+    @Resource
+    private SysMenuMapper sysMenuMapper;
 
     @Resource
     private LihuaConfig lihuaConfig;
@@ -61,15 +67,20 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         List<RouterVO> routerVOList = sysMenuService.selectSysMenuByLoginUserId(id);
         // 角色信息
         List<SysRoleVO> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
+        // 权限信息
+        List<RouterVO> routerVOS = sysMenuMapper.selectPermsByUserId(id);
         // 收藏/固定菜单
         List<SysViewTabVO> viewTabVOS = sysViewTabService.selectByUserId(id);
         // viewTab赋值routerPathKey
         handleSetViewTabKey(viewTabVOS,routerVOList);
+        // 处理角色权限信息
+        List<String> authorities = handleAuthorities(sysRoles,routerVOS);
 
         loginUser
             .setRouterList(routerVOList)
             .setSysRoleList(sysRoles)
-            .setViewTabVOList(viewTabVOS);
+            .setViewTabVOList(viewTabVOS)
+            .setAuthorities(authorities);
 
         // 设置redis缓存
         LoginUserMgmt.setLoginUserCache(loginUser);
@@ -87,5 +98,24 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             });
         });
 
+    }
+
+    private List<String> handleAuthorities(List<SysRoleVO> sysRoles,List<RouterVO> routerVOS) {
+        // 过滤出用户权限信息
+        List<String> perms = new ArrayList<>(routerVOS.stream()
+                .map(RouterVO::getPerms)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList());
+
+        // 过滤出用户角色信息
+        List<String> roleCodes = sysRoles.stream()
+                .map(SysRoleVO::getCode)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        // 合并角色/权限
+        perms.addAll(roleCodes);
+        return perms;
     }
 }

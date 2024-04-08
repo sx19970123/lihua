@@ -256,6 +256,7 @@ import { flattenTreeData} from "@/utils/tree.ts"
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
+
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {
   // 列表列集合

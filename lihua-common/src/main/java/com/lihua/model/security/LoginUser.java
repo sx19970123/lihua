@@ -59,9 +59,7 @@ public class LoginUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (permissionList == null) {
-            permissionList = authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        }
+        permissionList = authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
         return permissionList;
     }
 

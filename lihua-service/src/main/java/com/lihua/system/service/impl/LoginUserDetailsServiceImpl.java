@@ -61,10 +61,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
 
         // 过滤出用户角色信息
         List<String> roleCodes = sysRoleVOS.stream()
-                .map(item -> {
-                    item.setCode("ROLE_" + item.getCode());
-                    return item.getCode();
-                })
+                .map(SysRoleVO::getCode)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
