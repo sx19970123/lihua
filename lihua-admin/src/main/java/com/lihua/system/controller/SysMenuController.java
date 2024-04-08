@@ -25,7 +25,7 @@ public class SysMenuController extends BaseController {
         return success(sysMenuService.findList(sysMenuDTO));
     }
 
-    @PreAuthorize("hasRole('ROLE_admin1')")
+    @PreAuthorize("hasRole('ROLE_admin')")
     @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
         if (!StringUtils.hasText(id)) {
