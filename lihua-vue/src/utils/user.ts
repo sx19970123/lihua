@@ -114,13 +114,13 @@ const handleRouterComponent = (metaRouterList: Array<RouterType>) => {
 // 设置动态路由的component
 const handleSetComponent = (route: RouterType) => {
   for (let path in modules) {
-    const dir = path.split('views/')[1]
+    const dir = path.split('views')[1]
     if (dir === route.component) {
       route.component = () => modules[path]()
     }
   }
   if (typeof route.component === 'string') {
     route.danger = true
-    route.meta.title = "项目路径下没有找到 src/views/" + route.component + " 资源"
+    route.meta.title = "项目路径下没有找到 src/views" + route.component + " 资源"
   }
 }

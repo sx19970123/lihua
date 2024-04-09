@@ -30,7 +30,7 @@ const routers = [
         component: () => import("@/views/index.vue"),
         meta: {
           label: '首页',
-          icon: 'FastBackwardOutlined',
+          icon: 'HomeOutlined',
           viewTabSort: 1,
           affix: true,
           viewTab: true,

@@ -40,6 +40,8 @@ public class SysMenuServiceImpl implements SysMenuService {
             queryWrapper.lambda().eq(SysMenu::getStatus,sysMenuDTO.getStatus());
         }
 
+        queryWrapper.lambda().orderByAsc(SysMenu::getSort);
+
         List<SysMenu> sysMenus = sysMenuMapper.selectList(queryWrapper);
 
         // 构建树形结构

@@ -419,7 +419,7 @@ const initSave = () => {
     ],
     componentPath: [
       { required: true, message: '请输入组件路径',trigger: 'change' },
-      { pattern: /^[A-Za-z0-9]+(?:[./][A-Za-z0-9]+)*\.vue$/,message: '请输入正确的组件路径',trigger: 'change' }
+      { pattern: /^\/[A-Za-z0-9]+(?:[./][A-Za-z0-9]+)*\.vue$/,message: '请输入正确的组件路径，需以/开头',trigger: 'change' }
     ],
     linkPath: [
       { required: true, message: '请输入链接地址',trigger: 'change' },

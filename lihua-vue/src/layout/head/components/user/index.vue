@@ -76,6 +76,7 @@ const handleClickMenu = async ({key}: {key: string}) => {
               viewTabsStore.init(route)
               // 重新生成key
               viewTabsStore.regenerateComponentKey()
+              message.success(resp.msg)
             })
             .catch((err) => message.error('拉取用户信息失败：' + err))
       } else {
