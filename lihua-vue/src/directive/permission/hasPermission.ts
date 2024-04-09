@@ -9,15 +9,12 @@ export default (app:App<Element>):void => {
       const value = binding.value
       if (Array.isArray(value)) {
         if (value) {
-          let hasPermission = true
           for (const permission of value as string[]) {
             if (!currentPerms.includes(permission)) {
-              hasPermission = false
+              el.remove()
               break
             }
           }
-
-          el.style.display = hasPermission ? '' : 'none'
         }
       } else {
         console.error('v-hasPermission 指令: 参数错误，请传入字符串数组，如 v-hasRole="[\'xxx:xxx:xxx\']"')
