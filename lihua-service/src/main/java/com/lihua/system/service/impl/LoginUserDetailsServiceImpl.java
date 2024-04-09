@@ -36,44 +36,8 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
         if (sysUserVO == null) {
             throw new UsernameNotFoundException("用户名未找到");
         }
-        // 查询用户权限信息
-        List<RouterVO> routerVOList = null;
-        List<SysRoleVO> sysRoleVOS = null;
-        try {
-            routerVOList = sysMenuMapper.selectPermsByUserId(sysUserVO.getId());
-            sysRoleVOS = sysRoleMapper.selectSysRoleByUserId(sysUserVO.getId());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(ResultCodeEnum.getDefaultExceptionMessage(ResultCodeEnum.DB_ERROR));
-        }
-        if (routerVOList == null || routerVOList.isEmpty()) {
-            throw new PermissionDeniedDataAccessException(ResultCodeEnum.getDefaultExceptionMessage(ResultCodeEnum.NO_ACCESS_ERROR) ,null);
-        }
-        if (sysRoleVOS == null || sysRoleVOS.isEmpty()) {
-            throw new PermissionDeniedDataAccessException(ResultCodeEnum.getDefaultExceptionMessage(ResultCodeEnum.NO_ROLE_ERROR) ,null);
-        }
-        // 过滤出用户权限信息
-        List<String> perms = new ArrayList<>(routerVOList.stream()
-                .map(RouterVO::getPerms)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .toList());
 
-        // 过滤出用户角色信息
-        List<String> roleCodes = sysRoleVOS.stream()
-                .map(SysRoleVO::getCode)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .toList();
-
-        // 合并角色/权限
-        perms.addAll(roleCodes);
-
-        if (perms.isEmpty()) {
-            throw new PermissionDeniedDataAccessException(ResultCodeEnum.getDefaultExceptionMessage(ResultCodeEnum.NO_PERMISSION_ERROR) ,null);
-        }
-
-        return new LoginUser(sysUserVO,perms);
+        return new LoginUser(sysUserVO);
     }
 }
 

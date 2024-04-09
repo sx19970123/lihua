@@ -132,6 +132,3 @@ const routeSkip = (tab: StarViewType) => {
   }
 }
 </script>
-
-<style scoped>
-</style>

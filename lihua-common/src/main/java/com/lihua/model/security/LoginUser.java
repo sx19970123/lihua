@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -28,7 +29,7 @@ public class LoginUser implements UserDetails {
     /**
      * 权限集合
      */
-    private List<String> authorities;
+    private List<String> authorities = new ArrayList<>();
 
     /**
      *  登录时将 authorities 转换为 SimpleGrantedAuthority 类型集合，
@@ -93,8 +94,7 @@ public class LoginUser implements UserDetails {
         return true;
     }
 
-    public LoginUser(SysUserVO sysUserVO, List<String> authorities) {
+    public LoginUser(SysUserVO sysUserVO) {
         this.sysUserVO = sysUserVO;
-        this.authorities = authorities;
     }
 }

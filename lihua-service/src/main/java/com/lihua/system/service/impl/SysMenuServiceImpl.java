@@ -15,6 +15,9 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +25,8 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Resource
     private SysMenuMapper sysMenuMapper;
+
+    private String patternCpmponentName =  "([^/]+)\\.vue$";
 
     @Override
     public List<SysMenu> findList(SysMenuDTO sysMenuDTO) {
@@ -83,10 +88,27 @@ public class SysMenuServiceImpl implements SysMenuService {
     public List<RouterVO> selectSysMenuByLoginUserId(String userId) {
         List<RouterVO> sysMenuVOS = sysMenuMapper.selectPermsByUserId(userId);
         // 不需要权限数据
-        sysMenuVOS = sysMenuVOS.stream().filter(vo -> !vo.getType().equals("perms")).collect(Collectors.toList());
+        sysMenuVOS = sysMenuVOS
+                .stream()
+                .filter(vo -> !vo.getType().equals("perms"))
+                .peek(vo -> {
+                    // 使用正则表达式从组件路径中获取组件名称
+                    String component = vo.getComponent();
+                    if (component != null) {
+                        Pattern pattern = Pattern.compile(patternCpmponentName);
+                        Matcher matcher = pattern.matcher(component);
+                        if (matcher.find()) {
+                            String name = matcher.group(1);
+                            if (StringUtils.hasText(name)) {
+                                vo.setName(name);
+                            }
+                        }
+                    }
+                })
+                .collect(Collectors.toList());
         // 递归构建树
         List<RouterVO> routerVOList = TreeUtil.buildTree(sysMenuVOS);
-        // 设置层级key，再通过key设置path 和 组件name
+        // 设置层级key，再通过key设置path
         handleRouterPathKey(routerVOList, null);
         return routerVOList;
     }
@@ -100,18 +122,8 @@ public class SysMenuServiceImpl implements SysMenuService {
             } else if (parentKey != null){
                 item.setKey(parentKey + key);
             }
-            String fullKey = item.getKey();
             // 设置path
-            item.setPath(fullKey);
-            // 设置组件name
-            String[] keyWords = fullKey.split("/");
-            StringBuilder name = new StringBuilder();
-            for (String word : keyWords) {
-                String upperCaseWord = com.lihua.utils.string.StringUtils.initialUpperCase(word);
-                name.append(upperCaseWord);
-            }
-
-            item.setName(name.toString());
+            item.setPath(item.getKey());
             // 存在子集继续递归
             if (item.getChildren() != null && !item.getChildren().isEmpty()) {
                handleRouterPathKey(item.getChildren(),item.getKey());

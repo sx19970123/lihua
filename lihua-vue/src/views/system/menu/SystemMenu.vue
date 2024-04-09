@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-flex vertical :gap="16" v-hasPermission="['system:menu:list']">
+    <a-flex vertical :gap="16" v-hasRole="['ROLE_admin']">
       <!--      检索条件-->
       <a-card :style="{border: 'none'}">
         <a-form :colon="false" :model="menuQuery">
@@ -26,7 +26,7 @@
                 <template #icon>
                   <RedoOutlined />
                 </template>
-                重 置å
+                重 置
               </a-button>
             </a-form-item>
           </a-space>
@@ -43,7 +43,7 @@
         >
           <template #title>
             <a-flex :gap="8">
-              <a-button type="primary" @click="addMenu" v-hasPermission="['system:menu:save']">
+              <a-button type="primary" @click="addMenu">
                 <template #icon>
                   <PlusOutlined />
                 </template>
@@ -73,7 +73,7 @@
             </template>
             <!--            操作-->
             <template v-if="column.key === 'action'">
-              <a-button type="link" size="small" @click="getMenu(record.id)" v-hasPermission="['system:menu:save']">
+              <a-button type="link" size="small" @click="getMenu(record.id)">
                 <template #icon>
                   <EditOutlined />
                 </template>
@@ -84,7 +84,6 @@
                         size="small"
                         @click="addChildren(record)"
                         :disabled="record.menuType === 'link' || record.menuType === 'perms'"
-                        v-hasPermission="['system:menu:save']"
               >
                 <template #icon>
                   <PlusOutlined />
@@ -98,7 +97,7 @@
                             placement="bottomRight"
                             @confirm="handleDelete(record.id)"
               >
-                <a-button type="link" danger size="small" v-hasPermission="['system:menu:delete']">
+                <a-button type="link" danger size="small">
                   <template #icon>
                     <DeleteOutlined />
                   </template>
@@ -126,6 +125,14 @@
               :rules="menuRules"
               ref="formRef"
       >
+        <transition :name="themeStore.routeTransition" mode="out-in">
+          <a-alert message="组件路径中组件名称请保证系统内唯一，推荐根据目录大写驼峰命名"
+                   v-if="sysMenu.menuType === 'page'"
+                   type="warning"
+                   closable
+                   style="margin-bottom: 24px"
+          />
+        </transition>
         <a-form-item label="菜单类型" name="menuType">
           <a-radio-group v-model:value="sysMenu.menuType">
             <a-radio-button v-for="item in sys_menu_type" :value="item.value">{{item.label}}</a-radio-button>
@@ -256,6 +263,8 @@ import { flattenTreeData} from "@/utils/tree.ts"
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
+import { useThemeStore } from "@/stores/modules/theme";
+const themeStore = useThemeStore()
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {
   // 列表列集合

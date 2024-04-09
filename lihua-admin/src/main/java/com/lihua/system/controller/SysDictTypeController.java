@@ -6,6 +6,7 @@ import com.lihua.system.entity.SysDictType;
 import com.lihua.system.model.SysDictTypeDTO;
 import com.lihua.system.service.SysDictTypeService;
 import jakarta.annotation.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +19,13 @@ public class SysDictTypeController extends BaseController {
     @Resource
     private SysDictTypeService sysDictTypeService;
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("page")
     public String findPage(@RequestBody SysDictTypeDTO dictTypeDTO) {
         return success(sysDictTypeService.findPage(dictTypeDTO));
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
         if (!StringUtils.hasText(id)) {
@@ -31,11 +34,13 @@ public class SysDictTypeController extends BaseController {
         return success(sysDictTypeService.findById(id));
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     public String save(@RequestBody SysDictType sysDictType) {
         return success(sysDictTypeService.save(sysDictType));
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     public String delete(@RequestBody List<String> ids) {
         if (ids == null || ids.isEmpty()) {

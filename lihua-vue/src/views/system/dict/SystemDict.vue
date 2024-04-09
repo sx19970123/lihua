@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-flex vertical :gap="16" v-hasPermission="['system:dict:list']">
+    <a-flex vertical :gap="16" v-hasRole="['ROLE_admin']">
       <!--    检索条件-->
       <a-card :style="{border: 'none'}">
         <a-form :colon="false">
@@ -44,7 +44,7 @@
       >
         <template #title>
           <a-flex :gap="8">
-            <a-button type="primary" @click="handleModelStatus('新增字典')" v-hasPermission="['system:dict:save']">
+            <a-button type="primary" @click="handleModelStatus('新增字典')">
               <template #icon>
                 <PlusOutlined />
               </template>
@@ -78,14 +78,14 @@
             {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
           </template>
           <template v-if="column.key === 'action'">
-            <a-button type="link" size="small" @click="getDictType(record.id)" v-hasPermission="['system:dict:save']">
+            <a-button type="link" size="small" @click="getDictType(record.id)">
               <template #icon>
                 <EditOutlined />
               </template>
               编辑
             </a-button>
             <a-divider type="vertical"/>
-            <a-button type="link" size="small" @click="openDictConfig(record)" v-hasPermission="['system:dict:config']">
+            <a-button type="link" size="small" @click="openDictConfig(record)">
               <template #icon>
                 <SettingOutlined />
               </template>
@@ -98,7 +98,7 @@
                           placement="bottomRight"
                           @confirm="handleDelete(record.id)"
             >
-              <a-button type="link" danger size="small" v-hasPermission="['system:dict:delete']">
+              <a-button type="link" danger size="small">
                 <template #icon>
                   <DeleteOutlined />
                 </template>

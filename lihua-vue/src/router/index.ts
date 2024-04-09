@@ -40,7 +40,7 @@ const routers = [
         // 个人中心
       {
         path: '/profile',
-        component: () => import("@/views/system/profile/index.vue"),
+        component: () => import("@/views/system/profile/SystemProfile.vue"),
         meta: {
           label: '个人中心',
           icon: 'UserOutlined',
@@ -56,7 +56,7 @@ const routers = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import("@/views/login.vue")
+    component: () => import("@/views/Login.vue")
   },
   // 404
   {

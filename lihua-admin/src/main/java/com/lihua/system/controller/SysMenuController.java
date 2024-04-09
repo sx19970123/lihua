@@ -19,7 +19,7 @@ public class SysMenuController extends BaseController {
     @Resource
     private SysMenuService sysMenuService;
 
-    @PreAuthorize("hasAuthority('system:menu:list')")
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("list")
     public String findList(@RequestBody SysMenuDTO sysMenuDTO) {
         return success(sysMenuService.findList(sysMenuDTO));
@@ -35,11 +35,13 @@ public class SysMenuController extends BaseController {
         return success(sysMenuService.findById(id));
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     public String save(@RequestBody SysMenu sysMenu) {
         return success(sysMenuService.save(sysMenu));
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     public String deleteByIds(@RequestBody List<String> ids) {
         if (ids == null || ids.isEmpty()) {
