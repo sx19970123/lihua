@@ -22,9 +22,12 @@ interface SysRole {
   /**
    * 菜单id集合
    */
-  menuIds?: string[];
+  menuIds?: string[] | checked;
 }
 
+type checked = {
+  checked: []
+}
 
 interface SysRoleDTO {
   /**
@@ -38,7 +41,7 @@ interface SysRoleDTO {
   /**
    * 角色状态
    */
-  status: string;
+  status: string | null;
   /**
    * 当前页数
    */

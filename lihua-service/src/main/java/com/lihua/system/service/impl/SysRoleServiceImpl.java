@@ -58,10 +58,11 @@ public class SysRoleServiceImpl implements SysRoleService {
     public String save(SysRole sysRole) {
         String id;
         // 保存role表数据
+        checkRoleCode(sysRole);
         if (StringUtils.hasText(sysRole.getId())) {
-            id = insert(sysRole);
-        } else {
             id = update(sysRole);
+        } else {
+            id = insert(sysRole);
         }
         // 保存关联表数据
         saveRoleMenu(id, sysRole.getMenuIds());
@@ -71,6 +72,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     private String insert(SysRole sysRole) {
         sysRole.setCreateId(LoginUserContext.getUserId());
         sysRole.setCreateTime(LocalDateTime.now());
+        sysRole.setDelFlag("0");
         sysRoleMapper.insert(sysRole);
         return sysRole.getId();
     }
@@ -84,11 +86,39 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     private void saveRoleMenu(String roleId,List<String> menuIds) {
         sysRoleMapper.deleteRoleMenuByRoleId(roleId);
-        sysRoleMapper.insertRoleMenu(roleId,menuIds);
+        if (!menuIds.isEmpty()) {
+            sysRoleMapper.insertRoleMenu(roleId,menuIds);
+        }
+    }
+
+    private void checkRoleCode(SysRole sysRole) {
+        QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysRole::getCode,sysRole.getCode());
+
+        List<SysRole> sysRoles = sysRoleMapper.selectList(queryWrapper);
+
+        if (sysRoles.isEmpty()) {
+            return;
+        }
+        if (sysRoles.size() > 1) {
+            throw new ServiceException("角色编码已存在");
+        }
+        if (!sysRoles.get(0).getId().equals(sysRole.getId())) {
+            throw new ServiceException("角色编码已存在");
+        }
     }
 
     @Override
     public void deleteByIds(List<String> ids) {
+        QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .in(SysRole::getId,ids)
+                .eq(SysRole::getStatus,"0");
+        Long count = sysRoleMapper.selectCount(queryWrapper);
+        if (count > 0) {
+            throw new ServiceException("角色状态为正常，不允许删除");
+        }
+
         Long menuCount = sysRoleMapper.selectRoleMenuCount("role_id",ids);
         Long userCount = sysRoleMapper.selectUserRoleCount("role_id",ids);
         if (menuCount == 0 && userCount == 0) {

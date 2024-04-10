@@ -112,6 +112,7 @@
     <a-modal v-model:open="modalActive.open"
              ok-text="保 存"
              cancel-text="关 闭"
+             :confirm-loading="modalActive.saveLoading"
              @ok="saveMenu"
     >
       <template #title>
@@ -539,12 +540,14 @@ const initSave = () => {
   // 保存菜单
   const saveMenu = async () => {
     await formRef.value.validate()
+    modalActive.saveLoading = true
     const resp = await save(sysMenu.value)
     message.success(resp.msg)
     if (resp.code === 200) {
       await initList()
       modalActive.open = false
     }
+    modalActive.saveLoading = false
   }
 
   return {

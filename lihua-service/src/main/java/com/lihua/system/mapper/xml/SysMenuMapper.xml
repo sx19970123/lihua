@@ -35,7 +35,7 @@
         sys_menu.perms,
         sys_menu.icon,
         sys_menu.link_path,
-        sys_menu.QUERY,
+        sys_menu.query,
         sys_menu.menu_type,
         sys_menu.link_open_type,
         CASE

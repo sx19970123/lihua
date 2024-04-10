@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.security.RouterVO;
 import com.lihua.system.entity.SysMenu;
+import com.lihua.system.entity.SysRole;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysMenuService;
@@ -83,6 +84,7 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Override
     public void deleteByIds(List<String> ids) {
+        checkStatus(ids);
         checkChildren(ids);
         checkRole(ids);
         sysMenuMapper.deleteBatchIds(ids);
@@ -166,6 +168,20 @@ public class SysMenuServiceImpl implements SysMenuService {
         Long menuCount = sysRoleMapper.selectRoleMenuCount("menu_id", ids);
         if (menuCount > 0) {
             throw new ServiceException("菜单已绑定角色不允许删除");
+        }
+    }
+
+    /**
+     * 验证菜单状态
+     * @param ids
+     */
+    private void checkStatus(List<String> ids) {
+        QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().in(SysMenu::getId,ids)
+                        .eq(SysMenu::getStatus,"0");
+        Long count = sysMenuMapper.selectCount(queryWrapper);
+        if (count > 0) {
+            throw new ServiceException("菜单状态为正常不允许删除");
         }
     }
 

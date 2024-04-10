@@ -6,18 +6,18 @@
         <a-form :colon="false">
           <a-space size="small">
             <a-form-item class="form-item-single-line" label="角色名称">
-              <a-input placeholder="请输入角色名称" allowClear/>
+              <a-input placeholder="请输入角色名称" allowClear v-model:value="roleQuery.name"/>
             </a-form-item>
             <a-form-item class="form-item-single-line" label="角色编码">
-              <a-input placeholder="请输入角色编码" allowClear/>
+              <a-input placeholder="请输入角色编码" allowClear v-model:value="roleQuery.code"/>
             </a-form-item>
             <a-form-item class="form-item-single-line" label="角色状态">
-              <a-select style="width: 120px;" placeholder="请选择" allowClear>
+              <a-select style="width: 120px;" placeholder="请选择" allowClear v-model:value="roleQuery.status">
                 <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
               </a-select>
             </a-form-item>
             <a-form-item class="form-item-single-line">
-              <a-button type="primary">
+              <a-button type="primary" :loading="tableLoad" @click="queryPage">
                 <template #icon>
                   <SearchOutlined />
                 </template>
@@ -25,7 +25,7 @@
               </a-button>
             </a-form-item>
             <a-form-item class="form-item-single-line">
-              <a-button>
+              <a-button :loading="tableLoad" @click="resetPage">
                 <template #icon>
                   <RedoOutlined />
                 </template>
@@ -44,6 +44,8 @@
                 :row-selection="roleRowSelection"
                 :data-source="roleList"
                 :pagination="false"
+                :loading="tableLoad"
+                row-key="id"
             >
               <template #title>
                 <a-flex :gap="8">
@@ -73,6 +75,7 @@
                                 ok-text="确 定"
                                 cancel-text="取 消"
                                 placement="bottomRight"
+                                @confirm="handleDelete(record.id)"
                   >
                     <a-button type="link" danger size="small">
                       <template #icon>
@@ -88,6 +91,7 @@
                   <a-pagination v-model:current="roleQuery.pageNum"
                                 :total="roleTotal"
                                 :show-total="(total:number) => `共 ${total} 条`"
+                                @change="queryPage"
                                 />
                 </a-flex>
               </template>
@@ -111,11 +115,7 @@
         </a-flex>
     </a-flex>
 <!--    角色模态框-->
-    <a-modal v-model:open="modalActive.open"
-             ok-text="保 存"
-             cancel-text="关 闭"
-             :confirm-loading="modalActive.saveLoading"
-    >
+    <a-modal v-model:open="modalActive.open" :footer="null">
       <template #title>
         <div style="margin-bottom: 24px">
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
@@ -125,34 +125,29 @@
               :label-col="{style: { width: '80px' }}"
               :colon="false"
               :rules="roleRules"
+              @finish="saveRole"
       >
         <a-form-item label="角色名称" name="name">
-          <a-input placeholder="请输入角色名称" v-model:value="role.name" maxlength="35" show-count allow-clear/>
+          <a-input placeholder="请输入角色名称" v-model:value="role.name" :maxlength="35" show-count allow-clear/>
         </a-form-item>
         <a-form-item label="角色编码" name="code">
-          <a-input placeholder="角色编码以ROLE_开头" v-model:value="role.code" maxlength="50" show-count allow-clear/>
+          <a-input placeholder="角色编码以ROLE_开头" v-model:value="role.code" :maxlength="50" show-count allow-clear/>
         </a-form-item>
         <a-form-item label="角色状态">
           <a-radio-group v-model:value="role.status">
             <a-radio v-for="item in sys_status" :value="item.value">{{item.label}}</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="菜单" class="form-item-single-line">
-          <a-space :size="24">
-            <a-flex align="center" :gap="8">
-                展开 <a-switch size="small"/>
-            </a-flex>
-            <a-flex align="center" :gap="8">
-              全选 <a-switch size="small"/>
-            </a-flex>
-            <a-flex align="center" :gap="8">
-              父子联动 <a-switch size="small"/>
-            </a-flex>
-          </a-space>
+        <a-form-item label="菜单" class="form-item-single-line unselectable">
+          <a-checkable-tag v-model:checked="menuSetting.checked" @change="handleCheckedAll">全选/全不选</a-checkable-tag>
+          <a-checkable-tag v-model:checked="menuSetting.expand" @change="handleExpandAll">展开/折叠</a-checkable-tag>
+          <a-checkable-tag v-model:checked="menuSetting.checkStrictly">父子关联</a-checkable-tag>
         </a-form-item>
         <a-form-item label=" ">
-          <a-card style="max-height: 260px" class="scrollbar" :body-style="{padding: '8px'}">
-            <a-tree :tree-data="menuOption"
+          <a-card :body-style="{padding: '8px'}">
+            <a-tree :tree-data="menuSetting.menuOption"
+                    :checkStrictly="!menuSetting.checkStrictly"
+                    v-model:expanded-keys="menuSetting.expandKeys"
                     v-model:checkedKeys="role.menuIds"
                     :field-names="{children:'children', title:'label', key:'id' }"
                     checkable
@@ -165,8 +160,13 @@
           </a-card>
         </a-form-item>
         <a-form-item label="备注">
-          <a-textarea v-model:value="role.remark"/>
+          <a-textarea v-model:value="role.remark" placeholder="请输入备注" :maxlength="200" show-count allow-clear/>
         </a-form-item>
+
+        <a-flex :gap="8" justify="flex-end">
+          <a-button @click="modalActive.open = false">关 闭</a-button>
+          <a-button type="primary" html-type="submit" :loading="modalActive.saveLoading">保 存</a-button>
+        </a-flex>
       </a-form>
     </a-modal>
   </div>
@@ -175,12 +175,14 @@
 <script setup lang="ts">
 import type {PageResponseType, ResponseType} from "@/api/type.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {reactive, ref} from "vue";
-import {findById, findPage} from "@/api/system/role/role.ts";
+import {reactive, ref, watch} from "vue";
+import {deleteByIds, findById, findPage, save} from "@/api/system/role/role.ts";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
 import {menuTreeOption} from "@/api/system/menu/menu.ts";
 import type {Rule} from "ant-design-vue/es/form";
+import {flattenTreeData} from "@/utils/tree.ts";
+import {message} from "ant-design-vue";
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
 
 // 列表查询相关
@@ -228,34 +230,60 @@ const initSearch = () => {
     },
   ]
   // 查询条件
-  const roleQuery: SysRoleDTO = {
+  const roleQuery = ref<SysRoleDTO> ({
     name: '',
     code: '',
-    status: '',
+    status: null,
     pageNum: 1,
     pageSize: 10,
-  }
+  })
   // 列表数据
   const roleList = ref<Array<SysRole>>([])
   const roleTotal = ref<number>()
+  // 列表加载中loading
+  const tableLoad = ref<boolean>(false)
 
+  // 查询列表
   const queryPage = async () => {
-    const resp:ResponseType<PageResponseType<SysRole>> = await findPage(roleQuery)
+    tableLoad.value = true
+    const resp:ResponseType<PageResponseType<SysRole>> = await findPage(roleQuery.value)
     if (resp.code === 200) {
-      roleList.value = resp.data.records
-      roleTotal.value = resp.data.total
+      // 防止删除到非第一页的最后一条数据时，列表变为空
+      if (resp.data.records.length === 0 && roleQuery.value.pageNum !== 1) {
+        roleQuery.value.pageNum = roleQuery.value.pageNum - 1
+        await queryPage()
+      } else {
+        roleList.value = resp.data.records
+        roleTotal.value = resp.data.total
+      }
     }
+    tableLoad.value = false
   }
+  const resetPage = async () => {
+    roleQuery.value = {
+      name: '',
+      code: '',
+      status: null,
+      pageNum: 1,
+      pageSize: 10,
+    }
+    await queryPage()
+
+  }
+
   queryPage()
   return {
     roleRowSelection,
     roleQuery,
     roleTotal,
     roleColumn,
-    roleList
+    roleList,
+    tableLoad,
+    queryPage,
+    resetPage,
   }
 }
-const {roleRowSelection,roleQuery,roleTotal,roleColumn,roleList} = initSearch()
+const {roleRowSelection,roleQuery,roleTotal,roleColumn,roleList,tableLoad,queryPage,resetPage} = initSearch()
 
 
 // 数据保存相关
@@ -298,9 +326,11 @@ const initSave = () => {
   // 根据id获取角色，打开模态框
   const getRole = async (id: string) => {
     const resp:ResponseType<SysRole> = await findById(id)
-    if (resp.code === 200) {
+    if (resp.code === 200 && resp.data) {
       await handleModelStatus("修改角色")
       role.value = resp.data
+    } else {
+      console.error(resp.msg)
     }
   }
   // 重置表单
@@ -309,33 +339,127 @@ const initSave = () => {
       status: '0',
       menuIds: []
     }
+    // 默认展开/全选关闭
+    menuSetting.value.checked = false
+    menuSetting.value.expand = false
+    handleExpandAll()
+    handleCheckedAll()
   }
-  // 菜单树
-  const menuOption = ref<Array<SysMenu>>([])
-  const initMenuTree = async () => {
-    const resp:ResponseType<Array<SysMenu>> = await menuTreeOption()
-    if (resp.code === 200) {
-      menuOption.value = resp.data
+
+  // 保存角色
+  const saveRole = async () => {
+    modalActive.saveLoading = true
+    // 开关父子联动绑定赋值不同，进行处理
+    if (role.value.menuIds?.checked) {
+      role.value.menuIds = role.value.menuIds.checked
     }
+    const resp = await save(role.value)
+    if (resp.code === 200) {
+      message.success(resp.msg)
+      modalActive.open = false
+      await queryPage()
+    } else {
+      message.error(resp.msg)
+      console.error(resp.msg)
+    }
+    modalActive.saveLoading = false
   }
-
-
 
   return {
     modalActive,
     role,
-    menuOption,
     roleRules,
     handleModelStatus,
-    getRole
+    getRole,
+    saveRole
   }
 }
 
-const {modalActive,role,menuOption,roleRules,handleModelStatus,getRole} = initSave()
+const {modalActive,role,roleRules,handleModelStatus,getRole,saveRole} = initSave()
+
+// 菜单树相关
+const useMenuTree = () => {
+  type MenuSetting = {
+    // 菜单树
+    menuOption: Array<SysMenu>,
+    // 扁平化后的树
+    flattenTree: Array<SysMenu>,
+    // 展开的节点
+    expandKeys: string[],
+    // 是否全部展开
+    expand: boolean,
+    // 父子联动
+    checkStrictly: boolean
+    // 是否全部选中
+    checked: boolean,
+  }
+  // 菜单树
+  const menuSetting = ref<MenuSetting>({
+    menuOption: [],
+    flattenTree: [],
+    expandKeys: [],
+    expand: false,
+    checkStrictly: true,
+    checked: false,
+  })
+  // 加载菜单树
+  const initMenuTree = async () => {
+    const resp:ResponseType<Array<SysMenu>> = await menuTreeOption()
+    if (resp.code === 200) {
+      menuSetting.value.flattenTree = []
+      menuSetting.value.menuOption = resp.data
+      flattenTreeData(menuSetting.value.menuOption,menuSetting.value.flattenTree)
+    }
+  }
+
+  // 处理全部展开
+  const handleExpandAll = () => {
+    menuSetting.value.expandKeys = []
+    if (menuSetting.value.expand) {
+      menuSetting.value.flattenTree.forEach(item => {
+        if (item.id) {
+          menuSetting.value.expandKeys.push(item.id)
+        }
+      })
+    } else {
+      menuSetting.value.expandKeys = []
+    }
+  }
+
+  // 处理全部选中
+  const handleCheckedAll = () => {
+    role.value.menuIds = []
+    if (menuSetting.value.checked) {
+      menuSetting.value.flattenTree.forEach(item => {
+        if (role.value.menuIds && item.id) {
+          role.value.menuIds.push(item.id)
+        }
+      })
+    } else {
+      role.value.menuIds = []
+    }
+  }
+
+  return {
+    menuSetting,
+    initMenuTree,
+    handleExpandAll,
+    handleCheckedAll,
+  }
+}
+
+const { initMenuTree, menuSetting, handleExpandAll, handleCheckedAll } = useMenuTree()
+
 
 // 数据删除相关
-const initDelete = () => {
-
+const handleDelete = async (id: String) => {
+  const resp = await deleteByIds([id])
+  if (resp.code === 200) {
+    message.success(resp.msg)
+    await queryPage()
+  } else {
+    message.error(resp.msg)
+  }
 }
 
 // 角色用户相关
@@ -364,6 +488,14 @@ const initRoleUser = () => {
   }
 }
 const {roleUserColumn} = initRoleUser()
+
+watch(() => role.value.menuIds , (value) => {
+  if (value.length === menuSetting.value.flattenTree.length) {
+    menuSetting.value.checked = true
+  } else {
+    menuSetting.value.checked = false
+  }
+})
 </script>
 
 <style scoped>

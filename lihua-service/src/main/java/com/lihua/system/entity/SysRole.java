@@ -7,6 +7,7 @@ import com.lihua.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -47,5 +48,5 @@ public class SysRole extends BaseEntity {
      * 菜单id集合
      */
     @TableField(exist = false)
-    private List<String> menuIds;
+    private List<String> menuIds = new ArrayList<>();
 }

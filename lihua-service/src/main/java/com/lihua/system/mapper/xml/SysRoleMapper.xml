@@ -42,7 +42,7 @@
 
     <select id="findById" resultMap="findByIdMap">
         SELECT id, name, code, status, remark, menu_Id FROM sys_role
-        INNER JOIN sys_role_menu ON sys_role.id = sys_role_menu.role_id
+        LEFT JOIN sys_role_menu ON sys_role.id = sys_role_menu.role_id
         WHERE sys_role.id = #{roleId}
     </select>
 

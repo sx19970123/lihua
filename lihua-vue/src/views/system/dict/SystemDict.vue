@@ -287,8 +287,14 @@ const initSearch = () => {
     tableLoad.value = true
     const resp:ResponseType<PageResponseType<SysDictType>> = await findPage(dictTypeQuery.value)
     if (resp.code === 200) {
-      dictTypeList.value = resp.data.records
-      dictTypeTotal.value = resp.data.total
+      if (resp.data.records.length === 0 && dictTypeQuery.value.pageNum > 1) {
+        dictTypeQuery.value.pageNum = dictTypeQuery.value.pageNum - 1
+        await queryPage()
+      } else {
+        dictTypeList.value = resp.data.records
+        dictTypeTotal.value = resp.data.total
+      }
+
     }
     tableLoad.value = false
   }
@@ -361,7 +367,7 @@ const initSave = () => {
       if (resp.code === 200) {
         message.success(resp.msg)
         handleModelStatus()
-        await initPage()
+        await queryPage()
       } else {
         message.error(resp.msg)
       }
