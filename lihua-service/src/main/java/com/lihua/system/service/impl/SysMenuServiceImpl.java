@@ -5,7 +5,7 @@ import com.lihua.exception.ServiceException;
 import com.lihua.model.security.RouterVO;
 import com.lihua.system.entity.SysMenu;
 import com.lihua.system.mapper.SysMenuMapper;
-import com.lihua.system.model.SysMenuDTO;
+import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtil;
@@ -15,7 +15,6 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -25,19 +24,21 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     @Resource
     private SysMenuMapper sysMenuMapper;
+    @Resource
+    private SysRoleMapper sysRoleMapper;
 
-    private String patternCpmponentName =  "([^/]+)\\.vue$";
+    private final String patternComponentName =  "([^/]+)\\.vue$";
 
     @Override
-    public List<SysMenu> findList(SysMenuDTO sysMenuDTO) {
+    public List<SysMenu> findList(SysMenu sysMenu) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
 
-        if (StringUtils.hasText(sysMenuDTO.getLabel())) {
-            queryWrapper.lambda().like(SysMenu::getLabel,sysMenuDTO.getLabel());
+        if (StringUtils.hasText(sysMenu.getLabel())) {
+            queryWrapper.lambda().like(SysMenu::getLabel,sysMenu.getLabel());
         }
 
-        if (StringUtils.hasText(sysMenuDTO.getStatus())) {
-            queryWrapper.lambda().eq(SysMenu::getStatus,sysMenuDTO.getStatus());
+        if (StringUtils.hasText(sysMenu.getStatus())) {
+            queryWrapper.lambda().eq(SysMenu::getStatus,sysMenu.getStatus());
         }
 
         queryWrapper.lambda().orderByAsc(SysMenu::getSort);
@@ -83,6 +84,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public void deleteByIds(List<String> ids) {
         checkChildren(ids);
+        checkRole(ids);
         sysMenuMapper.deleteBatchIds(ids);
     }
 
@@ -97,7 +99,7 @@ public class SysMenuServiceImpl implements SysMenuService {
                     // 使用正则表达式从组件路径中获取组件名称
                     String component = vo.getComponent();
                     if (component != null) {
-                        Pattern pattern = Pattern.compile(patternCpmponentName);
+                        Pattern pattern = Pattern.compile(patternComponentName);
                         Matcher matcher = pattern.matcher(component);
                         if (matcher.find()) {
                             String name = matcher.group(1);
@@ -114,6 +116,14 @@ public class SysMenuServiceImpl implements SysMenuService {
         handleRouterPathKey(routerVOList, null);
         return routerVOList;
     }
+
+    @Override
+    public List<SysMenu> menuTreeOption() {
+        SysMenu sysMenu = new SysMenu();
+        sysMenu.setStatus("0");
+        return findList(sysMenu);
+    }
+
     // 处理 routerPathKey
     private void handleRouterPathKey(List<RouterVO> routerVOList,String parentKey) {
         for (RouterVO item : routerVOList) {
@@ -144,7 +154,18 @@ public class SysMenuServiceImpl implements SysMenuService {
         Long count = sysMenuMapper.selectCount(queryWrapper);
 
         if (count != 0) {
-            throw new ServiceException("存在子集不允许删除");
+            throw new ServiceException("菜单存在子集不允许删除");
+        }
+    }
+
+    /**
+     * 验证删除数据是否已绑定角色
+     * @param ids
+     */
+    private void checkRole(List<String> ids) {
+        Long menuCount = sysRoleMapper.selectRoleMenuCount("menu_id", ids);
+        if (menuCount > 0) {
+            throw new ServiceException("菜单已绑定角色不允许删除");
         }
     }
 

@@ -9,7 +9,7 @@
               <a-input placeholder="请输入菜单名称" v-model:value="menuQuery.label" allow-clear/>
             </a-form-item>
             <a-form-item class="form-item-single-line" label="菜单状态" name="status">
-              <a-select style="width: 100px;" placeholder="请选择" v-model:value="menuQuery.status" allow-clear>
+              <a-select style="width: 120px;" placeholder="请选择" v-model:value="menuQuery.status" allow-clear>
                 <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
               </a-select>
             </a-form-item>

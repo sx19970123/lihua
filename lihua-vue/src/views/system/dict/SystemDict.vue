@@ -4,7 +4,7 @@
       <!--    检索条件-->
       <a-card :style="{border: 'none'}">
         <a-form :colon="false">
-          <a-flex :gap="8" align="center">
+          <a-space size="small">
             <a-form-item class="form-item-single-line" label="字典名称">
               <a-input v-model:value="dictTypeQuery.name" placeholder="请输入字典名称" allowClear/>
             </a-form-item>
@@ -30,7 +30,7 @@
                 重 置
               </a-button>
             </a-form-item>
-          </a-flex>
+          </a-space>
         </a-form>
       </a-card>
       <!--    列表页-->

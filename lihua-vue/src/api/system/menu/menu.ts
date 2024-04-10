@@ -46,3 +46,13 @@ export const deleteByIds = (ids: Array<string>) => {
     data: ids
   })
 }
+
+/**
+ * 获取系统全量菜单树选项数据
+ */
+export const menuTreeOption = () => {
+  return request({
+    url: 'system/menu/menuOption',
+    method: 'get'
+  })
+}

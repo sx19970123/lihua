@@ -6,7 +6,8 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysMenuDTO extends BaseDTO {
-    private String label;
+public class SysRoleDTO extends BaseDTO {
+    private String name;
+    private String code;
     private String status;
 }

@@ -2,7 +2,6 @@ package com.lihua.system.service;
 
 import com.lihua.model.security.RouterVO;
 import com.lihua.system.entity.SysMenu;
-import com.lihua.system.model.SysMenuDTO;
 
 import java.util.List;
 
@@ -11,10 +10,10 @@ public interface SysMenuService {
 
     /**
      * 列表页查询
-     * @param sysMenuDTO
+     * @param sysMenu
      * @return
      */
-    List<SysMenu> findList(SysMenuDTO sysMenuDTO);
+    List<SysMenu> findList(SysMenu sysMenu);
 
     /**
      * 根据id查询菜单
@@ -42,5 +41,11 @@ public interface SysMenuService {
      * @return
      */
     List<RouterVO> selectSysMenuByLoginUserId(String userId);
+
+    /**
+     * 获取菜单树Option
+     * @return
+     */
+    List<SysMenu> menuTreeOption();
 
 }

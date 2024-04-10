@@ -84,7 +84,7 @@ export interface SysDictTypeDTO {
   pageNum?: number;
 
   /**
-   * 总页数
+   * 每页记录数
    */
   pageSize?: number;
 }

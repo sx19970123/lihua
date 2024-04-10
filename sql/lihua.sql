@@ -11,7 +11,7 @@
  Target Server Version : 80033 (8.0.33)
  File Encoding         : 65001
 
- Date: 09/04/2024 13:47:03
+ Date: 10/04/2024 16:59:54
 */
 
 SET NAMES utf8mb4;
@@ -162,10 +162,10 @@ CREATE TABLE `sys_menu`  (
 -- Records of sys_menu
 -- ----------------------------
 INSERT INTO `sys_menu` VALUES ('031f293f02c84e4d9e27f866e18bc019', '1775035631645659138', '菜单管理', '菜单管理', 'page', '/menu', '/system/menu/SystemMenu.vue', '0', '0', NULL, 'BarsOutlined', 1, NULL, NULL, '1', '2024-04-07 20:12:50', '0', NULL, '0', '111', NULL, '0', 'new-page');
-INSERT INTO `sys_menu` VALUES ('031f293f02c84e4d9e27f866e18bc059', '1775035631645659138', '字典管理', '字典管理', 'page', '/dict', '/system/dict/SystemDict.vue', '0', '0', 'page', 'ReadOutlined', 2, NULL, NULL, '1', '2024-04-09 11:16:53', '0', NULL, '0', '22222', '{\"name\": \"John\"}', '0', 'new-page');
+INSERT INTO `sys_menu` VALUES ('031f293f02c84e4d9e27f866e18bc059', '1775035631645659138', '字典管理', '字典管理', 'page', '/dict', '/system/dict/SystemDict.vue', '0', '0', 'page', 'ReadOutlined', 2, NULL, NULL, '1', '2024-04-10 16:20:45', '0', NULL, '0', '22222', '{\"name\": \"John\"}', '0', 'new-page');
 INSERT INTO `sys_menu` VALUES ('1775035631645659138', '0', '系统管理', '系统管理', 'directory', '/system', NULL, '0', '0', 'directory', 'SettingOutlined', 2, '1', '2024-04-02 13:40:48', '1', '2024-04-09 11:40:33', '0', NULL, '1', NULL, NULL, '0', 'new-page');
 INSERT INTO `sys_menu` VALUES ('1775365169634258945', '0', '外部链接', '外部链接', 'directory', '/link', NULL, '0', '0', 'directory', 'NodeIndexOutlined', 4, '1', '2024-04-03 11:30:16', '1', '2024-04-09 11:41:26', '0', NULL, '1', NULL, NULL, '0', 'new-page');
-INSERT INTO `sys_menu` VALUES ('1775365569678585857', '1775365169634258945', '系统内显示', NULL, 'link', '/inner', NULL, '0', '0', NULL, 'ChromeOutlined', 1, '1', '2024-04-03 11:31:51', '1', '2024-04-05 10:33:42', '0', NULL, '1', 'https://gitee.com/yukino_git/lihua', NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1775365569678585857', '1775365169634258945', '系统内显示', '系统内显示', 'link', '/inner', NULL, '0', '0', 'link', 'ChromeOutlined', 1, '1', '2024-04-03 11:31:51', '1', '2024-04-10 16:02:00', '0', NULL, '1', 'http://boot3.jeecg.com/dashboard/analysis', NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1776075821136220161', '1775365169634258945', '系统外显示', NULL, 'link', '/sys-out', NULL, '0', '0', NULL, 'ChromeOutlined', 2, '1', '2024-04-05 10:34:08', NULL, NULL, '0', NULL, '1', 'https://gitee.com/yukino_git/lihua', NULL, '0', 'new-page');
 INSERT INTO `sys_menu` VALUES ('1776946902768373762', '031f293f02c84e4d9e27f866e18bc019', '列表查询', NULL, 'perms', NULL, NULL, '0', '0', 'system:menu:list', NULL, 1, '1', '2024-04-07 20:15:30', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1776947169823903746', '031f293f02c84e4d9e27f866e18bc019', '菜单保存', NULL, 'perms', '', NULL, '0', '0', 'system:menu:save', NULL, 2, '1', '2024-04-07 20:16:34', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
@@ -269,7 +269,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"url\":\"\",\"value\":\"Unfold\",\"type\":\"icon\",\"backgroundColor\":\"rgb(250, 173, 20)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"showViewTabs\":true,\"dataDark\":true,\"colorPrimary\":\"rgb(114, 46, 209)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(20,20,20,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"breathe\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(114, 46, 209)\"}}}', '0', NULL, NULL, '1', '2024-04-09 13:44:33', NULL, NULL, '12321311@qq.com', '15523647831');
+INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"url\":\"\",\"value\":\"Unfold\",\"type\":\"icon\",\"backgroundColor\":\"rgb(250, 173, 20)\"}', '1', '0', '{\"layoutType\":\"header-sider\",\"showViewTabs\":true,\"dataDark\":false,\"colorPrimary\":\"rgb(114, 46, 209)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"breathe\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(114, 46, 209)\"}}}', '0', NULL, NULL, '1', '2024-04-10 16:56:44', NULL, NULL, '12321311@qq.com', '15523647831');
 
 -- ----------------------------
 -- Table structure for sys_user_role
