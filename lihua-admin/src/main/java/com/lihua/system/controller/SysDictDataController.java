@@ -19,6 +19,11 @@ public class SysDictDataController extends BaseController {
     @Resource
     private SysDictDataService sysDictDataService;
 
+    /**
+     * 查询字典数据列表
+     * @param dictDataDTO
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("list")
     public String findListByTypeCode(@RequestBody SysDictDataDTO dictDataDTO) {
@@ -28,12 +33,21 @@ public class SysDictDataController extends BaseController {
         return success(sysDictDataService.findList(dictDataDTO));
     }
 
-    @PreAuthorize("hasRole('ROLE_admin')")
+    /**
+     * 查询下拉框中字典选项
+     * @param dictTypeCode
+     * @return
+     */
     @GetMapping("option/{dictTypeCode}")
     public String findDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
         return success(sysDictDataService.findDictOptionList(dictTypeCode));
     }
 
+    /**
+     * 保存字典数据
+     * @param sysDictData
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     public String save(@RequestBody SysDictData sysDictData) {
@@ -52,6 +66,11 @@ public class SysDictDataController extends BaseController {
         return success(sysDictDataService.save(sysDictData));
     }
 
+    /**
+     * 删除字典数据
+     * @param ids
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     public String delete(@RequestBody List<String> ids) {

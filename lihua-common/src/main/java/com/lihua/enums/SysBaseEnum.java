@@ -1,8 +1,10 @@
 package com.lihua.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum SysBaseEnum {
     /**
      * 用户登录成功 redis 缓存前缀
@@ -20,8 +22,5 @@ public enum SysBaseEnum {
 
     private final String value;
 
-    SysBaseEnum(String value) {
-        this.value = value;
-    }
 
 }

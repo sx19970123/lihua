@@ -19,12 +19,22 @@ public class SysDictTypeController extends BaseController {
     @Resource
     private SysDictTypeService sysDictTypeService;
 
+    /**
+     * 字典类型查询
+     * @param dictTypeDTO
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("page")
     public String findPage(@RequestBody SysDictTypeDTO dictTypeDTO) {
         return success(sysDictTypeService.findPage(dictTypeDTO));
     }
 
+    /**
+     * 根据主键查询
+     * @param id
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
@@ -34,12 +44,22 @@ public class SysDictTypeController extends BaseController {
         return success(sysDictTypeService.findById(id));
     }
 
+    /**
+     * 保存字典类型
+     * @param sysDictType
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     public String save(@RequestBody SysDictType sysDictType) {
         return success(sysDictTypeService.save(sysDictType));
     }
 
+    /**
+     * 删除字典类型
+     * @param ids
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     public String delete(@RequestBody List<String> ids) {

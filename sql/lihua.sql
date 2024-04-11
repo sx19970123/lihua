@@ -11,7 +11,7 @@
  Target Server Version : 80200
  File Encoding         : 65001
 
- Date: 10/04/2024 22:33:59
+ Date: 11/04/2024 22:26:34
 */
 
 SET NAMES utf8mb4;
@@ -303,6 +303,45 @@ CREATE TABLE `sys_user` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `login_ip`, `login_time`, `email`, `phone_number`) VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"url\":\"\",\"value\":\"Unfold\",\"type\":\"icon\",\"backgroundColor\":\"rgb(250, 173, 20)\"}', '1', '0', '{\"layoutType\":\"header-sider\",\"showViewTabs\":true,\"dataDark\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"breathe\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(22, 119, 255)\"}}}', '0', NULL, NULL, '1', '2024-04-10 21:46:57', NULL, NULL, '12321311@qq.com', '15523647831');
+INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `login_ip`, `login_time`, `email`, `phone_number`) VALUES ('2', 'test', '123', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for sys_user_dept
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_dept`;
+CREATE TABLE `sys_user_dept` (
+  `user_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
+  `dept_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '部门id',
+  `create_time` datetime DEFAULT NULL COMMENT '绑定时间',
+  `create_id` varchar(60) DEFAULT NULL COMMENT '绑定人id',
+  PRIMARY KEY (`user_id`,`dept_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='系统用户部门关联表';
+
+-- ----------------------------
+-- Records of sys_user_dept
+-- ----------------------------
+BEGIN;
+INSERT INTO `sys_user_dept` (`user_id`, `dept_id`, `create_time`, `create_id`) VALUES ('1', '1', NULL, NULL);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for sys_user_post
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_post`;
+CREATE TABLE `sys_user_post` (
+  `user_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
+  `post_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '岗位id',
+  `create_time` datetime DEFAULT NULL COMMENT '绑定时间',
+  `create_id` varchar(60) DEFAULT NULL COMMENT '绑定人id',
+  PRIMARY KEY (`user_id`,`post_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='系统用户岗位关联表';
+
+-- ----------------------------
+-- Records of sys_user_post
+-- ----------------------------
+BEGIN;
+INSERT INTO `sys_user_post` (`user_id`, `post_id`, `create_time`, `create_id`) VALUES ('1', '1', NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -312,6 +351,8 @@ DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role` (
   `user_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
   `role_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色id',
+  `create_time` datetime DEFAULT NULL COMMENT '绑定时间',
+  `create_id` varchar(60) DEFAULT NULL COMMENT '绑定人id',
   PRIMARY KEY (`user_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='系统用户角色关联表';
 
@@ -319,7 +360,9 @@ CREATE TABLE `sys_user_role` (
 -- Records of sys_user_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user_role` (`user_id`, `role_id`) VALUES ('1', '1');
+INSERT INTO `sys_user_role` (`user_id`, `role_id`, `create_time`, `create_id`) VALUES ('1', '1', NULL, NULL);
+INSERT INTO `sys_user_role` (`user_id`, `role_id`, `create_time`, `create_id`) VALUES ('1', '3', NULL, NULL);
+INSERT INTO `sys_user_role` (`user_id`, `role_id`, `create_time`, `create_id`) VALUES ('2', '4', NULL, NULL);
 COMMIT;
 
 -- ----------------------------

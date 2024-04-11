@@ -22,12 +22,22 @@ public class SysRoleController extends BaseController {
     @Resource
     private SysMenuService sysMenuService;
 
+    /**
+     * 查询角色信息
+     * @param sysRoleDTO
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("page")
     public String findPage(@RequestBody SysRoleDTO sysRoleDTO) {
         return success(sysRoleService.findPage(sysRoleDTO));
     }
 
+    /**
+     * 根据主键查询
+     * @param id
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
@@ -37,12 +47,22 @@ public class SysRoleController extends BaseController {
         return success(sysRoleService.findById(id));
     }
 
+    /**
+     * 保存角色信息
+     * @param sysRole
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     public String save(@RequestBody SysRole sysRole) {
         return success(sysRoleService.save(sysRole));
     }
 
+    /**
+     * 删除角色信息
+     * @param ids
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     public String deleteByIds(@RequestBody List<String> ids) {

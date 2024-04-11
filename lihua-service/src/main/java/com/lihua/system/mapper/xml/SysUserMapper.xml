@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lihua.system.mapper.SysUserMapper">
 
-
     <select id="selectByUsername" resultType="com.lihua.model.security.SysUserVO">
         SELECT
             id,
@@ -21,4 +20,55 @@
         WHERE
             del_flag = '0' AND status = '0' AND username = #{username}
     </select>
+
+
+    <select id="findBusinessUserPage" resultType="com.lihua.system.entity.SysUser">
+        SELECT
+            sys_user.id,
+            sys_user.username,
+            sys_user.nickname,
+            sys_user.gender,
+            sys_user.email,
+            sys_user.phone_number,
+            sys_user.status
+        FROM
+            sys_user
+        LEFT JOIN ${tableName} ON sys_user.id = ${tableName}.user_id
+        WHERE
+            ${tableName}.${fieldName} = #{businessId} AND sys_user.delete_flag = '0'
+        ORDER BY sys_user.id
+    </select>
+
+    <select id="findNotBusinessUserPage" resultType="com.lihua.system.entity.SysUser">
+        SELECT
+        sys_user.id,
+        sys_user.username,
+        sys_user.nickname,
+        sys_user.gender,
+        sys_user.email,
+        sys_user.phone_number,
+        sys_user.status
+        FROM
+        sys_user
+        LEFT JOIN ${tableName} ON sys_user.id != ${tableName}.user_id
+        WHERE
+        ${tableName}.${fieldName} = #{businessId} AND sys_user.delete_flag = '0'
+        ORDER BY sys_user.id
+    </select>
+
+    <delete id="detach">
+        DELETE FROM
+            ${tableName}
+        WHERE
+        ${fieldName} = #{businessId} AND user_id = #{userId}
+    </delete>
+
+    <insert id="associate">
+        INSERT INTO
+            ${tableName} (user_id, ${fieldName} ,create_time , create_id)
+        VALUES
+        <foreach collection="userIdList" item="userId" separator=",">
+            (#{userId}, #{businessId}, #{createTime} ,#{createId})
+        </foreach>
+    </insert>
 </mapper>

@@ -100,7 +100,7 @@ const handleRouterComponent = (metaRouterList: Array<RouterType>) => {
         }
         handleRouterComponent(route.children);
       }
-      // 页面组件设置 component
+      // 页面组件设置 components
       else {
         if (route.type === 'link') {
           route.component = IFrame
