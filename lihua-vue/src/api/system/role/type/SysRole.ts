@@ -22,12 +22,10 @@ interface SysRole {
   /**
    * 菜单id集合
    */
-  menuIds?: string[] | checked;
+  menuIds?: string[] | { checked: string[] };
 }
 
-type checked = {
-  checked: []
-}
+
 
 interface SysRoleDTO {
   /**

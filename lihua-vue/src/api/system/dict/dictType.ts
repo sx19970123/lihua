@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type {SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
+import type {SysDictType, SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
 
 /**
  * 列表页查询
@@ -27,7 +27,7 @@ export const findById = (id: string) => {
 /**
  * 保存数据
  */
-export const save = (data: SysDictTypeDTO) => {
+export const save = (data: SysDictType) => {
   return request({
     url: 'system/dictType',
     method: 'post',

@@ -46,9 +46,9 @@
             :loading="tableLoading"
             :pagination="false"
             v-model:expandedRowKeys="expandedRowKeys"
+            @resizeColumn="handleResizeColumn"
             rowKey="id"
             sticky
-            @resizeColumn="handleResizeColumn"
         >
           <template #title>
             <a-button type="primary" @click="handleAdd">

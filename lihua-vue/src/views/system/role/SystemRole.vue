@@ -45,7 +45,9 @@
                 :data-source="roleList"
                 :pagination="false"
                 :loading="tableLoad"
+                :custom-row="handleRowClick"
                 row-key="id"
+                row-class-name="hover-cursor-pointer"
             >
               <template #title>
                 <a-flex :gap="8">
@@ -64,7 +66,7 @@
                   <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
                 </template>
                 <template v-if="column.key === 'action'">
-                  <a-button type="link" size="small" @click="getRole(record.id)">
+                  <a-button type="link" size="small" @click="getRole($event,record.id)">
                     <template #icon>
                       <EditOutlined />
                     </template>
@@ -77,7 +79,7 @@
                                 placement="bottomRight"
                                 @confirm="handleDelete(record.id)"
                   >
-                    <a-button type="link" danger size="small">
+                    <a-button type="link" danger size="small" @click="(event: any) => event.stopPropagation()">
                       <template #icon>
                         <DeleteOutlined />
                       </template>
@@ -99,7 +101,9 @@
           </div>
 <!--          用户子表-->
           <div style="width: 40%">
-            <a-table :columns="roleUserColumn">
+            <a-table
+                :columns="roleUserColumn"
+            >
               <template #title>
                 <a-flex :gap="8">
                   <a-button type="primary">
@@ -184,7 +188,6 @@ import type {Rule} from "ant-design-vue/es/form";
 import {flattenTreeData} from "@/utils/tree.ts";
 import {message} from "ant-design-vue";
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
-
 // 列表查询相关
 const initSearch = () => {
   // 选中的数据id集合
@@ -198,6 +201,15 @@ const initSearch = () => {
     selectedRowKeys: selectedIds,
     onChange: (ids: Array<string>) => {
       selectedIds.value = ids
+    }
+  }
+  const handleRowClick = (record:SysRole) => {
+    return {
+      onClick: () => {
+        if (record.id) {
+          selectedIds.value = [record.id]
+        }
+      }
     }
   }
   // 列表列定义
@@ -281,9 +293,10 @@ const initSearch = () => {
     tableLoad,
     queryPage,
     resetPage,
+    handleRowClick
   }
 }
-const {roleRowSelection,roleQuery,roleTotal,roleColumn,roleList,tableLoad,queryPage,resetPage} = initSearch()
+const {roleRowSelection,roleQuery,roleTotal,roleColumn,roleList,tableLoad,queryPage,resetPage,handleRowClick} = initSearch()
 
 
 // 数据保存相关
@@ -308,7 +321,11 @@ const initSave = () => {
       modalActive.title = title
     }
     if (modalActive.open) {
+      // 加载菜单树
       await initMenuTree()
+      // 默认打开父子关联
+      menuSetting.value.checkStrictly = true
+      // 重置表单
       resetForm()
     }
   }
@@ -324,7 +341,8 @@ const initSave = () => {
   }
 
   // 根据id获取角色，打开模态框
-  const getRole = async (id: string) => {
+  const getRole = async (event:any ,id: string) => {
+    event.stopPropagation()
     const resp:ResponseType<SysRole> = await findById(id)
     if (resp.code === 200 && resp.data) {
       await handleModelStatus("修改角色")
@@ -350,8 +368,8 @@ const initSave = () => {
   const saveRole = async () => {
     modalActive.saveLoading = true
     // 开关父子联动绑定赋值不同，进行处理
-    if (role.value.menuIds?.checked) {
-      role.value.menuIds = role.value.menuIds.checked
+    if (!Array.isArray(role.value.menuIds)) {
+      role.value.menuIds = role.value.menuIds?.checked
     }
     const resp = await save(role.value)
     if (resp.code === 200) {
@@ -432,7 +450,9 @@ const useMenuTree = () => {
     if (menuSetting.value.checked) {
       menuSetting.value.flattenTree.forEach(item => {
         if (role.value.menuIds && item.id) {
-          role.value.menuIds.push(item.id)
+          if (Array.isArray(role.value.menuIds)) {
+            role.value.menuIds.push(item.id)
+          }
         }
       })
     } else {
@@ -452,7 +472,7 @@ const { initMenuTree, menuSetting, handleExpandAll, handleCheckedAll } = useMenu
 
 
 // 数据删除相关
-const handleDelete = async (id: String) => {
+const handleDelete = async (id: string) => {
   const resp = await deleteByIds([id])
   if (resp.code === 200) {
     message.success(resp.msg)
@@ -489,15 +509,8 @@ const initRoleUser = () => {
 }
 const {roleUserColumn} = initRoleUser()
 
+// 监听menuIds进行全选/非全选与数据同步
 watch(() => role.value.menuIds , (value) => {
-  if (value.length === menuSetting.value.flattenTree.length) {
-    menuSetting.value.checked = true
-  } else {
-    menuSetting.value.checked = false
-  }
+  menuSetting.value.checked = (value as []).length === menuSetting.value.flattenTree.length;
 })
 </script>
-
-<style scoped>
-
-</style>

@@ -1,3 +1,19 @@
+/* 滚动条 */
+.scrollbar {
+    overflow: auto;
+}
+.scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 8px;
+}
+.scrollbar::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 8px;
+}
+
 /**
     单行 form-item 下 label margin设置为0
  */
@@ -55,4 +71,11 @@
     -moz-user-select: none; /* Firefox 2+ */
     -ms-user-select: none; /* IE 10+ */
     user-select: none; /* Standard syntax */
+}
+
+/**
+    鼠标悬停变为手指
+ */
+.hover-cursor-pointer {
+    cursor: pointer
 }

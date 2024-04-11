@@ -81,10 +81,10 @@ export interface SysDictTypeDTO {
   /**
    * 当前页数
    */
-  pageNum?: number;
+  pageNum: number;
 
   /**
    * 每页记录数
    */
-  pageSize?: number;
+  pageSize: number;
 }

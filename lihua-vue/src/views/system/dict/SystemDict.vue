@@ -39,8 +39,9 @@
                :pagination="false"
                :loading="tableLoad"
                :row-selection="dictTypeRowSelectionType"
-               :rowKey="(item:SysDictType) => item.id"
-               :sticky="{ offsetHeader: themeStore.$state.layoutType === 'header-content' ? 118 : 102 }"
+               row-class-name="hover-cursor-pointer"
+               :custom-row="handleRowClick"
+               row-key="id"
       >
         <template #title>
           <a-flex :gap="8">
@@ -78,14 +79,14 @@
             {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
           </template>
           <template v-if="column.key === 'action'">
-            <a-button type="link" size="small" @click="getDictType(record.id)">
+            <a-button type="link" size="small" @click="getDictType($event,record.id)">
               <template #icon>
                 <EditOutlined />
               </template>
               编辑
             </a-button>
             <a-divider type="vertical"/>
-            <a-button type="link" size="small" @click="openDictConfig(record)">
+            <a-button type="link" size="small" @click="openDictConfig($event,record)">
               <template #icon>
                 <SettingOutlined />
               </template>
@@ -98,7 +99,7 @@
                           placement="bottomRight"
                           @confirm="handleDelete(record.id)"
             >
-              <a-button type="link" danger size="small">
+              <a-button type="link" danger size="small" @click="(event: any) => event.stopPropagation()">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
@@ -200,6 +201,20 @@ const initSearch = () => {
     selectedRowKeys: selectedIds,
     onChange: (ids: Array<string>) => {
       selectedIds.value = ids
+    }
+  }
+  const handleRowClick = (record:SysDictType) => {
+    return {
+      onClick: () => {
+        if (record.id) {
+          const selected = selectedIds.value
+          if (selected.includes(record.id)) {
+            selected.splice(selected.indexOf(record.id),1)
+          } else {
+            selected.push(record.id)
+          }
+        }
+      }
     }
   }
   // 列表列定义
@@ -307,12 +322,13 @@ const initSearch = () => {
     dictTypeRowSelectionType,
     selectedIds,
     tableLoad,
+    handleRowClick,
     resetPage,
     initPage,
     queryPage
   }
 }
-const {dictTypeQuery,dictTypeTotal,dictTypeList,dictTypeColumn,dictTypeRowSelectionType,selectedIds,tableLoad,resetPage,initPage,queryPage} = initSearch()
+const {dictTypeQuery,dictTypeTotal,dictTypeList,dictTypeColumn,dictTypeRowSelectionType,selectedIds,tableLoad,handleRowClick,resetPage,initPage,queryPage} = initSearch()
 
 // 数据保存相关
 const initSave = () => {
@@ -377,7 +393,8 @@ const initSave = () => {
     modalActive.saveLoading = false
   }
 
-  const getDictType = async (id: string) => {
+  const getDictType = async (event: any,id: string) => {
+    event.stopPropagation()
     const resp: ResponseType<SysDictType> = await findById(id)
     if (resp.code === 200) {
       handleModelStatus('编辑字典')
@@ -431,16 +448,24 @@ const initDelete = () => {
   }
   // 删除方法
   const handleDelete = async (id?:string) => {
+    const deleteIds = []
     if (id) {
-      selectedIds.value = [id]
+      deleteIds.push(id)
+    } else {
+      selectedIds.value.forEach(id => {
+        deleteIds.push(id)
+      })
     }
-    if (selectedIds.value && selectedIds.value.length > 0) {
-      const resp = await deleteData(selectedIds.value)
+
+    if (deleteIds.length > 0) {
+      const resp = await deleteData(deleteIds)
       if (resp.code === 200) {
         message.success(resp.msg);
-        // 清空选中
-        selectedIds.value = []
         closePopconfirm()
+        // id 不存在则清空选中数据
+        if (!id) {
+          selectedIds.value = []
+        }
         await initPage()
       } else {
         message.error(resp.msg)
@@ -472,7 +497,8 @@ const initDictConfig = () => {
     typeCode: '',
     type: '',
   })
-  const openDictConfig = (dictType: SysDictType) => {
+  const openDictConfig = (event: any ,dictType: SysDictType) => {
+    event.stopPropagation()
     drawerAction.title = dictType.name
     drawerAction.openDrawer = true
     if (dictType.code) {
