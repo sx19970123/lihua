@@ -9,7 +9,7 @@
       <a-form-item label="主题颜色">
         <color-select v-model:items="colorList" v-model="themeStore.colorPrimary" @click="themeStore.changeColorPrimary"/>
       </a-form-item>
-      <a-form-item label="导航颜色" v-if="!themeStore.dataDark">
+      <a-form-item label="导航颜色" v-if="!themeStore.dataTheme">
         <nav-color-select v-model="themeStore.siderTheme" @click="themeStore.changeSiderTheme"/>
       </a-form-item>
       <a-divider/>

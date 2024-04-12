@@ -7,7 +7,7 @@ export const useThemeStore = defineStore('theme',{
         /**
          * 暗色模式
          */
-        const dataDark: boolean = settings.dataDark
+        const dataTheme: boolean = settings.dataTheme
 
         /**
          * 顶部栏背景颜色
@@ -83,7 +83,7 @@ export const useThemeStore = defineStore('theme',{
         return {
             layoutType,
             showViewTabs,
-            dataDark,
+            dataTheme,
             colorPrimary,
             siderTheme,
             groundGlass,
@@ -123,14 +123,14 @@ export const useThemeStore = defineStore('theme',{
                     }
                 }
             }
-            this.$state.dataDark = localStorage.getItem("dataDark") === 'dark'
+            this.$state.dataTheme = localStorage.getItem("dataTheme") === 'dark'
         },
         // 暗色模式
         changeDataDark() {
             this.changeDocumentElement()
             let backgroundColor: string = ''
             // 暗色模式下，顶部颜色为黑色、侧边颜色为黑色，透明度根据磨砂效果控制
-            if (this.$state.dataDark) {
+            if (this.$state.dataTheme) {
                 this.siderTheme = 'light'
                 if (this.$state.groundGlass) {
                     backgroundColor = 'rgba(20,20,20,0.6)'
@@ -152,7 +152,7 @@ export const useThemeStore = defineStore('theme',{
                 this.$state.themeConfig.algorithm = theme.defaultAlgorithm
             }
             this.changeSiderTheme()
-            localStorage.setItem('dataDark',this.$state.dataDark ? 'dark' : 'light')
+            localStorage.setItem('dataTheme',this.$state.dataTheme ? 'dark' : 'light')
         },
         // 布局类型
         changeLayoutType() {
@@ -210,14 +210,14 @@ export const useThemeStore = defineStore('theme',{
         changeGroundGlass() {
             if (this.$state.groundGlass) {
                 document.documentElement.setAttribute("data-ground-glass",'glass')
-                if (!this.$state.dataDark) {
+                if (!this.$state.dataTheme) {
                     this.changeLayoutBackgroundColor('rgba(255,255,255,0.6)')
                 } else {
                     this.changeLayoutBackgroundColor('rgba(20,20,20,0.6)')
                 }
             } else {
                 document.documentElement.setAttribute("data-ground-glass",'no-glass')
-                if (!this.$state.dataDark) {
+                if (!this.$state.dataTheme) {
                     this.changeLayoutBackgroundColor('rgba(255,255,255,1)')
                 } else {
                     this.changeLayoutBackgroundColor('rgba(20,20,20,1)')
@@ -240,14 +240,14 @@ export const useThemeStore = defineStore('theme',{
         },
         // 修改html标签，标记当前颜色模式
         changeDocumentElement() {
-            document.documentElement.setAttribute("data-dark",this.$state.dataDark ? 'dark' : 'light')
+            document.documentElement.setAttribute("data-theme",this.$state.dataTheme ? 'dark' : 'light')
             document.documentElement.style.setProperty("--colorPrimary", this.$state.colorPrimary)
         },
         // 主题复原
         resetState() {
             this.$state.layoutType = settings.layoutType
             this.$state.showViewTabs = settings.showViewTabs
-            this.$state.dataDark = settings.dataDark
+            this.$state.dataTheme = localStorage.getItem("dataTheme") === "dark"
             this.$state.colorPrimary = settings.colorPrimary
             this.$state.siderTheme = settings.siderTheme
             this.$state.groundGlass = settings.groundGlass

@@ -104,13 +104,13 @@
 }
 
 /** 顶部右侧鼠标悬停修改背景颜色 */
-[data-dark = 'light']{
+[data-theme = 'light']{
     .header-right:hover {
         background: #f3f3f3;
     }
 }
 
-[data-dark = 'dark'] {
+[data-theme = 'dark'] {
     .header-right:hover {
         background: #292929;
     }

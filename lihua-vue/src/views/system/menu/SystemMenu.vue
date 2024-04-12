@@ -576,14 +576,14 @@ const handleDelete = async (id: string) => {
 </script>
 
 <style>
-[data-dark = 'light'] {
+[data-theme = 'light'] {
   .icon-btn-placeholder-style {
     color: #bfbfbf;
     font-weight: 351;
   }
 }
 
-[data-dark = 'dark'] {
+[data-theme = 'dark'] {
   .icon-btn-placeholder-style {
     color: #4f4f4f;
     font-weight: 351;

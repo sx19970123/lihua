@@ -47,7 +47,7 @@ const handleClockNavType = (key: string) => {
   font-size: 14px;
 }
 
-[data-dark = light] {
+[data-theme = light] {
   .nav-select-content {
     position: relative; /* 设置为相对定位 */
     width: 53px;
@@ -98,7 +98,7 @@ const handleClockNavType = (key: string) => {
   }
 }
 
-[data-dark = dark] {
+[data-theme = dark] {
   .nav-select-content {
     position: relative; /* 设置为相对定位 */
     width: 53px;

@@ -16,51 +16,20 @@
     }
     /* 选项卡选中项目虚化 */
     .ant-tabs-tab-active {
-        background: rgba(255, 255, 255, 0.6) !important;
-        border-bottom-color: rgba(255, 255, 255, 0.6) !important;
+        background: rgba(255, 255, 255, 0) !important;
+        border-bottom-color: rgba(255, 255, 255, 0) !important;
     }
-    /*------开启后页面卡顿严重，暂不启用------*/
-    /*表头虚化*/
-    /*.ant-table-cell {*/
-    /*    will-change: backdrop-filter;*/
-    /*    background: rgba(255,255,255,0.6) !important;*/
-    /*    backdrop-filter: saturate(180%) blur(20px) !important;*/
-    /*    -webkit-backdrop-filter: saturate(180%) blur(20px);*/
-    /*}*/
-    /*.ant-table-sticky-holder {*/
-    /*    background: rgba(0,0,0,0) !important;*/
-    /*}*/
-
-    /*------chrome下效果不理想，暂不启用------*/
-    /* popover 虚化 */
-    /*.ant-popover-inner {*/
-    /*    background: rgba(255,255,255,0) !important;*/
-    /*    -webkit-backdrop-filter: blur(20px) !important;*/
-    /*    backdrop-filter: blur(20px) !important;*/
-    /*}*/
-    /* dropdown 虚化 */
-    /*.ant-dropdown-menu-sub {*/
-    /*    background: rgba(255,255,255,0) !important;*/
-    /*    -webkit-backdrop-filter: saturate(180%) blur(20px) !important;*/
-    /*    backdrop-filter: blur(20px) !important;*/
-    /*}*/
-    /* dropdown 虚化 */
-    /*.ant-dropdown-menu-root {*/
-    /*    background: rgba(255,255,255,0) !important;*/
-    /*    -webkit-backdrop-filter: saturate(180%) blur(20px) !important;*/
-    /*    backdrop-filter: saturate(180%) blur(20px) !important;*/
-    /*}*/
 }
 
 /**
     table 页脚背景设置为白色
  */
-[data-dark = 'light'] {
+[data-theme = 'light'] {
     .ant-table-footer {
         background: #FFFFFF !important;
     }
 }
-[data-dark = 'dark'] {
+[data-theme = 'dark'] {
     .ant-table-footer {
         background: #141414 !important;
     }

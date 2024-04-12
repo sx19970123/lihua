@@ -225,7 +225,7 @@ const {showForm, showCard} = transition()
   background-position: center;
 }
 
-[data-dark = dark] {
+[data-theme = dark] {
   .login-background:before {
     content: "";
     position: absolute;

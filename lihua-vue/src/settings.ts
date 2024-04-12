@@ -11,7 +11,7 @@ export default {
     /**
      * 暗色模式
      */
-    dataDark: localStorage.getItem("dataDark") === 'dark',
+    dataTheme: localStorage.getItem("dataTheme") === 'dark',
 
     /**
      * 顶部栏背景颜色

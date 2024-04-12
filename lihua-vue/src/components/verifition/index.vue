@@ -138,7 +138,7 @@ export default {
 </script>
 <style>
 /* Dark Mode */
-[data-dark="dark"] {
+[data-theme="dark"] {
   .verifybox {
     position: relative;
     box-sizing: border-box;

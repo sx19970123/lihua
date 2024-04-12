@@ -22,15 +22,25 @@
 }
 
 /**
+    下拉菜单毛玻璃效果
+ */
+.drop-down-glass {
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    background: rgba(255,255,255,0);
+    border-radius:8px
+}
+
+/**
     根据主题颜色改变图标颜色
  */
-[data-dark = 'light']{
+[data-theme = 'light']{
     .icon-default-color {
         color: #292929;
     }
 }
 
-[data-dark = 'dark'] {
+[data-theme = 'dark'] {
     .icon-default-color {
         color: #f3f3f3;
     }
