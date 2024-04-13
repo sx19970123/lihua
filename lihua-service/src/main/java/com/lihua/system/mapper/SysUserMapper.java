@@ -13,26 +13,26 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     SysUserVO selectByUsername(String username);
 
     // 查询与业务相关联的用户信息
-    List<SysUser> findBusinessUserPage(@Param("iPage") IPage<SysUser> iPage,
+    IPage<SysUser> findAssociatedUserPage(@Param("iPage") IPage<SysUser> iPage,
                                        @Param("tableName") String tableName,
                                        @Param("fieldName") String fieldName,
-                                       @Param("businessId") String businessId);
+                                       @Param("id") String id);
     // 查询与业务没有关联的用户信息
-    List<SysUser> findNotBusinessUserPage(@Param("iPage") IPage<SysUser> iPage,
+    IPage<SysUser> findUnassociatedUserPage(@Param("iPage") IPage<SysUser> iPage,
                                        @Param("tableName") String tableName,
                                        @Param("fieldName") String fieldName,
-                                       @Param("businessId") String businessId);
+                                       @Param("id") String id);
 
     // 用户解除绑定
     void detach(@Param("tableName") String tableName,
                 @Param("fieldName") String fieldName,
-                @Param("businessId") String businessId,
+                @Param("id") String id,
                 @Param("userId") String userId);
     // 用户与业务绑定
     void associate(
             @Param("tableName") String tableName,
             @Param("fieldName") String fieldName,
-            @Param("businessId") String businessId,
+            @Param("id") String id,
             @Param("createId") String createId,
             @Param("createTime") LocalDateTime createTime,
             @Param("userIdList") List<String> userIdList);

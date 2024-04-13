@@ -1,7 +1,6 @@
 package com.lihua.system.model;
 
 import com.lihua.model.BaseDTO;
-import com.lihua.system.enums.BusinessUserEnums;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,17 +8,17 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysBusinessUserDTO extends BaseDTO {
+public class SysUserAssociationDTO extends BaseDTO {
 
     /**
      * 业务类型编码
      */
-    private String businessCode;
+    private String code;
 
     /**
      * 业务主键id
      */
-    private String businessId;
+    private String id;
 
     /**
      * 用户id

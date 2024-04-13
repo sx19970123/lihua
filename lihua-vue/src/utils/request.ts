@@ -38,11 +38,11 @@ service.interceptors.response.use((resp) => {
 
 
 // 数据返回统一封装样式
-export default (config: AxiosRequestConfig) => {
-    return new Promise<ResponseType<any> & Blob>((resolve, reject) => {
+export default <T> (config: AxiosRequestConfig) => {
+    return new Promise<ResponseType<T> & Blob>((resolve, reject) => {
         service
-          .request<ResponseType<any> & Blob>(config)
-          .then((response: AxiosResponse<ResponseType<any> & Blob>) => {
+          .request<ResponseType<T> & Blob>(config)
+          .then((response: AxiosResponse<ResponseType<T> & Blob>) => {
               resolve(response.data)
           })
           .catch((err) => {

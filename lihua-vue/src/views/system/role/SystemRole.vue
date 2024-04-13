@@ -91,6 +91,7 @@
               <template #footer>
                 <a-flex justify="flex-end">
                   <a-pagination v-model:current="roleQuery.pageNum"
+                                v-model:page-size="roleQuery.pageSize"
                                 :total="roleTotal"
                                 :show-total="(total:number) => `共 ${total} 条`"
                                 @change="queryPage"
@@ -101,20 +102,7 @@
           </div>
 <!--          用户子表-->
           <div style="width: 40%">
-            <a-table
-                :columns="roleUserColumn"
-            >
-              <template #title>
-                <a-flex :gap="8">
-                  <a-button type="primary">
-                    <template #icon>
-                      <PlusOutlined />
-                    </template>
-                    添 加
-                  </a-button>
-                </a-flex>
-              </template>
-            </a-table>
+            <user-association code="role" :id="selectedIds[0]"/>
           </div>
         </a-flex>
     </a-flex>
@@ -177,12 +165,12 @@
 </template>
 
 <script setup lang="ts">
-import type {PageResponseType, ResponseType} from "@/api/type.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {reactive, ref, watch} from "vue";
 import {deleteByIds, findById, findPage, save} from "@/api/system/role/role.ts";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
+import UserAssociation from "@/components/user-association/index.vue";
 import {menuTreeOption} from "@/api/system/menu/menu.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTreeData} from "@/utils/tree.ts";
@@ -191,7 +179,7 @@ const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
 // 列表查询相关
 const initSearch = () => {
   // 选中的数据id集合
-  const selectedIds = ref<Array<string>>([])
+  const selectedIds = ref<string[]>([])
   const roleRowSelection = {
     columnWidth: '55px',
     type: 'radio',
@@ -199,9 +187,6 @@ const initSearch = () => {
     preserveSelectedRowKeys: true,
     // 指定选中id的数据集合，操作完后可手动清空
     selectedRowKeys: selectedIds,
-    onChange: (ids: Array<string>) => {
-      selectedIds.value = ids
-    }
   }
   const handleRowClick = (record:SysRole) => {
     return {
@@ -258,7 +243,7 @@ const initSearch = () => {
   // 查询列表
   const queryPage = async () => {
     tableLoad.value = true
-    const resp:ResponseType<PageResponseType<SysRole>> = await findPage(roleQuery.value)
+    const resp = await findPage(roleQuery.value)
     if (resp.code === 200) {
       // 防止删除到非第一页的最后一条数据时，列表变为空
       if (resp.data.records.length === 0 && roleQuery.value.pageNum !== 1) {
@@ -267,6 +252,9 @@ const initSearch = () => {
       } else {
         roleList.value = resp.data.records
         roleTotal.value = resp.data.total
+        if (selectedIds.value.length === 0 && roleList.value[0].id) {
+          selectedIds.value = [roleList.value[0].id]
+        }
       }
     }
     tableLoad.value = false
@@ -291,12 +279,13 @@ const initSearch = () => {
     roleColumn,
     roleList,
     tableLoad,
+    selectedIds,
     queryPage,
     resetPage,
     handleRowClick
   }
 }
-const {roleRowSelection,roleQuery,roleTotal,roleColumn,roleList,tableLoad,queryPage,resetPage,handleRowClick} = initSearch()
+const {roleRowSelection,roleQuery,roleTotal,roleColumn,roleList,tableLoad,selectedIds,queryPage,resetPage,handleRowClick} = initSearch()
 
 
 // 数据保存相关
@@ -343,7 +332,7 @@ const initSave = () => {
   // 根据id获取角色，打开模态框
   const getRole = async (event:any ,id: string) => {
     event.stopPropagation()
-    const resp:ResponseType<SysRole> = await findById(id)
+    const resp = await findById(id)
     if (resp.code === 200 && resp.data) {
       await handleModelStatus("修改角色")
       role.value = resp.data
@@ -422,7 +411,7 @@ const useMenuTree = () => {
   })
   // 加载菜单树
   const initMenuTree = async () => {
-    const resp:ResponseType<Array<SysMenu>> = await menuTreeOption()
+    const resp = await menuTreeOption()
     if (resp.code === 200) {
       menuSetting.value.flattenTree = []
       menuSetting.value.menuOption = resp.data
@@ -470,7 +459,6 @@ const useMenuTree = () => {
 
 const { initMenuTree, menuSetting, handleExpandAll, handleCheckedAll } = useMenuTree()
 
-
 // 数据删除相关
 const handleDelete = async (id: string) => {
   const resp = await deleteByIds([id])
@@ -481,33 +469,6 @@ const handleDelete = async (id: string) => {
     message.error(resp.msg)
   }
 }
-
-// 角色用户相关
-const initRoleUser = () => {
-  const roleUserColumn: ColumnsType = [
-    {
-      title: '用户名称',
-      dataIndex: 'name',
-      ellipsis: true,
-      key: 'name'
-    },
-    {
-      title: '用户昵称',
-      dataIndex: 'nickname',
-      ellipsis: true,
-      key: 'nickname'
-    },
-    {
-      title: '操作',
-      align: 'center',
-      key: 'action',
-    },
-  ]
-  return {
-    roleUserColumn
-  }
-}
-const {roleUserColumn} = initRoleUser()
 
 // 监听menuIds进行全选/非全选与数据同步
 watch(() => role.value.menuIds , (value) => {

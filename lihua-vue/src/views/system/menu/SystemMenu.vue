@@ -65,11 +65,11 @@
             </template>
             <!--            类型-->
             <template v-if="column.key === 'menuType'">
-              <dict-tag :dict-data-value="text" :dict-data-option="sys_menu_type" :style="{'margin-right': 0}"/>
+              <dict-tag :dict-data-value="text" :dict-data-option="sys_menu_type"/>
             </template>
             <!--            状态-->
             <template v-if="column.key === 'status'">
-              <dict-tag :dict-data-value="text" :dict-data-option="sys_status" :style="{'margin-right': 0}"/>
+              <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
             </template>
             <!--            操作-->
             <template v-if="column.key === 'action'">

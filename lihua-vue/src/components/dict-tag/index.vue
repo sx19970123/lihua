@@ -60,7 +60,7 @@ const props = defineProps({
   },
   style: {
     type: Object,
-    default: {}
+    default:  { 'margin-right': 0 }
   },
   // 展示树型结构全路径
   fullTreeNode: {
@@ -78,4 +78,11 @@ const props = defineProps({
     default: ''
   }
 })
+
+if (!props.dictDataValue) {
+  console.error("dict-tag/DictTag 组件中 dictDataValue 值不存在")
+}
+if (!props.dictDataOption) {
+  console.error("dict-tag/DictTag 组件中 dictDataOption 值不存在")
+}
 </script>

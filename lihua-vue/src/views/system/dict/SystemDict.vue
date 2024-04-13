@@ -70,10 +70,10 @@
         </template>
         <template #bodyCell="{column,record}">
           <template v-if="column.key === 'type'">
-            <dict-tag :dict-data-option="sys_dict_type" :dict-data-value="record[column.key]" :style="{'margin-right': 0}"/>
+            <dict-tag :dict-data-option="sys_dict_type" :dict-data-value="record[column.key]"/>
           </template>
           <template v-if="column.key === 'status'">
-            <dict-tag :dict-data-option="sys_status" :dict-data-value="record[column.key]" :style="{'margin-right': 0}"/>
+            <dict-tag :dict-data-option="sys_status" :dict-data-value="record[column.key]"/>
           </template>
           <template v-if="column.key === 'createTime'">
             {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
@@ -111,6 +111,7 @@
         <template #footer>
           <a-flex justify="flex-end">
             <a-pagination v-model:current="dictTypeQuery.pageNum"
+                          v-model:page-size="dictTypeQuery.pageSize"
                           :total="dictTypeTotal"
                           :show-total="(total:number) => `共 ${total} 条`"
                           @change="queryPage"/>

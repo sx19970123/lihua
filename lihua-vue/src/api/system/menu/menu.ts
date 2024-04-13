@@ -5,7 +5,7 @@ import request from "@/utils/request";
  * @param data
  */
 export const findList = (data:SysMenu) => {
-  return request({
+  return request<Array<SysMenu>>({
     url: 'system/menu/list',
     method: 'post',
     data: data
@@ -17,7 +17,7 @@ export const findList = (data:SysMenu) => {
  * @param id
  */
 export const findById = (id: string) => {
-  return request({
+  return request<SysMenu>({
     url: 'system/menu/' + id,
     method: 'get'
   })
@@ -51,7 +51,7 @@ export const deleteByIds = (ids: Array<string>) => {
  * 获取系统全量菜单树选项数据
  */
 export const menuTreeOption = () => {
-  return request({
+  return request<Array<SysMenu>>({
     url: 'system/menu/menuOption',
     method: 'get'
   })

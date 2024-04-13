@@ -1,8 +1,9 @@
 import request from "@/utils/request";
+import type {PageResponseType} from "@/api/type.ts";
 
 // 分页查询列表
 export const findPage = (data: SysRoleDTO) => {
-  return request({
+  return request<PageResponseType<SysRole>>({
     url: 'system/role/page',
     method: 'post',
     data: data,
@@ -11,7 +12,7 @@ export const findPage = (data: SysRoleDTO) => {
 
 // 根据id查询数据
 export const findById = (id: string) => {
-  return request({
+  return request<SysRole>({
     url: 'system/role/' + id,
     method: 'get'
   })

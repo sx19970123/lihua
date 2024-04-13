@@ -22,7 +22,7 @@
     </select>
 
 
-    <select id="findBusinessUserPage" resultType="com.lihua.system.entity.SysUser">
+    <select id="findAssociatedUserPage" resultType="com.lihua.system.entity.SysUser">
         SELECT
             sys_user.id,
             sys_user.username,
@@ -35,11 +35,11 @@
             sys_user
         LEFT JOIN ${tableName} ON sys_user.id = ${tableName}.user_id
         WHERE
-            ${tableName}.${fieldName} = #{businessId} AND sys_user.delete_flag = '0'
+            ${tableName}.${fieldName} = #{id} AND sys_user.del_flag = '0'
         ORDER BY sys_user.id
     </select>
 
-    <select id="findNotBusinessUserPage" resultType="com.lihua.system.entity.SysUser">
+    <select id="findUnassociatedUserPage" resultType="com.lihua.system.entity.SysUser">
         SELECT
         sys_user.id,
         sys_user.username,
@@ -50,9 +50,9 @@
         sys_user.status
         FROM
         sys_user
-        LEFT JOIN ${tableName} ON sys_user.id != ${tableName}.user_id
+        LEFT JOIN ${tableName} ON sys_user.id = ${tableName}.user_id AND ${tableName}.${fieldName} = #{id}
         WHERE
-        ${tableName}.${fieldName} = #{businessId} AND sys_user.delete_flag = '0'
+        ${tableName}.${fieldName} IS NULL AND sys_user.del_flag = '0'
         ORDER BY sys_user.id
     </select>
 
@@ -60,7 +60,7 @@
         DELETE FROM
             ${tableName}
         WHERE
-        ${fieldName} = #{businessId} AND user_id = #{userId}
+        ${fieldName} = #{id} AND user_id = #{userId}
     </delete>
 
     <insert id="associate">
@@ -68,7 +68,7 @@
             ${tableName} (user_id, ${fieldName} ,create_time , create_id)
         VALUES
         <foreach collection="userIdList" item="userId" separator=",">
-            (#{userId}, #{businessId}, #{createTime} ,#{createId})
+            (#{userId}, #{id}, #{createTime} ,#{createId})
         </foreach>
     </insert>
 </mapper>
