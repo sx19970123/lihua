@@ -3,7 +3,7 @@ package com.lihua.utils.security;
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
 import com.lihua.enums.SysBaseEnum;
-import com.lihua.exception.security.InvalidTokenException;
+import com.lihua.exception.ServiceException;
 import com.lihua.model.security.LoginUser;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.spring.SpringUtils;
@@ -38,7 +38,7 @@ public class LoginUserMgmt {
         try {
             JwtUtils.verify(token);
         } catch (Exception e) {
-            throw new InvalidTokenException("无效的token");
+            throw new ServiceException("无效的token");
         }
 
         String decode = JwtUtils.decode(token);

@@ -1,7 +1,6 @@
 package com.lihua.filter;
 
 import com.lihua.constant.Constant;
-import com.lihua.exception.security.LoginExpiredException;
 import com.lihua.model.security.LoginUser;
 import com.lihua.utils.security.LoginUserMgmt;
 import jakarta.servlet.FilterChain;
@@ -33,7 +32,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                         .getContext()
                         .setAuthentication(new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities()));
             } else {
-                throw new LoginExpiredException("认证信息过期失效");
+                throw new ServletException("认证信息过期失效");
             }
         }
 

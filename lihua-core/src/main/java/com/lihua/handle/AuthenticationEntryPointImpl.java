@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
@@ -26,11 +27,14 @@ public class AuthenticationEntryPointImpl extends BaseController implements Auth
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
         try {
-            requestMappingHandlerMapping.getHandler(request);
+            HandlerExecutionChain handler = requestMappingHandlerMapping.getHandler(request);
+            // springMVC 请求处理器返回 null 为 404
+            if (handler == null) {
+                WebUtils.renderJson(response, error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR));
+                return;
+            }
         } catch (Exception e) {
-            // throw new RuntimeException(e);
-            WebUtils.renderJson(response, error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR));
-            return;
+            e.printStackTrace();
         }
 
         WebUtils.renderJson(response, error(ResultCodeEnum.AUTHENTICATION_EXPIRED));

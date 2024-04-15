@@ -1,7 +1,6 @@
 package com.lihua.model.security;
 
 import com.lihua.model.BaseEntity;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,12 +31,13 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户名称
      */
+    @NotNull(message = "昵称不能为空")
     private String nickname;
 
     /**
      * 用户头像
      */
-    @NotBlank(message = "请输入用户头像")
+    @NotNull(message = "头像不能为空")
     private String avatar;
 
     /**

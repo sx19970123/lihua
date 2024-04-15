@@ -52,16 +52,16 @@ public class SysDictDataController extends BaseController {
     @PostMapping
     public String save(@RequestBody SysDictData sysDictData) {
         if (!StringUtils.hasText(sysDictData.getValue())) {
-            return error(ResultCodeEnum.PARAMS_IS_EMPTY,"字典值不存在");
+            return error(ResultCodeEnum.PARAMS_ERROR,"字典值不存在");
         }
         if (!StringUtils.hasText(sysDictData.getLabel())) {
-            return error(ResultCodeEnum.PARAMS_IS_EMPTY,"字典标签不存在");
+            return error(ResultCodeEnum.PARAMS_ERROR,"字典标签不存在");
         }
         if (!StringUtils.hasText(sysDictData.getDictTypeCode())) {
-            return error(ResultCodeEnum.PARAMS_IS_EMPTY,"字典类型不存在");
+            return error(ResultCodeEnum.PARAMS_ERROR,"字典类型不存在");
         }
         if (sysDictData.getSort() == null) {
-            return error(ResultCodeEnum.PARAMS_IS_EMPTY,"字典排序不存在");
+            return error(ResultCodeEnum.PARAMS_ERROR,"字典排序不存在");
         }
         return success(sysDictDataService.save(sysDictData));
     }
