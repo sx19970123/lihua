@@ -36,7 +36,7 @@
         </a-form>
       </a-card>
 <!--      列表页面-->
-        <a-flex :gap="16">
+        <a-flex :gap="8">
 <!--          角色主表-->
           <div style="width: 60%">
             <a-table

@@ -44,6 +44,7 @@
     <a-modal v-model:open="modalActive.open"
              width="800px"
              :confirm-loading="modalActive.saveLoading"
+             :body-style="{'margin-top': '24px','margin-bottom': '24px'}"
              :title="modalActive.title"
              @ok="handleAssociate"
     >
@@ -69,12 +70,12 @@
             </template>
           </template>
           <template #footer>
-            <a-flex justify="flex-end">
+            <a-flex justify="flex-end" v-if="unAssociationTotal > 10">
               <a-pagination v-model:current="unAssociationQuery.pageNum"
                             v-model:page-size="unAssociationQuery.pageSize"
                             :total="unAssociationTotal"
-                            :show-total="(total:number) => `共 ${total} 条`"
                             @change="queryUnassociatedUserPage"
+                            size="small"
               />
             </a-flex>
           </template>

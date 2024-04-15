@@ -1,41 +1,66 @@
 <template>
-  <div>
-    <a-button @click="open">loading</a-button>
-    <template v-for="item in 't1,t1-1,t1-1-1'.split(',')">
-      <dict-tag :dict-data-option="tree_test" :dict-data-value="item" root-tree-node-prefix=""/>
-    </template>
+  <div class="card-container">
+    <div class="card" :style="{ width: leftWidth + 'px' }">
+      <!-- Left card content goes here -->
+    </div>
+    <div class="divider"
+         :style="{ left: leftWidth + 'px' }"
+         draggable="true"
+         @dragstart="startDrag"
+         @drag="handleDrag"
+         @dragend="stopDrag">
+    </div>
+    <div class="card" :style="{ width: rightWidth + 'px' }">
+      <!-- Right card content goes here -->
+    </div>
   </div>
 </template>
 
+<script setup>
+import { ref } from 'vue';
 
+const startX = ref(0);
+const initialLeftWidth = 200;
+const leftWidth = ref(initialLeftWidth);
+const rightWidth = ref(200);
 
+const startDrag = (event) => {
+  startX.value = event.clientX;
+};
 
-<script setup lang="ts">
-import spin from "@/components/spin";
-import { LoadingOutlined } from '@ant-design/icons-vue';
-import {h, onMounted} from "vue";
-import dictTag from "@/components/dict-tag/index.vue"
-import {initDict} from "@/utils/dict";
+const handleDrag = (event) => {
+  event.dataTransfer.effectAllowed = 'move'
+  const deltaX = event.clientX - startX.value;
+  leftWidth.value += deltaX;
+  rightWidth.value -= deltaX;
+  startX.value = event.clientX;
+};
 
-const {tree_test} = initDict("tree_test")
-const open = () => {
-  spin.service({
-    size: 'large',
-    indicator: h(LoadingOutlined,{
-      style: {
-        fontSize: '48px'
-      }
-    }),
-    tip: '加载中'
-  })
-  setTimeout(() => {
-    spin.service().close()
-  },1000)
-}
-
+const stopDrag = () => {
+  // Optional: Add any cleanup logic here
+};
 
 </script>
 
-<style scoped>
+<style>
+.card-container {
+  display: flex;
+  position: relative;
+}
+
+.card {
+  border: 1px solid #ccc;
+  height: 300px;
+  overflow: hidden;
+}
+
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background-color: #f0f0f0;
+  cursor: ew-resize;
+}
 
 </style>

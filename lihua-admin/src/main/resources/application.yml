@@ -20,7 +20,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/lihua
     username: root
-    password: 123456
+    password: root
 
   # redis配置
   data:

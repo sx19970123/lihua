@@ -7,14 +7,13 @@ import com.lihua.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysDictData extends BaseEntity {
+public class SysDept extends BaseEntity {
     /**
-     * 主键id
+     * 主键
      */
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
@@ -25,34 +24,14 @@ public class SysDictData extends BaseEntity {
     private String parentId;
 
     /**
-     * 字典类型id
+     * 部门/岗位名称
      */
-    private String dictTypeCode;
+    private String name;
 
     /**
-     * 字典标签
+     * 部门/岗位编码
      */
-    private String label;
-
-    /**
-     * 字典值
-     */
-    private String value;
-
-    /**
-     * 字典排序
-     */
-    private Integer sort;
-
-    /**
-     * 备注
-     */
-    private String remark;
-
-    /**
-     * 删除标识
-     */
-    private String delFlag;
+    private String code;
 
     /**
      * 状态
@@ -60,13 +39,48 @@ public class SysDictData extends BaseEntity {
     private String status;
 
     /**
-     * tag 字典回显样式
+     * 排序
      */
-    private String tagStyle;
+    private Integer sort;
+
+    /**
+     * 负责人id
+     */
+    private String managerId;
+
+    /**
+     * 联系电话
+     */
+    private String phoneNumber;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 传真
+     */
+    private String fax;
+
+    /**
+     * 类型
+     */
+    private String type;
+
+    /**
+     * 逻辑删除标志
+     */
+    private String delFlag;
+
+    /**
+     * 备注
+     */
+    private String remark;
 
     /**
      * 子集
      */
     @TableField(exist = false)
-    private List<SysDictData> children;
+    private List<SysDept> children;
 }
