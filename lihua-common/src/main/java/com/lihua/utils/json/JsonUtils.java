@@ -26,9 +26,25 @@ public class JsonUtils {
         return objectMapper.writeValueAsString(data);
     }
 
+    /**
+     * json转为任意集合
+     * @param json
+     * @param clazz
+     * @return
+     * @param <T>
+     */
     @SneakyThrows
     public static <T> T toObject(String json, Class<T> clazz) {
         return objectMapper.readValue(json,clazz);
+    }
+
+    /**
+     * 判断字符串是否为json
+     * @param json
+     */
+    @SneakyThrows
+    public static void isJson(String json) {
+        objectMapper.readTree(json);
     }
 
 }

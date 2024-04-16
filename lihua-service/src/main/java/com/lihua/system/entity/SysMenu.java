@@ -4,6 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.lihua.model.BaseEntity;
+import com.lihua.system.entity.validation.MenuDirectoryValidation;
+import com.lihua.system.entity.validation.MenuLinkValidation;
+import com.lihua.system.entity.validation.MenuPageValidation;
+import com.lihua.system.entity.validation.MenuPermsValidation;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,11 +30,15 @@ public class SysMenu extends BaseEntity {
     /**
      * 父级菜单id
      */
+    @NotNull(message = "请选择上级菜单",
+            groups = { MenuDirectoryValidation.class, MenuLinkValidation.class, MenuPageValidation.class,MenuPermsValidation.class })
     private String parentId;
 
     /**
      * 菜单名称
      */
+    @NotNull(message = "请输入菜单名称",
+            groups = { MenuDirectoryValidation.class, MenuLinkValidation.class, MenuPageValidation.class,MenuPermsValidation.class })
     private String label;
 
     /**
@@ -39,31 +49,50 @@ public class SysMenu extends BaseEntity {
     /**
      * 菜单/页面
      */
+    @NotNull(message = "请选择菜单类型",
+            groups = { MenuDirectoryValidation.class, MenuLinkValidation.class, MenuPageValidation.class,MenuPermsValidation.class })
     private String menuType;
 
     /**
      * 路由地址
      */
+    @NotNull(message = "请输入路由地址",
+            groups = { MenuDirectoryValidation.class, MenuLinkValidation.class, MenuPageValidation.class })
+    @Pattern(regexp = "^/(?!.*/{2})[A-Za-z0-9_/-]*$",message = "请输入正确的路由地址",
+            groups = { MenuDirectoryValidation.class, MenuLinkValidation.class, MenuPageValidation.class })
     private String routerPath;
 
     /**
      * 组件路径
      */
+//    @NotNull(message = "请输入组件路径",
+//            groups =  MenuPageValidation.class )
+//    @Pattern(regexp = "^/[A-Za-z0-9]+(?:[./][A-Za-z0-9]+)*\\.vue$",
+//            message = "请输入正确的组件路径",
+//            groups =  MenuPageValidation.class )
     private String componentPath;
 
     /**
      * 是否显示（0显示、1隐藏）
      */
+    @NotNull(message = "请选择菜单显示",
+            groups = { MenuDirectoryValidation.class, MenuLinkValidation.class, MenuPageValidation.class })
     private String visible;
 
     /**
      * 菜单状态(0正常、1停用)
      */
+    @NotNull(message = "请选择菜单状态",
+            groups = { MenuDirectoryValidation.class, MenuLinkValidation.class, MenuPageValidation.class,MenuPermsValidation.class })
     private String status;
 
     /**
      * 权限标识符
      */
+    @NotNull (message = "请输入权限标识符", groups = MenuPermsValidation.class)
+    @Pattern(regexp = "^[A-Za-z0-9:]*$",
+            message = "请输入正确的权限标识",
+            groups = MenuPermsValidation.class)
     private String perms;
 
     /**
@@ -85,26 +114,38 @@ public class SysMenu extends BaseEntity {
     /**
      * 页面缓存(0缓存、1不缓存)
      */
+    @NotNull(message = "请选择是否缓存",
+            groups = MenuPageValidation.class)
     private String cache;
 
     /**
      * 外链类型地址
      */
+    @NotNull
+    @Pattern(regexp = "^https?://",
+            message = "请输入正确的链接地址",
+            groups = MenuLinkValidation.class)
     private String linkPath;
 
     /**
      * 链接打开方式
      */
+    @NotNull(message = "请选择链接打开方式" ,
+            groups = MenuLinkValidation.class)
     private String linkOpenType;
 
     /**
      * 排序
      */
+    @NotNull(message = "请输入显示顺序",
+            groups = { MenuDirectoryValidation.class, MenuLinkValidation.class, MenuPageValidation.class,MenuPermsValidation.class })
     private Integer sort;
 
     /**
      * 展示在viewTab
      */
+    @NotNull(message = "请选择多任务栏",
+            groups = {MenuLinkValidation.class, MenuPageValidation.class})
     private String viewTab;
 
     /**

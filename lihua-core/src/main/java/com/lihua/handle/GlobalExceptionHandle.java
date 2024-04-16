@@ -3,7 +3,11 @@ package com.lihua.handle;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.web.BaseController;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +20,7 @@ import java.util.stream.Collectors;
  */
 @RestControllerAdvice
 @Configuration
+@Slf4j
 public class GlobalExceptionHandle extends BaseController {
 
     /**
@@ -26,6 +31,7 @@ public class GlobalExceptionHandle extends BaseController {
     @ExceptionHandler(RuntimeException.class)
     public String handleRuntimeException(Exception e) {
         e.printStackTrace();
+        log.error(e.getMessage());
         return error(ResultCodeEnum.ERROR, e.getMessage());
     }
 
@@ -37,6 +43,7 @@ public class GlobalExceptionHandle extends BaseController {
     @ExceptionHandler(ServiceException.class)
     public String handleServiceException(Exception e) {
         e.printStackTrace();
+        log.error(e.getMessage());
         return error(ResultCodeEnum.ERROR, e.getMessage());
     }
 
@@ -55,7 +62,18 @@ public class GlobalExceptionHandle extends BaseController {
                 .distinct()
                 .collect(Collectors.joining("；"));
 
-        return error(ResultCodeEnum.PARAMS_ERROR, errMessages);
+        return error(ResultCodeEnum.PARAMS_MISSING, errMessages);
+    }
+
+    /**
+     * 处理spring mvc 参数格式异常信息
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public String handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.error(e.getMessage());
+        return error(ResultCodeEnum.PARAMS_ERROR,e.getMessage());
     }
 
 }

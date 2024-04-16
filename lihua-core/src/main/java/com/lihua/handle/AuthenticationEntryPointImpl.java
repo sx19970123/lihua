@@ -6,6 +6,9 @@ import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -19,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * 请在 GlobalExceptionHandle.handleAuthenticationException 进行配置
  */
 @Component
+@Slf4j
 public class AuthenticationEntryPointImpl extends BaseController implements AuthenticationEntryPoint {
 
     @Resource
@@ -34,7 +38,9 @@ public class AuthenticationEntryPointImpl extends BaseController implements Auth
                 return;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // springMVC 处理异常也认定为 404
+            WebUtils.renderJson(response, error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR));
+            log.error(e.getMessage());
         }
 
         WebUtils.renderJson(response, error(ResultCodeEnum.AUTHENTICATION_EXPIRED));

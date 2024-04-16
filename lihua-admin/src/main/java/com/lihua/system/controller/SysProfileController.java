@@ -4,10 +4,15 @@ import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysUser;
+import com.lihua.system.entity.validation.ProfileSaveValidation;
+import com.lihua.system.entity.validation.ProfileThemeValidation;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,7 +39,7 @@ public class SysProfileController extends BaseController {
      * @return
      */
     @PostMapping("basics")
-    public String saveBasics(@RequestBody SysUser sysUser) {
+    public String saveBasics(@RequestBody @Validated(ProfileSaveValidation.class) SysUser sysUser) {
         return success(sysProfileService.saveBasics(sysUser));
     }
 
@@ -44,7 +49,7 @@ public class SysProfileController extends BaseController {
      * @return
      */
     @PostMapping("theme")
-    public String saveTheme(@RequestBody SysUser sysUser) {
+    public String saveTheme(@RequestBody @Validated(ProfileThemeValidation.class) SysUser sysUser) {
         return success(sysProfileService.saveTheme(sysUser.getTheme()));
     }
 
@@ -55,7 +60,8 @@ public class SysProfileController extends BaseController {
      * @return
      */
     @PostMapping("password")
-    public String updatePassword(String oldPassword, String newPassword) {
+    public String updatePassword(@NotNull(message = "旧密码不能为空") String oldPassword,
+                                 @NotNull(message = "新密码不能为空") @Size(min = 6, max = 22, message = "密码长度为6-22字符") String newPassword) {
         if (!SecurityUtils.matchesPassword(oldPassword,LoginUserContext.getSysUser().getPassword())) {
             return error(ResultCodeEnum.ERROR,"旧密码输入错误");
         }

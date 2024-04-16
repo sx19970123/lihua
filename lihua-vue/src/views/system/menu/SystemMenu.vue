@@ -424,7 +424,7 @@ const initSave = () => {
     ],
     linkPath: [
       { required: true, message: '请输入链接地址',trigger: 'change' },
-      { pattern: /^https?:\/\//, message: '请输入链接地址',trigger: 'change' }
+      { pattern: /^https?:\/\//, message: '请输入正确的链接地址',trigger: 'change' }
     ],
     perms: [
       { required: true, message: '请输入权限标识',trigger: 'change' },
