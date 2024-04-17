@@ -70,11 +70,6 @@ export const useThemeStore = defineStore('theme',{
         const routeTransition: string = settings.routeTransition
 
         /**
-         * header 占用高度，只要用与a-table组件下，设置了sticky情况下offsetHeader的取值
-         */
-        const offsetHeader: number = 0
-
-        /**
          * ant 主题配置
          */
         const themeConfig = settings.themeConfig
@@ -94,7 +89,6 @@ export const useThemeStore = defineStore('theme',{
             siderWith,
             originSiderWith,
             routeTransition,
-            offsetHeader,
             themeConfig
         }
     },
@@ -167,8 +161,6 @@ export const useThemeStore = defineStore('theme',{
             }
             // 修改页面标识
             document.documentElement.setAttribute("layout-type", this.$state.layoutType)
-            // 计算顶栏占用高度
-            this.computeHeaderOccupyHeight()
         },
         // 显示多窗口页面
         changeShowViewTabs() {
@@ -178,8 +170,6 @@ export const useThemeStore = defineStore('theme',{
             } else {
                 document.documentElement.setAttribute("view-tabs", "hide")
             }
-            // 计算顶栏占用高度
-            this.computeHeaderOccupyHeight()
         },
         // 导航类型
         changeSiderMode(value: string) {
@@ -231,8 +221,6 @@ export const useThemeStore = defineStore('theme',{
             } else {
                 document.documentElement.setAttribute("data-head-affix",'un-affix')
             }
-            // 计算顶栏占用高度
-            this.computeHeaderOccupyHeight()
         },
         // 切换顶部栏背景颜色
         changeLayoutBackgroundColor(value: string) {
@@ -260,8 +248,6 @@ export const useThemeStore = defineStore('theme',{
             this.$state.routeTransition = settings.routeTransition
             this.$state.themeConfig = settings.themeConfig
             this.changeDataDark()
-            // 计算顶栏占用高度
-            this.computeHeaderOccupyHeight()
         },
         // 折叠侧边栏
         foldSiderWidth()  {
@@ -271,33 +257,6 @@ export const useThemeStore = defineStore('theme',{
         // 展开侧边栏
         unfoldSiderWidth() {
             this.siderWith = this.originSiderWith
-        },
-        // 计算顶栏占用高度
-        computeHeaderOccupyHeight() {
-            let height = 0
-            // 固定头部
-            const affix= this.$state.affixHead
-            // 布局类型
-            const layoutType= this.$state.layoutType === 'header-content'
-            // 启用viewTabs
-            const showViewTabs= this.$state.showViewTabs
-
-            if (!affix) {
-                this.$state.offsetHeader = height
-                return;
-            }
-
-            if (layoutType) {
-                height = height + 64
-            } else {
-                height = height + 48
-            }
-
-            if (showViewTabs) {
-                height = height + 60
-            }
-
-            this.$state.offsetHeader = height
         }
     },
 })

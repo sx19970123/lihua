@@ -1,99 +1,23 @@
-/* 根据不同样式布局，设置最小的显示窗口高度 */
-[layout-type=header-content][view-tabs=show] .layout-content {
-    min-height: calc(100vh - (64px + 60px + 16px + 16px));
+/* 根据是否开启多任务栏，设定不同的content高度 */
+[view-tabs=show] .layout-content {
+    min-height: calc(100vh - (48px + 60px + 16px));
 }
-[layout-type=header-content][view-tabs=hide] .layout-content {
-    min-height: calc(100vh - (64px + 16px + 16px));
+[view-tabs=hide] .layout-content {
+    min-height: calc(100vh - (48px + 16px));
 }
-[layout-type=header-sider][view-tabs=show] .layout-content {
-    min-height: calc(100vh - (48px + 60px + 16px + 16px));
-}
-[layout-type=header-sider][view-tabs=hide] .layout-content {
-    min-height: calc(100vh - (48px + 16px + 16px));
-}
-[layout-type=sider-header][view-tabs=show] .layout-content {
-    min-height: calc(100vh - (48px + 60px + 16px + 16px));
-}
-[layout-type=sider-header][view-tabs=hide] .layout-content {
-    min-height: calc(100vh - (48px + 16px + 16px));
-}
+
+/* content 外边框上左右各为16像素*/
 .layout-content {
-    margin: 16px;
+    margin: 16px 16px 0 16px;
 }
 
 /*顶栏右侧元素样式*/
 .header-right-item {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding: 0 8px 0 8px;
     border-radius: 4px;
     cursor: pointer;
 }
 
-/**【固定头部】 侧边导航布局 */
-[data-head-affix = affix] {
-    .shr-layout-header {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-}
-
-/**【固定头部】 混合布局 */
-[data-head-affix = affix] {
-    .hsr-layout-header {
-        position: sticky;
-        width: 100%;
-        z-index: 3;
-        top: 0;
-    }
-    .hsr-layout-sider {
-        position: relative;
-        height: calc(100vh - 48px);
-        z-index: 2;
-        top: 0;
-        box-shadow: 2px 0 8px rgba(29,35,41,0.1);
-    }
-    .hsr-view-tabs {
-        position: sticky;
-        z-index: 1;
-        backdrop-filter: saturate(180%) blur(20px);
-        -webkit-backdrop-filter: saturate(180%) blur(20px);
-    }
-}
-
-/**【固定头部】 顶部导航布局 */
-[data-head-affix = affix] {
-    .hct-layout-header {
-        position: sticky;
-        top: 0;
-        z-index: 2;
-    }
-    .hct-view-tabs {
-        position: sticky;
-        z-index: 1;
-        backdrop-filter: saturate(180%) blur(20px);
-        -webkit-backdrop-filter: saturate(180%) blur(20px);
-    }
-}
-
-/**【不固定头部】 导航布局 */
-[data-head-affix = un-affix] {
-    .hsr-layout-header {
-        position: static;
-        z-index: 2;
-        top: 0;
-    }
-    .hsr-layout-sider {
-        position: sticky;
-        height: calc(100vh - 48px);
-        z-index: 1;
-        top: 0;
-        box-shadow: 2px 0 8px rgba(29,35,41,0.1);
-    }
-    .hsr-view-tabs {
-        padding-top: 6px;
-    }
-}
 
 /** 顶部右侧鼠标悬停修改背景颜色 */
 [data-theme = 'light']{

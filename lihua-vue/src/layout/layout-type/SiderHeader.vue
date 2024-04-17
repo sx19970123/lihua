@@ -1,6 +1,7 @@
 <template>
-  <a-layout style="min-height: 100vh;">
-    <a-layout-sider class="shr-layout-sider scrollbar"
+  <a-layout style="min-height: 100vh">
+    <a-layout-sider class="sider scrollbar"
+                    v-show="false"
                     :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                     :theme="themeStore.siderTheme"
                     :trigger="null"
@@ -14,10 +15,10 @@
       <Side/>
     </a-layout-sider>
     <a-layout>
-      <a-layout-header class="shr-layout-header"
+      <a-layout-header class="layout-header"
                        :style="{'background': themeStore.layoutBackgroundColor}">
-        <Head/>
-        <ViewTabs  v-if="themeStore.showViewTabs"/>
+        <Head class="header" v-show="false"/>
+        <view-tabs  v-if="themeStore.showViewTabs"/>
       </a-layout-header>
       <a-layout-content class="layout-content">
         <!--内容-->
@@ -41,27 +42,35 @@ const permission = usePermissionStore()
 </script>
 
 <style scoped>
-.shr-layout-header {
+.layout-header {
   height: auto;
-  padding-left: 0;
-  padding-right: 0;
+  padding: 0;
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  box-shadow: 2px 0 8px rgba(29,35,41,0.1);
   line-height: 48px;
 }
-.shr-layout-sider {
+.header {
+  box-shadow: 0 1px 4px rgba(0,21,41,.12);
+}
+.sider {
   position: sticky;
   height: 100vh;
-  top: 0px;
+  top: 0;
   z-index: 2;
-  box-shadow: 2px 0 8px rgba(29,35,41,0.05);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 1px 4px rgba(0,21,41,.12);
 }
 .logo {
-  position: sticky;
   margin: 16px;
+}
+</style>
+
+<style>
+[data-head-affix = affix] {
+  .layout-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
 }
 </style>
 

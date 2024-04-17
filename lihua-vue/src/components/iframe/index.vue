@@ -16,22 +16,10 @@ if (route.meta.link) {
   border-radius: 8px;
   border: none;
 }
-[layout-type=header-content][view-tabs=show] .lihua-iframe {
-  min-height: calc(100vh - (64px + 60px + 16px + 16px) - 4px);
+[view-tabs=show] .lihua-iframe {
+  min-height: calc(100vh - (48px + 60px + 16px));
 }
-[layout-type=header-content][view-tabs=hide] .lihua-iframe {
-  min-height: calc(100vh - (64px + 16px + 16px) - 4px);
-}
-[layout-type=header-sider][view-tabs=show] .lihua-iframe {
-  min-height: calc(100vh - (48px + 60px + 16px + 16px) - 4px);
-}
-[layout-type=header-sider][view-tabs=hide] .lihua-iframe {
-  min-height: calc(100vh - (48px + 16px + 16px) - 4px);
-}
-[layout-type=sider-header][view-tabs=show] .lihua-iframe {
-  min-height: calc(100vh - (48px + 60px + 16px + 16px) - 4px);
-}
-[layout-type=sider-header][view-tabs=hide] .lihua-iframe {
-  min-height: calc(100vh - (48px + 16px + 16px) - 4px);
+[view-tabs=hide] .lihua-iframe {
+  min-height: calc(100vh - (48px + 16px));
 }
 </style>

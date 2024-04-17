@@ -1,24 +1,27 @@
 <template>
     <a-tabs :activeKey="activeKey"
+            style="padding: 8px 0 0 8px;"
             type="editable-card"
             size="small"
             hide-add
             @edit="closeTab"
             @change="handleSwitchTab"
     >
-      <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" :closable="!tab.affix">
+      <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" :closable="!tab.affix" style="padding: 0">
         <!--每个tab的下拉菜单-->
         <template #tab>
           <tab-pane-menu :tab="tab" :index="index" @route-skip="routeSkip" @cancel-keep-alive="cancelKeepAliveCache"/>
         </template>
       </a-tab-pane>
-      <!-- view-tabs 左侧空白-->
-      <template #leftExtra>
-        <div style="width: 8px;"></div>
-      </template>
       <!--view-tabs 右侧下拉菜单-->
       <template #rightExtra>
-        <tab-right-menu @route-skip="routeSkip" @cancel-keep-alive="cancelKeepAliveCache"/>
+        <a-space>
+<!--          <a-tooltip title="填充页面">-->
+<!--            <button class="ant-tabs-nav-more"><ExpandOutlined/></button>-->
+<!--          </a-tooltip>-->
+          <tab-right-menu @route-skip="routeSkip" @cancel-keep-alive="cancelKeepAliveCache"/>
+        </a-space>
+
       </template>
     </a-tabs>
 </template>
@@ -132,3 +135,8 @@ const routeSkip = (tab: StarViewType) => {
   }
 }
 </script>
+<style>
+.ant-tabs-nav {
+  margin-bottom: 8px !important;
+}
+</style>

@@ -43,5 +43,5 @@
     侧边风格2导航添加阴影效果
  */
 .ant-layout-sider-trigger {
-    box-shadow: 2px 0 8px rgba(29,35,41,0.1);
+    box-shadow: 0 1px 4px rgba(0,21,41,.12);
 }

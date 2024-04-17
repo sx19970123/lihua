@@ -175,7 +175,6 @@ const handleTime = (time: string) => {
 </script>
 <style>
 .ant-tabs-nav-more {
-  margin-left: 2px !important;
   cursor: pointer;
   border-radius: 8px
 }
