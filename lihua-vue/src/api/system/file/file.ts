@@ -7,7 +7,7 @@ import request from "@/utils/request";
 export const uploadAvatar = (avatar: Blob) => {
     const formData = new FormData();
     formData.append('avatarFile',avatar)
-    return request({
+    return request<string>({
         url: 'system/file/avatar',
         method: 'post',
         data: formData,

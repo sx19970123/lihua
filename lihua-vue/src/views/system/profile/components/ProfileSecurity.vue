@@ -108,7 +108,6 @@ const handleChange = () => {
 
 const handleFinish = async (data: passwordType) => {
   const resp = await updatePassword(data.oldPassword,data.newPassword)
-
   if (resp.code === 200) {
     message.success("修改成功")
   } else {

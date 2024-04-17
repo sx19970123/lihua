@@ -1,12 +1,13 @@
 import request from "@/utils/request";
 import type {SysDictType, SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
+import type {PageResponseType} from "@/api/type.ts";
 
 /**
  * 列表页查询
  * @param data
  */
 export const findPage = (data: SysDictTypeDTO) => {
-  return request({
+  return request<PageResponseType<SysDictType>>({
     url: 'system/dictType/page',
     method: 'post',
     data: data
@@ -18,7 +19,7 @@ export const findPage = (data: SysDictTypeDTO) => {
  * @param id
  */
 export const findById = (id: string) => {
-  return request({
+  return request<SysDictType>({
     url: 'system/dictType/' + id,
     method: 'get'
   })

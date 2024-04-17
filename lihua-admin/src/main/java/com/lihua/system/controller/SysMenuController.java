@@ -1,5 +1,6 @@
 package com.lihua.system.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysMenu;
@@ -16,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("system/menu")
@@ -44,92 +44,58 @@ public class SysMenuController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @GetMapping("{id}")
-    public String findById(@PathVariable("id") @NotNull(message = "主键不能为空") String id) {
+    public String findById(@PathVariable("id") @NotNull(message = "请选择数据") String id) {
         return success(sysMenuService.findById(id));
     }
 
     /**
-     * 保存菜单数据
+     * 保存菜单数据，根据不同菜单类型进行分别校验
      * @param sysMenu
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_admin')")
-    @PostMapping
-    public String save(@RequestBody @Validated(MenuValidation.class) SysMenu sysMenu) {
-        // 通过 Validated 进行参数校验，因分组不通，需分开进行校验
-        switch (sysMenu.getMenuType()) {
-            case "directory" -> {
-                return saveDirectory(sysMenu);
-            }
-            case "page" -> {
-                return savePage(sysMenu);
-            }
-            case "link" -> {
-                return saveLink(sysMenu);
-            }
-            case "perms" -> {
-                return savePerms(sysMenu);
-            }
-            default -> {
-                return error(ResultCodeEnum.ERROR,"未知的菜单类型");
-            }
-        }
-    }
 
-    /**
-     * 保存目录类型菜单
-     * @param sysMenu
-     * @return
-     */
-    private String saveDirectory(@Validated(MenuDirectoryValidation.class) SysMenu sysMenu) {
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("directory")
+    public String saveDirectory(@RequestBody @Validated(MenuValidation.MenuDirectoryValidation.class) SysMenu sysMenu) {
         return success(sysMenuService.save(sysMenu));
     }
 
-    /**
-     * 保存页面类型菜单
-     * @param sysMenu
-     * @return
-     */
-    private String savePage(@Validated(MenuPageValidation.class) SysMenu sysMenu) {
-        // 当 query 不为空时，检查 query 是否为标准的json格式
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("page")
+    public String savePage(@RequestBody @Validated(MenuValidation.MenuPageValidation.class) SysMenu sysMenu) {
+        // 校验 query 是否为json参数
         if (StringUtils.hasText(sysMenu.getQuery())) {
             try {
                 JsonUtils.isJson(sysMenu.getQuery());
-            } catch (Exception e) {
-                log.error("query 不为标准json字符串 {}", e.getMessage());
-                return error(ResultCodeEnum.PARAMS_ERROR,"请输入正确的参数");
+            } catch (JsonProcessingException e) {
+                return error(ResultCodeEnum.PARAMS_ERROR);
             }
         }
 
         return success(sysMenuService.save(sysMenu));
     }
 
-    /**
-     * 保存链接类型菜单
-     * @param sysMenu
-     * @return
-     */
-    private String saveLink(@Validated(MenuLinkValidation.class) SysMenu sysMenu) {
+
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("link")
+    public String saveLink(@RequestBody @Validated(MenuValidation.MenuLinkValidation.class) SysMenu sysMenu) {
         return success(sysMenuService.save(sysMenu));
     }
 
-    /**
-     * 保存权限类型菜单
-     * @param sysMenu
-     * @return
-     */
-    private String savePerms(@Validated(MenuPermsValidation.class) SysMenu sysMenu) {
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("perms")
+    public String savePerms(@RequestBody @Validated(MenuValidation.MenuPermsValidation.class) SysMenu sysMenu) {
         return success(sysMenuService.save(sysMenu));
     }
 
-    /**
-     * 根据id删除菜单数据
-     * @param ids
-     * @return
-     */
+        /**
+         * 根据id删除菜单数据
+         * @param ids
+         * @return
+         */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
-    public String deleteByIds(@RequestBody @NotEmpty(message = "主键集合不能为空") List<String> ids) {
+    public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysMenuService.deleteByIds(ids);
         return success();
     }

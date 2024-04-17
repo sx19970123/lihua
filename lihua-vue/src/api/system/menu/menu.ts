@@ -29,7 +29,7 @@ export const findById = (id: string) => {
  */
 export const save = (data:SysMenu) => {
   return request({
-    url: 'system/menu',
+    url: 'system/menu/' + data.menuType,
     method: 'post',
     data: data
   })

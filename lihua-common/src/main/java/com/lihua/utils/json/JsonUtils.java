@@ -1,5 +1,6 @@
 package com.lihua.utils.json;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lihua.utils.spring.SpringUtils;
 import lombok.SneakyThrows;
@@ -42,8 +43,7 @@ public class JsonUtils {
      * 判断字符串是否为json
      * @param json
      */
-    @SneakyThrows
-    public static void isJson(String json) {
+    public static void isJson(String json) throws JsonProcessingException {
         objectMapper.readTree(json);
     }
 

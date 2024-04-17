@@ -7,8 +7,6 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -32,7 +30,7 @@ public class AuthenticationEntryPointImpl extends BaseController implements Auth
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
         try {
             HandlerExecutionChain handler = requestMappingHandlerMapping.getHandler(request);
-            // springMVC 请求处理器返回 null 为 404
+            // springMVC 请求处理器返回 null 认定为 404
             if (handler == null) {
                 WebUtils.renderJson(response, error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR));
                 return;
@@ -40,7 +38,8 @@ public class AuthenticationEntryPointImpl extends BaseController implements Auth
         } catch (Exception e) {
             // springMVC 处理异常也认定为 404
             WebUtils.renderJson(response, error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR));
-            log.error(e.getMessage());
+            log.error(e.getMessage(),e);
+            return;
         }
 
         WebUtils.renderJson(response, error(ResultCodeEnum.AUTHENTICATION_EXPIRED));

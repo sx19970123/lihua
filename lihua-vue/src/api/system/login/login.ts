@@ -11,7 +11,7 @@ export const login =  (username: string,
         username,
         password
     }
-    return request({
+    return request<string>({
         url: '/system/login',
         method: 'post',
         data: data,

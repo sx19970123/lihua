@@ -256,6 +256,8 @@ const initSearch = () => {
           selectedIds.value = [roleList.value[0].id]
         }
       }
+    } else {
+      message.error(resp.msg)
     }
     tableLoad.value = false
   }
@@ -416,6 +418,8 @@ const useMenuTree = () => {
       menuSetting.value.flattenTree = []
       menuSetting.value.menuOption = resp.data
       flattenTreeData(menuSetting.value.menuOption,menuSetting.value.flattenTree)
+    } else {
+      message.error(resp.msg)
     }
   }
 

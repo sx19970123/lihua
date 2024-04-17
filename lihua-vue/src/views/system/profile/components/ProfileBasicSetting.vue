@@ -12,13 +12,13 @@
         </a-form-item>
       </a-row>
       <a-form-item label="用户昵称" name="nickname">
-        <a-input class="form-item-width" v-model:value="userInfo.nickname" allow-clear show-count/>
+        <a-input class="form-item-width" placeholder="请输入用户昵称" v-model:value="userInfo.nickname" allow-clear show-count/>
       </a-form-item>
       <a-form-item label="手机号码" name="phoneNumber">
-        <a-input class="form-item-width" v-model:value="userInfo.phoneNumber" allow-clear/>
+        <a-input class="form-item-width" placeholder="请输入手机号码" v-model:value="userInfo.phoneNumber" allow-clear/>
       </a-form-item>
       <a-form-item label="电子邮箱" name="email" ref="email">
-        <a-auto-complete class="form-item-width" v-model:value="userInfo.email" @search="emailHandleSearch" :options="emailOptions" allow-clear>
+        <a-auto-complete class="form-item-width" placeholder="请输入电子邮箱"  v-model:value="userInfo.email" @search="emailHandleSearch" :options="emailOptions" allow-clear>
           <template #option="{ value: val }">
             {{ val.split('@')[0] }} @
             <span style="font-weight: bold">{{ val.split('@')[1] }}</span>

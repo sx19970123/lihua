@@ -3,7 +3,7 @@ import request from "@/utils/request";
  * 列表查询
  */
 export const findList = (data: SysDictDataType) => {
-  return request({
+  return request<Array<SysDictDataType>>({
     url: 'system/dictData/list',
     method: 'post',
     data: data
@@ -14,7 +14,7 @@ export const findList = (data: SysDictDataType) => {
  * 保存数据
  */
 export const save = (data: SysDictDataType) => {
-  return request({
+  return request<string>({
     url: 'system/dictData',
     method: 'post',
     data: data

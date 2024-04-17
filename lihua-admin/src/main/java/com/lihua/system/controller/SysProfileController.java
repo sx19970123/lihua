@@ -4,8 +4,7 @@ import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysUser;
-import com.lihua.system.entity.validation.ProfileSaveValidation;
-import com.lihua.system.entity.validation.ProfileThemeValidation;
+import com.lihua.system.entity.validation.ProfileValidation;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
@@ -39,7 +38,7 @@ public class SysProfileController extends BaseController {
      * @return
      */
     @PostMapping("basics")
-    public String saveBasics(@RequestBody @Validated(ProfileSaveValidation.class) SysUser sysUser) {
+    public String saveBasics(@RequestBody @Validated(ProfileValidation.ProfileSaveValidation.class) SysUser sysUser) {
         return success(sysProfileService.saveBasics(sysUser));
     }
 
@@ -49,7 +48,7 @@ public class SysProfileController extends BaseController {
      * @return
      */
     @PostMapping("theme")
-    public String saveTheme(@RequestBody @Validated(ProfileThemeValidation.class) SysUser sysUser) {
+    public String saveTheme(@RequestBody @Validated(ProfileValidation.ProfileThemeValidation.class) SysUser sysUser) {
         return success(sysProfileService.saveTheme(sysUser.getTheme()));
     }
 

@@ -153,19 +153,19 @@
           </a-tree-select>
         </a-form-item>
         <a-form-item label="菜单名称" :wrapper-col="{span: 16}" name="label">
-          <a-input v-model:value="sysMenu.label" placeholder="请输入菜单名称" :maxlength="30" allowClear/>
+          <a-input v-model:value="sysMenu.label" placeholder="请输入菜单名称" :maxlength="30" allowClear show-count/>
         </a-form-item>
         <a-form-item label="路由地址" name="routerPath" v-if="sysMenu.menuType !== 'perms'" :wrapper-col="{span: 16}">
-          <a-input v-model:value="sysMenu.routerPath" placeholder="浏览器地址栏访问的路由地址" :maxlength="100" allowClear/>
+          <a-input v-model:value="sysMenu.routerPath" placeholder="浏览器地址栏访问的路由地址" :maxlength="100" allowClear show-count/>
         </a-form-item>
         <a-form-item label="组件路径" name="componentPath" v-if="sysMenu.menuType === 'page'" :wrapper-col="{span: 16}">
-          <a-input v-model:value="sysMenu.componentPath" placeholder="views下路径地址以 .vue结尾" :maxlength="100" allowClear/>
+          <a-input v-model:value="sysMenu.componentPath" placeholder="views下路径地址以 .vue结尾" :maxlength="100" allowClear show-count/>
         </a-form-item>
         <a-form-item label="链接地址" name="linkPath" :wrapper-col="{span: 16}" v-if="sysMenu.menuType === 'link'">
-          <a-textarea v-model:value="sysMenu.linkPath" placeholder="外链地址需要以http(s)://开头" :maxlength="300" allowClear/>
+          <a-textarea v-model:value="sysMenu.linkPath" placeholder="外链地址需要以http(s)://开头" :maxlength="300" allowClear show-count/>
         </a-form-item>
         <a-form-item label="权限标识" name="perms" v-if="sysMenu.menuType === 'perms'" :wrapper-col="{span: 16}">
-          <a-input v-model:value="sysMenu.perms" :maxlength="50" allowClear placeholder="controller中定义的权限标识"/>
+          <a-input v-model:value="sysMenu.perms" :maxlength="50" allowClear placeholder="controller中定义的权限标识" show-count/>
         </a-form-item>
         <a-form-item label="显示排序" name="sort">
           <a-input-number v-model:value="sysMenu.sort" style="width: 120px;" placeholder="升序排列"/>
@@ -240,10 +240,10 @@
             </a-col>
           </a-row>
           <a-form-item label="路由参数" name="query" v-if="sysMenu.menuType === 'page'" :wrapper-col="{span: 17}">
-            <a-textarea placeholder="访问路由的默认参数，格式为json字符串" v-model:value="sysMenu.query" :rows="1" :maxlength="100" allowClear/>
+            <a-textarea placeholder="访问路由的默认参数，格式为json字符串" v-model:value="sysMenu.query" :rows="1" :maxlength="100" allowClear show-count/>
           </a-form-item>
           <a-form-item label="备注" name="remark" :wrapper-col="{span: 17}">
-            <a-textarea :maxlength="500" :rows="2" v-model="sysMenu.remark" allowClear placeholder="请输入备注信息"/>
+            <a-textarea :maxlength="500" :rows="2" v-model="sysMenu.remark" allowClear placeholder="请输入备注信息" show-count/>
           </a-form-item>
         </div>
       </a-form>
@@ -336,10 +336,14 @@ const initSearch = () => {
   const initList = async () => {
     tableLoad.value = true
     const resp = await findList(menuQuery.value)
-    // 列表数据
-    menuList.value = resp.data
-    initTreeData()
-    tableLoad.value = false
+    if (resp.code === 200) {
+      // 列表数据
+      menuList.value = resp.data
+      initTreeData()
+      tableLoad.value = false
+    } else {
+      message.error(resp.msg)
+    }
   }
 
   // 重置表单
@@ -542,10 +546,12 @@ const initSave = () => {
     await formRef.value.validate()
     modalActive.saveLoading = true
     const resp = await save(sysMenu.value)
-    message.success(resp.msg)
     if (resp.code === 200) {
+      message.success(resp.msg)
       await initList()
       modalActive.open = false
+    } else {
+      message.error(resp.msg)
     }
     modalActive.saveLoading = false
   }
