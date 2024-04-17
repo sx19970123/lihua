@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.lihua.model.BaseEntity;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,26 +22,31 @@ public class SysDept extends BaseEntity {
     /**
      * 父级id
      */
+    @NotNull(message = "请选择上级节点")
     private String parentId;
 
     /**
      * 部门/岗位名称
      */
+    @NotNull(message = "请输入部门/岗位名称")
     private String name;
 
     /**
      * 部门/岗位编码
      */
+    @NotNull(message = "请输入部门/岗位编码")
     private String code;
 
     /**
      * 状态
      */
+    @NotNull(message = "请选择状态")
     private String status;
 
     /**
      * 排序
      */
+    @NotNull(message = "请输入排序")
     private Integer sort;
 
     /**
@@ -66,6 +72,7 @@ public class SysDept extends BaseEntity {
     /**
      * 类型
      */
+    @NotNull(message = "请选择类型")
     private String type;
 
     /**

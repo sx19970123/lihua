@@ -7,22 +7,22 @@
         <Head></Head>
       </a-flex>
     </a-layout-header>
-
     <a-layout>
-      <a-layout-sider class="hsr-layout-sider scrollbar"
-                      :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
-                      :theme="themeStore.siderTheme"
-                      :width="themeStore.siderWith"
-                      v-model:collapsed="permission.collapsed"
-                      collapsible
-                      breakpoint="lg"
+      <a-layout-sider
+          class="hsr-layout-sider"
+          :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
+          :theme="themeStore.siderTheme"
+          :width="themeStore.siderWith"
+          v-model:collapsed="permission.collapsed"
+          collapsible
+          breakpoint="lg"
       >
         <!-- 侧边栏-->
         <Side/>
       </a-layout-sider>
       <!--    菜单开合开关-->
       <a-layout-content>
-        <ViewTabs class="hsr-view-tabs" v-if="themeStore.showViewTabs" :style="{'background': themeStore.layoutBackgroundColor}"/>
+        <ViewTabs  v-if="themeStore.showViewTabs" :style="{'background': themeStore.layoutBackgroundColor}"/>
         <!--内容-->
         <Content class="hsr-content layout-content"/>
       </a-layout-content>
@@ -49,16 +49,5 @@ const permission = usePermissionStore()
   padding-left: 16px;
   min-width: 200px;
 }
-
-.hsr-layout-header {
-  height: auto;
-  padding-left: 0;
-  padding-right: 0;
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  box-shadow: 2px 0 8px rgba(29,35,41,0.1);
-  line-height: 48px;
-}
-
 </style>
 

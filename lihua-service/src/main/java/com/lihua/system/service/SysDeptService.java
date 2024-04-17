@@ -14,9 +14,25 @@ public interface SysDeptService {
     List<SysDept> findList(SysDept sysDept);
 
     /**
-     * 保存单位/用户
+     * 保存单位
      * @param sysDept
      * @return
      */
     String save(SysDept sysDept);
+
+    /**
+     * 根据id查询单位
+     * @param id
+     * @return
+     */
+    SysDept findById(String id);
+
+
+    /**
+     * 根据ids 删除单位部门
+     * @param ids
+     */
+    void deleteByIds(List<String> ids);
+
+
 }

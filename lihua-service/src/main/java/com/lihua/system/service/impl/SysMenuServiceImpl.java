@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.security.RouterVO;
 import com.lihua.system.entity.SysMenu;
-import com.lihua.system.entity.SysRole;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysMenuService;
@@ -12,6 +11,7 @@ import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
@@ -83,10 +83,12 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
+    @Transactional
     public void deleteByIds(List<String> ids) {
         checkStatus(ids);
         checkChildren(ids);
-        checkRole(ids);
+//        checkRole(ids);
+        deleteRoleMenu(ids);
         sysMenuMapper.deleteBatchIds(ids);
     }
 
@@ -166,9 +168,18 @@ public class SysMenuServiceImpl implements SysMenuService {
      */
     private void checkRole(List<String> ids) {
         Long menuCount = sysRoleMapper.selectRoleMenuCount("menu_id", ids);
+
         if (menuCount > 0) {
             throw new ServiceException("菜单已绑定角色不允许删除");
         }
+    }
+
+    /**
+     * 删除角色关联表数据
+     * @param ids
+     */
+    private void deleteRoleMenu(List<String> ids) {
+        sysRoleMapper.deleteRoleMenuByMenuIds(ids);
     }
 
     /**

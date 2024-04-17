@@ -91,12 +91,14 @@
                 新增下级
               </a-button>
               <a-divider type="vertical"/>
-              <a-popconfirm title="删除后不可恢复，是否删除？"
-                            ok-text="确 定"
+              <a-popconfirm ok-text="确 定"
                             cancel-text="取 消"
                             placement="bottomRight"
                             @confirm="handleDelete(record.id)"
               >
+                <template #title>
+                  删除菜单后，对应角色将自动解绑 <br/>且不可恢复，是否继续？
+                </template>
                 <a-button type="link" danger size="small">
                   <template #icon>
                     <DeleteOutlined />

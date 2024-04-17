@@ -1,19 +1,19 @@
 <template>
   <a-layout>
-    <a-layout-header class="hct-layout-header"
-                     :style="themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''">
-
-      <a-flex align="center" justify="space-between">
-        <!--logo-->
-        <Logo class="logo"/>
-        <!--导航-->
-        <Side class="sider"/>
-        <!--页头-->
-        <Head></Head>
-      </a-flex>
-    </a-layout-header>
-    <!--多标签-->
-    <ViewTabs class="hct-view-tabs" v-if="themeStore.showViewTabs" :style="{background: themeStore.layoutBackgroundColor}" style="padding-top: 6px"/>
+    <div class="hct-layout-header">
+      <a-layout-header style="padding-left: 0;padding-right: 0" :style="themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''">
+        <a-flex align="center" justify="space-between">
+          <!--logo-->
+          <Logo class="logo"/>
+          <!--导航-->
+          <Side class="sider"/>
+          <!--页头-->
+          <Head></Head>
+        </a-flex>
+      </a-layout-header>
+      <!--多标签-->
+      <ViewTabs class="hct-view-tabs" v-if="themeStore.showViewTabs" :style="{background: themeStore.layoutBackgroundColor}" style="padding-top: 6px"/>
+    </div>
     <a-layout-content>
       <!--内容-->
       <Content class="layout-content"/>
@@ -42,13 +42,9 @@ const themeStore = useThemeStore()
   padding-left: 64px;
 }
 .hct-layout-header {
-  height: auto;
-  padding-left: 0;
-  padding-right: 0;
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   box-shadow: 2px 0 8px rgba(29,35,41,0.1);
-  line-height: 64px;
 }
 </style>
 

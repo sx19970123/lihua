@@ -16,6 +16,8 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     Long selectUserRoleCount(@Param("key") String key, @Param("ids") List<String> ids);
     // 根据角色id 删除角色菜单关联表
     Long deleteRoleMenuByRoleId(String roleId);
+    // 根据菜单id 删除角色菜单关联表
+    Long deleteRoleMenuByMenuIds(List<String> menuIds);
     // 向sys_role_menu表中批量新增数据
     void insertRoleMenu(@Param("roleId") String roleId,@Param("menuIds") List<String> menuIds);
     // 根据roleId查询角色及绑定的菜单信息
