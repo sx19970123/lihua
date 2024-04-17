@@ -6,8 +6,11 @@ import com.lihua.system.entity.SysDictType;
 import com.lihua.system.model.SysDictTypeDTO;
 import com.lihua.system.service.SysDictTypeService;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,9 +41,6 @@ public class SysDictTypeController extends BaseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
-        if (!StringUtils.hasText(id)) {
-            return error(ResultCodeEnum.PRIMARY_KEY_IS_EMPTY);
-        }
         return success(sysDictTypeService.findById(id));
     }
 
@@ -51,7 +51,7 @@ public class SysDictTypeController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
-    public String save(@RequestBody SysDictType sysDictType) {
+    public String save(@RequestBody @Validated SysDictType sysDictType) {
         return success(sysDictTypeService.save(sysDictType));
     }
 
@@ -62,10 +62,7 @@ public class SysDictTypeController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
-    public String delete(@RequestBody List<String> ids) {
-        if (ids == null || ids.isEmpty()) {
-            return error(ResultCodeEnum.PRIMARY_KEY_COLLECTION_IS_EMPTY);
-        }
+    public String delete(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysDictTypeService.deleteByIds(ids);
         return success();
     }

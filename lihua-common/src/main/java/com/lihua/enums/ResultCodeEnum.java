@@ -18,13 +18,7 @@ public enum ResultCodeEnum {
     ACCESS_ERROR (405,"访问权限不足"),
 
     ERROR (500,"业务异常"),
-    SERVER_UNAVAILABLE (503,"服务器维护中"),
-
-    @Deprecated
-    PRIMARY_KEY_IS_EMPTY(507,"主键为空"),
-    @Deprecated
-    PRIMARY_KEY_COLLECTION_IS_EMPTY(508,"集合元素为空");
-
+    SERVER_UNAVAILABLE (503,"服务器维护中");
 
     /**
      * 状态码

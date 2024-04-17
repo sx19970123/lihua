@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.lihua.model.BaseEntity;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -22,16 +23,19 @@ public class SysRole extends BaseEntity {
     /**
      * 角色名称
      */
+    @NotNull(message = "请输入角色名称")
     private String name;
 
     /**
      * 角色编码
      */
+    @NotNull(message = "请输入角色编码")
     private String code;
 
     /**
      * 角色状态
      */
+    @NotNull(message = "请选择角色状态")
     private String status;
 
     /**

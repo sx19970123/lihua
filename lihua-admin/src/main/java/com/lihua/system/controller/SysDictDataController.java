@@ -6,8 +6,10 @@ import com.lihua.system.entity.SysDictData;
 import com.lihua.system.model.SysDictDataDTO;
 import com.lihua.system.service.SysDictDataService;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,7 +52,7 @@ public class SysDictDataController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
-    public String save(@RequestBody SysDictData sysDictData) {
+    public String save(@RequestBody @Validated SysDictData sysDictData) {
         return success(sysDictDataService.save(sysDictData));
     }
 
@@ -61,10 +63,7 @@ public class SysDictDataController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
-    public String delete(@RequestBody List<String> ids) {
-        if (ids == null || ids.isEmpty()) {
-            return error(ResultCodeEnum.PRIMARY_KEY_COLLECTION_IS_EMPTY);
-        }
+    public String delete(@RequestBody @NotEmpty(message = "请选择字段数据") List<String> ids) {
         sysDictDataService.deleteByIds(ids);
         return success();
     }

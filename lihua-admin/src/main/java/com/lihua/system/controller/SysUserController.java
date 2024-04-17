@@ -1,13 +1,12 @@
 package com.lihua.system.controller;
 
-import com.lihua.enums.ResultCodeEnum;
-import com.lihua.exception.ServiceException;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.SysUserAssociationDTO;
+import com.lihua.system.model.validation.UserAssociationValidation;
 import com.lihua.system.service.SysUserAssociationService;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,8 +23,7 @@ public class SysUserController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("association/page")
-    public String findAssociatedUserPage(@RequestBody SysUserAssociationDTO sysUserAssociationDTO) {
-        checkBusinessData(sysUserAssociationDTO);
+    public String findAssociatedUserPage(@RequestBody @Validated(UserAssociationValidation.AssociationValidation.class) SysUserAssociationDTO sysUserAssociationDTO) {
         return success(sysUserAssociationService.findAssociatedUserPage(sysUserAssociationDTO));
     }
 
@@ -36,8 +34,7 @@ public class SysUserController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("unAssociation/page")
-    public String findUnassociatedUserPage(@RequestBody SysUserAssociationDTO sysUserAssociationDTO) {
-        checkBusinessData(sysUserAssociationDTO);
+    public String findUnassociatedUserPage(@RequestBody @Validated(UserAssociationValidation.AssociationValidation.class) SysUserAssociationDTO sysUserAssociationDTO) {
         return success(sysUserAssociationService.findUnassociatedUserPage(sysUserAssociationDTO));
     }
 
@@ -48,11 +45,7 @@ public class SysUserController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping("association/detach")
-    public String detach(@RequestBody SysUserAssociationDTO sysUserAssociationDTO) {
-        checkBusinessData(sysUserAssociationDTO);
-        if (!StringUtils.hasText(sysUserAssociationDTO.getUserId())) {
-            return error(ResultCodeEnum.PRIMARY_KEY_IS_EMPTY,"用户id不存在");
-        }
+    public String detach(@RequestBody @Validated({UserAssociationValidation.AssociationValidation.class,UserAssociationValidation.DetachAssociationValidation.class}) SysUserAssociationDTO sysUserAssociationDTO) {
         sysUserAssociationService.detach(sysUserAssociationDTO);
         return success();
     }
@@ -64,22 +57,9 @@ public class SysUserController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("association")
-    public String associate(@RequestBody SysUserAssociationDTO sysUserAssociationDTO) {
-        checkBusinessData(sysUserAssociationDTO);
-        if (sysUserAssociationDTO.getUserIdList() == null || sysUserAssociationDTO.getUserIdList().isEmpty()) {
-            return error(ResultCodeEnum.PRIMARY_KEY_COLLECTION_IS_EMPTY,"用户id集合为空");
-        }
+    public String associate(@RequestBody @Validated({UserAssociationValidation.AssociationValidation.class,UserAssociationValidation.AssociateAssociationValidation.class}) SysUserAssociationDTO sysUserAssociationDTO) {
         sysUserAssociationService.associate(sysUserAssociationDTO);
         return success();
     }
 
-    // 通用验证信息
-    private void checkBusinessData(SysUserAssociationDTO sysUserAssociationDTO) {
-        if (!StringUtils.hasText(sysUserAssociationDTO.getCode())) {
-            throw new ServiceException("业务编码不存在");
-        }
-        if (!StringUtils.hasText(sysUserAssociationDTO.getId())) {
-            throw new ServiceException("业务主键不存在");
-        }
-    }
 }
