@@ -19,13 +19,16 @@ export const useViewTabsStore = defineStore('viewTabs',{
         const tabCacheKey: string = ''
         // layout中content组件key值，修改以重新加载组件
         const contentComponentKey: string = ''
+        // 显示layout
+        const showLayout: boolean = 'hide' !== localStorage.getItem("show-hide-layout")
         return {
             viewTabs,
             totalViewTabs,
             activeKey,
             tabCacheKey,
             componentAlive,
-            contentComponentKey
+            contentComponentKey,
+            showLayout
         }
     },
     actions: {
@@ -202,7 +205,6 @@ export const useViewTabsStore = defineStore('viewTabs',{
         },
         // 删除组件缓存
         removeComponentsKeepAlive(name: string) {
-            console.log('删除组件',name)
             this.$state.componentAlive = this.$state.componentAlive.filter(item => item !== name)
         },
         // 清空组件缓存

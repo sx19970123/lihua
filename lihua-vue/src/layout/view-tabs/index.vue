@@ -15,10 +15,7 @@
       </a-tab-pane>
       <!--view-tabs 右侧下拉菜单-->
       <template #rightExtra>
-        <a-space>
-<!--          <a-tooltip title="填充页面">-->
-<!--            <button class="ant-tabs-nav-more"><ExpandOutlined/></button>-->
-<!--          </a-tooltip>-->
+        <a-space :size="0">
           <tab-right-menu @route-skip="routeSkip" @cancel-keep-alive="cancelKeepAliveCache"/>
         </a-space>
 

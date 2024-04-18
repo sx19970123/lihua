@@ -1,7 +1,7 @@
 <template>
   <a-layout>
     <div class="header">
-      <a-layout-header class="layout-header" v-show="false" :style="themeStore.siderTheme === 'light' ?
+      <a-layout-header class="layout-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' ?
       { background: themeStore.layoutBackgroundColor } : ''">
         <a-flex align="center" justify="space-between">
           <!--logo-->
@@ -30,6 +30,9 @@ import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/modules/theme";
 const themeStore = useThemeStore()
+const props = defineProps<{  showLayout: boolean }>()
+
+
 </script>
 
 <style scoped>

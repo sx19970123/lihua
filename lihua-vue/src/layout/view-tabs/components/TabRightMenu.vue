@@ -1,69 +1,77 @@
 <template>
-  <a-dropdown>
-    <button class="ant-tabs-nav-more">
-      <MoreOutlined />
+  <div style="padding-right: 8px">
+    <button class="ant-tabs-nav-more" @click="showHideLayout">
+      <ExpandOutlined v-if="viewTabsStore.showLayout" />
+      <CompressOutlined v-else />
     </button>
-    <template #overlay>
-      <a-menu @click="handleClickMenuTab">
-        <a-sub-menu class="menu-item-min-width" key="recent">
-          <template #title>
-            <FieldTimeOutlined />
-            最近使用
-          </template>
-          <div class="scrollbar" v-if="recentData.length > 0" style="max-height: 400px">
-            <a-menu-item v-for="item in recentData" :key="item.path">
-              <template #icon>
-                <component :is="item.icon"/>
-              </template>
-              <a-flex :gap="40" align="space-between" justify="space-between" >
+    <a-dropdown>
+      <button class="ant-tabs-nav-more">
+        <MoreOutlined />
+      </button>
+      <template #overlay>
+        <a-menu @click="handleClickMenuTab">
+          <a-sub-menu class="menu-item-min-width" key="recent">
+            <template #title>
+              <FieldTimeOutlined />
+              最近使用
+            </template>
+            <div class="scrollbar" v-if="recentData.length > 0" style="max-height: 400px">
+              <a-menu-item v-for="item in recentData" :key="item.path">
+                <template #icon>
+                  <component :is="item.icon"/>
+                </template>
+                <a-flex :gap="40" align="space-between" justify="space-between" >
                 <span>
                   {{item.label}}
                 </span>
-                <span>
+                  <span>
                   {{ handleTime(item.openTime) }}
                 </span>
-              </a-flex>
-            </a-menu-item>
-          </div>
-          <a-divider v-if="recentData.length > 0" style="margin: 0px"/>
-          <a-menu-item v-if="recentData.length > 0" key="clear-recent" danger>
-            <div style="text-align: center">
-                 <ClearOutlined /> 清空最近使用
+                </a-flex>
+              </a-menu-item>
             </div>
-          </a-menu-item>
-          <a-empty v-else>
-            <template #description>
-              <a-typography-text>暂无数据</a-typography-text>
-            </template>
-          </a-empty>
-        </a-sub-menu>
-        <a-sub-menu class="menu-item-min-width" key="star">
-          <template #title>
-              <StarOutlined />
-            收藏夹栏
-          </template>
-          <div class="scrollbar" style="max-height: 400px" v-if="starData.length > 0">
-            <a-menu-item class="menu-item-min-width" v-for="item in starData" :key="item.routerPathKey">
-              <template #icon>
-                <component :is="item.icon"/>
-              </template>
-              {{item.label}}
+            <a-divider v-if="recentData.length > 0" style="margin: 0px"/>
+            <a-menu-item v-if="recentData.length > 0" key="clear-recent" danger>
+              <div style="text-align: center">
+                <ClearOutlined /> 清空最近使用
+              </div>
             </a-menu-item>
-          </div>
-          <a-empty v-else>
-            <template #description>
-              <a-typography-text>暂无数据</a-typography-text>
+            <a-empty v-else>
+              <template #description>
+                <a-typography-text>暂无数据</a-typography-text>
+              </template>
+            </a-empty>
+          </a-sub-menu>
+          <a-sub-menu class="menu-item-min-width" key="star">
+            <template #title>
+              <StarOutlined />
+              收藏夹栏
             </template>
-          </a-empty>
-        </a-sub-menu>
-        <a-divider style="margin: 0px"/>
-        <a-menu-item class="menu-item-min-width" key="close-all" danger>
-          <CloseOutlined />
-          关闭全部
-        </a-menu-item>
-      </a-menu>
-    </template>
-  </a-dropdown>
+            <div class="scrollbar" style="max-height: 400px" v-if="starData.length > 0">
+              <a-menu-item class="menu-item-min-width" v-for="item in starData" :key="item.routerPathKey">
+                <template #icon>
+                  <component :is="item.icon"/>
+                </template>
+                {{item.label}}
+              </a-menu-item>
+            </div>
+            <a-empty v-else>
+              <template #description>
+                <a-typography-text>暂无数据</a-typography-text>
+              </template>
+            </a-empty>
+          </a-sub-menu>
+          <a-divider style="margin: 0px"/>
+          <a-menu-item class="menu-item-min-width" key="close-all" danger>
+            <CloseOutlined />
+            关闭全部
+          </a-menu-item>
+        </a-menu>
+      </template>
+    </a-dropdown>
+  </div>
+
+
 </template>
 <script setup lang="ts">
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
@@ -172,13 +180,29 @@ const handleTime = (time: string) => {
     }
   }
 }
+
+/**
+ * 控制layout显示关闭
+ */
+const showHideLayout = () => {
+  const data =  localStorage.getItem("show-hide-layout")
+  if ('hide' === data) {
+    localStorage.setItem("show-hide-layout",'show')
+  } else {
+    localStorage.setItem("show-hide-layout",'hide')
+  }
+  viewTabsStore.$state.showLayout = localStorage.getItem("show-hide-layout") === 'show'
+}
 </script>
 <style>
 .ant-tabs-nav-more {
+  padding: 8px !important;
   cursor: pointer;
   border-radius: 8px
 }
-
+.ant-tabs-nav-more:hover {
+  color:  var(--colorPrimary) !important;
+}
 .menu-item-min-width {
   min-width: 120px;
 }

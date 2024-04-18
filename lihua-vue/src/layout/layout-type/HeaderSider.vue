@@ -1,6 +1,6 @@
 <template>
   <a-layout>
-    <a-layout-header class="header" v-show="false" :style="{'background': themeStore.layoutBackgroundColor}">
+    <a-layout-header class="header" v-show="props.showLayout" :style="{'background': themeStore.layoutBackgroundColor}">
       <a-flex align="center" justify="space-between">
         <Logo class="logo"/>
         <!--页头-->
@@ -10,7 +10,7 @@
 
     <a-layout>
       <a-layout-sider class="sider scrollbar"
-                      v-show="false"
+                      v-show="props.showLayout"
                       :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                       :theme="themeStore.siderTheme"
                       :width="themeStore.siderWith"
@@ -41,7 +41,7 @@ import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/modules/theme";
 const themeStore = useThemeStore()
 const permission = usePermissionStore()
-
+const props = defineProps<{  showLayout: boolean }>()
 </script>
 
 <style scoped>

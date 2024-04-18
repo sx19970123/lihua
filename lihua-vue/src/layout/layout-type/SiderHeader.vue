@@ -1,7 +1,7 @@
 <template>
   <a-layout style="min-height: 100vh">
     <a-layout-sider class="sider scrollbar"
-                    v-show="false"
+                    v-show="props.showLayout"
                     :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                     :theme="themeStore.siderTheme"
                     :trigger="null"
@@ -17,7 +17,7 @@
     <a-layout>
       <a-layout-header class="layout-header"
                        :style="{'background': themeStore.layoutBackgroundColor}">
-        <Head class="header" v-show="false"/>
+        <Head class="header" v-show="props.showLayout"/>
         <view-tabs  v-if="themeStore.showViewTabs"/>
       </a-layout-header>
       <a-layout-content class="layout-content">
@@ -38,7 +38,7 @@ import { usePermissionStore } from "@/stores/modules/permission";
 import {useThemeStore} from "@/stores/modules/theme";
 const themeStore = useThemeStore()
 const permission = usePermissionStore()
-
+const props = defineProps<{  showLayout: boolean }>()
 </script>
 
 <style scoped>
