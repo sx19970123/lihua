@@ -30,7 +30,7 @@
            <dict-tag :dict-data-value="text" :dict-data-option="sys_dept_type"/>
          </template>
          <template v-if="column.key === 'action'">
-           <a-button type="link" size="small">
+           <a-button type="link" size="small" @click="selectById(record.id)">
              <template #icon>
                <EditOutlined />
              </template>
@@ -39,6 +39,7 @@
            <a-divider type="vertical"/>
            <a-button type="link"
                      size="small"
+                     @click="addChildren(record)"
            >
              <template #icon>
                <PlusOutlined />
@@ -71,23 +72,26 @@
          <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
        </div>
      </template>
-      <a-form :colon="false" :model="sysDept" :label-col="{ span: 4 }">
+      <a-form :colon="false" :model="sysDept" :label-col="{ span: 4 }" :rules="deptRoles">
         <a-form-item label="部门类型">
           <a-radio-group v-model:value="sysDept.type">
             <a-radio-button v-for="item in sys_dept_type" :value="item.value">{{item.label}}</a-radio-button>
           </a-radio-group>
         </a-form-item>
         <a-form-item label="上级部门" :wrapper-col="{span: 16}">
-          <a-tree-select/>
+          <a-tree-select :tree-data="parentDeptList"
+                         :fieldNames="{children:'children', label:'name',value: 'id'}"
+                         v-model:value="sysDept.parentId"
+          />
         </a-form-item>
-        <a-form-item label="部门名称" :wrapper-col="{span: 16}">
-          <a-input v-model:value="sysDept.name"/>
+        <a-form-item label="部门名称" :wrapper-col="{span: 16}" name="name">
+          <a-input v-model:value="sysDept.name" placeholder="请输入部门名称" :maxlength="60" show-count allow-clear/>
         </a-form-item>
-        <a-form-item label="部门编码" :wrapper-col="{span: 16}">
-          <a-input v-model:value="sysDept.code"/>
+        <a-form-item label="部门编码" :wrapper-col="{span: 16}" name="code">
+          <a-input v-model:value="sysDept.code" placeholder="请输入部门编码" :maxlength="100" show-count allow-clear/>
         </a-form-item>
-        <a-form-item label="排序">
-          <a-input-number v-model:value="sysDept.sort"/>
+        <a-form-item label="排序" name="sort">
+          <a-input-number v-model:value="sysDept.sort" placeholder="升序排列" allow-clear/>
         </a-form-item>
         <a-form-item label="状态">
           <a-radio-group v-model:value="sysDept.status">
@@ -97,7 +101,7 @@
         <a-row>
           <a-col :span="12">
             <a-form-item label="负责人" :label-col="{span: 8}">
-              <a-input-search v-model:value="sysDept.manager">
+              <a-input-search v-model:value="sysDept.manager" placeholder="请输入负责人" allow-clear>
                 <template #enterButton>
                   <a-button>
                     <template #icon><TeamOutlined /></template>
@@ -107,25 +111,25 @@
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="联系电话" :label-col="{span: 8}">
-              <a-input v-model:value="sysDept.phoneNumber"/>
+            <a-form-item label="联系电话" :label-col="{span: 8}" name="phoneNumber">
+              <a-input v-model:value="sysDept.phoneNumber" placeholder="请输入联系电话" allow-clear/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="12">
-            <a-form-item label="传真" :label-col="{span: 8}">
-              <a-input v-model:value="sysDept.fax"/>
+            <a-form-item label="传真" :label-col="{span: 8}" name="fax">
+              <a-input v-model:value="sysDept.fax" placeholder="请输入传真号码" allow-clear/>
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="电子邮箱" :label-col="{span: 8}">
-              <a-input v-model:value="sysDept.email"/>
+            <a-form-item label="电子邮箱" :label-col="{span: 8}" name="email">
+              <a-input v-model:value="sysDept.email" placeholder="请输入电子邮箱" allow-clear/>
             </a-form-item>
           </a-col>
         </a-row>
         <a-form-item label="备注">
-          <a-textarea type="textarea" v-model="sysDept.remark"/>
+          <a-textarea type="textarea" v-model="sysDept.remark" placeholder="请输入备注" :maxlength="300" show-count allow-clear/>
         </a-form-item>
       </a-form>
    </a-modal>
@@ -135,11 +139,13 @@
 <script setup lang="ts">
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findList} from "@/api/system/dept/dept.ts";
+import {findById, findList} from "@/api/system/dept/dept.ts";
 import {reactive, ref} from "vue";
 import {message} from "ant-design-vue";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
+import {cloneDeep} from "lodash-es";
+import type {Rule} from "ant-design-vue/es/form";
 const {sys_dept_type, sys_status} = initDict("sys_dept_type","sys_status")
 const initSearch = () => {
   // 列表信息
@@ -187,11 +193,12 @@ const initSearch = () => {
 
   const deptQuery = ref<SysDept>({})
   const deptList = ref<Array<SysDept>>([])
-
   const initList = async () => {
     const resp = await findList(deptQuery.value);
     if (resp.code === 200) {
       deptList.value = resp.data
+      // 加载上级部门树
+      initTreeData()
     } else {
       message.error(resp.msg);
     }
@@ -208,6 +215,27 @@ const {deptColumn,deptList} = initSearch()
 // 保存数据
 const initSave = () => {
 
+  const deptRoles: Record<string, Rule[]> = {
+    name: [
+      {required: true, message: "请输入部门名称", trigger: "change"}
+    ],
+    code: [
+      {required: true, message: "请输入部门编码", trigger: "change"}
+    ],
+    sort: [
+      {required: true, message: "请输入排序", trigger: "change"}
+    ],
+    phoneNumber: [
+      {pattern: /^1[3456789]\d{9}$/, message: "请输入正确的手机号码", trigger: "change"}
+    ],
+    email: [
+      {pattern: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/, message: "请输入正确的邮箱", trigger: "change"}
+    ],
+    fax: [
+      {pattern: /^\d{3,20}$/, message: "请输入正确的传真", trigger: "change"}
+    ]
+  }
+
   // 模态框状态
   type modalActiveType = {
     open: boolean, // 模态框开关
@@ -218,11 +246,56 @@ const initSave = () => {
   const modalActive = reactive<modalActiveType>({
     open: false,
     saveLoading: false,
-    title: "保存部门"
+    title: "新增部门"
   })
 
   // 部门数据
   const sysDept = ref<SysDept>({})
+  // 上级部门
+  const parentDeptList = ref<Array<SysDept>>([])
+
+  // 新增部门
+  const addDept = () => {
+    handleModelStatus("新增部门")
+    if (deptList) {
+      sysDept.value.sort = getSort(deptList.value)
+    } else {
+      sysDept.value.sort = 1
+    }
+
+  }
+  // 新增下级
+  const addChildren = (dept: SysDept) => {
+    handleModelStatus("新增部门")
+    sysDept.value.parentId = dept.id
+    if (dept.children) {
+      sysDept.value.sort = getSort(dept?.children)
+    } else {
+      sysDept.value.sort = 1
+    }
+  }
+
+  // 获取排序
+  const getSort = (deptList: Array<SysDept>): number => {
+    const sorts = deptList.map(item => item.sort)
+    if (sorts && sorts.length > 0) {
+      const max = Math.max(...sorts as number[])
+      return max + 1
+    } else {
+      return 1
+    }
+  }
+
+  // 根据id查询数据
+  const selectById = async (id: string) => {
+    const resp = await findById(id)
+    if (resp.code === 200) {
+      handleModelStatus("修改部门")
+      sysDept.value = resp.data
+    } else {
+      message.error(resp.msg)
+    }
+  }
 
   // 修改模态框状态，打开关闭模态框
   const handleModelStatus = (title: string) => {
@@ -232,19 +305,56 @@ const initSave = () => {
     }
 
     if (modalActive.open) {
-      // resetForm()
+      resetForm()
+    }
+  }
+
+  const resetForm = () => {
+    sysDept.value = {
+      status: '0',
+      type: 'dept',
+      parentId: '0'
     }
   }
 
 
 
+  // 初始化树型结构
+  const initTreeData = () => {
+    const deepDeptList = cloneDeep(deptList.value)
+    handleDeptTree(deepDeptList)
+    parentDeptList.value = [{
+      id: '0',
+      name: '根节点',
+      children: deepDeptList
+    }]
+  }
+
+  // 处理树
+  const handleDeptTree = (deptList: Array<SysDept>) => {
+    deptList = deptList.filter(item => item.type === 'dept')
+    deptList.forEach(item => {
+      if (item.children && item.children.length > 0) {
+        item.children = item.children?.filter(item => item.type === 'dept')
+        handleDeptTree(item.children)
+      }
+    })
+
+  }
+
   return {
     modalActive,
     sysDept,
+    parentDeptList,
+    deptRoles,
+    selectById,
+    addChildren,
+    initTreeData,
+    handleDeptTree,
     handleModelStatus
   }
 }
-const {modalActive,sysDept,handleModelStatus} = initSave()
+const {modalActive,sysDept,parentDeptList,deptRoles,selectById,addChildren,initTreeData,handleModelStatus} = initSave()
 
 // 删除数据
 </script>

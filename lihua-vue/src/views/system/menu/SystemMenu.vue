@@ -495,8 +495,6 @@ const initSave = () => {
   // 新增菜单
   const addMenu = () => {
     handleModelStatus('新增菜单')
-    sysMenu.value.parentId = '0'
-    sysMenu.value.menuType = 'directory'
     const sorts = menuList.value.map(item => item.sort)
     if (sorts && sorts.length > 0) {
       const max = Math.max(...sorts as number[])
