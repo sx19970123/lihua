@@ -1,17 +1,19 @@
 <template>
   <a-layout>
     <div class="header">
-      <a-layout-header class="layout-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' ?
-      { background: themeStore.layoutBackgroundColor } : ''">
-        <a-flex align="center" justify="space-between">
-          <!--logo-->
-          <Logo class="logo"/>
-          <!--导航-->
-          <Side class="sider"/>
-          <!--页头-->
-          <Head></Head>
-        </a-flex>
-      </a-layout-header>
+      <transition :name="themeStore.routeTransition" mode="out-in">
+        <a-layout-header class="layout-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' ?
+        { background: themeStore.layoutBackgroundColor } : ''">
+          <a-flex align="center" justify="space-between">
+            <!--logo-->
+            <Logo class="logo"/>
+            <!--导航-->
+            <Side class="sider"/>
+            <!--页头-->
+            <Head></Head>
+          </a-flex>
+        </a-layout-header>
+      </transition>
       <!--多标签-->
       <view-tabs v-if="themeStore.showViewTabs" :style="{background: themeStore.layoutBackgroundColor}" style="padding-top: 6px"/>
     </div>

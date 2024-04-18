@@ -1,23 +1,27 @@
 <template>
   <a-layout style="min-height: 100vh">
-    <a-layout-sider class="sider scrollbar"
-                    v-show="props.showLayout"
-                    :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
-                    :theme="themeStore.siderTheme"
-                    :trigger="null"
-                    :width="themeStore.siderWith"
-                    v-model:collapsed="permission.collapsed"
-                    collapsible
-                    breakpoint="lg"
-    >
-      <Logo class="logo"/>
-      <!-- 侧边栏-->
-      <Side/>
-    </a-layout-sider>
+    <transition :name="themeStore.routeTransition" mode="out-in">
+      <a-layout-sider class="sider scrollbar"
+                      v-show="props.showLayout"
+                      :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
+                      :theme="themeStore.siderTheme"
+                      :trigger="null"
+                      :width="themeStore.siderWith"
+                      v-model:collapsed="permission.collapsed"
+                      collapsible
+                      breakpoint="lg"
+      >
+        <Logo class="logo"/>
+        <!-- 侧边栏-->
+        <Side/>
+      </a-layout-sider>
+    </transition>
     <a-layout>
       <a-layout-header class="layout-header"
                        :style="{'background': themeStore.layoutBackgroundColor}">
+        <transition :name="themeStore.routeTransition" mode="out-in">
         <Head class="header" v-show="props.showLayout"/>
+        </transition>
         <view-tabs  v-if="themeStore.showViewTabs"/>
       </a-layout-header>
       <a-layout-content class="layout-content">

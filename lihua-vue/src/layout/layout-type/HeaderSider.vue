@@ -1,26 +1,30 @@
 <template>
   <a-layout>
-    <a-layout-header class="header" v-show="props.showLayout" :style="{'background': themeStore.layoutBackgroundColor}">
-      <a-flex align="center" justify="space-between">
-        <Logo class="logo"/>
-        <!--页头-->
-        <Head></Head>
-      </a-flex>
-    </a-layout-header>
+    <transition :name="themeStore.routeTransition" mode="out-in">
+      <a-layout-header class="header" v-show="props.showLayout" :style="{'background': themeStore.layoutBackgroundColor}">
+        <a-flex align="center" justify="space-between">
+          <Logo class="logo"/>
+          <!--页头-->
+          <Head></Head>
+        </a-flex>
+      </a-layout-header>
+    </transition>
 
     <a-layout>
-      <a-layout-sider class="sider scrollbar"
-                      v-show="props.showLayout"
-                      :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
-                      :theme="themeStore.siderTheme"
-                      :width="themeStore.siderWith"
-                      v-model:collapsed="permission.collapsed"
-                      collapsible
-                      breakpoint="lg"
-      >
-        <!-- 侧边栏-->
-        <Side/>
-      </a-layout-sider>
+      <transition :name="themeStore.routeTransition" mode="out-in">
+        <a-layout-sider class="sider scrollbar"
+                        v-show="props.showLayout"
+                        :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
+                        :theme="themeStore.siderTheme"
+                        :width="themeStore.siderWith"
+                        v-model:collapsed="permission.collapsed"
+                        collapsible
+                        breakpoint="lg"
+        >
+          <!-- 侧边栏-->
+          <Side/>
+        </a-layout-sider>
+      </transition>
       <!--    菜单开合开关-->
       <a-layout-content>
         <view-tabs class="view-tabs" v-if="themeStore.showViewTabs" :style="{'background': themeStore.layoutBackgroundColor, 'top': !props.showLayout ? '0' : '' }"/>
