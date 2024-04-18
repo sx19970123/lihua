@@ -192,7 +192,9 @@ const showHideLayout = () => {
     localStorage.setItem("show-hide-layout",'hide')
   }
   viewTabsStore.$state.showLayout = localStorage.getItem("show-hide-layout") === 'show'
+  viewTabsStore.setShowLayoutAttribute()
 }
+
 </script>
 <style>
 .ant-tabs-nav-more {

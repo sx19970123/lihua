@@ -1,11 +1,13 @@
 /* 根据是否开启多任务栏，设定不同的content高度 */
-[view-tabs=show] .layout-content {
-    min-height: calc(100vh - (48px + 60px + 16px));
+[view-tabs=show][show-hide-layout=show] .layout-content {
+    min-height: calc(100vh - (48px + 52px + 16px));
 }
-[view-tabs=hide] .layout-content {
+[view-tabs=hide][show-hide-layout=show] .layout-content {
     min-height: calc(100vh - (48px + 16px));
 }
-
+[view-tabs=show][show-hide-layout=hide] .layout-content {
+    min-height: calc(100vh - (52px + 16px));
+}
 /* content 外边框上左右各为16像素*/
 .layout-content {
     margin: 16px 16px 0 16px;

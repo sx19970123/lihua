@@ -66,6 +66,8 @@ export const useViewTabsStore = defineStore('viewTabs',{
             this.$state.totalViewTabs = viewTabVOList
             // 默认显示数据
             this.$state.viewTabs = this.$state.totalViewTabs.filter(tab => tab.affix)
+            // 更新显示隐藏layout
+            this.setShowLayoutAttribute()
         },
         // 根据路由信息加载viewTag
         init(route: RouteLocationNormalizedLoaded) {
@@ -215,6 +217,10 @@ export const useViewTabsStore = defineStore('viewTabs',{
         regenerateComponentKey() {
             // 生成一个随机的 UUID
             this.$state.contentComponentKey = uuid()
+        },
+        // 修改显示layout后更新html节点show-hide-layout
+        setShowLayoutAttribute () {
+            document.documentElement.setAttribute("show-hide-layout", 'hide' === localStorage.getItem("show-hide-layout")  ? 'hide' : 'show')
         }
     }
 })
