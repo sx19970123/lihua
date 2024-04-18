@@ -38,7 +38,7 @@ export const deleteData = (ids: Array<string>) => {
  * @param dictTypeCode
  */
 export const getDictDataOption = (dictTypeCode: string) => {
-  return request({
+  return request<Array<SysDictDataType>>({
     url: 'system/dictData/option/' + dictTypeCode,
     method: 'get'
   })

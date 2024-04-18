@@ -76,7 +76,6 @@
                   <a-popconfirm title="删除后不可恢复，是否删除？"
                                 ok-text="确 定"
                                 cancel-text="取 消"
-                                placement="bottomRight"
                                 @confirm="handleDelete(record.id)"
                   >
                     <a-button type="link" danger size="small" @click="(event: any) => event.stopPropagation()">

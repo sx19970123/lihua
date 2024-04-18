@@ -55,6 +55,11 @@ public class SysDept extends BaseEntity {
     private String managerId;
 
     /**
+     * 负责人
+     */
+    private String manager;
+
+    /**
      * 联系电话
      */
     private String phoneNumber;

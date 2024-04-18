@@ -11,7 +11,7 @@
  Target Server Version : 80033 (8.0.33)
  File Encoding         : 65001
 
- Date: 15/04/2024 16:56:53
+ Date: 18/04/2024 16:17:01
 */
 
 SET NAMES utf8mb4;
@@ -28,11 +28,12 @@ CREATE TABLE `sys_dept`  (
   `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '编码',
   `sort` int NULL DEFAULT NULL COMMENT '排序',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '状态',
-  `manager_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '负责人',
+  `manager_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '负责人id',
+  `manager` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '负责人',
   `phone_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '联系电话',
   `email` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '邮箱',
   `fax` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '传真',
-  `type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '类型：部门/岗位',
+  `type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '类型：部门/岗位',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '逻辑删除标志',
   `create_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人id',
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
@@ -45,6 +46,9 @@ CREATE TABLE `sys_dept`  (
 -- ----------------------------
 -- Records of sys_dept
 -- ----------------------------
+INSERT INTO `sys_dept` VALUES ('1', '0', '小米科技', 'xiaomi', 1, NULL, NULL, '雷军儿', NULL, NULL, NULL, 'post', '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_dept` VALUES ('2', '1', '紫米科技', 'zimi', 2, NULL, NULL, '雷军二', NULL, NULL, NULL, 'dept', '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_dept` VALUES ('3', '4', '测试', 'test', 3, NULL, NULL, '雷军三', NULL, NULL, NULL, 'dept', '0', NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_dict_data
@@ -125,6 +129,8 @@ INSERT INTO `sys_dict_data` VALUES ('1774250428016214017', '0', 'sys_link_menu_o
 INSERT INTO `sys_dict_data` VALUES ('1774252801971306497', '0', 'sys_whether', '是', '0', 1, NULL, '0', '1', '2024-03-31 09:50:07', NULL, NULL, '0', 'default');
 INSERT INTO `sys_dict_data` VALUES ('1774252803737108481', '0', 'sys_whether', '否', '1', 2, NULL, '0', '1', '2024-03-31 09:50:07', NULL, NULL, '0', 'default');
 INSERT INTO `sys_dict_data` VALUES ('1778063479844745217', '0', 'ce', 'ce', 'ce', 1, NULL, '1', '1', '2024-04-10 22:12:23', '1', '2024-04-10 22:12:30', '1', 'default');
+INSERT INTO `sys_dict_data` VALUES ('1780864938674667522', '0', 'system_dept_type', '部门', 'dept', 1, NULL, '0', '1', '2024-04-18 15:44:23', NULL, NULL, '0', 'processing');
+INSERT INTO `sys_dict_data` VALUES ('1780864940843122690', '0', 'system_dept_type', '岗位', 'post', 2, NULL, '0', '1', '2024-04-18 15:44:23', NULL, NULL, '0', 'success');
 INSERT INTO `sys_dict_data` VALUES ('2', '0', '1', '否', '1', 1, '系统选项2否', '0', NULL, NULL, '1', '2024-03-15 16:30:56', '0', NULL);
 
 -- ----------------------------
@@ -161,6 +167,7 @@ INSERT INTO `sys_dict_type` VALUES ('1778067479683981314', 'ce ', 'ce', '0', NUL
 INSERT INTO `sys_dict_type` VALUES ('1778067499556593666', 'ce', 'cece', '0', NULL, '1', '2024-04-10 22:28:21', '1', '2024-04-10 22:31:46', '1', '1');
 INSERT INTO `sys_dict_type` VALUES ('1778067521006264322', 'cece', 'cecece', '0', NULL, '1', '2024-04-10 22:28:27', '1', '2024-04-10 22:31:48', '1', '1');
 INSERT INTO `sys_dict_type` VALUES ('1778067548164382722', 'cecec', 'cececee', '0', NULL, '1', '2024-04-10 22:28:33', '1', '2024-04-10 22:30:35', '1', '1');
+INSERT INTO `sys_dict_type` VALUES ('1780864852875984898', '部门类型', 'system_dept_type', '0', '保存部门操作时的类型选项，分为部门和岗位', '1', '2024-04-18 15:44:02', '1', '2024-04-18 15:53:23', '0', '0');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -212,13 +219,24 @@ INSERT INTO `sys_menu` VALUES ('1776948618620391426', '031f293f02c84e4d9e27f866e
 INSERT INTO `sys_menu` VALUES ('1777536058626834433', '1775035631645659138', '角色管理', '角色管理', 'page', '/role', '/system/role/SystemRole.vue', '0', '0', 'page', 'UserSwitchOutlined', 3, '1', '2024-04-09 11:16:36', '1', '2024-04-09 13:39:23', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1777536311941824513', '1775035631645659138', '用户管理', '用户管理', 'page', '/user', '/system/user/SystemUser.vue', '0', '0', 'page', 'TeamOutlined', 4, '1', '2024-04-09 11:17:36', '1', '2024-04-09 13:39:30', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1777536895235293186', '1775035631645659138', '部门管理', '部门管理', 'page', '/dept', '/system/dept/SystemDept.vue', '0', '0', 'page', 'ApartmentOutlined', 5, '1', '2024-04-09 11:19:56', '1', '2024-04-09 13:39:42', '0', NULL, '0', NULL, NULL, '0', 'inner');
-INSERT INTO `sys_menu` VALUES ('1777537254552928258', '1775035631645659138', '岗位管理', '岗位管理', 'page', '/post', '/system/post/SystemPost.vue', '0', '0', 'page', 'IdcardOutlined', 6, '1', '2024-04-09 11:21:21', '1', '2024-04-09 13:39:50', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1777537254552928258', '1775035631645659138', '岗位管理', '岗位管理', 'page', '/post', '/system/post/SystemPost.vue', '0', '1', 'page', 'IdcardOutlined', 6, '1', '2024-04-09 11:21:21', '1', '2024-04-17 13:57:31', '1', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1777538040162844673', '0', '日志管理', '日志管理', 'directory', '/log', NULL, '0', '0', 'directory', 'FileSearchOutlined', 3, '1', '2024-04-09 11:24:28', '1', '2024-04-09 11:41:34', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1777538768721838082', '1777538040162844673', '登录日志', '登录日志', 'page', '/login', '/log/login/LogLogin.vue', '0', '0', 'page', 'FileProtectOutlined', 1, '1', '2024-04-09 11:27:22', '1', '2024-04-09 13:40:15', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1777539419447132162', '1777538040162844673', '操作日志', '操作日志', 'page', '/operate', '/log/operate/LogOperate.vue', '0', '0', 'page', 'FileSyncOutlined', 2, '1', '2024-04-09 11:29:57', '1', '2024-04-09 13:40:21', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1777539832263114753', '0', '通知公告', '通知公告', 'page', '/notice', '/Notice.vue', '0', '0', 'page', 'MessageOutlined', 1, '1', '2024-04-09 11:31:36', '1', '2024-04-09 13:40:02', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1778063591245459457', '0', 'ces', 'ces', 'directory', '/ces', NULL, '0', '0', 'directory', NULL, 5, '1', '2024-04-10 22:12:50', NULL, NULL, '1', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1778064366633803777', '0', '测试菜单', '测试菜单', 'directory', '/12321', NULL, '0', '1', 'directory', NULL, 5, '1', '2024-04-10 22:15:54', '1', '2024-04-10 22:19:55', '1', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1780420780302405633', '0', 'ces ', 'ces ', 'directory', '/ces', NULL, '0', '1', 'directory', NULL, 5, '1', '2024-04-17 10:19:27', '1', '2024-04-17 13:37:03', '1', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1780421335728918529', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:21:40', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_menu` VALUES ('1780422393649885185', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:25:52', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_menu` VALUES ('1780422522222088193', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:26:23', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_menu` VALUES ('1780422633165615105', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:26:49', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_menu` VALUES ('1780422872471621633', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:27:46', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_menu` VALUES ('1780422881095110657', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:27:48', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_menu` VALUES ('1780423014360743938', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:28:20', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_menu` VALUES ('1780423917344051201', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:31:55', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_menu` VALUES ('1780427329154502657', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:45:29', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_menu` VALUES ('1780858187371954177', '0', '123', '123', 'directory', '/123', NULL, '0', '1', 'directory', NULL, 5, '1', '2024-04-18 15:17:33', '1', '2024-04-18 15:17:54', '1', NULL, '0', NULL, NULL, '0', 'inner');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -273,7 +291,6 @@ INSERT INTO `sys_role_menu` VALUES ('1', '1776948618620391426');
 INSERT INTO `sys_role_menu` VALUES ('1', '1777536058626834433');
 INSERT INTO `sys_role_menu` VALUES ('1', '1777536311941824513');
 INSERT INTO `sys_role_menu` VALUES ('1', '1777536895235293186');
-INSERT INTO `sys_role_menu` VALUES ('1', '1777537254552928258');
 INSERT INTO `sys_role_menu` VALUES ('1', '1777538040162844673');
 INSERT INTO `sys_role_menu` VALUES ('1', '1777538768721838082');
 INSERT INTO `sys_role_menu` VALUES ('1', '1777539419447132162');
@@ -291,7 +308,6 @@ INSERT INTO `sys_role_menu` VALUES ('1778051355835736065', '1776948618620391426'
 INSERT INTO `sys_role_menu` VALUES ('1778051355835736065', '1777536058626834433');
 INSERT INTO `sys_role_menu` VALUES ('1778051355835736065', '1777536311941824513');
 INSERT INTO `sys_role_menu` VALUES ('1778051355835736065', '1777536895235293186');
-INSERT INTO `sys_role_menu` VALUES ('1778051355835736065', '1777537254552928258');
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -321,7 +337,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"url\":\"\",\"value\":\"Unfold\",\"type\":\"icon\",\"backgroundColor\":\"rgb(250, 173, 20)\"}', '1', '0', '{\"layoutType\":\"header-sider\",\"showViewTabs\":true,\"dataTheme\":false,\"colorPrimary\":\"rgb(114, 46, 209)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"breathe\",\"offsetHeader\":108,\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(114, 46, 209)\"}}}', '0', NULL, NULL, '1', '2024-04-15 13:40:07', NULL, NULL, '12321311@qq.com', '15523647831');
+INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"url\":\"\",\"value\":\"PixelCat\",\"type\":\"icon\",\"backgroundColor\":\"rgb(250, 173, 20)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"showViewTabs\":true,\"dataTheme\":false,\"colorPrimary\":\"rgb(114, 46, 209)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"breathe\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(114, 46, 209)\"}}}', '0', NULL, NULL, '1', '2024-04-18 15:49:05', NULL, NULL, '12321311@qq.com', '15523647831');
 
 -- ----------------------------
 -- Table structure for sys_user_dept
@@ -356,6 +372,7 @@ CREATE TABLE `sys_user_role`  (
 -- Records of sys_user_role
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES ('1', '1', NULL, NULL);
+INSERT INTO `sys_user_role` VALUES ('1', '1779067819464077314', '2024-04-18 15:28:38', '1');
 
 -- ----------------------------
 -- Table structure for sys_view_tab

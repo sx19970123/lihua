@@ -5,6 +5,7 @@ import com.lihua.system.entity.SysDept;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.service.SysDeptService;
 import com.lihua.utils.security.LoginUserContext;
+import com.lihua.utils.tree.TreeUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -22,14 +23,16 @@ public class SysDeptServiceImpl implements SysDeptService {
     public List<SysDept> findList(SysDept sysDept) {
         QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
         // 单位名称
-        if (!StringUtils.hasText(sysDept.getName())) {
+        if (StringUtils.hasText(sysDept.getName())) {
             queryWrapper.lambda().like(SysDept::getName,sysDept.getName());
         }
-        if (!StringUtils.hasText(sysDept.getCode())) {
+        if (StringUtils.hasText(sysDept.getCode())) {
             queryWrapper.lambda().like(SysDept::getCode,sysDept.getCode());
         }
 
-        return sysDeptMapper.selectList(queryWrapper);
+        List<SysDept> sysDepts = sysDeptMapper.selectList(queryWrapper);
+
+        return TreeUtil.buildTree(sysDepts);
     }
 
     @Override
@@ -41,11 +44,6 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
     }
 
-    /**
-     * 根据id修改数据
-     * @param sysDept
-     * @return
-     */
     private String updateById(SysDept sysDept) {
         sysDept.setUpdateId(LoginUserContext.getUserId());
         sysDept.setUpdateTime(LocalDateTime.now());
@@ -53,11 +51,6 @@ public class SysDeptServiceImpl implements SysDeptService {
         return sysDept.getId();
     }
 
-    /**
-     * 新增数据
-     * @param sysDept
-     * @return
-     */
     private String insert(SysDept sysDept) {
         sysDept.setCreateId(LoginUserContext.getUserId());
         sysDept.setCreateTime(LocalDateTime.now());

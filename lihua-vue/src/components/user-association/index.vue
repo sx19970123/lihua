@@ -20,7 +20,7 @@
             <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
         </template>
         <template v-if="column.key === 'action'">
-          <a-popconfirm title="是否解绑该用户？" @confirm="handleDetach(record.id)">
+          <a-popconfirm placement="topRight" title="确认解绑该用户？" @confirm="handleDetach(record.id)">
             <a-button type="link" danger size="small">
               <template #icon>
                 <DisconnectOutlined />
