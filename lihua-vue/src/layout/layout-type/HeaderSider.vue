@@ -23,7 +23,7 @@
       </a-layout-sider>
       <!--    菜单开合开关-->
       <a-layout-content>
-        <view-tabs class="view-tabs" style="top: 0" v-if="themeStore.showViewTabs" :style="{'background': themeStore.layoutBackgroundColor}"/>
+        <view-tabs class="view-tabs" v-if="themeStore.showViewTabs" :style="{'background': themeStore.layoutBackgroundColor, 'top': !props.showLayout ? '0' : '' }"/>
         <!--内容-->
         <Content class="layout-content"/>
       </a-layout-content>

@@ -1,6 +1,7 @@
 <template>
   <a-flex align="center" style="margin-right: 16px">
       <language v-if="false"/>
+      <notification/>
       <windows-change/>
       <user/>
   </a-flex>
@@ -9,4 +10,5 @@
 import User from "@/layout/head/components/user/index.vue"
 import Language from "@/layout/head/components/language/index.vue"
 import WindowsChange from "@/layout/head/components/window-change/index.vue"
+import Notification from "@/layout/head/components/notification/index.vue"
 </script>
