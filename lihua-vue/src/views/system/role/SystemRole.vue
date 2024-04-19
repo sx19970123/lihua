@@ -244,16 +244,11 @@ const initSearch = () => {
     tableLoad.value = true
     const resp = await findPage(roleQuery.value)
     if (resp.code === 200) {
-      // 防止删除到非第一页的最后一条数据时，列表变为空
-      if (resp.data.records.length === 0 && roleQuery.value.pageNum !== 1) {
-        roleQuery.value.pageNum = roleQuery.value.pageNum - 1
-        await queryPage()
-      } else {
-        roleList.value = resp.data.records
-        roleTotal.value = resp.data.total
-        if (selectedIds.value.length === 0 && roleList.value[0].id) {
-          selectedIds.value = [roleList.value[0].id]
-        }
+      roleList.value = resp.data.records
+      roleTotal.value = resp.data.total
+      // 默认选中第一条数据
+      if (selectedIds.value.length === 0 && roleList.value[0].id) {
+        selectedIds.value = [roleList.value[0].id]
       }
     } else {
       message.error(resp.msg)

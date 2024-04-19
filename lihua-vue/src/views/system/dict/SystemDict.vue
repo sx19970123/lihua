@@ -303,14 +303,10 @@ const initSearch = () => {
     tableLoad.value = true
     const resp:ResponseType<PageResponseType<SysDictType>> = await findPage(dictTypeQuery.value)
     if (resp.code === 200) {
-      if (resp.data.records.length === 0 && dictTypeQuery.value.pageNum > 1) {
-        dictTypeQuery.value.pageNum = dictTypeQuery.value.pageNum - 1
-        await queryPage()
-      } else {
-        dictTypeList.value = resp.data.records
-        dictTypeTotal.value = resp.data.total
-      }
-
+      dictTypeList.value = resp.data.records
+      dictTypeTotal.value = resp.data.total
+    } else {
+      message.error(resp.msg)
     }
     tableLoad.value = false
   }

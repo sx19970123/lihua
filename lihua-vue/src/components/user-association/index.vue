@@ -146,15 +146,12 @@ const initSearch = () => {
     listLoading.value = true
     const resp = await findAssociatedUserPage(userQuery.value)
     if (resp.code === 200) {
-      if (resp.data.records.length === 0 && userQuery.value.pageNum && userQuery.value.pageNum !== 1) {
-        userQuery.value.pageNum = userQuery.value.pageNum - 1
-        await queryPage()
-      } else {
-        userList.value = resp.data.records
-        userTotal.value = resp.data.total
-        listLoading.value = false
-      }
+      userList.value = resp.data.records
+      userTotal.value = resp.data.total
+    } else {
+      message.error(resp.msg)
     }
+    listLoading.value = false
   }
 
   return {
