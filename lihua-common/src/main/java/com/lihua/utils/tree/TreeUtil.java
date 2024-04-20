@@ -6,47 +6,65 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * 通用构建树方法，大数据量性能不佳，慎用
+ * 通用构建树方法
  */
 public class TreeUtil {
 
     private static final String DEFAULT_ID = "Id";
     private static final String DEFAULT_PARENT_ID = "ParentId";
     private static final String DEFAULT_CHILDREN = "Children";
-    private static final String DEFAULT_ROOT_VALUE = "0";
+
 
     /**
-     * 将 List<T> 构建为 树形结构 ，默认属性为 id parentId children 0
+     * 通过lambda表达式构建
+     * @return
+     */
+    public static LambdaTreeUtil lambda() {
+        return new LambdaTreeUtil();
+    }
+
+    /**
+     * 将 List<T> 构建为 树形结构 ，默认属性为 id parentId children
      * 可通过重载指定属性
      * @param list
      * @return
      * @param <T>
      */
     public static <T> List<T> buildTree(List<T> list) {
-        return buildTree(list,DEFAULT_ID,DEFAULT_PARENT_ID,DEFAULT_CHILDREN,DEFAULT_ROOT_VALUE);
+        return buildTree(list,DEFAULT_ID,DEFAULT_PARENT_ID,DEFAULT_CHILDREN);
     }
 
+    public static <T> List<T> buildTree(List<T> list, String propKeyName,String propParentKeyName,String propChildrenName) {
+        final String finalPropKeyName = StringUtils.initialUpperCase(propKeyName);
+        final String finalPropParentKeyName = StringUtils.initialUpperCase(propParentKeyName);
+        final String finalPropChildrenName = StringUtils.initialUpperCase(propChildrenName);
 
-    public static <T,V> List<T> buildTree(List<T> list,V rootValue) {
-        return buildTree(list,DEFAULT_ID,DEFAULT_PARENT_ID,DEFAULT_CHILDREN,rootValue);
-    }
-    public static <T,V> List<T> buildTree(List<T> list, String propKeyName,String propParentKeyName) {
-        propKeyName = StringUtils.initialUpperCase(propKeyName);
-        propParentKeyName = StringUtils.initialUpperCase(propParentKeyName);
-        return build(list,propKeyName,propParentKeyName,DEFAULT_CHILDREN,DEFAULT_ROOT_VALUE);
-    }
+        // 获取全部 key（id）集合
+        List<String> ids = list
+                .stream()
+                .map(item -> Objects.requireNonNull(get(item, finalPropKeyName)).toString())
+                .toList();
 
-    public static <T,V> List<T> buildTree(List<T> list, String propKeyName,String propParentKeyName , V rootValue) {
-        propKeyName = StringUtils.initialUpperCase(propKeyName);
-        propParentKeyName = StringUtils.initialUpperCase(propParentKeyName);
-        return build(list,propKeyName,propParentKeyName,DEFAULT_CHILDREN,rootValue);
-    }
+        List<T> respList = new ArrayList<T>();
 
-    public static <T,V> List<T> buildTree(List<T> list, String propKeyName,String propParentKeyName,String propChildrenName , V rootValue) {
-        propKeyName = StringUtils.initialUpperCase(propKeyName);
-        propParentKeyName = StringUtils.initialUpperCase(propParentKeyName);
-        propChildrenName = StringUtils.initialUpperCase(propChildrenName);
-        return build(list,propKeyName,propParentKeyName,propChildrenName,rootValue);
+        // 过滤出 parentKey（pid）不在 ids 集合中的数据，为跟节点
+        List<String> parentIds = list
+                .stream()
+                .filter(item -> {
+                    String parentId = (String) get(item, finalPropParentKeyName);
+                    return org.springframework.util.StringUtils.hasText(parentId) && !ids.contains(parentId);
+                })
+                .map(item -> Objects.requireNonNull((String)get(item, finalPropParentKeyName)))
+                .distinct()
+                .toList();
+
+        // 当条件筛选时，根节点不一定全部都是相同的，所以根据不同的跟节点分别执行树的构建，最后将所有树都放到同一集合中
+        parentIds.forEach(parentId -> {
+            List<T> build = build(list, finalPropKeyName, finalPropParentKeyName, finalPropChildrenName, parentId);
+            respList.addAll(build);
+        });
+
+        return respList;
     }
 
     /**
@@ -78,7 +96,10 @@ public class TreeUtil {
         for (T item : list) {
             List<T> children = map.get(get(item, propKeyName));
             if (children != null) {
-                List<Object> child = getList(item, propChildrenName);
+                List<T> child = getList(item, propChildrenName);
+                if (child == null) {
+
+                }
                 child.addAll(children);
             }
 

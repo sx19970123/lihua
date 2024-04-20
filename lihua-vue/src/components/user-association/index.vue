@@ -11,7 +11,7 @@
             <template #icon>
               <PlusOutlined />
             </template>
-            添 加
+            绑 定
           </a-button>
         </a-flex>
       </template>

@@ -257,7 +257,7 @@
 
 // 列表查询相关
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {deleteByIds, findById, findList, save} from "@/api/system/menu/menu.ts";
+import {deleteByIds, findById, findList, menuTreeOption, save} from "@/api/system/menu/menu.ts";
 import {reactive, ref} from "vue";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
@@ -341,7 +341,6 @@ const initSearch = () => {
     if (resp.code === 200) {
       // 列表数据
       menuList.value = resp.data
-      initTreeData()
       tableLoad.value = false
     } else {
       message.error(resp.msg)
@@ -352,33 +351,6 @@ const initSearch = () => {
   const resetList = async () => {
     menuQuery.value = {}
     await initList()
-  }
-
-  // 加载菜单树
-  const initTreeData = () => {
-    // 深拷贝数据
-    const menuTree = cloneDeep(menuList.value)
-    // 过滤不需要的数据（只保留菜单和页面）
-    handleMenuTree(menuTree)
-    // 表单树
-    parentMenuTree.value = [{
-      label: '根节点',
-      id: '0',
-      menuType: 'directory',
-      children: menuTree
-    }]
-  }
-
-  // 处理menu树形选择
-  const handleMenuTree = (menuTree: Array<SysMenu>) => {
-    // 过滤最外层
-    menuTree = menuTree.filter(tree => tree.menuType !== 'link' && tree.menuType !== 'perms')
-    menuTree.forEach(item => {
-      if (item.children && item.children.length > 0) {
-        item.children = item.children.filter(tree => tree.menuType !== 'link' && tree.menuType !== 'perms')
-        handleMenuTree(item.children)
-      }
-    })
   }
 
   // 展开折叠
@@ -541,6 +513,38 @@ const initSave = () => {
     }
   }
 
+  // 加载菜单树
+  const initTreeData = async () => {
+    const resp = await menuTreeOption()
+    if (resp.code === 200) {
+      // 深拷贝数据
+      const menuTree = cloneDeep(resp.data)
+      // 过滤不需要的数据（只保留菜单和页面）
+      handleMenuTree(menuTree)
+      // 表单树
+      parentMenuTree.value = [{
+        label: '根节点',
+        id: '0',
+        menuType: 'directory',
+        children: menuTree
+      }]
+    } else {
+      message.error(resp.msg)
+      console.error('menuTreeOption异常',resp.msg)
+    }
+  }
+
+  // 处理menu树形选择
+  const handleMenuTree = (menuTree: Array<SysMenu>) => {
+    // 过滤最外层
+    menuTree = menuTree.filter(tree => tree.menuType !== 'link' && tree.menuType !== 'perms')
+    menuTree.forEach(item => {
+      if (item.children && item.children.length > 0) {
+        item.children = item.children.filter(tree => tree.menuType !== 'link' && tree.menuType !== 'perms')
+        handleMenuTree(item.children)
+      }
+    })
+  }
   // 保存菜单
   const saveMenu = async () => {
     await formRef.value.validate()
@@ -549,6 +553,7 @@ const initSave = () => {
     if (resp.code === 200) {
       message.success(resp.msg)
       await initList()
+      await initTreeData()
       modalActive.open = false
     } else {
       message.error(resp.msg)
@@ -564,17 +569,19 @@ const initSave = () => {
     getMenu,
     addMenu,
     addChildren,
+    initTreeData,
     saveMenu
   }
 }
-const {modalActive,sysMenu,menuRules,formRef,getMenu,addMenu,addChildren,saveMenu} = initSave()
-
+const {modalActive,sysMenu,menuRules,formRef,getMenu,addMenu,addChildren,initTreeData,saveMenu} = initSave()
+initTreeData()
 // 数据删除相关
 const handleDelete = async (id: string) => {
   const resp = await deleteByIds([id])
   if (resp.code === 200) {
     message.success(resp.msg)
     await initList()
+    await initTreeData()
   } else {
     message.error(resp.msg)
   }

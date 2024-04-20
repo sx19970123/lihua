@@ -3,19 +3,28 @@ package com.lihua.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.security.RouterVO;
+import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysMenu;
+import com.lihua.system.entity.SysRole;
+import com.lihua.system.entity.SysUser;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.utils.security.LoginUserContext;
+import com.lihua.utils.tree.LambdaTreeUtil;
 import com.lihua.utils.tree.TreeUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -45,9 +54,13 @@ public class SysMenuServiceImpl implements SysMenuService {
         queryWrapper.lambda().orderByAsc(SysMenu::getSort);
 
         List<SysMenu> sysMenus = sysMenuMapper.selectList(queryWrapper);
-
         // 构建树形结构
-        return TreeUtil.buildTree(sysMenus);
+        return TreeUtil.lambda().buildTree(
+                sysMenus,
+                SysMenu::getId,
+                SysMenu::getParentId,
+                SysMenu::getChildren,
+                SysMenu::setChildren);
     }
 
     @Override
@@ -195,5 +208,4 @@ public class SysMenuServiceImpl implements SysMenuService {
             throw new ServiceException("菜单状态为正常不允许删除");
         }
     }
-
 }

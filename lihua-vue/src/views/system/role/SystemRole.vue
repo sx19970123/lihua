@@ -36,9 +36,9 @@
         </a-form>
       </a-card>
 <!--      列表页面-->
-        <a-flex :gap="8">
+        <a-flex :gap="16">
 <!--          角色主表-->
-          <div style="width: 60%">
+          <div style="width: 55%">
             <a-table
                 :columns="roleColumn"
                 :row-selection="roleRowSelection"
@@ -100,7 +100,7 @@
             </a-table>
           </div>
 <!--          用户子表-->
-          <div style="width: 40%">
+          <div style="width: 45%">
             <user-association code="role" :id="selectedIds[0]"/>
           </div>
         </a-flex>

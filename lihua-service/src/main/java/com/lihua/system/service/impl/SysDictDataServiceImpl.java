@@ -1,5 +1,6 @@
 package com.lihua.system.service.impl;
 
+import cn.hutool.core.lang.func.Func1;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.cache.RedisCache;
@@ -11,6 +12,7 @@ import com.lihua.system.model.SysDictDataDTO;
 import com.lihua.system.service.SysDictDataService;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.security.LoginUserContext;
+import com.lihua.utils.tree.LambdaTreeUtil;
 import com.lihua.utils.tree.TreeUtil;
 import jakarta.annotation.Resource;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -76,7 +78,6 @@ public class SysDictDataServiceImpl implements SysDictDataService {
             }
 
         }
-
         return TreeUtil.buildTree(dictData);
     }
 
