@@ -10,7 +10,7 @@
      <a-table :pagination="false" :columns="deptColumn" :data-source="deptList">
        <template #title>
          <a-flex :gap="8">
-           <a-button type="primary" @click="handleModelStatus('新增部门')">
+           <a-button type="primary" @click="addDept">
              <template #icon>
                <PlusOutlined />
              </template>
@@ -66,18 +66,13 @@
      </a-table>
    </a-flex>
     <!--模态框-->
-   <a-modal v-model:open="modalActive.open">
+   <a-modal v-model:open="modalActive.open" @ok="saveDept" ref="formRef">
      <template #title>
        <div style="margin-bottom: 24px">
          <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
        </div>
      </template>
       <a-form :colon="false" :model="sysDept" :label-col="{ span: 4 }" :rules="deptRoles">
-        <a-form-item label="部门类型">
-          <a-radio-group v-model:value="sysDept.type">
-            <a-radio-button v-for="item in sys_dept_type" :value="item.value">{{item.label}}</a-radio-button>
-          </a-radio-group>
-        </a-form-item>
         <a-form-item label="上级部门" :wrapper-col="{span: 16}">
           <a-tree-select :tree-data="parentDeptList"
                          :fieldNames="{children:'children', label:'name',value: 'id'}"
@@ -139,7 +134,7 @@
 <script setup lang="ts">
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findById, findList} from "@/api/system/dept/dept.ts";
+import {deptOption, findById, findList, save} from "@/api/system/dept/dept.ts";
 import {reactive, ref} from "vue";
 import {message} from "ant-design-vue";
 import {initDict} from "@/utils/dict.ts";
@@ -167,12 +162,6 @@ const initSearch = () => {
       align: 'right'
     },
     {
-      title: '类型',
-      key: 'type',
-      dataIndex: 'type',
-      align: 'center'
-    },
-    {
       title: '状态',
       key: 'status',
       dataIndex: 'status',
@@ -197,8 +186,6 @@ const initSearch = () => {
     const resp = await findList(deptQuery.value);
     if (resp.code === 200) {
       deptList.value = resp.data
-      // 加载上级部门树
-      initTreeData()
     } else {
       message.error(resp.msg);
     }
@@ -207,10 +194,11 @@ const initSearch = () => {
 
   return {
     deptColumn,
-    deptList
+    deptList,
+    initList
   }
 }
-const {deptColumn,deptList} = initSearch()
+const {deptColumn,deptList,initList} = initSearch()
 
 // 保存数据
 const initSave = () => {
@@ -235,6 +223,8 @@ const initSave = () => {
       {pattern: /^\d{3,20}$/, message: "请输入正确的传真", trigger: "change"}
     ]
   }
+  // 表单
+  const formRef = ref()
 
   // 模态框状态
   type modalActiveType = {
@@ -246,7 +236,7 @@ const initSave = () => {
   const modalActive = reactive<modalActiveType>({
     open: false,
     saveLoading: false,
-    title: "新增部门"
+    title: ""
   })
 
   // 部门数据
@@ -262,7 +252,6 @@ const initSave = () => {
     } else {
       sysDept.value.sort = 1
     }
-
   }
   // 新增下级
   const addChildren = (dept: SysDept) => {
@@ -312,7 +301,6 @@ const initSave = () => {
   const resetForm = () => {
     sysDept.value = {
       status: '0',
-      type: 'dept',
       parentId: '0'
     }
   }
@@ -320,41 +308,60 @@ const initSave = () => {
 
 
   // 初始化树型结构
-  const initTreeData = () => {
-    const deepDeptList = cloneDeep(deptList.value)
-    handleDeptTree(deepDeptList)
-    parentDeptList.value = [{
-      id: '0',
-      name: '根节点',
-      children: deepDeptList
-    }]
+  const initTreeData = async () => {
+    const resp = await deptOption()
+    if (resp.code === 200) {
+      const deepDeptList = cloneDeep(deptList.value)
+      handleDeptTree(deepDeptList)
+      parentDeptList.value = [{
+        id: '0',
+        name: '根节点',
+        children: deepDeptList
+      }]
+    } else {
+      message.error(resp.msg)
+      console.error("获取单位树失败",resp.msg)
+    }
+
   }
 
   // 处理树
   const handleDeptTree = (deptList: Array<SysDept>) => {
-    deptList = deptList.filter(item => item.type === 'dept')
     deptList.forEach(item => {
       if (item.children && item.children.length > 0) {
-        item.children = item.children?.filter(item => item.type === 'dept')
         handleDeptTree(item.children)
       }
     })
-
   }
 
+  const saveDept = async (dept: SysDept) => {
+    formRef.value.validate()
+    const resp = await save(dept)
+    if (resp.code === 200) {
+      await initList()
+      await initTreeData()
+      message.success(resp.msg)
+    } else {
+      message.error(resp.msg)
+    }
+  }
+  initTreeData()
   return {
     modalActive,
     sysDept,
     parentDeptList,
     deptRoles,
+    formRef,
     selectById,
     addChildren,
     initTreeData,
     handleDeptTree,
+    addDept,
+    saveDept,
     handleModelStatus
   }
 }
-const {modalActive,sysDept,parentDeptList,deptRoles,selectById,addChildren,initTreeData,handleModelStatus} = initSave()
+const {modalActive,sysDept,parentDeptList,deptRoles,formRef,selectById,addChildren,initTreeData,addDept,saveDept,handleModelStatus} = initSave()
 
 // 删除数据
 </script>

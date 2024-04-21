@@ -45,10 +45,6 @@ interface SysDept {
    */
   fax?: string;
   /**
-   * 数据类型：部门/岗位
-   */
-  type?: string;
-  /**
    * 备注
    */
   remark?: string;

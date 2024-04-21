@@ -30,9 +30,8 @@ public class SysDeptServiceImpl implements SysDeptService {
             queryWrapper.lambda().like(SysDept::getCode,sysDept.getCode());
         }
 
-        List<SysDept> sysDepts = sysDeptMapper.selectList(queryWrapper);
-
-        return TreeUtil.buildTree(sysDepts);
+        List<SysDept> sysDeptList = sysDeptMapper.selectList(queryWrapper);
+        return TreeUtil.buildTree(sysDeptList);
     }
 
     @Override
@@ -67,5 +66,10 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public void deleteByIds(List<String> ids) {
         sysDeptMapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    public List<SysDept> deptTreeOption() {
+        return findList(new SysDept());
     }
 }

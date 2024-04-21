@@ -52,7 +52,7 @@ export const deleteByIds = (ids: Array<string>) => {
  */
 export const menuTreeOption = () => {
   return request<Array<SysMenu>>({
-    url: 'system/menu/menuOption',
+    url: 'system/menu/option',
     method: 'get'
   })
 }

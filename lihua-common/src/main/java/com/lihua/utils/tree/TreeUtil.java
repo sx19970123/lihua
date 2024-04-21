@@ -47,7 +47,7 @@ public class TreeUtil {
 
         List<T> respList = new ArrayList<T>();
 
-        // 过滤出 parentKey（pid）不在 ids 集合中的数据，为跟节点
+        // 过滤出 parentKey（pid）不在 ids 集合中的数据，为根节点
         List<String> parentIds = list
                 .stream()
                 .filter(item -> {
@@ -98,9 +98,10 @@ public class TreeUtil {
             if (children != null) {
                 List<T> child = getList(item, propChildrenName);
                 if (child == null) {
-
+                    set(item,propChildrenName,new ArrayList<>());
+                    child = getList(item, propChildrenName);
+                    child.addAll(children);
                 }
-                child.addAll(children);
             }
 
             if (Objects.equals(get(item, propParentKeyName), rootParentValue)) {
@@ -115,7 +116,7 @@ public class TreeUtil {
     /**
      * 通过反射调用 get 方法，返回对象
      */
-    public static <T,K> K get(T item , String prop) {
+    private static <T,K> K get(T item , String prop) {
         Class<?> cls = item.getClass();
         for (Method method : cls.getMethods()) {
             if (method.getName().equals("get" + prop)) {
@@ -139,11 +140,10 @@ public class TreeUtil {
                 Object invoke = null;
                 try {
                     invoke = method.invoke(item);
-                    if (invoke == null) {
-                        set(item,prop,new ArrayList<>());
-                        return (List<K>) method.invoke(item);
+                    if (invoke != null) {
+                        return (List<K>) invoke;
                     }
-                     return  (List<K>) invoke;
+                    return null;
                 } catch (Exception e) {
                     throw new RuntimeException("TreeUtil 通过反射调用get方法发生异常");
                 }

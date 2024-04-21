@@ -46,3 +46,13 @@ export const deleteByIds = (ids: Array<string>) => {
     data: ids
   })
 }
+
+/**
+ * 单位下拉树
+ */
+export const deptOption = () => {
+  return request({
+    url: 'system/dept/option',
+    method: 'get',
+  })
+}

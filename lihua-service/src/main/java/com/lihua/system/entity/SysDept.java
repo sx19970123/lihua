@@ -75,12 +75,6 @@ public class SysDept extends BaseEntity {
     private String fax;
 
     /**
-     * 类型
-     */
-    @NotNull(message = "请选择类型")
-    private String type;
-
-    /**
      * 逻辑删除标志
      */
     private String delFlag;

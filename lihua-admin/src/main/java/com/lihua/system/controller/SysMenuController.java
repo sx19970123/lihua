@@ -104,7 +104,7 @@ public class SysMenuController extends BaseController {
      * 菜单下拉框选项
      * @return
      */
-    @GetMapping("menuOption")
+    @GetMapping("option")
     public String menuTreeOption() {
         return success(sysMenuService.menuTreeOption());
     }

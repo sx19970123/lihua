@@ -35,4 +35,9 @@ public interface SysDeptService {
     void deleteByIds(List<String> ids);
 
 
+    /**
+     * 获取部门树option
+     * @return
+     */
+    List<SysDept> deptTreeOption();
 }

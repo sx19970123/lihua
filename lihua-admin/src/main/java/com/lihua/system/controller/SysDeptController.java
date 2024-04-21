@@ -37,4 +37,13 @@ public class SysDeptController extends BaseController {
         sysDeptService.deleteByIds(ids);
         return success();
     }
+
+    /**
+     * 菜单下拉框选项
+     * @return
+     */
+    @GetMapping("option")
+    public String deptTreeOption() {
+        return success(sysDeptService.deptTreeOption());
+    }
 }
