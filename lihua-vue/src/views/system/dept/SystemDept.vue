@@ -3,11 +3,45 @@
    <a-flex :gap="16" vertical v-hasRole="['ROLE_admin']">
      <!--检索条件-->
      <a-card :style="{border: 'none'}">
-       <a-form :colon="false">
-
+       <a-form :colon="false" :model="deptQuery">
+         <a-space size="small">
+           <a-form-item class="form-item-single-line" label="部门名称" name="name">
+             <a-input placeholder="请输入部门名称" v-model:value="deptQuery.name" allow-clear/>
+           </a-form-item>
+           <a-form-item class="form-item-single-line" label="部门编码" name="code">
+             <a-input placeholder="请输入部门编码" v-model:value="deptQuery.code" allow-clear/>
+           </a-form-item>
+           <a-form-item class="form-item-single-line" label="状态" name="status">
+             <a-select style="width: 120px;" placeholder="请选择" v-model:value="deptQuery.status" allow-clear>
+               <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
+             </a-select>
+           </a-form-item>
+           <a-form-item class="form-item-single-line">
+             <a-button type="primary" @click="initList" :loading="tableLoad">
+               <template #icon>
+                 <SearchOutlined />
+               </template>
+               查 询
+             </a-button>
+           </a-form-item>
+           <a-form-item class="form-item-single-line">
+             <a-button @click="resetList" :loading="tableLoad">
+               <template #icon>
+                 <RedoOutlined />
+               </template>
+               重 置
+             </a-button>
+           </a-form-item>
+         </a-space>
        </a-form>
      </a-card>
-     <a-table :pagination="false" :columns="deptColumn" :data-source="deptList">
+     <a-table :pagination="false"
+              :columns="deptColumn"
+              :data-source="deptList"
+              row-key="id"
+              v-model:expanded-row-keys="expandedRowKeys"
+              :loading="tableLoad"
+     >
        <template #title>
          <a-flex :gap="8">
            <a-button type="primary" @click="addDept">
@@ -16,18 +50,18 @@
              </template>
              新 增
            </a-button>
-           <a-button type="primary">
+           <a-button type="primary" @click="handleExpanded">
              <template #icon>
-               <Unfold v-if="true"/>
+               <Unfold v-if="expandedRowKeys.length === 0"/>
                <PickUp v-else/>
              </template>
-             {{!true ? '展 开' : '折 叠'}}
+             {{!expandedRowKeys.length ? '展 开' : '折 叠'}}
            </a-button>
          </a-flex>
        </template>
        <template #bodyCell="{column,record,text}">
-         <template v-if="column.key === 'type'">
-           <dict-tag :dict-data-value="text" :dict-data-option="sys_dept_type"/>
+         <template v-if="column.key === 'status'">
+           <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
          </template>
          <template v-if="column.key === 'action'">
            <a-button type="link" size="small" @click="selectById(record.id)">
@@ -50,6 +84,7 @@
            <a-popconfirm ok-text="确 定"
                          cancel-text="取 消"
                          placement="bottomRight"
+                         @confirm="handleDelete(record.id)"
            >
              <template #title>
                数据删除后不可恢复，是否删除？
@@ -66,13 +101,13 @@
      </a-table>
    </a-flex>
     <!--模态框-->
-   <a-modal v-model:open="modalActive.open" @ok="saveDept" ref="formRef">
+   <a-modal v-model:open="modalActive.open" @ok="saveDept" :confirm-loading="modalActive.saveLoading">
      <template #title>
        <div style="margin-bottom: 24px">
          <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
        </div>
      </template>
-      <a-form :colon="false" :model="sysDept" :label-col="{ span: 4 }" :rules="deptRoles">
+      <a-form :colon="false" :model="sysDept" :label-col="{ span: 4 }" :rules="deptRoles"  ref="formRef">
         <a-form-item label="上级部门" :wrapper-col="{span: 16}">
           <a-tree-select :tree-data="parentDeptList"
                          :fieldNames="{children:'children', label:'name',value: 'id'}"
@@ -124,7 +159,7 @@
           </a-col>
         </a-row>
         <a-form-item label="备注">
-          <a-textarea type="textarea" v-model="sysDept.remark" placeholder="请输入备注" :maxlength="300" show-count allow-clear/>
+          <a-textarea type="textarea" v-model:value="sysDept.remark" placeholder="请输入备注" :maxlength="300" show-count allow-clear/>
         </a-form-item>
       </a-form>
    </a-modal>
@@ -134,24 +169,25 @@
 <script setup lang="ts">
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deptOption, findById, findList, save} from "@/api/system/dept/dept.ts";
+import {deleteByIds, deptOption, findById, findList, save} from "@/api/system/dept/dept.ts";
 import {reactive, ref} from "vue";
 import {message} from "ant-design-vue";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import {cloneDeep} from "lodash-es";
 import type {Rule} from "ant-design-vue/es/form";
-const {sys_dept_type, sys_status} = initDict("sys_dept_type","sys_status")
+import {flattenTreeData} from "@/utils/tree.ts";
+const {sys_status} = initDict("sys_status")
 const initSearch = () => {
   // 列表信息
   const deptColumn: ColumnsType = [
     {
-      title: '名称',
+      title: '部门名称',
       key: 'name',
       dataIndex: 'name',
     },
     {
-      title: '编码',
+      title: '部门编码',
       key: 'code',
       dataIndex: 'code',
     },
@@ -180,25 +216,58 @@ const initSearch = () => {
     }
   ]
 
+  // 查询条件
   const deptQuery = ref<SysDept>({})
+  // 列表数据
   const deptList = ref<Array<SysDept>>([])
+  // 默认展开行
+  const expandedRowKeys = ref<Array<string>>([])
+  // 列表加载
+  const tableLoad = ref<boolean>(false)
+
+  // 查询列表
   const initList = async () => {
+    tableLoad.value = true
     const resp = await findList(deptQuery.value);
     if (resp.code === 200) {
       deptList.value = resp.data
+      tableLoad.value = false
     } else {
       message.error(resp.msg);
     }
   }
+
+  // 重置列表
+  const resetList = async () => {
+    deptQuery.value = {}
+    await initList()
+  }
+
+  // 展开折叠
+  const handleExpanded = () => {
+    if (expandedRowKeys.value.length == 0) {
+      const data:Array<SysMenu> = ([])
+      flattenTreeData(deptList.value,data)
+      expandedRowKeys.value = data.filter(item => item.id).map(item => item.id as string)
+    } else {
+      expandedRowKeys.value = []
+    }
+  }
+
   initList()
 
   return {
     deptColumn,
+    deptQuery,
     deptList,
-    initList
+    expandedRowKeys,
+    tableLoad,
+    initList,
+    resetList,
+    handleExpanded
   }
 }
-const {deptColumn,deptList,initList} = initSearch()
+const {deptColumn,deptQuery,deptList,expandedRowKeys,tableLoad,initList,resetList,handleExpanded} = initSearch()
 
 // 保存数据
 const initSave = () => {
@@ -238,6 +307,7 @@ const initSave = () => {
     saveLoading: false,
     title: ""
   })
+
 
   // 部门数据
   const sysDept = ref<SysDept>({})
@@ -287,7 +357,7 @@ const initSave = () => {
   }
 
   // 修改模态框状态，打开关闭模态框
-  const handleModelStatus = (title: string) => {
+  const handleModelStatus = (title?: string) => {
     modalActive.open = !modalActive.open
     if (title) {
       modalActive.title = title
@@ -305,13 +375,11 @@ const initSave = () => {
     }
   }
 
-
-
   // 初始化树型结构
   const initTreeData = async () => {
     const resp = await deptOption()
     if (resp.code === 200) {
-      const deepDeptList = cloneDeep(deptList.value)
+      const deepDeptList = cloneDeep(resp.data)
       handleDeptTree(deepDeptList)
       parentDeptList.value = [{
         id: '0',
@@ -322,7 +390,6 @@ const initSave = () => {
       message.error(resp.msg)
       console.error("获取单位树失败",resp.msg)
     }
-
   }
 
   // 处理树
@@ -334,12 +401,17 @@ const initSave = () => {
     })
   }
 
-  const saveDept = async (dept: SysDept) => {
+  const saveDept = async () => {
     formRef.value.validate()
-    const resp = await save(dept)
+    modalActive.saveLoading = true
+    const resp = await save(sysDept.value)
     if (resp.code === 200) {
       await initList()
       await initTreeData()
+      await initTreeData()
+
+      handleModelStatus()
+      modalActive.saveLoading = false
       message.success(resp.msg)
     } else {
       message.error(resp.msg)
@@ -364,6 +436,16 @@ const initSave = () => {
 const {modalActive,sysDept,parentDeptList,deptRoles,formRef,selectById,addChildren,initTreeData,addDept,saveDept,handleModelStatus} = initSave()
 
 // 删除数据
+const handleDelete = async (id: string) => {
+  const resp = await deleteByIds([id]);
+  if (resp.code === 200) {
+    await initList()
+    await initTreeData()
+    message.success(resp.msg)
+  } else {
+    message.error(resp.msg)
+  }
+}
 </script>
 
 <style scoped>

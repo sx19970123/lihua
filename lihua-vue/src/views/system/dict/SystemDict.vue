@@ -373,21 +373,17 @@ const initSave = () => {
 
   // 保存方法
   const saveDictType = async () => {
-    modalActive.saveLoading = true
-    try {
       await formRef.value.validate()
+      modalActive.saveLoading = true
       const resp = await save(dictTypeData)
       if (resp.code === 200) {
-        message.success(resp.msg)
         handleModelStatus()
+        message.success(resp.msg)
+        modalActive.saveLoading = false
         await queryPage()
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      console.error(e)
-    }
-    modalActive.saveLoading = false
   }
 
   const getDictType = async (event: any,id: string) => {
