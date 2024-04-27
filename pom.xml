@@ -16,7 +16,7 @@
 
         <mysql.version>8.2.0</mysql.version>
         <druid.version>1.1.6</druid.version>
-        <mybatis-plus.version>3.5.5</mybatis-plus.version>
+        <mybatis-plus.version>3.5.6</mybatis-plus.version>
         <jwt.version>3.10.3</jwt.version>
         <hutool.version>5.8.25</hutool.version>
     </properties>
@@ -54,7 +54,7 @@
         <!--        mybatis-plus-->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
         <!--        lombok-->
