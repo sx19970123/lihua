@@ -3,22 +3,33 @@ package com.lihua.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.exception.ServiceException;
 import com.lihua.system.entity.SysDept;
+import com.lihua.system.entity.SysPost;
 import com.lihua.system.mapper.SysDeptMapper;
+import com.lihua.system.model.SysDeptVO;
 import com.lihua.system.service.SysDeptService;
+import com.lihua.system.service.SysPostService;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtil;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SysDeptServiceImpl implements SysDeptService {
 
     @Resource
     private SysDeptMapper sysDeptMapper;
+
+    @Resource
+    private SysPostService sysPostService;
+
 
     @Override
     public List<SysDept> findList(SysDept sysDept) {
@@ -36,12 +47,44 @@ public class SysDeptServiceImpl implements SysDeptService {
             queryWrapper.lambda().eq(SysDept::getStatus,sysDept.getStatus());
         }
 
-        List<SysDept> sysDeptList = sysDeptMapper.selectList(queryWrapper);
-        return TreeUtil.buildTree(sysDeptList);
+        return sysDeptMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<SysDeptVO> findDeptPostList(SysDept sysDept) {
+        // 查询 dept 数据
+        List<SysDept> sysDeptList = findList(sysDept);
+
+        if (sysDeptList.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<SysDeptVO> sysDeptVOS = new ArrayList<>();
+
+        // 根据dept id 查询岗位数据
+        List<String> deptIds = sysDeptList.stream().map(SysDept::getId).toList();
+        List<SysPost> postByDeptIdList = sysPostService.findPostByDeptId(deptIds);
+
+        // 部门岗位数据组合
+        Map<String, List<SysPost>> postListGroupByDeptId =
+                postByDeptIdList.stream().collect(Collectors.groupingBy(SysPost::getDeptId));
+
+        sysDeptList.forEach(dept -> {
+            SysDeptVO sysDeptVO = new SysDeptVO();
+            BeanUtils.copyProperties(dept,sysDeptVO);
+            if (postListGroupByDeptId.get(dept.getId()) != null) {
+                sysDeptVO.setSysPostList(postListGroupByDeptId.get(dept.getId()));
+            }
+            sysDeptVOS.add(sysDeptVO);
+        });
+
+        // 构建树返回
+        return TreeUtil.buildTree(sysDeptVOS);
     }
 
     @Override
     public String save(SysDept sysDept) {
+        checkDeptCode(sysDept);
         if (StringUtils.hasText(sysDept.getId())) {
             return updateById(sysDept);
         } else {
@@ -85,7 +128,7 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public List<SysDept> deptTreeOption() {
-        return findList(new SysDept());
+        return TreeUtil.buildTree(findList(new SysDept()));
     }
 
     // 检查状态
@@ -117,6 +160,25 @@ public class SysDeptServiceImpl implements SysDeptService {
         Long count = sysDeptMapper.deptUserCount(ids);
         if (count > 0) {
             throw new ServiceException("存在用户不允许删除");
+        }
+    }
+
+    // 校验dept code唯一性
+    private void checkDeptCode(SysDept sysDept) {
+        QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysDept::getCode,sysDept.getCode());
+        List<SysDept> sysDeptList = sysDeptMapper.selectList(queryWrapper);
+
+        if (sysDeptList.isEmpty()) {
+            return;
+        }
+
+        if (sysDeptList.size() > 1) {
+            throw new ServiceException("单位编码已存在");
+        }
+
+        if (!sysDeptList.get(0).getId().equals(sysDept.getId())) {
+            throw new ServiceException("单位编码已存在");
         }
     }
 }

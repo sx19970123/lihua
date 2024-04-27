@@ -52,4 +52,8 @@ interface SysDept {
    * 子节点
    */
   children?: SysDept[];
+  /**
+   * 部门信息
+   */
+  sysPostList?: SysPost[];
 }

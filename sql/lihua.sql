@@ -11,7 +11,7 @@
  Target Server Version : 80200
  File Encoding         : 65001
 
- Date: 25/04/2024 23:27:06
+ Date: 27/04/2024 23:59:08
 */
 
 SET NAMES utf8mb4;
@@ -46,9 +46,9 @@ CREATE TABLE `sys_dept` (
 -- Records of sys_dept
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '0', '小米科技', 'xiaomi', 1, NULL, NULL, '雷军儿', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('2', '1', '紫米科技', 'zimi', 2, NULL, NULL, '雷军二', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('3', '5', '测试', 'test', 3, NULL, NULL, '雷军三', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '0', '小米科技', 'xiaomi', 1, '0', NULL, '雷军儿', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 10:54:54', NULL);
+INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('2', '1', '紫米科技', 'zimi', 2, '0', NULL, '雷军二', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 12:49:55', NULL);
+INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('3', '5', '测试', 'test', 3, '0', NULL, '雷军三', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 12:44:30', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -222,8 +222,8 @@ INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `route
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1776948212783730690', '031f293f02c84e4d9e27f866e18bc059', '字典保存', NULL, 'perms', '', NULL, '0', '0', 'system:dict:save', NULL, 2, '1', '2024-04-07 20:20:43', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1776948371953373186', '031f293f02c84e4d9e27f866e18bc059', '字典删除', NULL, 'perms', '', NULL, '0', '0', 'system:dict:delete', NULL, 3, '1', '2024-04-07 20:21:21', '1', '2024-04-07 20:22:26', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1776948618620391426', '031f293f02c84e4d9e27f866e18bc059', '字典配置', NULL, 'perms', NULL, NULL, '0', '0', 'system:dict:config', NULL, 4, '1', '2024-04-07 20:22:19', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
-INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1777536058626834433', '1775035631645659138', '角色管理', '角色管理', 'page', '/role', '/system/role/SystemRole.vue', '0', '0', 'page', 'UserSwitchOutlined', 3, '1', '2024-04-09 11:16:36', '1', '2024-04-09 13:39:23', '0', NULL, '0', NULL, NULL, '0', 'inner');
-INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1777536311941824513', '1775035631645659138', '用户管理', '用户管理', 'page', '/user', '/system/user/SystemUser.vue', '0', '0', 'page', 'TeamOutlined', 4, '1', '2024-04-09 11:17:36', '1', '2024-04-09 13:39:30', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1777536058626834433', '1775035631645659138', '角色管理', '角色管理', 'page', '/role', '/system/role/SystemRole.vue', '0', '0', 'page', 'TeamOutlined', 3, '1', '2024-04-09 11:16:36', '1', '2024-04-27 13:26:37', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1777536311941824513', '1775035631645659138', '用户管理', '用户管理', 'page', '/user', '/system/user/SystemUser.vue', '0', '0', 'page', 'UserSwitchOutlined', 4, '1', '2024-04-09 11:17:36', '1', '2024-04-27 13:27:21', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1777536895235293186', '1775035631645659138', '部门管理', '部门管理', 'page', '/dept', '/system/dept/SystemDept.vue', '0', '0', 'page', 'ApartmentOutlined', 5, '1', '2024-04-09 11:19:56', '1', '2024-04-09 13:39:42', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1777537254552928258', '1775035631645659138', '岗位管理', '岗位管理', 'page', '/post', '/system/post/SystemPost.vue', '0', '1', 'page', 'IdcardOutlined', 6, '1', '2024-04-09 11:21:21', '1', '2024-04-17 13:57:31', '1', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1777538040162844673', '0', '日志管理', '日志管理', 'directory', '/log', NULL, '0', '0', 'directory', 'FileSearchOutlined', 3, '1', '2024-04-09 11:24:28', '1', '2024-04-09 11:41:34', '0', NULL, '0', NULL, NULL, '0', 'inner');
@@ -244,6 +244,7 @@ INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `route
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1780427329154502657', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:45:29', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1780858187371954177', '0', '123', '123', 'directory', '/123', NULL, '0', '1', 'directory', NULL, 5, '1', '2024-04-18 15:17:33', '1', '2024-04-18 15:17:54', '1', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1781676435656531969', '0', 'ces', 'ces', 'directory', '/ces', NULL, '0', '1', 'directory', NULL, 5, '1', '2024-04-20 21:28:59', '1', '2024-04-20 21:29:11', '1', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES ('1784084466574819330', '1775035631645659138', '岗位管理', '岗位管理', 'page', '/post', '/system/post/SystemPost.vue', '0', '0', 'page', 'ScheduleOutlined', 6, '1', '2024-04-27 12:57:38', '1', '2024-04-27 13:04:15', '0', NULL, '0', NULL, NULL, '0', 'inner');
 COMMIT;
 
 -- ----------------------------
@@ -253,6 +254,7 @@ DROP TABLE IF EXISTS `sys_post`;
 CREATE TABLE `sys_post` (
   `id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT ' 主键',
   `dept_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '部门主键',
+  `dept_code` varchar(60) DEFAULT NULL COMMENT '部门编码',
   `name` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '名称',
   `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '编码',
   `sort` int DEFAULT NULL COMMENT '排序',
@@ -275,9 +277,9 @@ CREATE TABLE `sys_post` (
 -- Records of sys_post
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_post` (`id`, `dept_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '0', '小米科技', 'xiaomi', 1, NULL, NULL, '雷军儿', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_post` (`id`, `dept_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('2', '1', '紫米科技', 'zimi', 2, NULL, NULL, '雷军二', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_post` (`id`, `dept_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('3', '4', '测试', 'test', 3, NULL, NULL, '雷军三', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '1', NULL, '生产部', 'xiaomi', 10, NULL, NULL, '雷军儿', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('2', '1', NULL, '研发部', 'zimi', 2, NULL, NULL, '雷军二', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('3', '1', NULL, '市场部', 'test', 3, NULL, NULL, '雷军三', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -302,7 +304,7 @@ CREATE TABLE `sys_role` (
 -- Records of sys_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_role` (`id`, `name`, `code`, `status`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '超级管理员', 'ROLE_admin', '0', '0', NULL, NULL, '1', '2024-04-10 22:33:17', NULL);
+INSERT INTO `sys_role` (`id`, `name`, `code`, `status`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '超级管理员', 'ROLE_admin', '0', '0', NULL, NULL, '1', '2024-04-27 12:58:21', NULL);
 INSERT INTO `sys_role` (`id`, `name`, `code`, `status`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1779067819464077314', ' 一般角色', 'ROLE_common', '1', '0', '1', '2024-04-13 16:43:16', '1', '2024-04-14 00:15:56', NULL);
 COMMIT;
 
@@ -340,6 +342,7 @@ INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '177753804016284
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '1777538768721838082');
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '1777539419447132162');
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '1777539832263114753');
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '1784084466574819330');
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1778051355835736065', '031f293f02c84e4d9e27f866e18bc019');
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1778051355835736065', '031f293f02c84e4d9e27f866e18bc059');
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1778051355835736065', '1775035631645659138');

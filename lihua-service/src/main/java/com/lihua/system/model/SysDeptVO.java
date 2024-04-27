@@ -1,0 +1,18 @@
+package com.lihua.system.model;
+
+import com.lihua.system.entity.SysDept;
+import com.lihua.system.entity.SysPost;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.List;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class SysDeptVO extends SysDept {
+
+    /**
+     * 部门信息
+     */
+    private List<SysPost> sysPostList;
+}

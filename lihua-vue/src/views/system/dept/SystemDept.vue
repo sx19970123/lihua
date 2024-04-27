@@ -63,6 +63,11 @@
          <template v-if="column.key === 'status'">
            <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
          </template>
+         <template v-if="column.key === 'post'">
+           <a-typography-link @click="handleSkipRoute(record.id)">
+             {{ record.sysPostList?.map((sysPost:SysPost) => sysPost.name).join("、") }}
+           </a-typography-link>
+         </template>
          <template v-if="column.key === 'action'">
            <a-button type="link" size="small" @click="selectById(record.id)">
              <template #icon>
@@ -176,8 +181,10 @@ import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import {cloneDeep} from "lodash-es";
 import type {Rule} from "ant-design-vue/es/form";
+import {useRouter} from "vue-router";
 import {flattenTreeData} from "@/utils/tree.ts";
 const {sys_status} = initDict("sys_status")
+const router = useRouter()
 const initSearch = () => {
   // 列表信息
   const deptColumn: ColumnsType = [
@@ -195,18 +202,28 @@ const initSearch = () => {
       title: '排序',
       key: 'sort',
       dataIndex: 'sort',
-      align: 'right'
+      align: 'right',
+      width: 100
     },
     {
       title: '状态',
       key: 'status',
       dataIndex: 'status',
-      align: 'center'
+      align: 'center',
+      width: 100
     },
     {
       title: '负责人',
       key: 'manager',
       dataIndex: 'manager',
+      align: 'center',
+      width: 120
+    },
+    {
+      title: '岗位',
+      key: 'post',
+      dataIndex: 'post',
+      ellipsis: true,
     },
     {
       title: '操作',
@@ -445,6 +462,16 @@ const handleDelete = async (id: string) => {
   } else {
     message.error(resp.msg)
   }
+}
+
+// 跳转至岗位页面
+const handleSkipRoute = (id: string) => {
+  router.push({
+    path: "/system/post",
+    query: {
+      deptId: id
+    }
+  })
 }
 </script>
 

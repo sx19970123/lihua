@@ -1,6 +1,7 @@
 package com.lihua.system.service;
 
 import com.lihua.system.entity.SysDept;
+import com.lihua.system.model.SysDeptVO;
 
 import java.util.List;
 
@@ -12,6 +13,14 @@ public interface SysDeptService {
      * @return
      */
     List<SysDept> findList(SysDept sysDept);
+
+
+    /**
+     * 查询带有岗位信息的post列表
+     * @param sysDept
+     * @return
+     */
+    List<SysDeptVO> findDeptPostList(SysDept sysDept);
 
     /**
      * 保存单位

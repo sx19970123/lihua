@@ -18,8 +18,8 @@ public class SysDeptController extends BaseController {
     private SysDeptService sysDeptService;
 
     @PostMapping("list")
-    public String findList(@RequestBody SysDept sysDept) {
-        return success(sysDeptService.findList(sysDept));
+    public String findDeptPostList(@RequestBody SysDept sysDept) {
+        return success(sysDeptService.findDeptPostList(sysDept));
     }
 
     @PostMapping
