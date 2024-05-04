@@ -14,30 +14,28 @@
               <div style="margin: 16px" v-if="showForm">
                 <div class="login-title">
                   <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
+                  <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
                   <a-typography-text v-if="false">没有账户？</a-typography-text>
                   <a-typography-link v-if="false">立即注册
                     <RightOutlined/>
                   </a-typography-link>
                 </div>
                 <a-form :model="loginForm" @finish="handleFinish" :rules="loginRoles">
-                  <a-form-item name="username" :validate-status="validateStatus" hasFeedback>
+                  <a-form-item name="username" hasFeedback>
                     <a-input class="login-form-item"
                              autocomplete="off"
                              v-model:value="loginForm.username"
                              placeholder="用户名"
-                             @change="changeInput"
-
                     >
                       <template #prefix>
                         <UserOutlined style="color: rgba(0, 0, 0, 0.25)"/>
                       </template>
                     </a-input>
                   </a-form-item>
-                  <a-form-item name="password" :validate-status="validateStatus" :help="statusMsg" hasFeedback>
+                  <a-form-item name="password" hasFeedback>
                     <a-input-password class="login-form-item"
                                       v-model:value="loginForm.password"
                                       placeholder="密码"
-                                      @change="changeInput"
                     >
                       <template #prefix>
                         <LockOutlined style="color: rgba(0, 0, 0, 0.25)"/>
@@ -114,9 +112,8 @@ const loginForm = reactive<LoginFormType>({
   username: '',
   password: ''
 })
-const validateStatus = ref<string>()
-const statusMsg = ref<string>()
 const loginLoading = ref<boolean>()
+const errorMessage = ref<string>()
 
 const loginRoles: Record<string, Rule[]> = {
   username: [{required: true, message: '请输入账号', trigger: 'change'}],
@@ -151,8 +148,6 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
       // 路由跳转完成后的后续逻辑可以放在这里
     } else {
       message.error(msg);
-      validateStatus.value = 'error'
-      statusMsg.value = msg
       loginLoading.value = false
     }
   } catch (error) {
@@ -161,10 +156,6 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
     loginLoading.value = false
   }
 };
-const changeInput = () => {
-  validateStatus.value = ''
-  statusMsg.value = ''
-}
 const handleFinish = () => {
   if (enableCaptcha.value) {
     showVerify()
@@ -189,9 +180,15 @@ const showVerify = () => {
 }
 // 是否启用验证码
 const captcha = async () => {
-  const resp = await enable()
-  if (resp.code === 200 && resp.data) {
-    enableCaptcha.value = true
+  try {
+    const resp = await enable()
+    if (resp.code === 200 && resp.data) {
+      enableCaptcha.value = true
+    } else {
+      console.error(resp.msg)
+    }
+  } catch (e) {
+    errorMessage.value = '无法访问服务器，请检查网络连接'
   }
 }
 captcha()

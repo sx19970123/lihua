@@ -1,0 +1,22 @@
+package com.lihua.system.model;
+
+import com.lihua.model.BaseDTO;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class SysPostDTO extends BaseDTO {
+    /**
+     * 岗位名称
+     */
+    private String name;
+    /**
+     * 岗位编码
+     */
+    private String code;
+    /**
+     * 岗位状态
+     */
+    private String status;
+}

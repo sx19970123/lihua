@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lihua.system.mapper.SysPostMapper">
+
+    <select id="findPage" resultType="com.lihua.system.model.SysPostVO">
+        SELECT
+            sys_post.id,
+            dept_id,
+            dept_code,
+            sys_post.name,
+            sys_post.code,
+            sys_post.sort,
+            sys_post.status,
+            sys_post.manager_id,
+            sys_post.manager,
+            sys_post.phone_number,
+            sys_post.email,
+            sys_post.fax,
+            sys_post.remark,
+            sys_dept.NAME AS dept_name
+        FROM
+            sys_post
+        INNER JOIN sys_dept ON sys_dept.id = sys_post.dept_id
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="postUserCount" resultType="java.lang.Long">
+        select count(1) from sys_user_post where post_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

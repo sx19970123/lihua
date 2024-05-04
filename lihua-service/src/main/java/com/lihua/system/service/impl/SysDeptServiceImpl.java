@@ -152,7 +152,13 @@ public class SysDeptServiceImpl implements SysDeptService {
             throw new ServiceException("存在子集不允许删除");
         }
     }
+
+    // 验证是否存在岗位
     private void checkPost(List<String> ids) {
+        Long count = sysPostService.findCountByDeptId(ids);
+        if (count > 0) {
+            throw new ServiceException("存在岗位不允许删除");
+        }
     }
 
     // 验证是否关联了用户

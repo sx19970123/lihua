@@ -11,7 +11,7 @@
            <a-form-item class="form-item-single-line" label="部门编码" name="code">
              <a-input placeholder="请输入部门编码" v-model:value="deptQuery.code" allow-clear/>
            </a-form-item>
-           <a-form-item class="form-item-single-line" label="状态" name="status">
+           <a-form-item class="form-item-single-line" label="部门状态" name="status">
              <a-select style="width: 120px;" placeholder="请选择" v-model:value="deptQuery.status" allow-clear>
                <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
              </a-select>
@@ -136,13 +136,7 @@
         <a-row>
           <a-col :span="12">
             <a-form-item label="负责人" :label-col="{span: 8}">
-              <a-input-search v-model:value="sysDept.manager" placeholder="请输入负责人" allow-clear>
-                <template #enterButton>
-                  <a-button>
-                    <template #icon><TeamOutlined /></template>
-                  </a-button>
-                </template>
-              </a-input-search>
+              <a-input-search v-model:value="sysDept.manager" placeholder="请输入负责人" allow-clear/>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -424,7 +418,6 @@ const initSave = () => {
     const resp = await save(sysDept.value)
     if (resp.code === 200) {
       await initList()
-      await initTreeData()
       await initTreeData()
 
       handleModelStatus()
