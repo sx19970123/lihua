@@ -69,3 +69,22 @@ interface SysPost {
      */
     delFlag?: string;
 }
+
+interface SysDeptVO extends SysPost{
+    /**
+     * 所属部门名称
+     */
+    deptName?: string
+}
+
+interface SysPostDTO {
+    /**
+     * 当前页数
+     */
+    pageNum: number;
+
+    /**
+     * 每页记录数
+     */
+    pageSize: number;
+}

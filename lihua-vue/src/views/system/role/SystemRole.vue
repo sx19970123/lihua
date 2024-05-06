@@ -38,69 +38,67 @@
 <!--      列表页面-->
         <a-flex :gap="16">
 <!--          角色主表-->
-          <div style="width: 55%">
-            <a-table
-                :columns="roleColumn"
-                :row-selection="roleRowSelection"
-                :data-source="roleList"
-                :pagination="false"
-                :loading="tableLoad"
-                :custom-row="handleRowClick"
-                row-key="id"
-                row-class-name="hover-cursor-pointer"
-            >
-              <template #title>
-                <a-flex :gap="8">
-                  <a-button type="primary" @click="handleModelStatus('新增角色')">
-                    <template #icon>
-                      <PlusOutlined />
-                    </template>
-                    新 增
-                  </a-button>
-                </a-flex>
-              </template>
+          <a-table
+              :columns="roleColumn"
+              :row-selection="roleRowSelection"
+              :data-source="roleList"
+              :pagination="false"
+              :loading="tableLoad"
+              :custom-row="handleRowClick"
+              row-key="id"
+              row-class-name="hover-cursor-pointer"
+          >
+            <template #title>
+              <a-flex :gap="8">
+                <a-button type="primary" @click="handleModelStatus('新增角色')">
+                  <template #icon>
+                    <PlusOutlined />
+                  </template>
+                  新 增
+                </a-button>
+              </a-flex>
+            </template>
 
-              <template #bodyCell="{column,record,text}">
-                <!-- 角色状态-->
-                <template v-if="column.key === 'status'">
-                  <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
-                </template>
-                <template v-if="column.key === 'action'">
-                  <a-button type="link" size="small" @click="getRole($event,record.id)">
+            <template #bodyCell="{column,record,text}">
+              <!-- 角色状态-->
+              <template v-if="column.key === 'status'">
+                <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
+              </template>
+              <template v-if="column.key === 'action'">
+                <a-button type="link" size="small" @click="getRole($event,record.id)">
+                  <template #icon>
+                    <EditOutlined />
+                  </template>
+                  编辑
+                </a-button>
+                <a-divider type="vertical"/>
+                <a-popconfirm title="删除后不可恢复，是否删除？"
+                              ok-text="确 定"
+                              cancel-text="取 消"
+                              @confirm="handleDelete(record.id)"
+                >
+                  <a-button type="link" danger size="small" @click="(event: any) => event.stopPropagation()">
                     <template #icon>
-                      <EditOutlined />
+                      <DeleteOutlined />
                     </template>
-                    编辑
+                    删除
                   </a-button>
-                  <a-divider type="vertical"/>
-                  <a-popconfirm title="删除后不可恢复，是否删除？"
-                                ok-text="确 定"
-                                cancel-text="取 消"
-                                @confirm="handleDelete(record.id)"
-                  >
-                    <a-button type="link" danger size="small" @click="(event: any) => event.stopPropagation()">
-                      <template #icon>
-                        <DeleteOutlined />
-                      </template>
-                      删除
-                    </a-button>
-                  </a-popconfirm>
-                </template>
+                </a-popconfirm>
               </template>
-              <template #footer>
-                <a-flex justify="flex-end">
-                  <a-pagination v-model:current="roleQuery.pageNum"
-                                v-model:page-size="roleQuery.pageSize"
-                                :total="roleTotal"
-                                :show-total="(total:number) => `共 ${total} 条`"
-                                @change="queryPage"
-                                />
-                </a-flex>
-              </template>
-            </a-table>
-          </div>
+            </template>
+            <template #footer>
+              <a-flex justify="flex-end">
+                <a-pagination v-model:current="roleQuery.pageNum"
+                              v-model:page-size="roleQuery.pageSize"
+                              :total="roleTotal"
+                              :show-total="(total:number) => `共 ${total} 条`"
+                              @change="queryPage"
+                              />
+              </a-flex>
+            </template>
+          </a-table>
 <!--          用户子表-->
-          <div style="width: 45%">
+          <div style="width: 45%" v-if="false">
             <user-association code="role" :id="selectedIds[0]"/>
           </div>
         </a-flex>

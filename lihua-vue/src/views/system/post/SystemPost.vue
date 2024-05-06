@@ -1,58 +1,51 @@
 <template>
   <div>
-    <a-flex :gap="16" v-hasRole="['ROLE_admin']">
-<!--      部门树-->
-      <div style="width: 20%">
-        <a-card>
-          <a-space size="small" direction="vertical">
-            <a-input-search placeholder="请输入部门名称"/>
-            <a-tree :tree-data="deptTree"
-                    :fieldNames="{children:'children', title:'name',key: 'id'}"/>
+    <a-flex :gap="16" vertical>
+      <!--        检索条件-->
+      <a-card :style="{border: 'none'}">
+        <a-form :colon="false">
+          <a-space size="small">
+            <a-form-item label="所属部门" class="form-item-single-line">
+              <a-tree-select :tree-data="deptTree"
+                          :fieldNames="{children:'children', label:'name', value: 'id' }"
+                          style="width: 196px"
+                          placeholder="请选择部门"
+                          allow-clear/>
+            </a-form-item>
+            <a-form-item label="岗位名称" class="form-item-single-line">
+              <a-input placeholder="请输入岗位名称" allow-clear/>
+            </a-form-item>
+            <a-form-item label="岗位编码" class="form-item-single-line">
+              <a-input placeholder="请输入岗位编码" allow-clear/>
+            </a-form-item>
+            <a-form-item label="岗位状态" class="form-item-single-line">
+              <a-select placeholder="请选择" allow-clear>
+                <a-select-option :value="item.value" v-for="item in sys_status">{{item.label}}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item class="form-item-single-line">
+              <a-button type="primary">
+                <template #icon>
+                  <SearchOutlined />
+                </template>
+                查 询
+              </a-button>
+            </a-form-item>
+            <a-form-item class="form-item-single-line">
+              <a-button>
+                <template #icon>
+                  <RedoOutlined />
+                </template>
+                重 置
+              </a-button>
+            </a-form-item>
           </a-space>
-        </a-card>
-      </div>
-      <div style="width: 80%">
-        <a-flex :gap="16" vertical>
-          <!--        检索条件-->
-          <a-card :style="{border: 'none'}">
-            <a-form :colon="false">
-              <a-space size="small">
-                <a-form-item label="岗位名称" class="form-item-single-line">
-                  <a-input placeholder="请输入岗位名称"/>
-                </a-form-item>
-                <a-form-item label="岗位编码" class="form-item-single-line">
-                  <a-input placeholder="请输入岗位编码"/>
-                </a-form-item>
-                <a-form-item label="岗位状态" class="form-item-single-line">
-                  <a-select placeholder="请选择">
+        </a-form>
+      </a-card>
+      <!--        列表-->
+      <a-table :columns="postColumn" :data-source="postList">
 
-                  </a-select>
-                </a-form-item>
-                <a-form-item class="form-item-single-line">
-                  <a-button type="primary">
-                    <template #icon>
-                      <SearchOutlined />
-                    </template>
-                    查 询
-                  </a-button>
-                </a-form-item>
-                <a-form-item class="form-item-single-line">
-                  <a-button>
-                    <template #icon>
-                      <RedoOutlined />
-                    </template>
-                    重 置
-                  </a-button>
-                </a-form-item>
-              </a-space>
-            </a-form>
-          </a-card>
-          <!--        树型结构-->
-          <a-table :columns="postColumn">
-
-          </a-table>
-        </a-flex>
-      </div>
+      </a-table>
     </a-flex>
   </div>
 </template>
@@ -62,6 +55,11 @@
 import {deptOption} from "@/api/system/dept/dept.ts";
 import {ref} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
+import {initDict} from "@/utils/dict.ts";
+import {findPage} from "@/api/system/post/post.ts";
+
+const {sys_status} = initDict("sys_status")
+
 
 // 初始化部门树
 const initDept = () => {
@@ -116,8 +114,8 @@ const initSearch = () => {
     },
     {
       title: '所属部门',
-      key: 'dept',
-      dataIndex: 'dept',
+      key: 'deptName',
+      dataIndex: 'deptName',
       ellipsis: true,
     },
     {
@@ -128,11 +126,28 @@ const initSearch = () => {
     }
   ]
 
+  const postQuery = ref<SysPostDTO>({
+    pageNum: 0,
+    pageSize: 10,
+  })
+  const total = ref<number>()
+  const postList = ref<Array<SysPost>>()
+
+  const initList = async () => {
+    const resp = await findPage(postQuery.value)
+    if (resp.code === 200) {
+      postList.value = resp.data.records
+      total.value = resp.data.total
+    }
+  }
+  initList()
   return {
-    postColumn
+    postColumn,
+    postList,
+    total
   }
 }
-const { postColumn } = initSearch()
+const { postColumn,postList,total } = initSearch()
 
 
 // 保存岗位
