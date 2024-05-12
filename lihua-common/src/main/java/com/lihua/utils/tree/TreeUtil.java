@@ -93,7 +93,8 @@ public class TreeUtil {
         list.forEach(item -> map.computeIfAbsent(get(item,propParentKeyName), k -> new ArrayList<>()).add(item));
 
         // 构建树形结构
-        for (T item : list) {
+        // 对集合使用 removeIf ，当符合条件节点使用完毕后从当前删除。这样同一集合中多棵树中，需要递归的次数会越来越少
+        list.removeIf(item -> {
             List<T> children = map.get(get(item, propKeyName));
             if (children != null) {
                 List<T> child = getList(item, propChildrenName);
@@ -104,10 +105,14 @@ public class TreeUtil {
                 }
             }
 
+            // 返回true 即删除集合中item 元素
             if (Objects.equals(get(item, propParentKeyName), rootParentValue)) {
                 treeList.add(item);
+                return true;
+            } else {
+                return false;
             }
-        }
+        });
 
         return treeList;
     }

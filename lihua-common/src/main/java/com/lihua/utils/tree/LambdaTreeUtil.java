@@ -24,7 +24,10 @@ public class LambdaTreeUtil{
         List<T> respTreeList = new ArrayList<>();
         // 获取全部根节点id
         List<String> parentKeyList = getParentKeyList(originCollection, getKeyMethod, getParentKeyMethod);
-        parentKeyList.forEach(parentKey -> respTreeList.addAll(build(originCollection,getKeyMethod,getParentKeyMethod,getChildrenMethod,setChildrenMethod,parentKey)));
+        parentKeyList.forEach(parentKey -> {
+            respTreeList.addAll(build(originCollection,getKeyMethod,getParentKeyMethod,getChildrenMethod,setChildrenMethod,parentKey));
+            System.out.println(originCollection.size());
+        });
         return respTreeList;
     }
 
@@ -64,7 +67,8 @@ public class LambdaTreeUtil{
         originCollection.forEach(item -> map.computeIfAbsent(getParentKeyMethod.apply(item), k -> new ArrayList<>()).add(item));
 
         // 构建树形结构
-        for (T item : originCollection) {
+        // 对集合使用 removeIf ，当符合条件节点使用完毕后从当前删除。这样同一集合中多棵树中，需要递归的次数会越来越少
+        originCollection.removeIf(item -> {
             List<T> children = map.get(getKeyMethod.apply(item));
             if (children != null) {
                 List<T> child = getChildrenMethod.apply(item);
@@ -75,10 +79,14 @@ public class LambdaTreeUtil{
                 }
             }
 
+            // 返回true 即删除集合中item 元素
             if (Objects.equals(getParentKeyMethod.apply(item), rootParentValue)) {
                 treeList.add(item);
+                return true;
+            } else {
+                return false;
             }
-        }
+        });
 
         return treeList;
     }
