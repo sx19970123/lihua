@@ -136,7 +136,7 @@
         <a-row>
           <a-col :span="12">
             <a-form-item label="负责人" :label-col="{span: 8}">
-              <a-input-search v-model:value="sysDept.manager" placeholder="请输入负责人" allow-clear/>
+              <a-input v-model:value="sysDept.manager" placeholder="请输入负责人" allow-clear/>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -197,21 +197,18 @@ const initSearch = () => {
       key: 'sort',
       dataIndex: 'sort',
       align: 'right',
-      width: 100
     },
     {
       title: '状态',
       key: 'status',
       dataIndex: 'status',
       align: 'center',
-      width: 100
     },
     {
       title: '负责人',
       key: 'manager',
       dataIndex: 'manager',
       align: 'center',
-      width: 120
     },
     {
       title: '岗位',

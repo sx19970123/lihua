@@ -35,11 +35,6 @@ interface SysPost {
     status?: string;
 
     /**
-     * 岗位负责人主键
-     */
-    managerId?: string;
-
-    /**
      * 岗位负责人姓名
      */
     manager?: string;
@@ -78,6 +73,12 @@ interface SysDeptVO extends SysPost{
 }
 
 interface SysPostDTO {
+
+    /**
+     * 所属部门id
+     */
+    deptId?: string | null;
+
     /**
      * 当前页数
      */

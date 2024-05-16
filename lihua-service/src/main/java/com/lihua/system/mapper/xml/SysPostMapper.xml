@@ -11,7 +11,6 @@
             sys_post.code,
             sys_post.sort,
             sys_post.status,
-            sys_post.manager_id,
             sys_post.manager,
             sys_post.phone_number,
             sys_post.email,

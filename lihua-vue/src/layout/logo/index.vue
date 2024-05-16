@@ -6,8 +6,9 @@
           <span>LiHua</span>
         </a-avatar>
       </div>
-        <span v-if="!themeStore.dataTheme && themeStore.siderTheme === 'dark' && themeStore.layoutType !== 'header-sider'" style="color: aliceblue;font-size: 20px">LiHua Pro</span>
-        <a-typography-title v-else class="title" content="LiHua Pro" ellipsis :level="4"/>
+      <a-typography-title class="title" ellipsis :level="4">
+        <span :class="themeStore.layoutType !== 'header-sider' && themeStore.siderTheme === 'dark' ? 'main-name': ''">LiHua Pro</span>
+      </a-typography-title>
     </a-flex>
     <a-flex align="center" justify="center" v-else>
       <div>
@@ -34,5 +35,8 @@ const themeStore = useThemeStore()
     margin: 0;
     overflow: hidden;
   }
+}
+.main-name {
+  color: rgba(255, 255, 255, 0.85);
 }
 </style>

@@ -24,11 +24,6 @@ interface SysDept {
    */
   sort?: number;
   /**
-   * 负责人id
-   */
-  managerId?: string;
-
-  /**
    * 负责人
    */
   manager?: string;

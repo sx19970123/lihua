@@ -48,11 +48,6 @@ public class SysPost extends BaseEntity {
     private String status;
 
     /**
-     * 岗位负责人主键
-     */
-    private String managerId;
-
-    /**
      * 岗位负责人姓名
      */
     private String manager;

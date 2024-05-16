@@ -64,6 +64,9 @@
               <template v-if="column.key === 'status'">
                 <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
               </template>
+              <template v-if="column.key === 'createTime'">
+                {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
+              </template>
               <template v-if="column.key === 'action'">
                 <a-button type="link" size="small" @click="getRole($event,record.id)">
                   <template #icon>
@@ -172,6 +175,7 @@ import {menuTreeOption} from "@/api/system/menu/menu.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTreeData} from "@/utils/tree.ts";
 import {message} from "ant-design-vue";
+import dayjs from "dayjs";
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
 // 列表查询相关
 const initSearch = () => {
@@ -214,7 +218,12 @@ const initSearch = () => {
       align: 'center',
       ellipsis: true,
       key: 'status',
-      width: 100
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      align: 'center',
+      key: 'createTime',
     },
     {
       title: '操作',

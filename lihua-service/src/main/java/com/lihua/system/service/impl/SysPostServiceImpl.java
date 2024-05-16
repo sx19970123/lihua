@@ -42,6 +42,8 @@ public class SysPostServiceImpl implements SysPostService {
             queryWrapper.like("sys_post.status",dto.getStatus());
         }
 
+        queryWrapper.lambda().orderByAsc(SysPost::getSort);
+
         sysPostMapper.findPage(iPage,queryWrapper);
 
         return iPage;

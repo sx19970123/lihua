@@ -6,11 +6,14 @@
         <a-form :colon="false">
           <a-space size="small">
             <a-form-item label="所属部门" class="form-item-single-line">
-              <a-tree-select :tree-data="deptTree"
-                          :fieldNames="{children:'children', label:'name', value: 'id' }"
-                          style="width: 196px"
-                          placeholder="请选择部门"
-                          allow-clear/>
+              <a-tree-select
+                  :tree-data="deptTree"
+                  :fieldNames="{children:'children', label:'name', value: 'id' }"
+
+                  placeholder="请选择部门"
+                  allow-clear
+                  v-model:value="postQuery.deptId"
+              />
             </a-form-item>
             <a-form-item label="岗位名称" class="form-item-single-line">
               <a-input placeholder="请输入岗位名称" allow-clear/>
@@ -43,8 +46,47 @@
         </a-form>
       </a-card>
       <!--        列表-->
-      <a-table :columns="postColumn" :data-source="postList">
+      <a-table :columns="postColumn" :data-source="postList" :pagination="false">
+        <template #title>
+          <a-flex :gap="8">
+            <a-button type="primary">
+              <template #icon>
+                <PlusOutlined />
+              </template>
+              新 增
+            </a-button>
+          </a-flex>
+        </template>
 
+        <template #bodyCell="{column,record,text}">
+          <template v-if="column.key === 'status'">
+            <dict-tag  :dict-data-option="sys_status" :dict-data-value="text"/>
+          </template>
+
+          <template v-if="column.key === 'action'">
+            <a-button type="link" size="small">
+              <template #icon>
+                <EditOutlined />
+              </template>
+              编辑
+            </a-button>
+            <a-divider type="vertical"/>
+            <a-popconfirm ok-text="确 定"
+                          cancel-text="取 消"
+                          placement="bottomRight"
+            >
+              <template #title>
+                数据删除后不可恢复，是否删除？
+              </template>
+              <a-button type="link" danger size="small">
+                <template #icon>
+                  <DeleteOutlined />
+                </template>
+                删除
+              </a-button>
+            </a-popconfirm>
+          </template>
+        </template>
       </a-table>
     </a-flex>
   </div>
@@ -53,12 +95,20 @@
 <script setup lang="ts">
 
 import {deptOption} from "@/api/system/dept/dept.ts";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {initDict} from "@/utils/dict.ts";
 import {findPage} from "@/api/system/post/post.ts";
-
+import {useRoute} from "vue-router";
+import DictTag from "@/components/dict-tag/index.vue";
 const {sys_status} = initDict("sys_status")
+const route = useRoute();
+
+// 监听传入deptId变化进行部门赋值
+watch(() => route.query.deptId, (value) => {
+  postQuery.value.deptId = value as string | undefined;
+  initList()
+})
 
 
 // 初始化部门树
@@ -96,21 +146,18 @@ const initSearch = () => {
       key: 'sort',
       dataIndex: 'sort',
       align: 'right',
-      width: 100
     },
     {
       title: '状态',
       key: 'status',
       dataIndex: 'status',
       align: 'center',
-      width: 100
     },
     {
       title: '负责人',
       key: 'manager',
       dataIndex: 'manager',
       align: 'center',
-      width: 120
     },
     {
       title: '所属部门',
@@ -127,6 +174,7 @@ const initSearch = () => {
   ]
 
   const postQuery = ref<SysPostDTO>({
+    deptId: route.query.deptId as string | undefined,
     pageNum: 0,
     pageSize: 10,
   })
@@ -144,10 +192,12 @@ const initSearch = () => {
   return {
     postColumn,
     postList,
+    postQuery,
+    initList,
     total
   }
 }
-const { postColumn,postList,total } = initSearch()
+const { postColumn,postList,postQuery,initList,total } = initSearch()
 
 
 // 保存岗位
