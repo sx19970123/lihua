@@ -50,11 +50,6 @@ public class SysDept extends BaseEntity {
     private Integer sort;
 
     /**
-     * 负责人id
-     */
-    private String managerId;
-
-    /**
      * 负责人
      */
     private String manager;
