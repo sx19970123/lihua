@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : root
+ Source Server         : 127.0.0.1
  Source Server Type    : MySQL
- Source Server Version : 80200
+ Source Server Version : 80200 (8.2.0)
  Source Host           : localhost:3306
  Source Schema         : lihua
 
  Target Server Type    : MySQL
- Target Server Version : 80200
+ Target Server Version : 80200 (8.2.0)
  File Encoding         : 65001
 
- Date: 27/04/2024 23:59:08
+ Date: 16/05/2024 21:54:52
 */
 
 SET NAMES utf8mb4;
@@ -28,7 +28,6 @@ CREATE TABLE `sys_dept` (
   `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '编码',
   `sort` int DEFAULT NULL COMMENT '排序',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '状态',
-  `manager_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '负责人id',
   `manager` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '负责人',
   `phone_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '联系电话',
   `email` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '邮箱',
@@ -46,9 +45,9 @@ CREATE TABLE `sys_dept` (
 -- Records of sys_dept
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '0', '小米科技', 'xiaomi', 1, '0', NULL, '雷军儿', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 10:54:54', NULL);
-INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('2', '1', '紫米科技', 'zimi', 2, '0', NULL, '雷军二', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 12:49:55', NULL);
-INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('3', '5', '测试', 'test', 3, '0', NULL, '雷军三', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 12:44:30', NULL);
+INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '0', '小米科技', 'xiaomi', 1, '0', '雷军儿', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 10:54:54', NULL);
+INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('2', '1', '紫米科技', 'zimi', 2, '0', '雷军二', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 12:49:55', NULL);
+INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('3', '5', '测试', 'test', 3, '0', '雷军三', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 12:44:30', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -259,7 +258,6 @@ CREATE TABLE `sys_post` (
   `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '编码',
   `sort` int DEFAULT NULL COMMENT '排序',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '状态',
-  `manager_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '负责人id',
   `manager` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '负责人',
   `phone_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '联系电话',
   `email` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '邮箱',
@@ -277,9 +275,9 @@ CREATE TABLE `sys_post` (
 -- Records of sys_post
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '1', NULL, '生产部', 'xiaomi', 10, NULL, NULL, '雷军儿', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('2', '1', NULL, '研发部', 'zimi', 2, NULL, NULL, '雷军二', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager_id`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('3', '1', NULL, '市场部', 'test', 3, NULL, NULL, '雷军三', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '1', NULL, '生产部', 'xiaomi', 10, '0', '雷军儿', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('2', '1', NULL, '研发部', 'zimi', 2, '0', '雷军二', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('3', '1', NULL, '市场部', 'test', 3, '0', '雷军三', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -304,7 +302,7 @@ CREATE TABLE `sys_role` (
 -- Records of sys_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_role` (`id`, `name`, `code`, `status`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '超级管理员', 'ROLE_admin', '0', '0', NULL, NULL, '1', '2024-04-27 12:58:21', NULL);
+INSERT INTO `sys_role` (`id`, `name`, `code`, `status`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '超级管理员', 'ROLE_admin', '0', '0', NULL, '2024-05-16 21:32:55', '1', '2024-05-12 15:17:12', NULL);
 INSERT INTO `sys_role` (`id`, `name`, `code`, `status`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1779067819464077314', ' 一般角色', 'ROLE_common', '1', '0', '1', '2024-04-13 16:43:16', '1', '2024-04-14 00:15:56', NULL);
 COMMIT;
 
@@ -325,9 +323,6 @@ BEGIN;
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '031f293f02c84e4d9e27f866e18bc019');
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '031f293f02c84e4d9e27f866e18bc059');
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '1775035631645659138');
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '1775365169634258945');
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '1775365569678585857');
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '1776075821136220161');
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '1776946902768373762');
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '1776947169823903746');
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES ('1', '1776947236303622146');
@@ -387,7 +382,7 @@ CREATE TABLE `sys_user` (
 -- Records of sys_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `login_ip`, `login_time`, `email`, `phone_number`) VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"url\":\"\",\"value\":\"PixelCat\",\"type\":\"icon\",\"backgroundColor\":\"rgb(250, 173, 20)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"showViewTabs\":true,\"dataTheme\":false,\"colorPrimary\":\"rgb(114, 46, 209)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"breathe\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(114, 46, 209)\"}}}', '0', NULL, NULL, '1', '2024-04-18 15:49:05', NULL, NULL, '12321311@qq.com', '15523647831');
+INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `login_ip`, `login_time`, `email`, `phone_number`) VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"url\":\"\",\"value\":\"PixelCat\",\"type\":\"icon\",\"backgroundColor\":\"rgb(250, 173, 20)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"showViewTabs\":true,\"dataTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderWith\":80,\"originSiderWith\":200,\"routeTransition\":\"fade\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(22, 119, 255)\"}}}', '0', NULL, NULL, '1', '2024-05-16 21:52:44', NULL, NULL, '12321311@qq.com', '15523647831');
 COMMIT;
 
 -- ----------------------------

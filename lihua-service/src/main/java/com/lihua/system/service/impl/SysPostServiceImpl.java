@@ -29,20 +29,26 @@ public class SysPostServiceImpl implements SysPostService {
 
         QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
 
-        // 部门名称
+        // 岗位名称
         if (StringUtils.hasText(dto.getName())) {
             queryWrapper.like("sys_post.name",dto.getName());
         }
-        // 部门编码
+        // 岗位编码
         if (StringUtils.hasText(dto.getCode())) {
             queryWrapper.like("sys_post.code",dto.getCode());
         }
-        // 部门状态
+        // 岗位状态
         if (StringUtils.hasText(dto.getStatus())) {
             queryWrapper.like("sys_post.status",dto.getStatus());
         }
-
-        queryWrapper.lambda().orderByAsc(SysPost::getSort);
+        // 所属单位
+        if (StringUtils.hasText(dto.getDeptId())) {
+            queryWrapper.like("sys_post.dept_id",dto.getDeptId());
+        }
+        queryWrapper.eq("sys_post.del_flag", "0");
+        queryWrapper
+                .lambda()
+                .orderByAsc(SysPost::getSort);
 
         sysPostMapper.findPage(iPage,queryWrapper);
 
@@ -56,7 +62,8 @@ public class SysPostServiceImpl implements SysPostService {
 
     @Override
     public String save(SysPost sysPost) {
-        if (StringUtils.hasText(sysPost.getId())) {
+        checkPostCode(sysPost);
+        if (!StringUtils.hasText(sysPost.getId())) {
             return insert(sysPost);
         }
         return update(sysPost);
@@ -65,7 +72,7 @@ public class SysPostServiceImpl implements SysPostService {
     private String insert(SysPost sysPost) {
         sysPost.setCreateTime(LocalDateTime.now());
         sysPost.setCreateId(LoginUserContext.getUserId());
-        sysPost.setDelFlag("1");
+        sysPost.setDelFlag("0");
         sysPostMapper.insert(sysPost);
         return sysPost.getId();
     }
@@ -118,5 +125,24 @@ public class SysPostServiceImpl implements SysPostService {
         QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().in(SysPost::getDeptId,deptIdList);
         return sysPostMapper.selectCount(queryWrapper);
+    }
+
+    private void checkPostCode(SysPost sysPost) {
+        QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.lambda().eq(SysPost::getCode, sysPost.getCode());
+        List<SysPost> sysPosts = sysPostMapper.selectList(queryWrapper);
+
+        if (sysPosts.isEmpty()) {
+            return;
+        }
+
+        if (sysPosts.size() > 1) {
+            throw new ServiceException("岗位编码已存在");
+        }
+
+        if (!sysPosts.get(0).getId().equals(sysPost.getId())) {
+            throw new ServiceException("岗位编码已存在");
+        }
     }
 }

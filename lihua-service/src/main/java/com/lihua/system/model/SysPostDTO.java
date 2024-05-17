@@ -8,6 +8,10 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SysPostDTO extends BaseDTO {
     /**
+     * 部门id
+     */
+    private String deptId;
+    /**
      * 岗位名称
      */
     private String name;

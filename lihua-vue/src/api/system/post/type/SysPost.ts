@@ -75,6 +75,21 @@ interface SysDeptVO extends SysPost{
 interface SysPostDTO {
 
     /**
+     * 岗位状态
+     */
+    status?: string;
+
+    /**
+     * 岗位名称
+     */
+    name?: string;
+
+    /**
+     * 岗位编码
+     */
+    code?: string;
+
+    /**
      * 所属部门id
      */
     deptId?: string | null;

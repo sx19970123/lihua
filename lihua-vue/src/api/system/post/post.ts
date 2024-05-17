@@ -18,7 +18,7 @@ export const findPage = (data: SysPostDTO) => {
  * @param data
  */
 export const save = (data: SysPost) => {
-    return request({
+    return request<string>({
         url: '/system/post',
         data: data,
         method: 'post',

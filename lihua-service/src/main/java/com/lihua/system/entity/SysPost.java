@@ -73,7 +73,7 @@ public class SysPost extends BaseEntity {
     private String remark;
 
     /**
-     * 删除标识
+     * 逻辑删除标志
      */
     private String delFlag;
 }

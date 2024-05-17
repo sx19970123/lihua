@@ -214,7 +214,7 @@ const initSearch = () => {
       title: '岗位',
       key: 'post',
       dataIndex: 'post',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: '操作',
@@ -410,7 +410,7 @@ const initSave = () => {
   }
 
   const saveDept = async () => {
-    formRef.value.validate()
+    await formRef.value.validate()
     modalActive.saveLoading = true
     const resp = await save(sysDept.value)
     if (resp.code === 200) {
@@ -418,11 +418,11 @@ const initSave = () => {
       await initTreeData()
 
       handleModelStatus()
-      modalActive.saveLoading = false
       message.success(resp.msg)
     } else {
       message.error(resp.msg)
     }
+    modalActive.saveLoading = false
   }
   initTreeData()
   return {

@@ -223,27 +223,23 @@ const initSearch = () => {
     {
       title: '名称',
       dataIndex: 'name',
-      ellipsis: true,
       key: 'name'
     },
     {
       title: '编码',
       dataIndex: 'code',
-      ellipsis: true,
       key: 'code'
     },
     {
       title: '状态',
       dataIndex: 'status',
       align: 'center',
-      ellipsis: true,
       key: 'status',
     },
     {
       title: '类型',
       dataIndex: 'type',
       align: 'center',
-      ellipsis: true,
       key: 'type',
     },
     {
@@ -257,7 +253,6 @@ const initSearch = () => {
       dataIndex: 'createTime',
       align: 'center',
       key: 'createTime',
-      ellipsis: true,
       width: '180px'
     },
     {
