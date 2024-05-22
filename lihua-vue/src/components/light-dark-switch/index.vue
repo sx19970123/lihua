@@ -29,9 +29,14 @@ type TransitionFunction = {
 // 切换主题
 const handleChangeTheme = (checked: boolean, event: PointerEvent) => {
   // 调用Document下的startViewTransition API，执行切换主题操作，通过设置返回值进行动画配置
-  const transition = (document as ViewTransitionDocument).startViewTransition(() => {
-    themeStore.changeDataDark()
-  })
+  let transition
+  try {
+    transition = (document as ViewTransitionDocument).startViewTransition(() => {
+      themeStore.changeDataDark()
+    })
+  } catch (e) {
+    console.error("当前浏览器不兼容 startViewTransition ", e)
+  }
   // 判断 transition 是否存在，不存在表示浏览器不兼容该api，直接修改主题
   if (!transition) {
     themeStore.changeDataDark()
