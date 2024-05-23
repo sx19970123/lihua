@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 系统用户
@@ -57,16 +58,6 @@ public class SysUserVO extends BaseEntity {
     private String theme;
 
     /**
-     * 最后登陆IP地址
-     */
-    private String loginIp;
-
-    /**
-     * 最后登录时间
-     */
-    private LocalDateTime loginTime;
-
-    /**
      * 手机号码
      */
     private String phoneNumber;
@@ -76,4 +67,8 @@ public class SysUserVO extends BaseEntity {
      */
     private String email;
 
+    /**
+     * 所属单位名称集合
+     */
+    private List<String> deptLabelList;
 }

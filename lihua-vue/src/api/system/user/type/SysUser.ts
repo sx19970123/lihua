@@ -8,7 +8,7 @@ interface SysUser {
     /**
      * 用户名
      */
-    username: string;
+    username?: string;
 
     /**
      * 密码
@@ -18,7 +18,7 @@ interface SysUser {
     /**
      * 昵称
      */
-    nickname: string;
+    nickname?: string;
 
     /**
      * 头像
@@ -28,22 +28,17 @@ interface SysUser {
     /**
      * 性别
      */
-    gender: string;
+    gender?: string;
 
     /**
      * 状态
      */
-    status: string;
+    status?: string;
 
     /**
      * 主题
      */
     theme?: string;
-
-    /**
-     * 登陆ip
-     */
-    loginIp?: string;
 
     /**
      * 邮箱
@@ -54,4 +49,28 @@ interface SysUser {
      * 手机号码
      */
     phoneNumber?: string;
+}
+
+interface SysUserVO extends SysUser{
+    deptList?: string[]
+}
+
+interface SysUserDTO extends SysUser {
+    /**
+     * 部门id集合
+     */
+    deptIdList: string[]
+    /**
+     * 当前页数
+     */
+    pageNum?: number
+    /**
+     * 每页记录数
+     */
+    pageSize?: number
+
+    /**
+     * 创建时间集合
+     */
+    createTimeList: Date[]
 }

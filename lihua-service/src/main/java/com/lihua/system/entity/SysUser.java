@@ -71,16 +71,6 @@ public class SysUser extends BaseEntity {
     private String delFlag;
 
     /**
-     * 最后登陆ip
-     */
-    private String loginIp;
-
-    /**
-     * 最后登陆时间
-     */
-    private LocalDateTime loginTime;
-
-    /**
      * 邮箱
      */
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",

@@ -11,13 +11,40 @@
             avatar,
             gender,
             theme,
-            login_ip,
-            login_time,
             phone_number,
             email
         FROM
             sys_user
         WHERE
             del_flag = '0' AND status = '0' AND username = #{username}
+    </select>
+
+    <select id="findPage" resultType="com.lihua.model.security.SysUserVO">
+        SELECT
+            id,
+            username,
+            nickname,
+            gender,
+            status,
+            create_time,
+            email,
+            phone_number
+        FROM
+            sys_user
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="findUserDeptByUserIds" resultType="com.lihua.system.model.SysUserDeptDTO">
+        SELECT
+            sys_user_dept.user_id as userId,
+            sys_dept.name as deptName
+        FROM
+            sys_dept
+        LEFT JOIN sys_user_dept ON sys_dept.id = sys_user_dept.dept_id
+        WHERE
+        sys_user_dept.user_id in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
     </select>
 </mapper>

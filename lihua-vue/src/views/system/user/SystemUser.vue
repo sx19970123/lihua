@@ -57,8 +57,39 @@
         </a-form>
       </a-card>
 
-      <a-table :columns="userColumn">
+      <a-table :columns="userColumn" :data-source="userList">
 
+        <template #bodyCell="{column,record,text}">
+          <template v-if="column.key === 'deptLabelList'">
+            {{text.join('、')}}
+          </template>
+          <template v-if="column.key === 'createTime'">
+            {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
+          </template>
+          <template v-if="column.key === 'status'">
+            <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
+          </template>
+          <template v-if="column.key === 'action'">
+            <a-button type="link" size="small">
+              <template #icon>
+                <EditOutlined />
+              </template>
+              编辑
+            </a-button>
+            <a-divider type="vertical"/>
+            <a-popconfirm title="删除后不可恢复，是否删除？"
+                          ok-text="确 定"
+                          cancel-text="取 消"
+            >
+              <a-button type="link" danger size="small" @click="(event: any) => event.stopPropagation()">
+                <template #icon>
+                  <DeleteOutlined />
+                </template>
+                删除
+              </a-button>
+            </a-popconfirm>
+          </template>
+        </template>
       </a-table>
     </a-flex>
   </div>
@@ -68,7 +99,13 @@
 
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
+import {findPage} from "@/api/system/user/user.ts"
+import {initDict} from "@/utils/dict"
+import {ref} from "vue";
+import DictTag from "@/components/dict-tag/index.vue"
+import dayjs from "dayjs";
 
+const {sys_status} = initDict("sys_status")
 const initSearch = () => {
   const userColumn: ColumnsType = [
     {
@@ -83,8 +120,8 @@ const initSearch = () => {
     },
     {
       title: '所属部门',
-      key: 'deptList',
-      dataIndex: 'deptList'
+      key: 'deptLabelList',
+      dataIndex: 'deptLabelList'
     },
     {
       title: '手机号码',
@@ -112,12 +149,39 @@ const initSearch = () => {
     }
   ]
 
+  const userQuery = ref<SysUserDTO>({
+    deptIdList: [],
+    nickname: undefined,
+    username: undefined,
+    phoneNumber: undefined,
+    status: undefined,
+    createTimeList: [],
+    pageNum: 1,
+    pageSize: 10,
+  })
+
+  const userList = ref<SysUserVO[]>([])
+
+  const total = ref<Number>(0)
+
+  const initPage = async () => {
+    const resp = await findPage(userQuery.value)
+    if (resp.code === 200) {
+      userList.value = resp.data.records
+      total.value = resp.data.total
+    }
+  }
+
+  initPage()
+
   return {
-    userColumn
+    userColumn,
+    userList,
+    total
   }
 }
 
-const {userColumn} = initSearch()
+const {userColumn,userList,total } = initSearch()
 //
 </script>
 
