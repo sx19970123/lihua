@@ -8,6 +8,7 @@
             <a-col :span="6">
               <a-form-item label="部门">
                 <a-tree-select placeholder="请选择部门"
+                               multiple
                                :tree-data="option"
                                v-model:value="userQuery.deptIdList"
                                 :fieldNames="{children:'children', label:'name', value: 'id' }"
@@ -116,43 +117,77 @@
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
         </div>
       </template>
+      <a-segmented v-model:value="segmented" :options="segmentedOption" style="margin-bottom: 16px"/>
+      <a-form :label-col="{span: 3}" :colon="false">
+<!--        显示基本信息-->
+        <div v-show="segmented === 'basic'">
+          <a-form-item label="用户名" :wrapper-col="{span: 16}">
+            <a-input/>
+          </a-form-item>
+          <a-form-item label="密码" :wrapper-col="{span: 16}">
+            <a-input-password/>
+          </a-form-item>
+          <a-form-item label="昵称" :wrapper-col="{span: 16}">
+            <a-input/>
+          </a-form-item>
+            <a-form-item label="性别">
+              <a-radio-group>
+                <a-radio :value="item.value" v-for="item in user_gender">{{item.label}}</a-radio>
+              </a-radio-group>
+            </a-form-item>
+            <a-form-item label="状态">
+              <a-radio :value="item.value" v-for="item in sys_status">{{item.label}}</a-radio>
+            </a-form-item>
+          <a-row>
+            <a-col :span="12">
+              <a-form-item label="手机号" :label-col="{span: 6}">
+                <a-input></a-input>
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item label="邮箱" :label-col="{span: 6}">
+                <a-input></a-input>
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-form-item label="备注">
+            <a-textarea></a-textarea>
+          </a-form-item>
+        </div>
+<!--        显示权限信息-->
+        <div v-show="segmented === 'perm'">
+          <a-form-item label="角色">
+            <a-select></a-select>
+          </a-form-item>
+          <a-form-item label="部门">
+            <a-tree-select></a-tree-select>
+          </a-form-item>
 
-      <a-form>
-        <a-row :gutter="16">
-          <a-col :span="12">
+          <a-form-item label="岗位">
+            <select-card
+              :data-source="option"
+              item-key="id"
+              vertical
+            >
+              <template #content="{item, isSelected, color}">
+                <a-flex align="center" justify="space-between">
+                  <a-typography-title :level="5" style="margin: 0">{{item.name}}</a-typography-title>
+                  <a-tag v-if="isSelected" :color="color">默认</a-tag>
+                </a-flex>
 
-          </a-col>
-          <a-col :span="12">
+                <div style="margin-top: 16px">
+                  <a-checkable-tag>销售部</a-checkable-tag>
+                  <a-checkable-tag>研发部</a-checkable-tag>
+                  <a-checkable-tag>产品部</a-checkable-tag>
+                  <a-checkable-tag>市场部</a-checkable-tag>
+                  <a-checkable-tag>售后部</a-checkable-tag>
+                </div>
 
-          </a-col>
-        </a-row>
-        <a-form-item label="用户名">
+              </template>
+            </select-card>
+          </a-form-item>
 
-        </a-form-item>
-        <a-form-item label="昵称">
-
-        </a-form-item>
-        <a-form-item label="性别">
-
-        </a-form-item>
-        <a-form-item label="状态">
-
-        </a-form-item>
-        <a-form-item label="邮箱">
-
-        </a-form-item>
-        <a-form-item label="手机号码">
-
-        </a-form-item>
-        <a-form-item label="角色">
-
-        </a-form-item>
-        <a-form-item label="部门">
-
-        </a-form-item>
-        <a-form-item label="岗位">
-
-        </a-form-item>
+        </div>
       </a-form>
     </a-modal>
   </div>
@@ -164,12 +199,12 @@
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {findPage} from "@/api/system/user/user.ts"
 import {initDict} from "@/utils/dict"
-import {reactive, ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import DictTag from "@/components/dict-tag/index.vue"
+import SelectCard from "@/components/select-card/index.vue"
 import dayjs from "dayjs";
 import {deptOption} from "@/api/system/dept/dept.ts";
-
-const {sys_status} = initDict("sys_status")
+const {sys_status,user_gender} = initDict("sys_status", "user_gender")
 const initSearch = () => {
 
   const option = ref<Array<SysDept>>([])
@@ -177,9 +212,7 @@ const initSearch = () => {
   const initDeptOption = async () => {
     const resp = await deptOption()
     if (resp.code === 200) {
-      resp.data.forEach(dept => {
-        option.value.push(dept)
-      })
+      option.value.push(...resp.data)
     }
   }
 
@@ -266,6 +299,15 @@ const {userColumn,userQuery,userList,option,total } = initSearch()
 // 数据保存相关
 const initSave = () => {
 
+  const segmentedOption = reactive([{
+    value: 'basic',
+    label: '基础信息',
+  }, {
+    value: 'perm',
+    label: '权限信息'
+  }])
+  const segmented = ref<string>(segmentedOption[0].value)
+
   // modal 相关属性定义
   type modalActiveType = {
     open: boolean, // 模态框开关
@@ -288,12 +330,13 @@ const initSave = () => {
 
   return {
     modalActive,
+    segmentedOption,
+    segmented,
     handleModelStatus
   }
 
 }
-
-const {modalActive,handleModelStatus} = initSave()
+const {modalActive,segmented,segmentedOption,handleModelStatus} = initSave()
 </script>
 
 <style scoped>
