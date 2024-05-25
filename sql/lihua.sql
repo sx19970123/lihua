@@ -11,7 +11,7 @@
  Target Server Version : 80200 (8.2.0)
  File Encoding         : 65001
 
- Date: 16/05/2024 21:54:52
+ Date: 25/05/2024 12:54:19
 */
 
 SET NAMES utf8mb4;
@@ -47,7 +47,7 @@ CREATE TABLE `sys_dept` (
 BEGIN;
 INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '0', '小米科技', 'xiaomi', 1, '0', '雷军儿', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 10:54:54', NULL);
 INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('2', '1', '紫米科技', 'zimi', 2, '0', '雷军二', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 12:49:55', NULL);
-INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('3', '5', '测试', 'test', 3, '0', '雷军三', NULL, NULL, NULL, '0', NULL, NULL, '1', '2024-04-27 12:44:30', NULL);
+INSERT INTO `sys_dept` (`id`, `parent_id`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('3', '5', '测试', 'test', 3, '1', '雷军三', NULL, NULL, NULL, '1', NULL, NULL, '1', '2024-05-17 22:45:15', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -112,7 +112,7 @@ INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `valu
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1771163394133315585', '0', 'sys_status', '停用', '1', 2, NULL, '0', '1', '2024-03-22 21:13:54', '1', '2024-03-22 21:18:01', '0', 'error');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1771165766595235841', '0', 'sys_dict_type', '一般字典', '0', 1, NULL, '0', '1', '2024-03-22 21:23:20', '1', '2024-03-24 20:46:11', '0', 'processing');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1771165768948240385', '0', 'sys_dict_type', '树型字典', '1', 2, NULL, '0', '1', '2024-03-22 21:23:21', '1', '2024-03-24 20:46:12', '0', 'success');
-INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1771166154488664065', '0', 'sys_dict_tag_style', '默认', 'default', 1, NULL, '0', '1', '2024-03-22 21:24:53', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1771166154488664065', '0', 'sys_dict_tag_style', '默认', 'default', 1, NULL, '0', '1', '2024-03-22 21:24:53', '1', '2024-05-17 21:05:18', '0', 'default');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1771166156803919874', '0', 'sys_dict_tag_style', '主要', 'processing', 2, NULL, '0', '1', '2024-03-22 21:24:53', NULL, NULL, '0', 'processing');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1771166159454720001', '0', 'sys_dict_tag_style', '成功', 'success', 3, NULL, '0', '1', '2024-03-22 21:24:54', NULL, NULL, '0', 'success');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1771166162894049282', '0', 'sys_dict_tag_style', '警告', 'warning', 4, NULL, '0', '1', '2024-03-22 21:24:55', NULL, NULL, '0', 'warning');
@@ -276,6 +276,24 @@ CREATE TABLE `sys_post` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1', '1', NULL, '生产部', 'xiaomi', 10, '0', '雷军儿', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791469053508648962', '3', 'test', ' 测试的岗位', 'test2', 12, '1', '123', '15510916240', '2651518588@qq.com', '123123123', '1', '1', '2024-05-17 22:01:21', '1', '2024-05-17 22:43:00', '备注');
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791469255602798593', '3', 'test', ' 测试的岗位', 'test232', 12, '1', '123', '15510916240', '2651518588@qq.com', '123123123', '1', '1', '2024-05-17 22:02:09', '1', '2024-05-17 22:45:28', '备注');
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791472989485436930', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:16:59', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791473001669890049', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:17:02', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791473028660236290', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:17:09', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791473070473252866', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:17:19', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791473212983119873', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:17:53', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791473561261346818', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:19:16', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791475948499800065', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:28:45', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791482361842311169', '1', 'xiaomi', ' 一般角色', 'sys_dept_type', 12, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:54:14', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791482385481408514', '1', 'xiaomi', '123', '123', 123, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:54:19', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791482412715024386', '1', 'xiaomi', '123', '1232', 123, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:54:26', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791482437054570498', '1', 'xiaomi', '123', '12321', 123, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:54:32', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791482457401139201', '1', 'xiaomi', '123', '123213', 123, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 22:54:37', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791482493237272578', '1', 'xiaomi', '123', '123123', 1233, '1', NULL, NULL, NULL, NULL, '1', '1', '2024-05-17 22:54:45', '1', '2024-05-17 23:02:08', NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791484414786347009', '1', 'xiaomi', '123', '12323', 123, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 23:02:23', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791484441931882498', '1', 'xiaomi', '1', '111', 11, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 23:02:30', NULL, NULL, NULL);
+INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('1791484467974316034', '1', 'xiaomi', '333', '33', 1, '0', NULL, NULL, NULL, NULL, '0', '1', '2024-05-17 23:02:36', NULL, NULL, NULL);
 INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('2', '1', NULL, '研发部', 'zimi', 2, '0', '雷军二', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `sys_post` (`id`, `dept_id`, `dept_code`, `name`, `code`, `sort`, `status`, `manager`, `phone_number`, `email`, `fax`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `remark`) VALUES ('3', '1', NULL, '市场部', 'test', 3, '0', '雷军三', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL);
 COMMIT;
@@ -371,8 +389,6 @@ CREATE TABLE `sys_user` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '更新人id',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `login_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '最后登陆ip',
-  `login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '邮箱',
   `phone_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '手机号码',
   PRIMARY KEY (`id`) USING BTREE
@@ -382,7 +398,7 @@ CREATE TABLE `sys_user` (
 -- Records of sys_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `login_ip`, `login_time`, `email`, `phone_number`) VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"url\":\"\",\"value\":\"PixelCat\",\"type\":\"icon\",\"backgroundColor\":\"rgb(250, 173, 20)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"showViewTabs\":true,\"dataTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderWith\":80,\"originSiderWith\":200,\"routeTransition\":\"fade\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(22, 119, 255)\"}}}', '0', NULL, NULL, '1', '2024-05-16 21:52:44', NULL, NULL, '12321311@qq.com', '15523647831');
+INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`) VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"url\":\"\",\"value\":\"NintendoSwitch\",\"type\":\"icon\",\"backgroundColor\":\"rgb(245, 34, 45)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"showViewTabs\":true,\"dataTheme\":false,\"colorPrimary\":\"rgb(114, 46, 209)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderWith\":200,\"originSiderWith\":200,\"routeTransition\":\"breathe\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(114, 46, 209)\"}}}', '0', NULL, '2024-05-23 22:05:50', '1', '2024-05-25 11:04:50', '12321311@qq.com', '15523647831');
 COMMIT;
 
 -- ----------------------------
@@ -394,6 +410,7 @@ CREATE TABLE `sys_user_dept` (
   `dept_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '部门id',
   `create_time` datetime DEFAULT NULL COMMENT '绑定时间',
   `create_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '绑定人id',
+  `default` char(1) DEFAULT NULL COMMENT '默认单位',
   PRIMARY KEY (`user_id`,`dept_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='系统用户部门关联表';
 
@@ -401,7 +418,7 @@ CREATE TABLE `sys_user_dept` (
 -- Records of sys_user_dept
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user_dept` (`user_id`, `dept_id`, `create_time`, `create_id`) VALUES ('1', '1', NULL, NULL);
+INSERT INTO `sys_user_dept` (`user_id`, `dept_id`, `create_time`, `create_id`, `default`) VALUES ('1', '1', NULL, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -459,7 +476,7 @@ CREATE TABLE `sys_view_tab` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `sys_view_tab` (`user_id`, `menu_id`, `affix`, `star`) VALUES ('1', '031f293f02c84e4d9e27f866e18bc019', '0', '0');
-INSERT INTO `sys_view_tab` (`user_id`, `menu_id`, `affix`, `star`) VALUES ('1', '031f293f02c84e4d9e27f866e18bc059', '0', '0');
+INSERT INTO `sys_view_tab` (`user_id`, `menu_id`, `affix`, `star`) VALUES ('1', '031f293f02c84e4d9e27f866e18bc059', '0', '1');
 INSERT INTO `sys_view_tab` (`user_id`, `menu_id`, `affix`, `star`) VALUES ('1', '1775365569678585857', '0', '0');
 COMMIT;
 

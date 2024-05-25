@@ -38,7 +38,7 @@ const handleChangeTheme = (checked: boolean, event: PointerEvent) => {
       themeStore.changeDataDark()
     })
   } catch (e) {
-    console.error("当前浏览器不兼容 startViewTransition ", e)
+    console.warn("当前浏览器不兼容 startViewTransition 动画")
   }
   // 判断 transition 是否存在，不存在表示浏览器不兼容该api，直接修改主题
   if (!transition) {
