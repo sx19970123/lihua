@@ -162,12 +162,14 @@
           <a-form-item label="部门">
             <a-tree-select></a-tree-select>
           </a-form-item>
-
+          <a-button @click="ceshi">ceshi</a-button>
           <a-form-item label="岗位">
             <select-card
               :data-source="option"
+              empty-description="请选择部门"
               item-key="id"
               vertical
+              v-model="test"
             >
               <template #content="{item, isSelected, color}">
                 <a-flex align="center" justify="space-between">
@@ -337,6 +339,14 @@ const initSave = () => {
 
 }
 const {modalActive,segmented,segmentedOption,handleModelStatus} = initSave()
+
+const test = ref<string>('1')
+const ceshi = () => {
+  option.value.length = 1
+}
+watch(() => test.value, () => {
+  console.log('test.value',test.value)
+},{deep: true})
 </script>
 
 <style scoped>
