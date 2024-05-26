@@ -84,4 +84,9 @@ public class SysDept extends BaseEntity {
      */
     @TableField(exist = false)
     private List<SysDept> children;
+
+    @TableField(exist = false)
+    private String value;
+    @TableField(exist = false)
+    private String label;
 }

@@ -1,6 +1,7 @@
 package com.lihua.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lihua.model.security.SysRoleVO;
 import com.lihua.system.entity.SysRole;
 import com.lihua.system.model.SysRoleDTO;
 
@@ -34,4 +35,11 @@ public interface SysRoleService {
      * @param ids
      */
     void deleteByIds(List<String> ids);
+
+    /**
+     * 获取当前用户下的角色信息
+     * @return
+     */
+    List<SysRoleVO> getRoleOption();
+
 }

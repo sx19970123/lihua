@@ -128,7 +128,8 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public List<SysDept> deptTreeOption() {
-        return TreeUtil.buildTree(findList(new SysDept()));
+        List<SysDept> list = findList(new SysDept());
+        return TreeUtil.buildTree(list);
     }
 
     // 检查状态

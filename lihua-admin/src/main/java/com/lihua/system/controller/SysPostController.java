@@ -1,6 +1,7 @@
 package com.lihua.system.controller;
 
 import com.lihua.model.web.BaseController;
+import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysPost;
 import com.lihua.system.model.SysPostDTO;
 import com.lihua.system.service.SysPostService;
@@ -37,12 +38,16 @@ public class SysPostController extends BaseController {
         return success(sysPostService.save(sysPost));
     }
 
-
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
         sysPostService.deleteByIds(ids);
         return success();
+    }
+
+    @PostMapping("option")
+    public String getPostOptionByDeptId(@RequestBody @NotEmpty(message = "部门集合为空") List<String> deptIds) {
+        return success(sysPostService.getPostOptionByDeptId(deptIds));
     }
 
 }

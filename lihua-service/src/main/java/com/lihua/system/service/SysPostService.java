@@ -2,11 +2,13 @@ package com.lihua.system.service;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysPost;
 import com.lihua.system.model.SysPostDTO;
 import com.lihua.system.model.SysPostVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SysPostService {
 
@@ -50,4 +52,11 @@ public interface SysPostService {
      * @return
      */
     Long findCountByDeptId(List<String> deptIdList);
+
+    /**
+     * 根据部门id查询岗位集合
+     * @param deptIds
+     * @return
+     */
+    Map<String, List<SysPost>> getPostOptionByDeptId(List<String> deptIds);
 }

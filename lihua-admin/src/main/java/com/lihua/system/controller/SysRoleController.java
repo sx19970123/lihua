@@ -66,4 +66,13 @@ public class SysRoleController extends BaseController {
         sysRoleService.deleteByIds(ids);
         return success();
     }
+
+    /**
+     * 获取当前用户下的角色列表
+     * @return
+     */
+    @GetMapping("option")
+    public String getRoleOption() {
+        return success(sysRoleService.getRoleOption());
+    }
 }

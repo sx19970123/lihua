@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
+import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysPost;
 import com.lihua.system.mapper.SysPostMapper;
 import com.lihua.system.model.SysPostDTO;
@@ -16,6 +17,8 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SysPostServiceImpl implements SysPostService {
@@ -125,6 +128,18 @@ public class SysPostServiceImpl implements SysPostService {
         QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().in(SysPost::getDeptId,deptIdList);
         return sysPostMapper.selectCount(queryWrapper);
+    }
+
+    @Override
+    public Map<String, List<SysPost>> getPostOptionByDeptId(List<String> deptIds) {
+        QueryWrapper<SysPost> deptQueryWrapper = new QueryWrapper<>();
+        deptQueryWrapper.lambda()
+                .in(SysPost::getDeptId, deptIds)
+                .eq(SysPost::getStatus,"0")
+                .orderByAsc(SysPost::getSort);
+        List<SysPost> sysPosts = sysPostMapper.selectList(deptQueryWrapper);
+
+        return sysPosts.stream().collect(Collectors.groupingBy(SysPost::getDeptId));
     }
 
     private void checkPostCode(SysPost sysPost) {

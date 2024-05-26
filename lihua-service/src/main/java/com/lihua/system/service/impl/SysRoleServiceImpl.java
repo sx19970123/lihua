@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
+import com.lihua.model.security.SysRoleVO;
 import com.lihua.system.entity.SysRole;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.model.SysRoleDTO;
@@ -126,5 +127,10 @@ public class SysRoleServiceImpl implements SysRoleService {
         } else {
             throw new ServiceException("角色已绑定菜单/用户，不允许删除");
         }
+    }
+
+    @Override
+    public List<SysRoleVO> getRoleOption() {
+        return sysRoleMapper.selectSysRoleByUserId(LoginUserContext.getUserId());
     }
 }
