@@ -1,11 +1,10 @@
 <template>
-  <a-flex :gap="props.gap" :vertical="props.vertical">
+  <a-flex :gap="props.gap" :vertical="props.vertical" class="scrollbar" :style="{'max-height': vertical ? props.maxHeight + 'px' : 'none'}">
     <div class="select-card"
          v-if="props.dataSource && props.dataSource.length > 0"
          v-for="(item,index) in props.dataSource"
          @click.stop="handleClickCard(item)"
-         :style="activeCardValueList.includes(item[props.itemKey]) ? bodyStyle : ''">
-
+         :style="item[props.itemKey] && activeCardValueList.includes(item[props.itemKey]) ? bodyStyle : ''">
 <!--      具名插槽 content-->
 <!--      返回参数 dataSource：传入的option-->
 <!--      返回参数 item：option遍历出的元素-->
@@ -43,6 +42,11 @@ const props = defineProps({
   vertical: {
     type: Boolean,
     default: false
+  },
+  // 最大高度 （仅对垂直排列生效）
+  maxHeight: {
+    type: Number,
+    default: 300
   },
   // 是否支持多选
   multiple: {
@@ -125,7 +129,6 @@ const handleVmodel = () => {
     }
     clearActiveCardValueList();
     for (const item of modelValue as Array<any>) {
-      console.log(item)
       activeCardValueList.push(item);
     }
 
@@ -166,6 +169,8 @@ watch(() => props.modelValue,() => {
 watch(() => props.dataSource, () => {
   // modelValue 未选中值时不进行操作
   if (!props.modelValue || props.modelValue === 0) {
+    // 双向绑定值不存在时，清空已选项
+    clearActiveCardValueList()
     return;
   }
   // 双向绑定modelValue
@@ -233,6 +238,7 @@ watch(() => props.dataSource, () => {
   .select-card {
     border-radius: 8px;
     padding: 16px;
+    margin-right: 3px;
   }
   .select-card:hover {
     cursor: pointer;

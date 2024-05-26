@@ -17,3 +17,10 @@ export type PageResponseType<T> = {
     size: number,
     total: number
 }
+
+/**
+ * 接收Map类型返回值
+ */
+export type MapResponseType<T> = {
+    [key: string]: T[];
+}

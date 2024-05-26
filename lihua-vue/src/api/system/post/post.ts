@@ -1,5 +1,5 @@
 import request from "@/utils/request.ts";
-import type {PageResponseType} from "@/api/type.ts";
+import type {MapResponseType, PageResponseType} from "@/api/type.ts";
 
 /**
  * 分页查询
@@ -53,7 +53,7 @@ export const deleteByIds = (ids: Array<String>) => {
  * @param deptIds
  */
 export const getPostOptionByDeptId = (deptIds: string[]) => {
-    return request<Map<String, Array<SysPost>>>({
+    return request<MapResponseType<SysPost>>({
         url: '/system/post/option',
         method: 'post',
         data: deptIds

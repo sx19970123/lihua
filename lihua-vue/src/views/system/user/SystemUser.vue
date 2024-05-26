@@ -10,6 +10,7 @@
                 <a-tree-select
                     placeholder="请选择部门"
                     v-model:value="userQuery.deptIdList"
+                    :show-checked-strategy="SHOW_ALL"
                     multiple
                     :tree-data="sysDeptList"
                     :fieldNames="{children:'children', label:'name', value: 'id' }"
@@ -175,6 +176,7 @@
                 :show-checked-strategy="SHOW_ALL"
                 :fieldNames="{children:'children', label:'name', value: 'id' }"
                 :tree-data="sysDeptList"
+                @change="handleChangeDept"
                 multiple
                 show-search
             >
@@ -185,25 +187,31 @@
               <a-typography-text>默认部门<br/> 岗位</a-typography-text>
             </template>
             <select-card
-              :data-source="sysDeptList"
+              :data-source="sysPostList"
               empty-description="请选择部门"
-              item-key="id"
+              item-key="deptId"
               vertical
             >
               <template #content="{item, isSelected, color}">
                 <a-flex align="center" justify="space-between">
-                  <a-typography-title :level="5" style="margin: 0">{{item.name}}</a-typography-title>
+                  <a-typography-title :level="5" style="margin: 0">{{item.deptName}}</a-typography-title>
                   <a-tag v-if="isSelected" :color="color">默认</a-tag>
                 </a-flex>
 
-                <div style="margin-top: 16px">
-                  <a-checkable-tag>销售部</a-checkable-tag>
-                  <a-checkable-tag>研发部</a-checkable-tag>
-                  <a-checkable-tag>产品部</a-checkable-tag>
-                  <a-checkable-tag>市场部</a-checkable-tag>
-                  <a-checkable-tag>售后部</a-checkable-tag>
+                <div style="margin-top: 16px;">
+                  <div v-if="item.postList && item.postList.length > 0">
+                    <a-checkable-tag v-for="post in item.postList"
+                                     @change="(checked: boolean) => handleSelectPostId(post.id, checked)"
+                                     @click.stop="() => {}"
+                                     :key="post.id"
+                                     v-model:checked="post.checked">
+                      {{post.name}}
+                    </a-checkable-tag>
+                  </div>
+                  <div v-else>
+                    <a-typography-text type="secondary">当前部门下暂无岗位数据</a-typography-text>
+                  </div>
                 </div>
-
               </template>
             </select-card>
           </a-form-item>
@@ -363,8 +371,14 @@ const initFormOptions = () => {
   const sysRoleList = ref<Array<SysRole>>([])
   // 部门信息
   const sysDeptList = ref<Array<SysDept>>([])
+
+  type PostType = {
+    deptName: string,
+    deptId: string,
+    postList: Array<SysPost>,
+  }
   // 岗位信息
-  const sysPostMap = ref<Map<String, Array<SysPost>>>(new Map())
+  const sysPostList = ref<Array<PostType>>([])
 
   // 加载角色信息
   const initRole = async () => {
@@ -381,25 +395,80 @@ const initFormOptions = () => {
     }
   }
   // 根据部门id加载岗位信息
-  const initPostByDeptId = async (deptIds: string[]) => {
+  const initPostByDeptId = async (deptIds: string[], option: Array<{label: string, value: string}>) => {
     const resp = await getPostOptionByDeptId(deptIds)
     if (resp.code === 200) {
-      sysPostMap.value = resp.data
+      sysPostList.value = []
+      const data = resp.data
+      deptIds.forEach(deptId => {
+        const dataForDeptId = data[deptId]
+        // push 单位-岗位数据
+        sysPostList.value.push({
+          deptId: deptId,
+          postList: dataForDeptId ? dataForDeptId : [],
+          deptName: option.filter(item => item.value === deptId)[0].label
+        })
+      })
     }
   }
+
+  // 选择部门
+  const handleChangeDept = async (value: Array<string>, label: Array<string>) => {
+    const option:Array<{
+      value: string,
+      label: string
+    }> = []
+    for (let i = 0; i < value.length; i++) {
+      option.push({
+        value: value[i],
+        label: label[i]
+      })
+    }
+    if (value.length > 0) {
+      await initPostByDeptId(value, option)
+    } else {
+      sysPostList.value = []
+    }
+
+  }
+
+  // 处理选中/取消选中 岗位标签
+  const handleSelectPostId = (tag: string, checked: boolean) => {
+    // 初始化 postIdList 为数组，如果它还没有被初始化
+    if (!sysUserDTO.value.postIdList) {
+      sysUserDTO.value.postIdList = [];
+    }
+
+    // 如果 checked 为 true，则添加 tag，否则删除它
+    if (checked) {
+      // 确保 tag 不会被重复添加
+      if (!sysUserDTO.value.postIdList.includes(tag)) {
+        sysUserDTO.value.postIdList.push(tag);
+      }
+    } else {
+      // 找到 tag 的索引并将其删除
+      const index = sysUserDTO.value.postIdList.indexOf(tag);
+      if (index > -1) {
+        sysUserDTO.value.postIdList.splice(index, 1);
+      }
+    }
+  };
+
   initRole()
   initDept()
   return {
     sysRoleList,
     sysDeptList,
-    sysPostMap,
+    sysPostList,
     initRole,
     initDept,
-    initPostByDeptId
+    initPostByDeptId,
+    handleChangeDept,
+    handleSelectPostId
   }
 }
 
-const {sysRoleList,sysDeptList,sysPostMap} = initFormOptions()
+const {sysRoleList,sysDeptList,sysPostList,handleChangeDept,handleSelectPostId} = initFormOptions()
 </script>
 
 <style scoped>
