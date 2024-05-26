@@ -50,7 +50,7 @@ export const deleteByIds = (ids: Array<string>) => {
 /**
  * 单位下拉树
  */
-export const deptOption = () => {
+export const getDeptOption = () => {
   return request<Array<SysDept>>({
     url: 'system/dept/option',
     method: 'get',

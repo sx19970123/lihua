@@ -35,3 +35,11 @@ export const deleteByIds = (ids: Array<string>) => {
     data: ids
   })
 }
+
+// 获取用户集合
+export const getRoleOption = () => {
+  return request<Array<SysRole>>({
+    url: 'system/role/option',
+    method: 'get'
+  })
+}

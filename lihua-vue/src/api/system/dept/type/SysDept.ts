@@ -51,4 +51,6 @@ interface SysDept {
    * 部门信息
    */
   sysPostList?: SysPost[];
+
+  value?: string
 }

@@ -47,3 +47,15 @@ export const deleteByIds = (ids: Array<String>) => {
         method: 'delete'
     })
 }
+
+/**
+ * 根据部门信息获取岗位数据
+ * @param deptIds
+ */
+export const getPostOptionByDeptId = (deptIds: string[]) => {
+    return request<Map<String, Array<SysPost>>>({
+        url: '/system/post/option',
+        method: 'post',
+        data: deptIds
+    })
+}

@@ -56,14 +56,32 @@ interface SysUserVO extends SysUser{
 }
 
 interface SysUserDTO extends SysUser {
+
     /**
      * 部门id集合
      */
-    deptIdList: string[]
+    deptIdList?: string[]
+
+    /**
+     * 默认的部门id
+     */
+    defaultId?: string
+
+    /**
+     * 角色id集合
+     */
+    roleIdList?: string[]
+
+    /**
+     * 岗位id集合
+     */
+    postIdList?: string[]
+
     /**
      * 当前页数
      */
     pageNum?: number
+
     /**
      * 每页记录数
      */
@@ -72,5 +90,5 @@ interface SysUserDTO extends SysUser {
     /**
      * 创建时间集合
      */
-    createTimeList: Date[]
+    createTimeList?: Date[]
 }

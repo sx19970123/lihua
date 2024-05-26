@@ -168,7 +168,7 @@
 <script setup lang="ts">
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deleteByIds, deptOption, findById, findList, save} from "@/api/system/dept/dept.ts";
+import {deleteByIds, getDeptOption, findById, findList, save} from "@/api/system/dept/dept.ts";
 import {reactive, ref} from "vue";
 import {message} from "ant-design-vue";
 import {initDict} from "@/utils/dict.ts";
@@ -385,7 +385,7 @@ const initSave = () => {
 
   // 初始化树型结构
   const initTreeData = async () => {
-    const resp = await deptOption()
+    const resp = await getDeptOption()
     if (resp.code === 200) {
       const deepDeptList = cloneDeep(resp.data)
       handleDeptTree(deepDeptList)

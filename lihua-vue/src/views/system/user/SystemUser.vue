@@ -7,12 +7,15 @@
           <a-row :span="24" :gutter="16">
             <a-col :span="6">
               <a-form-item label="部门">
-                <a-tree-select placeholder="请选择部门"
-                               multiple
-                               :tree-data="option"
-                               v-model:value="userQuery.deptIdList"
-                                :fieldNames="{children:'children', label:'name', value: 'id' }"
-                               allowClear/>
+                <a-tree-select
+                    placeholder="请选择部门"
+                    v-model:value="userQuery.deptIdList"
+                    multiple
+                    :tree-data="sysDeptList"
+                    :fieldNames="{children:'children', label:'name', value: 'id' }"
+                    tree-node-filter-prop="label"
+                    allowClear
+                />
               </a-form-item>
             </a-col>
             <a-col :span="6">
@@ -118,17 +121,17 @@
         </div>
       </template>
       <a-segmented v-model:value="segmented" :options="segmentedOption" style="margin-bottom: 16px"/>
-      <a-form :label-col="{span: 3}" :colon="false">
+      <a-form :model="sysUserDTO" :label-col="{span: 4}" :colon="false">
 <!--        显示基本信息-->
         <div v-show="segmented === 'basic'">
           <a-form-item label="用户名" :wrapper-col="{span: 16}">
-            <a-input/>
+            <a-input placeholder="请输入用户名"/>
           </a-form-item>
           <a-form-item label="密码" :wrapper-col="{span: 16}">
-            <a-input-password/>
+            <a-input-password placeholder="请输入默认密码"/>
           </a-form-item>
           <a-form-item label="昵称" :wrapper-col="{span: 16}">
-            <a-input/>
+            <a-input placeholder="请输入昵称"/>
           </a-form-item>
             <a-form-item label="性别">
               <a-radio-group>
@@ -140,36 +143,52 @@
             </a-form-item>
           <a-row>
             <a-col :span="12">
-              <a-form-item label="手机号" :label-col="{span: 6}">
-                <a-input></a-input>
+              <a-form-item label="手机号" :label-col="{span: 8}">
+                <a-input  placeholder="请输入手机号码"/>
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="邮箱" :label-col="{span: 6}">
-                <a-input></a-input>
+              <a-form-item label="邮箱" :label-col="{span: 8}">
+                <a-input  placeholder="请输入邮箱"/>
               </a-form-item>
             </a-col>
           </a-row>
           <a-form-item label="备注">
-            <a-textarea></a-textarea>
+            <a-textarea  placeholder="请输入备注"></a-textarea>
           </a-form-item>
         </div>
 <!--        显示权限信息-->
         <div v-show="segmented === 'perm'">
           <a-form-item label="角色">
-            <a-select></a-select>
+            <a-select
+                v-model:value="sysUserDTO.roleIdList"
+                placeholder="请选择用户角色"
+                :options="sysRoleList"
+                mode="multiple"
+                optionFilterProp="name"
+                :fieldNames="{label: 'name', value: 'id'}"/>
           </a-form-item>
           <a-form-item label="部门">
-            <a-tree-select></a-tree-select>
+            <a-tree-select
+                placeholder="请选择部门"
+                v-model:value="sysUserDTO.deptIdList"
+                :show-checked-strategy="SHOW_ALL"
+                :fieldNames="{children:'children', label:'name', value: 'id' }"
+                :tree-data="sysDeptList"
+                multiple
+                show-search
+            >
+            </a-tree-select>
           </a-form-item>
-          <a-button @click="ceshi">ceshi</a-button>
-          <a-form-item label="岗位">
+          <a-form-item>
+            <template #label>
+              <a-typography-text>默认部门<br/> 岗位</a-typography-text>
+            </template>
             <select-card
-              :data-source="option"
+              :data-source="sysDeptList"
               empty-description="请选择部门"
               item-key="id"
               vertical
-              v-model="test"
             >
               <template #content="{item, isSelected, color}">
                 <a-flex align="center" justify="space-between">
@@ -201,23 +220,18 @@
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {findPage} from "@/api/system/user/user.ts"
 import {initDict} from "@/utils/dict"
-import {reactive, ref, watch} from "vue";
+import {reactive, ref} from "vue";
 import DictTag from "@/components/dict-tag/index.vue"
 import SelectCard from "@/components/select-card/index.vue"
 import dayjs from "dayjs";
-import {deptOption} from "@/api/system/dept/dept.ts";
+import {getDeptOption} from "@/api/system/dept/dept.ts";
+import {getRoleOption} from "@/api/system/role/role.ts";
+import {getPostOptionByDeptId} from "@/api/system/post/post.ts";
+import {TreeSelect} from "ant-design-vue";
 const {sys_status,user_gender} = initDict("sys_status", "user_gender")
+const SHOW_ALL = TreeSelect.SHOW_ALL;
+
 const initSearch = () => {
-
-  const option = ref<Array<SysDept>>([])
-  // 初始化单位选项
-  const initDeptOption = async () => {
-    const resp = await deptOption()
-    if (resp.code === 200) {
-      option.value.push(...resp.data)
-    }
-  }
-
   const userColumn: ColumnsType = [
     {
       title: '用户名',
@@ -284,22 +298,22 @@ const initSearch = () => {
   }
 
   initPage()
-  initDeptOption()
-
   return {
     userColumn,
     userQuery,
     userList,
-    option,
     total
   }
 }
 
-const {userColumn,userQuery,userList,option,total } = initSearch()
+const {userColumn,userQuery,userList,total } = initSearch()
 
 
 // 数据保存相关
 const initSave = () => {
+
+  // 定义保存用户信息
+  const sysUserDTO = ref<SysUserDTO>({})
 
   const segmentedOption = reactive([{
     value: 'basic',
@@ -317,12 +331,14 @@ const initSave = () => {
     title: string, // 模态框标题
   }
 
+  // 模态框状态
   const modalActive = reactive<modalActiveType>({
     open: false,
     saveLoading: false,
     title: ''
   })
 
+  // 修改模态框状态等信息
   const handleModelStatus = (title?:string) => {
     modalActive.open = !modalActive.open
     if (title) {
@@ -334,19 +350,56 @@ const initSave = () => {
     modalActive,
     segmentedOption,
     segmented,
+    sysUserDTO,
     handleModelStatus
   }
 
 }
-const {modalActive,segmented,segmentedOption,handleModelStatus} = initSave()
+const {modalActive,segmented,segmentedOption,sysUserDTO,handleModelStatus} = initSave()
 
-const test = ref<string>('1')
-const ceshi = () => {
-  option.value.length = 1
+// 加载表单需要的选项 角色/部门/岗位
+const initFormOptions = () => {
+  // 角色信息
+  const sysRoleList = ref<Array<SysRole>>([])
+  // 部门信息
+  const sysDeptList = ref<Array<SysDept>>([])
+  // 岗位信息
+  const sysPostMap = ref<Map<String, Array<SysPost>>>(new Map())
+
+  // 加载角色信息
+  const initRole = async () => {
+    const resp = await getRoleOption()
+    if (resp.code === 200) {
+      sysRoleList.value = resp.data
+    }
+  }
+  // 加载部门信息
+  const initDept = async () => {
+    const resp = await getDeptOption()
+    if (resp.code === 200) {
+      sysDeptList.value = resp.data
+    }
+  }
+  // 根据部门id加载岗位信息
+  const initPostByDeptId = async (deptIds: string[]) => {
+    const resp = await getPostOptionByDeptId(deptIds)
+    if (resp.code === 200) {
+      sysPostMap.value = resp.data
+    }
+  }
+  initRole()
+  initDept()
+  return {
+    sysRoleList,
+    sysDeptList,
+    sysPostMap,
+    initRole,
+    initDept,
+    initPostByDeptId
+  }
 }
-watch(() => test.value, () => {
-  console.log('test.value',test.value)
-},{deep: true})
+
+const {sysRoleList,sysDeptList,sysPostMap} = initFormOptions()
 </script>
 
 <style scoped>

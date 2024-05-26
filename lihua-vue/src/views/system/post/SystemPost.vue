@@ -165,7 +165,7 @@
 
 <script setup lang="ts">
 
-import {deptOption} from "@/api/system/dept/dept.ts";
+import {getDeptOption} from "@/api/system/dept/dept.ts";
 import {reactive, ref, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {initDict} from "@/utils/dict.ts";
@@ -189,7 +189,7 @@ watch(() => route.query.deptId, (value) => {
 const initDept = () => {
   const deptTree = ref<Array<SysDept>>([])
   const initDeptTree = async () => {
-    const resp = await deptOption()
+    const resp = await getDeptOption()
     if (resp.code === 200 ) {
       deptTree.value = resp.data
     }
