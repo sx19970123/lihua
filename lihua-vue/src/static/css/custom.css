@@ -2,8 +2,11 @@
 .scrollbar {
     overflow: auto;
 }
+
+/* Webkit 浏览器 (Chrome, Safari) */
 .scrollbar::-webkit-scrollbar {
-    width: 6px;
+    width: 6px;    /* 纵向滚动条的宽度 */
+    height: 6px;   /* 横向滚动条的高度 */
 }
 .scrollbar::-webkit-scrollbar-thumb {
     background-color: #888;
@@ -13,6 +16,13 @@
     background-color: transparent;
     border-radius: 8px;
 }
+
+/* Firefox */
+.scrollbar {
+    scrollbar-width: thin; /* 缩小滚动条宽度 */
+    scrollbar-color: #888 transparent; /* 滑块颜色和轨道颜色 */
+}
+
 
 /**
     单行 form-item 下 label margin设置为0
