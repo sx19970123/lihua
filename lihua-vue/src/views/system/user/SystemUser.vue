@@ -178,7 +178,7 @@
                 :tree-data="sysDeptList"
                 @change="handleChangeDept"
                 multiple
-                show-search
+                allow-clear
             >
             </a-tree-select>
           </a-form-item>
@@ -190,6 +190,7 @@
               :data-source="sysPostList"
               empty-description="请选择部门"
               item-key="deptId"
+              v-model="sysUserDTO.defaultDeptId"
               vertical
             >
               <template #content="{item, isSelected, color}">
@@ -228,7 +229,7 @@
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {findPage} from "@/api/system/user/user.ts"
 import {initDict} from "@/utils/dict"
-import {reactive, ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import DictTag from "@/components/dict-tag/index.vue"
 import SelectCard from "@/components/select-card/index.vue"
 import dayjs from "dayjs";
@@ -236,6 +237,8 @@ import {getDeptOption} from "@/api/system/dept/dept.ts";
 import {getRoleOption} from "@/api/system/role/role.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/post.ts";
 import {TreeSelect} from "ant-design-vue";
+import { cloneDeep } from 'lodash-es';
+import {flattenTreeData} from "@/utils/tree.ts";
 const {sys_status,user_gender} = initDict("sys_status", "user_gender")
 const SHOW_ALL = TreeSelect.SHOW_ALL;
 
@@ -321,7 +324,8 @@ const {userColumn,userQuery,userList,total } = initSearch()
 const initSave = () => {
 
   // 定义保存用户信息
-  const sysUserDTO = ref<SysUserDTO>({})
+  const sysUserDTO = ref<SysUserDTO>({
+  })
 
   const segmentedOption = reactive([{
     value: 'basic',
@@ -363,10 +367,10 @@ const initSave = () => {
   }
 
 }
-const {modalActive,segmented,segmentedOption,sysUserDTO,handleModelStatus} = initSave()
+
 
 // 加载表单需要的选项 角色/部门/岗位
-const initFormOptions = () => {
+const initOptions = () => {
   // 角色信息
   const sysRoleList = ref<Array<SysRole>>([])
   // 部门信息
@@ -383,6 +387,7 @@ const initFormOptions = () => {
     deptId: string,
     postList: Array<PostOptional>,
   }
+
   // 岗位信息
   const sysPostList = ref<Array<PostType>>([])
 
@@ -400,41 +405,39 @@ const initFormOptions = () => {
       sysDeptList.value = resp.data
     }
   }
-  // 根据部门id加载岗位信息
-  const initPostByDeptId = async (deptIds: string[], option: Array<{label: string, value: string}>) => {
-    const resp = await getPostOptionByDeptId(deptIds)
+
+  // 加载岗位信息，通过 选中部门/表单回显写入部门id 进行加载
+  const initPostByDeptIdOption = async (deptIds: string[], option: Array<{label: string, value: string}>) => {
+    // 记录原始部门ID集合
+    const originDeptIds = sysPostList.value.map(post => post.deptId)
+    // 删除没有被选中的id
+    originDeptIds.forEach(deptId => {
+      if (!deptIds.includes(deptId)) {
+        const index = sysPostList.value.findIndex(item => item.deptId === deptId)
+        if (index > -1) {
+          sysPostList.value.splice(index, 1)
+        }
+      }
+    })
+
+    // 如果新旧ID集合长度相同，直接返回
+    if (deptIds.length === sysPostList.value.length) {
+      return;
+    }
+
+    // 新选中的部门id集合
+    const newDeptIds = deptIds.filter(item => !originDeptIds.includes(item))
+
+    // 后端查询新部门及岗位数据
+    const resp = await getPostOptionByDeptId(newDeptIds)
     if (resp.code === 200) {
       const data = resp.data
-      deptIds.forEach(deptId => {
-        const dataForDeptId = data[deptId]
-        // push 单位-岗位数据
-        // 1 添加的情况
-        // 判断 deptId 在 sysPostList 元素中对应的 deptId 是否存在
-        // 存在：保持不变
-        // 不存在： 向 sysPostList 中 push 数据
-        if (deptIds.length > sysPostList.value.length) {
-          const ids = sysPostList.value.map(post => post.deptId)
-          if (!ids.includes(deptId)) {
-            console.log('新增的=', deptId)
-            console.log('新增的=', option.filter(item => item.value = deptId)[0].label)
-            console.log("option=",option)
-            sysPostList.value.push({
-              deptName: option.filter(item => item.value = deptId)[0].label,
-              deptId: deptId,
-              postList: sysPostsToPostOptional(dataForDeptId)
-            })
-          }
-        }
-        // 2 减少的情况
-        // 判断 sysPostList 中是否存在 deptIds 中不存在的 id
-        // 存在： 删除 sysPostList 中对应 deptId 的数据
-        // 不存在： 保持不变
-        if (deptIds.length < sysPostList.value.length) {
-          const deptIds = sysPostList.value.map(post => post.deptId)
-          if (deptIds.includes(deptId)) {
-            sysPostList.value.splice(sysPostList.value.findIndex(item => item.deptId === deptId), 1)
-          }
-        }
+      newDeptIds.forEach(deptId => {
+        sysPostList.value.push({
+          deptId: deptId,
+          deptName: cloneDeep(option).find((item:{label: string, value: string}) => item.value === deptId).label,
+          postList: sysPostsToPostOptional(data[deptId])
+        })
       })
     }
   }
@@ -454,7 +457,7 @@ const initFormOptions = () => {
     return resp
   }
 
-  // 选择部门
+  // 通过选中部门加载岗位信息
   const handleChangeDept = async (value: Array<string>, label: Array<string>) => {
     const option:Array<{
       value: string,
@@ -466,12 +469,27 @@ const initFormOptions = () => {
         label: label[i]
       })
     }
+
     if (value.length > 0) {
-      await initPostByDeptId(value, option)
+      await initPostByDeptIdOption(value, option)
     } else {
       sysPostList.value = []
     }
+  }
 
+  // 通过表单回写部门id加载岗位信息
+  const initPostByDeptIds = async (value: Array<string>) => {
+    const flattenTree:Array<SysDept> = []
+    flattenTreeData(sysDeptList.value,flattenTree)
+    const labelList: Array<string> = []
+    value.forEach(item => {
+      flattenTree.forEach(dept => {
+        if (dept.id === item && dept.name) {
+          labelList.push(dept.name)
+        }
+      })
+    })
+    await handleChangeDept(value, labelList)
   }
 
   // 处理选中/取消选中 岗位标签
@@ -502,15 +520,26 @@ const initFormOptions = () => {
     sysRoleList,
     sysDeptList,
     sysPostList,
-    initRole,
-    initDept,
-    initPostByDeptId,
     handleChangeDept,
-    handleSelectPostId
+    handleSelectPostId,
+    initPostByDeptIds
   }
 }
 
-const {sysRoleList,sysDeptList,sysPostList,handleChangeDept,handleSelectPostId} = initFormOptions()
+// 加载可选项信息
+
+// 查询列表
+
+
+// 处理可选项 选中回显
+
+// 处理表单保存回显
+
+// 处理数据删除
+
+
+const {sysRoleList,sysDeptList,sysPostList,handleChangeDept,handleSelectPostId,initPostByDeptIds} = initOptions()
+const {modalActive,segmented,segmentedOption,sysUserDTO,handleModelStatus} = initSave()
 </script>
 
 <style scoped>

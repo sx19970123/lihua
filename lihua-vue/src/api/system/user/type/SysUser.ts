@@ -65,7 +65,7 @@ interface SysUserDTO extends SysUser {
     /**
      * 默认的部门id
      */
-    defaultId?: string
+    defaultDeptId?: string
 
     /**
      * 角色id集合

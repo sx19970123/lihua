@@ -1,5 +1,5 @@
 <template>
-  <a-flex :gap="props.gap" :vertical="props.vertical" class="scrollbar" :style="{'max-height': vertical ? props.maxHeight + 'px' : 'none'}">
+  <a-flex :gap="props.gap" :wrap="props.vertical ? '' : 'wrap'" :vertical="props.vertical" class="scrollbar" :style="{'max-height': props.vertical ? props.maxHeight + 'px' : 'none'}">
     <div class="select-card"
          v-if="props.dataSource && props.dataSource.length > 0"
          v-for="(item,index) in props.dataSource"
@@ -29,6 +29,7 @@
 // 接受父组件传递参数
 import {reactive, ref, watch, defineProps} from "vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
+import { cloneDeep } from 'lodash-es'
 const themeStore = useThemeStore()
 
 // 定义父级传入的配置项
@@ -81,7 +82,6 @@ const activeCardValueList = reactive<Array<any>>([])
 // 处理点击选中
 const handleClickCard = (item: any): void => {
   const keyItem = item[props.itemKey]
-
   if (!keyItem) {
     console.error("key 不是 option 集合对象的属性");
     return;
@@ -89,7 +89,7 @@ const handleClickCard = (item: any): void => {
   // 取消选中
   if (activeCardValueList.includes(keyItem)) {
     activeCardValueList.splice(activeCardValueList.indexOf(keyItem),1)
-    props.multiple ? emit('update:modelValue', activeCardValueList) : emit('update:modelValue', null)
+    props.multiple ? emit('update:modelValue', cloneDeep(activeCardValueList)) : emit('update:modelValue', null)
     return;
   }
 
@@ -97,16 +97,16 @@ const handleClickCard = (item: any): void => {
   if (props.multiple) {
     activeCardValueList.push(keyItem)
     // 多选情况下，返回选中值的集合
-    emit('update:modelValue', activeCardValueList)
+    emit('update:modelValue', cloneDeep(activeCardValueList))
   } else {
     clearActiveCardValueList()
     activeCardValueList.push(keyItem)
     // 单选情况下返回选中的值
-    emit('update:modelValue', keyItem)
+    emit('update:modelValue', cloneDeep(keyItem))
   }
 
   // 向父级抛出点击事件
-  emit('click',{activeValueList: activeCardValueList ,item: item, props: props})
+  emit('click',{activeValueList: cloneDeep(activeCardValueList) ,item: cloneDeep(item), props: cloneDeep(props)})
 }
 
 // 清空选中集合
@@ -118,6 +118,11 @@ const clearActiveCardValueList = () => {
 const handleVmodel = () => {
   // 双向绑定modelValue
   const modelValue = props.modelValue;
+
+  if (!modelValue) {
+    return;
+  }
+
   const type = Array.isArray(modelValue) ? 'array' : typeof modelValue;
   // 是否多选
   const multiple = props.multiple;
@@ -177,7 +182,6 @@ watch(() => props.dataSource, () => {
   const type = Array.isArray(props.modelValue) ? 'array' : typeof props.modelValue;
   // 是否多选
   const multiple = props.multiple;
-
   if (props.dataSource && props.dataSource.length > 0) {
     // 全部可选集合
     const allList = props.dataSource.map(item => item[props.itemKey])
@@ -190,9 +194,9 @@ watch(() => props.dataSource, () => {
           // 计算 props.modelValue 与 allList 的交集
           const intersection = modelValue.filter(item => allList.includes(item));
           // 清空 props.modelValue 并将交集元素添加回去
-          modelValue.length = 0;
-          modelValue.push(...intersection);
-          emit('update:modelValue', modelValue)
+          // modelValue.length = 0;
+          // modelValue.push(...intersection);
+          emit('update:modelValue', cloneDeep(intersection));
         }
       } else {
         console.error("错误：双向绑定数据类型不匹配，期望接收数组，但实际接收到的是单一元素。");
@@ -204,7 +208,6 @@ watch(() => props.dataSource, () => {
         console.error("错误：双向绑定数据类型不匹配，期望接收单一元素，但实际接收到的是一个数组。");
       } else {
         if (!allList.includes(props.modelValue)) {
-          (props.modelValue as any) = null
           emit('update:modelValue', null)
         }
       }
@@ -213,10 +216,8 @@ watch(() => props.dataSource, () => {
   } else {
     // dataSource 不存在时直接清空 modelValue
     if (multiple) {
-      (props.modelValue as []).length = 0
       emit('update:modelValue', [])
     } else {
-      (props.modelValue as any) = null
       emit('update:modelValue', null)
     }
   }
