@@ -372,10 +372,16 @@ const initFormOptions = () => {
   // 部门信息
   const sysDeptList = ref<Array<SysDept>>([])
 
+  type PostOptional = {
+    id?: string,
+    name?: string,
+    checked: boolean
+  }
+
   type PostType = {
     deptName: string,
     deptId: string,
-    postList: Array<SysPost>,
+    postList: Array<PostOptional>,
   }
   // 岗位信息
   const sysPostList = ref<Array<PostType>>([])
@@ -398,18 +404,54 @@ const initFormOptions = () => {
   const initPostByDeptId = async (deptIds: string[], option: Array<{label: string, value: string}>) => {
     const resp = await getPostOptionByDeptId(deptIds)
     if (resp.code === 200) {
-      sysPostList.value = []
       const data = resp.data
       deptIds.forEach(deptId => {
         const dataForDeptId = data[deptId]
         // push 单位-岗位数据
-        sysPostList.value.push({
-          deptId: deptId,
-          postList: dataForDeptId ? dataForDeptId : [],
-          deptName: option.filter(item => item.value === deptId)[0].label
+        // 1 添加的情况
+        // 判断 deptId 在 sysPostList 元素中对应的 deptId 是否存在
+        // 存在：保持不变
+        // 不存在： 向 sysPostList 中 push 数据
+        if (deptIds.length > sysPostList.value.length) {
+          const ids = sysPostList.value.map(post => post.deptId)
+          if (!ids.includes(deptId)) {
+            console.log('新增的=', deptId)
+            console.log('新增的=', option.filter(item => item.value = deptId)[0].label)
+            console.log("option=",option)
+            sysPostList.value.push({
+              deptName: option.filter(item => item.value = deptId)[0].label,
+              deptId: deptId,
+              postList: sysPostsToPostOptional(dataForDeptId)
+            })
+          }
+        }
+        // 2 减少的情况
+        // 判断 sysPostList 中是否存在 deptIds 中不存在的 id
+        // 存在： 删除 sysPostList 中对应 deptId 的数据
+        // 不存在： 保持不变
+        if (deptIds.length < sysPostList.value.length) {
+          const deptIds = sysPostList.value.map(post => post.deptId)
+          if (deptIds.includes(deptId)) {
+            sysPostList.value.splice(sysPostList.value.findIndex(item => item.deptId === deptId), 1)
+          }
+        }
+      })
+    }
+  }
+
+  // 将 SysPost 集合 转换为 PostOptional 集合
+  const sysPostsToPostOptional = (postList: Array<SysPost>): Array<PostOptional> => {
+    const resp: Array<PostOptional> = []
+    if (postList) {
+      postList.forEach(post => {
+        resp.push({
+          id: post.id,
+          name: post.name,
+          checked: false
         })
       })
     }
+    return resp
   }
 
   // 选择部门
