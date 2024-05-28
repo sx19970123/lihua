@@ -71,4 +71,31 @@ public class SysUserVO extends BaseEntity {
      * 所属单位名称集合
      */
     private List<String> deptLabelList;
+
+    /**
+     * 所属单位id集合
+     */
+    private List<String> deptIdList;
+
+    /**
+     * 默认单位id
+     */
+    private String defaultDeptId;
+
+    /**
+     * 默认单位集合（用于sql接收数据）
+     */
+    private List<String> defaultDeptIdList;
+
+    /**
+     * 所属角色id集合
+     */
+    private List<String> roleIdList;
+
+    /**
+     * 所属岗位id集合
+     */
+    private List<String> postIdList;
+
+
 }

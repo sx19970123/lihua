@@ -12,7 +12,7 @@ export const findPage = (data: SysUserDTO) => {
 
 // 根据id查询详情
 export const findById = (id: string) => {
-    return request<SysUserVO>({
+    return request<SysUserDTO>({
         url: "system/user/" + id,
         method: "get"
     })

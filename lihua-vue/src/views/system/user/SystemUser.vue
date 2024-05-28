@@ -92,7 +92,7 @@
             <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
           </template>
           <template v-if="column.key === 'action'">
-            <a-button type="link" size="small">
+            <a-button type="link" size="small" @click="getUserInfo(record.id)">
               <template #icon>
                 <EditOutlined />
               </template>
@@ -227,7 +227,7 @@
 
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findPage} from "@/api/system/user/user.ts"
+import {findPage, findById} from "@/api/system/user/user.ts"
 import {initDict} from "@/utils/dict"
 import {reactive, ref, watch} from "vue";
 import DictTag from "@/components/dict-tag/index.vue"
@@ -324,9 +324,9 @@ const {userColumn,userQuery,userList,total } = initSearch()
 const initSave = () => {
 
   // 定义保存用户信息
-  const sysUserDTO = ref<SysUserDTO>({
-  })
+  const sysUserDTO = ref<SysUserDTO>({})
 
+  // 表单滑块选项
   const segmentedOption = reactive([{
     value: 'basic',
     label: '基础信息',
@@ -358,16 +358,34 @@ const initSave = () => {
     }
   }
 
+  // 根据id查询用户信息
+  const getUserInfo = async (userId: string) => {
+    const resp = await findById(userId)
+    if (resp.code === 200) {
+      handleModelStatus("编辑用户")
+      // 表单数据赋值
+      sysUserDTO.value = resp.data
+      // 默认部门 / 岗位 回显
+      const deptIds = sysUserDTO.value.deptIdList
+      const postIds = sysUserDTO.value.postIdList
+      if (deptIds) {
+        await initPostByDeptIds(deptIds)
+      }
+      if (postIds) {
+        initPostTag(postIds)
+      }
+    }
+  }
   return {
     modalActive,
     segmentedOption,
     segmented,
     sysUserDTO,
-    handleModelStatus
+    handleModelStatus,
+    getUserInfo
   }
 
 }
-
 
 // 加载表单需要的选项 角色/部门/岗位
 const initOptions = () => {
@@ -442,7 +460,7 @@ const initOptions = () => {
     }
   }
 
-  // 将 SysPost 集合 转换为 PostOptional 集合
+  // 将 SysPost 集合  转换为 PostOptional 集合
   const sysPostsToPostOptional = (postList: Array<SysPost>): Array<PostOptional> => {
     const resp: Array<PostOptional> = []
     if (postList) {
@@ -514,6 +532,21 @@ const initOptions = () => {
     }
   };
 
+  // 回显岗位标签
+  const initPostTag = (postIds: Array<String>) => {
+    // 部门岗位中postId 与 postIds 相同时 checked 设置为true
+    const postDeptOption = sysPostList.value
+    postDeptOption.forEach(postDept => {
+      if (postDept.postList && postDept.postList.length > 0) {
+        postDept.postList.forEach(post => {
+          if (post.id && postIds.includes(post.id)) {
+            post.checked = true
+          }
+        })
+      }
+    })
+  }
+
   initRole()
   initDept()
   return {
@@ -522,24 +555,13 @@ const initOptions = () => {
     sysPostList,
     handleChangeDept,
     handleSelectPostId,
-    initPostByDeptIds
+    initPostByDeptIds,
+    initPostTag
   }
 }
 
-// 加载可选项信息
-
-// 查询列表
-
-
-// 处理可选项 选中回显
-
-// 处理表单保存回显
-
-// 处理数据删除
-
-
-const {sysRoleList,sysDeptList,sysPostList,handleChangeDept,handleSelectPostId,initPostByDeptIds} = initOptions()
-const {modalActive,segmented,segmentedOption,sysUserDTO,handleModelStatus} = initSave()
+const {sysRoleList,sysDeptList,sysPostList,handleChangeDept,handleSelectPostId,initPostByDeptIds,initPostTag} = initOptions()
+const {modalActive,segmented,segmentedOption,sysUserDTO,handleModelStatus,getUserInfo} = initSave()
 </script>
 
 <style scoped>

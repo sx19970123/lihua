@@ -2,6 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lihua.system.mapper.SysUserMapper">
 
+
+    <resultMap id="findByIdMap" type="com.lihua.model.security.SysUserVO">
+        <result column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="nickname" property="nickname" />
+        <result column="gender" property="gender" />
+        <result column="status" property="status" />
+        <result column="email" property="email" />
+        <result column="phone_number" property="phoneNumber" />
+        <collection property="deptIdList" ofType="java.lang.String">
+            <result column="dept_id"/>
+        </collection>
+        <collection property="defaultDeptIdList" ofType="java.lang.String">
+            <result column="default_dept_id"/>
+        </collection>
+        <collection property="postIdList" ofType="java.lang.String">
+            <result column="post_id"/>
+        </collection>
+        <collection property="roleIdList" ofType="java.lang.String">
+            <result column="role_id"/>
+        </collection>
+
+
+    </resultMap>
+
     <select id="selectByUsername" resultType="com.lihua.model.security.SysUserVO">
         SELECT
             id,
@@ -46,5 +71,29 @@
         <foreach collection="userIds" item="userId" open="(" separator="," close=")">
             #{userId}
         </foreach>
+    </select>
+
+    <select id="findById" resultMap="findByIdMap">
+        SELECT
+            id,
+            username,
+            nickname,
+            gender,
+            STATUS,
+            email,
+            phone_number,
+            sys_user_dept.dept_id,
+            sys_user_post.post_id,
+            sys_user_role.role_id,
+            CASE sys_user_dept.default_dept WHEN '0'
+            THEN sys_user_dept.dept_id
+            ELSE '' END AS default_dept_id
+        FROM
+        sys_user
+        LEFT JOIN sys_user_dept ON sys_user.id = sys_user_dept.user_id
+        LEFT JOIN sys_user_post ON sys_user.id = sys_user_post.user_id
+        LEFT JOIN sys_user_role ON sys_user.id = sys_user_role.user_id
+        WHERE
+            sys_user.id = #{id}
     </select>
 </mapper>

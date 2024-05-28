@@ -1,7 +1,7 @@
 <template>
   <a-dropdown>
     <div class="header-right-item header-right">
-      <user-avatar :size="32" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
+      <user-avatar :size="34" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
     </div>
     <template #overlay>
       <a-menu style="min-width: 220px" @click="handleClickMenu">

@@ -72,9 +72,12 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public SysUserVO findById(String id) {
-        SysUser sysUser = sysUserMapper.selectById(id);
-        SysUserVO sysUserVO = new SysUserVO();
-        BeanUtils.copyProperties(sysUser,sysUserVO);
+        SysUserVO sysUserVO = sysUserMapper.findById(id);
+        // 设置默认单位id
+        if (!sysUserVO.getDefaultDeptIdList().isEmpty()) {
+            List<String> list = sysUserVO.getDefaultDeptIdList().stream().filter(StringUtils::hasText).toList();
+            sysUserVO.setDefaultDeptId(!list.isEmpty() ? list.get(0) : null);
+        }
         return sysUserVO;
     }
 
