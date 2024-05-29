@@ -49,6 +49,11 @@ interface SysUser {
      * 手机号码
      */
     phoneNumber?: string;
+
+    /**
+     * 备注
+     */
+    remark?: string;
 }
 
 interface SysUserVO extends SysUser{

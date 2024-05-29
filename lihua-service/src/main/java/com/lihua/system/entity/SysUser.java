@@ -86,4 +86,9 @@ public class SysUser extends BaseEntity {
             groups = ProfileValidation.ProfileSaveValidation.class)
     private String phoneNumber;
 
+    /**
+     * 备注
+     */
+    private String remark;
+
 }

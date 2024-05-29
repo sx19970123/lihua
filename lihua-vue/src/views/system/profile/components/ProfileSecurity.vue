@@ -75,7 +75,7 @@ const rules: Record<string, Rule[]> = {
   ],
   newPassword: [
     { required: true,message: "请输入新密码",trigger: 'change'},
-    { min: 6, max: 22, message: '密码长度6-22位', trigger: 'change' }
+    { min: 6, max: 30, message: '密码长度6-30位', trigger: 'change' }
   ],
   confirmPassword: [
     { required: true,message: "请再次输入密码",trigger: 'change'},

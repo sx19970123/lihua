@@ -122,40 +122,42 @@
         </div>
       </template>
       <a-segmented v-model:value="segmented" :options="segmentedOption" style="margin-bottom: 16px"/>
-      <a-form :model="sysUserDTO" :label-col="{span: 4}" :colon="false">
+      <a-form ref="formRef" :rules="userRules" :model="sysUserDTO" :label-col="{span: 4}" :colon="false">
 <!--        显示基本信息-->
         <div v-show="segmented === 'basic'">
-          <a-form-item label="用户名" :wrapper-col="{span: 16}">
-            <a-input placeholder="请输入用户名"/>
+          <a-form-item label="用户名" name="username" :wrapper-col="{span: 16}">
+            <a-input v-model:value="sysUserDTO.username" placeholder="请输入用户名" :maxlength="30" show-count/>
           </a-form-item>
-          <a-form-item label="密码" :wrapper-col="{span: 16}">
-            <a-input-password placeholder="请输入默认密码"/>
+          <a-form-item label="密码" name="password" :wrapper-col="{span: 16}" v-if="!sysUserDTO.id">
+            <a-input-password v-model:value="sysUserDTO.password" placeholder="请输入默认密码"/>
           </a-form-item>
-          <a-form-item label="昵称" :wrapper-col="{span: 16}">
-            <a-input placeholder="请输入昵称"/>
+          <a-form-item label="昵称" name="nickname" :wrapper-col="{span: 16}">
+            <a-input v-model:value="sysUserDTO.nickname" placeholder="请输入昵称" :maxlength="20" show-count/>
           </a-form-item>
             <a-form-item label="性别">
-              <a-radio-group>
+              <a-radio-group v-model:value="sysUserDTO.gender">
                 <a-radio :value="item.value" v-for="item in user_gender">{{item.label}}</a-radio>
               </a-radio-group>
             </a-form-item>
             <a-form-item label="状态">
-              <a-radio :value="item.value" v-for="item in sys_status">{{item.label}}</a-radio>
+              <a-radio-group v-model:value="sysUserDTO.status">
+                <a-radio :value="item.value" v-for="item in sys_status">{{item.label}}</a-radio>
+              </a-radio-group>
             </a-form-item>
           <a-row>
             <a-col :span="12">
-              <a-form-item label="手机号" :label-col="{span: 8}">
-                <a-input  placeholder="请输入手机号码"/>
+              <a-form-item label="手机号" :label-col="{span: 8}" name="phoneNumber">
+                <a-input v-model:value="sysUserDTO.phoneNumber"  placeholder="请输入手机号码"/>
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="邮箱" :label-col="{span: 8}">
-                <a-input  placeholder="请输入邮箱"/>
+              <a-form-item label="邮箱" :label-col="{span: 8}" name="email">
+                <a-input v-model:value="sysUserDTO.email" placeholder="请输入邮箱"/>
               </a-form-item>
             </a-col>
           </a-row>
           <a-form-item label="备注">
-            <a-textarea  placeholder="请输入备注"></a-textarea>
+            <a-textarea v-model:value="sysUserDTO.remark" placeholder="请输入备注"></a-textarea>
           </a-form-item>
         </div>
 <!--        显示权限信息-->
@@ -191,6 +193,7 @@
               empty-description="请选择部门"
               item-key="deptId"
               v-model="sysUserDTO.defaultDeptId"
+              :max-height="600"
               vertical
             >
               <template #content="{item, isSelected, color}">
@@ -198,7 +201,6 @@
                   <a-typography-title :level="5" style="margin: 0">{{item.deptName}}</a-typography-title>
                   <a-tag v-if="isSelected" :color="color">默认</a-tag>
                 </a-flex>
-
                 <div style="margin-top: 16px;">
                   <div v-if="item.postList && item.postList.length > 0">
                     <a-checkable-tag v-for="post in item.postList"
@@ -216,7 +218,6 @@
               </template>
             </select-card>
           </a-form-item>
-
         </div>
       </a-form>
     </a-modal>
@@ -229,7 +230,7 @@
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {findPage, findById} from "@/api/system/user/user.ts"
 import {initDict} from "@/utils/dict"
-import {reactive, ref, watch} from "vue";
+import {reactive, ref} from "vue";
 import DictTag from "@/components/dict-tag/index.vue"
 import SelectCard from "@/components/select-card/index.vue"
 import dayjs from "dayjs";
@@ -239,6 +240,7 @@ import {getPostOptionByDeptId} from "@/api/system/post/post.ts";
 import {TreeSelect} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import {flattenTreeData} from "@/utils/tree.ts";
+import type {Rule} from "ant-design-vue/es/form";
 const {sys_status,user_gender} = initDict("sys_status", "user_gender")
 const SHOW_ALL = TreeSelect.SHOW_ALL;
 
@@ -322,9 +324,34 @@ const {userColumn,userQuery,userList,total } = initSearch()
 
 // 数据保存相关
 const initSave = () => {
+  // 表单实例
+  const formRef = ref()
+
+  // 表单验证
+  const userRules: Record<string, Rule[]> = {
+    username: [
+      {required: true, message: "请填写用户名", trigger: "change"}
+    ],
+    password: [
+      {required: true, message: "请填写密码", trigger: "change"},
+      { min: 6, max: 30, message: '密码长度6-30位', trigger: 'change' }
+    ],
+    nickname: [
+      {required: true, message: "请填写昵称", trigger: "change"}
+    ],
+    phoneNumber: [
+      {pattern: /^1[3456789]\d{9}$/, message: "请输入正确的手机号码", trigger: "change"}
+    ],
+    email: [
+      {pattern: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/, message: "请输入正确的邮箱", trigger: "change"}
+    ]
+  }
 
   // 定义保存用户信息
-  const sysUserDTO = ref<SysUserDTO>({})
+  const sysUserDTO = ref<SysUserDTO>({
+    gender: '1',
+    status: '0'
+  })
 
   // 表单滑块选项
   const segmentedOption = reactive([{
@@ -334,6 +361,7 @@ const initSave = () => {
     value: 'perm',
     label: '权限信息'
   }])
+
   const segmented = ref<string>(segmentedOption[0].value)
 
   // modal 相关属性定义
@@ -356,6 +384,24 @@ const initSave = () => {
     if (title) {
       modalActive.title = title
     }
+
+    if (modalActive.open) {
+      resetForm()
+    }
+  }
+
+  // 重置表单
+  const resetForm = () => {
+    // 重置表单
+    sysUserDTO.value = {
+      gender: '1',
+      status: '0'
+    }
+    // 分段器设置为默认
+    segmented.value = 'basic'
+    // 重制部门岗位
+    initPostByDeptIds([])
+    initPostTag([])
   }
 
   // 根据id查询用户信息
@@ -381,11 +427,15 @@ const initSave = () => {
     segmentedOption,
     segmented,
     sysUserDTO,
+    userRules,
+    formRef,
+    resetForm,
     handleModelStatus,
     getUserInfo
   }
 
 }
+const {modalActive,segmented,segmentedOption,sysUserDTO,userRules,formRef,handleModelStatus,getUserInfo} = initSave()
 
 // 加载表单需要的选项 角色/部门/岗位
 const initOptions = () => {
@@ -561,7 +611,6 @@ const initOptions = () => {
 }
 
 const {sysRoleList,sysDeptList,sysPostList,handleChangeDept,handleSelectPostId,initPostByDeptIds,initPostTag} = initOptions()
-const {modalActive,segmented,segmentedOption,sysUserDTO,handleModelStatus,getUserInfo} = initSave()
 </script>
 
 <style scoped>

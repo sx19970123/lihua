@@ -68,6 +68,11 @@ public class SysUserVO extends BaseEntity {
     private String email;
 
     /**
+     * 备注
+     */
+    private String remark;
+
+    /**
      * 所属单位名称集合
      */
     private List<String> deptLabelList;

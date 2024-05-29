@@ -11,6 +11,7 @@
         <result column="status" property="status" />
         <result column="email" property="email" />
         <result column="phone_number" property="phoneNumber" />
+        <result column="remark" property="remark" />
         <collection property="deptIdList" ofType="java.lang.String">
             <result column="dept_id"/>
         </collection>
@@ -37,7 +38,8 @@
             gender,
             theme,
             phone_number,
-            email
+            email,
+            remark
         FROM
             sys_user
         WHERE

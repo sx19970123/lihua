@@ -30,7 +30,7 @@ export const save = (data: SysPost) => {
  * @param id
  */
 export const findById = (id: string) => {
-    return request({
+    return request<SysPost>({
         url: '/system/post/' + id,
         method: 'get'
     })
