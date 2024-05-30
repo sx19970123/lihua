@@ -184,11 +184,14 @@
             >
             </a-tree-select>
           </a-form-item>
+          <a-form-item label="部门">
+            <dept-select v-model="sysUserDTO.deptIdList" multiple/>
+          </a-form-item>
           <a-form-item>
             <template #label>
               <a-typography-text>默认部门<br/> 岗位</a-typography-text>
             </template>
-            <select-card
+            <card-select
               :data-source="sysPostList"
               empty-description="请选择部门"
               item-key="deptId"
@@ -216,7 +219,7 @@
                   </div>
                 </div>
               </template>
-            </select-card>
+            </card-select>
           </a-form-item>
         </div>
       </a-form>
@@ -232,7 +235,8 @@ import {findPage, findById} from "@/api/system/user/user.ts"
 import {initDict} from "@/utils/dict"
 import {reactive, ref} from "vue";
 import DictTag from "@/components/dict-tag/index.vue"
-import SelectCard from "@/components/select-card/index.vue"
+import CardSelect from "@/components/card-select/index.vue"
+import DeptSelect from "@/components/dept-select/index.vue"
 import dayjs from "dayjs";
 import {getDeptOption} from "@/api/system/dept/dept.ts";
 import {getRoleOption} from "@/api/system/role/role.ts";

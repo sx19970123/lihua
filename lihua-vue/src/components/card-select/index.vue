@@ -236,12 +236,14 @@ watch(() => props.dataSource, () => {
       border: 1px solid #424242;
     }
   }
-  .select-card {
-    border-radius: 8px;
-    padding: 16px;
-    margin-right: 3px;
-  }
-  .select-card:hover {
-    cursor: pointer;
-  }
+</style>
+<style scoped>
+.select-card {
+  border-radius: 8px;
+  padding: 16px;
+  margin-right: 3px;
+}
+.select-card:hover {
+  cursor: pointer;
+}
 </style>
