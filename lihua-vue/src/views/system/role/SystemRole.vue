@@ -124,7 +124,7 @@
         <a-form-item label="菜单" class="form-item-single-line unselectable">
           <a-checkable-tag v-model:checked="menuSetting.checked" @change="handleCheckedAll">全选/全不选</a-checkable-tag>
           <a-checkable-tag v-model:checked="menuSetting.expand" @change="handleExpandAll">展开/折叠</a-checkable-tag>
-          <a-checkable-tag v-model:checked="menuSetting.checkStrictly">父子关联</a-checkable-tag>
+          <a-checkable-tag v-model:checked="menuSetting.checkStrictly" @click="menuSetting.checkStrictly ? role.menuIds = [] : ''">父子关联</a-checkable-tag>
         </a-form-item>
         <a-form-item label=" ">
           <a-card :body-style="{padding: '8px'}">
@@ -133,7 +133,9 @@
                     v-model:expanded-keys="menuSetting.expandKeys"
                     v-model:checked-keys="role.menuIds"
                     :field-names="{children:'children', title:'label', key:'id' }"
+                    :selectable="false"
                     checkable
+
             >
               <template #title="{label,menuType}">
                 {{label}}
@@ -439,7 +441,17 @@ const handleDelete = async (id: string) => {
 }
 
 // 监听menuIds进行全选/非全选与数据同步
-watch(() => role.value.menuIds , (value) => {
-  menuSetting.value.checked = (value as []).length === menuSetting.value.flattenTree.length;
-})
+watch(() => role.value.menuIds, (value) => {
+  let ids: string[] = [];
+
+  if (Array.isArray(value)) {
+    // 如果 value 是数组
+    ids = value;
+  } else if (value && typeof value === 'object' && 'checked' in value) {
+    // 如果 value 是包含 checked 属性的对象
+    ids = (value as { checked: string[] }).checked;
+  }
+  // 更新 checked 状态
+  menuSetting.value.checked = ids.length === menuSetting.value.flattenTree.length;
+});
 </script>
