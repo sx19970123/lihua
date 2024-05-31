@@ -5,16 +5,15 @@
       <div style="margin: 8px 8px 8px 0">
         <a-checkable-tag v-model:checked="checkedAll" @click="handleCheckedAllKeys">全选/全不选</a-checkable-tag>
         <a-checkable-tag v-model:checked="expanded" @click="handleExpanded">展开/折叠</a-checkable-tag>
-        <a-checkable-tag v-model:checked="connection">父子关联</a-checkable-tag>
+        <a-checkable-tag v-model:checked="checkStrictly">父子关联</a-checkable-tag>
       </div>
       <a-tree :tree-data="sysDeptList"
-              :fieldNames="{children:'children', title:'name', key: 'id' }"
-              :check-strictly="!connection"
-              v-model:checkedKeys="selectedIds"
+              :field-names="{children:'children', title:'name', key: 'id' }"
+              :check-strictly="!checkStrictly"
+              v-model:checked-keys="selectedIds"
               v-model:expanded-keys="expandedIds"
               :checkable="multiple"
-              :selectable="!multiple"
-              @select="handleSelectNode"
+              :selectable="false"
       >
         <template  #title="{ name }">
           <span v-if="name.indexOf(keyword) > -1">
@@ -68,11 +67,15 @@ const checkedAll = ref<boolean>(false)
 // 展开折叠
 const expanded = ref<boolean>(false)
 // 父子关联
-const connection = ref<boolean>(false)
+const checkStrictly = ref<boolean>(false)
 // 筛选关键词
 const keyword = ref<string>('')
 
 const emits = defineEmits(["update:modelValue"])
+
+const showSel = () => {
+  console.log(selectedIds.value)
+}
 
 // 加载部门信息
 const initDept = async () => {
@@ -85,7 +88,7 @@ const initDept = async () => {
     // 不进行双向绑定的树
     originTree.push(...resp.data)
     // 回显双向绑定
-    handleVmodel()
+    // handleVmodel()
   }
 }
 initDept()
@@ -106,13 +109,8 @@ const handleExpanded = () => {
   }
 }
 
-// 单选情况下的双向绑定
-const handleSelectNode = (selectedKeys, e:{selected: bool, selectedNodes, node, event}) => {
-  if (selectedKeys.length > 0) {
-    emits('update:modelValue', cloneDeep(selectedKeys[0]))
-  } else {
-    emits('update:modelValue', null)
-  }
+const handleVModel = (checkIds: string[]) => {
+
 }
 
 // 根据关键词过滤树
@@ -129,29 +127,23 @@ const filterTreeByLabel = (tree: Array<SysDept>, keyword: string) => {
 };
 
 // 处理回显双向绑定
-const handleVmodel = () => {
-  const vModel = props.modelValue
-  if (!vModel) {
-    return
-  }
-  if (Array.isArray(vModel)) {
-    vModel.forEach(v => {
-      console.log(selectedIds.value)
-      if (!selectedIds.value.includes(v)) {
-        selectedIds.value.push(v)
-      }
-    })
-  } else {
-    if (!selectedIds.value.includes(vModel)) {
-      selectedIds.value.push(vModel)
-    }
-  }
-}
-
-// 监听回显勾选数据
-watch(() => selectedIds.value, (value) => {
-  checkedAll.value = value.length === flattenDeptList.length;
-})
+// const handleVmodel = () => {
+//   const vModel = props.modelValue
+//   if (!vModel) {
+//     return
+//   }
+//   if (Array.isArray(vModel)) {
+//     vModel.forEach(v => {
+//       if (!selectedIds.value.includes(v)) {
+//         selectedIds.value.push(v)
+//       }
+//     })
+//   } else {
+//     if (!selectedIds.value.includes(vModel)) {
+//       selectedIds.value.push(vModel)
+//     }
+//   }
+// }
 
 // 监听关键词筛选
 watch(() => keyword.value, (value) => {
@@ -169,20 +161,32 @@ watch(() => keyword.value, (value) => {
   }
 })
 
-// 多选情况下的双向绑定
+// 双向绑定
 watch(() => selectedIds.value, (value) => {
-  const vModelArray = []
-  cloneDeep(value.checked).forEach(item => {
-    vModelArray.push(item)
-  })
-  console.log(selectedIds.value)
-  // emits('update:modelValue',vModelArray )
-})
+  let vModelData = []
+  // 单选时监听到的数据类型不同
+  if (value.checked) {
+    vModelData.push(...cloneDeep(value.checked))
+  } else {
+    vModelData.push(...cloneDeep(value))
+  }
 
-// 回显双向绑定
-watch(() => props.modelValue, () => {
-  handleVmodel()
-})
+  // 多选集合
+  if (props.multiple) {
+    emits("update:modelValue",vModelData)
+  }
+  // 单选元素 || null
+  else {
+    if (vModelData.length > 0) {
+      emits("update:modelValue",vModelData[0])
+    } else {
+      emits("update:modelValue",null)
+    }
+  }
+  // 全选标识
+  checkedAll.value = vModelData.length === flattenDeptList.length;
+},{deep: true})
+
 </script>
 <style>
 [data-theme="light"] {

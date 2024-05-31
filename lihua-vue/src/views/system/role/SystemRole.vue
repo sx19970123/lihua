@@ -129,9 +129,9 @@
         <a-form-item label=" ">
           <a-card :body-style="{padding: '8px'}">
             <a-tree :tree-data="menuSetting.menuOption"
-                    :checkStrictly="!menuSetting.checkStrictly"
+                    :check-strictly="!menuSetting.checkStrictly"
                     v-model:expanded-keys="menuSetting.expandKeys"
-                    v-model:checkedKeys="role.menuIds"
+                    v-model:checked-keys="role.menuIds"
                     :field-names="{children:'children', title:'label', key:'id' }"
                     checkable
             >
