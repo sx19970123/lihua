@@ -32,6 +32,13 @@
 }
 
 /**
+    ant 官方 tree-select 组件长度默认很短，定义css与其他input框默认长度对齐
+ */
+.default-input-width {
+    width: 196px !important
+}
+
+/**
     下拉菜单毛玻璃效果
  */
 .drop-down-glass {

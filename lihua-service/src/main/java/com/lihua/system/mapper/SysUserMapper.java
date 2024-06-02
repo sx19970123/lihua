@@ -8,12 +8,14 @@ import com.lihua.model.security.SysUserVO;
 import com.lihua.system.entity.SysUser;
 import com.lihua.system.model.SysUserDeptDTO;
 import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
     // 用户登陆查询
-    SysUserVO selectByUsername(String username);
+    SysUserVO loginSelect(@Param("username") String username);
 
     IPage<SysUserVO> findPage(@Param("iPage") IPage<SysUserVO> iPage, @Param(Constants.WRAPPER) QueryWrapper<SysUser> queryWrapper);
 
@@ -21,4 +23,8 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     // 根据id查询用户全部信息
     SysUserVO findById(@Param("id") String id);
+
+    // 根据username、phoneNumber、email 查询符合条件的用户
+    List<SysUser> checkUserData(@Param("username") String username,@Param("phoneNumber") String phoneNumber,@Param("email") String email);
+
 }

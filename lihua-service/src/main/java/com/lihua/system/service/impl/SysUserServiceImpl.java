@@ -6,15 +6,26 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.security.SysUserVO;
 import com.lihua.system.entity.SysUser;
+import com.lihua.system.entity.SysUserDept;
+import com.lihua.system.entity.SysUserPost;
+import com.lihua.system.entity.SysUserRole;
 import com.lihua.system.mapper.SysUserMapper;
 import com.lihua.system.model.SysUserDTO;
 import com.lihua.system.model.SysUserDeptDTO;
+import com.lihua.system.service.SysUserDeptService;
+import com.lihua.system.service.SysUserPostService;
+import com.lihua.system.service.SysUserRoleService;
 import com.lihua.system.service.SysUserService;
+import com.lihua.utils.security.LoginUserContext;
+import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,6 +35,15 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Resource
     private SysUserMapper sysUserMapper;
+
+    @Resource
+    private SysUserRoleService sysUserRoleService;
+
+    @Resource
+    private SysUserPostService sysUserPostService;
+
+    @Resource
+    private SysUserDeptService sysUserDeptService;
 
     @Override
     public IPage<SysUserVO> findPage(SysUserDTO sysUserDTO) {
@@ -36,8 +56,8 @@ public class SysUserServiceImpl implements SysUserService {
             queryWrapper.in("dept_id", sysUserDTO.getDeptIdList());
         }
         // 昵称
-        if (StringUtils.hasText(sysUserDTO.getNickName())) {
-            queryWrapper.like("nickname", sysUserDTO.getNickName());
+        if (StringUtils.hasText(sysUserDTO.getNickname())) {
+            queryWrapper.like("nickname", sysUserDTO.getNickname());
         }
         // 用户名
         if (StringUtils.hasText(sysUserDTO.getUsername())) {
@@ -73,7 +93,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public SysUserVO findById(String id) {
         SysUserVO sysUserVO = sysUserMapper.findById(id);
-        // 设置默认单位id
+        // 设置默认部门id
         if (!sysUserVO.getDefaultDeptIdList().isEmpty()) {
             List<String> list = sysUserVO.getDefaultDeptIdList().stream().filter(StringUtils::hasText).toList();
             sysUserVO.setDefaultDeptId(!list.isEmpty() ? list.get(0) : null);
@@ -82,10 +102,16 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    @Transactional
     public String save(SysUserDTO sysUserDTO) {
         SysUser sysUser = new SysUser();
+        // 校验用户数据
+        checkUserData(sysUserDTO);
+
         BeanUtils.copyProperties(sysUserDTO, sysUser);
         String id = null;
+
+        // 插入/更新
         if (!StringUtils.hasText(sysUserDTO.getId())) {
             id = insert(sysUser);
         } else {
@@ -93,10 +119,11 @@ public class SysUserServiceImpl implements SysUserService {
         }
 
         // 保存部门数据
-
+        saveUserDept(id, sysUserDTO.getDefaultDeptId(), sysUserDTO.getDeptIdList());
         // 保存岗位数据
-
+        saveUserPost(id, sysUserDTO.getPostIdList());
         // 保存角色数据
+        saveUserRole(id, sysUserDTO.getRoleIdList());
 
         return id;
     }
@@ -125,11 +152,22 @@ public class SysUserServiceImpl implements SysUserService {
 
     // 新增用户
     private String insert(SysUser sysUser) {
+        // 密码加密
+        sysUser.setPassword(SecurityUtils.encryptPassword(sysUser.getPassword()));
+        sysUser.setCreateId(LoginUserContext.getUserId());
+        sysUser.setCreateTime(LocalDateTime.now());
+        sysUser.setDelFlag("0");
+        sysUserMapper.insert(sysUser);
         return sysUser.getId();
     }
 
     // 更细用户信息
     private String update(SysUser sysUser) {
+        sysUser.setUpdateId(LoginUserContext.getUserId());
+        sysUser.setCreateTime(LocalDateTime.now());
+        // 用户管理中无法更新用户密码。mp默认策略不更新null值数据
+        sysUser.setPassword(null);
+        sysUserMapper.updateById(sysUser);
         return sysUser.getId();
     }
 
@@ -146,4 +184,97 @@ public class SysUserServiceImpl implements SysUserService {
             throw new ServiceException("存在状态为正常的用户，无法删除");
         }
     }
+
+    // 用户唯一项校验
+    private void checkUserData(SysUserDTO sysUserDTO) {
+        String username = sysUserDTO.getUsername();
+        String phoneNumber = sysUserDTO.getPhoneNumber();
+        String email = sysUserDTO.getEmail();
+
+        List<SysUser> sysUsers = sysUserMapper.checkUserData(username, phoneNumber, email);
+
+        // 新增或修改时username, phoneNumber, email 均唯一 校验通过
+        if (sysUsers.isEmpty() || (sysUsers.size() == 1 && sysUsers.get(0).getId().equals(sysUserDTO.getId()))) {
+            return;
+        }
+
+        List<String> errMessage = new ArrayList<>();
+        // 用户名
+        if (StringUtils.hasText(sysUserDTO.getUsername())) {
+            Map<String, List<SysUser>> groupByUsername = sysUsers.stream().collect(Collectors.groupingBy(SysUser::getUsername));
+            List<SysUser> byUsername = groupByUsername.getOrDefault(sysUserDTO.getUsername(),new ArrayList<>());
+            if (!byUsername.isEmpty() && !byUsername.get(0).getId().equals(sysUserDTO.getId())) {
+                errMessage.add("用户名");
+            }
+        }
+        // 手机号码
+        if (StringUtils.hasText(sysUserDTO.getPhoneNumber())) {
+            Map<String, List<SysUser>> groupByPhoneNumber = sysUsers.stream().collect(Collectors.groupingBy(SysUser::getPhoneNumber));
+            List<SysUser> byPhoneNumber = groupByPhoneNumber.getOrDefault(sysUserDTO.getPhoneNumber(),new ArrayList<>());
+            if (!byPhoneNumber.isEmpty() && !byPhoneNumber.get(0).getId().equals(sysUserDTO.getId())) {
+                errMessage.add("手机号码");
+            }
+        }
+        // 邮箱
+        if (StringUtils.hasText(sysUserDTO.getEmail())) {
+            Map<String, List<SysUser>> groupByEmail = sysUsers.stream().collect(Collectors.groupingBy(SysUser::getEmail));
+            List<SysUser> byEmail = groupByEmail.getOrDefault(sysUserDTO.getEmail(),new ArrayList<>());
+            if (!byEmail.isEmpty() && !byEmail.get(0).getId().equals(sysUserDTO.getId())) {
+                errMessage.add("邮箱");
+            }
+        }
+        // 抛出异常
+        if (!errMessage.isEmpty()) {
+            throw new ServiceException(String.join("、", errMessage) + "已存在");
+        }
+    }
+
+    // 保存用户角色关联表
+    private void saveUserRole(String userId, List<String> roleIdList) {
+        // 删除所有角色
+        sysUserRoleService.deleteByUserId(userId);
+        // 保存角色
+        if (roleIdList != null && !roleIdList.isEmpty()) {
+            // 组合数据
+            List<SysUserRole> sysUserRoles = new ArrayList<>(roleIdList.size());
+            LocalDateTime now = LocalDateTime.now();
+            String loginUserId = LoginUserContext.getUserId();
+            roleIdList.forEach(roleId -> sysUserRoles.add(new SysUserRole(userId, roleId, now, loginUserId)));
+            sysUserRoleService.save(sysUserRoles);
+        }
+    }
+
+    // 保存用户岗位关联表
+    private void saveUserPost(String userId, List<String> postIdList) {
+        // 删除所有岗位
+        sysUserPostService.deleteByUserId(userId);
+
+        // 保存岗位
+        if (postIdList != null && !postIdList.isEmpty()) {
+            // 组合数据
+            List<SysUserPost> sysUserPosts  = new ArrayList<>(postIdList.size());
+            LocalDateTime now = LocalDateTime.now();
+            String loginUserId = LoginUserContext.getUserId();
+            postIdList.forEach(postId -> sysUserPosts.add(new SysUserPost(userId, postId, now, loginUserId)));
+            sysUserPostService.save(sysUserPosts);
+        }
+    }
+
+    // 保存用户部门关联表
+    private void saveUserDept(String userId, String defaultDeptId, List<String> deptIdList) {
+        // 删除所有部门
+        sysUserDeptService.deleteByUserId(userId);
+        // 保存部门
+        if (deptIdList != null && !deptIdList.isEmpty()) {
+            // 组合数据
+            List<SysUserDept> sysUserDeptList  = new ArrayList<>(deptIdList.size());
+            LocalDateTime now = LocalDateTime.now();
+            String loginUserId = LoginUserContext.getUserId();
+            deptIdList.forEach(deptId -> sysUserDeptList.add(new SysUserDept(userId, deptId, now, loginUserId, deptId.equals(defaultDeptId) ? "0" : "1")));
+
+            sysUserDeptService.save(sysUserDeptList);
+        }
+
+    }
+
 }

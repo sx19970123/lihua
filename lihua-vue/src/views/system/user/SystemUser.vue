@@ -2,62 +2,57 @@
   <div>
     <a-flex :gap="16" vertical>
       <!--      筛选条件-->
-      <a-card :style="{border: 'none'}">
+      <a-card :style="{border: 'none'}" :body-style="{'padding-bottom': '0'}">
         <a-form :colon="false">
-          <a-row :span="24" :gutter="16">
-            <a-col :span="6">
+          <a-row :gutter="16">
+            <a-col>
               <a-form-item label="部门">
                 <a-tree-select
+                    class="default-input-width"
                     placeholder="请选择部门"
                     v-model:value="userQuery.deptIdList"
                     :show-checked-strategy="SHOW_ALL"
-                    multiple
+                    :maxTagCount="3"
                     :tree-data="sysDeptList"
                     :fieldNames="{children:'children', label:'name', value: 'id' }"
                     tree-node-filter-prop="label"
+                    multiple
                     allowClear
                 />
               </a-form-item>
             </a-col>
-            <a-col :span="6">
-              <a-form-item label="昵称">
-                <a-input placeholder="请输入昵称" v-model:value="userQuery.nickname" allowClear/>
-              </a-form-item>
-            </a-col>
-            <a-col :span="6">
+            <a-col>
               <a-form-item label="用户名">
                 <a-input placeholder="请输入用户名" v-model:value="userQuery.username" allowClear/>
               </a-form-item>
             </a-col>
-            <a-col :span="6">
-              <a-form-item label="手机号码">
-                <a-input placeholder="请输入手机号码" v-model:value="userQuery.phoneNumber" allowClear/>
+            <a-col>
+              <a-form-item label="昵称">
+                <a-input placeholder="请输入昵称" v-model:value="userQuery.nickname" allowClear/>
               </a-form-item>
             </a-col>
-          </a-row>
-          <a-row :span="24" :gutter="16">
-            <a-col :span="6">
-              <a-form-item label="创建时间" class="form-item-single-line">
-                <a-range-picker allowClear v-model:value="userQuery.createTimeList"/>
-              </a-form-item>
-            </a-col>
-            <a-col :span="3">
-              <a-form-item label="状态"  class="form-item-single-line" >
-                <a-select placeholder="请选择" v-model:value="userQuery.status">
-                  <a-select-option :value="item.value" v-for="item in sys_status" allowClear>{{item.label}}</a-select-option>
+            <a-col>
+              <a-form-item label="状态">
+                <a-select placeholder="请选择 " v-model:value="userQuery.status" allowClear>
+                  <a-select-option :value="item.value" v-for="item in sys_status">{{item.label}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col :span="6">
-              <a-form-item  class="form-item-single-line">
+            <a-col>
+              <a-form-item label="创建时间">
+                <a-range-picker allowClear v-model:value="userQuery.createTimeList"/>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item>
                 <a-space size="small">
-                  <a-button type="primary">
+                  <a-button type="primary" @click="queryPage" :loading="queryLoading">
                     <template #icon>
                       <SearchOutlined />
                     </template>
                     查 询
                   </a-button>
-                  <a-button >
+                  <a-button @click="resetPage" :loading="queryLoading">
                     <template #icon>
                       <RedoOutlined />
                     </template>
@@ -70,7 +65,7 @@
         </a-form>
       </a-card>
       <!--    表格-->
-      <a-table :columns="userColumn" :data-source="userList">
+      <a-table :columns="userColumn" :data-source="userList" :loading="queryLoading" :pagination="false">
         <template #title>
           <a-flex :gap="8">
             <a-button type="primary" @click="handleModelStatus('新增用户')">
@@ -83,7 +78,7 @@
         </template>
         <template #bodyCell="{column,record,text}">
           <template v-if="column.key === 'deptLabelList'">
-            {{text.join('、')}}
+            {{text ? text.join('、') : ''}}
           </template>
           <template v-if="column.key === 'createTime'">
             {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
@@ -112,149 +107,151 @@
             </a-popconfirm>
           </template>
         </template>
+        <template #footer>
+          <a-flex justify="flex-end">
+            <a-pagination v-model:current="userQuery.pageNum"
+                          v-model:page-size="userQuery.pageSize"
+                          :total="userTotal"
+                          :show-total="(total:number) => `共 ${total} 条`"
+                          @change="initPage"
+            />
+          </a-flex>
+        </template>
       </a-table>
     </a-flex>
 
-    <a-modal v-model:open="modalActive.open">
+    <a-modal v-model:open="modalActive.open" class="unselectable">
       <template #title>
         <div style="margin-bottom: 24px">
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
         </div>
       </template>
-      <a-segmented v-model:value="segmented" :options="segmentedOption" style="margin-bottom: 16px"/>
+      <a-segmented v-model:value="segmented" :options="segmentedOption" style="margin-bottom: 16px" @change="changeSegmented"/>
       <a-form ref="formRef" :rules="userRules" :model="sysUserDTO" :label-col="{span: 4}" :colon="false">
 <!--        显示基本信息-->
         <div v-show="segmented === 'basic'">
           <a-form-item label="用户名" name="username" :wrapper-col="{span: 16}">
-            <a-input v-model:value="sysUserDTO.username" placeholder="请输入用户名" :maxlength="30" show-count/>
+            <a-input v-model:value="sysUserDTO.username" placeholder="用于用户登陆" :maxlength="30" show-count allowClear/>
           </a-form-item>
           <a-form-item label="密码" name="password" :wrapper-col="{span: 16}" v-if="!sysUserDTO.id">
-            <a-input-password v-model:value="sysUserDTO.password" placeholder="请输入默认密码"/>
+            <a-input-password v-model:value="sysUserDTO.password" placeholder="请输入密码" allowClear/>
           </a-form-item>
           <a-form-item label="昵称" name="nickname" :wrapper-col="{span: 16}">
-            <a-input v-model:value="sysUserDTO.nickname" placeholder="请输入昵称" :maxlength="20" show-count/>
+            <a-input v-model:value="sysUserDTO.nickname" placeholder="请输入昵称" :maxlength="20" show-count allowClear/>
           </a-form-item>
-            <a-form-item label="性别">
-              <a-radio-group v-model:value="sysUserDTO.gender">
-                <a-radio :value="item.value" v-for="item in user_gender">{{item.label}}</a-radio>
-              </a-radio-group>
-            </a-form-item>
-            <a-form-item label="状态">
-              <a-radio-group v-model:value="sysUserDTO.status">
-                <a-radio :value="item.value" v-for="item in sys_status">{{item.label}}</a-radio>
-              </a-radio-group>
-            </a-form-item>
+          <a-form-item label="性别">
+            <a-radio-group v-model:value="sysUserDTO.gender">
+              <a-radio :value="item.value" v-for="item in user_gender">{{item.label}}</a-radio>
+            </a-radio-group>
+          </a-form-item>
+          <a-form-item label="状态">
+            <a-radio-group v-model:value="sysUserDTO.status">
+              <a-radio :value="item.value" v-for="item in sys_status">{{item.label}}</a-radio>
+            </a-radio-group>
+          </a-form-item>
           <a-row>
             <a-col :span="12">
               <a-form-item label="手机号" :label-col="{span: 8}" name="phoneNumber">
-                <a-input v-model:value="sysUserDTO.phoneNumber"  placeholder="请输入手机号码"/>
+                <a-input v-model:value="sysUserDTO.phoneNumber"  placeholder="请输入手机号码" allowClear/>
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="邮箱" :label-col="{span: 8}" name="email">
-                <a-input v-model:value="sysUserDTO.email" placeholder="请输入邮箱"/>
+              <a-form-item label="邮箱" :label-col="{span: 5}" name="email">
+                <a-input v-model:value="sysUserDTO.email" placeholder="请输入邮箱" allowClear/>
               </a-form-item>
             </a-col>
           </a-row>
           <a-form-item label="备注">
-            <a-textarea v-model:value="sysUserDTO.remark" placeholder="请输入备注"></a-textarea>
+            <a-textarea v-model:value="sysUserDTO.remark" placeholder="请输入备注" allowClear :maxlength="480" show-count></a-textarea>
           </a-form-item>
         </div>
 <!--        显示权限信息-->
-        <div v-show="segmented === 'perm'">
-          <div v-show="permStep === 'dept'">
-            <a-form-item label="角色">
-              <a-select
-                  v-model:value="sysUserDTO.roleIdList"
-                  placeholder="请选择用户角色"
-                  :options="sysRoleList"
-                  mode="multiple"
-                  optionFilterProp="name"
-                  :fieldNames="{label: 'name', value: 'id'}"/>
-            </a-form-item>
-            <a-form-item label="部门" class="form-item-single-line">
-
-              <div style="margin-top: 0px">
-                <a-checkable-tag v-model:checked="deptTreeSetting.checked" @click="handleCheckedAllKeys">全选/全不选</a-checkable-tag>
-                <a-checkable-tag v-model:checked="deptTreeSetting.expand" @click="handleExpanded">展开/折叠</a-checkable-tag>
-                <a-checkable-tag v-model:checked="deptTreeSetting.checkStrictly" @click=" deptTreeSetting.checkStrictly ? sysUserDTO.deptIdList = [] : ''">父子关联</a-checkable-tag>
-              </div>
-            </a-form-item>
-            <a-form-item label=" ">
+        <div v-show="segmented === 'dept'">
+          <a-form-item label="角色">
+            <a-select
+                v-model:value="sysUserDTO.roleIdList"
+                placeholder="请选择用户角色"
+                :options="sysRoleList"
+                mode="multiple"
+                optionFilterProp="name"
+                :fieldNames="{label: 'name', value: 'id'}"/>
+          </a-form-item>
+          <a-form-item label="部门" class="form-item-single-line">
+            <div style="margin-top: 0px">
+              <a-checkable-tag v-model:checked="deptTreeSetting.checked" @click="handleCheckedAllKeys">全选/全不选</a-checkable-tag>
+              <a-checkable-tag v-model:checked="deptTreeSetting.expand" @click="handleExpanded">展开/折叠</a-checkable-tag>
+              <a-checkable-tag v-model:checked="deptTreeSetting.checkStrictly" @click=" deptTreeSetting.checkStrictly ? sysUserDTO.deptIdList = [] : ''">父子关联</a-checkable-tag>
+            </div>
+          </a-form-item>
+          <a-form-item label=" ">
 <!--              部门树-->
-              <div class="dept-card">
-                <a-input placeholder="检索部门树" v-model:value="deptKeyword" style="margin-bottom: 8px; height: 28px"/>
-                <a-tree
-                    :tree-data="sysDeptList"
-                    :field-names="{children:'children', title:'name', key: 'id' }"
-                    :check-strictly="!deptTreeSetting.checkStrictly"
-                    v-model:checked-keys="sysUserDTO.deptIdList"
-                    v-model:expanded-keys="deptTreeSetting.expandKeys"
-                    :selectable="false"
-                    checkable
-                >
-                  <template  #title="{ name }">
-                    <span v-if="name.indexOf(deptKeyword) > -1">
-                      {{name.substring(0,name.indexOf(deptKeyword))}}
-                      <span :style="'color:' + themeStore.colorPrimary">{{deptKeyword}}</span>
-                      {{name.substring(name.indexOf(deptKeyword) + deptKeyword.length)}}
-                    </span>
-                    <span v-else>{{ name }}</span>
-                  </template>
-                </a-tree>
-              </div>
-            </a-form-item>
-          </div>
-          <div v-show="permStep === 'post'">
-            <a-form-item>
-<!--              <template #label>-->
-<!--                <a-typography-text>默认部门<br/> 岗位</a-typography-text>-->
-<!--              </template>-->
-              <card-select
-                  :data-source="sysPostList"
-                  empty-description="请选择部门"
-                  item-key="deptId"
-                  v-model="sysUserDTO.defaultDeptId"
-                  :max-height="600"
-                  vertical
+            <div class="dept-card">
+              <a-input placeholder="检索部门树" v-model:value="deptKeyword" allowClear style="margin-bottom: 8px; height: 28px"/>
+              <a-tree
+                  :tree-data="sysDeptList"
+                  :field-names="{children:'children', title:'name', key: 'id' }"
+                  :check-strictly="!deptTreeSetting.checkStrictly"
+                  v-model:checked-keys="sysUserDTO.deptIdList"
+                  v-model:expanded-keys="deptTreeSetting.expandKeys"
+                  :selectable="false"
+                  checkable
               >
-                <template #content="{item, isSelected, color}">
-                  <a-flex align="center" justify="space-between">
-                    <a-typography-title :level="5" style="margin: 0">{{item.deptName}}</a-typography-title>
-                    <a-tag v-if="isSelected" :color="color">默认</a-tag>
-                  </a-flex>
-                  <div style="margin-top: 16px;">
-                    <div v-if="item.postList && item.postList.length > 0">
-                      <a-checkable-tag v-for="post in item.postList"
-                                       @change="(checked: boolean) => handleSelectPostId(post.id, checked)"
-                                       @click.stop="() => {}"
-                                       :key="post.id"
-                                       v-model:checked="post.checked">
-                        {{post.name}}
-                      </a-checkable-tag>
-                    </div>
-                    <div v-else>
-                      <a-typography-text type="secondary">当前部门下暂无岗位数据</a-typography-text>
-                    </div>
-                  </div>
+                <template  #title="{ name }">
+                  <span v-if="name.indexOf(deptKeyword) > -1">
+                    {{name.substring(0,name.indexOf(deptKeyword))}}
+                    <span :style="'color:' + themeStore.colorPrimary">{{deptKeyword}}</span>
+                    {{name.substring(name.indexOf(deptKeyword) + deptKeyword.length)}}
+                  </span>
+                  <span v-else>{{ name }}</span>
                 </template>
-              </card-select>
-            </a-form-item>
-          </div>
+              </a-tree>
+            </div>
+          </a-form-item>
+        </div>
+        <div v-show="segmented === 'post'">
+          <a-form-item>
+            <card-select
+                :data-source="sysPostList"
+                empty-description="请选择部门"
+                item-key="deptId"
+                v-model="sysUserDTO.defaultDeptId"
+                :max-height="600"
+                :loading="postLoading"
+                vertical
+            >
+              <template #content="{item, isSelected, color}">
+                <a-flex align="center" justify="space-between">
+                  <a-typography-title :level="5" style="margin: 0">{{item.deptName}}</a-typography-title>
+                  <a-tag v-if="isSelected" :color="color">默认</a-tag>
+                </a-flex>
+                <div style="margin-top: 16px;">
+                  <div v-if="item.postList && item.postList.length > 0">
+                    <a-checkable-tag v-for="post in item.postList"
+                                     @change="(checked: boolean) => handleSelectPostId(post.id, checked)"
+                                     @click.stop="() => {}"
+                                     :key="post.id"
+                                     v-model:checked="post.checked">
+                      {{post.name}}
+                    </a-checkable-tag>
+                  </div>
+                  <div v-else>
+                    <a-typography-text type="secondary">当前部门下暂无岗位数据</a-typography-text>
+                  </div>
+                </div>
+              </template>
+            </card-select>
+          </a-form-item>
         </div>
       </a-form>
       <template #footer>
-        <a-button>关 闭</a-button>
-        <a-popover content="角色&部门配置">
-          <a-button type="primary" v-show="segmented === 'perm' && permStep === 'post'" @click="permStep = 'dept'">
-            <template #icon>
-              <LeftOutlined />
-            </template>
-          </a-button>
-        </a-popover>
-        <a-button type="primary">保 存</a-button>
-        <a-popover content="岗位&默认部门配置">
-          <a-button type="primary" v-show="segmented === 'perm' && permStep === 'dept'" @click="toPostForm">
+        <a-button @click="modalActive.open = false">关 闭</a-button>
+        <a-button type="primary" @click="saveUser" :loading="modalActive.saveLoading">保 存</a-button>
+<!--        前往下一选项卡-->
+        <a-popover v-if="segmented !== 'post'"
+                   :content="segmentedOption[segmentedOption.findIndex(item => item.value === segmented) + 1]?.label">
+          <a-button v-if="segmented !== 'post'"
+                    type="primary"
+                    @click="toNextForm(segmentedOption[segmentedOption.findIndex(item => item.value === segmented) + 1]?.value)">
             <template #icon>
               <RightOutlined />
             </template>
@@ -269,7 +266,7 @@
 
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findPage, findById} from "@/api/system/user/user.ts"
+import {findPage, findById, save} from "@/api/system/user/user.ts"
 import {initDict} from "@/utils/dict"
 import {reactive, ref, watch} from "vue";
 import DictTag from "@/components/dict-tag/index.vue"
@@ -278,7 +275,7 @@ import dayjs from "dayjs";
 import {getDeptOption} from "@/api/system/dept/dept.ts";
 import {getRoleOption} from "@/api/system/role/role.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/post.ts";
-import {TreeSelect} from "ant-design-vue";
+import {message, TreeSelect} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import {flattenTreeData} from "@/utils/tree.ts";
 import type {Rule} from "ant-design-vue/es/form";
@@ -289,6 +286,7 @@ const SHOW_ALL = TreeSelect.SHOW_ALL;
 // 没有进行双向绑定的单位树
 let originDeptTree: Array<SysDept> = ([])
 
+// 列表查询
 const initSearch = () => {
   const userColumn: ColumnsType = [
     {
@@ -336,7 +334,6 @@ const initSearch = () => {
     deptIdList: [],
     nickname: undefined,
     username: undefined,
-    phoneNumber: undefined,
     status: undefined,
     createTimeList: [],
     pageNum: 1,
@@ -344,28 +341,52 @@ const initSearch = () => {
   })
 
   const userList = ref<SysUserVO[]>([])
+  const userTotal = ref<Number>(0)
+  const queryLoading = ref<boolean>(false)
 
-  const total = ref<Number>(0)
-
+  // 列表页查询
   const initPage = async () => {
+    queryLoading.value = true
     const resp = await findPage(userQuery.value)
     if (resp.code === 200) {
       userList.value = resp.data.records
-      total.value = resp.data.total
+      userTotal.value = resp.data.total
     }
+    queryLoading.value = false
   }
 
-  initPage()
+  // 条件检索初始页码设置为0
+  const queryPage = async () => {
+    userQuery.value.pageNum = 1
+    await initPage()
+  }
+
+  // 清空选项
+  const resetPage = async () => {
+    userQuery.value = {
+      deptIdList: [],
+      nickname: undefined,
+      username: undefined,
+      status: undefined,
+      createTimeList: [],
+      pageNum: 1,
+      pageSize: 10
+    }
+    await initPage()
+  }
   return {
     userColumn,
     userQuery,
     userList,
-    total
+    userTotal,
+    queryLoading,
+    initPage,
+    queryPage,
+    resetPage
   }
 }
-
-const {userColumn,userQuery,userList,total } = initSearch()
-
+const {userColumn,userQuery,userList,userTotal,queryLoading,initPage,queryPage,resetPage } = initSearch()
+initPage()
 
 // 数据保存相关
 const initSave = () => {
@@ -399,18 +420,21 @@ const initSave = () => {
   })
 
   // 表单滑块选项
-  const segmentedOption = reactive([{
+  const segmentedOption = reactive<Array<{
+    value: 'basic' | 'dept' | 'post',
+    label: string
+  }>>([{
     value: 'basic',
     label: '基础信息',
   }, {
-    value: 'perm',
-    label: '权限信息'
+    value: 'dept',
+    label: '角色&部门'
+  }, {
+    value: 'post',
+    label: '岗位&默认部门'
   }])
 
   const segmented = ref<string>(segmentedOption[0].value)
-
-  // 权限步骤
-  const permStep = ref<'dept'|'post'>('dept')
 
   // modal 相关属性定义
   type modalActiveType = {
@@ -438,6 +462,21 @@ const initSave = () => {
     }
   }
 
+  // 切换分段器
+  const changeSegmented = (value: string) => {
+    if (value === 'post') {
+      toPostForm()
+    }
+  }
+
+  // 前往下一表单页面
+  const toNextForm = (nextSegmentedValue: 'basic' | 'dept' | 'post') => {
+    if (nextSegmentedValue === 'post') {
+      toPostForm()
+    }
+    segmented.value = nextSegmentedValue
+  }
+
   // 重置表单
   const resetForm = () => {
     // 重置表单
@@ -451,6 +490,28 @@ const initSave = () => {
     // 重制部门岗位
     initPostByDeptIds([])
     initPostTag([])
+  }
+
+  // 保存用户信息
+  const saveUser = async () => {
+    try {
+      await formRef.value.validate()
+      modalActive.saveLoading = true
+      sysUserDTO.value.deptIdList = handleDeptIdList()
+      const resp = await save(sysUserDTO.value)
+      if (resp.code === 200) {
+        message.success(resp.msg)
+        modalActive.open = false
+        await initPage()
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (error) {
+      // 出现表单验证信息后跳转到表单首页
+      toNextForm('basic')
+    } finally {
+      modalActive.saveLoading = false
+    }
   }
 
   // 根据id查询用户信息
@@ -478,35 +539,21 @@ const initSave = () => {
     sysUserDTO,
     userRules,
     formRef,
-    permStep,
     resetForm,
     handleModelStatus,
-    getUserInfo
+    getUserInfo,
+    toNextForm,
+    changeSegmented,
+    saveUser
   }
 
 }
-const {modalActive,segmented,segmentedOption,sysUserDTO,userRules,formRef,permStep,handleModelStatus,getUserInfo} = initSave()
+const {modalActive,segmented,segmentedOption,sysUserDTO,userRules,formRef,handleModelStatus,getUserInfo,toNextForm,changeSegmented,saveUser} = initSave()
 
-// 加载表单需要的选项 角色/部门/岗位
-const initOptions = () => {
+// 加载角色
+const initRoleData = () => {
   // 角色信息
   const sysRoleList = ref<Array<SysRole>>([])
-
-  type PostOptional = {
-    id?: string,
-    name?: string,
-    checked: boolean
-  }
-
-  type PostType = {
-    deptName: string,
-    deptId: string,
-    postList: Array<PostOptional>,
-  }
-
-  // 岗位信息
-  const sysPostList = ref<Array<PostType>>([])
-
   // 加载角色信息
   const initRole = async () => {
     const resp = await getRoleOption()
@@ -514,144 +561,14 @@ const initOptions = () => {
       sysRoleList.value = resp.data
     }
   }
-
-  // 加载岗位信息，通过 选中部门/表单回显写入部门id 进行加载
-  const initPostByDeptIdOption = async (deptIds: string[], option: Array<{label: string, value: string}>) => {
-    // 记录原始部门ID集合
-    const originDeptIds = sysPostList.value.map(post => post.deptId)
-    // 删除没有被选中的id
-    originDeptIds.forEach(deptId => {
-      if (!deptIds.includes(deptId)) {
-        const index = sysPostList.value.findIndex(item => item.deptId === deptId)
-        if (index > -1) {
-          sysPostList.value.splice(index, 1)
-        }
-      }
-    })
-
-    // 如果新旧ID集合长度相同，直接返回
-    if (deptIds.length === sysPostList.value.length) {
-      return;
-    }
-
-    // 新选中的部门id集合
-    const newDeptIds = deptIds.filter(item => !originDeptIds.includes(item))
-
-    // 后端查询新部门及岗位数据
-    const resp = await getPostOptionByDeptId(newDeptIds)
-    if (resp.code === 200) {
-      const data = resp.data
-      newDeptIds.forEach(deptId => {
-        sysPostList.value.push({
-          deptId: deptId,
-          deptName: cloneDeep(option).find((item:{label: string, value: string}) => item.value === deptId).label,
-          postList: sysPostsToPostOptional(data[deptId])
-        })
-      })
-    }
-  }
-
-  // 将 SysPost 集合  转换为 PostOptional 集合
-  const sysPostsToPostOptional = (postList: Array<SysPost>): Array<PostOptional> => {
-    const resp: Array<PostOptional> = []
-    if (postList) {
-      postList.forEach(post => {
-        resp.push({
-          id: post.id,
-          name: post.name,
-          checked: false
-        })
-      })
-    }
-    return resp
-  }
-
-  // 通过选中部门加载岗位信息
-  const handleChangeDept = async (value: Array<string>, label: Array<string>) => {
-    const option:Array<{
-      value: string,
-      label: string
-    }> = []
-    for (let i = 0; i < value.length; i++) {
-      option.push({
-        value: value[i],
-        label: label[i]
-      })
-    }
-
-    if (value.length > 0) {
-      await initPostByDeptIdOption(value, option)
-    } else {
-      sysPostList.value = []
-    }
-  }
-
-  // 通过表单回写部门id加载岗位信息
-  const initPostByDeptIds = async (value: Array<string>) => {
-    const flattenTree:Array<SysDept> = []
-    flattenTreeData(sysDeptList.value,flattenTree)
-    const labelList: Array<string> = []
-    value.forEach(item => {
-      flattenTree.forEach(dept => {
-        if (dept.id === item && dept.name) {
-          labelList.push(dept.name)
-        }
-      })
-    })
-    await handleChangeDept(value, labelList)
-  }
-
-  // 处理选中/取消选中 岗位标签
-  const handleSelectPostId = (tag: string, checked: boolean) => {
-    // 初始化 postIdList 为数组，如果它还没有被初始化
-    if (!sysUserDTO.value.postIdList) {
-      sysUserDTO.value.postIdList = [];
-    }
-
-    // 如果 checked 为 true，则添加 tag，否则删除它
-    if (checked) {
-      // 确保 tag 不会被重复添加
-      if (!sysUserDTO.value.postIdList.includes(tag)) {
-        sysUserDTO.value.postIdList.push(tag);
-      }
-    } else {
-      // 找到 tag 的索引并将其删除
-      const index = sysUserDTO.value.postIdList.indexOf(tag);
-      if (index > -1) {
-        sysUserDTO.value.postIdList.splice(index, 1);
-      }
-    }
-  };
-
-  // 回显岗位标签
-  const initPostTag = (postIds: Array<String>) => {
-    // 部门岗位中postId 与 postIds 相同时 checked 设置为true
-    const postDeptOption = sysPostList.value
-    postDeptOption.forEach(postDept => {
-      if (postDept.postList && postDept.postList.length > 0) {
-        postDept.postList.forEach(post => {
-          if (post.id && postIds.includes(post.id)) {
-            post.checked = true
-          }
-        })
-      }
-    })
-  }
-
   initRole()
   return {
-    sysRoleList,
-    sysPostList,
-    handleChangeDept,
-    handleSelectPostId,
-    initPostByDeptIds,
-    initPostTag
+    sysRoleList
   }
 }
+const {sysRoleList} = initRoleData()
 
-const {sysRoleList,sysPostList,handleChangeDept,handleSelectPostId,initPostByDeptIds,initPostTag} = initOptions()
-
-// 处理部门树数据
+// 加载部门
 const initDeptData = () => {
   // 部门信息
   const sysDeptList = ref<Array<SysDept>>([])
@@ -733,26 +650,182 @@ const initDeptData = () => {
     deptTreeSetting,
     deptKeyword,
     flattenDeptList,
+    deptIds,
     handleExpanded,
     handleCheckedAllKeys,
     filterTreeByLabel
   }
 }
+const {sysDeptList,deptTreeSetting,deptKeyword,flattenDeptList,deptIds,handleExpanded, handleCheckedAllKeys,filterTreeByLabel} = initDeptData()
 
-const {sysDeptList,deptTreeSetting,deptKeyword,flattenDeptList,handleExpanded, handleCheckedAllKeys,filterTreeByLabel} = initDeptData()
+// 加载岗位
+const initPostData = () => {
 
-const toPostForm = () => {
-  const obj = sysUserDTO.value.deptIdList as {checked: string[]} | string[]
-  let ids = []
-  if ((obj as {checked: string[]}).checked) {
-    ids = (obj as {checked: string[]}).checked
-  } else {
-    ids = (obj as string[])
+  type PostOptional = {
+    id?: string,
+    name?: string,
+    checked: boolean
   }
-  initPostByDeptIds(ids)
-  permStep.value = 'post'
-}
 
+  type PostType = {
+    deptName: string,
+    deptId: string,
+    postList: Array<PostOptional>,
+  }
+
+  // 岗位信息
+  const sysPostList = ref<Array<PostType>>([])
+  // 加载loading
+  const postLoading = ref<boolean>(false)
+
+  // 进入岗位页面加载部门
+  const toPostForm = async () => {
+    try {
+      postLoading.value = true
+      await initPostByDeptIds(handleDeptIdList())
+    } catch (error) {
+      message.error(error.message)
+    } finally {
+      postLoading.value = false
+    }
+  }
+
+  // 将 {checked: string[]} 或 string[] 数据处理为统一 数组
+  const handleDeptIdList = (): string[] => {
+    const obj = sysUserDTO.value.deptIdList as {checked: string[]} | string[]
+    let ids = []
+    if ((obj as {checked: string[]}).checked) {
+      ids = (obj as {checked: string[]}).checked
+    } else {
+      ids = (obj as string[])
+    }
+    return ids
+  }
+
+  // 通过部门id获取部门名称用于回显
+  const initPostByDeptIds = async (value: Array<string>) => {
+    const option:Array<{
+      value: string,
+      label: string
+    }> = []
+    // 组合option
+    value.forEach(item => {
+      flattenDeptList.forEach(dept => {
+        if (dept.id === item && dept.name) {
+          option.push({
+            value: dept.id,
+            label: dept.name
+          })
+        }
+      })
+    })
+
+    if (value.length > 0) {
+      await initPostByDeptIdOption(value, option)
+    } else {
+      sysPostList.value = []
+    }
+  }
+
+  // 加载岗位信息，通过 选中部门/表单回显写入部门id 进行加载
+  const initPostByDeptIdOption = async (deptIds: string[], option: Array<{label: string, value: string}>) => {
+    // 记录原始部门ID集合
+    const originDeptIds = sysPostList.value.map(post => post.deptId)
+    // 删除没有被选中的id
+    originDeptIds.forEach(deptId => {
+      if (!deptIds.includes(deptId)) {
+        const index = sysPostList.value.findIndex(item => item.deptId === deptId)
+        if (index > -1) {
+          sysPostList.value.splice(index, 1)
+        }
+      }
+    })
+
+    // 如果新旧ID集合长度相同，直接返回
+    if (deptIds.length === sysPostList.value.length) {
+      return;
+    }
+
+    // 新选中的部门id集合
+    const newDeptIds = deptIds.filter(item => !originDeptIds.includes(item))
+
+    // 后端查询新部门及岗位数据
+    const resp = await getPostOptionByDeptId(newDeptIds)
+    if (resp.code === 200) {
+      const data = resp.data
+      newDeptIds.forEach(deptId => {
+        sysPostList.value.push({
+          deptId: deptId,
+          deptName: cloneDeep(option).find((item:{label: string, value: string}) => item.value === deptId).label,
+          postList: sysPostsToPostOptional(data[deptId])
+        })
+      })
+    }
+  }
+
+  // 将 SysPost 集合  转换为 PostOptional 集合
+  const sysPostsToPostOptional = (postList: Array<SysPost>): Array<PostOptional> => {
+    const resp: Array<PostOptional> = []
+    if (postList) {
+      postList.forEach(post => {
+        resp.push({
+          id: post.id,
+          name: post.name,
+          checked: false
+        })
+      })
+    }
+    return resp
+  }
+
+  // 处理选中/取消选中 岗位标签
+  const handleSelectPostId = (tag: string, checked: boolean) => {
+    // 初始化 postIdList 为数组，如果它还没有被初始化
+    if (!sysUserDTO.value.postIdList) {
+      sysUserDTO.value.postIdList = [];
+    }
+
+    // 如果 checked 为 true，则添加 tag，否则删除它
+    if (checked) {
+      // 确保 tag 不会被重复添加
+      if (!sysUserDTO.value.postIdList.includes(tag)) {
+        sysUserDTO.value.postIdList.push(tag);
+      }
+    } else {
+      // 找到 tag 的索引并将其删除
+      const index = sysUserDTO.value.postIdList.indexOf(tag);
+      if (index > -1) {
+        sysUserDTO.value.postIdList.splice(index, 1);
+      }
+    }
+  };
+
+  // 回显岗位标签
+  const initPostTag = (postIds: Array<String>) => {
+    // 部门岗位中postId 与 postIds 相同时 checked 设置为true
+    const postDeptOption = sysPostList.value
+    postDeptOption.forEach(postDept => {
+      if (postDept.postList && postDept.postList.length > 0) {
+        postDept.postList.forEach(post => {
+          if (post.id && postIds.includes(post.id)) {
+            post.checked = true
+          }
+        })
+      }
+    })
+  }
+
+  return {
+    sysPostList,
+    postLoading,
+    initPostTag,
+    toPostForm,
+    handleSelectPostId,
+    initPostByDeptIds,
+    handleDeptIdList
+  }
+}
+const {sysPostList, postLoading, initPostTag, toPostForm ,handleSelectPostId,initPostByDeptIds,handleDeptIdList} = initPostData()
 
 // 监听关键词筛选
 watch(() => deptKeyword.value, (value) => {
@@ -770,7 +843,7 @@ watch(() => deptKeyword.value, (value) => {
   }
 })
 
-// 坚挺反向选中标签
+// 监听反向选中标签
 watch(() => sysUserDTO.value.deptIdList, (value) => {
   let ids: string[] = [];
 
@@ -784,7 +857,7 @@ watch(() => sysUserDTO.value.deptIdList, (value) => {
 
   // 更新 deptTreeSetting 的 checked 状态
   deptTreeSetting.value.checked = ids.length === flattenDeptList.length;
-});
+})
 </script>
 
 <style>

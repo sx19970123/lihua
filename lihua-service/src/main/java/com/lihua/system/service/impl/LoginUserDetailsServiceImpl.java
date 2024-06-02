@@ -30,13 +30,10 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        // 查询用户信息
-        SysUserVO sysUserVO = sysUserMapper.selectByUsername(username);
+        SysUserVO sysUserVO = sysUserMapper.loginSelect(username);
         if (sysUserVO == null) {
             throw new UsernameNotFoundException("用户名未找到");
         }
-
         return new LoginUser(sysUserVO);
     }
 }

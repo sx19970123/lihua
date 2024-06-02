@@ -1,28 +1,31 @@
 <template>
-  <a-flex :gap="props.gap" :wrap="props.vertical ? '' : 'wrap'" :vertical="props.vertical" class="scrollbar" :style="{'max-height': props.vertical ? props.maxHeight + 'px' : 'none'}">
-    <div class="select-card"
-         v-if="props.dataSource && props.dataSource.length > 0"
-         v-for="(item,index) in props.dataSource"
-         @click.stop="handleClickCard(item)"
-         :style="item[props.itemKey] && activeCardValueList.includes(item[props.itemKey]) ? bodyStyle : ''">
-<!--      具名插槽 content-->
-<!--      返回参数 dataSource：传入的option-->
-<!--      返回参数 item：option遍历出的元素-->
-<!--      返回参数 index：option遍历索引-->
-<!--      返回参数 isSelected：是否为当前选中元素-->
-<!--      返回参数 color：当前主题颜色-->
-      <slot name="content"
-            :dataSource="props.dataSource"
-            :item="item"
-            :index="index"
-            :isSelected="activeCardValueList.includes(item[props.itemKey])"
-            :color="themeStore.colorPrimary"/>
-    </div>
-<!--    空状态-->
-    <div class="select-card" v-else>
-      <a-empty :description="props.emptyDescription" />
-    </div>
-  </a-flex>
+  <a-spin :spinning="props.loading">
+    <a-flex :gap="props.gap" :wrap="props.vertical ? '' : 'wrap'" :vertical="props.vertical" class="scrollbar" :style="{'max-height': props.vertical ? props.maxHeight + 'px' : 'none'}">
+      <div class="select-card"
+           v-if="props.dataSource && props.dataSource.length > 0"
+           v-for="(item,index) in props.dataSource"
+           @click.stop="handleClickCard(item)"
+           :style="item[props.itemKey] && activeCardValueList.includes(item[props.itemKey]) ? bodyStyle : ''">
+        <!--      具名插槽 content-->
+        <!--      返回参数 dataSource：传入的option-->
+        <!--      返回参数 item：option遍历出的元素-->
+        <!--      返回参数 index：option遍历索引-->
+        <!--      返回参数 isSelected：是否为当前选中元素-->
+        <!--      返回参数 color：当前主题颜色-->
+        <slot name="content"
+              :dataSource="props.dataSource"
+              :item="item"
+              :index="index"
+              :isSelected="activeCardValueList.includes(item[props.itemKey])"
+              :color="themeStore.colorPrimary"/>
+      </div>
+      <!--    空状态-->
+      <div class="select-card" v-else>
+        <a-empty :description="props.emptyDescription" />
+      </div>
+    </a-flex>
+  </a-spin>
+
 </template>
 
 <script setup lang="ts">
@@ -67,6 +70,11 @@ const props = defineProps({
   // 空状态描述
   emptyDescription: {
     type: String
+  },
+  // 加载中
+  loading: {
+    type: Boolean,
+    default: false
   },
   // 定义 v-model
   modelValue: {}
