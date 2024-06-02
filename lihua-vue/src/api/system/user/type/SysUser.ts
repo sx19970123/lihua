@@ -1,4 +1,4 @@
-interface SysUser {
+export interface SysUser {
 
     /**
      * 主键id
@@ -56,11 +56,11 @@ interface SysUser {
     remark?: string;
 }
 
-interface SysUserVO extends SysUser{
+export interface SysUserVO extends SysUser{
     deptList?: string[]
 }
 
-interface SysUserDTO extends SysUser {
+export interface SysUserDTO extends SysUser {
 
     /**
      * 部门id集合

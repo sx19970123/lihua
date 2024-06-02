@@ -267,6 +267,7 @@ import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import { useThemeStore } from "@/stores/modules/theme";
+import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
 const themeStore = useThemeStore()
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {

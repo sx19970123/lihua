@@ -1,4 +1,4 @@
-interface SysDictDataType {
+export interface SysDictDataType {
   /**
    * 主键id
    */
@@ -56,7 +56,7 @@ interface SysDictDataType {
 }
 
 
-interface SysDictDataTypeDTO {
+export interface SysDictDataTypeDTO {
   /**
    * 字典类型编码
    */

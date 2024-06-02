@@ -17,7 +17,7 @@ const { setToken,removeToken } = token
 /**
  * 定义 userStore 的用户信息
  */
-interface UserStoreType {
+type UserStoreType = {
     // 用户昵称
     name: string | null,
     // 用户名

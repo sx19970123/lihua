@@ -280,6 +280,10 @@ import {message, TreeSelect} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import {flattenTreeData} from "@/utils/tree.ts";
 import type {Rule} from "ant-design-vue/es/form";
+import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
+import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+import type {SysRole} from "@/api/system/role/type/SysRole.ts";
+import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 const themeStore = useThemeStore();
 const {sys_status,user_gender} = initDict("sys_status", "user_gender")
@@ -452,7 +456,7 @@ const initSave = () => {
   })
 
   // 修改模态框状态等信息
-  const handleModelStatus = (title?:string, defaultDeptId: string) => {
+  const handleModelStatus = (title?:string) => {
     modalActive.open = !modalActive.open
     if (title) {
       modalActive.title = title
@@ -685,7 +689,7 @@ const initPostData = () => {
       postLoading.value = true
       await initPostByDeptIds(handleDeptIdList())
     } catch (error) {
-      message.error(error.message)
+      console.error(error)
     } finally {
       postLoading.value = false
     }

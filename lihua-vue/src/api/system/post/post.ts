@@ -1,5 +1,6 @@
 import request from "@/utils/request.ts";
 import type {MapResponseType, PageResponseType} from "@/api/type.ts";
+import type {SysPost, SysPostDTO} from "@/api/system/post/type/SysPost.ts";
 
 /**
  * 分页查询

@@ -1,4 +1,5 @@
 import request from "@/utils/request.ts";
+import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 
 /**
  * 列表查询

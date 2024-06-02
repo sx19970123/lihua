@@ -23,10 +23,12 @@ import {changeLanguage} from "@/utils/i18n";
 const selectKeys = ref<Array<string>>([localStorage.getItem("language") || 'cn'])
 const { sys_language } = initDict("sys_language")
 // 修改语言
-const handleChangeLanguage = (value: string) => {
-  changeLanguage(value)
-  localStorage.setItem("language",value)
-  selectKeys.value = [value]
+const handleChangeLanguage = (value?: string) => {
+  if (value) {
+    changeLanguage(value)
+    localStorage.setItem("language",value)
+    selectKeys.value = [value]
+  }
 }
 </script>
 

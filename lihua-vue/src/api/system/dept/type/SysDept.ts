@@ -1,4 +1,4 @@
-interface SysDept {
+export interface SysDept {
   /**
    * 主键id
    */

@@ -1,4 +1,4 @@
-interface SysMenu {
+export interface SysMenu {
   /**
    * 主键
    */

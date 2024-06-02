@@ -175,6 +175,8 @@ import DictTag from "@/components/dict-tag/index.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTreeData} from "@/utils/tree.ts";
 import {message} from "ant-design-vue";
+import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+import type {SysPost, SysPostDTO} from "@/api/system/post/type/SysPost.ts";
 const {sys_status} = initDict("sys_status")
 const route = useRoute();
 

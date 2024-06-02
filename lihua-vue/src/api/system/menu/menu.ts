@@ -1,4 +1,5 @@
 import request from "@/utils/request";
+import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
 
 /**
  * 列表查询

@@ -1,4 +1,4 @@
-interface SysRole {
+export interface SysRole {
   /**
    * 主键
    */
@@ -27,7 +27,7 @@ interface SysRole {
 
 
 
-interface SysRoleDTO {
+export interface SysRoleDTO {
   /**
    * 角色名称
    */

@@ -32,20 +32,13 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import dictTag from "@/components/dict-tag/index.vue"
-// 定义字典选项对象的类型
-interface DictOption {
-  value: string
-  label: string
-  tagStyle?: string
-  bordered?: boolean
-  children: Array<DictOption>
-}
+import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType.ts";
 
 // 从父组件接收参数
 const props = defineProps({
   // 字典data集合
   dictDataOption: {
-    type: Array as () => Array<DictOption>,
+    type: Array as () => Array<SysDictDataType>,
     required: true
   },
   // 被翻译的字典值

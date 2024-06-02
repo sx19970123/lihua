@@ -177,6 +177,9 @@ import {cloneDeep} from "lodash-es";
 import type {Rule} from "ant-design-vue/es/form";
 import {useRouter} from "vue-router";
 import {flattenTreeData} from "@/utils/tree.ts";
+import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+import type {SysPost} from "@/api/system/post/type/SysPost.ts";
+import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
 const {sys_status} = initDict("sys_status")
 const router = useRouter()
 const initSearch = () => {

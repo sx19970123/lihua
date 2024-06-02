@@ -168,6 +168,8 @@ import type {Rule} from "ant-design-vue/es/form";
 import {flattenTreeData} from "@/utils/tree.ts";
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
+import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
+import type {SysRole, SysRoleDTO} from "@/api/system/role/type/SysRole.ts";
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
 // 列表查询相关
 const initSearch = () => {

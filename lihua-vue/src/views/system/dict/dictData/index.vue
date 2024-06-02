@@ -197,6 +197,7 @@ import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import {initDict, reLoadDict} from "@/utils/dict";
 import dictTag from "@/components/dict-tag/index.vue"
+import type {SysDictDataType, SysDictDataTypeDTO} from "@/api/system/dict/type/SysDictDataType.ts";
 
 const props = defineProps<{
   typeCode: string,
@@ -522,7 +523,7 @@ const initSave = () => {
   const handleReloadDictData = (dictTypeCode: string) => {
     if (dictTypeCode === "sys_dict_tag_style") {
       reLoadDict(dictTypeCode).then(resp => {
-        sys_dict_tag_style.value = resp
+        sys_dict_tag_style.value = resp as Array<SysDictDataType>
       })
     }
   }

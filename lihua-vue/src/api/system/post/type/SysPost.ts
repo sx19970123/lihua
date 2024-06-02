@@ -1,4 +1,4 @@
-interface SysPost {
+export interface SysPost {
     /**
      * 主键
      */
@@ -65,14 +65,14 @@ interface SysPost {
     delFlag?: string;
 }
 
-interface SysDeptVO extends SysPost{
+export interface SysDeptVO extends SysPost{
     /**
      * 所属部门名称
      */
     deptName?: string
 }
 
-interface SysPostDTO {
+export interface SysPostDTO {
 
     /**
      * 岗位状态

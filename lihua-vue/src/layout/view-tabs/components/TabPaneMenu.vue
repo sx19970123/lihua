@@ -65,7 +65,9 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
   const tab = tabPane.tab
   switch (key) {
     case "reload": {
-      router.replace({ path: route.path, params: route.params, query: route.query, force: true })
+      if (route.name) {
+        router.replace({name: route.name, params: route.params, query: route.query})
+      }
       break
     }
     case "close-left": {
