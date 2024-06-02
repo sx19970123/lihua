@@ -31,6 +31,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder
                         .getContext()
                         .setAuthentication(new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities()));
+                // 判断过期时间进行重新缓存
+                LoginUserMgmt.verifyLoginUserCache();
             } else {
                 throw new ServletException("认证信息过期失效");
             }

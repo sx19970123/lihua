@@ -1,12 +1,10 @@
-package com.lihua.model.security;
+package com.lihua.system.model;
 
 import com.lihua.model.BaseEntity;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**

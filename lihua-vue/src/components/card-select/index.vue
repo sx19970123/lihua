@@ -1,5 +1,5 @@
 <template>
-  <a-spin :spinning="props.loading">
+  <a-spin :spinning="loading">
     <a-flex :gap="props.gap" :wrap="props.vertical ? '' : 'wrap'" :vertical="props.vertical" class="scrollbar" :style="{'max-height': props.vertical ? props.maxHeight + 'px' : 'none'}">
       <div class="select-card"
            v-if="props.dataSource && props.dataSource.length > 0"
@@ -230,7 +230,7 @@ watch(() => props.dataSource, () => {
     }
   }
 
-},{deep: true})
+})
 </script>
 
 <style>

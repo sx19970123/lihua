@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Data
 @Accessors(chain = true)
-public class MetaVO implements Serializable {
+public class Meta implements Serializable {
 
     // 导航标题
     private String label;

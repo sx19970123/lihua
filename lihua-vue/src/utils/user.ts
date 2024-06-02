@@ -31,11 +31,11 @@ export const reloadLoginUser = () => {
       // 初始化用户菜单数据
       permissionStore.initMenu(metaRouterList, staticRoutes as any[])
       // 初始化totalViewTabs数据
-      viewTabsStore.initTotalViewTabs(resp.data?.viewTabVOList || [], staticRoutes as any[])
+      viewTabsStore.initTotalViewTabs(resp.data?.viewTabList || [], staticRoutes as any[])
       // 设置最近使用组件的缓存key值
       viewTabsStore.setViewCacheKey(resp.data?.username || '')
       // 初始化系统主题
-      themeStore.init(resp.data.sysUserVO.theme)
+      themeStore.init(resp.data.user.theme)
       // 清空字典store
       dictStore.clearDict()
       // 清空组件keep-alive

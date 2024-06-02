@@ -3,8 +3,8 @@ package com.lihua.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.exception.ServiceException;
+import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
-import com.lihua.model.security.SysUserVO;
 import com.lihua.system.entity.SysUser;
 import com.lihua.system.mapper.SysUserMapper;
 import com.lihua.system.service.SysProfileService;
@@ -27,71 +27,71 @@ public class SysProfileServiceImpl implements SysProfileService {
     @Override
     public String saveBasics(SysUser sysUser) {
         // 获取当前登陆信息
-        SysUserVO sysUserVO = LoginUserContext.getLoginUser().getSysUserVO();
+        CurrentUser currentUser = LoginUserContext.getLoginUser().getUser();
         // 验证手机号码、邮箱
-        checkPhoneNumber(sysUser.getPhoneNumber(),sysUserVO.getId());
-        checkEmailNumber(sysUser.getEmail(),sysUserVO.getId());
+        checkPhoneNumber(sysUser.getPhoneNumber(),currentUser.getId());
+        checkEmailNumber(sysUser.getEmail(),currentUser.getId());
 
         // 修改
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda()
-                .eq(SysUser::getId,sysUserVO.getId())
+                .eq(SysUser::getId,currentUser.getId())
                 .set(SysUser::getAvatar,sysUser.getAvatar())
                 .set(SysUser::getNickname,sysUser.getNickname())
                 .set(SysUser::getPhoneNumber,sysUser.getPhoneNumber())
                 .set(SysUser::getEmail,sysUser.getEmail())
                 .set(SysUser::getGender,sysUser.getGender())
                 .set(SysUser::getUpdateTime, DateUtils.now())
-                .set(SysUser::getUpdateId,sysUserVO.getId());
+                .set(SysUser::getUpdateId,currentUser.getId());
 
         int update = sysUserMapper.update(updateWrapper);
         // 更新缓存
         if (update == 1) {
-            sysUserVO.setAvatar(sysUser.getAvatar());
-            sysUserVO.setEmail(sysUser.getEmail());
-            sysUserVO.setPhoneNumber(sysUser.getPhoneNumber());
-            sysUserVO.setGender(sysUser.getGender());
-            sysUserVO.setNickname(sysUser.getNickname());
+            currentUser.setAvatar(sysUser.getAvatar());
+            currentUser.setEmail(sysUser.getEmail());
+            currentUser.setPhoneNumber(sysUser.getPhoneNumber());
+            currentUser.setGender(sysUser.getGender());
+            currentUser.setNickname(sysUser.getNickname());
             LoginUser loginUser = LoginUserContext.getLoginUser();
-            loginUser.setSysUserVO(sysUserVO);
+            loginUser.setUser(currentUser);
             LoginUserMgmt.setLoginUserCache(loginUser);
         }
 
-        return sysUserVO.getId();
+        return currentUser.getId();
     }
 
     @Override
     public String updatePassword(String newPassword) {
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         LoginUser loginUser = LoginUserContext.getLoginUser();
-        SysUserVO sysUserVO = loginUser.getSysUserVO();
+        CurrentUser currentUser = loginUser.getUser();
         String password = SecurityUtils.encryptPassword(newPassword);
-        updateWrapper.lambda().eq(SysUser::getId,sysUserVO.getId())
+        updateWrapper.lambda().eq(SysUser::getId,currentUser.getId())
                 .set(SysUser::getPassword, password)
                 .set(SysUser::getUpdateTime, LocalDateTime.now());
 
         int update = sysUserMapper.update(updateWrapper);
         if (update == 1) {
-            sysUserVO.setPassword(password);
+            currentUser.setPassword(password);
             LoginUserMgmt.setLoginUserCache(loginUser);
         }
-        return sysUserVO.getId();
+        return currentUser.getId();
     }
 
     @Override
     public String saveTheme(String theme) {
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         LoginUser loginUser = LoginUserContext.getLoginUser();
-        SysUserVO sysUserVO = loginUser.getSysUserVO();
-        updateWrapper.lambda().eq(SysUser::getId,sysUserVO.getId())
+        CurrentUser currentUser = loginUser.getUser();
+        updateWrapper.lambda().eq(SysUser::getId,currentUser.getId())
                 .set(SysUser::getTheme,theme)
                 .set(SysUser::getUpdateTime, LocalDateTime.now());
         int update = sysUserMapper.update(updateWrapper);
         if (update == 1) {
-            sysUserVO.setTheme(theme);
+            currentUser.setTheme(theme);
             LoginUserMgmt.setLoginUserCache(loginUser);
         }
-        return sysUserVO.getId();
+        return currentUser.getId();
     }
 
 

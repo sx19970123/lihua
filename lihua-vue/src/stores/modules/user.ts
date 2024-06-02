@@ -89,12 +89,12 @@ export const useUserStore = defineStore('user', {
             return new Promise((resolve, reject) => {
                 getProfileInfo().then((resp: ResponseType<UserInfoType>) => {
                     if (resp.code === 200) {
-                        const userInfo = resp.data.sysUserVO
+                        const userInfo = resp.data.user
                         this.$state.userInfo = userInfo
                         this.$state.name = userInfo.nickname
                         this.$state.avatar = userInfo.avatar ? JSON.parse(userInfo.avatar) : {type: 'text', backgroundColor: 'rgb(191, 191, 191)', value: userInfo.nickname, url: ''}
                         this.$state.username = userInfo.username
-                        this.$state.roles = resp.data.sysRoleList.map(role => role.code)
+                        this.$state.roles = resp.data.roleList.map(role => role.code)
                         this.$state.permissions = resp.data.permissionList.map(permission => permission.authority)
                         this.handleAvatar()
                         resolve(resp)

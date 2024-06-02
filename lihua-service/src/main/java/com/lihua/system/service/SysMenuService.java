@@ -1,6 +1,6 @@
 package com.lihua.system.service;
 
-import com.lihua.model.security.RouterVO;
+import com.lihua.model.security.CurrentRouter;
 import com.lihua.system.entity.SysMenu;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public interface SysMenuService {
      * 用户登录时通过 id获取用户菜单信息
      * @return
      */
-    List<RouterVO> selectSysMenuByLoginUserId(String userId);
+    List<CurrentRouter> selectSysMenuByLoginUserId(String userId);
 
     /**
      * 获取菜单树Option

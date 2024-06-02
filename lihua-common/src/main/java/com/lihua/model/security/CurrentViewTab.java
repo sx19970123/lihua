@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
-public class SysViewTabVO implements Serializable {
+public class CurrentViewTab implements Serializable {
     /**
      * 页面名称
      */

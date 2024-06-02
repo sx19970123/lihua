@@ -2,9 +2,10 @@ package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.lihua.exception.ServiceException;
+import com.lihua.model.security.CurrentViewTab;
 import com.lihua.model.security.LoginUser;
-import com.lihua.model.security.RouterVO;
-import com.lihua.model.security.SysViewTabVO;
+import com.lihua.model.security.CurrentRouter;
 import com.lihua.system.entity.SysViewTab;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysViewTabMapper;
@@ -29,9 +30,13 @@ public class SysViewTabServiceImpl implements SysViewTabService {
     private SysViewTabMapper sysUserStarViewMapper;
 
     @Override
-    public List<SysViewTabVO> selectByUserId(String userId) {
+    public List<CurrentViewTab> selectByUserId(String userId) {
         // 获取当前用户菜单数据
-        List<RouterVO> routerVOList = sysMenuMapper.selectPermsByUserId(userId);
+        List<CurrentRouter> routerVOList = sysMenuMapper.selectPermsByUserId(userId);
+
+        if (routerVOList.isEmpty()) {
+            throw new ServiceException("请联系管理员分配角色&菜单");
+        }
 
         // 获取收藏菜单数据
         QueryWrapper<SysViewTab> queryWrapper = new QueryWrapper<>();
@@ -40,19 +45,19 @@ public class SysViewTabServiceImpl implements SysViewTabService {
                         routerVOList
                         .stream()
                         .filter(routerVO -> "page".equals(routerVO.getType()) || "link".equals(routerVO.getType()))
-                        .map(RouterVO::getId)
+                        .map(CurrentRouter::getId)
                         .collect(Collectors.toSet())
                 ).and(wrapper -> wrapper.eq(SysViewTab::getAffix,"1").or().eq(SysViewTab::getStar,"1"));
 
         List<SysViewTab> sysUserStarViews = sysUserStarViewMapper.selectList(queryWrapper);
 
         // 数据组合
-        List<SysViewTabVO> viewVOS = new ArrayList<>();
+        List<CurrentViewTab> viewVOS = new ArrayList<>();
         routerVOList
                 .stream()
                 .filter(route -> "page".equals(route.getType()) || "link".equals(route.getType()))
                 .forEach(route -> {
-                    SysViewTabVO sysViewTabVO = new SysViewTabVO();
+                    CurrentViewTab sysViewTabVO = new CurrentViewTab();
                     sysViewTabVO
                             .setLabel(route.getMeta().getLabel())
                             .setIcon(route.getMeta().getIcon())
@@ -75,7 +80,7 @@ public class SysViewTabServiceImpl implements SysViewTabService {
     }
 
     @Override
-    public SysViewTabVO save(SysViewTab sysStarView) {
+    public CurrentViewTab save(SysViewTab sysStarView) {
         UpdateWrapper<SysViewTab> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda()
                 .eq(SysViewTab::getUserId, LoginUserContext.getUserId())
@@ -105,9 +110,9 @@ public class SysViewTabServiceImpl implements SysViewTabService {
         }
 
         // 重新设置loginUserContext
-        SysViewTabVO starView = null;
+        CurrentViewTab starView = null;
         LoginUser loginUser = LoginUserContext.getLoginUser();
-        for (SysViewTabVO starViewVO : loginUser.getViewTabVOList()) {
+        for (CurrentViewTab starViewVO : loginUser.getViewTabList()) {
             if (starViewVO.getMenuId().equals(sysStarView.getMenuId())) {
                 starViewVO.setAffix("1".equals(sysStarView.getAffix()))
                         .setStar("1".equals(sysStarView.getStar()));

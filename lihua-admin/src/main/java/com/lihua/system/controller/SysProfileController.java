@@ -28,7 +28,7 @@ public class SysProfileController extends BaseController {
     @GetMapping("info")
     public String getUserInfo() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
-        loginUser.getSysUserVO().setPassword(null);
+        loginUser.getUser().setPassword(null);
         return success(loginUser);
     }
 
@@ -61,10 +61,10 @@ public class SysProfileController extends BaseController {
     @PostMapping("password")
     public String updatePassword(@NotNull(message = "旧密码不能为空") String oldPassword,
                                  @NotNull(message = "新密码不能为空") @Size(min = 6, max = 22, message = "密码长度为6-22字符") String newPassword) {
-        if (!SecurityUtils.matchesPassword(oldPassword,LoginUserContext.getSysUser().getPassword())) {
+        if (!SecurityUtils.matchesPassword(oldPassword,LoginUserContext.getUser().getPassword())) {
             return error(ResultCodeEnum.ERROR,"旧密码输入错误");
         }
-        if (SecurityUtils.matchesPassword(newPassword,LoginUserContext.getSysUser().getPassword())) {
+        if (SecurityUtils.matchesPassword(newPassword,LoginUserContext.getUser().getPassword())) {
             return error(ResultCodeEnum.ERROR,"新密码不能与旧密码相同");
         }
 

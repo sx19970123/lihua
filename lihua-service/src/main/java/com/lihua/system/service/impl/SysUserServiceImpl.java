@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
-import com.lihua.model.security.SysUserVO;
 import com.lihua.system.entity.SysUser;
 import com.lihua.system.entity.SysUserDept;
 import com.lihua.system.entity.SysUserPost;
@@ -12,6 +11,7 @@ import com.lihua.system.entity.SysUserRole;
 import com.lihua.system.mapper.SysUserMapper;
 import com.lihua.system.model.SysUserDTO;
 import com.lihua.system.model.SysUserDeptDTO;
+import com.lihua.system.model.SysUserVO;
 import com.lihua.system.service.SysUserDeptService;
 import com.lihua.system.service.SysUserPostService;
 import com.lihua.system.service.SysUserRoleService;
@@ -76,7 +76,7 @@ public class SysUserServiceImpl implements SysUserService {
             queryWrapper.between("create_time", sysUserDTO.getCreateTimeList().get(0),sysUserDTO.getCreateTimeList().get(1));
         }
 
-        queryWrapper.orderByDesc("id");
+        queryWrapper.eq("del_flag","0").orderByDesc("id");
 
         iPage = sysUserMapper.findPage(iPage, queryWrapper);
 
@@ -201,7 +201,7 @@ public class SysUserServiceImpl implements SysUserService {
         List<String> errMessage = new ArrayList<>();
         // 用户名
         if (StringUtils.hasText(sysUserDTO.getUsername())) {
-            Map<String, List<SysUser>> groupByUsername = sysUsers.stream().collect(Collectors.groupingBy(SysUser::getUsername));
+            Map<String, List<SysUser>> groupByUsername = sysUsers.stream().filter(user -> StringUtils.hasText(user.getUsername())).collect(Collectors.groupingBy(SysUser::getUsername));
             List<SysUser> byUsername = groupByUsername.getOrDefault(sysUserDTO.getUsername(),new ArrayList<>());
             if (!byUsername.isEmpty() && !byUsername.get(0).getId().equals(sysUserDTO.getId())) {
                 errMessage.add("用户名");
@@ -209,7 +209,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
         // 手机号码
         if (StringUtils.hasText(sysUserDTO.getPhoneNumber())) {
-            Map<String, List<SysUser>> groupByPhoneNumber = sysUsers.stream().collect(Collectors.groupingBy(SysUser::getPhoneNumber));
+            Map<String, List<SysUser>> groupByPhoneNumber = sysUsers.stream().filter(user -> StringUtils.hasText(user.getPhoneNumber())).collect(Collectors.groupingBy(SysUser::getPhoneNumber));
             List<SysUser> byPhoneNumber = groupByPhoneNumber.getOrDefault(sysUserDTO.getPhoneNumber(),new ArrayList<>());
             if (!byPhoneNumber.isEmpty() && !byPhoneNumber.get(0).getId().equals(sysUserDTO.getId())) {
                 errMessage.add("手机号码");
@@ -217,7 +217,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
         // 邮箱
         if (StringUtils.hasText(sysUserDTO.getEmail())) {
-            Map<String, List<SysUser>> groupByEmail = sysUsers.stream().collect(Collectors.groupingBy(SysUser::getEmail));
+            Map<String, List<SysUser>> groupByEmail = sysUsers.stream().filter(user -> StringUtils.hasText(user.getEmail())).collect(Collectors.groupingBy(SysUser::getEmail));
             List<SysUser> byEmail = groupByEmail.getOrDefault(sysUserDTO.getEmail(),new ArrayList<>());
             if (!byEmail.isEmpty() && !byEmail.get(0).getId().equals(sysUserDTO.getId())) {
                 errMessage.add("邮箱");

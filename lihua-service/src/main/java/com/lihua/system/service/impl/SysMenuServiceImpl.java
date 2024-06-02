@@ -2,29 +2,20 @@ package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.exception.ServiceException;
-import com.lihua.model.security.RouterVO;
-import com.lihua.system.entity.SysDept;
+import com.lihua.model.security.CurrentRouter;
 import com.lihua.system.entity.SysMenu;
-import com.lihua.system.entity.SysRole;
-import com.lihua.system.entity.SysUser;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.tree.LambdaTreeUtil;
 import com.lihua.utils.tree.TreeUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -106,10 +97,10 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public List<RouterVO> selectSysMenuByLoginUserId(String userId) {
-        List<RouterVO> sysMenuVOS = sysMenuMapper.selectPermsByUserId(userId);
+    public List<CurrentRouter> selectSysMenuByLoginUserId(String userId) {
+        List<CurrentRouter> currentRouterList = sysMenuMapper.selectPermsByUserId(userId);
         // 不需要权限数据
-        sysMenuVOS = sysMenuVOS
+        currentRouterList = currentRouterList
                 .stream()
                 .filter(vo -> !vo.getType().equals("perms"))
                 .peek(vo -> {
@@ -128,10 +119,10 @@ public class SysMenuServiceImpl implements SysMenuService {
                 })
                 .collect(Collectors.toList());
         // 递归构建树
-        List<RouterVO> routerVOList = TreeUtil.buildTree(sysMenuVOS);
+        List<CurrentRouter> routerList = TreeUtil.buildTree(currentRouterList);
         // 设置层级key，再通过key设置path
-        handleRouterPathKey(routerVOList, null);
-        return routerVOList;
+        handleRouterPathKey(routerList, null);
+        return routerList;
     }
 
     @Override
@@ -142,8 +133,8 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     // 处理 routerPathKey
-    private void handleRouterPathKey(List<RouterVO> routerVOList,String parentKey) {
-        for (RouterVO item : routerVOList) {
+    private void handleRouterPathKey(List<CurrentRouter> routerList, String parentKey) {
+        for (CurrentRouter item : routerList) {
             String key = item.getPath().startsWith("/") ? item.getPath() : "/" + item.getPath();
             // 根据菜单层级关系设置key
             if ("0".equals(item.getParentId())) {

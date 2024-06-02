@@ -47,18 +47,17 @@ public class LoginUserMgmt {
         try {
             return redisCache().getCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
         } catch (Exception e) {
-            log.error("从redis获取LoginUser发生异常，请检查redis状态");
-            e.printStackTrace();
+            log.error("从redis获取LoginUser发生异常，请检查redis状态", e);
         }
         return null;
     }
 
     /**
-     * 过期时间小于20分组时进行刷新
+     * 过期时间小于指定时间时进行刷新
      */
     public static void verifyLoginUserCache() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
-        if (DateUtils.differenceMinute(loginUser.getExpirationTime(),DateUtils.now()) < 20) {
+        if (DateUtils.differenceMinute(loginUser.getExpirationTime(),DateUtils.now()) < lihuaConfig().getRefreshThreshold()) {
             setLoginUserCache(loginUser);
         }
     }
@@ -71,7 +70,7 @@ public class LoginUserMgmt {
         // 记录过期时间
         loginUser.setExpirationTime(DateUtils.now().plusMinutes(lihuaConfig().getExpireTime()));
         // 设置缓存
-        redisCache().setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getSysUserVO().getId(),
+        redisCache().setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getUser().getId(),
                 loginUser,
                 lihuaConfig().getExpireTime(),
                 TimeUnit.MINUTES);

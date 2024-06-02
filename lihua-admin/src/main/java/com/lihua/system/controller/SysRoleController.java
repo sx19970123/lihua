@@ -5,6 +5,7 @@ import com.lihua.system.entity.SysRole;
 import com.lihua.system.model.SysRoleDTO;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.system.service.SysRoleService;
+import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -73,6 +74,6 @@ public class SysRoleController extends BaseController {
      */
     @GetMapping("option")
     public String getRoleOption() {
-        return success(sysRoleService.getRoleOption());
+        return success(LoginUserContext.getRoleList());
     }
 }

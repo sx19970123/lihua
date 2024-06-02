@@ -18,6 +18,11 @@ public class LihuaConfig {
     private Long expireTime;
 
     /**
+     * token 刷新阈值
+     */
+    private Long refreshThreshold;
+
+    /**
      * 允许跨域最长时间
      */
     private Long corsMaxAge;

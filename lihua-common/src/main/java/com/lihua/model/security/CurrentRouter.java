@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 @Data
 @Accessors(chain = true)
-public class RouterVO implements Serializable {
+public class CurrentRouter implements Serializable {
 
     // 用于生成树形结构
     private String id;
@@ -37,9 +37,9 @@ public class RouterVO implements Serializable {
     private String key;
 
     // 自定义的元数据
-    private MetaVO meta;
+    private Meta meta;
 
     // 子菜单 / 子页面
-    private List<RouterVO> children;
+    private List<CurrentRouter> children;
 
 }

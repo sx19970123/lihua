@@ -15,9 +15,9 @@ export interface UserInfoType {
     authorities: Array<AuthorType>,
     permissionList: Array<AuthorType>,
     routerList: Array<RouterType>,
-    viewTabVOList: Array<StarViewType>,
-    sysRoleList: Array<RoleType>,
-    sysUserVO: SysUserVOType,
+    viewTabList: Array<StarViewType>,
+    roleList: Array<RoleType>,
+    user: SysUserVOType,
     username: string
 }
 

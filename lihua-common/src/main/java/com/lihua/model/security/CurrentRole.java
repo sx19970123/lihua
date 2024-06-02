@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysRoleVO extends BaseEntity {
+public class CurrentRole extends BaseEntity {
     /**
      * 主键
      */

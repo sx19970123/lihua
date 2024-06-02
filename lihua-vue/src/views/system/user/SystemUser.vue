@@ -97,6 +97,7 @@
             <a-popconfirm title="删除后不可恢复，是否删除？"
                           ok-text="确 定"
                           cancel-text="取 消"
+                          @confirm="handleDelete(record.id)"
             >
               <a-button type="link" danger size="small" @click="(event: any) => event.stopPropagation()">
                 <template #icon>
@@ -266,7 +267,7 @@
 
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findPage, findById, save} from "@/api/system/user/user.ts"
+import {findPage, findById, save, deleteByIds} from "@/api/system/user/user.ts"
 import {initDict} from "@/utils/dict"
 import {reactive, ref, watch} from "vue";
 import DictTag from "@/components/dict-tag/index.vue"
@@ -451,7 +452,7 @@ const initSave = () => {
   })
 
   // 修改模态框状态等信息
-  const handleModelStatus = (title?:string) => {
+  const handleModelStatus = (title?:string, defaultDeptId: string) => {
     modalActive.open = !modalActive.open
     if (title) {
       modalActive.title = title
@@ -826,6 +827,16 @@ const initPostData = () => {
   }
 }
 const {sysPostList, postLoading, initPostTag, toPostForm ,handleSelectPostId,initPostByDeptIds,handleDeptIdList} = initPostData()
+
+const handleDelete = async (id: string) => {
+  const resp = await deleteByIds([id])
+  if (resp.code === 200) {
+    initPage()
+    message.success(resp.msg)
+  } else {
+    message.error(resp.msg)
+  }
+}
 
 // 监听关键词筛选
 watch(() => deptKeyword.value, (value) => {

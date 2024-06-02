@@ -13,7 +13,7 @@
         </collection>
     </resultMap>
 
-    <select id="selectSysRoleByUserId" resultType="com.lihua.model.security.SysRoleVO">
+    <select id="selectSysRoleByUserId" resultType="com.lihua.model.security.CurrentRole">
         SELECT
         sys_role.id,
         sys_role.name,

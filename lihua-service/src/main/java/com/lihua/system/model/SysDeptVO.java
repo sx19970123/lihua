@@ -12,7 +12,7 @@ import java.util.List;
 public class SysDeptVO extends SysDept {
 
     /**
-     * 部门信息
+     * 岗位信息
      */
     private List<SysPost> sysPostList;
 }

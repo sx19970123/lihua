@@ -5,8 +5,8 @@ import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
 import com.lihua.config.LihuaConfig;
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.model.security.CurrentUser;
 import com.lihua.model.web.BaseController;
-import com.lihua.model.security.SysUserVO;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
@@ -32,7 +32,7 @@ public class SysAuthenticationController extends BaseController {
      * @return
      */
     @PostMapping("login")
-    public String login(@RequestBody @Valid SysUserVO sysUserVO, String captchaVerification) {
+    public String login(@RequestBody @Valid CurrentUser sysUserVO, String captchaVerification) {
         // 开启验证码情况下进行验证
         if (lihuaConfig.getEnableVerificationCode() != null && lihuaConfig.getEnableVerificationCode()) {
             CaptchaVO captchaVO = new CaptchaVO();

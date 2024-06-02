@@ -2,6 +2,8 @@
 lihua:
   # 令牌过期时间（分钟）
   expireTime: 60
+  # 令牌刷新阈值（分钟）距令牌过期15分钟内时，有新请求时对令牌进行刷新
+  refreshThreshold: 15
   # 允许跨域的最长时间
   corsMaxAge: 3600
   # 上传文件路径 mac windows 注意目录切换

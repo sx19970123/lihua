@@ -3,13 +3,16 @@ package com.lihua.system.service.impl;
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
 import com.lihua.model.security.*;
+import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.mapper.SysMenuMapper;
+import com.lihua.system.mapper.SysPostMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.system.service.SysViewTabService;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.LoginUserMgmt;
+import com.lihua.utils.tree.TreeUtil;
 import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,13 +23,13 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Resource
     private RedisCache redisCache;
+
     @Resource
     private AuthenticationManager authenticationManager;
 
@@ -43,17 +46,24 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     private SysMenuMapper sysMenuMapper;
 
     @Resource
+    private SysPostMapper sysPostMapper;
+
+    @Resource
+    private SysDeptMapper sysDeptMapper;
+
+
+    @Resource
     private LihuaConfig lihuaConfig;
 
     @Transactional
     @Override
-    public String login(SysUserVO sysUserVO) {
+    public String login(CurrentUser sysUserVO) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(sysUserVO.getUsername(), sysUserVO.getPassword()));
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         // 处理登录用户信息，将用户基本数据存入 LoginUser 后存入 redis
         cacheUserLoginDetails(loginUser);
         // 根据username 生成jwt 返回
-        return JwtUtils.create(loginUser.getSysUserVO().getId());
+        return JwtUtils.create(loginUser.getUser().getId());
     }
 
     /**
@@ -62,31 +72,39 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
      */
     @Override
     public void cacheUserLoginDetails(LoginUser loginUser) {
-        String id = loginUser.getSysUserVO().getId();
+        String id = loginUser.getUser().getId();
         // 菜单router信息
-        List<RouterVO> routerVOList = sysMenuService.selectSysMenuByLoginUserId(id);
+        List<CurrentRouter> routerList = sysMenuService.selectSysMenuByLoginUserId(id);
         // 角色信息
-        List<SysRoleVO> sysRoles = sysRoleMapper.selectSysRoleByUserId(id);
+        List<CurrentRole> roles = sysRoleMapper.selectSysRoleByUserId(id);
         // 权限信息
-        List<RouterVO> routerVOS = sysMenuMapper.selectPermsByUserId(id);
+        List<CurrentRouter> permList = sysMenuMapper.selectPermsByUserId(id);
         // 收藏/固定菜单
-        List<SysViewTabVO> viewTabVOS = sysViewTabService.selectByUserId(id);
+        List<CurrentViewTab> viewTabList = sysViewTabService.selectByUserId(id);
+        // 岗位信息
+        List<CurrentPost> postList = sysPostMapper.selectByUserId(id);
+        // 部门信息
+        List<CurrentDept> deptList = sysDeptMapper.selectByUserId(id);
+
         // viewTab赋值routerPathKey
-        handleSetViewTabKey(viewTabVOS,routerVOList);
+        handleSetViewTabKey(viewTabList,routerList);
         // 处理角色权限信息
-        List<String> authorities = handleAuthorities(sysRoles,routerVOS);
+        List<String> authorities = handleAuthorities(roles,permList);
 
         loginUser
-            .setRouterList(routerVOList)
-            .setSysRoleList(sysRoles)
-            .setViewTabVOList(viewTabVOS)
+            .setRouterList(routerList)
+            .setRoleList(roles)
+            .setViewTabList(viewTabList)
+            .setDeptList(deptList)
+            .setDeptTree(TreeUtil.buildTree(deptList))
+            .setPostList(postList)
             .setAuthorities(authorities);
 
         // 设置redis缓存
         LoginUserMgmt.setLoginUserCache(loginUser);
     }
 
-    private void handleSetViewTabKey(List<SysViewTabVO> viewTabVOS,List<RouterVO> routerVOList) {
+    private void handleSetViewTabKey(List<CurrentViewTab> viewTabVOS,List<CurrentRouter> routerVOList) {
         viewTabVOS.forEach(tab -> {
             routerVOList.forEach(item -> {
                 if (item.getId().equals(tab.getMenuId())) {
@@ -100,17 +118,23 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     }
 
-    private List<String> handleAuthorities(List<SysRoleVO> sysRoles,List<RouterVO> routerVOS) {
+    /**
+     * spring security 默认将RULE_ 开头的字符串认定为角色，其余认定为权限；都存放在 GrantedAuthority 中
+     * @param sysRoles
+     * @param routerVOS
+     * @return
+     */
+    private List<String> handleAuthorities(List<CurrentRole> sysRoles,List<CurrentRouter> routerVOS) {
         // 过滤出用户权限信息
         List<String> perms = new ArrayList<>(routerVOS.stream()
-                .map(RouterVO::getPerms)
+                .map(CurrentRouter::getPerms)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList());
 
         // 过滤出用户角色信息
         List<String> roleCodes = sysRoles.stream()
-                .map(SysRoleVO::getCode)
+                .map(CurrentRole::getCode)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
