@@ -182,8 +182,8 @@ const showVerify = () => {
 const captcha = async () => {
   try {
     const resp = await enable()
-    if (resp.code === 200 && resp.data) {
-      enableCaptcha.value = true
+    if (resp.code === 200) {
+      enableCaptcha.value = resp.data
     } else {
       console.error(resp.msg)
     }
