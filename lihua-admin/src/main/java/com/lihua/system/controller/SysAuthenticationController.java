@@ -27,12 +27,12 @@ public class SysAuthenticationController extends BaseController {
 
     /**
      * 用户登录
-     * @param sysUserVO
+     * @param currentUser
      * @param captchaVerification
      * @return
      */
     @PostMapping("login")
-    public String login(@RequestBody @Valid CurrentUser sysUserVO, String captchaVerification) {
+    public String login(@RequestBody @Valid CurrentUser currentUser, String captchaVerification) {
         // 开启验证码情况下进行验证
         if (lihuaConfig.getEnableVerificationCode() != null && lihuaConfig.getEnableVerificationCode()) {
             CaptchaVO captchaVO = new CaptchaVO();
@@ -42,7 +42,7 @@ public class SysAuthenticationController extends BaseController {
                 return error(ResultCodeEnum.ERROR, verificationModel.getRepMsg());
             }
         }
-        return success(sysAuthenticationService.login(sysUserVO));
+        return success(sysAuthenticationService.login(currentUser));
     }
 
     /**

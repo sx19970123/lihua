@@ -57,8 +57,8 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Transactional
     @Override
-    public String login(CurrentUser sysUserVO) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(sysUserVO.getUsername(), sysUserVO.getPassword()));
+    public String login(CurrentUser currentUser) {
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(currentUser.getUsername(), sysUserVO.getPassword()));
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         // 处理登录用户信息，将用户基本数据存入 LoginUser 后存入 redis
         cacheUserLoginDetails(loginUser);
@@ -104,14 +104,14 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         LoginUserMgmt.setLoginUserCache(loginUser);
     }
 
-    private void handleSetViewTabKey(List<CurrentViewTab> viewTabVOS,List<CurrentRouter> routerVOList) {
-        viewTabVOS.forEach(tab -> {
-            routerVOList.forEach(item -> {
+    private void handleSetViewTabKey(List<CurrentViewTab> currentViewTabList,List<CurrentRouter> routerList) {
+        currentViewTabList.forEach(tab -> {
+            routerList.forEach(item -> {
                 if (item.getId().equals(tab.getMenuId())) {
                     tab.setRouterPathKey(item.getKey());
                 }
                 if (item.getChildren() != null && !item.getChildren().isEmpty()) {
-                    handleSetViewTabKey(viewTabVOS,item.getChildren());
+                    handleSetViewTabKey(currentViewTabList,item.getChildren());
                 }
             });
         });
@@ -120,20 +120,20 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     /**
      * spring security 默认将RULE_ 开头的字符串认定为角色，其余认定为权限；都存放在 GrantedAuthority 中
-     * @param sysRoles
-     * @param routerVOS
+     * @param roleList
+     * @param routerList
      * @return
      */
-    private List<String> handleAuthorities(List<CurrentRole> sysRoles,List<CurrentRouter> routerVOS) {
+    private List<String> handleAuthorities(List<CurrentRole> roleList,List<CurrentRouter> routerList) {
         // 过滤出用户权限信息
-        List<String> perms = new ArrayList<>(routerVOS.stream()
+        List<String> perms = new ArrayList<>(routerList.stream()
                 .map(CurrentRouter::getPerms)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList());
 
         // 过滤出用户角色信息
-        List<String> roleCodes = sysRoles.stream()
+        List<String> roleCodes = roleList.stream()
                 .map(CurrentRole::getCode)
                 .filter(StringUtils::hasText)
                 .distinct()

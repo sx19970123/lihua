@@ -7,10 +7,10 @@ public interface SysAuthenticationService {
 
     /**
      * 用户登陆
-     * @param sysUserVO
+     * @param currentUser
      * @return
      */
-    String login(CurrentUser sysUserVO);
+    String login(CurrentUser currentUser);
 
     /**
      * 缓存用户登录信息
