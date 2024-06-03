@@ -30,8 +30,8 @@ service.interceptors.response.use((resp) => {
     // token 失效或解析异常，清空用户信息返回登陆
     if (data.code === 401) {
         const userStore = useUserStore()
-        userStore.clearUserInfo()
-        message.error("身份验证过期，请重新登陆")
+        userStore.clearUserInfo(data.msg)
+        throw new Error(data.msg)
     }
     return resp;
 })

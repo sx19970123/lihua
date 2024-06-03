@@ -89,7 +89,7 @@
 <script setup lang="ts">
 import {useUserStore} from "@/stores/modules/user"
 import {useRouter} from 'vue-router'
-import {reactive, ref} from "vue"
+import {reactive, ref, watch} from "vue"
 import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
 import type {Rule} from "ant-design-vue/es/form";
@@ -97,7 +97,8 @@ import {enable} from "@/api/system/captcha/captcha";
 import token from "@/utils/token"
 import HeadThemeSwitch from "@/components/light-dark-switch/index.vue"
 import type {ResponseType} from "@/api/type";
-
+import {useRoute} from "vue-router";
+const route = useRoute()
 const router = useRouter()
 const verifyRef = ref<InstanceType<typeof Verify>>()
 const rememberMe = ref<boolean>(token.enableRememberMe())
@@ -156,6 +157,7 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
     loginLoading.value = false
   }
 };
+
 const handleFinish = () => {
   if (enableCaptcha.value) {
     showVerify()
@@ -193,6 +195,15 @@ const captcha = async () => {
 }
 captcha()
 
+// 判断重定向回来的参数，给用户合适的提示
+// 提示信息显示完成后销毁，刷新页面时不再提示
+const handleRedirect = () => {
+  if (history.state.msg) {
+    message.error(history.state.msg)
+    history.state.msg = undefined
+  }
+}
+handleRedirect()
 
 // 动画效果
 const transition = () => {

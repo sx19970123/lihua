@@ -53,7 +53,7 @@ import { useUserStore } from "@/stores/modules/user";
 import { useRouter,useRoute } from "vue-router";
 import {message} from "ant-design-vue";
 import {reloadData} from "@/api/system/login/login.ts";
-import {reloadLoginUser} from "@/utils/user.ts";
+import {reloadLoginUser} from "@/utils/auth.ts";
 import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
 const viewTabsStore = useViewTabsStore()
 

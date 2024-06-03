@@ -58,7 +58,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Transactional
     @Override
     public String login(CurrentUser currentUser) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(currentUser.getUsername(), sysUserVO.getPassword()));
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(currentUser.getUsername(), currentUser.getPassword()));
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         // 处理登录用户信息，将用户基本数据存入 LoginUser 后存入 redis
         cacheUserLoginDetails(loginUser);

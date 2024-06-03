@@ -1,3 +1,5 @@
+import type {SysPost} from "@/api/system/post/type/SysPost.ts";
+
 export interface SysDept {
   /**
    * 主键id

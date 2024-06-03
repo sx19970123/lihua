@@ -113,8 +113,11 @@ export const useUserStore = defineStore('user', {
                 this.clearUserInfo()
             })
         },
-        // 清空用户信息
-        clearUserInfo() {
+        /**
+         * 清空用户信息并重定向到登录页面
+         * @param msg
+         */
+        clearUserInfo(msg?: string) {
             this.$state.name = ''
             this.$state.username = ''
             this.$state.avatar = {type: 'text', backgroundColor: 'rgb(191, 191, 191)', value: '', url: ''}
@@ -139,7 +142,7 @@ export const useUserStore = defineStore('user', {
                 email: null
             }
             removeToken()
-            router.push("/login")
+            router.push({name: "Login", state: {msg: msg}})
         },
         // 保存主题修改
         saveTheme(themeJson: string) {

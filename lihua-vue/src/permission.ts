@@ -4,7 +4,7 @@ import 'nprogress/nprogress.css'
 import { useUserStore } from "@/stores/modules/user"
 import { useThemeStore } from "@/stores/modules/theme";
 import token from "@/utils/token"
-import { reloadLoginUser } from "@/utils/user.ts";
+import { reloadLoginUser } from "@/utils/auth.ts";
 const { getToken } = token
 NProgress.configure({
     showSpinner: true
@@ -23,14 +23,14 @@ router.beforeEach((to,from,next) => {
                 next({...to,replace: true})
             }).catch((err) => {
                 console.error(err)
-                userStore.clearUserInfo()
+                userStore.clearUserInfo(err)
             })
         } else {
             next()
         }
     } else {
         themeStore.resetState()
-        if (to.fullPath !== "/login") {
+        if (to.path !== "/login") {
             next("/login")
         } else {
             next();
