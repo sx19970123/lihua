@@ -1,6 +1,9 @@
 package com.lihua.system.controller;
 
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.model.security.AuthInfo;
+import com.lihua.model.security.CurrentDept;
+import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysUser;
@@ -11,6 +14,7 @@ import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +33,18 @@ public class SysProfileController extends BaseController {
     public String getUserInfo() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
         loginUser.getUser().setPassword(null);
-        return success(loginUser);
+
+        // 前端 store 用户数据
+        AuthInfo authInfo = new AuthInfo();
+        authInfo.setUserInfo(loginUser.getUser() != null ? loginUser.getUser() : new CurrentUser());
+        authInfo.setDepts(loginUser.getDeptTree());
+        authInfo.setPosts(loginUser.getPostList());
+        authInfo.setRoles(loginUser.getRoleList());
+        authInfo.setPermissions(loginUser.getPermissionList().stream().map(GrantedAuthority::getAuthority).toList());
+        authInfo.setRouters(loginUser.getRouterList());
+        authInfo.setViewTabs(loginUser.getViewTabList());
+        authInfo.setDefaultDept(LoginUserContext.getDefaultDept() != null ? LoginUserContext.getDefaultDept() : new CurrentDept());
+        return success(authInfo);
     }
 
     /**

@@ -6,7 +6,7 @@ const userStore = useUserStore()
 export default function setupHasRoleDirective(app: App<Element>): void {
   app.directive('hasRole', {
     mounted (el, binding) {
-      const currentRoles = cloneDeep(userStore.$state.roles)
+      const currentRoles = cloneDeep(userStore.$state.roleCodes)
       const value = binding.value
       if (Array.isArray(value)) {
         if (currentRoles && value) {

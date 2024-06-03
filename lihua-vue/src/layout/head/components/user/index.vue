@@ -11,12 +11,12 @@
             <a-flex vertical>
               <a-typography-text :copyable="{ tooltip: false }" strong>
                 <a-tooltip placement="bottom" title="用户昵称">
-                  {{userStore.$state.name}}
+                  {{userStore.$state.nickname}}
                 </a-tooltip>
               </a-typography-text>
               <a-typography-text :copyable="{ tooltip: false }">
                 <a-tooltip placement="bottom" title="用户uid">
-                  {{userStore.$state.userInfo.id}}
+                  {{userStore.$state.userId}}
                 </a-tooltip>
               </a-typography-text>
             </a-flex>
@@ -97,6 +97,6 @@ const userInfo = () => {
 }
 // 退出登陆
 const logout = () => {
-  userStore.logout()
+  userStore.handleLogout()
 }
 </script>

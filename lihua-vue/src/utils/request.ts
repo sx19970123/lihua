@@ -2,7 +2,6 @@ import axios, {type AxiosRequestConfig, type AxiosResponse} from 'axios';
 import token from "@/utils/token"
 import type {ResponseType} from "@/api/type"
 import { useUserStore } from "@/stores/modules/user";
-import { message } from "ant-design-vue";
 
 const { getToken } = token
 
@@ -29,7 +28,7 @@ service.interceptors.response.use((resp) => {
     const data = resp.data
     // token 失效或解析异常，清空用户信息返回登陆
     if (data.code === 401) {
-        const userStore = useUserStore()
+        const userStore= useUserStore()
         userStore.clearUserInfo(data.msg)
         throw new Error(data.msg)
     }

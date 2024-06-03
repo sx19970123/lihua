@@ -94,7 +94,7 @@ export const useThemeStore = defineStore('theme',{
     },
     actions: {
         // 初始化样式
-        init(themeJson: string | null) {
+        init(themeJson?: string) {
             this.initState(themeJson)
             this.changeDataDark()
             this.changeLayoutType()
@@ -104,7 +104,7 @@ export const useThemeStore = defineStore('theme',{
 
         },
         // 通过json数据初始化state
-        initState(themeJson: string | null) {
+        initState(themeJson?: string) {
             if (!themeJson) {
                 return
             }

@@ -1,24 +1,24 @@
 <template>
   <div>
     <a-form layout="vertical"
-            :model="userInfo"
+            :model="profileInfo"
             :rules="userRoles"
             @finish="handleFinish"
             @finishFailed="handleFinishFailed"
     >
       <a-row :span="8">
         <a-form-item label="头像">
-          <avatar-modifier v-model="userInfo.avatar"/>
+          <avatar-modifier v-model="profileInfo.avatar"/>
         </a-form-item>
       </a-row>
       <a-form-item label="用户昵称" name="nickname">
-        <a-input class="form-item-width" placeholder="请输入用户昵称" v-model:value="userInfo.nickname" allow-clear show-count/>
+        <a-input class="form-item-width" placeholder="请输入用户昵称" v-model:value="profileInfo.nickname" allow-clear show-count/>
       </a-form-item>
       <a-form-item label="手机号码" name="phoneNumber">
-        <a-input class="form-item-width" placeholder="请输入手机号码" v-model:value="userInfo.phoneNumber" allow-clear/>
+        <a-input class="form-item-width" placeholder="请输入手机号码" v-model:value="profileInfo.phoneNumber" allow-clear/>
       </a-form-item>
       <a-form-item label="电子邮箱" name="email" ref="email">
-        <a-auto-complete class="form-item-width" placeholder="请输入电子邮箱"  v-model:value="userInfo.email" @search="emailHandleSearch" :options="emailOptions" allow-clear>
+        <a-auto-complete class="form-item-width" placeholder="请输入电子邮箱"  v-model:value="profileInfo.email" @search="emailHandleSearch" :options="emailOptions" allow-clear>
           <template #option="{ value: val }">
             {{ val.split('@')[0] }} @
             <span style="font-weight: bold">{{ val.split('@')[1] }}</span>
@@ -26,7 +26,7 @@
         </a-auto-complete>
       </a-form-item>
       <a-form-item label="性别" name="gender">
-        <a-radio-group v-model:value="userInfo.gender">
+        <a-radio-group v-model:value="profileInfo.gender">
           <a-radio :value="item.value" v-for="item in sys_gender">{{item.label}}</a-radio>
         </a-radio-group>
       </a-form-item>
@@ -45,7 +45,7 @@ import {useUserStore} from "@/stores/modules/user";
 import AvatarModifier from "@/views/system/profile/components/AvatarModifier.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
-import type {UserInfo} from "@/api/system/profile/type/user";
+import type {ProfileInfo} from "@/api/system/profile/type/user";
 import {saveBasics} from "@/api/system/profile/profile";
 import {initDict} from "@/utils/dict.ts"
 const userStore = useUserStore()
@@ -54,7 +54,7 @@ const {sys_gender} = initDict('sys_gender')
 
 // 初始化数据
 const init = () => {
-  const userInfo = reactive<UserInfo>({
+  const profileInfo = reactive<ProfileInfo>({
     avatar: userStore.avatar,
     nickname: userStore.userInfo.nickname,
     gender: userStore.userInfo.gender,
@@ -81,7 +81,7 @@ const init = () => {
   })
 
   return {
-    userInfo,
+    profileInfo,
     userRoles
   }
 }
@@ -92,7 +92,7 @@ const init = () => {
  */
 const handleFinish = (values: {nickname: string,gender:string,email:string,phoneNumber:string}) => {
   saveBasics({
-    avatar: JSON.stringify(userInfo.avatar),
+    avatar: JSON.stringify(profileInfo.avatar),
     nickname: values.nickname,
     gender: values.gender,
     email: values.email,
@@ -122,7 +122,7 @@ const emailHandleSearch = (val: string) => {
   emailOptions.value = res;
 };
 
-const  {userInfo, userRoles}= init()
+const  {profileInfo, userRoles}= init()
 
 
 </script>

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import Layout from "@/layout/index.vue";
 import type { StarViewType,RecentType } from "@/api/system/view-tab/type/SysViewTab.ts"
-import type {RouterType} from "@/api/system/profile/type/router";
+import type {RouterType} from "@/api/type.ts";
 import dayjs from "dayjs";
 import type {RouteLocationNormalizedLoaded} from "vue-router";
 import { uuid } from "@/utils/idHelper.ts";

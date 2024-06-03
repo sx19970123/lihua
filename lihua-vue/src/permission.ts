@@ -17,7 +17,7 @@ router.beforeEach((to,from,next) => {
     NProgress.start()
     if (getToken()) {
         // 判断是否拉取了用户信息
-        if (userStore.userInfo.id === null) {
+        if (!userStore.userInfo.id) {
             // 拉取登录用户数据，并初始化store
             reloadLoginUser().then(() => {
                 next({...to,replace: true})

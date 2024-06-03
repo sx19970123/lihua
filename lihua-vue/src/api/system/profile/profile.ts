@@ -1,8 +1,8 @@
 import request from "@/utils/request";
-import type {UserInfoType} from "@/api/system/profile/type/user.ts";
+import type {AuthInfoType} from "@/api/type.ts";
 
 export const getProfileInfo = () => {
-    return request<UserInfoType>({
+    return request<AuthInfoType>({
         url: '/system/profile/info',
         method: 'get'
     })

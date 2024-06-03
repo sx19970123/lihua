@@ -54,7 +54,7 @@ export const deleteByIds = (ids: Array<String>) => {
  * @param deptIds
  */
 export const getPostOptionByDeptId = (deptIds: string[]) => {
-    return request<MapResponseType<SysPost>>({
+    return request<MapResponseType<String,SysPost>>({
         url: '/system/post/option',
         method: 'post',
         data: deptIds
