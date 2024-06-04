@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import {getBrowserType, getBrowserMajorVersion} from "@/utils/browser.ts"
+import {getBrowserType, getBrowserMajorVersion} from "@/utils/Browser.ts"
 import { useThemeStore } from "@/stores/modules/theme"
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import enUS from 'ant-design-vue/es/locale/en_US';

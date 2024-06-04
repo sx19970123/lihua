@@ -165,15 +165,15 @@
 
 <script setup lang="ts">
 
-import {getDeptOption} from "@/api/system/dept/dept.ts";
+import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {reactive, ref, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {initDict} from "@/utils/dict.ts";
-import {deleteByIds, findById, findPage, save} from "@/api/system/post/post.ts";
+import {deleteByIds, findById, findPage, save} from "@/api/system/post/Post.ts";
 import {useRoute} from "vue-router";
 import DictTag from "@/components/dict-tag/index.vue";
 import type {Rule} from "ant-design-vue/es/form";
-import {flattenTreeData} from "@/utils/tree.ts";
+import {flattenTreeData} from "@/utils/Tree.ts";
 import {message} from "ant-design-vue";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost, SysPostDTO} from "@/api/system/post/type/SysPost.ts";

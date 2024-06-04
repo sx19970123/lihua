@@ -3,8 +3,8 @@ import NProgress from "nprogress"
 import 'nprogress/nprogress.css'
 import { useUserStore } from "@/stores/modules/user"
 import { useThemeStore } from "@/stores/modules/theme";
-import token from "@/utils/token"
-import { reloadLoginUser } from "@/utils/auth.ts";
+import token from "@/utils/Token.ts"
+import { reloadLoginUser } from "@/utils/Auth.ts";
 const { getToken } = token
 NProgress.configure({
     showSpinner: true

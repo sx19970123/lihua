@@ -1,4 +1,4 @@
-import request from "@/utils/request.ts";
+import request from "@/utils/Request.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 
 /**

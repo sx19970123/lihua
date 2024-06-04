@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request from "@/utils/Request.ts";
 
 //获取验证图片  以及token
 export function reqGet(data: any) {

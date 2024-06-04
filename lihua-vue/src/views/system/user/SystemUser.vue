@@ -267,18 +267,18 @@
 
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findPage, findById, save, deleteByIds} from "@/api/system/user/user.ts"
+import {findPage, findById, save, deleteByIds} from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/dict"
 import {reactive, ref, watch} from "vue";
 import DictTag from "@/components/dict-tag/index.vue"
 import CardSelect from "@/components/card-select/index.vue"
 import dayjs from "dayjs";
-import {getDeptOption} from "@/api/system/dept/dept.ts";
-import {getRoleOption} from "@/api/system/role/role.ts";
-import {getPostOptionByDeptId} from "@/api/system/post/post.ts";
+import {getDeptOption} from "@/api/system/dept/Dept.ts";
+import {getRoleOption} from "@/api/system/role/Role.ts";
+import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
 import {message, TreeSelect} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
-import {flattenTreeData} from "@/utils/tree.ts";
+import {flattenTreeData} from "@/utils/Tree.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";

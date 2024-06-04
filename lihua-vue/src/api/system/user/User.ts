@@ -1,5 +1,5 @@
-import request from "@/utils/request.ts";
-import type {PageResponseType} from "@/api/type.ts";
+import request from "@/utils/Request.ts";
+import type {PageResponseType} from "@/api/global/Type.ts";
 import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
 
 // 分页查询列表

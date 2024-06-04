@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type {RouterType} from "@/api/type.ts";
+import type {RouterType} from "@/api/global/Type.ts";
 import type {RouteRecordRaw} from "vue-router";
 import Layout from "@/layout/index.vue";
 import router from "@/router";

@@ -45,8 +45,8 @@ import {useUserStore} from "@/stores/modules/user";
 import AvatarModifier from "@/views/system/profile/components/AvatarModifier.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
-import type {ProfileInfo} from "@/api/system/profile/type/user";
-import {saveBasics} from "@/api/system/profile/profile";
+import type {ProfileInfo} from "@/api/system/profile/type/SysProfile.ts";
+import {saveBasics} from "@/api/system/profile/Profile.ts";
 import {initDict} from "@/utils/dict.ts"
 const userStore = useUserStore()
 const {sys_gender} = initDict('sys_gender')

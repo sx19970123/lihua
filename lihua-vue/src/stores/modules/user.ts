@@ -1,17 +1,19 @@
 import { defineStore } from "pinia";
-import {login, logout} from "@/api/system/login/login";
-import {getProfileInfo, saveTheme} from "@/api/system/profile/profile";
-import token from "@/utils/token";
+import {login, logout} from "@/api/system/login/Login.ts";
+import {saveTheme} from "@/api/system/profile/Profile.ts";
+import token from "@/utils/Token.ts";
 import { message } from "ant-design-vue";
 import router from "@/router";
-import {imagePreview} from "@/api/system/file/file";
-import type { ResponseType } from "@/api/type";
-import type {AvatarType} from "@/api/system/profile/type/user";
-import type { AuthInfoType, UserInfoType} from "@/api/type.ts"
+import {imagePreview} from "@/api/system/file/File.ts";
+import {getAuthInfo} from "@/api/system/auth/Auth.ts";
+import type { ResponseType } from "@/api/global/Type.ts";
+import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
+import type { AuthInfoType, UserInfoType} from "@/api/system/auth/type/AuthInfoType.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
+
 
 const { setToken,removeToken } = token
 
@@ -78,7 +80,7 @@ export const useUserStore = defineStore('user', {
         // 获取用户信息
         getUserInfo ():Promise<ResponseType<AuthInfoType>> {
             return new Promise((resolve, reject) => {
-                getProfileInfo().then((resp) => {
+                getAuthInfo().then((resp) => {
                     if (resp.code === 200) {
                         const data = resp.data
                         const state = this.$state

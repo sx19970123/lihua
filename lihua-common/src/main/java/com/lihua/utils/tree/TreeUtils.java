@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * 通用构建树方法
  */
-public class TreeUtil {
+public class TreeUtils {
 
     private static final String DEFAULT_ID = "Id";
     private static final String DEFAULT_PARENT_ID = "ParentId";
@@ -19,8 +19,8 @@ public class TreeUtil {
      * 通过lambda表达式构建
      * @return
      */
-    public static LambdaTreeUtil lambda() {
-        return new LambdaTreeUtil();
+    public static LambdaTreeUtils lambda() {
+        return new LambdaTreeUtils();
     }
 
     /**
@@ -128,7 +128,7 @@ public class TreeUtil {
                 try {
                     return (K) method.invoke(item);
                 } catch (Exception e) {
-                    throw new RuntimeException("TreeUtil 通过反射调用get方法发生异常");
+                    throw new RuntimeException("TreeUtils 通过反射调用get方法发生异常");
                 }
             }
         }
@@ -150,7 +150,7 @@ public class TreeUtil {
                     }
                     return null;
                 } catch (Exception e) {
-                    throw new RuntimeException("TreeUtil 通过反射调用get方法发生异常");
+                    throw new RuntimeException("TreeUtils 通过反射调用get方法发生异常");
                 }
             }
         }
@@ -168,7 +168,7 @@ public class TreeUtil {
                 try {
                     method.invoke(item, value);
                 } catch (Exception e) {
-                    throw new RuntimeException("TreeUtil 通过反射调用set方法发生异常");
+                    throw new RuntimeException("TreeUtils 通过反射调用set方法发生异常");
                 }
             }
         }

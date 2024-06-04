@@ -48,11 +48,11 @@
 <script setup lang="ts">
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import {useRoute, useRouter} from "vue-router";
-import { viewTab } from "@/api/system/view-tab/viewTab.ts";
+import { viewTab } from "@/api/system/view-tab/ViewTab.ts";
 import { message } from "ant-design-vue";
 import { StarFilled , StarOutlined ,LockOutlined , UnlockOutlined} from '@ant-design/icons-vue';
 import { h } from "vue";
-import type { ResponseType } from "@/api/type";
+import type { ResponseType } from "@/api/global/Type.ts";
 import type { StarViewType } from "@/api/system/view-tab/type/SysViewTab.ts";
 
 const viewTabsStore = useViewTabsStore()

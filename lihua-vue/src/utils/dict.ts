@@ -1,8 +1,8 @@
 import { useDictStore } from "@/stores/modules/dict";
-import {getDictDataOption} from "@/api/system/dict/dictData";
+import {getDictDataOption} from "@/api/system/dict/DictData.ts";
 import { ref, toRefs} from "vue";
 import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType.ts";
-import type {ResponseType} from "@/api/type.ts";
+import type {ResponseType} from "@/api/global/Type.ts";
 // 初始化组件中需要的字典数据
 export const initDict = (...dictTypeCodes: string[]) => {
   // 返回 key 为字典编码，value 为字典集合结构

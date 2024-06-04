@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request from "@/utils/Request.ts";
 
 /**
  * 是否启用验证码

@@ -12,7 +12,7 @@ import com.lihua.system.service.SysMenuService;
 import com.lihua.system.service.SysViewTabService;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.LoginUserMgmt;
-import com.lihua.utils.tree.TreeUtil;
+import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -96,7 +96,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             .setRoleList(roles)
             .setViewTabList(viewTabList)
             .setDeptList(deptList)
-            .setDeptTree(TreeUtil.buildTree(deptList))
+            .setDeptTree(TreeUtils.buildTree(deptList))
             .setPostList(postList)
             .setAuthorities(authorities);
 

@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request from "@/utils/Request.ts";
 import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
 
 /**

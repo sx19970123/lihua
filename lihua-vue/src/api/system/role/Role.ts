@@ -1,5 +1,5 @@
-import request from "@/utils/request";
-import type {PageResponseType} from "@/api/type.ts";
+import request from "@/utils/Request.ts";
+import type {PageResponseType} from "@/api/global/Type.ts";
 import type {SysRole, SysRoleDTO} from "@/api/system/role/type/SysRole.ts";
 
 // 分页查询列表

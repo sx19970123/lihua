@@ -190,7 +190,7 @@
 <script setup lang="ts">
 // 接收父组件传入的typeId
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deleteData, findList, save} from "@/api/system/dict/dictData";
+import {deleteData, findList, save} from "@/api/system/dict/DictData.ts";
 import {nextTick, reactive, ref} from "vue";
 import type { UnwrapRef } from 'vue';
 import {message} from "ant-design-vue";

@@ -6,7 +6,7 @@ import com.lihua.utils.tree.functionalInterface.EntitySetterChildrenMethod;
 import org.springframework.util.StringUtils;
 import java.util.*;
 
-public class LambdaTreeUtil{
+public class LambdaTreeUtils {
     /**
      * 构建树
      * @param originCollection 待处理的扁平化树集合

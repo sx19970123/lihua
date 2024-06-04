@@ -1,12 +1,4 @@
-import request from "@/utils/request";
-import type {AuthInfoType} from "@/api/type.ts";
-
-export const getProfileInfo = () => {
-    return request<AuthInfoType>({
-        url: '/system/profile/info',
-        method: 'get'
-    })
-}
+import request from "@/utils/Request.ts";
 
 export const saveTheme = (themeJson: string) => {
     return request({

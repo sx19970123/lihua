@@ -11,7 +11,7 @@ import com.lihua.system.model.SysDictDataDTO;
 import com.lihua.system.service.SysDictDataService;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.tree.TreeUtil;
+import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.BeanUtils;
@@ -58,7 +58,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
 
         // 树形结构需要构建子数据
         if ("1".equals(dictDataDTO.getType())) {
-            return TreeUtil.buildTree(sysDictData);
+            return TreeUtils.buildTree(sysDictData);
         }
 
         return sysDictData;
@@ -76,7 +76,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
             }
 
         }
-        return TreeUtil.buildTree(dictData);
+        return TreeUtils.buildTree(dictData);
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.lihua.system.model.SysDeptVO;
 import com.lihua.system.service.SysDeptService;
 import com.lihua.system.service.SysPostService;
 import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.tree.TreeUtil;
+import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -79,7 +79,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         });
 
         // 构建树返回
-        return TreeUtil.buildTree(sysDeptVOS);
+        return TreeUtils.buildTree(sysDeptVOS);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public List<SysDept> deptTreeOption() {
         List<SysDept> list = findList(new SysDept());
-        return TreeUtil.buildTree(list);
+        return TreeUtils.buildTree(list);
     }
 
     // 检查状态

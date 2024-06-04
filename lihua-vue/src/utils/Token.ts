@@ -1,5 +1,5 @@
 import Cookies from "js-cookie"
-import {encrypt,decrypt} from "./crypto"
+import {encrypt,decrypt} from "./Crypto.ts"
 
 
 const TOKEN_KEY: string = "token"

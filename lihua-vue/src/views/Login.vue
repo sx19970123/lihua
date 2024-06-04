@@ -93,10 +93,10 @@ import {reactive, ref, watch} from "vue"
 import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
 import type {Rule} from "ant-design-vue/es/form";
-import {enable} from "@/api/system/captcha/captcha";
-import token from "@/utils/token"
+import {enable} from "@/api/system/captcha/Captcha.ts";
+import token from "@/utils/Token.ts"
 import HeadThemeSwitch from "@/components/light-dark-switch/index.vue"
-import type {ResponseType} from "@/api/type";
+import type {ResponseType} from "@/api/global/Type.ts";
 import {useRoute} from "vue-router";
 const route = useRoute()
 const router = useRouter()
@@ -228,7 +228,7 @@ const {showForm, showCard} = transition()
   position: relative;
   width: 100%;
   height: 100vh;
-  background-image: url("../assets/images/login-bg.jpg");
+  background-image: url("../assets/images/login-background.jpg");
   background-size: cover;
   background-position: center;
 }

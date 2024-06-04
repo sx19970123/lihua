@@ -59,13 +59,13 @@ import {ref} from "vue";
 import ColorSelect from "@/components/color-select/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
 import ImageCropper from "@/components/image-cropper/index.vue"
-import type {CropperDataType} from "@/components/image-cropper/cropperTyoe";
+import type {CropperDataType} from "@/components/image-cropper/CropperType.ts";
 import SysAvatar from "@/components/user-avatar/index.vue"
-import {uploadAvatar} from "@/api/system/file/file";
+import {uploadAvatar} from "@/api/system/file/File.ts";
 import {useUserStore} from "@/stores/modules/user";
 import {message, Modal} from 'ant-design-vue';
 import settings from "@/settings";
-import type {AvatarType} from "@/api/system/profile/type/user";
+import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 
 const userStore = useUserStore()
 // 双向绑定值

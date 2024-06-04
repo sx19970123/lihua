@@ -8,7 +8,7 @@ import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.tree.TreeUtil;
+import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +46,7 @@ public class SysMenuServiceImpl implements SysMenuService {
 
         List<SysMenu> sysMenus = sysMenuMapper.selectList(queryWrapper);
         // 构建树形结构
-        return TreeUtil.lambda().buildTree(
+        return TreeUtils.lambda().buildTree(
                 sysMenus,
                 SysMenu::getId,
                 SysMenu::getParentId,
@@ -119,7 +119,7 @@ public class SysMenuServiceImpl implements SysMenuService {
                 })
                 .collect(Collectors.toList());
         // 递归构建树
-        List<CurrentRouter> routerList = TreeUtil.buildTree(currentRouterList);
+        List<CurrentRouter> routerList = TreeUtils.buildTree(currentRouterList);
         // 设置层级key，再通过key设置path
         handleRouterPathKey(routerList, null);
         return routerList;

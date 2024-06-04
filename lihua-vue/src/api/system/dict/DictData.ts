@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request from "@/utils/Request.ts";
 import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType.ts";
 /**
  * 列表查询

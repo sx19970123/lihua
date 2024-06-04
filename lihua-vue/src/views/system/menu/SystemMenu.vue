@@ -257,12 +257,12 @@
 
 // 列表查询相关
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {deleteByIds, findById, findList, menuTreeOption, save} from "@/api/system/menu/menu.ts";
+import {deleteByIds, findById, findList, menuTreeOption, save} from "@/api/system/menu/Menu.ts";
 import {reactive, ref} from "vue";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
-import { flattenTreeData} from "@/utils/tree.ts"
+import { flattenTreeData} from "@/utils/Tree.ts"
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';

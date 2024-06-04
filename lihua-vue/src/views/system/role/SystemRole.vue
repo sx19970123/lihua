@@ -160,12 +160,12 @@
 <script setup lang="ts">
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {reactive, ref, watch} from "vue";
-import {deleteByIds, findById, findPage, save} from "@/api/system/role/role.ts";
+import {deleteByIds, findById, findPage, save} from "@/api/system/role/Role.ts";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
-import {menuTreeOption} from "@/api/system/menu/menu.ts";
+import {menuTreeOption} from "@/api/system/menu/Menu.ts";
 import type {Rule} from "ant-design-vue/es/form";
-import {flattenTreeData} from "@/utils/tree.ts";
+import {flattenTreeData} from "@/utils/Tree.ts";
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";

@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import Layout from "@/layout/index.vue";
 import type { StarViewType,RecentType } from "@/api/system/view-tab/type/SysViewTab.ts"
-import type {RouterType} from "@/api/type.ts";
+import type {RouterType} from "@/api/global/Type.ts";
 import dayjs from "dayjs";
 import type {RouteLocationNormalizedLoaded} from "vue-router";
-import { uuid } from "@/utils/idHelper.ts";
+import { uuid } from "@/utils/IdHelper.ts";
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         // viewTab 标签页数组

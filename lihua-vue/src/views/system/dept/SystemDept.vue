@@ -168,7 +168,7 @@
 <script setup lang="ts">
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deleteByIds, getDeptOption, findById, findList, save} from "@/api/system/dept/dept.ts";
+import {deleteByIds, getDeptOption, findById, findList, save} from "@/api/system/dept/Dept.ts";
 import {reactive, ref} from "vue";
 import {message} from "ant-design-vue";
 import {initDict} from "@/utils/dict.ts";
@@ -176,7 +176,7 @@ import DictTag from "@/components/dict-tag/index.vue"
 import {cloneDeep} from "lodash-es";
 import type {Rule} from "ant-design-vue/es/form";
 import {useRouter} from "vue-router";
-import {flattenTreeData} from "@/utils/tree.ts";
+import {flattenTreeData} from "@/utils/Tree.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";

@@ -1,6 +1,6 @@
 import axios, {type AxiosRequestConfig, type AxiosResponse} from 'axios';
-import token from "@/utils/token"
-import type {ResponseType} from "@/api/type"
+import token from "@/utils/Token.ts"
+import type {ResponseType} from "@/api/global/Type.ts"
 import { useUserStore } from "@/stores/modules/user";
 
 const { getToken } = token

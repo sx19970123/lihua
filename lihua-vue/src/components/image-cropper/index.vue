@@ -56,7 +56,7 @@
 import {VueCropper} from "vue-cropper";
 import 'vue-cropper/dist/index.css'
 import {defineProps, getCurrentInstance, ref} from 'vue';
-import type {CropperDataType} from "@/components/image-cropper/cropperTyoe";
+import type {CropperDataType} from "@/components/image-cropper/CropperType.ts";
 import {message} from "ant-design-vue";
 // 获取vue-cropper实例进行方法调用
 const { proxy }  = getCurrentInstance() as any;

@@ -174,9 +174,9 @@
 <script setup lang="ts">
 import {reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
-import type {ResponseType, PageResponseType } from "@/api/type"
+import type {ResponseType, PageResponseType } from "@/api/global/Type.ts"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {deleteData, findById, findPage, save} from "@/api/system/dict/dictType";
+import {deleteData, findById, findPage, save} from "@/api/system/dict/DictType.ts";
 import dayjs from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";

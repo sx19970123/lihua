@@ -4,33 +4,6 @@ import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 
 /**
- * 接收接口的返回值
- */
-export type ResponseType<T> = {
-    code: number;
-    msg: string;
-    data: T;
-}
-
-/**
- * 接收分页接口的返回值
- */
-export type PageResponseType<T> = {
-    current: number,
-    pages: number,
-    records: Array<T>,
-    size: number,
-    total: number
-}
-
-/**
- * 接收Map类型返回值
- */
-export type MapResponseType<String,V> = {
-    [key: string]: V[];
-}
-
-/**
  * 登陆成功后的认证数据信息，包含用户、角色、部门、岗位等所有信息
  */
 export interface AuthInfoType {
