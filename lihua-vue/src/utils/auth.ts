@@ -26,7 +26,7 @@ export const reloadLoginUser = () => {
         // 设置最近使用组件的缓存key值
         viewTabsStore.setViewCacheKey(userStore.$state.username)
         // 初始化系统主题
-        themeStore.init(userStore.$state.userInfo.avatar)
+        themeStore.init(userStore.$state.userInfo.theme)
         // 清空字典store
         dictStore.clearDict()
         // 清空组件keep-alive
