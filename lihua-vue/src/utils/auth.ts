@@ -31,11 +31,11 @@ export const reloadLoginUser = () => {
         dictStore.clearDict()
         // 清空组件keep-alive
         viewTabsStore.clearComponentsKeepAlive()
+        resolve('load success')
       } catch (e) {
         reject(e)
         console.error(e)
       }
-      resolve('load success')
     }).catch(e => {
       reject(e)
       console.error(e)
