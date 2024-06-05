@@ -2,35 +2,50 @@
   <div>
     <a-flex vertical :gap="16" v-hasRole="['ROLE_admin']">
       <!--    检索条件-->
-      <a-card :style="{border: 'none'}">
+      <a-card :style="{border: 'none'}" :body-style="{'padding-bottom': '0'}">
         <a-form :colon="false">
-          <a-space size="small">
-            <a-form-item class="form-item-single-line" label="字典名称">
-              <a-input v-model:value="dictTypeQuery.name" placeholder="请输入字典名称" allowClear/>
-            </a-form-item>
-            <a-form-item class="form-item-single-line" label="字典编码">
-              <a-input  v-model:value="dictTypeQuery.code" placeholder="请输入字典编码" allowClear/>
-            </a-form-item>
-            <a-form-item class="form-item-single-line" label="创建时间">
-              <a-range-picker v-model:value="dictTypeQuery.startEndTime" allowClear/>
-            </a-form-item>
-            <a-form-item class="form-item-single-line">
-              <a-button type="primary" @click="initPage" :loading="tableLoad">
-                <template #icon>
-                  <SearchOutlined />
-                </template>
-                查 询
-              </a-button>
-            </a-form-item>
-            <a-form-item class="form-item-single-line">
-              <a-button :loading="tableLoad" @click="resetPage">
-                <template #icon>
-                  <RedoOutlined />
-                </template>
-                重 置
-              </a-button>
-            </a-form-item>
-          </a-space>
+          <a-row :gutter="16">
+            <a-col>
+              <a-form-item label="字典名称">
+                <a-input v-model:value="dictTypeQuery.name" placeholder="请输入字典名称" allowClear/>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item label="字典编码">
+                <a-input  v-model:value="dictTypeQuery.code" placeholder="请输入字典编码" allowClear/>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item label="状态">
+                <a-select v-model:value="dictTypeQuery.status" placeholder="清选择" allowClear>
+                  <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item label="创建时间">
+                <a-range-picker v-model:value="dictTypeQuery.startEndTime" allowClear/>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item>
+                <a-space size="small">
+                  <a-button type="primary" @click="initPage" :loading="tableLoad">
+                    <template #icon>
+                      <SearchOutlined />
+                    </template>
+                    查 询
+                  </a-button>
+                  <a-button :loading="tableLoad" @click="resetPage">
+                    <template #icon>
+                      <RedoOutlined />
+                    </template>
+                    重 置
+                  </a-button>
+                </a-space>
+              </a-form-item>
+            </a-col>
+          </a-row>
         </a-form>
       </a-card>
       <!--    列表页-->

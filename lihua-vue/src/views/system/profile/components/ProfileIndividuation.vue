@@ -22,6 +22,13 @@
       <a-form-item label="导航宽度" v-if="themeStore.layoutType !== 'header-content'">
         <a-slider v-model:value="themeStore.siderWith" @change="themeStore.changeSiderWidth" dots :max="400" :min="80" :step="20" style="width: 230px"></a-slider>
       </a-form-item>
+      <a-form-item label="布局尺寸">
+        <a-radio-group v-model:value="themeStore.componentSize">
+          <a-radio value="small">更小</a-radio>
+          <a-radio value="default">适中</a-radio>
+          <a-radio value="large">更大</a-radio>
+        </a-radio-group>
+      </a-form-item>
       <a-form-item label="固定头部">
         <a-switch v-model:checked="themeStore.affixHead" @change="themeStore.changeAffixHead"></a-switch>
       </a-form-item>

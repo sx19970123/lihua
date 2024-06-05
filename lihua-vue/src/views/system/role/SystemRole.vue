@@ -2,37 +2,45 @@
   <div>
     <a-flex vertical :gap="16" v-hasRole="['ROLE_admin']">
 <!--      查询条件-->
-      <a-card :style="{border: 'none'}">
+      <a-card :style="{border: 'none'}" :body-style="{'padding-bottom': '0'}">
         <a-form :colon="false">
-          <a-space size="small">
-            <a-form-item class="form-item-single-line" label="角色名称">
-              <a-input placeholder="请输入角色名称" allowClear v-model:value="roleQuery.name"/>
-            </a-form-item>
-            <a-form-item class="form-item-single-line" label="角色编码">
-              <a-input placeholder="请输入角色编码" allowClear v-model:value="roleQuery.code"/>
-            </a-form-item>
-            <a-form-item class="form-item-single-line" label="角色状态">
-              <a-select style="width: 120px;" placeholder="请选择" allowClear v-model:value="roleQuery.status">
-                <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
-              </a-select>
-            </a-form-item>
-            <a-form-item class="form-item-single-line">
-              <a-button type="primary" :loading="tableLoad" @click="queryPage">
-                <template #icon>
-                  <SearchOutlined />
-                </template>
-                查 询
-              </a-button>
-            </a-form-item>
-            <a-form-item class="form-item-single-line">
-              <a-button :loading="tableLoad" @click="resetPage">
-                <template #icon>
-                  <RedoOutlined />
-                </template>
-                重 置
-              </a-button>
-            </a-form-item>
-          </a-space>
+          <a-row :gutter="16">
+            <a-col>
+              <a-form-item label="角色名称">
+                <a-input placeholder="请输入角色名称" allowClear v-model:value="roleQuery.name"/>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item label="角色编码">
+                <a-input placeholder="请输入角色编码" allowClear v-model:value="roleQuery.code"/>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item label="状态">
+                <a-select placeholder="请选择" allowClear v-model:value="roleQuery.status">
+                  <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item>
+                <a-space size="small">
+                  <a-button type="primary" :loading="tableLoad" @click="queryPage">
+                    <template #icon>
+                      <SearchOutlined />
+                    </template>
+                    查 询
+                  </a-button>
+                  <a-button :loading="tableLoad" @click="resetPage">
+                    <template #icon>
+                      <RedoOutlined />
+                    </template>
+                    重 置
+                  </a-button>
+                </a-space>
+              </a-form-item>
+            </a-col>
+          </a-row>
         </a-form>
       </a-card>
 <!--      列表页面-->

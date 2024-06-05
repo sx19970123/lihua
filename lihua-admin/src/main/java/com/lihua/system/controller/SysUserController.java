@@ -1,9 +1,13 @@
 package com.lihua.system.controller;
 
+import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.SysUserDTO;
 import com.lihua.system.service.SysUserService;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotEmpty;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,12 +30,15 @@ public class SysUserController extends BaseController {
     }
 
     @PostMapping
-    public String save(@RequestBody SysUserDTO sysUserDTO) {
+    public String save(@RequestBody @Validated SysUserDTO sysUserDTO) {
+        if (!StringUtils.hasText(sysUserDTO.getId()) && !StringUtils.hasText(sysUserDTO.getPassword())) {
+            return error(ResultCodeEnum.PARAMS_MISSING, "请输入密码");
+        }
         return success(sysUserService.save(sysUserDTO));
     }
 
     @DeleteMapping
-    public String deleteByIds(@RequestBody List<String> ids) {
+    public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysUserService.deleteByIds(ids);
         return success();
     }

@@ -6,10 +6,10 @@
     </span>
     <template #overlay>
       <a-menu @click="handleClickMenuTab">
-        <a-menu-item key="reload" v-if="false" :disabled="tabPane.tab.routerPathKey !== viewTabsStore.$state.activeKey">
-          <RedoOutlined />
-          刷新页面
-        </a-menu-item>
+<!--        <a-menu-item key="reload" :disabled="tabPane.tab.routerPathKey !== viewTabsStore.$state.activeKey">-->
+<!--          <RedoOutlined />-->
+<!--          刷新页面-->
+<!--        </a-menu-item>-->
         <a-menu-divider  v-if="false"/>
         <a-menu-item key="close-left" :disabled="tabPane.index === 0">
           <VerticalRightOutlined />
@@ -66,6 +66,7 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
   switch (key) {
     case "reload": {
       if (route.name) {
+        // todo 不好使，后续优化
         router.replace({name: route.name, params: route.params, query: route.query})
       }
       break

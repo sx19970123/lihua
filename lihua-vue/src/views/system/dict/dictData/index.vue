@@ -1,42 +1,50 @@
 <template>
   <a-flex vertical :gap="16">
-    <a-card style="margin-top: 24px;">
+    <a-card style="margin-top: 24px;" :body-style="{'padding-bottom': '0'}">
       <a-form :colon="false">
-        <a-flex :gap="8" align="center" >
-          <a-form-item class="form-item-single-line" label="标签">
-            <a-input v-model:value="dictDataQuery.label" allow-clear placeholder="请输入字典标签"/>
-          </a-form-item>
-          <a-form-item class="form-item-single-line" label="值">
-            <a-input v-model:value="dictDataQuery.value" allow-clear placeholder="请输入字典值"/>
-          </a-form-item>
-          <a-form-item class="form-item-single-line" label="状态">
-            <a-select v-model:value="dictDataQuery.status" allow-clear placeholder="请选择状态">
-              <a-select-option value="0">正常</a-select-option>
-              <a-select-option value="1">停用</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item  class="form-item-single-line">
-            <a-button type="primary"
-                      @click="queryList"
-                      :loading="tableLoading"
-            >
-              <template #icon>
-                <SearchOutlined />
-              </template>
-              查 询
-            </a-button>
-          </a-form-item>
-          <a-form-item  class="form-item-single-line">
-            <a-button @click="resetList"
-                      :loading="tableLoading"
-            >
-              <template #icon>
-                <RedoOutlined />
-              </template>
-              重 置
-            </a-button>
-          </a-form-item>
-        </a-flex>
+        <a-row :gutter="16">
+          <a-col>
+            <a-form-item label="标签">
+              <a-input v-model:value="dictDataQuery.label" allow-clear placeholder="请输入字典标签"/>
+            </a-form-item>
+          </a-col>
+          <a-col>
+            <a-form-item label="值">
+              <a-input v-model:value="dictDataQuery.value" allow-clear placeholder="请输入字典值"/>
+            </a-form-item>
+          </a-col>
+          <a-col>
+            <a-form-item label="状态">
+              <a-select v-model:value="dictDataQuery.status" allow-clear placeholder="请选择">
+                <a-select-option value="0">正常</a-select-option>
+                <a-select-option value="1">停用</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col>
+            <a-form-item>
+              <a-space size="small">
+                <a-button type="primary"
+                          @click="queryList"
+                          :loading="tableLoading"
+                >
+                  <template #icon>
+                    <SearchOutlined />
+                  </template>
+                  查 询
+                </a-button>
+                <a-button @click="resetList"
+                          :loading="tableLoading"
+                >
+                  <template #icon>
+                    <RedoOutlined />
+                  </template>
+                  重 置
+                </a-button>
+              </a-space>
+            </a-form-item>
+          </a-col>
+        </a-row>
       </a-form>
     </a-card>
     <a-card :body-style="{padding: 0}" :style="{'border-bottom': 'none'}">
@@ -98,7 +106,7 @@
                 <a-tag :color="editableData[record.id].value">{{editableData[record.id].label}}</a-tag>
               </template>
               <template v-else-if="editableData[record.id] && editableData[record.id].dictTypeCode !== 'sys_dict_tag_style'">
-                <a-select v-model:value="editableData[record.id].tagStyle">
+                <a-select v-model:value="editableData[record.id].tagStyle" placeholder="请选择">
                   <a-select-option :value="item.value" v-for="item in sys_dict_tag_style">
                     <a-tag :color="item.value" :bordered="false">{{item.label}}</a-tag>
                   </a-select-option>

@@ -24,6 +24,11 @@ export default {
     layoutType: 'sider-header',
 
     /**
+     * 组件大小 small / default / large
+     */
+    componentSize: 'default',
+
+    /**
      * 导航模式 inline / horizontal
      */
     siderMode: 'inline',

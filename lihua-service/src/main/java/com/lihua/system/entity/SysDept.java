@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.lihua.model.BaseEntity;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -57,11 +58,15 @@ public class SysDept extends BaseEntity {
     /**
      * 联系电话
      */
+    @Pattern(regexp = "^1[3-9]\\d{9}$",
+            message = "请输入正确的手机号码")
     private String phoneNumber;
 
     /**
      * 邮箱
      */
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            message = "请输入正确的邮箱地址")
     private String email;
 
     /**

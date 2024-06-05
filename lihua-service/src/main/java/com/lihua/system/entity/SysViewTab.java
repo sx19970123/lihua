@@ -1,19 +1,22 @@
 package com.lihua.system.entity;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
- * 才对呢
+ * 收藏/固定页面
  */
 @Data
 public class SysViewTab {
     /**
      * 用户id
      */
+    @NotNull(message = "用户id不能为空")
     private String userId;
 
     /**
      * 路由key
      */
+    @NotNull(message = "菜单id能为空")
     private String menuId;
 
     /**

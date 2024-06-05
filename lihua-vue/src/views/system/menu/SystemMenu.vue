@@ -2,34 +2,47 @@
   <div>
     <a-flex vertical :gap="16" v-hasRole="['ROLE_admin']">
       <!--      检索条件-->
-      <a-card :style="{border: 'none'}">
+      <a-card :style="{border: 'none'}" :body-style="{'padding-bottom': '0'}">
         <a-form :colon="false" :model="menuQuery">
-          <a-space size="small">
-            <a-form-item class="form-item-single-line" label="菜单名称" name="label">
-              <a-input placeholder="请输入菜单名称" v-model:value="menuQuery.label" allow-clear/>
-            </a-form-item>
-            <a-form-item class="form-item-single-line" label="菜单状态" name="status">
-              <a-select style="width: 120px;" placeholder="请选择" v-model:value="menuQuery.status" allow-clear>
-                <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
-              </a-select>
-            </a-form-item>
-            <a-form-item class="form-item-single-line">
-              <a-button type="primary" @click="initList" :loading="tableLoad">
-                <template #icon>
-                  <SearchOutlined />
-                </template>
-                查 询
-              </a-button>
-            </a-form-item>
-            <a-form-item class="form-item-single-line">
-              <a-button @click="resetList" :loading="tableLoad">
-                <template #icon>
-                  <RedoOutlined />
-                </template>
-                重 置
-              </a-button>
-            </a-form-item>
-          </a-space>
+          <a-row :gutter="16">
+            <a-col>
+              <a-form-item label="菜单名称" name="label">
+                <a-input placeholder="请输入菜单名称" v-model:value="menuQuery.label" allow-clear/>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item label="类型" name="menuType">
+                <a-select placeholder="请选择" v-model:value="menuQuery.menuType" allow-clear>
+                  <a-select-option v-for="item in sys_menu_type" :value="item.value">{{item.label}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item label="状态" name="status">
+                <a-select placeholder="请选择" v-model:value="menuQuery.status" allow-clear>
+                  <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item>
+                <a-space size="small">
+                  <a-button type="primary" @click="initList" :loading="tableLoad">
+                    <template #icon>
+                      <SearchOutlined />
+                    </template>
+                    查 询
+                  </a-button>
+                  <a-button @click="resetList" :loading="tableLoad">
+                    <template #icon>
+                      <RedoOutlined />
+                    </template>
+                    重 置
+                  </a-button>
+                </a-space>
+              </a-form-item>
+            </a-col>
+          </a-row>
         </a-form>
       </a-card>
       <!--      列表-->

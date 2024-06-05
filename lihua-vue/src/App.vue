@@ -1,5 +1,5 @@
 <template>
-  <a-config-provider :theme="themeStore.themeConfig" :locale="local">
+  <a-config-provider :theme="themeStore.themeConfig" :locale="local" :component-size="themeStore.componentSize">
 <!--    浏览器兼容提示-->
     <a-alert type="warning" closable banner v-if="isOldBrowser">
       <template #message>

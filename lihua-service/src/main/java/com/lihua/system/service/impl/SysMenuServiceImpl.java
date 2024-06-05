@@ -42,6 +42,10 @@ public class SysMenuServiceImpl implements SysMenuService {
             queryWrapper.lambda().eq(SysMenu::getStatus,sysMenu.getStatus());
         }
 
+        if (StringUtils.hasText(sysMenu.getMenuType())) {
+            queryWrapper.lambda().eq(SysMenu::getMenuType,sysMenu.getMenuType());
+        }
+
         queryWrapper.lambda().orderByAsc(SysMenu::getSort);
 
         List<SysMenu> sysMenus = sysMenuMapper.selectList(queryWrapper);

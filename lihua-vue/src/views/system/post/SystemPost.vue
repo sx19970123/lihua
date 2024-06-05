@@ -2,47 +2,57 @@
   <div>
     <a-flex :gap="16" vertical>
       <!--        检索条件-->
-      <a-card :style="{border: 'none'}">
+      <a-card :style="{border: 'none'}" :body-style="{'padding-bottom': '0'}">
         <a-form :colon="false">
-          <a-space size="small">
-            <a-form-item label="所属部门" class="form-item-single-line">
-              <a-tree-select
-                  :tree-data="deptTree"
-                  style="width: 180px"
-                  :fieldNames="{children:'children', label:'name', value: 'id' }"
-                  placeholder="请选择部门"
-                  allow-clear
-                  v-model:value="postQuery.deptId"
-              />
-            </a-form-item>
-            <a-form-item label="岗位名称" class="form-item-single-line">
-              <a-input placeholder="请输入岗位名称" v-model:value="postQuery.name" allow-clear/>
-            </a-form-item>
-            <a-form-item label="岗位编码" class="form-item-single-line">
-              <a-input placeholder="请输入岗位编码" v-model:value="postQuery.code" allow-clear/>
-            </a-form-item>
-            <a-form-item label="岗位状态" class="form-item-single-line">
-              <a-select placeholder="请选择" v-model:value="postQuery.status" allow-clear>
-                <a-select-option :value="item.value" v-for="item in sys_status">{{item.label}}</a-select-option>
-              </a-select>
-            </a-form-item>
-            <a-form-item class="form-item-single-line">
-              <a-button type="primary" @click="queryPage" :loading="tableLoad">
-                <template #icon>
-                  <SearchOutlined />
-                </template>
-                查 询
-              </a-button>
-            </a-form-item>
-            <a-form-item class="form-item-single-line">
-              <a-button :loading="tableLoad" @click="reloadPage">
-                <template #icon>
-                  <RedoOutlined />
-                </template>
-                重 置
-              </a-button>
-            </a-form-item>
-          </a-space>
+          <a-row :gutter="16">
+            <a-col>
+              <a-form-item label="所属部门">
+                <a-tree-select
+                    :tree-data="deptTree"
+                    style="width: 180px"
+                    :fieldNames="{children:'children', label:'name', value: 'id' }"
+                    placeholder="请选择部门"
+                    allow-clear
+                    v-model:value="postQuery.deptId"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item label="岗位名称">
+                <a-input placeholder="请输入岗位名称" v-model:value="postQuery.name" allow-clear/>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item label="岗位编码">
+                <a-input placeholder="请输入岗位编码" v-model:value="postQuery.code" allow-clear/>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item label="岗位状态">
+                <a-select placeholder="请选择" v-model:value="postQuery.status" allow-clear>
+                  <a-select-option :value="item.value" v-for="item in sys_status">{{item.label}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item>
+                <a-space size="small">
+                  <a-button type="primary" @click="queryPage" :loading="tableLoad">
+                    <template #icon>
+                      <SearchOutlined />
+                    </template>
+                    查 询
+                  </a-button>
+                  <a-button :loading="tableLoad" @click="reloadPage">
+                    <template #icon>
+                      <RedoOutlined />
+                    </template>
+                    重 置
+                  </a-button>
+                </a-space>
+              </a-form-item>
+            </a-col>
+          </a-row>
         </a-form>
       </a-card>
       <!--        列表-->

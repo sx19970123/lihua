@@ -8,6 +8,7 @@ import com.lihua.system.service.SysPostService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class SysPostController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
-    public String save(@RequestBody SysPost sysPost) {
+    public String save(@RequestBody @Validated SysPost sysPost) {
         return success(sysPostService.save(sysPost));
     }
 

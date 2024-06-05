@@ -74,6 +74,11 @@ export interface SysDictTypeDTO {
   code?: string;
 
   /**
+   * 字典类型状态
+   */
+  status?: string;
+
+  /**
    * 开始结束时间
    */
   startEndTime?: [Dayjs?, Dayjs?];

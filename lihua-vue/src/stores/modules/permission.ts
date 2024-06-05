@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
-import type {RouterType} from "@/api/global/Type.ts";
 import type {RouteRecordRaw} from "vue-router";
 import Layout from "@/layout/index.vue";
 import router from "@/router";
 import IFrame from "@/components/iframe/index.vue";
 import MiddleView from "@/components/middle-view/index.vue";
+import type {RouterType} from "@/api/system/auth/type/AuthInfoType.ts";
 
 // 获取 views 下的所有 vue 组件
 const modules = import.meta.glob("../../views/**/*.vue")

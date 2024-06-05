@@ -20,6 +20,11 @@ export const useThemeStore = defineStore('theme',{
         const layoutType: string = settings.layoutType
 
         /**
+         * 组件大小 small/ middle / large
+         */
+        const componentSize: string = settings.componentSize
+
+        /**
          * 导航模式 inline / horizontal
          */
         const siderMode: string = settings.siderMode
@@ -77,6 +82,7 @@ export const useThemeStore = defineStore('theme',{
 
         return {
             layoutType,
+            componentSize,
             showViewTabs,
             dataTheme,
             colorPrimary,
@@ -234,6 +240,7 @@ export const useThemeStore = defineStore('theme',{
         // 主题复原
         resetState() {
             this.$state.layoutType = settings.layoutType
+            this.$state.componentSize = settings.componentSize
             this.$state.showViewTabs = settings.showViewTabs
             this.$state.dataTheme = localStorage.getItem("dataTheme") === "dark"
             this.$state.colorPrimary = settings.colorPrimary

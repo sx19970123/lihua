@@ -45,6 +45,12 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
                     .lambda()
                     .like(SysDictType::getCode,dictTypeDTO.getCode());
         }
+        // 字典状态
+        if (StringUtils.hasText(dictTypeDTO.getStatus())) {
+            queryWrapper
+                    .lambda()
+                    .eq(SysDictType::getStatus,dictTypeDTO.getStatus());
+        }
         // 创建时间
         if (dictTypeDTO.getStartEndTime() != null && !dictTypeDTO.getStartEndTime().isEmpty()) {
             queryWrapper
