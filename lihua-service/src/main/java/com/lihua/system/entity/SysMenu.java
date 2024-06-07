@@ -119,7 +119,7 @@ public class SysMenu extends BaseEntity {
      * 外链类型地址
      */
     @NotNull(message = "请输入外链地址", groups = MenuValidation.MenuLinkValidation.class)
-    @Pattern(regexp = "^https?://",
+    @Pattern(regexp = "^(https?|ftp):\\/\\/[^\\s\\/$.?#].[^\\s]*$",
             message = "请输入正确的链接地址",
             groups = MenuValidation.MenuLinkValidation.class)
     private String linkPath;

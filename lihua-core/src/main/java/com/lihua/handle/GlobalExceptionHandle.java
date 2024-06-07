@@ -30,7 +30,7 @@ public class GlobalExceptionHandle extends BaseController {
      */
     @ExceptionHandler(RuntimeException.class)
     public String handleRuntimeException(Exception e) {
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         return error(ResultCodeEnum.ERROR, e.getMessage());
     }
 
@@ -41,7 +41,7 @@ public class GlobalExceptionHandle extends BaseController {
      */
     @ExceptionHandler(ServiceException.class)
     public String handleServiceException(Exception e) {
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         return error(ResultCodeEnum.ERROR, e.getMessage());
     }
 
@@ -59,7 +59,7 @@ public class GlobalExceptionHandle extends BaseController {
                 .map(ObjectError::getDefaultMessage)
                 .distinct()
                 .collect(Collectors.joining("；"));
-
+        log.error(errMessages, e);
         return error(ResultCodeEnum.PARAMS_MISSING, errMessages);
     }
 
@@ -70,7 +70,7 @@ public class GlobalExceptionHandle extends BaseController {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public String handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         return error(ResultCodeEnum.PARAMS_ERROR,e.getMessage());
     }
 

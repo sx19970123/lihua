@@ -165,15 +165,15 @@ export const useUserStore = defineStore('user', {
         },
         // 保存主题修改
         saveTheme(themeJson: string) {
-            if (themeJson !== this.userInfo.avatar) {
+            if (themeJson !== this.userInfo.theme) {
                 saveTheme(themeJson).then(resp => {
                     if (resp.code === 200) {
                         this.userInfo.theme = themeJson
-                        message.success(resp.msg)
+                         message.success("主题已保存")
                     }
                 })
             } else {
-                message.warning("主题未改变")
+                message.warning("主题未修改")
             }
         },
         // 处理头像

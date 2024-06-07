@@ -13,16 +13,21 @@
         </collection>
     </resultMap>
 
-    <select id="selectSysRoleByUserId" resultType="com.lihua.model.security.CurrentRole">
-        SELECT
+
+    <sql id="selectRoleItem">
         sys_role.id,
         sys_role.name,
         sys_role.code
+    </sql>
+
+    <select id="selectSysRoleByUserId" resultType="com.lihua.model.security.CurrentRole">
+        SELECT
+            <include refid="selectRoleItem"/>
         FROM
         sys_role
         INNER JOIN sys_user_role ON sys_user_role.role_id = sys_role.id
         WHERE
-        sys_role.STATUS = '0' AND sys_role.del_flag = '0' and sys_user_role.user_id = #{userId}
+        sys_role.status = '0' AND sys_role.del_flag = '0' and sys_user_role.user_id = #{userId}
     </select>
 
     <select id="selectRoleMenuCount" resultType="java.lang.Long">
@@ -44,6 +49,25 @@
         SELECT id, name, code, status, remark, menu_Id FROM sys_role
         LEFT JOIN sys_role_menu ON sys_role.id = sys_role_menu.role_id
         WHERE sys_role.id = #{roleId}
+    </select>
+    <select id="selectCodeByUserId" resultType="java.lang.String">
+        SELECT CODE
+        FROM
+        sys_role
+        LEFT JOIN sys_user_role ON sys_user_role.role_id = sys_role.id
+        WHERE
+        sys_user_role.user_id = #{userId}
+        AND sys_role.status = '0'
+        AND del_flag = '0'
+    </select>
+
+    <select id="selectAllRole" resultType="com.lihua.model.security.CurrentRole">
+        SELECT
+        <include refid="selectRoleItem"/>
+        FROM
+        sys_role
+        WHERE
+        sys_role.status = '0' AND sys_role.del_flag = '0'
     </select>
 
     <delete id="deleteRoleMenuByRoleId">

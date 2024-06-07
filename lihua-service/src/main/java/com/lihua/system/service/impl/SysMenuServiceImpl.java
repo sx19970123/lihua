@@ -101,35 +101,6 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public List<CurrentRouter> selectSysMenuByLoginUserId(String userId) {
-        List<CurrentRouter> currentRouterList = sysMenuMapper.selectPermsByUserId(userId);
-        // 不需要权限数据
-        currentRouterList = currentRouterList
-                .stream()
-                .filter(vo -> !vo.getType().equals("perms"))
-                .peek(vo -> {
-                    // 使用正则表达式从组件路径中获取组件名称
-                    String component = vo.getComponent();
-                    if (component != null) {
-                        Pattern pattern = Pattern.compile(patternComponentName);
-                        Matcher matcher = pattern.matcher(component);
-                        if (matcher.find()) {
-                            String name = matcher.group(1);
-                            if (StringUtils.hasText(name)) {
-                                vo.setName(name);
-                            }
-                        }
-                    }
-                })
-                .collect(Collectors.toList());
-        // 递归构建树
-        List<CurrentRouter> routerList = TreeUtils.buildTree(currentRouterList);
-        // 设置层级key，再通过key设置path
-        handleRouterPathKey(routerList, null);
-        return routerList;
-    }
-
-    @Override
     public List<SysMenu> menuTreeOption() {
         SysMenu sysMenu = new SysMenu();
         sysMenu.setStatus("0");

@@ -86,7 +86,7 @@
           <template v-if="column.key === 'status'">
             <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
           </template>
-          <template v-if="column.key === 'action'">
+          <template v-if="column.key === 'action' && record.username !== 'admin'">
             <a-button type="link" size="small" @click="getUserInfo(record.id)">
               <template #icon>
                 <EditOutlined />
@@ -307,6 +307,7 @@ const initSearch = () => {
     {
       title: '所属部门',
       key: 'deptLabelList',
+      ellipsis: true,
       dataIndex: 'deptLabelList'
     },
     {
@@ -322,6 +323,12 @@ const initSearch = () => {
       align: 'center'
     },
     {
+      title: '备注',
+      key: 'remark',
+      ellipsis: true,
+      dataIndex: 'remark',
+    },
+    {
       title: '创建时间',
       key: 'createTime',
       dataIndex: 'createTime',
@@ -331,7 +338,8 @@ const initSearch = () => {
       title: '操作',
       key: 'action',
       dataIndex: 'action',
-      align: 'center'
+      align: 'center',
+      width: '190px'
     }
   ]
 

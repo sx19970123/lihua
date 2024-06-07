@@ -50,7 +50,6 @@
             :pagination="false"
             :loading="tableLoad"
             row-key="id"
-            row-class-name="hover-cursor-pointer"
         >
           <template #title>
             <a-flex :gap="8">
@@ -71,7 +70,7 @@
             <template v-if="column.key === 'createTime'">
               {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
             </template>
-            <template v-if="column.key === 'action'">
+            <template v-if="column.key === 'action' && record.code !== 'ROLE_admin'">
               <a-button type="link" size="small" @click="getRole($event,record.id)">
                 <template #icon>
                   <EditOutlined />
@@ -201,6 +200,11 @@ const initSearch = () => {
       align: 'center',
       ellipsis: true,
       key: 'status',
+    },{
+      title: '备注',
+      dataIndex: 'remark',
+      ellipsis: true,
+      key: 'remark'
     },
     {
       title: '创建时间',
@@ -212,7 +216,7 @@ const initSearch = () => {
       title: '操作',
       align: 'center',
       key: 'action',
-      width: '300px'
+      width: '190px'
     },
   ]
   // 查询条件

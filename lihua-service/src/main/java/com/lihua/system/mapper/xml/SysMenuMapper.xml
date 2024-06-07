@@ -23,8 +23,7 @@
         </association>
     </resultMap>
 
-    <select id="selectPermsByUserId" resultMap="selectPermsByUserId">
-        SELECT
+    <sql id="selectMenuItem">
         sys_menu.id,
         sys_menu.parent_id,
         sys_menu.label,
@@ -59,6 +58,11 @@
         WHEN '1' THEN
         FALSE
         END AS view_tab
+    </sql>
+
+    <select id="selectPermsByUserId" resultMap="selectPermsByUserId">
+        SELECT
+        <include refid="selectMenuItem"/>
         FROM
         sys_menu
         INNER JOIN sys_role_menu ON sys_role_menu.menu_id = sys_menu.id
@@ -66,7 +70,16 @@
         INNER JOIN sys_user_role ON sys_user_role.role_id = sys_role.id
         WHERE
         sys_user_role.user_id = #{userId} AND sys_menu.status = '0' AND sys_menu.del_flag = '0'
+        ORDER BY
+        sys_menu.sort
+    </select>
 
+    <select id="selectAllPerms" resultMap="selectPermsByUserId">
+        SELECT
+        <include refid="selectMenuItem"/>
+        FROM
+        sys_menu
+        WHERE sys_menu.status = '0' AND sys_menu.del_flag = '0'
         ORDER BY
         sys_menu.sort
     </select>

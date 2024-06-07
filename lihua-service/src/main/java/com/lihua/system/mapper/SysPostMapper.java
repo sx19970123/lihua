@@ -19,4 +19,7 @@ public interface SysPostMapper extends BaseMapper<SysPost> {
     Long postUserCount(@Param("ids") List<String> ids);
 
     List<CurrentPost> selectByUserId(@Param("userId") String userId);
+
+    // 查询岗位信息（admin）
+    List<CurrentPost> selectAllPost();
 }

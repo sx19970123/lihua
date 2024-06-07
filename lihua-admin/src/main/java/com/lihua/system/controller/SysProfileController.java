@@ -15,6 +15,7 @@ import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +41,7 @@ public class SysProfileController extends BaseController {
         authInfo.setDepts(loginUser.getDeptTree());
         authInfo.setPosts(loginUser.getPostList());
         authInfo.setRoles(loginUser.getRoleList());
-        authInfo.setPermissions(loginUser.getPermissionList().stream().map(GrantedAuthority::getAuthority).toList());
+        authInfo.setPermissions(loginUser.getPermissionList().stream().map(GrantedAuthority::getAuthority).filter(item -> !item.startsWith("ROLE_")).toList());
         authInfo.setRouters(loginUser.getRouterList());
         authInfo.setViewTabs(loginUser.getViewTabList());
         authInfo.setDefaultDept(LoginUserContext.getDefaultDept() != null ? LoginUserContext.getDefaultDept() : new CurrentDept());

@@ -1,7 +1,6 @@
 package com.lihua.system.service.impl;
 
 import com.lihua.cache.RedisCache;
-import com.lihua.config.LihuaConfig;
 import com.lihua.model.security.*;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.mapper.SysMenuMapper;
@@ -18,11 +17,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class SysAuthenticationServiceImpl implements SysAuthenticationService {
@@ -51,11 +52,8 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Resource
     private SysDeptMapper sysDeptMapper;
 
+    private final String patternComponentName =  "([^/]+)\\.vue$";
 
-    @Resource
-    private LihuaConfig lihuaConfig;
-
-    @Transactional
     @Override
     public String login(CurrentUser currentUser) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(currentUser.getUsername(), currentUser.getPassword()));
@@ -73,27 +71,44 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Override
     public void cacheUserLoginDetails(LoginUser loginUser) {
         String id = loginUser.getUser().getId();
-        // 菜单router信息
-        List<CurrentRouter> routerList = sysMenuService.selectSysMenuByLoginUserId(id);
         // 角色信息
-        List<CurrentRole> roles = sysRoleMapper.selectSysRoleByUserId(id);
+        boolean isAdmin = isAdmin(id);
+
         // 权限信息
-        List<CurrentRouter> permList = sysMenuMapper.selectPermsByUserId(id);
+        List<CurrentRouter> permList;
+        // 岗位信息
+        List<CurrentPost> postList;
+        // 部门信息
+        List<CurrentDept> deptList;
+        // 角色信息
+        List<CurrentRole> roleList;
+        // admin 查询全部用户信息
+        if (isAdmin) {
+            permList = sysMenuMapper.selectAllPerms();
+            postList = sysPostMapper.selectAllPost();
+            deptList = sysDeptMapper.selectAllDept(id);
+            roleList = sysRoleMapper.selectAllRole();
+        }
+        // 其他用户根据配置权限进行查询
+        else {
+            permList = sysMenuMapper.selectPermsByUserId(id);
+            postList = sysPostMapper.selectByUserId(id);
+            deptList = sysDeptMapper.selectByUserId(id);
+            roleList = sysRoleMapper.selectSysRoleByUserId(id);
+        }
+
         // 收藏/固定菜单
         List<CurrentViewTab> viewTabList = sysViewTabService.selectByUserId(id);
-        // 岗位信息
-        List<CurrentPost> postList = sysPostMapper.selectByUserId(id);
-        // 部门信息
-        List<CurrentDept> deptList = sysDeptMapper.selectByUserId(id);
-
+        // 处理菜单router信息
+        List<CurrentRouter> routerList = handleSysMenu(permList);
         // viewTab赋值routerPathKey
         handleSetViewTabKey(viewTabList,routerList);
         // 处理角色权限信息
-        List<String> authorities = handleAuthorities(roles,permList);
+        List<String> authorities = handleAuthorities(roleList,permList);
 
         loginUser
             .setRouterList(routerList)
-            .setRoleList(roles)
+            .setRoleList(roleList)
             .setViewTabList(viewTabList)
             .setDeptList(deptList)
             .setDeptTree(TreeUtils.buildTree(deptList))
@@ -119,6 +134,17 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     }
 
     /**
+     * 判断当前登录用户是否为超级管理员
+     * @param userId
+     * @return
+     */
+    private boolean isAdmin(String userId) {
+        List<String> roleCodes = sysRoleMapper.selectCodeByUserId(userId);
+        return roleCodes.contains("ROLE_admin");
+    }
+
+
+    /**
      * spring security 默认将RULE_ 开头的字符串认定为角色，其余认定为权限；都存放在 GrantedAuthority 中
      * @param roleList
      * @param routerList
@@ -127,6 +153,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     private List<String> handleAuthorities(List<CurrentRole> roleList,List<CurrentRouter> routerList) {
         // 过滤出用户权限信息
         List<String> perms = new ArrayList<>(routerList.stream()
+                .filter(router -> "perms".equals(router.getType()))
                 .map(CurrentRouter::getPerms)
                 .filter(StringUtils::hasText)
                 .distinct()
@@ -141,5 +168,57 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         // 合并角色/权限
         perms.addAll(roleCodes);
         return perms;
+    }
+
+
+    /**
+     * 处理menu数据为路由数据
+     * @param currentRouterList
+     * @return
+     */
+    public List<CurrentRouter> handleSysMenu(List<CurrentRouter> currentRouterList) {
+        // 不需要权限数据
+        currentRouterList = currentRouterList
+                .stream()
+                .filter(vo -> !vo.getType().equals("perms"))
+                .peek(vo -> {
+                    // 使用正则表达式从组件路径中获取组件名称
+                    String component = vo.getComponent();
+                    if (component != null) {
+                        Pattern pattern = Pattern.compile(patternComponentName);
+                        Matcher matcher = pattern.matcher(component);
+                        if (matcher.find()) {
+                            String name = matcher.group(1);
+                            if (StringUtils.hasText(name)) {
+                                vo.setName(name);
+                            }
+                        }
+                    }
+                })
+                .collect(Collectors.toList());
+        // 递归构建树
+        List<CurrentRouter> routerList = TreeUtils.buildTree(currentRouterList);
+        // 设置层级key，再通过key设置path
+        handleRouterPathKey(routerList, null);
+        return routerList;
+    }
+
+    // 处理 routerPathKey
+    private void handleRouterPathKey(List<CurrentRouter> routerList, String parentKey) {
+        for (CurrentRouter item : routerList) {
+            String key = item.getPath().startsWith("/") ? item.getPath() : "/" + item.getPath();
+            // 根据菜单层级关系设置key
+            if ("0".equals(item.getParentId())) {
+                item.setKey(key);
+            } else if (parentKey != null){
+                item.setKey(parentKey + key);
+            }
+            // 设置path
+            item.setPath(item.getKey());
+            // 存在子集继续递归
+            if (item.getChildren() != null && !item.getChildren().isEmpty()) {
+                handleRouterPathKey(item.getChildren(),item.getKey());
+            }
+        }
     }
 }
