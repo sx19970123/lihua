@@ -29,3 +29,5 @@ declare module 'vue-cropper'
 declare module 'sortablejs'
 
 declare module 'lodash-es'
+
+declare module 'gsap'
