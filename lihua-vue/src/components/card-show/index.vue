@@ -2,7 +2,8 @@
   <div>
     <!-- 展示 overview 和 detail 的容器-->
     <div
-        class="container"
+        class="card-show-container"
+        ref="containerRef"
         :class="props.cardKey"
         :style="style"
         :id="props.cardKey"
@@ -10,7 +11,12 @@
         @mouseover="handleMouseOverCard"
         @mouseleave="handleMouseLeaveCard"
     >
+      <!-- 展示概述信息 -->
       <slot name="overview" v-if="showStatus === 'ready'"></slot>
+      <!-- 过渡时展示自定义封面 -->
+      <div v-if="showStatus === 'activity'" class="card-show-middle">
+        <slot name="middle"></slot>
+      </div>
     </div>
 
     <!-- 传送组建，点开内容时，将 content 传送到 id 为 props.cardKey 的元素下 -->
@@ -19,13 +25,13 @@
     </Teleport>
 
     <!-- 占位元素，复刻slot:title，会随着页面视口变化而变化，返回动画参数从该组建中获取 -->
-    <div v-if="showStatus !== 'ready'" style="opacity: 0" ref="placeholder">
+    <div v-if="showStatus !== 'ready'" style="opacity: 0" ref="placeholderRef">
       <slot name="overview"></slot>
     </div>
 
     <!-- mask 打开时背景蒙版 -->
     <Teleport to="body">
-      <div class="mask" v-if="showStatus !== 'ready'" @click="handleClose"></div>
+      <div class="card-show-mask" v-if="showStatus !== 'ready'" @click="handleClose"></div>
     </Teleport>
   </div>
 </template>
@@ -56,12 +62,38 @@ const props = defineProps({
   expandedTop: {
     type: Number,
     default: 100
+  },
+  // 鼠标悬浮缩放倍率
+  hoverScale: {
+    type: Number,
+    default: 1.05
+  },
+  // 自动完成，是否通过外部控制组件middle状态
+  autoComplete: {
+    type: Boolean,
+    default: true
+  },
+  // 当 autoComplete false 时，是用 middleComplete 控制 middle 遮罩是否关闭
+  middleComplete: {
+    type: Boolean
   }
 })
 
+// 定义向外抛出的函数
+/**
+ * cardClick 点击卡片时触发
+ * cardComplete 卡片展开完成时触发
+ * cardReady 卡片折叠完成时触发
+ * cardReadyOver 鼠标移入卡片时触发
+ * cardReadyLeave 鼠标移出卡片时触发
+ * */
+const emits = defineEmits(['cardClick','cardComplete','cardReady','cardReadyOver','cardReadyLeave'])
+
 const initClick = () => {
   // 占位元素的ref
-  const placeholder = ref()
+  const placeholderRef = ref()
+  // 容器元素ref
+  const containerRef = ref()
   // 展示的状态
   const showStatus = ref<'ready' | 'activity' | 'complete'>('ready')
   // 展开后改变css定位布局
@@ -72,6 +104,9 @@ const initClick = () => {
     if (showStatus.value !== 'ready') {
       return
     }
+    // todo 抛出函数
+    emits('cardClick', props.cardKey)
+    const bounding = containerRef.value.getBoundingClientRect()
     // 执行动画，先将缩放还原
     gsap.to('.' + props.cardKey, {
       scale: 1,
@@ -83,17 +118,21 @@ const initClick = () => {
         // container 设置为固定定位
         style.value = {position: 'fixed'}
         // 执行主要动画
-        gsap.to('.' + props.cardKey, {
+        gsap.fromTo('.' + props.cardKey, {
+          width: bounding.width
+        },{
           left: innerWidth.value / 2 - props.expandedWidth / 2,
           top: props.expandedTop,
           width: props.expandedWidth,
           height: props.expandedHeight,
-          borderRadius: 16 ,
           duration: 0.3,
           ease: 'power1.out',
           onComplete: () => {
-            // 动画执行完成后，状态修改为已完成
-            showStatus.value = 'complete'
+            // todo 抛出函数
+            if (props.autoComplete || props.middleComplete) {
+              showStatus.value = 'complete'
+              emits('cardComplete', props.cardKey)
+            }
           }
         })
       }
@@ -103,10 +142,10 @@ const initClick = () => {
   // 关闭详情卡片
   const handleClose = () => {
     // 动画播放完才可关闭
-    // if (showStatus.value !== 'complete') {
-    //   return;
-    // }
-    const bounding = placeholder.value.getBoundingClientRect()
+    if (showStatus.value !== 'complete') {
+      return;
+    }
+    const bounding = placeholderRef.value.getBoundingClientRect()
     // 状态修改为进行时
     showStatus.value = 'activity'
     // 执行主要动画
@@ -115,7 +154,6 @@ const initClick = () => {
       height: bounding.height,
       top: bounding.top,
       left: bounding.left,
-      borderRadius: 8 ,
       duration: 0.3,
       ease: 'power1.out',
       onComplete: () => {
@@ -123,18 +161,21 @@ const initClick = () => {
         style.value = {position: 'static', width: '', height: '', top: '', left: ''}
         // 动画执行完成后，状态修改为就绪
         showStatus.value = 'ready'
+        // todo 抛出函数
+        emits('cardReady', props.cardKey)
       }
     })
   }
   return {
     showStatus,
     style,
-    placeholder,
+    placeholderRef,
+    containerRef,
     handleClose,
     handleClickCard,
   }
 }
-const {showStatus, style, placeholder, handleClose, handleClickCard } = initClick()
+const {showStatus, style, placeholderRef,containerRef, handleClose, handleClickCard } = initClick()
 
 
 // 加载鼠标在卡片悬浮相关逻辑
@@ -144,10 +185,13 @@ const initHover = () => {
   // 鼠标悬浮于卡片
   const handleMouseOverCard = () => {
     if (hoverStatus.value === 'ready' || showStatus.value === 'ready') {
+      // todo 抛出函数
+      emits('cardReadyOver', props.cardKey)
+
       hoverStatus.value = 'activity'
       handleAddHoverStyle()
       gsap.to('.' + props.cardKey, {
-        scale: 1.05,
+        scale: props.hoverScale,
         duration: 0.1,
         onComplete: () => {
           hoverStatus.value = 'complete'
@@ -164,6 +208,8 @@ const initHover = () => {
         onComplete: () => {
           hoverStatus.value = 'ready'
           handleRemoveHoverStyle()
+          // todo 抛出函数
+          emits('cardReadyLeave', props.cardKey)
         }
       })
     }
@@ -171,13 +217,11 @@ const initHover = () => {
   // 添加 hover 样式
   const handleAddHoverStyle = () => {
     style.value.cursor = 'pointer'
-    style.value.borderRadius = '8px'
     style.value.boxShadow = '0 8px 16px 0 rgba(0, 0, 0, 0.08)'
   }
   // 移除 hover 样式
   const handleRemoveHoverStyle = () => {
     style.value.cursor = ''
-    style.value.borderRadius = ''
     style.value.boxShadow = ''
   }
   return {
@@ -204,20 +248,29 @@ const windowWidthResize = () => {
     style.value.left = left + 'px';
   }
 }
+
+watch(() => props.middleComplete, (value) => {
+  if (!props.autoComplete && value) {
+    showStatus.value = 'complete'
+  }
+})
 </script>
 
 <style scoped>
-.container {
-  border-radius: 8px;
+.card-show-container {
+  position: relative;
   z-index: 100;
-  background-color: #fff;
 }
-.card-show-title:hover {
-  cursor: pointer;
-  border-radius: 8px;
-  box-shadow:0 8px 16px 0 rgba(0, 0, 0, 0.08)
+.card-show-middle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(0,0,0,0.1)
 }
-.mask {
+.card-show-mask {
   position: fixed;
   z-index: 20;
   background: rgba(0, 0, 0, 0.3);
