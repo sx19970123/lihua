@@ -73,8 +73,8 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
-  // 当 autoComplete false 时，是用 middleComplete 控制 middle 遮罩是否关闭
-  middleComplete: {
+  // 当 autoComplete false 时，是用 haveComplete 控制 middle 遮罩是否关闭
+  haveComplete: {
     type: Boolean
   }
 })
@@ -87,7 +87,7 @@ const props = defineProps({
  * cardReadyOver 鼠标移入卡片时触发
  * cardReadyLeave 鼠标移出卡片时触发
  * */
-const emits = defineEmits(['cardClick','cardComplete','cardReady','cardReadyOver','cardReadyLeave'])
+const emits = defineEmits(['cardClick','cardComplete','cardReady','cardReadyOver','cardReadyLeave','maskClick'])
 
 const initClick = () => {
   // 占位元素的ref
@@ -129,7 +129,7 @@ const initClick = () => {
           ease: 'power1.out',
           onComplete: () => {
             // todo 抛出函数
-            if (props.autoComplete || props.middleComplete) {
+            if (props.autoComplete || props.haveComplete) {
               showStatus.value = 'complete'
               emits('cardComplete', props.cardKey)
             }
@@ -145,6 +145,8 @@ const initClick = () => {
     if (showStatus.value !== 'complete') {
       return;
     }
+    // todo 点击遮罩函数
+    emits('maskClick', props.cardKey)
     const bounding = placeholderRef.value.getBoundingClientRect()
     // 状态修改为进行时
     showStatus.value = 'activity'
@@ -249,7 +251,8 @@ const windowWidthResize = () => {
   }
 }
 
-watch(() => props.middleComplete, (value) => {
+// 监听 haveComplete 变化，当 autoComplete 为 false 时，haveComplete 为true 改变 showStatus 状态
+watch(() => props.haveComplete, (value) => {
   if (!props.autoComplete && value) {
     showStatus.value = 'complete'
   }
