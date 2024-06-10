@@ -18,7 +18,7 @@
       <div v-if="showStatus === 'activity'" class="card-show-middle">
         <slot name="middle"></slot>
       </div>
-      <!-- 当 showStatus !== 'complete' 时，执行动画前为获取其高度，会暂时将display设置为block，这不能在页面显示，所以showStatus === 'complete'之前设置为全透明 -->
+      <!-- 当 showStatus !== 'complete' 时，执行动画前为获取其高度，会暂时将display设置为block，这不能在页面显示，所以showStatus === 'complete' 之前设置为全透明 -->
       <div v-show="showStatus === 'complete'" ref="detailRef" :style="showStatus === 'complete' ? 'opacity: 1' : 'opacity: 0'">
         <slot name="detail"></slot>
       </div>
