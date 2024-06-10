@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { gsap } from 'gsap';
-import {onMounted, ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import type { CSSProperties } from 'vue';
 
 // 接受父组件参数
@@ -157,7 +157,7 @@ const initClick = () => {
 
   // 关闭详情卡片
   const handleClose = (event: KeyboardEvent | MouseEvent, type: string) => {
-    // 键盘触发后判断是不是esc键
+    // 键盘触发后判断是不是 esc 键
     if (type === 'keydown' && event instanceof KeyboardEvent && event.key !== 'Escape') {
       return;
     }
@@ -292,13 +292,16 @@ const {handleMouseOverCard, handleMouseLeaveCard } = initHover()
 // 视口的宽度，用于定位展开后元素位置
 const innerWidth = ref<number>(window.innerWidth)
 
-// 创建监听窗口变化函数
+// 监听窗口变化和键盘事件
 onMounted(() => {
   window.addEventListener('resize', windowWidthResize)
   window.addEventListener("keydown", (event) => handleClose(event, 'keydown'));
 })
-
-
+// 卸载组件前删除监听函数
+onUnmounted(() => {
+  window.removeEventListener('resize', windowWidthResize)
+  window.removeEventListener("keydown", (event) => handleClose(event, 'keydown'));
+})
 
 // 窗口变化后重置 innerWidth 和 left 属性
 const windowWidthResize = () => {
