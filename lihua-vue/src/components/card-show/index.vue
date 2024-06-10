@@ -6,23 +6,23 @@
         ref="containerRef"
         :class="props.cardKey"
         :style="style"
-        :id="props.cardKey"
         @click="handleClickCard"
         @mouseover="handleMouseOverCard"
         @mouseleave="handleMouseLeaveCard"
     >
       <!-- 展示概述信息 -->
-      <slot name="overview" v-if="showStatus === 'ready'"></slot>
+      <div v-if="showStatus === 'ready'">
+        <slot name="overview"></slot>
+      </div>
       <!-- 过渡时展示自定义封面 -->
       <div v-if="showStatus === 'activity'" class="card-show-middle">
         <slot name="middle"></slot>
       </div>
+      <!-- 当 showStatus !== 'complete' 时，执行动画前为获取其高度，会暂时将display设置为block，这不能在页面显示，所以showStatus === 'complete'之前设置为全透明 -->
+      <div v-show="showStatus === 'complete'" ref="detailRef" :style="showStatus === 'complete' ? 'opacity: 1' : 'opacity: 0'">
+        <slot name="detail"></slot>
+      </div>
     </div>
-
-    <!-- 传送组建，点开内容时，将 content 传送到 id 为 props.cardKey 的元素下 -->
-    <Teleport :to="'#' + props.cardKey " v-if="showStatus === 'complete'">
-      <slot name="detail"></slot>
-    </Teleport>
 
     <!-- 占位元素，复刻slot:title，会随着页面视口变化而变化，返回动画参数从该组建中获取 -->
     <div v-if="showStatus !== 'ready'" style="opacity: 0" ref="placeholderRef">
@@ -50,13 +50,11 @@ const props = defineProps({
   },
   // 展开后的宽度
   expandedWidth: {
-    type: Number,
-    default: 500
+    type: Number
   },
   // 展开后的高度
   expandedHeight: {
-    type: Number,
-    default: 500
+    type: Number
   },
   // 展开后距离页面顶端像素
   expandedTop: {
@@ -73,11 +71,19 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
-  // 当 autoComplete false 时，是用 haveComplete 控制 middle 遮罩是否关闭
-  haveComplete: {
+  // 当 autoComplete false 时，是用 isComplete 控制 middle 遮罩是否关闭
+  isComplete: {
     type: Boolean
+  },
+  // 是否展示详情
+  isDetailVisible: {
+    type: Boolean,
+    default: true
   }
 })
+
+// 动画状态类型
+type StatusType = 'ready' | 'activity' | 'complete'
 
 // 定义向外抛出的函数
 /**
@@ -94,19 +100,26 @@ const initClick = () => {
   const placeholderRef = ref()
   // 容器元素ref
   const containerRef = ref()
+  // 详情ref
+  const detailRef = ref()
+
   // 展示的状态
-  const showStatus = ref<'ready' | 'activity' | 'complete'>('ready')
+  const showStatus = ref<StatusType>('ready')
   // 展开后改变css定位布局
   const style = ref<CSSProperties>({position: 'static'})
+  // 详情可见
+  const detailVisible = showStatus.value === 'ready' && props.isDetailVisible
+
   // 点击卡片
   const handleClickCard = () => {
+    // todo 抛出函数
+    emits('cardClick', { key: props.cardKey, detailVisible: detailVisible})
+
     // 只有就绪状态才可点击
-    if (showStatus.value !== 'ready') {
+    if (!detailVisible) {
       return
     }
-    // todo 抛出函数
-    emits('cardClick', props.cardKey)
-    const bounding = containerRef.value.getBoundingClientRect()
+
     // 执行动画，先将缩放还原
     gsap.to('.' + props.cardKey, {
       scale: 1,
@@ -119,17 +132,17 @@ const initClick = () => {
         style.value = {position: 'fixed'}
         // 执行主要动画
         gsap.fromTo('.' + props.cardKey, {
-          width: bounding.width
+          width: getOverviewWidth()
         },{
-          left: innerWidth.value / 2 - props.expandedWidth / 2,
+          left: innerWidth.value / 2 - getDetailWidth() / 2,
           top: props.expandedTop,
-          width: props.expandedWidth,
-          height: props.expandedHeight,
+          width: getDetailWidth(),
+          height: getDetailHeight(),
           duration: 0.3,
           ease: 'power1.out',
           onComplete: () => {
             // todo 抛出函数
-            if (props.autoComplete || props.haveComplete) {
+            if (props.autoComplete || props.isComplete) {
               showStatus.value = 'complete'
               emits('cardComplete', props.cardKey)
             }
@@ -168,22 +181,52 @@ const initClick = () => {
       }
     })
   }
+
+  // 获取概述宽度
+  const getOverviewWidth = () => {
+    return containerRef.value.getBoundingClientRect().width
+  }
+
+  // 获取展开后高度
+  const getDetailHeight = () => {
+    if (props.expandedHeight) {
+      return props.expandedHeight
+    }
+    detailRef.value.style.display = 'block'
+    const bounding = detailRef.value.getBoundingClientRect()
+    detailRef.value.style.display = 'none'
+    return bounding.height
+  }
+
+  // 获取展开后的宽度
+  const getDetailWidth = () => {
+    if (props.expandedWidth) {
+      return props.expandedWidth
+    }
+    detailRef.value.style.display = 'block'
+    const bounding = detailRef.value.getBoundingClientRect()
+    detailRef.value.style.display = 'none'
+    return bounding.width
+  }
   return {
     showStatus,
     style,
     placeholderRef,
     containerRef,
+    detailRef,
+    detailVisible,
     handleClose,
     handleClickCard,
+    getDetailWidth
   }
 }
-const {showStatus, style, placeholderRef,containerRef, handleClose, handleClickCard } = initClick()
+const {showStatus, style, placeholderRef, containerRef, detailRef, detailVisible, handleClose, handleClickCard,getDetailWidth } = initClick()
 
 
 // 加载鼠标在卡片悬浮相关逻辑
 const initHover = () => {
   // 缩放状态分为 ready就绪 activity活动中 complete已完成
-  const hoverStatus = ref<'ready' | 'activity' | 'complete'>('ready')
+  const hoverStatus = ref<StatusType>('ready')
   // 鼠标悬浮于卡片
   const handleMouseOverCard = () => {
     if (hoverStatus.value === 'ready' || showStatus.value === 'ready') {
@@ -218,7 +261,9 @@ const initHover = () => {
   }
   // 添加 hover 样式
   const handleAddHoverStyle = () => {
-    style.value.cursor = 'pointer'
+    if (props.isDetailVisible) {
+      style.value.cursor = 'pointer'
+    }
     style.value.boxShadow = '0 8px 16px 0 rgba(0, 0, 0, 0.08)'
   }
   // 移除 hover 样式
@@ -246,14 +291,14 @@ onMounted(() => {
 const windowWidthResize = () => {
   innerWidth.value = window.innerWidth
   if (showStatus.value === 'complete') {
-    const left = window.innerWidth / 2 - props.expandedWidth / 2
+    const left = window.innerWidth / 2 - getDetailWidth() / 2
     style.value.left = left + 'px';
   }
 }
 
-// 监听 haveComplete 变化，当 autoComplete 为 false 时，haveComplete 为true 改变 showStatus 状态
-watch(() => props.haveComplete, (value) => {
-  if (!props.autoComplete && value) {
+// 监听 isComplete 变化，当 autoComplete 为 false 时，isComplete 为true 改变 showStatus 状态
+watch(() => props.isComplete, (value) => {
+  if (!props.autoComplete && value && detailVisible) {
     showStatus.value = 'complete'
   }
 })

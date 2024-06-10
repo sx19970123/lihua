@@ -4,11 +4,11 @@
       <card-show cardKey="s1"
                  style="width: 100%"
                  :auto-complete="false"
-                 :have-complete="middleComplete"
+                 :is-complete="middleComplete"
                  @card-click="handleClick"
+                 :is-detail-visible="false"
                  :hover-scale="1.01"
-                 :expanded-height="300"
-                 :expanded-width="1000"
+                 :expanded-width="600"
       >
         <template #overview>
           <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
@@ -36,7 +36,9 @@
 import CardShow from '@/components/card-show/index.vue'
 import {ref} from "vue";
 const middleComplete = ref<boolean>(false)
-const handleClick = () => {
+const handleClick = (key:string,show:boolean) => {
+  console.log(key)
+  console.log(show)
   setTimeout(() => {
     middleComplete.value = true
   },1000)
