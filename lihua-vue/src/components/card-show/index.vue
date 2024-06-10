@@ -31,7 +31,7 @@
 
     <!-- mask 打开时背景蒙版 -->
     <Teleport to="body">
-      <div class="card-show-mask" v-if="showStatus !== 'ready'" @click="handleClose"></div>
+      <div class="card-show-mask" v-if="showStatus !== 'ready'" @click="handleClose($event, 'mask')"></div>
     </Teleport>
   </div>
 </template>
@@ -50,10 +50,6 @@ const props = defineProps({
   },
   // 展开后的宽度
   expandedWidth: {
-    type: Number
-  },
-  // 展开后的高度
-  expandedHeight: {
     type: Number
   },
   // 展开后距离页面顶端像素
@@ -112,6 +108,9 @@ const initClick = () => {
 
   // 点击卡片
   const handleClickCard = () => {
+    if (showStatus.value === 'complete') {
+      return;
+    }
     // todo 抛出函数
     emits('cardClick', { key: props.cardKey, detailVisible: detailVisible})
 
@@ -119,20 +118,24 @@ const initClick = () => {
     if (!detailVisible) {
       return
     }
-
+    const bounding = containerRef.value.getBoundingClientRect()
     // 执行动画，先将缩放还原
     gsap.to('.' + props.cardKey, {
       scale: 1,
       duration: 0,
       // 缩放还原后再进行主要动画
       onComplete: () => {
+        // 关闭Y轴滚动条
+        hiddenOverflowY()
         // 状态修改为进行时
         showStatus.value = 'activity'
         // container 设置为固定定位
         style.value = {position: 'fixed'}
         // 执行主要动画
         gsap.fromTo('.' + props.cardKey, {
-          width: getOverviewWidth()
+          width: bounding.width,
+          left: bounding.left,
+          top:  bounding.top
         },{
           left: innerWidth.value / 2 - getDetailWidth() / 2,
           top: props.expandedTop,
@@ -153,7 +156,12 @@ const initClick = () => {
   }
 
   // 关闭详情卡片
-  const handleClose = () => {
+  const handleClose = (event: KeyboardEvent | MouseEvent, type: string) => {
+    // 键盘触发后判断是不是esc键
+    if (type === 'keydown' && event instanceof KeyboardEvent && event.key !== 'Escape') {
+      return;
+    }
+
     // 动画播放完才可关闭
     if (showStatus.value !== 'complete') {
       return;
@@ -163,6 +171,8 @@ const initClick = () => {
     const bounding = placeholderRef.value.getBoundingClientRect()
     // 状态修改为进行时
     showStatus.value = 'activity'
+    // 打开y轴滚动条
+    showOverflowY()
     // 执行主要动画
     gsap.to('.' + props.cardKey, {
       width: bounding.width,
@@ -182,16 +192,8 @@ const initClick = () => {
     })
   }
 
-  // 获取概述宽度
-  const getOverviewWidth = () => {
-    return containerRef.value.getBoundingClientRect().width
-  }
-
   // 获取展开后高度
   const getDetailHeight = () => {
-    if (props.expandedHeight) {
-      return props.expandedHeight
-    }
     detailRef.value.style.display = 'block'
     const bounding = detailRef.value.getBoundingClientRect()
     detailRef.value.style.display = 'none'
@@ -208,19 +210,27 @@ const initClick = () => {
     detailRef.value.style.display = 'none'
     return bounding.width
   }
+
+  const hiddenOverflowY = () => {
+    document.body.style.overflowY = 'hidden'
+  }
+
+  const showOverflowY = () => {
+    document.body.style.overflowY = 'auto'
+  }
+
   return {
     showStatus,
     style,
     placeholderRef,
     containerRef,
     detailRef,
-    detailVisible,
     handleClose,
     handleClickCard,
     getDetailWidth
   }
 }
-const {showStatus, style, placeholderRef, containerRef, detailRef, detailVisible, handleClose, handleClickCard,getDetailWidth } = initClick()
+const {showStatus, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard,getDetailWidth } = initClick()
 
 
 // 加载鼠标在卡片悬浮相关逻辑
@@ -285,7 +295,10 @@ const innerWidth = ref<number>(window.innerWidth)
 // 创建监听窗口变化函数
 onMounted(() => {
   window.addEventListener('resize', windowWidthResize)
+  window.addEventListener("keydown", (event) => handleClose(event, 'keydown'));
 })
+
+
 
 // 窗口变化后重置 innerWidth 和 left 属性
 const windowWidthResize = () => {
@@ -298,7 +311,7 @@ const windowWidthResize = () => {
 
 // 监听 isComplete 变化，当 autoComplete 为 false 时，isComplete 为true 改变 showStatus 状态
 watch(() => props.isComplete, (value) => {
-  if (!props.autoComplete && value && detailVisible) {
+  if (!props.autoComplete && props.isDetailVisible && showStatus.value === 'activity' && value) {
     showStatus.value = 'complete'
   }
 })
@@ -307,7 +320,7 @@ watch(() => props.isComplete, (value) => {
 <style scoped>
 .card-show-container {
   position: relative;
-  z-index: 100;
+  z-index: 101;
 }
 .card-show-middle {
   position: absolute;
@@ -320,12 +333,12 @@ watch(() => props.isComplete, (value) => {
 }
 .card-show-mask {
   position: fixed;
-  z-index: 20;
+  z-index: 100;
   background: rgba(0, 0, 0, 0.3);
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
 }
 </style>
 
