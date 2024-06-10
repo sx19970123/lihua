@@ -322,10 +322,17 @@ watch(() => props.isComplete, (value) => {
   position: fixed;
   z-index: 20;
   background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(6px);
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+}
+</style>
+
+<style>
+[data-ground-glass = glass] {
+  .card-show-mask {
+    backdrop-filter: blur(6px);
+  }
 }
 </style>

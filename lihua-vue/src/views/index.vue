@@ -6,7 +6,6 @@
                  :auto-complete="false"
                  :is-complete="middleComplete"
                  @card-click="handleClick"
-                 :is-detail-visible="false"
                  :hover-scale="1.01"
                  :expanded-width="600"
       >
