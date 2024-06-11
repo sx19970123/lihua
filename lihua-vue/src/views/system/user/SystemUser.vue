@@ -198,11 +198,11 @@
                   checkable
               >
                 <template  #title="{ name }">
-                  <span v-if="name.indexOf(deptKeyword) > -1">
-                    {{name.substring(0,name.indexOf(deptKeyword))}}
-                    <span :style="'color:' + themeStore.colorPrimary">{{deptKeyword}}</span>
-                    {{name.substring(name.indexOf(deptKeyword) + deptKeyword.length)}}
-                  </span>
+                  <div v-if="name.indexOf(deptKeyword) > -1">
+                    <span>{{name.substring(0,name.indexOf(deptKeyword))}}</span>
+                    <span :style="{'color':  themeStore.colorPrimary}">{{deptKeyword}}</span>
+                    <span>{{name.substring(name.indexOf(deptKeyword) + deptKeyword.length)}}</span>
+                  </div>
                   <span v-else>{{ name }}</span>
                 </template>
               </a-tree>

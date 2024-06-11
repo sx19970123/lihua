@@ -186,20 +186,22 @@
           <a-input-number v-model:value="sysMenu.sort" style="width: 140px;" placeholder="升序排列"/>
         </a-form-item>
         <a-form-item label="菜单图标" name="icon" v-if="sysMenu.menuType !== 'perms'" :wrapper-col="{span: 16}">
-          <a-popover trigger="click"
-                     destroy-tooltip-on-hide
+          <a-popconfirm trigger="click"
                      arrow-point-at-center
                      placement="topRight"
                      v-model:open="modalActive.openIconSelect"
           >
-            <template #content>
-              <icon-select width="410px"
+            <template #title>
+              <icon-select width="416px"
                            max-height="300px"
                            size="small"
                            v-model="sysMenu.icon"
                            @click="modalActive.openIconSelect = false"
               />
             </template>
+            <template #icon></template>
+            <template #cancelButton></template>
+            <template #okButton></template>
             <a-flex :gap="6">
               <a-input style="max-width: 140px" :value="sysMenu.icon" placeholder="选择图标" disabled>
                 <template #prefix>
@@ -212,7 +214,7 @@
                 </template>
               </a-button>
             </a-flex>
-          </a-popover>
+          </a-popconfirm>
         </a-form-item>
         <a-form-item label="打开方式" name="linkOpenType" v-if="sysMenu.menuType === 'link'">
           <a-radio-group v-model:value="sysMenu.linkOpenType">

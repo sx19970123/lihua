@@ -4,12 +4,13 @@
   >
     <a-flex :gap="8">
 <!--      图标筛选-->
-      <a-segmented v-model:value="segmentedValue" :options="segmentedData"/>
+      <a-segmented v-model:value="segmentedValue" :options="segmentedData" @change="handleQueryIcons"/>
       <a-input placeholder="筛选图标"
                v-if="showSearch"
                style="max-width: 140px"
                @change="handleQueryIcons"
                v-model:value="searchKeyword"
+               allow-clear
       />
       <a-button @click="showSearch = !showSearch">
         <template #icon>
@@ -17,19 +18,19 @@
           <SearchOutlined v-else/>
         </template>
       </a-button>
-
     </a-flex>
-<!--    三种类型图标切换-->
+<!--    四种类型图标切换-->
     <div :style="{maxHeight: props.maxHeight}" class="scrollbar">
       <a-flex :gap="8" wrap="wrap"  style="margin-top: 30px">
         <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-show="segmentedValue === 'outlined'" v-for="icon in outlinedIconList"  @click="clickIcon(icon)">
           <a-flex vertical align="center">
             <component class="icon-size" :is="icon"/>
             <div class="text-ellipsis" v-if="props.size !== 'small'">
-              <span :style="{color: themeStore.colorPrimary}"> {{icon.substring(searchKeyword.length,0)}}</span>
-              <span>
-                {{icon.substring(searchKeyword.length)}}
-              </span>
+              <div>
+                <span>{{ icon.substring(0, icon.toLowerCase().indexOf(searchKeyword.toLowerCase())) }}</span>
+                <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.colorPrimary }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
+                <span>{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
+              </div>
             </div>
           </a-flex>
         </div>
@@ -37,10 +38,9 @@
           <a-flex vertical align="center">
             <component class="icon-size" :is="icon"/>
             <div class="text-ellipsis" v-if="props.size !== 'small'">
-              <span :style="{color: themeStore.colorPrimary}"> {{icon.substring(searchKeyword.length,0)}}</span>
-              <span>
-                {{icon.substring(searchKeyword.length)}}
-              </span>
+              <span>{{ icon.substring(0, icon.toLowerCase().indexOf(searchKeyword.toLowerCase())) }}</span>
+              <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.colorPrimary }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
+              <span>{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
             </div>
           </a-flex>
         </div>
@@ -48,10 +48,9 @@
           <a-flex vertical align="center">
             <component class="icon-size" :is="icon"/>
             <div class="text-ellipsis" v-if="props.size !== 'small'">
-              <span :style="{color: themeStore.colorPrimary}"> {{icon.substring(searchKeyword.length,0)}}</span>
-              <span>
-                {{icon.substring(searchKeyword.length)}}
-              </span>
+              <span>{{ icon.substring(0, icon.toLowerCase().indexOf(searchKeyword.toLowerCase())) }}</span>
+              <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.colorPrimary }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
+              <span>{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
             </div>
           </a-flex>
         </div>
@@ -59,10 +58,9 @@
           <a-flex vertical align="center">
             <component class="icon-size" :is="icon"/>
             <div class="text-ellipsis" v-if="props.size !== 'small'">
-              <span :style="{color: themeStore.colorPrimary}"> {{icon.substring(searchKeyword.length,0)}}</span>
-              <span>
-                {{icon.substring(searchKeyword.length)}}
-              </span>
+              <span>{{ icon.substring(0, icon.toLowerCase().indexOf(searchKeyword.toLowerCase())) }}</span>
+              <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.colorPrimary }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
+              <span>{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
             </div>
           </a-flex>
         </div>
@@ -132,10 +130,10 @@ const props = defineProps({
   }
 })
 
-const finalOutlinedIconList = []
-const finalFilledIconList = []
-const finalTwoToneIconList = []
-const finalCustomIconLIst = []
+const finalOutlinedIconList: string[] = []
+const finalFilledIconList: string[] = []
+const finalTwoToneIconList: string[] = []
+const finalCustomIconLIst: string[] = []
 
 // 初始化三种类型图标集合
 for (let iconKey in icons) {
@@ -168,7 +166,7 @@ for (let path in modules) {
 }
 
 // v-modal 双向绑定
-const clickIcon = (icon: string) => {
+const clickIcon = (icon: string | null) => {
   if (props.modelValue === icon) {
     icon = null
   }
@@ -176,33 +174,24 @@ const clickIcon = (icon: string) => {
   emits('click')
 }
 
-// 实底
-// const filledIconList = ref<string[]>([])
-// // 线框
-// const outlinedIconList = ref<string[]>([])
-// // 双色
-// const twoToneIconList = ref<string[]>([])
-// // 自定义
-// const customIconLIst = ref<string[]>([])
-
 // 筛选图标
 const handleQueryIcons = () => {
   const keyword = searchKeyword.value
   switch (segmentedValue.value) {
     case 'filled': {
-      filledIconList.value = finalFilledIconList.filter(item => item.toLowerCase().startsWith(keyword.toLowerCase()))
+      filledIconList.value = finalFilledIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
       break
     }
     case 'outlined': {
-      outlinedIconList.value = finalOutlinedIconList.filter(item => item.toLowerCase().startsWith(keyword.toLowerCase()))
+      outlinedIconList.value = finalOutlinedIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
       break
     }
     case 'twoTone': {
-      twoToneIconList.value = finalTwoToneIconList.filter(item => item.toLowerCase().startsWith(keyword.toLowerCase()))
+      twoToneIconList.value = finalTwoToneIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
       break
     }
     case 'custom': {
-      customIconLIst.value = finalCustomIconLIst.filter(item => item.toLowerCase().startsWith(keyword.toLowerCase()))
+      customIconLIst.value = finalCustomIconLIst.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
       break
     }
   }
