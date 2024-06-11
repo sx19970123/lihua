@@ -183,24 +183,35 @@
           <a-input v-model:value="sysMenu.perms" :maxlength="50" allowClear placeholder="controller中定义的权限标识" show-count/>
         </a-form-item>
         <a-form-item label="显示排序" name="sort">
-          <a-input-number v-model:value="sysMenu.sort" style="width: 120px;" placeholder="升序排列"/>
+          <a-input-number v-model:value="sysMenu.sort" style="width: 140px;" placeholder="升序排列"/>
         </a-form-item>
         <a-form-item label="菜单图标" name="icon" v-if="sysMenu.menuType !== 'perms'" :wrapper-col="{span: 16}">
           <a-popover trigger="click"
-                     destroyTooltipOnHide
+                     destroy-tooltip-on-hide
+                     arrow-point-at-center
+                     placement="topRight"
                      v-model:open="modalActive.openIconSelect"
           >
             <template #content>
-              <icon-select width="350px"
+              <icon-select width="410px"
                            max-height="300px"
                            size="small"
                            v-model="sysMenu.icon"
-                           @click="modalActive.openIconSelect = false"/>
+                           @click="modalActive.openIconSelect = false"
+              />
             </template>
-            <a-button>
-              <component :is="sysMenu.icon" v-if="sysMenu.icon"/>
-              <a-typography v-else class="icon-btn-placeholder-style">点击选择图标</a-typography>
-            </a-button>
+            <a-flex :gap="6">
+              <a-input style="max-width: 140px" :value="sysMenu.icon" placeholder="选择图标" disabled>
+                <template #prefix>
+                  <component :is="sysMenu.icon" v-if="sysMenu.icon"/>
+                </template>
+              </a-input>
+              <a-button @click="modalActive.openIconSelect = true">
+                <template #icon>
+                  <SearchOutlined />
+                </template>
+              </a-button>
+            </a-flex>
           </a-popover>
         </a-form-item>
         <a-form-item label="打开方式" name="linkOpenType" v-if="sysMenu.menuType === 'link'">

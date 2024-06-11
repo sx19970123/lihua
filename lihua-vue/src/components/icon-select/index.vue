@@ -5,32 +5,65 @@
     <a-flex :gap="8">
 <!--      图标筛选-->
       <a-segmented v-model:value="segmentedValue" :options="segmentedData"/>
+      <a-input placeholder="筛选图标"
+               v-if="showSearch"
+               style="max-width: 140px"
+               @change="handleQueryIcons"
+               v-model:value="searchKeyword"
+      />
+      <a-button @click="showSearch = !showSearch">
+        <template #icon>
+          <ZoomOutOutlined v-if="showSearch"/>
+          <SearchOutlined v-else/>
+        </template>
+      </a-button>
+
     </a-flex>
 <!--    三种类型图标切换-->
     <div :style="{maxHeight: props.maxHeight}" class="scrollbar">
       <a-flex :gap="8" wrap="wrap"  style="margin-top: 30px">
-        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-if="segmentedValue === '线框'" v-for="icon in outlinedIconList"  @click="clickIcon(icon)">
+        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-show="segmentedValue === 'outlined'" v-for="icon in outlinedIconList"  @click="clickIcon(icon)">
           <a-flex vertical align="center">
             <component class="icon-size" :is="icon"/>
-            <div class="text-ellipsis">{{icon}}</div>
+            <div class="text-ellipsis" v-if="props.size !== 'small'">
+              <span :style="{color: themeStore.colorPrimary}"> {{icon.substring(searchKeyword.length,0)}}</span>
+              <span>
+                {{icon.substring(searchKeyword.length)}}
+              </span>
+            </div>
           </a-flex>
         </div>
-        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-if="segmentedValue === '实底'" v-for="icon in filledIconList"  @click="clickIcon(icon)">
+        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-show="segmentedValue === 'filled'" v-for="icon in filledIconList"  @click="clickIcon(icon)">
           <a-flex vertical align="center">
             <component class="icon-size" :is="icon"/>
-            <div class="text-ellipsis">{{icon}}</div>
+            <div class="text-ellipsis" v-if="props.size !== 'small'">
+              <span :style="{color: themeStore.colorPrimary}"> {{icon.substring(searchKeyword.length,0)}}</span>
+              <span>
+                {{icon.substring(searchKeyword.length)}}
+              </span>
+            </div>
           </a-flex>
         </div>
-        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-if="segmentedValue === '双色'" v-for="icon in twoToneIconList"  @click="clickIcon(icon)">
+        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-show="segmentedValue === 'twoTone'" v-for="icon in twoToneIconList"  @click="clickIcon(icon)">
           <a-flex vertical align="center">
             <component class="icon-size" :is="icon"/>
-            <div class="text-ellipsis">{{icon}}</div>
+            <div class="text-ellipsis" v-if="props.size !== 'small'">
+              <span :style="{color: themeStore.colorPrimary}"> {{icon.substring(searchKeyword.length,0)}}</span>
+              <span>
+                {{icon.substring(searchKeyword.length)}}
+              </span>
+            </div>
           </a-flex>
         </div>
-        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-if="segmentedValue === '自定义'" v-for="icon in customIconLIst"  @click="clickIcon(icon)">
+        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-show="segmentedValue === 'custom'" v-for="icon in customIconLIst"  @click="clickIcon(icon)">
           <a-flex vertical align="center">
             <component class="icon-size" :is="icon"/>
-            <div class="text-ellipsis">{{icon}}</div>
+            <div class="text-ellipsis" v-if="props.size !== 'small'">
+              <span :style="{color: themeStore.colorPrimary}"> {{icon.substring(searchKeyword.length,0)}}</span>
+              <span>
+                {{icon.substring(searchKeyword.length)}}
+              </span>
+            </div>
           </a-flex>
         </div>
       </a-flex>
@@ -39,9 +72,11 @@
 </template>
 
 <script setup lang="ts">
-import {type Component, computed, onMounted, type PropType, reactive, ref} from "vue";
+import {type Component, onMounted, type PropType, reactive, ref} from "vue";
 import * as Icons from "@ant-design/icons-vue";
-
+import {cloneDeep} from "lodash-es";
+import {useThemeStore} from "@/stores/modules/theme.ts";
+const themeStore = useThemeStore();
 // 读取icon目录下图标
 const modules = import.meta.glob("../icon/**/*.vue")
 
@@ -55,11 +90,26 @@ const outlinedIconList = ref<string[]>([])
 const twoToneIconList = ref<string[]>([])
 // 自定义
 const customIconLIst = ref<string[]>([])
-
-
+// 显示图标搜索框
+const showSearch = ref<boolean>(false)
+// 图标搜索关键字
+const searchKeyword = ref<string>('')
 // 图标类型筛选
-const segmentedData = reactive(['线框','实底','双色','自定义']);
-const segmentedValue = ref(segmentedData[0]);
+const segmentedData = reactive([{
+  label: '线框',
+  value: 'outlined'
+},{
+  label: '实底',
+  value: 'filled'
+},{
+  label: '双色',
+  value: 'twoTone'
+},{
+  label: '自定义',
+  value: 'custom'
+}]);
+const segmentedValue = ref(segmentedData[0].value);
+
 
 // v-modal
 const emits = defineEmits(['update:modelValue','click','loadComplete'])
@@ -82,6 +132,11 @@ const props = defineProps({
   }
 })
 
+const finalOutlinedIconList = []
+const finalFilledIconList = []
+const finalTwoToneIconList = []
+const finalCustomIconLIst = []
+
 // 初始化三种类型图标集合
 for (let iconKey in icons) {
   if (icons[iconKey].name === 'create') {
@@ -90,19 +145,25 @@ for (let iconKey in icons) {
 
   if (iconKey.endsWith('Outlined')) {
     outlinedIconList.value.push(iconKey)
+    finalOutlinedIconList.push(iconKey)
   }
   if (iconKey.endsWith('Filled')) {
     filledIconList.value.push(iconKey)
+    finalFilledIconList.push(iconKey)
   }
   if (iconKey.endsWith('TwoTone')) {
     twoToneIconList.value.push(iconKey)
+    finalTwoToneIconList.push(iconKey)
   }
 }
+
+
 // 初始化自定义图标集合
 for (let path in modules) {
   const match = path.match(/\/([^/]+)\.vue$/)
   if (match) {
     customIconLIst.value.push(match[1])
+    finalCustomIconLIst.push(match[1])
   }
 }
 
@@ -111,9 +172,42 @@ const clickIcon = (icon: string) => {
   if (props.modelValue === icon) {
     icon = null
   }
-  emits('update:modelValue',icon)
+  emits('update:modelValue',cloneDeep(icon))
   emits('click')
 }
+
+// 实底
+// const filledIconList = ref<string[]>([])
+// // 线框
+// const outlinedIconList = ref<string[]>([])
+// // 双色
+// const twoToneIconList = ref<string[]>([])
+// // 自定义
+// const customIconLIst = ref<string[]>([])
+
+// 筛选图标
+const handleQueryIcons = () => {
+  const keyword = searchKeyword.value
+  switch (segmentedValue.value) {
+    case 'filled': {
+      filledIconList.value = finalFilledIconList.filter(item => item.toLowerCase().startsWith(keyword.toLowerCase()))
+      break
+    }
+    case 'outlined': {
+      outlinedIconList.value = finalOutlinedIconList.filter(item => item.toLowerCase().startsWith(keyword.toLowerCase()))
+      break
+    }
+    case 'twoTone': {
+      twoToneIconList.value = finalTwoToneIconList.filter(item => item.toLowerCase().startsWith(keyword.toLowerCase()))
+      break
+    }
+    case 'custom': {
+      customIconLIst.value = finalCustomIconLIst.filter(item => item.toLowerCase().startsWith(keyword.toLowerCase()))
+      break
+    }
+  }
+}
+
 // 组件初始化完成
 onMounted(() => {
   emits('loadComplete')
