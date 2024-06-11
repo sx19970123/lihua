@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <a-flex vertical :gap="16">
     <a-flex :gap="16" vertical>
       <card-show cardKey="s1"
                  style="width: 100%"
@@ -8,257 +8,26 @@
                  @card-click="handleClick"
                  :hover-scale="1.01"
                  :expanded-width="600"
+                 :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius': '16px'}"
       >
         <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
+          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
             <a-typography-title>HELLO WORLD</a-typography-title>
           </a-card>
         </template>
         <template #middle>
-          <div style="display: flex; height: 100%;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);border-radius: 8px">
-            <component is="Sun" style="font-size: 70px;margin: auto"/>
-          </div>
+          <a-flex vertical justify="center" :gap="8">
+            <component is="Sun" style="font-size: 70px;"/>
+            <a-typography-text style="margin: auto">加载中</a-typography-text>
+          </a-flex>
+
         </template>
         <template #detail>
-          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
+          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px;border-radius: 16px">
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-      </card-show>
-      <card-show cardKey="s2"
-                 style="width: 100%"
-                 :auto-complete="false"
-                 :is-complete="middleComplete"
-                 @card-click="handleClick"
-                 :hover-scale="1.01"
-                 :expanded-width="600"
-      >
-        <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-        <template #middle>
-          <div style="display: flex; height: 100%;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);border-radius: 8px">
-            <component is="Sun" style="font-size: 70px;margin: auto"/>
-          </div>
-        </template>
-        <template #detail>
-          <a-card id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-      </card-show>
-      <card-show cardKey="s3"
-                 style="width: 100%"
-                 :auto-complete="false"
-                 :is-complete="middleComplete"
-                 @card-click="handleClick"
-                 :hover-scale="1.01"
-                 :expanded-width="600"
-      >
-        <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-        <template #middle>
-          <div style="display: flex; height: 100%;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);border-radius: 8px">
-            <component is="Sun" style="font-size: 70px;margin: auto"/>
-          </div>
-        </template>
-        <template #detail>
-          <a-card id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-      </card-show>
-      <card-show cardKey="s4"
-                 style="width: 100%"
-                 :auto-complete="false"
-                 :is-complete="middleComplete"
-                 @card-click="handleClick"
-                 :hover-scale="1.01"
-                 :expanded-width="600"
-      >
-        <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-        <template #middle>
-          <div style="display: flex; height: 100%;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);border-radius: 8px">
-            <component is="Sun" style="font-size: 70px;margin: auto"/>
-          </div>
-        </template>
-        <template #detail>
-          <a-card id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-      </card-show>
-      <card-show cardKey="s5"
-                 style="width: 100%"
-                 :auto-complete="false"
-                 :is-complete="middleComplete"
-                 @card-click="handleClick"
-                 :hover-scale="1.01"
-                 :expanded-width="600"
-      >
-        <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-        <template #middle>
-          <div style="display: flex; height: 100%;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);border-radius: 8px">
-            <component is="Sun" style="font-size: 70px;margin: auto"/>
-          </div>
-        </template>
-        <template #detail>
-          <a-card id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-      </card-show>
-      <card-show cardKey="s6"
-                 style="width: 100%"
-                 :auto-complete="true"
-                 :is-complete="middleComplete"
-                 @card-click="handleClick"
-                 :hover-scale="1.01"
-                 :expanded-width="600"
-      >
-        <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-        <template #middle>
-          <div style="display: flex; height: 100%;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);border-radius: 8px">
-            <component is="Sun" style="font-size: 70px;margin: auto"/>
-          </div>
-        </template>
-        <template #detail>
-          <a-card id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-      </card-show>
-      <card-show cardKey="s7"
-                 style="width: 100%"
-                 :auto-complete="false"
-                 :is-complete="middleComplete"
-                 @card-click="handleClick"
-                 :hover-scale="1.01"
-                 :expanded-width="600"
-      >
-        <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-        <template #middle>
-          <div style="display: flex; height: 100%;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);border-radius: 8px">
-            <component is="Sun" style="font-size: 70px;margin: auto"/>
-          </div>
-        </template>
-        <template #detail>
-          <a-card id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-      </card-show>
-      <card-show cardKey="s8"
-                 style="width: 100%"
-                 :auto-complete="false"
-                 :is-complete="middleComplete"
-                 @card-click="handleClick"
-                 :hover-scale="1.01"
-                 :expanded-width="600"
-      >
-        <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-        <template #middle>
-          <div style="display: flex; height: 100%;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);border-radius: 8px">
-            <component is="Sun" style="font-size: 70px;margin: auto"/>
-          </div>
-        </template>
-        <template #detail>
-          <a-card id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-      </card-show>
-      <card-show cardKey="s9"
-                 style="width: 100%"
-                 :auto-complete="false"
-                 :is-complete="middleComplete"
-                 @card-click="handleClick"
-                 :hover-scale="1.01"
-                 :expanded-width="600"
-      >
-        <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-        <template #middle>
-          <div style="display: flex; height: 100%;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);border-radius: 8px">
-            <component is="Sun" style="font-size: 70px;margin: auto"/>
-          </div>
-        </template>
-        <template #detail>
-          <a-card id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-      </card-show>
-      <card-show cardKey="s10"
-                 style="width: 100%"
-                 :auto-complete="false"
-                 :is-complete="middleComplete"
-                 @card-click="handleClick"
-                 :hover-scale="1.01"
-                 :expanded-width="600"
-      >
-        <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
-            <a-typography-title>HELLO WORLD</a-typography-title>
-          </a-card>
-        </template>
-        <template #middle>
-          <div style="display: flex; height: 100%;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);border-radius: 8px">
-            <component is="Sun" style="font-size: 70px;margin: auto"/>
-          </div>
-        </template>
-        <template #detail>
-          <a-card id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
@@ -266,7 +35,141 @@
         </template>
       </card-show>
     </a-flex>
-  </div>
+    <a-row :gutter="16">
+      <a-col :span="6"> <card-show cardKey="s2"
+                                   style="width: 100%"
+                                   :auto-complete="false"
+                                   :is-complete="middleComplete"
+                                   @card-click="handleClick"
+                                   :hover-scale="1.01"
+                                   :expanded-width="600"
+                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius': '16px'}"
+      >
+        <template #overview>
+          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
+            <a-typography-title>HELLO WORLD</a-typography-title>
+          </a-card>
+        </template>
+        <template #middle>
+          <a-flex vertical justify="center" :gap="8">
+            <component is="Sun" style="font-size: 70px;"/>
+            <a-typography-text style="margin: auto">加载中</a-typography-text>
+          </a-flex>
+
+        </template>
+        <template #detail>
+          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px;border-radius: 16px">
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+          </a-card>
+        </template>
+      </card-show></a-col>
+      <a-col :span="6"> <card-show cardKey="s3"
+                                   style="width: 100%"
+                                   :auto-complete="false"
+                                   :is-complete="middleComplete"
+                                   @card-click="handleClick"
+                                   :hover-scale="1.01"
+                                   :expanded-width="600"
+                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius': '16px'}"
+      >
+        <template #overview>
+          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
+            <a-typography-title>HELLO WORLD</a-typography-title>
+          </a-card>
+        </template>
+        <template #middle>
+          <a-flex vertical justify="center" :gap="8">
+            <component is="Sun" style="font-size: 70px;"/>
+            <a-typography-text style="margin: auto">加载中</a-typography-text>
+          </a-flex>
+
+        </template>
+        <template #detail>
+          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px;border-radius: 16px">
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+          </a-card>
+        </template>
+      </card-show></a-col>
+      <a-col :span="6"> <card-show cardKey="s4"
+                                   style="width: 100%"
+                                   :auto-complete="false"
+                                   :is-complete="middleComplete"
+                                   @card-click="handleClick"
+                                   :hover-scale="1.01"
+                                   :expanded-width="600"
+                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius': '16px'}"
+      >
+        <template #overview>
+          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
+            <a-typography-title>HELLO WORLD</a-typography-title>
+          </a-card>
+        </template>
+        <template #middle>
+          <a-flex vertical justify="center" :gap="8">
+            <component is="Sun" style="font-size: 70px;"/>
+            <a-typography-text style="margin: auto">加载中</a-typography-text>
+          </a-flex>
+
+        </template>
+        <template #detail>
+          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px;border-radius: 16px">
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+          </a-card>
+        </template>
+      </card-show></a-col>
+      <a-col :span="6"> <card-show cardKey="s5"
+                                   style="width: 100%"
+                                   :auto-complete="false"
+                                   :is-complete="middleComplete"
+                                   @card-click="handleClick"
+                                   :hover-scale="1.01"
+                                   :expanded-width="600"
+                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius': '16px'}"
+      >
+        <template #overview>
+          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
+            <a-typography-title>HELLO WORLD</a-typography-title>
+          </a-card>
+        </template>
+        <template #middle>
+          <a-flex vertical justify="center" :gap="8">
+            <component is="Sun" style="font-size: 70px;"/>
+            <a-typography-text style="margin: auto">加载中</a-typography-text>
+          </a-flex>
+
+        </template>
+        <template #detail>
+          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px;border-radius: 16px">
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+            <a-typography-title>HELLO WORLD</a-typography-title>
+          </a-card>
+        </template>
+      </card-show></a-col>
+    </a-row>
+  </a-flex>
 </template>
 
 <script setup lang="ts">

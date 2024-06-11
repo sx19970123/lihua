@@ -16,7 +16,12 @@
       </div>
       <!-- 过渡时展示自定义封面 -->
       <div v-if="showStatus === 'activity'" class="card-show-middle">
-        <slot name="middle"></slot>
+        <div style="display: flex; height: 100%; width: 100%" :style="props.middleStyle">
+          <div style="margin: auto">
+            <!-- 居中显示的元素 -->
+            <slot name="middle"></slot>
+          </div>
+        </div>
       </div>
       <!-- 当 showStatus !== 'complete' 时，执行动画前为获取其高度，会暂时将display设置为block，这不能在页面显示，所以showStatus === 'complete' 之前设置为全透明 -->
       <div v-show="showStatus === 'complete'" ref="detailRef" :style="showStatus === 'complete' ? 'opacity: 1' : 'opacity: 0'">
@@ -56,6 +61,10 @@ const props = defineProps({
   expandedTop: {
     type: Number,
     default: 100
+  },
+  // 过渡中的css
+  middleStyle: {
+    type: Object
   },
   // 鼠标悬浮缩放倍率
   hoverScale: {
@@ -332,7 +341,7 @@ watch(() => props.isComplete, (value) => {
   right: 0;
   bottom: 0;
   width: 100%;
-  background-color: rgba(0,0,0,0.1)
+  background-color: rgba(0,0,0,0)
 }
 .card-show-mask {
   position: fixed;
