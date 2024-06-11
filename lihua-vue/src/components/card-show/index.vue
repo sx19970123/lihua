@@ -170,7 +170,6 @@ const initClick = () => {
     if (type === 'keydown' && event instanceof KeyboardEvent && event.key !== 'Escape') {
       return;
     }
-
     // 动画播放完才可关闭
     if (showStatus.value !== 'complete') {
       return;
@@ -284,11 +283,13 @@ const initHover = () => {
       style.value.cursor = 'pointer'
     }
     style.value.boxShadow = '0 8px 16px 0 rgba(0, 0, 0, 0.08)'
+    style.value.borderRadius = '8px'
   }
   // 移除 hover 样式
   const handleRemoveHoverStyle = () => {
     style.value.cursor = ''
     style.value.boxShadow = ''
+    style.value.borderRadius = ''
   }
   return {
     handleMouseOverCard,
@@ -303,12 +304,12 @@ const innerWidth = ref<number>(window.innerWidth)
 
 // 监听窗口变化和键盘事件
 onMounted(() => {
-  window.addEventListener('resize', windowWidthResize)
+  window.addEventListener('resize', (event) => windowWidthResize(event))
   window.addEventListener("keydown", (event) => handleClose(event, 'keydown'));
 })
 // 卸载组件前删除监听函数
 onUnmounted(() => {
-  window.removeEventListener('resize', windowWidthResize)
+  window.removeEventListener('resize', (event) => windowWidthResize(event))
   window.removeEventListener("keydown", (event) => handleClose(event, 'keydown'));
 })
 
