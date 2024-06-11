@@ -108,6 +108,9 @@ for (let path in modules) {
 
 // v-modal 双向绑定
 const clickIcon = (icon: string) => {
+  if (props.modelValue === icon) {
+    icon = null
+  }
   emits('update:modelValue',icon)
   emits('click')
 }
