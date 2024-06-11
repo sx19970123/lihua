@@ -203,11 +203,13 @@
             <template #cancelButton></template>
             <template #okButton></template>
             <a-flex :gap="6">
-              <a-input style="max-width: 140px" :value="sysMenu.icon" placeholder="选择图标" disabled>
-                <template #prefix>
-                  <component :is="sysMenu.icon" v-if="sysMenu.icon"/>
-                </template>
-              </a-input>
+              <a-popover :content="sysMenu.icon" placement="bottom">
+                <a-input style="max-width: 140px;" @focus="(event: any) => event.target.blur()" :value="sysMenu.icon" placeholder="选择图标">
+                  <template #prefix>
+                    <component :is="sysMenu.icon" v-if="sysMenu.icon"/>
+                  </template>
+                </a-input>
+              </a-popover>
               <a-button @click="modalActive.openIconSelect = true">
                 <template #icon>
                   <SearchOutlined />
@@ -614,19 +616,3 @@ const handleDelete = async (id: string) => {
   }
 }
 </script>
-
-<style>
-[data-theme = 'light'] {
-  .icon-btn-placeholder-style {
-    color: #bfbfbf;
-    font-weight: 351;
-  }
-}
-
-[data-theme = 'dark'] {
-  .icon-btn-placeholder-style {
-    color: #4f4f4f;
-    font-weight: 351;
-  }
-}
-</style>
