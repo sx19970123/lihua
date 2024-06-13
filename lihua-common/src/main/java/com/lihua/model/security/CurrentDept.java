@@ -56,7 +56,7 @@ public class CurrentDept implements Serializable {
     /**
      * 0 默认部门
      */
-    private String isDefault;
+    private String defaultDept;
 
 
     /**

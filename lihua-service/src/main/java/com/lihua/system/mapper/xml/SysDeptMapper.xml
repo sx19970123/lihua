@@ -3,7 +3,7 @@
 <mapper namespace="com.lihua.system.mapper.SysDeptMapper">
 
     <select id="deptUserCount" resultType="java.lang.Long">
-        select count(1) from sys_user_dept where dept_id in
+        SELECT COUNT(1) FROM sys_user_dept WHERE dept_id IN
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>

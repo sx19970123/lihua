@@ -10,7 +10,6 @@ public class SysViewTab {
     /**
      * 用户id
      */
-    @NotNull(message = "用户id不能为空")
     private String userId;
 
     /**

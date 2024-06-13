@@ -198,6 +198,7 @@ captcha()
 // 判断重定向回来的参数，给用户合适的提示
 // 提示信息显示完成后销毁，刷新页面时不再提示
 const handleRedirect = () => {
+  console.log(history.state.msg)
   if (history.state.msg) {
     message.error(history.state.msg)
     history.state.msg = undefined

@@ -82,7 +82,7 @@ public class LoginUserContext implements Serializable {
      * @return
      */
     public static CurrentDept getDefaultDept() {
-        List<CurrentDept> defaultDeptList = getDeptList().stream().filter(dept -> "0".equals(dept.getIsDefault())).toList();
+        List<CurrentDept> defaultDeptList = getDeptList().stream().filter(dept -> "0".equals(dept.getDefaultDept())).toList();
         if (!defaultDeptList.isEmpty()) {
             return defaultDeptList.get(0);
         }

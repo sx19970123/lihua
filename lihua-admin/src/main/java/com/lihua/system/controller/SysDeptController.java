@@ -3,6 +3,7 @@ package com.lihua.system.controller;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysDept;
 import com.lihua.system.service.SysDeptService;
+import com.lihua.system.service.SysUserDeptService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +17,9 @@ public class SysDeptController extends BaseController {
 
     @Resource
     private SysDeptService sysDeptService;
+
+    @Resource
+    private SysUserDeptService sysUserDeptService;
 
     @PostMapping("list")
     public String findDeptPostList(@RequestBody SysDept sysDept) {
@@ -36,6 +40,11 @@ public class SysDeptController extends BaseController {
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysDeptService.deleteByIds(ids);
         return success();
+    }
+
+    @PostMapping("default/{id}")
+    public String setDefaultDept(@PathVariable("id") String id) {
+        return success(sysUserDeptService.setDefaultDept(id));
     }
 
     /**

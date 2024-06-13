@@ -111,7 +111,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             .setRoleList(roleList)
             .setViewTabList(viewTabList)
             .setDeptList(deptList)
-            .setDeptTree(TreeUtils.buildTree(deptList))
+            .setDeptTree(TreeUtils.buildTree(new ArrayList<>(deptList)))
             .setPostList(postList)
             .setAuthorities(authorities);
 

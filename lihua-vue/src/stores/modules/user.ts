@@ -163,6 +163,12 @@ export const useUserStore = defineStore('user', {
             removeToken()
             router.push({name: "Login", state: {msg: msg}})
         },
+        // 更新默认部门
+        updateDefaultDept(defaultDept: SysDept) {
+            this.$state.defaultDept = defaultDept
+            this.$state.defaultDeptName = defaultDept.name ? defaultDept.name : ''
+            this.$state.defaultDeptCode = defaultDept.code ? defaultDept.code : ''
+        },
         // 保存主题修改
         saveTheme(themeJson: string) {
             if (themeJson !== this.userInfo.theme) {
