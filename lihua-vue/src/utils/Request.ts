@@ -30,7 +30,7 @@ service.interceptors.response.use((resp) => {
     if (data.code === 401) {
         const userStore= useUserStore()
         userStore.clearUserInfo(data.msg)
-        throw new Error(data.msg)
+        throw data.msg
     }
     return resp;
 })
