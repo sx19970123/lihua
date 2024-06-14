@@ -31,7 +31,7 @@ import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import {ref, watch} from "vue";
 import {useUserStore} from "@/stores/modules/user.ts";
 import {useThemeStore} from "@/stores/modules/theme.ts";
-import {setDefaultDept} from "@/api/system/dept/Dept.ts";
+import {setDefaultDept} from "@/api/system/profile/Profile.ts";
 import {message} from "ant-design-vue";
 const themeStore = useThemeStore();
 const userStore = useUserStore();

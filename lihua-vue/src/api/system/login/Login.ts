@@ -21,17 +21,10 @@ export const login =  (username: string,
     })
 }
 
-
+// 退出登录
 export const logout = () => {
     return request({
         url: "/logout",
-        method: 'post'
-    })
-}
-
-export const reloadData = () => {
-    return request({
-        url: '/system/reloadData',
         method: 'post'
     })
 }

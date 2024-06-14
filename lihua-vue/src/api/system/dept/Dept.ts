@@ -57,14 +57,3 @@ export const getDeptOption = () => {
     method: 'get',
   })
 }
-
-/**
- * 设置默认部门
- * @param deptId
- */
-export const setDefaultDept = (deptId: string) => {
-  return request<SysDept>({
-    url: 'system/dept/default/' + deptId,
-    method: 'post',
-  })
-}

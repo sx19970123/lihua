@@ -9,13 +9,13 @@ import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysUser;
 import com.lihua.system.entity.validation.ProfileValidation;
 import com.lihua.system.service.SysProfileService;
+import com.lihua.system.service.SysUserDeptService;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,27 +26,8 @@ public class SysProfileController extends BaseController {
     @Resource
     private SysProfileService sysProfileService;
 
-    /**
-     * 从 SecurityContextHolder 中获取用户信息返回
-     * @return
-     */
-    @GetMapping("info")
-    public String getUserInfo() {
-        LoginUser loginUser = LoginUserContext.getLoginUser();
-        loginUser.getUser().setPassword(null);
-
-        // 前端 store 用户数据
-        AuthInfo authInfo = new AuthInfo();
-        authInfo.setUserInfo(loginUser.getUser() != null ? loginUser.getUser() : new CurrentUser());
-        authInfo.setDepts(loginUser.getDeptTree());
-        authInfo.setPosts(loginUser.getPostList());
-        authInfo.setRoles(loginUser.getRoleList());
-        authInfo.setPermissions(loginUser.getPermissionList().stream().map(GrantedAuthority::getAuthority).filter(item -> !item.startsWith("ROLE_")).toList());
-        authInfo.setRouters(loginUser.getRouterList());
-        authInfo.setViewTabs(loginUser.getViewTabList());
-        authInfo.setDefaultDept(LoginUserContext.getDefaultDept() != null ? LoginUserContext.getDefaultDept() : new CurrentDept());
-        return success(authInfo);
-    }
+    @Resource
+    private SysUserDeptService sysUserDeptService;
 
     /**
      * 保存基础信息
@@ -86,4 +67,15 @@ public class SysProfileController extends BaseController {
 
         return success(sysProfileService.updatePassword(newPassword));
     }
+
+    /**
+     * 设置默认部门
+     * @param id
+     * @return
+     */
+    @PostMapping("default/{id}")
+    public String setDefaultDept(@PathVariable("id") String id) {
+        return success(sysUserDeptService.setDefaultDept(id));
+    }
+
 }

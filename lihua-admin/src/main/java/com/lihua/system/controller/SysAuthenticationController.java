@@ -5,12 +5,16 @@ import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
 import com.lihua.config.LihuaConfig;
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.model.security.AuthInfo;
+import com.lihua.model.security.CurrentDept;
 import com.lihua.model.security.CurrentUser;
+import com.lihua.model.security.LoginUser;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,6 +47,28 @@ public class SysAuthenticationController extends BaseController {
             }
         }
         return success(sysAuthenticationService.login(currentUser));
+    }
+
+    /**
+     * 从 SecurityContextHolder 中获取用户信息返回
+     * @return
+     */
+    @GetMapping("info")
+    public String getUserInfo() {
+        LoginUser loginUser = LoginUserContext.getLoginUser();
+        loginUser.getUser().setPassword(null);
+
+        // 前端 store 用户数据
+        AuthInfo authInfo = new AuthInfo();
+        authInfo.setUserInfo(loginUser.getUser() != null ? loginUser.getUser() : new CurrentUser());
+        authInfo.setDepts(loginUser.getDeptTree());
+        authInfo.setPosts(loginUser.getPostList());
+        authInfo.setRoles(loginUser.getRoleList());
+        authInfo.setPermissions(loginUser.getPermissionList().stream().map(GrantedAuthority::getAuthority).filter(item -> !item.startsWith("ROLE_")).toList());
+        authInfo.setRouters(loginUser.getRouterList());
+        authInfo.setViewTabs(loginUser.getViewTabList());
+        authInfo.setDefaultDept(LoginUserContext.getDefaultDept() != null ? LoginUserContext.getDefaultDept() : new CurrentDept());
+        return success(authInfo);
     }
 
     /**

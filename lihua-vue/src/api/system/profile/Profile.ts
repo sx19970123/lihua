@@ -1,4 +1,5 @@
 import request from "@/utils/Request.ts";
+import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 
 export const saveTheme = (themeJson: string) => {
     return request({
@@ -26,5 +27,16 @@ export const updatePassword = (oldPassword: string,newPassword: string) => {
             newPassword: newPassword
         },
         method: 'post'
+    })
+}
+
+/**
+ * 设置默认部门
+ * @param deptId
+ */
+export const setDefaultDept = (deptId: string) => {
+    return request<SysDept>({
+        url: 'system/profile/default/' + deptId,
+        method: 'post',
     })
 }

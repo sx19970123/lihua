@@ -42,11 +42,6 @@ public class SysDeptController extends BaseController {
         return success();
     }
 
-    @PostMapping("default/{id}")
-    public String setDefaultDept(@PathVariable("id") String id) {
-        return success(sysUserDeptService.setDefaultDept(id));
-    }
-
     /**
      * 菜单下拉框选项
      * @return

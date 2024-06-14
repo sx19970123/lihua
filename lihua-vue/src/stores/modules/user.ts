@@ -178,8 +178,6 @@ export const useUserStore = defineStore('user', {
                          message.success("主题已保存")
                     }
                 })
-            } else {
-                message.warning("主题未修改")
             }
         },
         // 处理头像
