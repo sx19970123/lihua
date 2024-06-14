@@ -1,10 +1,10 @@
 <template>
-  <a-dropdown>
+  <a-dropdown trigger="click">
     <div class="header-right-item header-right">
       <user-avatar :size="34" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
     </div>
     <template #overlay>
-      <a-menu style="min-width: 220px" @click="handleClickMenu">
+      <a-menu class="user-card" @click="handleClickMenu">
         <a-menu-item disabled style="cursor: default">
           <a-flex align="center" :gap="12">
             <user-avatar :size="48" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
@@ -100,3 +100,10 @@ const logout = () => {
   userStore.handleLogout()
 }
 </script>
+
+<style scoped>
+.user-card {
+  min-width: 220px;
+  box-shadow: 0 2px 8px rgba(0,21,41,.12);
+}
+</style>
