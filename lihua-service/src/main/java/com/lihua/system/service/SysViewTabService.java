@@ -1,5 +1,6 @@
 package com.lihua.system.service;
 
+import com.lihua.model.security.CurrentRouter;
 import com.lihua.model.security.CurrentViewTab;
 import com.lihua.system.entity.SysViewTab;
 
@@ -11,7 +12,7 @@ public interface SysViewTabService {
      * @param userId
      * @return
      */
-    List<CurrentViewTab> selectByUserId(String userId);
+    List<CurrentViewTab> selectByUserId(String userId, List<CurrentRouter> routerVOList);
 
     /**
      * 保存viewTab收藏数据

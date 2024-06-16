@@ -74,8 +74,8 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         // 角色信息
         boolean isAdmin = isAdmin(id);
 
-        // 权限信息
-        List<CurrentRouter> permList;
+        // 菜单/权限信息
+        List<CurrentRouter> menuList;
         // 岗位信息
         List<CurrentPost> postList;
         // 部门信息
@@ -84,27 +84,27 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         List<CurrentRole> roleList;
         // admin 查询全部用户信息
         if (isAdmin) {
-            permList = sysMenuMapper.selectAllPerms();
+            menuList = sysMenuMapper.selectAllPerms();
             postList = sysPostMapper.selectAllPost();
             deptList = sysDeptMapper.selectAllDept(id);
             roleList = sysRoleMapper.selectAllRole();
         }
         // 其他用户根据配置权限进行查询
         else {
-            permList = sysMenuMapper.selectPermsByUserId(id);
+            menuList = sysMenuMapper.selectPermsByUserId(id);
             postList = sysPostMapper.selectByUserId(id);
             deptList = sysDeptMapper.selectByUserId(id);
             roleList = sysRoleMapper.selectSysRoleByUserId(id);
         }
 
         // 收藏/固定菜单
-        List<CurrentViewTab> viewTabList = sysViewTabService.selectByUserId(id);
+        List<CurrentViewTab> viewTabList = sysViewTabService.selectByUserId(id,menuList);
         // 处理菜单router信息
-        List<CurrentRouter> routerList = handleSysMenu(permList);
+        List<CurrentRouter> routerList = handleSysMenu(menuList);
         // viewTab赋值routerPathKey
         handleSetViewTabKey(viewTabList,routerList);
         // 处理角色权限信息
-        List<String> authorities = handleAuthorities(roleList,permList);
+        List<String> authorities = handleAuthorities(roleList,menuList);
 
         loginUser
             .setRouterList(routerList)
