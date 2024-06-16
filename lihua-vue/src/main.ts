@@ -14,6 +14,8 @@ import 'ant-design-vue/dist/reset.css';
 import * as Icons from "@ant-design/icons-vue";
 import "@/static/css/index.css"
 
+import Icon from "@/components/icon/index.vue"
+
 // i18n
 import i18n from "@/utils/i18n/index"
 
@@ -45,5 +47,8 @@ for (let path in modules) {
         }
     });
 }
+
+// 是用全局自定义icon组件
+app.component('icon', Icon)
 
 app.mount('#app')

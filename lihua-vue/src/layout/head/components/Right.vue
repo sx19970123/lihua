@@ -1,5 +1,5 @@
 <template>
-  <a-flex align="center" style="margin-right: 16px">
+  <a-flex align="center">
       <language v-if="false"/>
       <notification/>
       <windows-change/>

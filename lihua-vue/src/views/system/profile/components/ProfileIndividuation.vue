@@ -17,7 +17,7 @@
       <!-- 布局设置 -->
       <a-typography-title :level="5">布局设置</a-typography-title>
       <a-form-item label="导航类型">
-        <nav-select v-model="themeStore.layoutType" @click="themeStore.changeLayoutType"/>
+        <nav-select v-model="themeStore.layoutType" @click="themeStore.changeLayoutType" @change="handleChangeLayoutType"/>
       </a-form-item>
       <a-form-item label="导航宽度" v-if="themeStore.layoutType !== 'header-content'">
         <a-slider v-model:value="themeStore.siderWith" @change="themeStore.changeSiderWidth" dots :max="400" :min="80" :step="20" style="width: 230px"></a-slider>
@@ -28,6 +28,9 @@
           <a-radio value="default">适中（推荐）</a-radio>
           <a-radio value="large">更大</a-radio>
         </a-radio-group>
+      </a-form-item>
+      <a-form-item label="分组导航" v-if="themeStore.layoutType !== 'header-content'">
+        <a-switch v-model:checked="themeStore.siderGroup" @change="handleChangeSiderGroup"/>
       </a-form-item>
       <a-form-item label="固定头部">
         <a-switch v-model:checked="themeStore.affixHead" @change="themeStore.changeAffixHead"></a-switch>
@@ -68,11 +71,12 @@ import NavColorSelect from "@/components/nav-color-select/index.vue"
 import settings from "@/settings";
 import { useUserStore } from "@/stores/modules/user";
 import { useThemeStore } from "@/stores/modules/theme";
+import { usePermissionStore } from "@/stores/modules/permission.ts";
 import {onUnmounted, ref} from "vue";
 
 const themeStore = useThemeStore()
 const userStore = useUserStore()
-
+const permissionStore = usePermissionStore()
 // 主题颜色
 const colorList = ref<Array<{name: string,color: string}>>(settings.colorOptions)
 
@@ -81,6 +85,16 @@ onUnmounted(()=> {
   userStore.saveTheme(JSON.stringify(themeStore.$state));
 })
 
+// 处理修改菜单分组模式
+const handleChangeSiderGroup = (type: boolean) => {
+  permissionStore.reloadMenu(type ? 'group': undefined)
+}
+const handleChangeLayoutType = (key: string) => {
+  if (key === "header-content") {
+    themeStore.$state.siderGroup = false
+    handleChangeSiderGroup(false)
+  }
+}
 </script>
 <style scoped>
 

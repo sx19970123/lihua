@@ -30,9 +30,7 @@ public class SysViewTabServiceImpl implements SysViewTabService {
     private SysViewTabMapper sysUserStarViewMapper;
 
     @Override
-    public List<CurrentViewTab> selectByUserId(String userId) {
-        // 获取当前用户菜单数据
-        List<CurrentRouter> routerVOList = sysMenuMapper.selectPermsByUserId(userId);
+    public List<CurrentViewTab> selectByUserId(String userId, List<CurrentRouter> routerVOList) {
 
         if (routerVOList.isEmpty()) {
             throw new ServiceException("请联系管理员分配角色&菜单");
@@ -63,7 +61,10 @@ public class SysViewTabServiceImpl implements SysViewTabService {
                             .setIcon(route.getMeta().getIcon())
                             .setRouterPathKey(route.getKey())
                             .setQuery(route.getQuery())
-                            .setMenuId(route.getId());
+                            .setMenuId(route.getId())
+                            .setMenuType(route.getType())
+                            .setLinkOpenType(route.getMeta().getLinkOpenType())
+                            .setLink(route.getMeta().getLink());
                     // 判断是否进行收藏/固定
                     sysUserStarViews.forEach(star -> {
                         if (star.getMenuId().equals(route.getId())) {

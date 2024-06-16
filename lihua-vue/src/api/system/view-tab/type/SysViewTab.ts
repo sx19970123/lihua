@@ -6,7 +6,10 @@ export interface StarViewType {
     star: boolean | null,
     static?: boolean | null,
     viewTab?: boolean,
-    query: string
+    query: string,
+    menuType?: 'directory' | 'page' | 'link',
+    linkOpenType?: 'inner' | 'new-page',
+    link?: string
 }
 
 export interface RecentType {

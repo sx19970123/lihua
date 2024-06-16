@@ -34,6 +34,11 @@ export default {
     siderMode: 'inline',
 
     /**
+     * 菜单分组
+     */
+    siderGroup: false,
+
+    /**
      * 主要颜色
      */
     colorPrimary: 'rgb(22, 119, 255)',

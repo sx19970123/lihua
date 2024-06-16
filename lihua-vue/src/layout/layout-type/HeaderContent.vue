@@ -10,7 +10,7 @@
             <!--导航-->
             <Side class="sider"/>
             <!--页头-->
-            <Head></Head>
+            <Head class="head"></Head>
           </a-flex>
         </a-layout-header>
       </transition>
@@ -53,8 +53,14 @@ const props = defineProps<{  showLayout: boolean }>()
   margin-left: 16px;
 }
 .sider {
-  width: 66%;
-  padding: 0 64px 0 64px;
+  max-width: 60%;
+  padding-right: 64px;
+  padding-left: 64px;
+}
+.head {
+  min-width: 306px;
+  padding-right: 32px;
+  padding-left: 32px;
 }
 </style>
 

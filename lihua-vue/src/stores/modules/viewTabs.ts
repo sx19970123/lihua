@@ -115,6 +115,9 @@ export const useViewTabsStore = defineStore('viewTabs',{
                     // 缓存数据
                     handleAddTabCache(tab)
                 }
+            } else {
+                // 取消当前选中所有的tab
+                this.$state.activeKey = ''
             }
         },
         // 新开tab页

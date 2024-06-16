@@ -29,11 +29,12 @@
 const props = defineProps<{
   modelValue: string
 }>()
-const emits = defineEmits(['update:modelValue','click'])
+const emits = defineEmits(['update:modelValue','click','change'])
 
 const handleClockNavType = (key: string) => {
   emits('update:modelValue',key)
   emits('click',key)
+  emits('change',key)
 }
 </script>
 

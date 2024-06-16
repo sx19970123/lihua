@@ -30,6 +30,11 @@ export const useThemeStore = defineStore('theme',{
         const siderMode: string = settings.siderMode
 
         /**
+         * 菜单分组
+         */
+        const siderGroup: boolean = settings.siderGroup
+
+        /**
          * 主要颜色
          */
         const colorPrimary: string = settings.colorPrimary
@@ -92,6 +97,7 @@ export const useThemeStore = defineStore('theme',{
             layoutBackgroundColor,
             siderBackgroundColor,
             siderMode,
+            siderGroup,
             siderWith,
             originSiderWith,
             routeTransition,
@@ -254,6 +260,7 @@ export const useThemeStore = defineStore('theme',{
             this.$state.originSiderWith = settings.originSiderWith
             this.$state.routeTransition = settings.routeTransition
             this.$state.themeConfig = settings.themeConfig
+            this.$state.siderGroup = settings.siderGroup
             this.changeDataDark()
         },
         // 折叠侧边栏

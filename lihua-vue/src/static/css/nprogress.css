@@ -9,21 +9,6 @@
 #nprogress .peg {
     box-shadow: 0 0 10px var(--colorPrimary), 0 0 5px var(--colorPrimary) !important;
 }
-
-[layout-type = 'header-content'] {
-    #nprogress .spinner {
-        top: 22px !important;
-    }
-}
-
-[layout-type = 'sider-header'] {
-    #nprogress .spinner {
-        top: 14px !important;
-    }
-}
-
-[layout-type = 'header-sider'] {
-    #nprogress .spinner {
-        top: 14px !important;
-    }
+#nprogress .spinner {
+    right: 12px !important;
 }

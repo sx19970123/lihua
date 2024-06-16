@@ -20,7 +20,7 @@
       <a-layout-header class="layout-header"
                        :style="{'background': themeStore.layoutBackgroundColor}">
         <transition :name="themeStore.routeTransition" mode="out-in">
-        <Head class="header" v-show="props.showLayout"/>
+        <Head class="head" v-show="props.showLayout"/>
         </transition>
         <view-tabs  v-if="themeStore.showViewTabs"/>
       </a-layout-header>
@@ -53,8 +53,9 @@ const props = defineProps<{  showLayout: boolean }>()
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   line-height: 48px;
 }
-.header {
+.head {
   box-shadow: 0 1px 4px rgba(0,21,41,.12);
+  padding-right: 32px;
 }
 .sider {
   position: sticky;

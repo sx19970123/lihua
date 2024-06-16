@@ -46,4 +46,18 @@ public class CurrentViewTab implements Serializable {
      */
     private String query;
 
+    /**
+     * 菜单类型
+     */
+    private String menuType;
+
+    /**
+     * 链接打开类型
+     */
+    private String linkOpenType;
+
+    /**
+     * 链接型菜单链接地址
+     */
+    private String link;
 }

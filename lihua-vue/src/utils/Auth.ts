@@ -17,16 +17,16 @@ export const reloadLoginUser = () => {
       try {
         const metaRouterList = resp.data?.routers || []
         const staticRoutes = router.options.routes
+        // 初始化系统主题，在初始化菜单时需要用到
+        themeStore.init(userStore.$state.userInfo.theme)
         // 初始化动态路由
         permissionStore.initDynamicRouter(metaRouterList)
         // 初始化用户菜单数据
-        permissionStore.initMenu(metaRouterList, staticRoutes as any[])
+        permissionStore.initMenu(metaRouterList, staticRoutes as any[], themeStore.$state.siderGroup ? 'group' : undefined)
         // 初始化totalViewTabs数据
         viewTabsStore.initTotalViewTabs(resp.data.viewTabs || [], staticRoutes as any[])
         // 设置最近使用组件的缓存key值
         viewTabsStore.setViewCacheKey(userStore.$state.username)
-        // 初始化系统主题
-        themeStore.init(userStore.$state.userInfo.theme)
         // 清空字典store
         dictStore.clearDict()
         // 清空组件keep-alive

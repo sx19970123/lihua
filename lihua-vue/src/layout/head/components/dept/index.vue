@@ -1,10 +1,10 @@
 <template>
   <a-dropdown v-model:open="open" trigger="click">
-    <div class="header-right-item header-right">
-      <a-typography-text>
-        {{userStore.defaultDeptName}}
-      </a-typography-text>
-    </div>
+    <a-tooltip title="默认部门">
+      <span class="header-right-item header-right" style="max-width: 130px">
+        <a-typography-text ellipsis :content="userStore.defaultDeptName" style="vertical-align: middle"/>
+      </span>
+    </a-tooltip>
     <template #overlay>
       <a-card class="dept-card scrollbar" :bordered="false" :body-style="{padding: '8px'}">
         <default-dept @dept-select="() => open = false"/>

@@ -5,16 +5,19 @@ import router from "@/router";
 import IFrame from "@/components/iframe/index.vue";
 import MiddleView from "@/components/middle-view/index.vue";
 import type {RouterType} from "@/api/system/auth/type/AuthInfoType.ts";
-
+import { h } from "vue";
+import Icon from "@/components/icon/index.vue";
+import type {ItemType} from "ant-design-vue";
+import type {MenuItemGroupType, MenuItemType, SubMenuType} from "ant-design-vue/es/menu/src/hooks/useItems";
 // 获取 views 下的所有 vue 组件
 const modules = import.meta.glob("../../views/**/*.vue")
 
 export const usePermissionStore = defineStore('permission',{
     state: ()=> {
-        const sidebarRouters: Array<RouterType> = []
+        const menuRouters: Array<ItemType> = []
         const collapsed: boolean = true
         return {
-            sidebarRouters,
+            menuRouters,
             collapsed
         }
     },
@@ -43,8 +46,13 @@ export const usePermissionStore = defineStore('permission',{
             });
         },
         // 加载菜单
-        initMenu(metaRouterList: Array<RouterType>, staticRoutes: any[]): void {
-            this.$state.sidebarRouters = init(metaRouterList,staticRoutes)
+        initMenu(metaRouterList: Array<RouterType>, staticRoutes: any[], type?: 'group'): void {
+            const sidebarRouters =  init(metaRouterList,staticRoutes)
+            this.$state.menuRouters = handleGenerateMenuRouters(sidebarRouters, type)
+        },
+        // 重新加载菜单
+        reloadMenu(type?: 'group') {
+            handleReloadMenu(this.$state.menuRouters ,type)
         },
         // 展开菜单
         openCollapsed() {
@@ -172,4 +180,64 @@ const handleSetComponent = (route: RouterType) => {
         route.danger = true
         route.meta.title = "项目路径下没有找到 src/views" + route.component + " 资源"
     }
+}
+
+// 生成a-menu菜单数据
+const handleGenerateMenuRouters = (sidebarRouters:RouterType[], type?: 'group'): ItemType[] => {
+    return handleMenu(sidebarRouters, type)
+}
+const handleMenu = (sidebarRouters:RouterType[], type?: 'group'):ItemType[]  => {
+    const childrenItemType: ItemType[] = []
+    sidebarRouters.forEach(sidebar => {
+        // 菜单类型生成的对象包含children
+        if (sidebar.type === 'directory') {
+            if (sidebar.children && sidebar.children.length > 0) {
+                const resp = handleMenu(sidebar.children, type)
+                // 存在子集
+                if (resp && resp.length > 0) {
+                    const menuItem:ItemType  = {
+                        key: sidebar.path,
+                        icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
+                        label: sidebar.meta.label,
+                        children: resp,
+                        type: type
+                    }
+                    childrenItemType.push(menuItem)
+                }
+            } else {
+                // 不存在子集
+                const menuItem:ItemType  = {
+                    key: sidebar.path,
+                    icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
+                    label: sidebar.meta.label,
+                    children: [],
+                    type: type
+                }
+                childrenItemType.push(menuItem)
+            }
+        }
+        // 页面组件或外链类型
+        if (sidebar.type === 'page' || sidebar.type === 'link') {
+            const menuItem:ItemType  = {
+                key: sidebar.path,
+                icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
+                label: sidebar.meta.label,
+                danger: sidebar.danger,
+                title: sidebar.meta.title
+            }
+            childrenItemType.push(menuItem)
+        }
+    })
+
+    return childrenItemType;
+}
+
+
+const handleReloadMenu = (menuRouters: any[], type?: 'group') => {
+    menuRouters.forEach(router => {
+        if (router.children) {
+            handleReloadMenu(router.children, type)
+            router.type = type
+        }
+    })
 }

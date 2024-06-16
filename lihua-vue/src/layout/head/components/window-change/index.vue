@@ -1,9 +1,6 @@
 <template>
   <div>
-    <a-tooltip placement="bottom" v-if="isFull">
-      <template #title>
-        进入全屏
-      </template>
+    <a-tooltip placement="bottom" v-if="isFull" title="全屏">
       <div class="header-right-item header-right" @click="handleWindowChange">
         <a-avatar :size="32" style="background-color: rgba(0,0,0,0)">
           <FullscreenOutlined class="icon-default-color"/>

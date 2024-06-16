@@ -5,14 +5,14 @@
         <a-flex align="center" justify="space-between">
           <Logo class="logo"/>
           <!--页头-->
-          <Head></Head>
+          <Head class="head"></Head>
         </a-flex>
       </a-layout-header>
     </transition>
 
     <a-layout>
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-sider class="sider scrollbar"
+        <a-layout-sider class="sider"
                         v-show="props.showLayout"
                         :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                         :theme="themeStore.siderTheme"
@@ -22,7 +22,7 @@
                         breakpoint="lg"
         >
           <!-- 侧边栏-->
-          <Side/>
+          <Side class="sider-content scrollbar"/>
         </a-layout-sider>
       </transition>
       <!--    菜单开合开关-->
@@ -64,6 +64,12 @@ const props = defineProps<{  showLayout: boolean }>()
   z-index: 3;
   top: 0;
   box-shadow: 0 1px 4px rgba(0,21,41,.12);
+}
+.sider-content {
+  height: calc(100vh - 48px - 48px);
+}
+.head {
+  margin-right: 32px;
 }
 .logo {
   padding: 0 16px 0 16px;
