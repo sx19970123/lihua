@@ -58,7 +58,6 @@ const props = defineProps<{  showLayout: boolean }>()
   padding-left: 64px;
 }
 .head {
-  min-width: 306px;
   padding-right: 32px;
   padding-left: 32px;
 }
