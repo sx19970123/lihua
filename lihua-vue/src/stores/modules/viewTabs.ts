@@ -1,10 +1,13 @@
 import { defineStore } from "pinia";
 import Layout from "@/layout/index.vue";
+import MiddleView from "@/components/middle-view/index.vue";
+import Iframe from "@/components/iframe/index.vue";
 import type { StarViewType,RecentType } from "@/api/system/view-tab/type/SysViewTab.ts"
 import dayjs from "dayjs";
 import type {RouteLocationNormalizedLoaded} from "vue-router";
 import { uuid } from "@/utils/IdHelper.ts";
-import type {RouterType} from "@/api/system/auth/type/AuthInfoType.ts";
+import {isComponentTypeEq} from "@/utils/SiderViewTab.ts"
+
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         // viewTab 标签页数组
@@ -39,28 +42,20 @@ export const useViewTabsStore = defineStore('viewTabs',{
          */
         initTotalViewTabs(viewTabVOList: Array<StarViewType>, staticRoutes: any[]): void {
             // 过滤获取 Layout 为父级的静态路由
-            let layoutRoutes =  staticRoutes.filter(route => route.component === Layout)
-            // 生成 key
-            layoutRoutes = generateKey(layoutRoutes,'')
+            const layoutRoutes =  staticRoutes.filter(route => route.component && isComponentTypeEq(route.component , Layout))
             // 去除父级节点获取子路由组件
-            const hasKeyRoutComponentList: Array<any> = []
-            getChildren(layoutRoutes,hasKeyRoutComponentList)
+            const hasKeyRoutComponentList: Array<StarViewType> = []
+            getStaticItem(layoutRoutes,hasKeyRoutComponentList)
             // 根据定义的 viewTabSort 进行排序
-            hasKeyRoutComponentList.sort((a, b) => b.meta.viewTabSort - a.meta.viewTabSort)
+            hasKeyRoutComponentList.sort((a, b) => {
+                const num1 = a.viewTabSort ? a.viewTabSort : 999
+                const num2 = b.viewTabSort ? b.viewTabSort : 999
+                return  num2 - num1
+            })
             // 生成viewTab对象
-            if (hasKeyRoutComponentList.length > 0) {
-                hasKeyRoutComponentList.forEach(route => {
-                    viewTabVOList.unshift({
-                        label: route.meta.label,
-                        icon: route.meta.icon,
-                        affix: route.meta.affix,
-                        routerPathKey: route.key,
-                        star: false,
-                        static: true,
-                        query: route.meta.query
-                    })
-                })
-            }
+            hasKeyRoutComponentList.forEach(route => {
+                viewTabVOList.unshift(route)
+            })
 
             // 全量数据
             this.$state.totalViewTabs = viewTabVOList
@@ -229,50 +224,35 @@ export const useViewTabsStore = defineStore('viewTabs',{
 })
 
 /**
- * 处理 router/index 中静态路由，生成 key （路由path拼接）
- * @param routers
- */
-const generateKey = (routers: any[], key: string): Array<RouterType> => {
-    if (routers.length > 0) {
-        routers.forEach(menuItem => {
-            // 处理path
-            menuItem.path = menuItem.path === null ? '' : menuItem.path
-            menuItem.path = menuItem.path.startsWith("/") ? menuItem.path.substring(1): menuItem.path
-            // 处理双层 / 的情况
-            if (key === '/') {
-                menuItem.key = '/' + menuItem.path
-            } else {
-                menuItem.key = key + '/' + menuItem.path
-            }
-
-            if (menuItem.children && menuItem.children.length > 0) {
-                const child = generateKey(menuItem.children, menuItem.key)
-                menuItem.children = child === null ? [] : child
-            } else {
-                menuItem.children = []
-            }
-        })
-    }
-    return routers
-}
-
-/**
- * 获取最底层子节点
+ * 获取page 或 link 节点的数据
  * @param staticRoutes
  * @param arr
  */
-const getChildren = (staticRoutes: any[], arr:  Array<StarViewType>): void => {
+const getStaticItem = (staticRoutes: any[], arr: Array<StarViewType>): void => {
     if (staticRoutes) {
         staticRoutes.forEach(route => {
-            if (route.children && route.children.length > 0) {
-                if (route.component !== Layout) {
-                    arr.push(route)
-                }
-                getChildren(route.children,arr)
-            } else {
-                arr.push(route)
+            if (!isComponentTypeEq(route.component, Layout) && !isComponentTypeEq(route.component, MiddleView)) {
+                const item: StarViewType = {
+                    affix: route.meta?.affix,
+                    icon: route.meta?.icon,
+                    label: route.meta?.label,
+                    link: route.meta?.link,
+                    linkOpenType: route.meta?.linkOpenType,
+                    viewTabSort: route.meta?.viewTabSort,
+                    routerPathKey: route.path
             }
-        })
+                if (isComponentTypeEq(route.component, Iframe)) {
+                    item.menuType = 'link'
+                } else {
+                    item.menuType = 'page'
+                }
+                arr.push(item);
+            }
+
+            if (route.children && route.children.length > 0) {
+                getStaticItem(route.children, arr);
+            }
+        });
     }
 }
 

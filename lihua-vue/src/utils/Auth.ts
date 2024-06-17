@@ -4,6 +4,7 @@ import {usePermissionStore} from "@/stores/modules/permission.ts";
 import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import {useDictStore} from "@/stores/modules/dict.ts";
+import {cloneDeep} from 'lodash-es'
 
 // 认证通过后加载系统所需的各种数据
 export const reloadLoginUser = () => {
@@ -22,9 +23,9 @@ export const reloadLoginUser = () => {
         // 初始化动态路由
         permissionStore.initDynamicRouter(metaRouterList)
         // 初始化用户菜单数据
-        permissionStore.initMenu(metaRouterList, staticRoutes as any[], themeStore.$state.siderGroup ? 'group' : undefined)
+        permissionStore.initMenu(metaRouterList, cloneDeep(staticRoutes) as any[], themeStore.$state.siderGroup ? 'group' : undefined)
         // 初始化totalViewTabs数据
-        viewTabsStore.initTotalViewTabs(resp.data.viewTabs || [], staticRoutes as any[])
+        viewTabsStore.initTotalViewTabs(resp.data.viewTabs || [], cloneDeep(staticRoutes) as any[])
         // 设置最近使用组件的缓存key值
         viewTabsStore.setViewCacheKey(userStore.$state.username)
         // 清空字典store

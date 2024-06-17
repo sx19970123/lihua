@@ -1,14 +1,15 @@
 import { defineStore } from "pinia";
 import type {RouteRecordRaw} from "vue-router";
-import Layout from "@/layout/index.vue";
 import router from "@/router";
+import Layout from "@/layout/index.vue";
 import IFrame from "@/components/iframe/index.vue";
 import MiddleView from "@/components/middle-view/index.vue";
 import type {RouterType} from "@/api/system/auth/type/AuthInfoType.ts";
 import { h } from "vue";
 import Icon from "@/components/icon/index.vue";
 import type {ItemType} from "ant-design-vue";
-import type {MenuItemGroupType, MenuItemType, SubMenuType} from "ant-design-vue/es/menu/src/hooks/useItems";
+import {isComponentTypeEq} from "@/utils/SiderViewTab.ts"
+
 // 获取 views 下的所有 vue 组件
 const modules = import.meta.glob("../../views/**/*.vue")
 
@@ -47,8 +48,12 @@ export const usePermissionStore = defineStore('permission',{
         },
         // 加载菜单
         initMenu(metaRouterList: Array<RouterType>, staticRoutes: any[], type?: 'group'): void {
-            const sidebarRouters =  init(metaRouterList,staticRoutes)
-            this.$state.menuRouters = handleGenerateMenuRouters(sidebarRouters, type)
+            // 静态数据生成
+            const staticMenuData = handleGenerateStaticMenuData(staticRoutes, type)
+            // 动态数据生成
+            const dynamicMenuData = handleGenerateMenuData(metaRouterList, type)
+            // 合并菜单数据
+            this.$state.menuRouters = [...staticMenuData, ...dynamicMenuData]
         },
         // 重新加载菜单
         reloadMenu(type?: 'group') {
@@ -65,70 +70,33 @@ export const usePermissionStore = defineStore('permission',{
     },
 })
 
-const init = (metaRouterList: Array<RouterType>, staticRoutes: any[]): Array<RouterType> => {
-    const routers = handleMenuShowFilter(staticRoutes)
-    if (routers) {
-        return generateKey(routers ,'').concat(metaRouterList)
-    }
-    return []
-}
-/**
- * 处理 router/index 中静态路由，生成 key （路由path拼接）
- * @param routers
- * @param key
- */
-const generateKey = (routers: any[] , key: string): Array<RouterType> => {
-    if (routers.length > 0) {
-        routers.forEach(menuItem => {
-            // 处理path
-            menuItem.path = menuItem.path === null ? '' : menuItem.path
-            menuItem.path = menuItem.path.startsWith("/") ? menuItem.path.substring(1): menuItem.path
-            // 处理双层 / 的情况
-            if (key === '/') {
-                menuItem.key = '/' + menuItem.path
-            } else {
-                menuItem.key = key + '/' + menuItem.path
-            }
-
-            if (menuItem.children && menuItem.children.length > 0) {
-                const child = generateKey(menuItem.children, menuItem.key)
-                menuItem.children = child === null ? [] : child
-            } else {
-                menuItem.children = []
-            }
-        })
-    }
-    return routers
-}
 
 /**
- * 过滤要在菜单显示的路由
+ * 过滤导航菜单
+ * 筛选出meta中visible为true的路由节点（当某一节点的visible为false时，其子节点全部不要）
  */
-const handleMenuShowFilter = (staticRoutes: any[]) => {
+const siderMenuFilter = (staticRoutes: any[]) => {
     if (staticRoutes && staticRoutes.length > 0) {
-        // 其他静态路由
-        const filteredRoutes:any[] = staticRoutes.filter(item => item?.meta?.visible && item.path !== '')
-        // 根节点为''并且有子节点的静态路由，当只有一个子节点的visible为true时，在菜单栏只显示页面
-        const indexRoutes:any[] = staticRoutes.filter(item => item.path === '' && item.children && item.children.length > 0)
-        // 用来保存单个页面的集合
-        const singleRoutes:any[] = []
-
-        indexRoutes.forEach(item => {
-            const chiVisible = item.children.filter((chi:any) => chi?.meta?.visible)
-            if (chiVisible.length === 1) {
-                singleRoutes.unshift(chiVisible[0])
+        for (let i = 0; i < staticRoutes.length; i++) {
+            const route = staticRoutes[i]
+            if (!(route?.meta?.visible)) {
+                staticRoutes.splice(i, 1)
+                i--
             } else {
-                singleRoutes.unshift(item)
+                if (isComponentTypeEq(route.component, Layout)) {
+                    route.type = 'layout'
+                } else if (isComponentTypeEq(route.component, MiddleView)) {
+                    route.type = 'directory'
+                } else if (isComponentTypeEq(route.component, IFrame)) {
+                    route.type = 'link'
+                } else {
+                    route.type = 'page'
+                }
+                if (route.children && route.children.length > 0) {
+                    siderMenuFilter(route.children)
+                }
             }
-        })
-
-        if (singleRoutes.length > 0) {
-            singleRoutes.forEach(item => {
-                filteredRoutes.unshift(item)
-            })
         }
-
-        return filteredRoutes;
     }
 }
 
@@ -182,17 +150,21 @@ const handleSetComponent = (route: RouterType) => {
     }
 }
 
-// 生成a-menu菜单数据
-const handleGenerateMenuRouters = (sidebarRouters:RouterType[], type?: 'group'): ItemType[] => {
-    return handleMenu(sidebarRouters, type)
+// 生成静态菜单数据
+const handleGenerateStaticMenuData = (staticRoutes: any[], type?: 'group') :ItemType[] => {
+    // 过滤导航栏分配type
+    siderMenuFilter(staticRoutes)
+    return handleGenerateMenuData(staticRoutes, type)
 }
-const handleMenu = (sidebarRouters:RouterType[], type?: 'group'):ItemType[]  => {
+
+// 生成动态菜单数据
+const handleGenerateMenuData = (sidebarRouters:RouterType[], type?: 'group'):ItemType[]  => {
     const childrenItemType: ItemType[] = []
     sidebarRouters.forEach(sidebar => {
         // 菜单类型生成的对象包含children
         if (sidebar.type === 'directory') {
             if (sidebar.children && sidebar.children.length > 0) {
-                const resp = handleMenu(sidebar.children, type)
+                const resp = handleGenerateMenuData(sidebar.children, type)
                 // 存在子集
                 if (resp && resp.length > 0) {
                     const menuItem:ItemType  = {
@@ -215,11 +187,18 @@ const handleMenu = (sidebarRouters:RouterType[], type?: 'group'):ItemType[]  => 
                 }
                 childrenItemType.push(menuItem)
             }
+        } else if(sidebar.type === 'layout') {
+            if (sidebar.children && sidebar.children.length > 0) {
+                const resp = handleGenerateMenuData(sidebar.children, type)
+                resp.forEach(item => {
+                    childrenItemType.push(item)
+                })
+            }
         }
         // 其余类型（页面/静态路由）
         else {
             const menuItem:ItemType  = {
-                key: sidebar.key,
+                key: sidebar.key ? sidebar.key : sidebar.path,
                 icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
                 label: sidebar.meta.label,
                 danger: sidebar.danger,

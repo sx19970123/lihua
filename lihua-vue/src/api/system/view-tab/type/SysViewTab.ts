@@ -3,13 +3,15 @@ export interface StarViewType {
     icon: string | null,
     label: string,
     routerPathKey: string,
-    star: boolean | null,
+    star?: boolean | null,
     static?: boolean | null,
     viewTab?: boolean,
-    query: string,
+    query?: string,
+    menuId?: string,
     menuType?: 'directory' | 'page' | 'link',
     linkOpenType?: 'inner' | 'new-page',
-    link?: string
+    link?: string,
+    viewTabSort?: number
 }
 
 export interface RecentType {
