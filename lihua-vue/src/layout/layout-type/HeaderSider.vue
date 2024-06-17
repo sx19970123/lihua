@@ -1,7 +1,7 @@
 <template>
   <a-layout>
     <transition :name="themeStore.routeTransition" mode="out-in">
-      <a-layout-header class="header" v-show="props.showLayout" :style="{'background': themeStore.layoutBackgroundColor}">
+      <a-layout-header class="hs-header" v-show="props.showLayout" :style="{'background': themeStore.layoutBackgroundColor}">
         <a-flex align="center" justify="space-between">
           <Logo class="logo"/>
           <!--页头-->
@@ -12,7 +12,7 @@
 
     <a-layout>
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-sider class="sider"
+        <a-layout-sider class="hs-sider"
                         v-show="props.showLayout"
                         :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                         :theme="themeStore.siderTheme"
@@ -49,7 +49,7 @@ const props = defineProps<{  showLayout: boolean }>()
 </script>
 
 <style scoped>
-.header {
+.hs-header {
   z-index: 4;
   padding: 0;
   height: 48px;
@@ -58,7 +58,7 @@ const props = defineProps<{  showLayout: boolean }>()
   -webkit-backdrop-filter: saturate(180%);
   box-shadow: 0 1px 4px rgba(0,21,41,.12);
 }
-.sider {
+.hs-sider {
   position: sticky;
   height: calc(100vh - 48px);
   z-index: 3;
@@ -83,11 +83,11 @@ const props = defineProps<{  showLayout: boolean }>()
 
 <style>
 [data-head-affix = affix] {
-  .header {
+  .hs-header {
     position: sticky;
     top: 0;
   }
-  .sider {
+  .hs-sider {
     position: sticky;
     top:48px;
   }
@@ -95,6 +95,14 @@ const props = defineProps<{  showLayout: boolean }>()
     position: sticky;
     z-index: 2;
     top: 48px;
+  }
+}
+[data-theme = dark] {
+  .hs-header {
+    box-shadow: 0 1px 4px rgba(150, 150, 150,.1);
+  }
+  .hs-sider {
+    box-shadow: 0 1px 4px rgba(150, 150, 150,.1);
   }
 }
 </style>

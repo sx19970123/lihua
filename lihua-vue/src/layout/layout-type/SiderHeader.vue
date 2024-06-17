@@ -1,7 +1,7 @@
 <template>
   <a-layout style="min-height: 100vh">
     <transition :name="themeStore.routeTransition" mode="out-in">
-      <a-layout-sider class="sider scrollbar"
+      <a-layout-sider class="sh-sider scrollbar"
                       v-show="props.showLayout"
                       :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                       :theme="themeStore.siderTheme"
@@ -17,10 +17,10 @@
       </a-layout-sider>
     </transition>
     <a-layout>
-      <a-layout-header class="layout-header"
+      <a-layout-header class="sh-header"
                        :style="{'background': themeStore.layoutBackgroundColor}">
         <transition :name="themeStore.routeTransition" mode="out-in">
-        <Head class="head" v-show="props.showLayout"/>
+        <Head class="sh-head" v-show="props.showLayout"/>
         </transition>
         <view-tabs  v-if="themeStore.showViewTabs"/>
       </a-layout-header>
@@ -46,18 +46,18 @@ const props = defineProps<{  showLayout: boolean }>()
 </script>
 
 <style scoped>
-.layout-header {
+.sh-header {
   height: auto;
   padding: 0;
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   line-height: 48px;
 }
-.head {
+.sh-head {
   box-shadow: 0 1px 4px rgba(0,21,41,.12);
   padding-right: 32px;
 }
-.sider {
+.sh-sider {
   position: sticky;
   height: 100vh;
   top: 0;
@@ -71,10 +71,18 @@ const props = defineProps<{  showLayout: boolean }>()
 
 <style>
 [data-head-affix = affix] {
-  .layout-header {
+  .sh-header {
     position: sticky;
     top: 0;
     z-index: 1;
+  }
+}
+[data-theme = dark] {
+  .sh-sider {
+    box-shadow: 0 1px 4px rgba(150, 150, 150,.1);
+  }
+  .sh-head {
+    box-shadow: 0 1px 4px rgba(150, 150, 150,.1);
   }
 }
 </style>

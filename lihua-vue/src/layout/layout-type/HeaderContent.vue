@@ -1,8 +1,8 @@
 <template>
   <a-layout>
-    <div class="header">
+    <div class="hc-header">
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="layout-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' ?
+        <a-layout-header class="hc-layout-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' ?
         { background: themeStore.layoutBackgroundColor } : ''">
           <a-flex align="center" justify="space-between">
             <!--logo-->
@@ -10,7 +10,7 @@
             <!--导航-->
             <Side class="sider"/>
             <!--页头-->
-            <Head class="head"></Head>
+            <Head></Head>
           </a-flex>
         </a-layout-header>
       </transition>
@@ -38,11 +38,11 @@ const props = defineProps<{  showLayout: boolean }>()
 </script>
 
 <style scoped>
-.header {
+.hc-header {
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%);
 }
-.layout-header {
+.hc-layout-header {
   padding: 0;
   height: 48px;
   line-height: 48px;
@@ -53,19 +53,22 @@ const props = defineProps<{  showLayout: boolean }>()
   margin-left: 16px;
 }
 .sider {
-  max-width: 60vw;
-  padding-right: 64px;
-  padding-left: 64px;
-}
-.head {
-  padding-right: 32px;
-  padding-left: 32px;
+  width: 100%;
+  padding: 0 64px 0 64px;
 }
 </style>
 
 <style>
-.header {
- position: sticky;
- z-index: 2;
+[data-head-affix = affix] {
+  .hc-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+}
+[data-theme = dark] {
+  .hc-layout-header {
+    box-shadow: 0 1px 4px rgba(255, 255, 255,.12);
+  }
 }
 </style>
