@@ -196,7 +196,7 @@ const handleMenu = (sidebarRouters:RouterType[], type?: 'group'):ItemType[]  => 
                 // 存在子集
                 if (resp && resp.length > 0) {
                     const menuItem:ItemType  = {
-                        key: sidebar.path,
+                        key: sidebar.key,
                         icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
                         label: sidebar.meta.label,
                         children: resp,
@@ -207,7 +207,7 @@ const handleMenu = (sidebarRouters:RouterType[], type?: 'group'):ItemType[]  => 
             } else {
                 // 不存在子集
                 const menuItem:ItemType  = {
-                    key: sidebar.path,
+                    key: sidebar.key,
                     icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
                     label: sidebar.meta.label,
                     children: [],
@@ -216,10 +216,10 @@ const handleMenu = (sidebarRouters:RouterType[], type?: 'group'):ItemType[]  => 
                 childrenItemType.push(menuItem)
             }
         }
-        // 页面组件或外链类型
-        if (sidebar.type === 'page' || sidebar.type === 'link') {
+        // 其余类型（页面/静态路由）
+        else {
             const menuItem:ItemType  = {
-                key: sidebar.path,
+                key: sidebar.key,
                 icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
                 label: sidebar.meta.label,
                 danger: sidebar.danger,
@@ -232,7 +232,7 @@ const handleMenu = (sidebarRouters:RouterType[], type?: 'group'):ItemType[]  => 
     return childrenItemType;
 }
 
-
+// 重新加载菜单导航
 const handleReloadMenu = (menuRouters: any[], type?: 'group') => {
     menuRouters.forEach(router => {
         if (router.children) {

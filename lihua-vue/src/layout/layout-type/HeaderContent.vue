@@ -53,7 +53,7 @@ const props = defineProps<{  showLayout: boolean }>()
   margin-left: 16px;
 }
 .sider {
-  max-width: 60%;
+  max-width: 60vw;
   padding-right: 64px;
   padding-left: 64px;
 }
