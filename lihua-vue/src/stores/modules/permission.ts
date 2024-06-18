@@ -8,7 +8,8 @@ import type {RouterType} from "@/api/system/auth/type/AuthInfoType.ts";
 import { h } from "vue";
 import Icon from "@/components/icon/index.vue";
 import type {ItemType} from "ant-design-vue";
-import {hasRouteRole, isComponentTypeEq, isSiderGroup} from "@/utils/Auth.ts"
+import {hasRouteRole, isSiderGroup} from "@/utils/Auth.ts"
+import {isEqual} from "lodash-es"
 
 // 获取 views 下的所有 vue 组件
 const modules = import.meta.glob("../../views/**/*.vue")
@@ -87,11 +88,11 @@ const siderMenuFilter = (staticRoutes: any[]) => {
                 staticRoutes.splice(i, 1)
                 i--
             } else {
-                if (isComponentTypeEq(route.component, Layout)) {
+                if (isEqual(route.component,Layout)) {
                     route.type = 'layout'
-                } else if (isComponentTypeEq(route.component, MiddleView)) {
+                } else if (isEqual(route.component, MiddleView)) {
                     route.type = 'directory'
-                } else if (isComponentTypeEq(route.component, IFrame)) {
+                } else if (isEqual(route.component,IFrame)) {
                     route.type = 'link'
                 } else {
                     route.type = 'page'

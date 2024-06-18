@@ -5,15 +5,6 @@ let userStore: ReturnType<typeof useUserStore> | null = null;
 let themeStore: ReturnType<typeof useThemeStore> | null = null;
 
 /**
- * 判断路由中指定的 component 和目标类型是否相同
- * @param obj1
- * @param obj2
- */
-export const isComponentTypeEq = (obj1: any, obj2: any): boolean => {
-    return obj1?.__file === obj2?.__file;
-};
-
-/**
  * 判断是否拥有指定的角色
  * @param routeRoleList 静态路由指定的角色编码集合
  */

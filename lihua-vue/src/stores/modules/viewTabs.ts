@@ -6,8 +6,8 @@ import type { StarViewType,RecentType } from "@/api/system/view-tab/type/SysView
 import dayjs from "dayjs";
 import type {RouteLocationNormalizedLoaded} from "vue-router";
 import { uuid } from "@/utils/IdHelper.ts";
-import {hasRouteRole, isComponentTypeEq, isSiderGroup} from "@/utils/Auth.ts"
-
+import {hasRouteRole} from "@/utils/Auth.ts"
+import {isEqual} from "lodash-es"
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         // viewTab 标签页数组
@@ -230,7 +230,7 @@ const getStaticItem = (staticRoutes: any[], arr: Array<StarViewType>): void => {
     if (staticRoutes) {
         staticRoutes.forEach(route => {
 
-            if (hasRouteRole(route?.meta?.role as string[]) && !isComponentTypeEq(route.component, Layout) && !isComponentTypeEq(route.component, MiddleView)) {
+            if (hasRouteRole(route?.meta?.role as string[]) && !isEqual(route.component, Layout) && !isEqual(route.component, MiddleView)) {
                 const item: StarViewType = {
                     affix: route.meta?.affix,
                     icon: route.meta?.icon,
@@ -240,7 +240,7 @@ const getStaticItem = (staticRoutes: any[], arr: Array<StarViewType>): void => {
                     viewTabSort: route.meta?.viewTabSort,
                     routerPathKey: route.path
                 }
-                if (isComponentTypeEq(route.component, Iframe)) {
+                if (isEqual(route.component, Iframe)) {
                     item.menuType = 'link'
                 } else {
                     item.menuType = 'page'
