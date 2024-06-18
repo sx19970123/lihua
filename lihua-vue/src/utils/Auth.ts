@@ -1,45 +1,46 @@
-import router from "@/router";
-import {useUserStore} from "@/stores/modules/user.ts";
-import {usePermissionStore} from "@/stores/modules/permission.ts";
-import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
-import {useThemeStore} from "@/stores/modules/theme.ts";
-import {useDictStore} from "@/stores/modules/dict.ts";
-import {cloneDeep} from 'lodash-es'
+import { useUserStore } from "@/stores/modules/user.ts";
+import { useThemeStore } from "@/stores/modules/theme.ts";
 
-// 认证通过后加载系统所需的各种数据
-export const reloadLoginUser = () => {
-  const userStore = useUserStore()
-  const permissionStore = usePermissionStore()
-  const viewTabsStore = useViewTabsStore()
-  const themeStore = useThemeStore()
-  const dictStore = useDictStore()
-  return new Promise((resolve, reject) => {
-    userStore.getUserInfo().then((resp) => {
-      try {
-        const metaRouterList = resp.data?.routers || []
-        const staticRoutes = router.options.routes
-        // 初始化系统主题，在初始化菜单时需要用到
-        themeStore.init(userStore.$state.userInfo.theme)
-        // 初始化动态路由
-        permissionStore.initDynamicRouter(metaRouterList)
-        // 初始化用户菜单数据
-        permissionStore.initMenu(metaRouterList, cloneDeep(staticRoutes) as any[], themeStore.$state.siderGroup ? 'group' : undefined)
-        // 初始化totalViewTabs数据
-        viewTabsStore.initTotalViewTabs(resp.data.viewTabs || [], cloneDeep(staticRoutes) as any[])
-        // 设置最近使用组件的缓存key值
-        viewTabsStore.setViewCacheKey(userStore.$state.username)
-        // 清空字典store
-        dictStore.clearDict()
-        // 清空组件keep-alive
-        viewTabsStore.clearComponentsKeepAlive()
-        resolve('load success')
-      } catch (e) {
-        reject(e)
-        console.error(e)
-      }
-    }).catch(e => {
-      reject(e)
-      console.error(e)
-    })
-  })
+let userStore: ReturnType<typeof useUserStore> | null = null;
+let themeStore: ReturnType<typeof useThemeStore> | null = null;
+
+/**
+ * 判断路由中指定的 component 和目标类型是否相同
+ * @param obj1
+ * @param obj2
+ */
+export const isComponentTypeEq = (obj1: any, obj2: any): boolean => {
+    return obj1?.__file === obj2?.__file;
+};
+
+/**
+ * 判断是否拥有指定的角色
+ * @param routeRoleList 静态路由指定的角色编码集合
+ */
+export const hasRouteRole = (routeRoleList?: string[]): boolean => {
+    // 静态路由没有指定均为所有用户可访问
+    if (!routeRoleList || routeRoleList.length === 0) {
+        return true;
+    }
+
+    // 初始化赋值 userStore
+    if (!userStore) {
+        userStore = useUserStore();
+    }
+
+    // 获取用户角色编码
+    const userRoleList = userStore.roleCodes;
+
+    // 返回用户是否拥有静态路由指定角色
+    return routeRoleList.some(role => userRoleList.includes(role));
+};
+
+/**
+ * 导航菜单是否为分组模式
+ */
+export const isSiderGroup = (): 'group' | undefined => {
+    if (!themeStore) {
+        themeStore = useThemeStore();
+    }
+    return themeStore.siderGroup ? 'group' : undefined
 }

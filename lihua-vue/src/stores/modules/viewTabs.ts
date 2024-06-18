@@ -6,7 +6,7 @@ import type { StarViewType,RecentType } from "@/api/system/view-tab/type/SysView
 import dayjs from "dayjs";
 import type {RouteLocationNormalizedLoaded} from "vue-router";
 import { uuid } from "@/utils/IdHelper.ts";
-import {isComponentTypeEq} from "@/utils/SiderViewTab.ts"
+import {hasRouteRole, isComponentTypeEq, isSiderGroup} from "@/utils/Auth.ts"
 
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
@@ -41,11 +41,9 @@ export const useViewTabsStore = defineStore('viewTabs',{
          * @param staticRoutes
          */
         initTotalViewTabs(viewTabVOList: Array<StarViewType>, staticRoutes: any[]): void {
-            // 过滤获取 Layout 为父级的静态路由
-            const layoutRoutes =  staticRoutes.filter(route => route.component && isComponentTypeEq(route.component , Layout))
             // 去除父级节点获取子路由组件
             const hasKeyRoutComponentList: Array<StarViewType> = []
-            getStaticItem(layoutRoutes,hasKeyRoutComponentList)
+            getStaticItem(staticRoutes,hasKeyRoutComponentList)
             // 根据定义的 viewTabSort 进行排序
             hasKeyRoutComponentList.sort((a, b) => {
                 const num1 = a.viewTabSort ? a.viewTabSort : 999
@@ -231,7 +229,8 @@ export const useViewTabsStore = defineStore('viewTabs',{
 const getStaticItem = (staticRoutes: any[], arr: Array<StarViewType>): void => {
     if (staticRoutes) {
         staticRoutes.forEach(route => {
-            if (!isComponentTypeEq(route.component, Layout) && !isComponentTypeEq(route.component, MiddleView)) {
+
+            if (hasRouteRole(route?.meta?.role as string[]) && !isComponentTypeEq(route.component, Layout) && !isComponentTypeEq(route.component, MiddleView)) {
                 const item: StarViewType = {
                     affix: route.meta?.affix,
                     icon: route.meta?.icon,
@@ -240,7 +239,7 @@ const getStaticItem = (staticRoutes: any[], arr: Array<StarViewType>): void => {
                     linkOpenType: route.meta?.linkOpenType,
                     viewTabSort: route.meta?.viewTabSort,
                     routerPathKey: route.path
-            }
+                }
                 if (isComponentTypeEq(route.component, Iframe)) {
                     item.menuType = 'link'
                 } else {

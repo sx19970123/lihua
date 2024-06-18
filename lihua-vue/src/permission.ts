@@ -4,39 +4,58 @@ import 'nprogress/nprogress.css'
 import { useUserStore } from "@/stores/modules/user"
 import { useThemeStore } from "@/stores/modules/theme";
 import token from "@/utils/Token.ts"
-import { reloadLoginUser } from "@/utils/Auth.ts";
+import { init } from "@/utils/AppInit.ts";
+import {hasRouteRole} from "@/utils/Auth.ts";
 const { getToken } = token
 NProgress.configure({
     showSpinner: true
 })
 
 // 路由前置守卫
-router.beforeEach((to,from,next) => {
-    const userStore = useUserStore()
-    const themeStore = useThemeStore()
-    NProgress.start()
-    if (getToken()) {
-        // 判断是否拉取了用户信息
-        if (!userStore.userInfo.id) {
-            // 拉取登录用户数据，并初始化store
-            reloadLoginUser().then(() => {
-                next({...to,replace: true})
-            }).catch((err) => {
-                console.error(err)
-                userStore.clearUserInfo(err)
-            })
-        } else {
-            next()
+router.beforeEach(async (to, from, next) => {
+    const userStore = useUserStore();
+    const themeStore = useThemeStore();
+    NProgress.start();
+
+    const hasToken = getToken();
+
+    if (hasToken) {
+        try {
+            // 判断是否已拉取用户信息
+            if (!userStore.userInfo.id) {
+                // 拉取登录用户数据，并初始化 store
+                await init();
+
+                // 判断用户是否拥有静态路由中指定的角色
+                if (hasRouteRole(to?.meta?.role as string[])) {
+                    next({ ...to, replace: true });
+                } else {
+                    next("/403");
+                }
+            } else {
+                if (hasRouteRole(to?.meta?.role as string[])) {
+                    next();
+                } else {
+                    next("/403");
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            userStore.clearUserInfo();
+            next("/login");
         }
     } else {
-        themeStore.resetState()
+        // token 失效后重置主题后重定向到登陆页
+        themeStore.resetState();
         if (to.path !== "/login") {
-            next("/login")
+            next("/login");
         } else {
             next();
         }
     }
-})
+
+    NProgress.done();
+});
 
 // 路由后置守卫
 router.afterEach((to,from) => { NProgress.done() })

@@ -55,7 +55,7 @@ import { useUserStore } from "@/stores/modules/user";
 import { useRouter,useRoute } from "vue-router";
 import {message} from "ant-design-vue";
 import {reloadData} from "@/api/system/auth/Auth.ts";
-import {reloadLoginUser} from "@/utils/Auth.ts";
+import { init } from "@/utils/AppInit.ts";
 import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
 const viewTabsStore = useViewTabsStore()
 
@@ -72,7 +72,7 @@ const handleClickMenu = async ({key}: {key: string}) => {
     case 'user-data-update': {
       const resp = await reloadData()
       if (resp.code === 200) {
-        reloadLoginUser()
+        init()
             .then(() => {
               // 重新加载ViewTag
               viewTabsStore.init(route)

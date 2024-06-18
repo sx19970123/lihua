@@ -120,16 +120,21 @@ export const useThemeStore = defineStore('theme',{
             if (!themeJson) {
                 return
             }
-            let state = JSON.parse(themeJson);
-            for (let stateKey in state) {
-                for (let $stateKey in this.$state) {
-                    if (stateKey === $stateKey) {
-                        // 使用类型断言告诉 TypeScript $stateKey 是 $state 对象的一个键
-                        (this.$state as any)[$stateKey] = state[stateKey];
+            try {
+                let state = JSON.parse(themeJson);
+                for (let stateKey in state) {
+                    for (let $stateKey in this.$state) {
+                        if (stateKey === $stateKey) {
+                            // 使用类型断言告诉 TypeScript $stateKey 是 $state 对象的一个键
+                            (this.$state as any)[$stateKey] = state[stateKey];
+                        }
                     }
                 }
+                this.$state.dataTheme = localStorage.getItem("dataTheme") === 'dark'
+            } catch (e) {
+                console.error('初始化主题失败，使用默认主题',e)
+                return;
             }
-            this.$state.dataTheme = localStorage.getItem("dataTheme") === 'dark'
         },
         // 暗色模式
         changeDataDark() {

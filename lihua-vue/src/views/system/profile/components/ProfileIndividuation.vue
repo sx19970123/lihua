@@ -86,8 +86,8 @@ onUnmounted(()=> {
 })
 
 // 处理修改菜单分组模式
-const handleChangeSiderGroup = (type: boolean) => {
-  permissionStore.reloadMenu(type ? 'group': undefined)
+const handleChangeSiderGroup = () => {
+  permissionStore.reloadMenu()
 }
 const handleChangeLayoutType = (key: string) => {
   if (key === "header-content") {

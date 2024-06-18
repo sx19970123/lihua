@@ -8,7 +8,7 @@ import type {RouterType} from "@/api/system/auth/type/AuthInfoType.ts";
 import { h } from "vue";
 import Icon from "@/components/icon/index.vue";
 import type {ItemType} from "ant-design-vue";
-import {isComponentTypeEq} from "@/utils/SiderViewTab.ts"
+import {hasRouteRole, isComponentTypeEq, isSiderGroup} from "@/utils/Auth.ts"
 
 // 获取 views 下的所有 vue 组件
 const modules = import.meta.glob("../../views/**/*.vue")
@@ -47,17 +47,17 @@ export const usePermissionStore = defineStore('permission',{
             });
         },
         // 加载菜单
-        initMenu(metaRouterList: Array<RouterType>, staticRoutes: any[], type?: 'group'): void {
+        initMenu(metaRouterList: Array<RouterType>, staticRoutes: any[]): void {
             // 静态数据生成
-            const staticMenuData = handleGenerateStaticMenuData(staticRoutes, type)
+            const staticMenuData = handleGenerateStaticMenuData(staticRoutes)
             // 动态数据生成
-            const dynamicMenuData = handleGenerateMenuData(metaRouterList, type)
+            const dynamicMenuData = handleGenerateMenuData(metaRouterList)
             // 合并菜单数据
             this.$state.menuRouters = [...staticMenuData, ...dynamicMenuData]
         },
         // 重新加载菜单
-        reloadMenu(type?: 'group') {
-            handleReloadMenu(this.$state.menuRouters ,type)
+        reloadMenu() {
+            handleReloadMenu(this.$state.menuRouters)
         },
         // 展开菜单
         openCollapsed() {
@@ -79,7 +79,11 @@ const siderMenuFilter = (staticRoutes: any[]) => {
     if (staticRoutes && staticRoutes.length > 0) {
         for (let i = 0; i < staticRoutes.length; i++) {
             const route = staticRoutes[i]
-            if (!(route?.meta?.visible)) {
+            // 是否展示
+            const visible = route?.meta?.visible
+            // 是否拥有角色
+            const hasRole = hasRouteRole(route?.meta?.role as string[])
+            if (!visible || !hasRole) {
                 staticRoutes.splice(i, 1)
                 i--
             } else {
@@ -151,20 +155,20 @@ const handleSetComponent = (route: RouterType) => {
 }
 
 // 生成静态菜单数据
-const handleGenerateStaticMenuData = (staticRoutes: any[], type?: 'group') :ItemType[] => {
+const handleGenerateStaticMenuData = (staticRoutes: any[]) :ItemType[] => {
     // 过滤导航栏分配type
     siderMenuFilter(staticRoutes)
-    return handleGenerateMenuData(staticRoutes, type)
+    return handleGenerateMenuData(staticRoutes)
 }
 
 // 生成动态菜单数据
-const handleGenerateMenuData = (sidebarRouters:RouterType[], type?: 'group'):ItemType[]  => {
+const handleGenerateMenuData = (sidebarRouters:RouterType[]):ItemType[]  => {
     const childrenItemType: ItemType[] = []
     sidebarRouters.forEach(sidebar => {
         // 菜单类型生成的对象包含children
         if (sidebar.type === 'directory') {
             if (sidebar.children && sidebar.children.length > 0) {
-                const resp = handleGenerateMenuData(sidebar.children, type)
+                const resp = handleGenerateMenuData(sidebar.children)
                 // 存在子集
                 if (resp && resp.length > 0) {
                     const menuItem:ItemType  = {
@@ -172,7 +176,7 @@ const handleGenerateMenuData = (sidebarRouters:RouterType[], type?: 'group'):Ite
                         icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
                         label: sidebar.meta.label,
                         children: resp,
-                        type: type
+                        type: isSiderGroup()
                     }
                     childrenItemType.push(menuItem)
                 }
@@ -183,13 +187,13 @@ const handleGenerateMenuData = (sidebarRouters:RouterType[], type?: 'group'):Ite
                     icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
                     label: sidebar.meta.label,
                     children: [],
-                    type: type
+                    type: isSiderGroup()
                 }
                 childrenItemType.push(menuItem)
             }
         } else if(sidebar.type === 'layout') {
             if (sidebar.children && sidebar.children.length > 0) {
-                const resp = handleGenerateMenuData(sidebar.children, type)
+                const resp = handleGenerateMenuData(sidebar.children)
                 resp.forEach(item => {
                     childrenItemType.push(item)
                 })
@@ -212,11 +216,11 @@ const handleGenerateMenuData = (sidebarRouters:RouterType[], type?: 'group'):Ite
 }
 
 // 重新加载菜单导航
-const handleReloadMenu = (menuRouters: any[], type?: 'group') => {
+const handleReloadMenu = (menuRouters: any[]) => {
     menuRouters.forEach(router => {
         if (router.children) {
-            handleReloadMenu(router.children, type)
-            router.type = type
+            handleReloadMenu(router.children)
+            router.type = isSiderGroup()
         }
     })
 }
