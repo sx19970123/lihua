@@ -1,15 +1,12 @@
 package com.lihua.system.controller;
 
-import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysDictType;
 import com.lihua.system.model.SysDictTypeDTO;
 import com.lihua.system.service.SysDictTypeService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
