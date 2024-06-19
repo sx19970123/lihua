@@ -1,10 +1,10 @@
 import request from "@/utils/Request.ts";
 import type {PageResponseType} from "@/api/global/Type.ts";
-import type {SysRole, SysRoleDTO} from "@/api/system/role/type/SysRole.ts";
+import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRole.ts";
 
 // 分页查询列表
 export const findPage = (data: SysRoleDTO) => {
-  return request<PageResponseType<SysRole>>({
+  return request<PageResponseType<SysRoleVO>>({
     url: 'system/role/page',
     method: 'post',
     data: data,
@@ -25,6 +25,14 @@ export const save = (data: SysRole) => {
     url: 'system/role',
     method: 'post',
     data: data
+  })
+}
+
+// 修改角色状态
+export const updateStatus = (id: string, status: string) => {
+  return request<string>({
+    url: 'system/role/updateStatus/' + id + '/' + status,
+    method: 'post'
   })
 }
 

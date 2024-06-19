@@ -1,5 +1,5 @@
 import request from "@/utils/Request.ts";
-import type {SysDictType, SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
+import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
 import type {PageResponseType} from "@/api/global/Type.ts";
 
 /**
@@ -7,7 +7,7 @@ import type {PageResponseType} from "@/api/global/Type.ts";
  * @param data
  */
 export const findPage = (data: SysDictTypeDTO) => {
-  return request<PageResponseType<SysDictType>>({
+  return request<PageResponseType<SysDictTypeVO>>({
     url: 'system/dictType/page',
     method: 'post',
     data: data
@@ -33,6 +33,18 @@ export const save = (data: SysDictType) => {
     url: 'system/dictType',
     method: 'post',
     data: data
+  })
+}
+
+/**
+ * 修改状态
+ * @param id
+ * @param status
+ */
+export const updateStatus = (id: string, status: string) => {
+  return request<string>({
+    url: 'system/dictType/updateStatus/' + id + '/' + status,
+    method: 'post'
   })
 }
 

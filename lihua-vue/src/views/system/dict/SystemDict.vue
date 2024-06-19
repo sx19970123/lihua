@@ -83,12 +83,22 @@
             </a-popconfirm>
           </a-flex>
         </template>
-        <template #bodyCell="{column,record}">
+        <template #bodyCell="{column,record,text}">
           <template v-if="column.key === 'type'">
             <dict-tag :dict-data-option="sys_dict_type" :dict-data-value="record[column.key]"/>
           </template>
           <template v-if="column.key === 'status'">
-            <dict-tag :dict-data-option="sys_status" :dict-data-value="record[column.key]"/>
+            <a-switch v-model:checked="record.statusIsNormal"
+                      @change="(checked: boolean | string | number, event: MouseEvent) => handleUpdateStatus(event,record.id, text)"
+                      @click="(checked: boolean | string | number, event: MouseEvent) => { event.stopPropagation(); record.updateStatusLoading = true }"
+                      :loading="record.updateStatusLoading">
+              <template #checkedChildren>
+                {{sys_status.filter(item => item.value === text)[0]?.label}}
+              </template>
+              <template #unCheckedChildren>
+                {{sys_status.filter(item => item.value === text)[0]?.label}}
+              </template>
+            </a-switch>
           </template>
           <template v-if="column.key === 'createTime'">
             {{ dayjs(record[column.key]).format('YYYY-MM-DD HH:mm') }}
@@ -114,7 +124,7 @@
                           placement="bottomRight"
                           @confirm="handleDelete(record.id)"
             >
-              <a-button type="link" danger size="small" @click="(event: any) => event.stopPropagation()">
+              <a-button type="link" danger size="small" @click="(event: MouseEvent) => event.stopPropagation()">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
@@ -188,10 +198,10 @@
 
 <script setup lang="ts">
 import {reactive, ref} from "vue";
-import type {SysDictType, SysDictTypeDTO} from "@/api/system/dict/type/SysDictType";
-import type {ResponseType, PageResponseType } from "@/api/global/Type.ts"
+import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
+import type {ResponseType } from "@/api/global/Type.ts"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {deleteData, findById, findPage, save} from "@/api/system/dict/DictType.ts";
+import {deleteData, findById, findPage, save, updateStatus} from "@/api/system/dict/DictType.ts";
 import dayjs from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";
@@ -237,12 +247,16 @@ const initSearch = () => {
     {
       title: '名称',
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      ellipsis: true,
+
     },
     {
       title: '编码',
       dataIndex: 'code',
-      key: 'code'
+      key: 'code',
+      ellipsis: true,
+
     },
     {
       title: '状态',
@@ -267,7 +281,8 @@ const initSearch = () => {
       dataIndex: 'createTime',
       align: 'center',
       key: 'createTime',
-      width: '180px'
+      ellipsis: true,
+
     },
     {
       title: '操作',
@@ -287,7 +302,7 @@ const initSearch = () => {
   // 总条数
   const dictTypeTotal = ref<number>()
   // 数据集对象
-  const dictTypeList = ref<Array<SysDictType>>()
+  const dictTypeList = ref<Array<SysDictTypeVO>>([])
   // 列表loading
   const tableLoad = ref<boolean>(false)
 
@@ -310,10 +325,15 @@ const initSearch = () => {
   // 查询数据
   const queryPage = async () => {
     tableLoad.value = true
-    const resp:ResponseType<PageResponseType<SysDictType>> = await findPage(dictTypeQuery.value)
+    const resp = await findPage(dictTypeQuery.value)
     if (resp.code === 200) {
       dictTypeList.value = resp.data.records
       dictTypeTotal.value = resp.data.total
+      // 回显状态
+      dictTypeList.value?.some(dictType => {
+        dictType.statusIsNormal = dictType.status === '0'
+        dictType.updateStatusLoading = false
+      })
     } else {
       message.error(resp.msg)
     }
@@ -395,7 +415,7 @@ const initSave = () => {
       }
   }
 
-  const getDictType = async (event: any,id: string) => {
+  const getDictType = async (event: MouseEvent,id: string) => {
     event.stopPropagation()
     const resp: ResponseType<SysDictType> = await findById(id)
     if (resp.code === 200) {
@@ -420,17 +440,41 @@ const initSave = () => {
     dictTypeData.remark = undefined
   }
 
+  // 修改角色状态
+  const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
+    event.stopPropagation();
+    const resp = await updateStatus(id, status)
+    let newStatus: string = ''
+    if (resp.code === 200) {
+      newStatus = resp.data
+      message.success(resp.msg)
+    } else {
+      newStatus = status
+      message.error(resp.msg)
+    }
+    // 重新赋值
+    dictTypeList.value.some(dictType => {
+      if (dictType.id === id) {
+        dictType.status = newStatus
+        dictType.statusIsNormal = dictType.status === '0'
+        dictType.updateStatusLoading = false
+        return
+      }
+    })
+  }
+
   return {
     dictTypeData,
     modalActive,
     formRules,
+    handleUpdateStatus,
     handleModelStatus,
     saveDictType,
     getDictType,
     formRef
   }
 }
-const { dictTypeData,modalActive,formRules,handleModelStatus,saveDictType,getDictType,formRef } = initSave()
+const { dictTypeData,modalActive,formRules,handleUpdateStatus,handleModelStatus,saveDictType,getDictType,formRef } = initSave()
 
 // 数据删除相关
 const initDelete = () => {

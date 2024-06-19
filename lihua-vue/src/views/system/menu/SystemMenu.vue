@@ -82,7 +82,17 @@
             </template>
             <!--            状态-->
             <template v-if="column.key === 'status'">
-              <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
+              <a-switch v-model:checked="record.statusIsNormal"
+                        @change="(checked: boolean | string | number, event: MouseEvent) => handleUpdateStatus(event,record.id, text)"
+                        @click="(checked: boolean | string | number, event: MouseEvent) => { event.stopPropagation(); record.updateStatusLoading = true }"
+                        :loading="record.updateStatusLoading">
+                <template #checkedChildren>
+                  {{sys_status.filter(item => item.value === text)[0]?.label}}
+                </template>
+                <template #unCheckedChildren>
+                  {{sys_status.filter(item => item.value === text)[0]?.label}}
+                </template>
+              </a-switch>
             </template>
             <!--            操作-->
             <template v-if="column.key === 'action'">
@@ -285,7 +295,7 @@
 
 // 列表查询相关
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {deleteByIds, findById, findList, menuTreeOption, save} from "@/api/system/menu/Menu.ts";
+import {deleteByIds, findById, findList, menuTreeOption, save, updateStatus} from "@/api/system/menu/Menu.ts";
 import {reactive, ref} from "vue";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
@@ -295,7 +305,7 @@ import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import { useThemeStore } from "@/stores/modules/theme";
-import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
+import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
 const themeStore = useThemeStore()
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {
@@ -357,8 +367,8 @@ const initSearch = () => {
   // 筛选条件
   const menuQuery = ref<SysMenu>({})
   // 列表元素
-  const menuList = ref<Array<SysMenu>>([])
-  const parentMenuTree = ref<Array<SysMenu>>([])
+  const menuList = ref<Array<SysMenuVO>>([])
+  const parentMenuTree = ref<Array<SysMenuVO>>([])
   // 默认展开的行
   const expandedRowKeys = ref<Array<string>>([])
   // 列表加载中loading
@@ -371,9 +381,23 @@ const initSearch = () => {
       // 列表数据
       menuList.value = resp.data
       tableLoad.value = false
+      // 回显状态
+      handleMenuStatus(menuList.value)
     } else {
       message.error(resp.msg)
     }
+  }
+
+  // 处理回显菜单状态
+  const handleMenuStatus = (menuList: Array<SysMenuVO>) => {
+    menuList.forEach(menu => {
+      menu.statusIsNormal = menu.status === '0'
+      menu.updateStatusLoading = false
+
+      if (menu.children && menu.children.length > 0) {
+        handleMenuStatus(menu.children)
+      }
+    })
   }
 
   // 重置表单
@@ -527,8 +551,43 @@ const initSave = () => {
     } else {
       sysMenu.value.sort = 1
     }
-
   }
+
+  // 修改菜单状态
+  const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
+    event.stopPropagation()
+    const resp = await updateStatus(id, status)
+    let newStatus: string = ''
+    if (resp.code === 200) {
+      newStatus = resp.data
+      message.success(resp.msg)
+    } else {
+      newStatus = status
+      message.error(resp.msg)
+    }
+    // 重新赋值
+    handleMenuStatus(menuList.value, id, newStatus)
+  }
+
+  // 回显菜单状态
+  const handleMenuStatus = (menuList: Array<SysMenuVO>, id: string, status: string): boolean => {
+    for (let menu of menuList) {
+      if (menu.id === id) {
+        menu.status = status;
+        menu.statusIsNormal = menu.status === '0';
+        menu.updateStatusLoading = false;
+        return true; // 终止循环并返回 true
+      }
+
+      if (menu.children && menu.children.length > 0) {
+        const found = handleMenuStatus(menu.children, id, status);
+        if (found) return true; // 终止外部循环
+      }
+    }
+
+    return false;
+  };
+
   // 重置表单
   const resetForm = () => {
     sysMenu.value = {
@@ -595,6 +654,7 @@ const initSave = () => {
     formRef,
     menuRules,
     sysMenu,
+    handleUpdateStatus,
     getMenu,
     addMenu,
     addChildren,
@@ -602,7 +662,7 @@ const initSave = () => {
     saveMenu
   }
 }
-const {modalActive,sysMenu,menuRules,formRef,getMenu,addMenu,addChildren,initTreeData,saveMenu} = initSave()
+const {modalActive,sysMenu,menuRules,formRef,handleUpdateStatus,getMenu,addMenu,addChildren,initTreeData,saveMenu} = initSave()
 initTreeData()
 // 数据删除相关
 const handleDelete = async (id: string) => {

@@ -28,6 +28,14 @@ export const save = (data: SysUser) => {
     })
 }
 
+// 修改用户状态
+export const updateStatus = (id: string, status: string) => {
+    return request<string>({
+        url: 'system/user/updateStatus/' + id + '/' + status,
+        method: 'post'
+    })
+}
+
 // 根据id集合删除用户信息
 export const deleteByIds = (ids: string[]) => {
     return request({

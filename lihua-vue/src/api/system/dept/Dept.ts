@@ -1,12 +1,12 @@
 import request from "@/utils/Request.ts";
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
 
 /**
  * 列表查询
  * @param data
  */
 export const findList = (data: SysDept) => {
-  return request<Array<SysDept>>({
+  return request<Array<SysDeptVO>>({
     url: 'system/dept/list',
     method: 'post',
     data: data
@@ -33,6 +33,18 @@ export const findById = (id: string) => {
   return request<SysDept>({
     url: 'system/dept/' + id,
     method: 'get'
+  })
+}
+
+/**
+ * 修改状态
+ * @param id
+ * @param status
+ */
+export const updateStatus = (id: string, status: string) => {
+  return request<string>({
+    url: 'system/dept/updateStatus/' + id + '/' + status,
+    method: 'post'
   })
 }
 

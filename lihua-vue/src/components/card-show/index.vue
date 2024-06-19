@@ -36,7 +36,7 @@
 
     <!-- mask 打开时背景蒙版 -->
     <Teleport to="body">
-      <div class="card-show-mask" v-if="showStatus !== 'ready'" @click="handleClose($event, 'mask')"></div>
+      <div class="card-show-mask" v-show="showMask" @click="handleClose($event, 'mask')"></div>
     </Teleport>
   </div>
 </template>
@@ -114,6 +114,8 @@ const initClick = () => {
   const style = ref<CSSProperties>({position: 'static'})
   // 详情可见
   const detailVisible = showStatus.value === 'ready' && props.isDetailVisible
+  // 显示遮罩
+  const showMask = ref<boolean>(false)
 
   // 点击卡片
   const handleClickCard = () => {
@@ -127,6 +129,8 @@ const initClick = () => {
     if (!detailVisible) {
       return
     }
+    // 打开遮罩
+    showMask.value = true
     const bounding = containerRef.value.getBoundingClientRect()
     // 执行动画，先将缩放还原
     gsap.to('.' + props.cardKey, {
@@ -179,6 +183,8 @@ const initClick = () => {
     const bounding = placeholderRef.value.getBoundingClientRect()
     // 状态修改为进行时
     showStatus.value = 'activity'
+    // 关闭遮罩
+    showMask.value = false
     // 打开y轴滚动条
     showOverflowY()
     // 执行主要动画
@@ -229,6 +235,7 @@ const initClick = () => {
 
   return {
     showStatus,
+    showMask,
     style,
     placeholderRef,
     containerRef,
@@ -238,7 +245,7 @@ const initClick = () => {
     getDetailWidth
   }
 }
-const {showStatus, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard,getDetailWidth } = initClick()
+const {showStatus, showMask, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard,getDetailWidth } = initClick()
 
 
 // 加载鼠标在卡片悬浮相关逻辑

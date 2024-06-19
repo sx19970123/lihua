@@ -65,7 +65,17 @@
           <template #bodyCell="{column,record,text}">
             <!-- 角色状态-->
             <template v-if="column.key === 'status'">
-              <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
+              <a-switch v-model:checked="record.statusIsNormal"
+                        @change="(checked: boolean | string | number, event: MouseEvent) => handleUpdateStatus(event,record.id, text)"
+                        @click="(checked: boolean | string | number, event: MouseEvent) => { event.stopPropagation(); record.updateStatusLoading = true }"
+                        :loading="record.updateStatusLoading">
+                <template #checkedChildren>
+                  {{sys_status.filter(item => item.value === text)[0]?.label}}
+                </template>
+                <template #unCheckedChildren>
+                  {{sys_status.filter(item => item.value === text)[0]?.label}}
+                </template>
+              </a-switch>
             </template>
             <template v-if="column.key === 'createTime'">
               {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
@@ -167,7 +177,7 @@
 <script setup lang="ts">
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {reactive, ref, watch} from "vue";
-import {deleteByIds, findById, findPage, save} from "@/api/system/role/Role.ts";
+import {deleteByIds, findById, findPage, save, updateStatus} from "@/api/system/role/Role.ts";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
 import {menuTreeOption} from "@/api/system/menu/Menu.ts";
@@ -176,7 +186,7 @@ import {flattenTreeData} from "@/utils/Tree.ts";
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
-import type {SysRole, SysRoleDTO} from "@/api/system/role/type/SysRole.ts";
+import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRole.ts";
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
 // 列表查询相关
 const initSearch = () => {
@@ -228,7 +238,7 @@ const initSearch = () => {
     pageSize: 10,
   })
   // 列表数据
-  const roleList = ref<Array<SysRole>>([])
+  const roleList = ref<Array<SysRoleVO>>([])
   const roleTotal = ref<number>()
   // 列表加载中loading
   const tableLoad = ref<boolean>(false)
@@ -240,6 +250,12 @@ const initSearch = () => {
     if (resp.code === 200) {
       roleList.value = resp.data.records
       roleTotal.value = resp.data.total
+
+      // 回显状态
+      roleList.value.forEach(role => {
+        role.statusIsNormal = role.status === '0'
+        role.updateStatusLoading = false
+      })
     } else {
       message.error(resp.msg)
     }
@@ -354,17 +370,41 @@ const initSave = () => {
     modalActive.saveLoading = false
   }
 
+  // 修改角色状态
+  const handleUpdateStatus = async (event:MouseEvent, id: string, status: string) => {
+    event.stopPropagation()
+    const resp = await updateStatus(id, status)
+    let newStatus: string = ''
+    if (resp.code === 200) {
+      newStatus = resp.data
+      message.success(resp.msg)
+    } else {
+      newStatus = status
+      message.error(resp.msg)
+    }
+    // 重新赋值
+    roleList.value.some(role => {
+      if (role.id === id) {
+        role.status = newStatus
+        role.statusIsNormal = role.status === '0'
+        role.updateStatusLoading = false
+        return
+      }
+    })
+  }
+
   return {
     modalActive,
     role,
     roleRules,
+    handleUpdateStatus,
     handleModelStatus,
     getRole,
     saveRole
   }
 }
 
-const {modalActive,role,roleRules,handleModelStatus,getRole,saveRole} = initSave()
+const {modalActive,role,roleRules,handleUpdateStatus,handleModelStatus,getRole,saveRole} = initSave()
 
 // 菜单树相关
 const useMenuTree = () => {

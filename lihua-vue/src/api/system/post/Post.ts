@@ -1,13 +1,13 @@
 import request from "@/utils/Request.ts";
 import type {MapResponseType, PageResponseType} from "@/api/global/Type.ts";
-import type {SysPost, SysPostDTO} from "@/api/system/post/type/SysPost.ts";
+import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
 
 /**
  * 分页查询
  * @param data
  */
 export const findPage = (data: SysPostDTO) => {
-    return request<PageResponseType<SysPost>>({
+    return request<PageResponseType<SysPostVO>>({
         url: "/system/post/page",
         data: data,
         method: "post",
@@ -34,6 +34,18 @@ export const findById = (id: string) => {
     return request<SysPost>({
         url: '/system/post/' + id,
         method: 'get'
+    })
+}
+
+/**
+ * 修改状态
+ * @param id
+ * @param status
+ */
+export const updateStatus = (id: string, status: string) => {
+    return request<string>({
+        url: 'system/post/updateStatus/' + id + '/' + status,
+        method: 'post'
     })
 }
 

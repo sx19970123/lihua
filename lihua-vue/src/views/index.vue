@@ -22,7 +22,7 @@
           </a-flex>
         </template>
         <template #detail>
-          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);border-radius: 16px">
+          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
@@ -42,10 +42,10 @@
                                    @card-click="handleClick"
                                    :hover-scale="1.01"
                                    :expanded-width="600"
-                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius': '16px'}"
+                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius':' 8px'}"
       >
         <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
+          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
             <a-typography-title>HELLO WORLD</a-typography-title>
           </a-card>
         </template>
@@ -57,7 +57,7 @@
 
         </template>
         <template #detail>
-          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px;border-radius: 16px">
+          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
@@ -75,7 +75,7 @@
                                    @card-click="handleClick"
                                    :hover-scale="1.01"
                                    :expanded-width="600"
-                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius': '16px'}"
+                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius':' 8px'}"
       >
         <template #overview>
           <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
@@ -90,7 +90,7 @@
 
         </template>
         <template #detail>
-          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px;border-radius: 16px">
+          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px;">
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
@@ -108,7 +108,7 @@
                                    @card-click="handleClick"
                                    :hover-scale="1.01"
                                    :expanded-width="600"
-                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius': '16px'}"
+                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius':' 8px'}"
       >
         <template #overview>
           <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
@@ -123,7 +123,7 @@
 
         </template>
         <template #detail>
-          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px;border-radius: 16px">
+          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px">
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
@@ -141,7 +141,7 @@
                                    @card-click="handleClick"
                                    :hover-scale="1.01"
                                    :expanded-width="600"
-                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius': '16px'}"
+                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius':' 8px'}"
       >
         <template #overview>
           <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
@@ -156,7 +156,7 @@
 
         </template>
         <template #detail>
-          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px;border-radius: 16px">
+          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);height: 300px;">
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>

@@ -25,6 +25,10 @@ export interface SysRole {
   menuIds?: string[] | { checked: string[] };
 }
 
+export interface SysRoleVO extends SysRole{
+  statusIsNormal?: boolean,
+  updateStatusLoading?: boolean
+}
 
 
 export interface SysRoleDTO {

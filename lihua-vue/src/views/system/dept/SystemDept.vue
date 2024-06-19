@@ -61,7 +61,17 @@
        </template>
        <template #bodyCell="{column,record,text}">
          <template v-if="column.key === 'status'">
-           <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
+           <a-switch v-model:checked="record.statusIsNormal"
+                     @change="(checked: boolean | string | number, event: MouseEvent) => handleUpdateStatus(event,record.id, text)"
+                     @click="(checked: boolean | string | number, event: MouseEvent) => { event.stopPropagation(); record.updateStatusLoading = true }"
+                     :loading="record.updateStatusLoading">
+             <template #checkedChildren>
+               {{sys_status.filter(item => item.value === text)[0]?.label}}
+             </template>
+             <template #unCheckedChildren>
+               {{sys_status.filter(item => item.value === text)[0]?.label}}
+             </template>
+           </a-switch>
          </template>
          <template v-if="column.key === 'post'">
            <a-typography-link @click="handleSkipRoute(record.id)">
@@ -168,18 +178,16 @@
 <script setup lang="ts">
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deleteByIds, getDeptOption, findById, findList, save} from "@/api/system/dept/Dept.ts";
+import {deleteByIds, getDeptOption, findById, findList, save, updateStatus} from "@/api/system/dept/Dept.ts";
 import {reactive, ref} from "vue";
 import {message} from "ant-design-vue";
 import {initDict} from "@/utils/dict.ts";
-import DictTag from "@/components/dict-tag/index.vue"
 import {cloneDeep} from "lodash-es";
 import type {Rule} from "ant-design-vue/es/form";
 import {useRouter} from "vue-router";
 import {flattenTreeData} from "@/utils/Tree.ts";
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
-import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
 const {sys_status} = initDict("sys_status")
 const router = useRouter()
 const initSearch = () => {
@@ -230,7 +238,7 @@ const initSearch = () => {
   // 查询条件
   const deptQuery = ref<SysDept>({})
   // 列表数据
-  const deptList = ref<Array<SysDept>>([])
+  const deptList = ref<Array<SysDeptVO>>([])
   // 默认展开行
   const expandedRowKeys = ref<Array<string>>([])
   // 列表加载
@@ -243,9 +251,23 @@ const initSearch = () => {
     if (resp.code === 200) {
       deptList.value = resp.data
       tableLoad.value = false
+
+      handleDeptStatus(deptList.value)
     } else {
       message.error(resp.msg);
     }
+  }
+
+  // 处理回显菜单状态
+  const handleDeptStatus = (deptList: Array<SysDeptVO>) => {
+    deptList.forEach(dept => {
+      dept.statusIsNormal = dept.status === '0'
+      dept.updateStatusLoading = false
+
+      if (dept.children && dept.children.length > 0) {
+        handleDeptStatus(dept.children)
+      }
+    })
   }
 
   // 重置列表
@@ -257,7 +279,7 @@ const initSearch = () => {
   // 展开折叠
   const handleExpanded = () => {
     if (expandedRowKeys.value.length == 0) {
-      const data:Array<SysMenu> = ([])
+      const data:Array<SysDeptVO> = ([])
       flattenTreeData(deptList.value,data)
       expandedRowKeys.value = data.filter(item => item.id).map(item => item.id as string)
     } else {
@@ -427,6 +449,42 @@ const initSave = () => {
     }
     modalActive.saveLoading = false
   }
+
+  // 修改菜单状态
+  const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
+    event.stopPropagation()
+    const resp = await updateStatus(id, status)
+    let newStatus: string = ''
+    if (resp.code === 200) {
+      newStatus = resp.data
+      message.success(resp.msg)
+    } else {
+      newStatus = status
+      message.error(resp.msg)
+    }
+    // 重新赋值
+    handleDeptStatus(deptList.value, id, newStatus)
+  }
+
+  // 回显菜单状态
+  const handleDeptStatus = (deptList: Array<SysDeptVO>, id: string, status: string): boolean => {
+    for (let dept of deptList) {
+      if (dept.id === id) {
+        dept.status = status;
+        dept.statusIsNormal = dept.status === '0';
+        dept.updateStatusLoading = false;
+        return true; // 终止循环并返回 true
+      }
+
+      if (dept.children && dept.children.length > 0) {
+        const found = handleDeptStatus(dept.children, id, status);
+        if (found) return true; // 终止外部循环
+      }
+    }
+
+    return false;
+  };
+
   initTreeData()
   return {
     modalActive,
@@ -434,6 +492,7 @@ const initSave = () => {
     parentDeptList,
     deptRoles,
     formRef,
+    handleUpdateStatus,
     selectById,
     addChildren,
     initTreeData,
@@ -443,7 +502,7 @@ const initSave = () => {
     handleModelStatus
   }
 }
-const {modalActive,sysDept,parentDeptList,deptRoles,formRef,selectById,addChildren,initTreeData,addDept,saveDept,handleModelStatus} = initSave()
+const {modalActive,sysDept,parentDeptList,deptRoles,formRef,handleUpdateStatus,selectById,addChildren,initTreeData,addDept,saveDept,handleModelStatus} = initSave()
 
 // 删除数据
 const handleDelete = async (id: string) => {

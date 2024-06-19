@@ -48,11 +48,18 @@ export interface SysDept {
   /**
    * 子节点
    */
-  children?: SysDept[];
+  children?: SysDeptVO[];
   /**
    * 部门信息
    */
   sysPostList?: SysPost[];
 
   value?: string
+}
+
+export interface SysDeptVO extends SysDept {
+
+  statusIsNormal?: boolean
+
+  updateStatusLoading?: boolean
 }

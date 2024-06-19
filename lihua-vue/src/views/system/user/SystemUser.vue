@@ -84,7 +84,17 @@
             {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
           </template>
           <template v-if="column.key === 'status'">
-            <dict-tag :dict-data-value="text" :dict-data-option="sys_status"/>
+            <a-switch v-model:checked="record.statusIsNormal"
+                      @change="(checked: boolean | string | number, event: MouseEvent) => handleUpdateStatus(event,record.id, text)"
+                      @click="(checked: boolean | string | number, event: MouseEvent) => { event.stopPropagation(); record.updateStatusLoading = true }"
+                      :loading="record.updateStatusLoading">
+              <template #checkedChildren>
+                {{sys_status.filter(item => item.value === text)[0]?.label}}
+              </template>
+              <template #unCheckedChildren>
+                {{sys_status.filter(item => item.value === text)[0]?.label}}
+              </template>
+            </a-switch>
           </template>
           <template v-if="column.key === 'action' && record.username !== 'admin'">
             <a-button type="link" size="small" @click="getUserInfo(record.id)">
@@ -267,10 +277,9 @@
 
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findPage, findById, save, deleteByIds} from "@/api/system/user/User.ts"
+import {findPage, findById, save, deleteByIds, updateStatus} from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/dict"
 import {reactive, ref, watch} from "vue";
-import DictTag from "@/components/dict-tag/index.vue"
 import CardSelect from "@/components/card-select/index.vue"
 import dayjs from "dayjs";
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
@@ -280,7 +289,7 @@ import {message, TreeSelect} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import {flattenTreeData} from "@/utils/Tree.ts";
 import type {Rule} from "ant-design-vue/es/form";
-import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
+import type {SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
@@ -332,7 +341,8 @@ const initSearch = () => {
       title: '创建时间',
       key: 'createTime',
       dataIndex: 'createTime',
-      align: 'center'
+      align: 'center',
+      ellipsis: true,
     },
     {
       title: '操作',
@@ -364,6 +374,12 @@ const initSearch = () => {
     if (resp.code === 200) {
       userList.value = resp.data.records
       userTotal.value = resp.data.total
+
+      // 回显状态
+      userList.value.forEach(user => {
+        user.statusIsNormal = user.status === '0'
+        user.updateStatusLoading = false
+      })
     }
     queryLoading.value = false
   }
@@ -527,6 +543,29 @@ const initSave = () => {
     }
   }
 
+  // 处理改变状态
+  const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
+    event.stopPropagation()
+    const resp = await updateStatus(id, status)
+    let newStatus: string = ''
+    if (resp.code === 200) {
+      newStatus = resp.data
+      message.success(resp.msg)
+    } else {
+      newStatus = status
+      message.error(resp.msg)
+    }
+    // 重新赋值
+    userList.value.some(user => {
+      if (user.id === id) {
+        user.status = newStatus
+        user.statusIsNormal =  user.status === '0'
+        user.updateStatusLoading = false
+        return
+      }
+    })
+  }
+
   // 根据id查询用户信息
   const getUserInfo = async (userId: string) => {
     const resp = await findById(userId)
@@ -552,7 +591,7 @@ const initSave = () => {
     sysUserDTO,
     userRules,
     formRef,
-    resetForm,
+    handleUpdateStatus,
     handleModelStatus,
     getUserInfo,
     toNextForm,
@@ -561,7 +600,7 @@ const initSave = () => {
   }
 
 }
-const {modalActive,segmented,segmentedOption,sysUserDTO,userRules,formRef,handleModelStatus,getUserInfo,toNextForm,changeSegmented,saveUser} = initSave()
+const {modalActive,segmented,segmentedOption,sysUserDTO,userRules,formRef,handleUpdateStatus, handleModelStatus,getUserInfo,toNextForm,changeSegmented,saveUser} = initSave()
 
 // 加载角色
 const initRoleData = () => {

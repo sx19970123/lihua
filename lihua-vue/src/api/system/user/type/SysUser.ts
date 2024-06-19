@@ -58,6 +58,10 @@ export interface SysUser {
 
 export interface SysUserVO extends SysUser{
     deptList?: string[]
+
+    statusIsNormal?: boolean
+
+    updateStatusLoading?: boolean
 }
 
 export interface SysUserDTO extends SysUser {

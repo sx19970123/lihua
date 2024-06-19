@@ -1,12 +1,12 @@
 import request from "@/utils/Request.ts";
-import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
+import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
 
 /**
  * 列表查询
  * @param data
  */
 export const findList = (data:SysMenu) => {
-  return request<Array<SysMenu>>({
+  return request<Array<SysMenuVO>>({
     url: 'system/menu/list',
     method: 'post',
     data: data
@@ -33,6 +33,18 @@ export const save = (data:SysMenu) => {
     url: 'system/menu/' + data.menuType,
     method: 'post',
     data: data
+  })
+}
+
+/**
+ * 修改状态
+ * @param id
+ * @param status
+ */
+export const updateStatus = (id: string, status: string) => {
+  return request<string>({
+    url: 'system/menu/updateStatus/' + id + '/' + status,
+    method: 'post'
   })
 }
 

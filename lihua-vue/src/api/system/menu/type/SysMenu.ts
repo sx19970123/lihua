@@ -87,5 +87,10 @@ export interface SysMenu {
   /**
    * 子元素
    */
-  children?: Array<SysMenu>
+  children?: Array<SysMenuVO>
+}
+
+export interface SysMenuVO extends SysMenu{
+  statusIsNormal?: boolean,
+  updateStatusLoading?: boolean
 }

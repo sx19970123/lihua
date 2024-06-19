@@ -61,6 +61,13 @@ export interface SysDictType {
   status?: string;
 }
 
+export interface SysDictTypeVO extends SysDictType {
+
+  statusIsNormal?: boolean
+
+  updateStatusLoading?: boolean
+}
+
 export interface SysDictTypeDTO {
 
   /**

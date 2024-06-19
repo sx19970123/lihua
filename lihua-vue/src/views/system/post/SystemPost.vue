@@ -70,7 +70,17 @@
 
         <template #bodyCell="{column,record,text}">
           <template v-if="column.key === 'status'">
-            <dict-tag  :dict-data-option="sys_status" :dict-data-value="text"/>
+            <a-switch v-model:checked="record.statusIsNormal"
+                      @change="(checked: boolean | string | number, event: MouseEvent) => handleUpdateStatus(event,record.id, text)"
+                      @click="(checked: boolean | string | number, event: MouseEvent) => { event.stopPropagation(); record.updateStatusLoading = true }"
+                      :loading="record.updateStatusLoading">
+              <template #checkedChildren>
+                {{sys_status.filter(item => item.value === text)[0]?.label}}
+              </template>
+              <template #unCheckedChildren>
+                {{sys_status.filter(item => item.value === text)[0]?.label}}
+              </template>
+            </a-switch>
           </template>
 
           <template v-if="column.key === 'action'">
@@ -179,14 +189,13 @@ import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {reactive, ref, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {initDict} from "@/utils/dict.ts";
-import {deleteByIds, findById, findPage, save} from "@/api/system/post/Post.ts";
+import {deleteByIds, findById, findPage, save, updateStatus} from "@/api/system/post/Post.ts";
 import {useRoute} from "vue-router";
-import DictTag from "@/components/dict-tag/index.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTreeData} from "@/utils/Tree.ts";
 import {message} from "ant-design-vue";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
-import type {SysPost, SysPostDTO} from "@/api/system/post/type/SysPost.ts";
+import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
 const {sys_status} = initDict("sys_status")
 const route = useRoute();
 
@@ -265,7 +274,7 @@ const initSearch = () => {
     pageSize: 10,
   })
   const postTotal = ref<number>()
-  const postList = ref<Array<SysPost>>()
+  const postList = ref<Array<SysPostVO>>([])
   const tableLoad = ref<boolean>(false)
 
   const queryPage = async () => {
@@ -288,6 +297,12 @@ const initSearch = () => {
       postList.value = resp.data.records
       postTotal.value = resp.data.total
       tableLoad.value = false
+
+      // 回显状态
+      postList.value.forEach(post => {
+        post.statusIsNormal = post.status === '0'
+        post.updateStatusLoading = false
+      })
     } else {
       message.error(resp.msg)
     }
@@ -401,17 +416,43 @@ const initSave = () => {
     modalActive.saveLoading = false
   }
 
+
+  // 修改角色状态
+  const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
+    event.stopPropagation()
+    const resp = await updateStatus(id, status)
+    let newStatus: string = ''
+    if (resp.code === 200) {
+      newStatus = resp.data
+      message.success(resp.msg)
+    } else {
+      newStatus = status
+      message.error(resp.msg)
+    }
+    // 重新赋值
+    postList.value.some(post => {
+      if (post.id === id) {
+        post.status = newStatus
+        post.statusIsNormal = post.status === '0'
+        post.updateStatusLoading = false
+        return
+      }
+    })
+  }
+
+
   return {
     modalActive,
     sysPost,
     postRoles,
     formRef,
+    handleUpdateStatus,
     selectById,
     savePost,
     handleModalStatus,
   }
 }
-const { modalActive, sysPost, postRoles, formRef, selectById ,savePost ,handleModalStatus } = initSave()
+const { modalActive, sysPost, postRoles, formRef, handleUpdateStatus,  selectById ,savePost ,handleModalStatus } = initSave()
 
 // 删除岗位
 const handleDelete = async (id: string) => {

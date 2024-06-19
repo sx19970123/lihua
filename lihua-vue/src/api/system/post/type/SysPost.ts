@@ -65,11 +65,15 @@ export interface SysPost {
     delFlag?: string;
 }
 
-export interface SysDeptVO extends SysPost{
+export interface SysPostVO extends SysPost{
     /**
      * 所属部门名称
      */
     deptName?: string
+
+    statusIsNormal?: boolean
+
+    updateStatusLoading?: boolean
 }
 
 export interface SysPostDTO {
