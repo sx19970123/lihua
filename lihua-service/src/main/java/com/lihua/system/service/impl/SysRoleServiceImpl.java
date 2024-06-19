@@ -1,10 +1,12 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
 import com.lihua.system.entity.SysRole;
+import com.lihua.system.entity.SysUser;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.model.SysRoleDTO;
 import com.lihua.system.service.SysMenuService;
@@ -126,5 +128,19 @@ public class SysRoleServiceImpl implements SysRoleService {
         } else {
             throw new ServiceException("角色已绑定菜单/用户，不允许删除");
         }
+    }
+
+    @Override
+    public String updateStatus(String id, String currentStatus) {
+        UpdateWrapper<SysRole> updateWrapper = new UpdateWrapper<>();
+        String status = "0".equals(currentStatus) ? "1" : "0";
+
+        updateWrapper.lambda()
+                .set(SysRole::getStatus, status)
+                .set(SysRole::getUpdateId, LoginUserContext.getUserId())
+                .set(SysRole::getUpdateTime, LocalDateTime.now())
+                .eq(SysRole::getId, id);
+        sysRoleMapper.update(null, updateWrapper);
+        return status;
     }
 }

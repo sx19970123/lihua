@@ -1,17 +1,16 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.exception.ServiceException;
 import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysPost;
-import com.lihua.system.entity.SysUserDept;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.model.SysDeptVO;
 import com.lihua.system.service.SysDeptService;
 import com.lihua.system.service.SysPostService;
 import com.lihua.system.service.SysUserDeptService;
 import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.security.SecurityUtils;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
@@ -20,7 +19,6 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -136,6 +134,20 @@ public class SysDeptServiceImpl implements SysDeptService {
     public List<SysDept> deptTreeOption() {
         List<SysDept> list = findList(new SysDept());
         return TreeUtils.buildTree(list);
+    }
+
+    @Override
+    public String updateStatus(String id, String currentStatus) {
+        UpdateWrapper<SysDept> updateWrapper = new UpdateWrapper<>();
+        String status = "0".equals(currentStatus) ? "1" : "0";
+
+        updateWrapper.lambda()
+                .set(SysDept::getStatus, status)
+                .set(SysDept::getUpdateId, LoginUserContext.getUserId())
+                .set(SysDept::getUpdateTime, LocalDateTime.now())
+                .eq(SysDept::getId, id);
+        sysDeptMapper.update(null, updateWrapper);
+        return status;
     }
 
     // 检查状态

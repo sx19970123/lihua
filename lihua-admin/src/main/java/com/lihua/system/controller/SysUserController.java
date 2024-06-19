@@ -6,6 +6,7 @@ import com.lihua.system.model.SysUserDTO;
 import com.lihua.system.service.SysUserService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ public class SysUserController extends BaseController {
         return success(sysUserService.findById(id));
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     public String save(@RequestBody @Validated SysUserDTO sysUserDTO) {
         if (!StringUtils.hasText(sysUserDTO.getId()) && !StringUtils.hasText(sysUserDTO.getPassword())) {
@@ -37,6 +39,13 @@ public class SysUserController extends BaseController {
         return success(sysUserService.save(sysUserDTO));
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("updateStatus/{id}/{currentStatus}")
+    public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
+        return success(sysUserService.updateStatus(id, currentStatus));
+    }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysUserService.deleteByIds(ids);

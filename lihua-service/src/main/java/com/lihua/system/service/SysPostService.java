@@ -59,4 +59,12 @@ public interface SysPostService {
      * @return
      */
     Map<String, List<SysPost>> getPostOptionByDeptId(List<String> deptIds);
+
+    /**
+     * 修改状态
+     * @param id
+     * @param currentStatus
+     * @return
+     */
+    String updateStatus(String id, String currentStatus);
 }

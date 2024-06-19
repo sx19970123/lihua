@@ -35,4 +35,12 @@ public interface SysRoleService {
      */
     void deleteByIds(List<String> ids);
 
+
+    /**
+     * 修改状态
+     * @param id 角色id
+     * @param currentStatus 当前状态
+     * @return 更新后状态
+     */
+    String updateStatus(String id, String currentStatus);
 }

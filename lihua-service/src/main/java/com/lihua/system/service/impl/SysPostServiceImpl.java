@@ -1,10 +1,10 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
-import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysPost;
 import com.lihua.system.mapper.SysPostMapper;
 import com.lihua.system.model.SysPostDTO;
@@ -140,6 +140,20 @@ public class SysPostServiceImpl implements SysPostService {
         List<SysPost> sysPosts = sysPostMapper.selectList(deptQueryWrapper);
 
         return sysPosts.stream().collect(Collectors.groupingBy(SysPost::getDeptId));
+    }
+
+    @Override
+    public String updateStatus(String id, String currentStatus) {
+        UpdateWrapper<SysPost> updateWrapper = new UpdateWrapper<>();
+        String status = "0".equals(currentStatus) ? "1" : "0";
+
+        updateWrapper.lambda()
+                .set(SysPost::getStatus, status)
+                .set(SysPost::getUpdateId, LoginUserContext.getUserId())
+                .set(SysPost::getUpdateTime, LocalDateTime.now())
+                .eq(SysPost::getId, id);
+        sysPostMapper.update(null, updateWrapper);
+        return status;
     }
 
     private void checkPostCode(SysPost sysPost) {

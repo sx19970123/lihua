@@ -56,6 +56,18 @@ public class SysDictTypeController extends BaseController {
     }
 
     /**
+     * 修改字典状态
+     * @param id
+     * @param currentStatus
+     * @return
+     */
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("updateStatus/{id}/{currentStatus}")
+    public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
+        return success(sysDictTypeService.updateStatus(id, currentStatus));
+    }
+
+    /**
      * 删除字典类型
      * @param ids
      * @return

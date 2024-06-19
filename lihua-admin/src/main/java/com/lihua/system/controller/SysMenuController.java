@@ -31,7 +31,6 @@ public class SysMenuController extends BaseController {
      * @param sysMenu
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("list")
     public String findList(@RequestBody SysMenu sysMenu) {
         return success(sysMenuService.findList(sysMenu));
@@ -42,7 +41,6 @@ public class SysMenuController extends BaseController {
      * @param id
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_admin')")
     @GetMapping("{id}")
     public String findById(@PathVariable("id") @NotNull(message = "请选择数据") String id) {
         return success(sysMenuService.findById(id));
@@ -88,11 +86,17 @@ public class SysMenuController extends BaseController {
         return success(sysMenuService.save(sysMenu));
     }
 
-        /**
-         * 根据id删除菜单数据
-         * @param ids
-         * @return
-         */
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("updateStatus/{id}/{currentStatus}")
+    public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
+        return success(sysMenuService.updateStatus(id, currentStatus));
+    }
+
+    /**
+     * 根据id删除菜单数据
+     * @param ids
+     * @return
+     */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {

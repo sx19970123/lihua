@@ -28,7 +28,6 @@ public class SysRoleController extends BaseController {
      * @param sysRoleDTO
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("page")
     public String findPage(@RequestBody SysRoleDTO sysRoleDTO) {
         return success(sysRoleService.findPage(sysRoleDTO));
@@ -39,7 +38,6 @@ public class SysRoleController extends BaseController {
      * @param id
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_admin')")
     @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
         return success(sysRoleService.findById(id));
@@ -54,6 +52,18 @@ public class SysRoleController extends BaseController {
     @PostMapping
     public String save(@RequestBody @Validated SysRole sysRole) {
         return success(sysRoleService.save(sysRole));
+    }
+
+    /**
+     * 修改角色状态
+     * @param id
+     * @param currentStatus
+     * @return
+     */
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("updateStatus/{id}/{currentStatus}")
+    public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
+        return success(sysRoleService.updateStatus(id, currentStatus));
     }
 
     /**

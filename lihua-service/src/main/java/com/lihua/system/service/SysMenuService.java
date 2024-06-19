@@ -40,4 +40,11 @@ public interface SysMenuService {
      */
     List<SysMenu> menuTreeOption();
 
+    /**
+     * 修改菜单状态
+     * @param id
+     * @param currentStatus
+     * @return
+     */
+    String updateStatus(String id, String currentStatus);
 }

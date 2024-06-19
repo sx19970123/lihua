@@ -21,13 +21,11 @@ public class SysPostController extends BaseController {
     private SysPostService sysPostService;
 
 
-    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("page")
     public String findPage(@RequestBody SysPostDTO dto) {
         return success(sysPostService.findPage(dto));
     }
 
-    @PreAuthorize("hasRole('ROLE_admin')")
     @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
         return success(sysPostService.findById(id));
@@ -37,6 +35,12 @@ public class SysPostController extends BaseController {
     @PostMapping
     public String save(@RequestBody @Validated SysPost sysPost) {
         return success(sysPostService.save(sysPost));
+    }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("updateStatus/{id}/{currentStatus}")
+    public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
+        return success(sysPostService.updateStatus(id, currentStatus));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")

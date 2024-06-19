@@ -6,6 +6,7 @@ import com.lihua.system.service.SysDeptService;
 import com.lihua.system.service.SysUserDeptService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class SysDeptController extends BaseController {
         return success(sysDeptService.findDeptPostList(sysDept));
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     public String save(@RequestBody @Validated SysDept sysDept) {
         return success(sysDeptService.save(sysDept));
@@ -36,6 +38,13 @@ public class SysDeptController extends BaseController {
         return success(sysDeptService.findById(id));
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("updateStatus/{id}/{currentStatus}")
+    public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
+        return success(sysDeptService.updateStatus(id, currentStatus));
+    }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysDeptService.deleteByIds(ids);

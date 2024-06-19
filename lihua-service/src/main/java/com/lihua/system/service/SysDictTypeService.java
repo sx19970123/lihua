@@ -37,4 +37,11 @@ public interface SysDictTypeService {
     void deleteByIds(List<String> ids);
 
 
+    /**
+     * 修改状态
+     * @param id
+     * @param currentStatus
+     * @return
+     */
+    String updateStatus(String id, String currentStatus);
 }

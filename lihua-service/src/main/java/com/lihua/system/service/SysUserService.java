@@ -32,4 +32,12 @@ public interface SysUserService {
      * @return
      */
     void deleteByIds(List<String> ids);
+
+    /**
+     * 修改用户状态
+     * @param id 用户id
+     * @param currentStatus 当前用户状态
+     * @return 更新后的用户状态
+     */
+    String updateStatus(String id, String currentStatus);
 }

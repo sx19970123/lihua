@@ -1,6 +1,7 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.security.CurrentRouter;
 import com.lihua.system.entity.SysMenu;
@@ -16,9 +17,6 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 public class SysMenuServiceImpl implements SysMenuService {
@@ -105,6 +103,20 @@ public class SysMenuServiceImpl implements SysMenuService {
         SysMenu sysMenu = new SysMenu();
         sysMenu.setStatus("0");
         return findList(sysMenu);
+    }
+
+    @Override
+    public String updateStatus(String id, String currentStatus) {
+        UpdateWrapper<SysMenu> updateWrapper = new UpdateWrapper<>();
+        String status = "0".equals(currentStatus) ? "1" : "0";
+
+        updateWrapper.lambda()
+                .set(SysMenu::getStatus, status)
+                .set(SysMenu::getUpdateId, LoginUserContext.getUserId())
+                .set(SysMenu::getUpdateTime, LocalDateTime.now())
+                .eq(SysMenu::getId, id);
+        sysMenuMapper.update(null, updateWrapper);
+        return status;
     }
 
     // 处理 routerPathKey

@@ -1,13 +1,11 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
-import com.lihua.system.entity.SysUser;
-import com.lihua.system.entity.SysUserDept;
-import com.lihua.system.entity.SysUserPost;
-import com.lihua.system.entity.SysUserRole;
+import com.lihua.system.entity.*;
 import com.lihua.system.mapper.SysUserMapper;
 import com.lihua.system.model.SysUserDTO;
 import com.lihua.system.model.SysUserDeptDTO;
@@ -132,6 +130,19 @@ public class SysUserServiceImpl implements SysUserService {
     public void deleteByIds(List<String> ids) {
         checkStatus(ids);
         sysUserMapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    public String updateStatus(String id, String currentStatus) {
+        UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
+        String status = "0".equals(currentStatus) ? "1" : "0";
+        updateWrapper.lambda()
+                .set(SysUser::getStatus, status)
+                .set(SysUser::getUpdateId, LoginUserContext.getUserId())
+                .set(SysUser::getUpdateTime, LocalDateTime.now())
+                .eq(SysUser::getId, id);
+        sysUserMapper.update(null, updateWrapper);
+        return status;
     }
 
     // 处理用户所属部门

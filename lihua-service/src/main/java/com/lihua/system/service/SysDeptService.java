@@ -49,4 +49,12 @@ public interface SysDeptService {
      * @return
      */
     List<SysDept> deptTreeOption();
+
+    /**
+     * 修改部门状态
+     * @param id
+     * @param currentStatus
+     * @return
+     */
+    String updateStatus(String id, String currentStatus);
 }

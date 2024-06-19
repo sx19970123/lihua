@@ -1,6 +1,7 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
@@ -105,6 +106,20 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
         checkDictData(ids);
         checkStatus(ids);
         sysDictTypeMapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    public String updateStatus(String id, String currentStatus) {
+        UpdateWrapper<SysDictType> updateWrapper = new UpdateWrapper<>();
+        String status = "0".equals(currentStatus) ? "1" : "0";
+
+        updateWrapper.lambda()
+                .set(SysDictType::getStatus, status)
+                .set(SysDictType::getUpdateId, LoginUserContext.getUserId())
+                .set(SysDictType::getUpdateTime, LocalDateTime.now())
+                .eq(SysDictType::getId, id);
+        sysDictTypeMapper.update(null, updateWrapper);
+        return status;
     }
 
     private void checkDictData(List<String> ids) {
