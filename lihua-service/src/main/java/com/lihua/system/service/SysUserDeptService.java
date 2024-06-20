@@ -11,7 +11,7 @@ public interface SysUserDeptService {
     void save(List<SysUserDept> sysUserDeptList);
 
     // 清空用户下的部门
-    void deleteByUserId(String userId);
+    void deleteByUserIds(List<String> userIds);
 
     // 判断登陆用户是否属于该部门
     boolean hasDept(String deptId);

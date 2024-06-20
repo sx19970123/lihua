@@ -24,6 +24,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -127,8 +128,14 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    @Transactional
     public void deleteByIds(List<String> ids) {
         checkStatus(ids);
+        // 删除部门、岗位、角色 与用户的关联数据
+        sysUserDeptService.deleteByUserIds(ids);
+        sysUserPostService.deleteByUserIds(ids);
+        sysUserRoleService.deleteByUserIds(ids);
+        // 删除用户信息
         sysUserMapper.deleteBatchIds(ids);
     }
 
@@ -243,7 +250,7 @@ public class SysUserServiceImpl implements SysUserService {
     // 保存用户角色关联表
     private void saveUserRole(String userId, List<String> roleIdList) {
         // 删除所有角色
-        sysUserRoleService.deleteByUserId(userId);
+        sysUserRoleService.deleteByUserIds(Collections.singletonList(userId));
         // 保存角色
         if (roleIdList != null && !roleIdList.isEmpty()) {
             // 组合数据
@@ -258,7 +265,7 @@ public class SysUserServiceImpl implements SysUserService {
     // 保存用户岗位关联表
     private void saveUserPost(String userId, List<String> postIdList) {
         // 删除所有岗位
-        sysUserPostService.deleteByUserId(userId);
+        sysUserPostService.deleteByUserIds(Collections.singletonList(userId));
 
         // 保存岗位
         if (postIdList != null && !postIdList.isEmpty()) {
@@ -274,7 +281,7 @@ public class SysUserServiceImpl implements SysUserService {
     // 保存用户部门关联表
     private void saveUserDept(String userId, String defaultDeptId, List<String> deptIdList) {
         // 删除所有部门
-        sysUserDeptService.deleteByUserId(userId);
+        sysUserDeptService.deleteByUserIds(Collections.singletonList(userId));
         // 保存部门
         if (deptIdList != null && !deptIdList.isEmpty()) {
             // 组合数据

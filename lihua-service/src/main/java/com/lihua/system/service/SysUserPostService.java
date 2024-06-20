@@ -8,7 +8,7 @@ public interface SysUserPostService {
 
     void save(List<SysUserPost> sysUserPosts);
 
-    void deleteByUserId(String userId);
+    void deleteByUserIds(List<String> userIds);
 
 
 }

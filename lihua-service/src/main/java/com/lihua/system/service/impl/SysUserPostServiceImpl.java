@@ -19,9 +19,9 @@ public class SysUserPostServiceImpl extends ServiceImpl<SysUserPostMapper, SysUs
     }
 
     @Override
-    public void deleteByUserId(String userId) {
+    public void deleteByUserIds(List<String> userIds) {
         QueryWrapper<SysUserPost> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(SysUserPost::getUserId, userId);
+        queryWrapper.lambda().in(SysUserPost::getUserId, userIds);
         remove(queryWrapper);
     }
 }

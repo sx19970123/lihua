@@ -10,7 +10,12 @@
       <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" :closable="!tab.affix" style="padding: 0">
         <!--每个tab的下拉菜单-->
         <template #tab>
-          <tab-pane-menu :tab="tab" :index="index" @route-skip="routeSkip" @cancel-keep-alive="cancelKeepAliveCache"/>
+          <tab-pane-menu :tab="tab"
+                         :index="index"
+                         @route-skip="routeSkip"
+                         @cancel-keep-alive="cancelKeepAliveCache"
+                         @mousedown="(event: MouseEvent) => event.button === 1 && !tab.affix ? closeTab(tab.routerPathKey) : ''"
+          />
         </template>
       </a-tab-pane>
       <!--view-tabs 右侧下拉菜单-->
@@ -18,7 +23,6 @@
         <a-space :size="0">
           <tab-right-menu @route-skip="routeSkip" @cancel-keep-alive="cancelKeepAliveCache"/>
         </a-space>
-
       </template>
     </a-tabs>
 </template>

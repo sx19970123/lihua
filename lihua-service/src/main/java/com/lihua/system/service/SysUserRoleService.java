@@ -10,6 +10,6 @@ public interface SysUserRoleService {
     void save(List<SysUserRole> sysUserRoleList);
 
     // 根据userid删除
-    void deleteByUserId(String userId);
+    void deleteByUserIds(List<String> userIds);
 
 }

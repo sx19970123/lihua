@@ -18,9 +18,9 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
     }
 
     @Override
-    public void deleteByUserId(String userId) {
+    public void deleteByUserIds(List<String> userIds) {
         QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(SysUserRole::getUserId, userId);
+        queryWrapper.lambda().in(SysUserRole::getUserId, userIds);
         remove(queryWrapper);
     }
 }

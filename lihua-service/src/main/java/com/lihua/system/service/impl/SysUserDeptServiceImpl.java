@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -34,10 +35,11 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
         saveBatch(sysUserDeptList);
     }
 
+
     @Override
-    public void deleteByUserId(String userId) {
+    public void deleteByUserIds(List<String> userIds) {
         QueryWrapper<SysUserDept> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(SysUserDept::getUserId, userId);
+        queryWrapper.lambda().in(SysUserDept::getUserId, userIds);
         remove(queryWrapper);
     }
 
@@ -57,7 +59,7 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
 
         // 超级管理员将关联表数据删除后再新增
         if (LoginUserContext.isAdmin()) {
-            deleteByUserId(userId);
+            deleteByUserIds(Collections.singletonList(userId));
             save(List.of(new SysUserDept(userId, deptId, LocalDateTime.now(), userId, "0")));
         } else {
             // 普通用户修改关联表
