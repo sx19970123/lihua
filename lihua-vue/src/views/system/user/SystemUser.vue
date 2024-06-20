@@ -65,7 +65,16 @@
         </a-form>
       </a-card>
       <!--    表格-->
-      <a-table :columns="userColumn" :data-source="userList" :loading="queryLoading" :pagination="false">
+      <a-table :columns="userColumn"
+               :data-source="userList"
+               :loading="queryLoading"
+               :pagination="false"
+
+               :row-selection="userRowSelectionType"
+               row-class-name="hover-cursor-pointer"
+               :custom-row="handleRowClick"
+               row-key="id"
+      >
         <template #title>
           <a-flex :gap="8">
             <a-button type="primary" @click="handleModelStatus('新增用户')">
@@ -74,6 +83,21 @@
               </template>
               新 增
             </a-button>
+            <a-popconfirm title="删除后不可恢复，是否删除？"
+                          :open="openDeletePopconfirm"
+                          ok-text="确 定"
+                          cancel-text="取 消"
+                          @confirm="handleDelete(undefined)"
+                          @cancel="closePopconfirm"
+            >
+              <a-button danger @click="openPopconfirm">
+                <template #icon>
+                  <DeleteOutlined />
+                </template>
+                删 除
+                <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
+              </a-button>
+            </a-popconfirm>
           </a-flex>
         </template>
         <template #bodyCell="{column,record,text}">
@@ -97,7 +121,7 @@
             </a-switch>
           </template>
           <template v-if="column.key === 'action' && record.username !== 'admin'">
-            <a-button type="link" size="small" @click="getUserInfo(record.id)">
+            <a-button type="link" size="small" @click="(event: MouseEvent) => getUserInfo(event, record.id)">
               <template #icon>
                 <EditOutlined />
               </template>
@@ -105,11 +129,12 @@
             </a-button>
             <a-divider type="vertical"/>
             <a-popconfirm title="删除后不可恢复，是否删除？"
+                          placement="bottomRight"
                           ok-text="确 定"
                           cancel-text="取 消"
                           @confirm="handleDelete(record.id)"
             >
-              <a-button type="link" danger size="small" @click="(event: any) => event.stopPropagation()">
+              <a-button type="link" danger size="small" @click="(event: MouseEvent) => event.stopPropagation()">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
@@ -302,6 +327,44 @@ let originDeptTree: Array<SysDept> = ([])
 
 // 列表查询
 const initSearch = () => {
+
+  // 选中的数据id集合
+  const selectedIds = ref<Array<string>>([])
+  // 列表勾选对象
+  const userRowSelectionType = {
+    columnWidth: '55px',
+    type: 'checkbox',
+    // 支持跨页勾选
+    preserveSelectedRowKeys: true,
+    // 指定选中id的数据集合，操作完后可手动清空
+    selectedRowKeys: selectedIds,
+    onChange: (ids: Array<string>) => {
+      selectedIds.value = ids
+    },
+    // 设置禁选数据
+    getCheckboxProps: (record: SysUserVO) => ({
+      disabled: record.username === 'admin',
+    })
+  }
+  // 点击数据行选中
+  const handleRowClick = (record:SysUserVO) => {
+    if (record.username === 'admin') {
+      return
+    }
+    return {
+      onClick: () => {
+        if (record.id) {
+          const selected = selectedIds.value
+          if (selected.includes(record.id)) {
+            selected.splice(selected.indexOf(record.id),1)
+          } else {
+            selected.push(record.id)
+          }
+        }
+      }
+    }
+  }
+
   const userColumn: ColumnsType = [
     {
       title: '用户名',
@@ -409,12 +472,15 @@ const initSearch = () => {
     userList,
     userTotal,
     queryLoading,
+    userRowSelectionType,
+    selectedIds,
+    handleRowClick,
     initPage,
     queryPage,
     resetPage
   }
 }
-const {userColumn,userQuery,userList,userTotal,queryLoading,initPage,queryPage,resetPage } = initSearch()
+const {userColumn,userQuery,userList,userTotal,queryLoading,userRowSelectionType,selectedIds,handleRowClick,initPage,queryPage,resetPage } = initSearch()
 initPage()
 
 // 数据保存相关
@@ -567,7 +633,8 @@ const initSave = () => {
   }
 
   // 根据id查询用户信息
-  const getUserInfo = async (userId: string) => {
+  const getUserInfo = async (event: MouseEvent, userId: string) => {
+    event.stopPropagation()
     const resp = await findById(userId)
     if (resp.code === 200) {
       handleModelStatus("编辑用户")
@@ -879,15 +946,52 @@ const initPostData = () => {
 }
 const {sysPostList, postLoading, initPostTag, toPostForm ,handleSelectPostId,initPostByDeptIds,handleDeptIdList} = initPostData()
 
-const handleDelete = async (id: string) => {
-  const resp = await deleteByIds([id])
-  if (resp.code === 200) {
-    initPage()
-    message.success(resp.msg)
-  } else {
-    message.error(resp.msg)
+const intiDelete = () => {
+  // 显示删除提示
+  const openDeletePopconfirm = ref<boolean>(false);
+  // 打开删除提示框
+  const openPopconfirm = () => {
+    if (selectedIds.value && selectedIds.value.length > 0) {
+      openDeletePopconfirm.value = true
+    } else {
+      message.warning("请勾选数据")
+    }
+  }
+  // 关闭删除提示框
+  const closePopconfirm = () => {
+    openDeletePopconfirm.value = false
+  }
+  // 处理删除逻辑
+  const handleDelete = async (id?: string) => {
+    const deleteIds = id ? [id] : [...selectedIds.value];
+
+    if (deleteIds.length > 0) {
+      const resp = await deleteByIds(deleteIds)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        // id 不存在则清空选中数据
+        if (!id) {
+          selectedIds.value = []
+        }
+        await initPage()
+      } else {
+        message.error(resp.msg)
+      }
+    } else {
+      message.warning("请勾选数据")
+    }
+    closePopconfirm()
+  }
+
+  return {
+    handleDelete,
+    closePopconfirm,
+    openPopconfirm,
+    openDeletePopconfirm
   }
 }
+
+const {handleDelete,closePopconfirm,openPopconfirm,openDeletePopconfirm} = intiDelete()
 
 // 监听关键词筛选
 watch(() => deptKeyword.value, (value) => {

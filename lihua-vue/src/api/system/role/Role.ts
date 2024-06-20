@@ -37,7 +37,7 @@ export const updateStatus = (id: string, status: string) => {
 }
 
 // 根据id集合删除数据
-export const deleteByIds = (ids: Array<string>) => {
+export const deleteData = (ids: Array<string>) => {
   return request({
     url: 'system/role',
     method: 'delete',

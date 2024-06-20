@@ -52,7 +52,7 @@ export const updateStatus = (id: string, status: string) => {
  * 数据删除
  * @param ids
  */
-export const deleteByIds = (ids: Array<string>) => {
+export const deleteData = (ids: Array<string>) => {
   return request({
     url: 'system/dept',
     method: 'delete',

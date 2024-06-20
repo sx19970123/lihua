@@ -25,7 +25,7 @@
             <a-col>
               <a-form-item>
                 <a-space size="small">
-                  <a-button type="primary" :loading="tableLoad" @click="queryPage">
+                  <a-button type="primary" :loading="tableLoad" @click="initPage">
                     <template #icon>
                       <SearchOutlined />
                     </template>
@@ -49,6 +49,9 @@
             :data-source="roleList"
             :pagination="false"
             :loading="tableLoad"
+            :row-selection="roleRowSelectionType"
+            row-class-name="hover-cursor-pointer"
+            :custom-row="handleRowClick"
             row-key="id"
         >
           <template #title>
@@ -59,6 +62,21 @@
                 </template>
                 新 增
               </a-button>
+              <a-popconfirm title="删除后不可恢复，是否删除？"
+                            :open="openDeletePopconfirm"
+                            ok-text="确 定"
+                            cancel-text="取 消"
+                            @confirm="handleDelete(undefined)"
+                            @cancel="closePopconfirm"
+              >
+                <a-button danger @click="openPopconfirm">
+                  <template #icon>
+                    <DeleteOutlined />
+                  </template>
+                  删 除
+                  <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
+                </a-button>
+              </a-popconfirm>
             </a-flex>
           </template>
 
@@ -81,7 +99,7 @@
               {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
             </template>
             <template v-if="column.key === 'action' && record.code !== 'ROLE_admin'">
-              <a-button type="link" size="small" @click="getRole($event,record.id)">
+              <a-button type="link" size="small" @click="(event: MouseEvent) => getRole(event, record.id)">
                 <template #icon>
                   <EditOutlined />
                 </template>
@@ -89,6 +107,7 @@
               </a-button>
               <a-divider type="vertical"/>
               <a-popconfirm title="删除后不可恢复，是否删除？"
+                            placement="bottomRight"
                             ok-text="确 定"
                             cancel-text="取 消"
                             @confirm="handleDelete(record.id)"
@@ -108,7 +127,7 @@
                             v-model:page-size="roleQuery.pageSize"
                             :total="roleTotal"
                             :show-total="(total:number) => `共 ${total} 条`"
-                            @change="queryPage"
+                            @change="initPage"
                             />
             </a-flex>
           </template>
@@ -177,7 +196,7 @@
 <script setup lang="ts">
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {reactive, ref, watch} from "vue";
-import {deleteByIds, findById, findPage, save, updateStatus} from "@/api/system/role/Role.ts";
+import {deleteData, findById, findPage, save, updateStatus} from "@/api/system/role/Role.ts";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
 import {menuTreeOption} from "@/api/system/menu/Menu.ts";
@@ -190,6 +209,43 @@ import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRol
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
 // 列表查询相关
 const initSearch = () => {
+  // 选中的数据id集合
+  const selectedIds = ref<Array<string>>([])
+  // 列表勾选对象
+  const roleRowSelectionType = {
+    columnWidth: '55px',
+    type: 'checkbox',
+    // 支持跨页勾选
+    preserveSelectedRowKeys: true,
+    // 指定选中id的数据集合，操作完后可手动清空
+    selectedRowKeys: selectedIds,
+    onChange: (ids: Array<string>) => {
+      selectedIds.value = ids
+    },
+    // 设置禁选数据
+    getCheckboxProps: (record: SysRoleVO) => ({
+      disabled: record.code === 'ROLE_admin'
+    })
+  }
+  // 点击选中行
+  const handleRowClick = (record:SysRoleVO) => {
+    if (record.code === 'ROLE_admin') {
+      return
+    }
+    return {
+      onClick: () => {
+        if (record.id) {
+          const selected = selectedIds.value
+          if (selected.includes(record.id)) {
+            selected.splice(selected.indexOf(record.id),1)
+          } else {
+            selected.push(record.id)
+          }
+        }
+      }
+    }
+  }
+
   // 列表列定义
   const roleColumn: ColumnsType = [
     {
@@ -244,7 +300,7 @@ const initSearch = () => {
   const tableLoad = ref<boolean>(false)
 
   // 查询列表
-  const queryPage = async () => {
+  const initPage = async () => {
     tableLoad.value = true
     const resp = await findPage(roleQuery.value)
     if (resp.code === 200) {
@@ -269,21 +325,24 @@ const initSearch = () => {
       pageNum: 1,
       pageSize: 10,
     }
-    await queryPage()
+    await initPage()
   }
 
-  queryPage()
+  initPage()
   return {
     roleQuery,
     roleTotal,
     roleColumn,
     roleList,
     tableLoad,
-    queryPage,
-    resetPage
+    selectedIds,
+    roleRowSelectionType,
+    initPage,
+    resetPage,
+    handleRowClick,
   }
 }
-const {roleQuery,roleTotal,roleColumn,roleList,tableLoad,queryPage,resetPage} = initSearch()
+const {roleQuery,roleTotal,roleColumn,roleList,tableLoad,selectedIds,roleRowSelectionType,initPage,resetPage,handleRowClick} = initSearch()
 
 
 // 数据保存相关
@@ -328,7 +387,7 @@ const initSave = () => {
   }
 
   // 根据id获取角色，打开模态框
-  const getRole = async (event:any ,id: string) => {
+  const getRole = async (event:MouseEvent ,id: string) => {
     event.stopPropagation()
     const resp = await findById(id)
     if (resp.code === 200 && resp.data) {
@@ -362,7 +421,7 @@ const initSave = () => {
     if (resp.code === 200) {
       message.success(resp.msg)
       modalActive.open = false
-      await queryPage()
+      await initPage()
     } else {
       message.error(resp.msg)
       console.error(resp.msg)
@@ -483,16 +542,52 @@ const useMenuTree = () => {
 
 const { initMenuTree, menuSetting, handleExpandAll, handleCheckedAll } = useMenuTree()
 
-// 数据删除相关
-const handleDelete = async (id: string) => {
-  const resp = await deleteByIds([id])
-  if (resp.code === 200) {
-    message.success(resp.msg)
-    await queryPage()
-  } else {
-    message.error(resp.msg)
+// 删除岗位
+const initDelete = () => {
+  // 显示删除提示
+  const openDeletePopconfirm = ref<boolean>(false);
+  // 打开删除提示框
+  const openPopconfirm = () => {
+    if (selectedIds.value && selectedIds.value.length > 0) {
+      openDeletePopconfirm.value = true
+    } else {
+      message.warning("请勾选数据")
+    }
+  }
+  // 关闭删除提示框
+  const closePopconfirm = () => {
+    openDeletePopconfirm.value = false
+  }
+  // 处理删除逻辑
+  const handleDelete = async (id?:string) => {
+    const deleteIds = id ? [id] : [...selectedIds.value];
+
+    if (deleteIds.length > 0) {
+      const resp = await deleteData(deleteIds)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        // id 不存在则清空选中数据
+        if (!id) {
+          selectedIds.value = []
+        }
+        await initPage()
+      } else {
+        message.error(resp.msg)
+      }
+    } else {
+      message.warning("请勾选数据")
+    }
+    closePopconfirm()
+  }
+
+  return {
+    openDeletePopconfirm,
+    closePopconfirm,
+    handleDelete,
+    openPopconfirm
   }
 }
+const {openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm} = initDelete()
 
 // 监听menuIds进行全选/非全选与数据同步
 watch(() => role.value.menuIds, (value) => {

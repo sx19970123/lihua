@@ -144,11 +144,21 @@ public class SysMenuServiceImpl implements SysMenuService {
      */
     private void checkChildren(List<String> ids) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().in(SysMenu::getParentId,ids)
-                .eq(SysMenu::getDelFlag,"0");
-        Long count = sysMenuMapper.selectCount(queryWrapper);
+        queryWrapper.lambda()
+                .in(SysMenu::getParentId,ids)
+                .eq(SysMenu::getDelFlag,"0")
+                .select(SysMenu::getId);
+        List<SysMenu> sysMenus = sysMenuMapper.selectList(queryWrapper);
 
-        if (count != 0) {
+        if (sysMenus.isEmpty()) {
+            return;
+        }
+
+        // 对比以删除节点为父节点的数据，当这些数据全部与删除的数据相同，则要删除的数据中没有子节点存在
+        List<String> list = new java.util.ArrayList<>(sysMenus.stream().map(SysMenu::getId).toList());
+        list.removeAll(ids);
+
+        if (!list.isEmpty()) {
             throw new ServiceException("菜单存在子集不允许删除");
         }
     }

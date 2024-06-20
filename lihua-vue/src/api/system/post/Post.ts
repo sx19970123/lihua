@@ -53,7 +53,7 @@ export const updateStatus = (id: string, status: string) => {
  * 根据id批量删除
  * @param ids
  */
-export const deleteByIds = (ids: Array<String>) => {
+export const deleteData = (ids: Array<String>) => {
     return request({
         url: '/system/post',
         data: ids,

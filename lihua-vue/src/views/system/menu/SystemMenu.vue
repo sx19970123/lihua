@@ -53,6 +53,9 @@
           row-key="id"
           v-model:expanded-row-keys="expandedRowKeys"
           :loading="tableLoad"
+          :row-selection="menuRowSelectionType"
+          row-class-name="hover-cursor-pointer"
+          :custom-row="handleRowClick"
         >
           <template #title>
             <a-flex :gap="8">
@@ -62,7 +65,26 @@
                 </template>
                 新 增
               </a-button>
-              <a-button type="primary" @click="handleExpanded">
+
+              <a-popconfirm :open="openDeletePopconfirm"
+                            ok-text="确 定"
+                            cancel-text="取 消"
+                            @confirm="handleDelete(undefined)"
+                            @cancel="closePopconfirm"
+              >
+                <template #title>
+                  删除后对应角色解绑，不可恢复。<br/>是否继续？
+                </template>
+                <a-button danger @click="openPopconfirm">
+                  <template #icon>
+                    <DeleteOutlined />
+                  </template>
+                  删 除
+                  <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
+                </a-button>
+              </a-popconfirm>
+
+              <a-button @click="handleExpanded">
                 <template #icon>
                   <Unfold v-if="expandedRowKeys.length === 0"/>
                   <PickUp v-else/>
@@ -96,7 +118,7 @@
             </template>
             <!--            操作-->
             <template v-if="column.key === 'action'">
-              <a-button type="link" size="small" @click="getMenu(record.id)">
+              <a-button type="link" size="small" @click="(event:MouseEvent) => getMenu(event, record.id)">
                 <template #icon>
                   <EditOutlined />
                 </template>
@@ -105,7 +127,7 @@
               <a-divider type="vertical"/>
               <a-button type="link"
                         size="small"
-                        @click="addChildren(record)"
+                        @click="(event: MouseEvent) => addChildren(event, record)"
                         :disabled="record.menuType === 'link' || record.menuType === 'perms'"
               >
                 <template #icon>
@@ -120,9 +142,9 @@
                             @confirm="handleDelete(record.id)"
               >
                 <template #title>
-                  删除菜单后，对应角色将自动解绑 <br/>且不可恢复，是否继续？
+                  删除后对应角色解绑，不可恢复。<br/>是否继续？
                 </template>
-                <a-button type="link" danger size="small">
+                <a-button type="link" danger size="small" @click="(event:MouseEvent) => event.stopPropagation()">
                   <template #icon>
                     <DeleteOutlined />
                   </template>
@@ -295,7 +317,7 @@
 
 // 列表查询相关
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {deleteByIds, findById, findList, menuTreeOption, save, updateStatus} from "@/api/system/menu/Menu.ts";
+import {deleteData, findById, findList, menuTreeOption, save, updateStatus} from "@/api/system/menu/Menu.ts";
 import {reactive, ref} from "vue";
 import {initDict} from "@/utils/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
@@ -309,6 +331,37 @@ import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
 const themeStore = useThemeStore()
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {
+
+  // 选中的数据id集合
+  const selectedIds = ref<Array<string>>([])
+  // 列表勾选对象
+  const menuRowSelectionType = {
+    checkStrictly: true,
+    columnWidth: '55px',
+    type: 'checkbox',
+    // 支持跨页勾选
+    preserveSelectedRowKeys: true,
+    // 指定选中id的数据集合，操作完后可手动清空
+    selectedRowKeys: selectedIds,
+    onChange: (ids: Array<string>) => {
+      selectedIds.value = ids
+    }
+  }
+  const handleRowClick = (record:SysMenuVO) => {
+    return {
+      onClick: () => {
+        if (record.id) {
+          const selected = selectedIds.value
+          if (selected.includes(record.id)) {
+            selected.splice(selected.indexOf(record.id),1)
+          } else {
+            selected.push(record.id)
+          }
+        }
+      }
+    }
+  }
+
   // 列表列集合
   const menuColumn:ColumnsType = [
     {
@@ -425,6 +478,9 @@ const initSearch = () => {
     expandedRowKeys,
     parentMenuTree,
     tableLoad,
+    selectedIds,
+    menuRowSelectionType,
+    handleRowClick,
     handleExpanded,
     initList,
     resetList
@@ -432,7 +488,7 @@ const initSearch = () => {
 }
 
 
-const { menuColumn,menuQuery,menuList,expandedRowKeys,parentMenuTree,tableLoad,handleExpanded,initList,resetList } = initSearch()
+const { menuColumn,menuQuery,menuList,expandedRowKeys,parentMenuTree,tableLoad,selectedIds,menuRowSelectionType,handleRowClick,handleExpanded,initList,resetList } = initSearch()
 // 数据保存相关
 const initSave = () => {
   // 保存的menu对象
@@ -508,7 +564,8 @@ const initSave = () => {
     }
   }
   // 根据id获取菜单数据
-  const getMenu = async (id:string) => {
+  const getMenu = async (event:MouseEvent, id:string) => {
+    event.stopPropagation()
     const resp = await findById(id)
     if (resp.code === 200) {
       handleModelStatus('编辑菜单')
@@ -529,7 +586,8 @@ const initSave = () => {
     }
   }
   // 新增下级
-  const addChildren = (parent: SysMenu) => {
+  const addChildren = (event: MouseEvent, parent: SysMenu) => {
+    event.stopPropagation()
     handleModelStatus('新增菜单')
 
     sysMenu.value.parentId = parent.id
@@ -664,15 +722,54 @@ const initSave = () => {
 }
 const {modalActive,sysMenu,menuRules,formRef,handleUpdateStatus,getMenu,addMenu,addChildren,initTreeData,saveMenu} = initSave()
 initTreeData()
-// 数据删除相关
-const handleDelete = async (id: string) => {
-  const resp = await deleteByIds([id])
-  if (resp.code === 200) {
-    message.success(resp.msg)
-    await initList()
-    await initTreeData()
-  } else {
-    message.error(resp.msg)
+
+// 删除菜单
+const initDelete = () => {
+  // 显示删除提示
+  const openDeletePopconfirm = ref<boolean>(false);
+  // 打开删除提示框
+  const openPopconfirm = () => {
+    if (selectedIds.value && selectedIds.value.length > 0) {
+      openDeletePopconfirm.value = true
+    } else {
+      message.warning("请勾选数据")
+    }
+  }
+  // 关闭删除提示框
+  const closePopconfirm = () => {
+    openDeletePopconfirm.value = false
+  }
+  // 处理删除逻辑
+  const handleDelete = async (id?:string) => {
+    const deleteIds = id ? [id] : [...selectedIds.value];
+
+    if (deleteIds.length > 0) {
+      const resp = await deleteData(deleteIds)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        // id 不存在则清空选中数据
+        if (!id) {
+          selectedIds.value = []
+        }
+        await initList()
+        await initTreeData()
+      } else {
+        message.error(resp.msg)
+      }
+    } else {
+      message.warning("请勾选数据")
+    }
+    closePopconfirm()
+  }
+
+  return {
+    openDeletePopconfirm,
+    closePopconfirm,
+    handleDelete,
+    openPopconfirm
   }
 }
+
+const {openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm} = initDelete()
+
 </script>
