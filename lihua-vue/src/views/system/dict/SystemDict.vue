@@ -494,20 +494,12 @@ const initDelete = () => {
   }
   // 删除方法
   const handleDelete = async (id?:string) => {
-    const deleteIds = []
-    if (id) {
-      deleteIds.push(id)
-    } else {
-      selectedIds.value.forEach(id => {
-        deleteIds.push(id)
-      })
-    }
+    const deleteIds = id ? [id] : [...selectedIds.value];
 
     if (deleteIds.length > 0) {
       const resp = await deleteData(deleteIds)
       if (resp.code === 200) {
         message.success(resp.msg);
-        closePopconfirm()
         // id 不存在则清空选中数据
         if (!id) {
           selectedIds.value = []
@@ -519,6 +511,7 @@ const initDelete = () => {
     } else {
       message.warning("请勾选数据")
     }
+    closePopconfirm()
   }
 
   return{

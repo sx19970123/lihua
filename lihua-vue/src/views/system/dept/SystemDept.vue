@@ -41,6 +41,9 @@
               row-key="id"
               v-model:expanded-row-keys="expandedRowKeys"
               :loading="tableLoad"
+              :row-selection="deptRowSelectionType"
+              row-class-name="hover-cursor-pointer"
+              :custom-row="handleRowClick"
      >
        <template #title>
          <a-flex :gap="8">
@@ -50,7 +53,24 @@
              </template>
              新 增
            </a-button>
-           <a-button type="primary" @click="handleExpanded">
+
+           <a-popconfirm title="删除后不可恢复，是否删除？"
+                         :open="openDeletePopconfirm"
+                         ok-text="确 定"
+                         cancel-text="取 消"
+                         @confirm="handleDelete(undefined)"
+                         @cancel="closePopconfirm"
+           >
+             <a-button danger @click="openPopconfirm">
+               <template #icon>
+                 <DeleteOutlined />
+               </template>
+               删 除
+               <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
+             </a-button>
+           </a-popconfirm>
+
+           <a-button @click="handleExpanded">
              <template #icon>
                <Unfold v-if="expandedRowKeys.length === 0"/>
                <PickUp v-else/>
@@ -74,12 +94,12 @@
            </a-switch>
          </template>
          <template v-if="column.key === 'post'">
-           <a-typography-link @click="handleSkipRoute(record.id)">
+           <a-typography-link @click="(event: MouseEvent) => handleSkipRoute(event, record.id)">
              {{ record.sysPostList?.map((sysPost:SysPost) => sysPost.name).join("、") }}
            </a-typography-link>
          </template>
          <template v-if="column.key === 'action'">
-           <a-button type="link" size="small" @click="selectById(record.id)">
+           <a-button type="link" size="small" @click="(event: MouseEvent) => selectById(event,record.id)">
              <template #icon>
                <EditOutlined />
              </template>
@@ -88,7 +108,7 @@
            <a-divider type="vertical"/>
            <a-button type="link"
                      size="small"
-                     @click="addChildren(record)"
+                     @click="(event: MouseEvent) => addChildren(event, record)"
            >
              <template #icon>
                <PlusOutlined />
@@ -104,7 +124,7 @@
              <template #title>
                数据删除后不可恢复，是否删除？
              </template>
-             <a-button type="link" danger size="small">
+             <a-button type="link" danger size="small" @click="(event: MouseEvent) => event.stopPropagation()">
                <template #icon>
                  <DeleteOutlined />
                </template>
@@ -178,7 +198,7 @@
 <script setup lang="ts">
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deleteByIds, getDeptOption, findById, findList, save, updateStatus} from "@/api/system/dept/Dept.ts";
+import {deleteData, getDeptOption, findById, findList, save, updateStatus} from "@/api/system/dept/Dept.ts";
 import {reactive, ref} from "vue";
 import {message} from "ant-design-vue";
 import {initDict} from "@/utils/dict.ts";
@@ -191,6 +211,35 @@ import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 const {sys_status} = initDict("sys_status")
 const router = useRouter()
 const initSearch = () => {
+  // 选中的数据id集合
+  const selectedIds = ref<Array<string>>([])
+  // 列表勾选对象
+  const deptRowSelectionType = {
+    checkStrictly: true,
+    columnWidth: '55px',
+    type: 'checkbox',
+    // 支持跨页勾选
+    preserveSelectedRowKeys: true,
+    // 指定选中id的数据集合，操作完后可手动清空
+    selectedRowKeys: selectedIds,
+    onChange: (ids: Array<string>) => {
+      selectedIds.value = ids
+    }
+  }
+  const handleRowClick = (record:SysDeptVO) => {
+    return {
+      onClick: () => {
+        if (record.id) {
+          const selected = selectedIds.value
+          if (selected.includes(record.id)) {
+            selected.splice(selected.indexOf(record.id),1)
+          } else {
+            selected.push(record.id)
+          }
+        }
+      }
+    }
+  }
   // 列表信息
   const deptColumn: ColumnsType = [
     {
@@ -295,12 +344,15 @@ const initSearch = () => {
     deptList,
     expandedRowKeys,
     tableLoad,
+    selectedIds,
+    deptRowSelectionType,
+    handleRowClick,
     initList,
     resetList,
     handleExpanded
   }
 }
-const {deptColumn,deptQuery,deptList,expandedRowKeys,tableLoad,initList,resetList,handleExpanded} = initSearch()
+const {deptColumn,deptQuery,deptList,expandedRowKeys,tableLoad,selectedIds,deptRowSelectionType,handleRowClick,initList,resetList,handleExpanded} = initSearch()
 
 // 保存数据
 const initSave = () => {
@@ -357,7 +409,8 @@ const initSave = () => {
     }
   }
   // 新增下级
-  const addChildren = (dept: SysDept) => {
+  const addChildren = (event: MouseEvent, dept: SysDept) => {
+    event.stopPropagation()
     handleModelStatus("新增部门")
     sysDept.value.parentId = dept.id
     if (dept.children) {
@@ -379,7 +432,8 @@ const initSave = () => {
   }
 
   // 根据id查询数据
-  const selectById = async (id: string) => {
+  const selectById = async (event: MouseEvent,id: string) => {
+    event.stopPropagation()
     const resp = await findById(id)
     if (resp.code === 200) {
       handleModelStatus("修改部门")
@@ -498,26 +552,63 @@ const initSave = () => {
     initTreeData,
     handleDeptTree,
     addDept,
-    saveDept,
-    handleModelStatus
+    saveDept
   }
 }
-const {modalActive,sysDept,parentDeptList,deptRoles,formRef,handleUpdateStatus,selectById,addChildren,initTreeData,addDept,saveDept,handleModelStatus} = initSave()
+const {modalActive,sysDept,parentDeptList,deptRoles,formRef,handleUpdateStatus,selectById,addChildren,initTreeData,addDept,saveDept} = initSave()
 
-// 删除数据
-const handleDelete = async (id: string) => {
-  const resp = await deleteByIds([id]);
-  if (resp.code === 200) {
-    await initList()
-    await initTreeData()
-    message.success(resp.msg)
-  } else {
-    message.error(resp.msg)
+// 删除部门
+const initDelete = () => {
+  // 显示删除提示
+  const openDeletePopconfirm = ref<boolean>(false);
+  // 打开删除提示框
+  const openPopconfirm = () => {
+    if (selectedIds.value && selectedIds.value.length > 0) {
+      openDeletePopconfirm.value = true
+    } else {
+      message.warning("请勾选数据")
+    }
+  }
+  // 关闭删除提示框
+  const closePopconfirm = () => {
+    openDeletePopconfirm.value = false
+  }
+  // 处理删除逻辑
+  const handleDelete = async (id?:string) => {
+    const deleteIds = id ? [id] : [...selectedIds.value];
+
+    if (deleteIds.length > 0) {
+      const resp = await deleteData(deleteIds)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        // id 不存在则清空选中数据
+        if (!id) {
+          selectedIds.value = []
+        }
+        await initList()
+        await initTreeData()
+      } else {
+        message.error(resp.msg)
+      }
+    } else {
+      message.warning("请勾选数据")
+    }
+    closePopconfirm()
+  }
+
+  return {
+    openDeletePopconfirm,
+    closePopconfirm,
+    handleDelete,
+    openPopconfirm
   }
 }
+
+const {openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm} = initDelete()
 
 // 跳转至岗位页面
-const handleSkipRoute = (id: string) => {
+const handleSkipRoute = (event: MouseEvent, id: string) => {
+  event.stopPropagation()
   router.push({
     path: "/system/post",
     query: {

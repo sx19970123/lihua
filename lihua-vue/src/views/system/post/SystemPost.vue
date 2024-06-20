@@ -56,7 +56,15 @@
         </a-form>
       </a-card>
       <!--        列表-->
-      <a-table :columns="postColumn" :data-source="postList" :pagination="false" :loading="tableLoad">
+      <a-table :columns="postColumn"
+               :data-source="postList"
+               :pagination="false"
+               :loading="tableLoad"
+               :row-selection="postRowSelectionType"
+               row-class-name="hover-cursor-pointer"
+               :custom-row="handleRowClick"
+               row-key="id"
+      >
         <template #title>
           <a-flex :gap="8">
             <a-button type="primary" @click="handleModalStatus('新增岗位')">
@@ -65,6 +73,21 @@
               </template>
               新 增
             </a-button>
+            <a-popconfirm title="删除后不可恢复，是否删除？"
+                          :open="openDeletePopconfirm"
+                          ok-text="确 定"
+                          cancel-text="取 消"
+                          @confirm="handleDelete(undefined)"
+                          @cancel="closePopconfirm"
+            >
+              <a-button danger @click="openPopconfirm">
+                <template #icon>
+                  <DeleteOutlined />
+                </template>
+                删 除
+                <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
+              </a-button>
+            </a-popconfirm>
           </a-flex>
         </template>
 
@@ -84,7 +107,7 @@
           </template>
 
           <template v-if="column.key === 'action'">
-            <a-button type="link" size="small" @click="selectById(record.id)">
+            <a-button type="link" size="small" @click="(event:MouseEvent) => selectById(event, record.id)">
               <template #icon>
                 <EditOutlined />
               </template>
@@ -99,7 +122,7 @@
               <template #title>
                 数据删除后不可恢复，是否删除？
               </template>
-              <a-button type="link" danger size="small">
+              <a-button type="link" danger size="small" @click="(event:MouseEvent) => event.stopPropagation()">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
@@ -189,7 +212,7 @@ import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {reactive, ref, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {initDict} from "@/utils/dict.ts";
-import {deleteByIds, findById, findPage, save, updateStatus} from "@/api/system/post/Post.ts";
+import {deleteData, findById, findPage, save, updateStatus} from "@/api/system/post/Post.ts";
 import {useRoute} from "vue-router";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTreeData} from "@/utils/Tree.ts";
@@ -226,6 +249,34 @@ const { deptTree } = initDept()
 
 // 查询列表
 const initSearch = () => {
+  // 选中的数据id集合
+  const selectedIds = ref<Array<string>>([])
+  // 列表勾选对象
+  const postRowSelectionType = {
+    columnWidth: '55px',
+    type: 'checkbox',
+    // 支持跨页勾选
+    preserveSelectedRowKeys: true,
+    // 指定选中id的数据集合，操作完后可手动清空
+    selectedRowKeys: selectedIds,
+    onChange: (ids: Array<string>) => {
+      selectedIds.value = ids
+    }
+  }
+  const handleRowClick = (record:SysPostVO) => {
+    return {
+      onClick: () => {
+        if (record.id) {
+          const selected = selectedIds.value
+          if (selected.includes(record.id)) {
+            selected.splice(selected.indexOf(record.id),1)
+          } else {
+            selected.push(record.id)
+          }
+        }
+      }
+    }
+  }
   const postColumn: ColumnsType = [
     {
       title: '岗位名称',
@@ -312,6 +363,9 @@ const initSearch = () => {
     postColumn,
     postList,
     postQuery,
+    selectedIds,
+    postRowSelectionType,
+    handleRowClick,
     queryPage,
     initPage,
     reloadPage,
@@ -319,7 +373,7 @@ const initSearch = () => {
     postTotal
   }
 }
-const { postColumn,postList,postQuery,initPage,queryPage,reloadPage,tableLoad,postTotal } = initSearch()
+const { postColumn,postList,postQuery,selectedIds,postRowSelectionType,handleRowClick,initPage,queryPage,reloadPage,tableLoad,postTotal } = initSearch()
 
 
 // 保存岗位
@@ -381,7 +435,8 @@ const initSave = () => {
     }
   }
 
-  const selectById = async (id: string) => {
+  const selectById = async (event:MouseEvent, id: string) => {
+    event.stopPropagation()
     const resp = await findById(id)
     if (resp.code === 200) {
       handleModalStatus('修改岗位')
@@ -455,15 +510,52 @@ const initSave = () => {
 const { modalActive, sysPost, postRoles, formRef, handleUpdateStatus,  selectById ,savePost ,handleModalStatus } = initSave()
 
 // 删除岗位
-const handleDelete = async (id: string) => {
-  const resp = await deleteByIds([id])
-  if (resp.code === 200) {
-    message.success(resp.msg)
-    await initPage()
-  } else {
-    message.error(resp.msg)
+const initDelete = () => {
+  // 显示删除提示
+  const openDeletePopconfirm = ref<boolean>(false);
+  // 打开删除提示框
+  const openPopconfirm = () => {
+    if (selectedIds.value && selectedIds.value.length > 0) {
+      openDeletePopconfirm.value = true
+    } else {
+      message.warning("请勾选数据")
+    }
+  }
+  // 关闭删除提示框
+  const closePopconfirm = () => {
+    openDeletePopconfirm.value = false
+  }
+  // 处理删除逻辑
+  const handleDelete = async (id?:string) => {
+    const deleteIds = id ? [id] : [...selectedIds.value];
+
+    if (deleteIds.length > 0) {
+      const resp = await deleteData(deleteIds)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        // id 不存在则清空选中数据
+        if (!id) {
+          selectedIds.value = []
+        }
+        await initPage()
+      } else {
+        message.error(resp.msg)
+      }
+    } else {
+      message.warning("请勾选数据")
+    }
+    closePopconfirm()
+  }
+
+  return {
+    openDeletePopconfirm,
+    closePopconfirm,
+    handleDelete,
+    openPopconfirm
   }
 }
+
+const {openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm} = initDelete()
 </script>
 
 <style scoped>
