@@ -92,7 +92,7 @@ const handleChangeSiderGroup = () => {
 const handleChangeLayoutType = (key: string) => {
   if (key === "header-content") {
     themeStore.$state.siderGroup = false
-    handleChangeSiderGroup(false)
+    handleChangeSiderGroup()
   }
 }
 </script>

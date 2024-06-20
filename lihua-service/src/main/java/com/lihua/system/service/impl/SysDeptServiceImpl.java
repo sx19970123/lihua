@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.exception.ServiceException;
 import com.lihua.system.entity.SysDept;
+import com.lihua.system.entity.SysMenu;
 import com.lihua.system.entity.SysPost;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.model.SysDeptVO;
@@ -165,9 +166,20 @@ public class SysDeptServiceImpl implements SysDeptService {
     // 验证是否存在子集
     private void checkChildren(List<String> ids) {
         QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().in(SysDept::getParentId,ids);
-        Long count = sysDeptMapper.selectCount(queryWrapper);
-        if (count > 0) {
+        queryWrapper.lambda()
+                .in(SysDept::getParentId,ids)
+                .select(SysDept::getId);
+        List<SysDept> sysDepts = sysDeptMapper.selectList(queryWrapper);
+
+        if (sysDepts.isEmpty()) {
+            return;
+        }
+
+        // 对比以删除节点为父节点的数据，当这些数据全部与删除的数据相同，则要删除的数据中没有子节点存在
+        List<String> list = new java.util.ArrayList<>(sysDepts.stream().map(SysDept::getId).toList());
+        list.removeAll(ids);
+
+        if (!list.isEmpty()) {
             throw new ServiceException("存在子集不允许删除");
         }
     }
