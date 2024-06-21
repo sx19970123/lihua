@@ -3,6 +3,7 @@ package com.lihua.system.controller;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.SysUserDTO;
+import com.lihua.system.model.SysUserVO;
 import com.lihua.system.service.SysUserService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
@@ -49,6 +50,12 @@ public class SysUserController extends BaseController {
     @DeleteMapping
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysUserService.deleteByIds(ids);
+        return success();
+    }
+
+    @PostMapping("export")
+    public String exportExcel(@RequestBody SysUserDTO sysUserDTO) {
+        List<SysUserVO> exportList =  sysUserService.exportExcel(sysUserDTO);
         return success();
     }
 }

@@ -40,4 +40,11 @@ public interface SysUserService {
      * @return 更新后的用户状态
      */
     String updateStatus(String id, String currentStatus);
+
+    /**
+     * 导出excel
+     * @param sysUserDTO
+     * @return
+     */
+    List<SysUserVO> exportExcel(SysUserDTO sysUserDTO);
 }

@@ -152,6 +152,12 @@ public class SysUserServiceImpl implements SysUserService {
         return status;
     }
 
+    @Override
+    public List<SysUserVO> exportExcel(SysUserDTO sysUserDTO) {
+        // 1. 查询
+        return List.of();
+    }
+
     // 处理用户所属部门
     private void handleUserDept(List<SysUserVO> records) {
         List<String> userIds = records.stream().map(SysUserVO::getId).toList();

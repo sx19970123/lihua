@@ -1,6 +1,7 @@
 package com.lihua.system.model;
 
 import com.lihua.model.BaseEntity;
+import com.lihua.system.entity.SysDept;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -101,4 +102,5 @@ public class SysUserVO extends BaseEntity {
     private List<String> postIdList;
 
 
+    private List<SysDept> sysDeptList;
 }
