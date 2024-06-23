@@ -7,7 +7,9 @@ lihua:
   # 允许跨域的最长时间
   corsMaxAge: 3600
   # 上传文件路径 mac windows 注意目录切换
-  uploadFilePath: '/Users/shangxuan/项目/upload/'
+  uploadFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
+  # 文件导出路径
+  exportFilePath: '/Users/shangxuan/项目/lihuaFile/export/'
   # 启用验证码
   enableVerificationCode: false
 server:

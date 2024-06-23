@@ -7,7 +7,6 @@
              <a-menu-item key="Individuation"> 样式布局</a-menu-item>
              <a-menu-item key="Basic"> 基础设置</a-menu-item>
              <a-menu-item key="Security"> 安全设置</a-menu-item>
-             <a-menu-item key="Dept"> 我的部门</a-menu-item>
            </a-menu>
          </a-col>
          <a-col :span="20">
@@ -41,11 +40,7 @@ const allComponents = ref([
   {
     name: 'Security',
     com: markRaw(Security)
-  },
-  {
-    name: 'Dept',
-    com: markRaw(Dept)
-  },
+  }
 ])
 // 默认选中组件
 const activeComponent = ref(markRaw(Individuation))

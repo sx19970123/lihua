@@ -5,6 +5,7 @@ import com.lihua.handle.AccessDeniedHandlerImpl;
 import com.lihua.handle.AuthenticationEntryPointImpl;
 import com.lihua.handle.LogoutSuccessHandlerImpl;
 import jakarta.annotation.Resource;
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,6 +47,8 @@ public class SecurityConfig {
         // 配置拦截请求
         http.authorizeHttpRequests(authorizeHttpRequestsCustomizer -> {
             authorizeHttpRequestsCustomizer
+                    // 对于异步分发权限放开（涉及文件下载返回 ResponseEntity<StreamingResponseBody> 的情况）
+                    .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
                     .requestMatchers("/system/login/**","/captcha/**").permitAll()
                     .anyRequest().authenticated();
         });
@@ -88,5 +91,4 @@ public class SecurityConfig {
         daoAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
         return new ProviderManager(daoAuthenticationProvider);
     }
-
 }

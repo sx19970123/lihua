@@ -10,7 +10,7 @@ import java.io.OutputStream;
 
 import static com.lihua.enums.ResultCodeEnum.SUCCESS;
 
-public class BaseController {
+public class BaseController extends BaseFileController {
 
 
     public static void imageFileSuccess(HttpServletResponse response, byte[] buffer) throws IOException {
@@ -24,9 +24,9 @@ public class BaseController {
             out.write(buffer);
         }
     }
-    
-    public static <T> String success() {
-        return success(null);
+
+    public static String success() {
+        return success(SUCCESS.getDefaultMsg(), null);
     }
 
     public static <T> String success(T data) {
@@ -37,11 +37,11 @@ public class BaseController {
         return response(SUCCESS, msg, data);
     }
 
-    public static <T> String error(ResultCodeEnum resultCodeEnum, String message) {
+    public static String error(ResultCodeEnum resultCodeEnum, String message) {
         return error(resultCodeEnum, message, null);
     }
 
-    public static <T> String error(ResultCodeEnum resultCodeEnum) {
+    public static String error(ResultCodeEnum resultCodeEnum) {
         return error(resultCodeEnum, resultCodeEnum.getDefaultMsg(), null);
     }
     

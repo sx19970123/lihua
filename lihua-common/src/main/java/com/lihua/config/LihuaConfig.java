@@ -28,13 +28,32 @@ public class LihuaConfig {
     private Long corsMaxAge;
 
     /**
-     * 上传文件路径
+     * 文件上传路径
      */
     private String uploadFilePath;
+
+    /**
+     * 文件导出路径
+     */
+    private String exportFilePath;
 
     /**
      * 启用验证码
      */
     private Boolean enableVerificationCode;
 
+
+    /**
+     * 判断 exportFilePath 结尾是否为 /
+     */
+    public String getExportFilePath() {
+        return exportFilePath.lastIndexOf("/") != -1 ? exportFilePath : exportFilePath + "/";
+    }
+
+    /**
+     * 判断 uploadFilePath 结尾是否为 /
+     */
+    public String getUploadFilePath() {
+        return uploadFilePath.lastIndexOf("/") != -1 ? uploadFilePath : uploadFilePath + "/";
+    }
 }

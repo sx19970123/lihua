@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -41,8 +42,9 @@ public class SysFileServiceImpl implements SysFileService {
     }
 
     @Override
-    public byte[] imagePreview(String fileName) {
-        return FileUtil.readBytes(lihuaConfig.getUploadFilePath() + fileName);
+    public File imagePreview(String fileName) {
+        File file = new File(lihuaConfig.getUploadFilePath() + fileName);
+        return file;
     }
 
     @Override

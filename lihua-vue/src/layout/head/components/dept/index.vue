@@ -6,9 +6,9 @@
       </span>
     </a-tooltip>
     <template #overlay>
-      <a-card class="dept-card scrollbar" :bordered="false" :body-style="{padding: '8px'}">
+      <div class="default-dept-card scrollbar">
         <default-dept @dept-select="() => open = false"/>
-      </a-card>
+      </div>
     </template>
   </a-dropdown>
 </template>
@@ -22,8 +22,19 @@ const open = ref<boolean>(false)
 </script>
 
 <style scoped>
-.dept-card {
+.default-dept-card {
   max-height: 500px;
   box-shadow: 0 2px 8px rgba(0,21,41,.12);
+  padding: 8px;
+  background-color: #ffffff;
+  border-radius: 8px;
 }
 </style>
+<style>
+[data-theme=dark] {
+  .default-dept-card {
+    background-color: #1f1f1f;
+  }
+}
+</style>
+
