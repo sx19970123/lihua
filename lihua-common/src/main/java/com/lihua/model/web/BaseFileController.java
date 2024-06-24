@@ -1,12 +1,16 @@
 package com.lihua.model.web;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 文件下载相关操作，使用 StreamingResponseBody 避免将文件一次性全部加载到内存中
@@ -15,12 +19,17 @@ import java.io.*;
 @Slf4j
 public class BaseFileController {
 
-    public static ResponseEntity<StreamingResponseBody> success(File file) throws FileNotFoundException {
+    @SneakyThrows
+    public static ResponseEntity<StreamingResponseBody> success(File file){
         FileInputStream fileInputStream = new FileInputStream(file);
         return success(fileInputStream, file.getName());
     }
 
-    public static ResponseEntity<StreamingResponseBody> success(InputStream inputStream, String fileName) {
+    public static ResponseEntity<StreamingResponseBody> success(InputStream inputStream, String fileName) throws UnsupportedEncodingException {
+        if (!StringUtils.hasText(fileName)) {
+            fileName = "attachment";
+        }
+        fileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
         StreamingResponseBody stream = out -> {
           try {
               byte[] buffer = new byte[4096];
@@ -41,7 +50,7 @@ public class BaseFileController {
 
         return ResponseEntity
                 .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename*=UTF-8''" + fileName)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(stream);
     }

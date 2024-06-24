@@ -9,7 +9,7 @@ lihua:
   # 上传文件路径 mac windows 注意目录切换
   uploadFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
   # 文件导出路径
-  exportFilePath: '/Users/shangxuan/项目/lihuaFile/export/'
+  exportFilePath: 'D:/home/lihua/export/'
   # 启用验证码
   enableVerificationCode: false
 server:

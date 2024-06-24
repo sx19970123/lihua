@@ -1,6 +1,7 @@
 package com.lihua.utils.excel;
 
 import com.github.liaochong.myexcel.core.DefaultExcelBuilder;
+import com.github.liaochong.myexcel.core.DefaultStreamExcelBuilder;
 import com.github.liaochong.myexcel.utils.FileExportUtil;
 import com.lihua.config.LihuaConfig;
 import com.lihua.exception.ServiceException;
@@ -26,10 +27,18 @@ public class ExcelUtils {
      * @param fileName
      * @return
      */
-    public <T> File excelExport(List<T> exportList, Class<T> clazz, String fileName) {
-        Workbook workbook = DefaultExcelBuilder.of(clazz).build(exportList);
+    public static <T> File excelExport(List<T> exportList, Class<T> clazz, String fileName) {
+        DefaultStreamExcelBuilder<T> excelBuilder = DefaultStreamExcelBuilder
+                .of(clazz)
+                .autoMerge()
+                // 自定义表头样式，详见：https://github.com/liaochong/myexcel/wiki/Style-support
+                .style("title->background-color:rgb(217,217,217);vertical-align:center;text-align:center;border-style:thin")
+                .titleRowHeight(30)
+                .start();
+        excelBuilder.append(exportList);
+        Workbook workbook = excelBuilder.build();
         File file = new File(handleFullFilePath(fileName));
-        try {
+        try (excelBuilder) {
             FileExportUtil.export(workbook, file);
         } catch (IOException e) {
             log.error(e.getMessage(),e);
@@ -40,7 +49,7 @@ public class ExcelUtils {
 
 
     // 处理全文件地址
-    private String handleFullFilePath(String fileName) {
+    private static String handleFullFilePath(String fileName) {
         if (!StringUtils.hasText(fileName)) {
             throw new ServiceException("导出文件名为空");
         }

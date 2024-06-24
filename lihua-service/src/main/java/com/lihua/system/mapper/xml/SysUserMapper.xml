@@ -24,8 +24,22 @@
         <collection property="roleIdList" ofType="java.lang.String">
             <result column="role_id"/>
         </collection>
+    </resultMap>
 
-
+    <resultMap id="findExportDataMap" type="com.lihua.system.model.SysUserVO">
+        <result column="username" property="username" />
+        <result column="nickname" property="nickname" />
+        <result column="gender" property="gender" />
+        <result column="status" property="status" />
+        <result column="email" property="email" />
+        <result column="phone_number" property="phoneNumber" />
+        <result column="remark" property="remark" />
+        <collection property="deptCodeList" ofType="java.lang.String">
+            <result column="code"/>
+        </collection>
+        <collection property="deptLabelList" ofType="java.lang.String">
+            <result column="name"/>
+        </collection>
     </resultMap>
 
     <select id="loginSelect" resultType="com.lihua.model.security.CurrentUser">
@@ -109,5 +123,24 @@
         (EXISTS (SELECT 1 FROM sys_user WHERE username = #{username} AND del_flag = '0')
         OR EXISTS (SELECT 1 FROM sys_user WHERE email = #{email} AND del_flag = '0')
         OR EXISTS (SELECT 1 FROM sys_user WHERE phone_number = #{phoneNumber} AND del_flag = '0'))
+    </select>
+
+
+    <select id="findExportData" resultMap="findExportDataMap">
+        SELECT
+            sys_user.username,
+            sys_user.nickname,
+            sys_user.gender,
+            sys_user.STATUS,
+            sys_user.phone_number,
+            sys_user.email,
+            sys_user.remark,
+            sys_dept.CODE,
+            sys_dept.NAME
+        FROM
+            sys_user
+        LEFT JOIN sys_user_dept ON sys_user_dept.user_id = sys_user.id
+        LEFT JOIN sys_dept ON sys_dept.id = sys_user_dept.dept_id
+        ${ew.customSqlSegment}
     </select>
 </mapper>

@@ -14,6 +14,7 @@ import com.lihua.system.service.SysUserDeptService;
 import com.lihua.system.service.SysUserPostService;
 import com.lihua.system.service.SysUserRoleService;
 import com.lihua.system.service.SysUserService;
+import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -153,9 +155,40 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public List<SysUserVO> exportExcel(SysUserDTO sysUserDTO) {
-        // 1. 查询
-        return List.of();
+    public File exportExcel(SysUserDTO sysUserDTO) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+
+        // 部门id
+        if (sysUserDTO.getDeptIdList() != null && !sysUserDTO.getDeptIdList().isEmpty()) {
+            queryWrapper.in("sys_dept.dept_id", sysUserDTO.getDeptIdList());
+        }
+        // 昵称
+        if (StringUtils.hasText(sysUserDTO.getNickname())) {
+            queryWrapper.like("sys_user.nickname", sysUserDTO.getNickname());
+        }
+        // 用户名
+        if (StringUtils.hasText(sysUserDTO.getUsername())) {
+            queryWrapper.like("sys_user.username", sysUserDTO.getUsername());
+        }
+        // 电话号码
+        if (StringUtils.hasText(sysUserDTO.getPhoneNumber())) {
+            queryWrapper.like("sys_user.phone_number", sysUserDTO.getPhoneNumber());
+        }
+        // 状态
+        if (StringUtils.hasText(sysUserDTO.getStatus())) {
+            queryWrapper.eq("sys_user.status", sysUserDTO.getStatus());
+        }
+        // 创建时间
+        if (sysUserDTO.getCreateTimeList() != null && !sysUserDTO.getCreateTimeList().isEmpty()) {
+            queryWrapper.between("sys_user.create_time", sysUserDTO.getCreateTimeList().get(0),sysUserDTO.getCreateTimeList().get(1));
+        }
+
+        queryWrapper.eq("sys_user.del_flag","0").orderByDesc("sys_user.id");
+
+        List<SysUserVO> exportList = sysUserMapper.findExportData(queryWrapper);
+
+        // 导出excel
+        return ExcelUtils.excelExport(exportList, SysUserVO.class, "系统用户");
     }
 
     // 处理用户所属部门

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.system.model.SysUserDTO;
 import com.lihua.system.model.SysUserVO;
 
+import java.io.File;
 import java.util.List;
 
 public interface SysUserService {
@@ -46,5 +47,5 @@ public interface SysUserService {
      * @param sysUserDTO
      * @return
      */
-    List<SysUserVO> exportExcel(SysUserDTO sysUserDTO);
+    File exportExcel(SysUserDTO sysUserDTO);
 }
