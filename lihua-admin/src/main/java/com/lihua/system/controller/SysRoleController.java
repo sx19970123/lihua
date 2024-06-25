@@ -84,6 +84,6 @@ public class SysRoleController extends BaseController {
      */
     @GetMapping("option")
     public String getRoleOption() {
-        return success(LoginUserContext.getRoleList());
+        return success(LoginUserContext.getRoleList().stream().filter(role -> !"ROLE_admin".equals(role.getCode())).toList());
     }
 }

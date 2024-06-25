@@ -13,7 +13,6 @@
         <a-tree :tree-data="deptTree"
                 :selectable="false"
                 defaultExpandAll
-                style="margin-top: 4px"
                 :field-names="{children:'children', title:'name', key:'id'}">
           <template #title="{name,code,id}">
             <div @mouseover="handleMouseOver(id)" @mouseleave="handleMouseLeave" @dblclick="handleSetDefaultDept(id)">
