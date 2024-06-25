@@ -18,6 +18,7 @@ public enum ResultCodeEnum {
     ACCESS_ERROR (405,"访问权限不足"),
 
     ERROR (500,"业务异常"),
+    FILE_ERROR (501,"文件处理异常"),
     SERVER_UNAVAILABLE (503,"服务器维护中");
 
     /**

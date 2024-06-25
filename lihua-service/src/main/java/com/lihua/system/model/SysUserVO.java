@@ -4,7 +4,9 @@ import com.github.liaochong.myexcel.core.annotation.ExcelColumn;
 import com.github.liaochong.myexcel.core.annotation.ExcelModel;
 import com.github.liaochong.myexcel.core.annotation.IgnoreColumn;
 import com.github.liaochong.myexcel.core.annotation.MultiColumn;
+import com.lihua.utils.excel.annotation.ExcelWriteConverterDictTypeCode;
 import com.lihua.model.BaseEntity;
+import com.lihua.utils.excel.converter.SysDictWriteConverter;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +29,7 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户名
      */
-    @ExcelColumn(order = 0, title = "用户名")
+    @ExcelColumn(order = 0, title = "用户信息->用户名")
     @NotNull(message = "用户名不能为空")
     private String username;
 
@@ -41,7 +43,7 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户名称
      */
-    @ExcelColumn(order = 1, title = "用户昵称")
+    @ExcelColumn(order = 1, title = "用户信息->用户昵称")
     private String nickname;
 
     /**
@@ -53,17 +55,15 @@ public class SysUserVO extends BaseEntity {
     /**
      * 性别
      */
-    @ExcelColumn(
-            order = 2,
-            title = "性别",
-            mapping="1:男,0:女,2:其他"
-    )
+    @ExcelColumn(order = 2,title = "用户信息->性别", writeConverter = SysDictWriteConverter.class)
+    @ExcelWriteConverterDictTypeCode("user_gender")
     private String gender;
 
     /**
      * 用户状态
      */
-    @ExcelColumn(order = 3, title = "状态")
+    @ExcelColumn(order = 3, title = "用户信息->状态", writeConverter = SysDictWriteConverter.class)
+    @ExcelWriteConverterDictTypeCode("sys_status")
     private String status;
 
     /**
@@ -75,40 +75,41 @@ public class SysUserVO extends BaseEntity {
     /**
      * 手机号码
      */
-    @ExcelColumn(order = 4, title = "手机号码")
+    @ExcelColumn(order = 4, title = "用户信息->手机号码")
     private String phoneNumber;
 
     /**
      * 邮箱
      */
-    @ExcelColumn(order = 5, title = "邮箱")
+    @ExcelColumn(order = 5, title = "用户信息->邮箱")
     private String email;
 
     /**
      * 备注
      */
-    @ExcelColumn(order = 6, title = "备注")
+    @ExcelColumn(order = 6, title = "用户信息->备注")
     private String remark;
 
     /**
      * 所属部门名称集合
      */
     @MultiColumn(classType = String.class)
-    @ExcelColumn(order = 7, title = "部门名称")
+    @ExcelColumn(order = 7, title = "部门信息->部门名称")
     private List<String> deptLabelList;
 
     /**
      * 所属部门编码集合
      */
     @MultiColumn(classType = String.class)
-    @ExcelColumn(order = 8, title = "部门编码")
+    @ExcelColumn(order = 8, title = "部门信息->部门编码")
     private List<String> deptCodeList;
 
     /**
      * 所属部门下的岗位名称
      */
-    @ExcelColumn(order = 9, title = "岗位")
-    private String postName;
+    @MultiColumn(classType = String.class)
+    @ExcelColumn(order = 9, title = "部门信息->岗位")
+    private List<String> postLabelList;
 
     /**
      * 所属部门id集合

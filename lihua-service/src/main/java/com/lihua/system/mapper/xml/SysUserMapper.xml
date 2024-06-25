@@ -34,6 +34,9 @@
         <result column="email" property="email" />
         <result column="phone_number" property="phoneNumber" />
         <result column="remark" property="remark" />
+        <collection property="deptIdList" ofType="java.lang.String">
+            <result column="id"/>
+        </collection>
         <collection property="deptCodeList" ofType="java.lang.String">
             <result column="code"/>
         </collection>
@@ -62,18 +65,19 @@
     </select>
 
     <select id="findPage" resultType="com.lihua.system.model.SysUserVO">
-        SELECT
-            id,
-            username,
-            nickname,
-            gender,
-            status,
-            create_time,
-            email,
-            phone_number,
-            remark
+        SELECT DISTINCT
+            sys_user.id,
+            sys_user.username,
+            sys_user.nickname,
+            sys_user.gender,
+            sys_user.status,
+            sys_user.create_time,
+            sys_user.email,
+            sys_user.phone_number,
+            sys_user.remark
         FROM
             sys_user
+        LEFT JOIN sys_user_dept ON sys_user_dept.user_id = sys_user.id
         ${ew.customSqlSegment}
     </select>
 
@@ -127,16 +131,17 @@
 
 
     <select id="findExportData" resultMap="findExportDataMap">
-        SELECT
+        SELECT DISTINCT
             sys_user.username,
             sys_user.nickname,
             sys_user.gender,
-            sys_user.STATUS,
+            sys_user.status,
             sys_user.phone_number,
             sys_user.email,
             sys_user.remark,
-            sys_dept.CODE,
-            sys_dept.NAME
+            sys_dept.id,
+            sys_dept.code,
+            sys_dept.name
         FROM
             sys_user
         LEFT JOIN sys_user_dept ON sys_user_dept.user_id = sys_user.id

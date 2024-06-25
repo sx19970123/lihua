@@ -2,6 +2,7 @@ import axios, {type AxiosRequestConfig, type AxiosResponse} from 'axios';
 import token from "@/utils/Token.ts"
 import type {ResponseType} from "@/api/global/Type.ts"
 import { useUserStore } from "@/stores/modules/user";
+import {message} from "ant-design-vue";
 
 const { getToken } = token
 
@@ -31,6 +32,10 @@ service.interceptors.response.use((resp) => {
         const userStore= useUserStore()
         userStore.clearUserInfo(data.msg)
         throw data.msg
+    }
+    // 服务器处理文件异常，提示异常信息
+    if (data.code === 501) {
+        message.error(data.msg)
     }
     return resp;
 })

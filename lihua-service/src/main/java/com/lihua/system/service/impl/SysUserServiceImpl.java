@@ -10,10 +10,7 @@ import com.lihua.system.mapper.SysUserMapper;
 import com.lihua.system.model.SysUserDTO;
 import com.lihua.system.model.SysUserDeptDTO;
 import com.lihua.system.model.SysUserVO;
-import com.lihua.system.service.SysUserDeptService;
-import com.lihua.system.service.SysUserPostService;
-import com.lihua.system.service.SysUserRoleService;
-import com.lihua.system.service.SysUserService;
+import com.lihua.system.service.*;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
@@ -25,10 +22,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +39,9 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Resource
     private SysUserDeptService sysUserDeptService;
+
+    @Resource
+    private SysPostService sysPostService;
 
     @Override
     public IPage<SysUserVO> findPage(SysUserDTO sysUserDTO) {
@@ -74,7 +71,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
         // 创建时间
         if (sysUserDTO.getCreateTimeList() != null && !sysUserDTO.getCreateTimeList().isEmpty()) {
-            queryWrapper.between("create_time", sysUserDTO.getCreateTimeList().get(0),sysUserDTO.getCreateTimeList().get(1));
+            queryWrapper.between("sys_user.create_time", sysUserDTO.getCreateTimeList().get(0),sysUserDTO.getCreateTimeList().get(1));
         }
 
         queryWrapper.eq("del_flag","0").orderByDesc("id");
@@ -85,7 +82,7 @@ public class SysUserServiceImpl implements SysUserService {
             return iPage;
         }
 
-        // 为用户所属部门赋值
+        // 为用户所属部门赋值(一对多分页会出问题，单独处理)
         handleUserDept(iPage.getRecords());
 
         return iPage;
@@ -186,6 +183,32 @@ public class SysUserServiceImpl implements SysUserService {
         queryWrapper.eq("sys_user.del_flag","0").orderByDesc("sys_user.id");
 
         List<SysUserVO> exportList = sysUserMapper.findExportData(queryWrapper);
+
+        // 获取所有部门id
+        List<String> deptIds = exportList
+                .stream()
+                .map(SysUserVO::getDeptIdList)
+                .flatMap(Collection::stream)
+                .distinct()
+                .toList();
+
+        // 根据部门id获取岗位信息
+        List<SysPost> postList = sysPostService.findPostByDeptId(deptIds);
+
+        // 创建deptId 与 post 映射
+        Map<String, List<String>> postGroupByDeptId = postList
+                .stream()
+                .collect(Collectors.groupingBy(SysPost::getDeptId,Collectors.mapping(SysPost::getName, Collectors.toList())));
+        // 根据deptId顺序设置岗位名称
+        exportList.forEach(export -> {
+            List<String> postNameLis = export.getDeptIdList()
+                    .stream()
+                    .map(deptId -> {
+                        List<String> postNames = postGroupByDeptId.getOrDefault(deptId, Collections.emptyList());
+                        return String.join("、", postNames);
+                    }).toList();
+            export.setPostLabelList(postNameLis);
+        });
 
         // 导出excel
         return ExcelUtils.excelExport(exportList, SysUserVO.class, "系统用户");

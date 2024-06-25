@@ -1,6 +1,6 @@
 package com.lihua.model.web;
 
-import lombok.SneakyThrows;
+import com.lihua.exception.FileException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,10 +19,14 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class BaseFileController {
 
-    @SneakyThrows
-    public static ResponseEntity<StreamingResponseBody> success(File file){
-        FileInputStream fileInputStream = new FileInputStream(file);
-        return success(fileInputStream, file.getName());
+    public static ResponseEntity<StreamingResponseBody> success(File file) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            return success(fileInputStream, file.getName());
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            throw new FileException(e.getMessage());
+        }
     }
 
     public static ResponseEntity<StreamingResponseBody> success(InputStream inputStream, String fileName) throws UnsupportedEncodingException {
@@ -39,6 +43,7 @@ public class BaseFileController {
               }
           } catch (IOException e) {
               log.error(e.getMessage(), e);
+              throw new FileException(e.getMessage());
           } finally {
               try {
                   inputStream.close();

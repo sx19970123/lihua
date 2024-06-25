@@ -4,6 +4,7 @@ import com.lihua.enums.ResultCodeEnum;
 import com.lihua.utils.json.JsonUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -38,7 +39,7 @@ public class BaseController extends BaseFileController {
     }
 
     public static String error(ResultCodeEnum resultCodeEnum, String message) {
-        return error(resultCodeEnum, message, null);
+        return error(resultCodeEnum, StringUtils.hasText(message) ? message : resultCodeEnum.getDefaultMsg(), null);
     }
 
     public static String error(ResultCodeEnum resultCodeEnum) {

@@ -4,6 +4,8 @@ import com.github.liaochong.myexcel.core.DefaultExcelBuilder;
 import com.github.liaochong.myexcel.core.DefaultStreamExcelBuilder;
 import com.github.liaochong.myexcel.utils.FileExportUtil;
 import com.lihua.config.LihuaConfig;
+import com.lihua.enums.ResultCodeEnum;
+import com.lihua.exception.FileException;
 import com.lihua.exception.ServiceException;
 import com.lihua.utils.spring.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +34,7 @@ public class ExcelUtils {
                 .of(clazz)
                 .autoMerge()
                 // 自定义表头样式，详见：https://github.com/liaochong/myexcel/wiki/Style-support
-                .style("title->background-color:rgb(217,217,217);vertical-align:center;text-align:center;border-style:thin")
+                .style( "cell->border-style:thin","title->background-color:rgb(217,217,217);vertical-align:center;text-align:center;border-style:thin")
                 .titleRowHeight(30)
                 .start();
         excelBuilder.append(exportList);
@@ -42,7 +44,7 @@ public class ExcelUtils {
             FileExportUtil.export(workbook, file);
         } catch (IOException e) {
             log.error(e.getMessage(),e);
-            throw new ServiceException(e.getMessage());
+            throw new FileException(e.getMessage());
         }
         return file;
     }
