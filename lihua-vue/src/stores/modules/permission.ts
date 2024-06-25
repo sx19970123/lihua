@@ -30,7 +30,7 @@ export const usePermissionStore = defineStore('permission',{
             handleRouterComponent (metaRouterList)
             // 顶级无父组件目录、页面添加layout父级
             metaRouterList.forEach(route => {
-                const isRoot =  route.parentId === '0' &&  ( route.children === null || route.children.length === 0)
+                const isRoot= route.children === null || route.children.length === 0
                 const isPageType = route.type === 'page';
                 const isMenuType = route.type === 'directory';
                 const isLinkType = route.type === 'link' && route.meta.linkOpenType === 'inner';

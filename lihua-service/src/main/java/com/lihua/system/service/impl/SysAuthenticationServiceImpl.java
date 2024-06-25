@@ -199,7 +199,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         // 递归构建树
         List<CurrentRouter> routerList = TreeUtils.buildTree(currentRouterList);
         // 设置层级key，再通过key设置path
-        handleRouterPathKey(routerList, null);
+        handleRouterPathKey(routerList, "");
         return routerList;
     }
 
@@ -210,7 +210,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             // 根据菜单层级关系设置key
             if ("0".equals(item.getParentId())) {
                 item.setKey(key);
-            } else if (parentKey != null){
+            } else {
                 item.setKey(parentKey + key);
             }
             // 设置path
