@@ -4,7 +4,7 @@
       <transition :name="themeStore.routeTransition" mode="out-in">
         <a-layout-header class="hc-layout-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' ?
         { background: themeStore.layoutBackgroundColor } : ''">
-          <a-flex align="center" justify="space-between">
+          <a-flex align="center" justify="space-between" style="margin-right: 32px">
             <!--logo-->
             <Logo class="logo"/>
             <!--导航-->

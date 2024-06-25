@@ -8,7 +8,7 @@
       :style="themeStore.layoutType === 'header' ? { width: themeStore.siderWith + 'px'} : ''"
       style="border-inline-end: none"
       :items="menu"
-      @click="handleClickMenuItem"
+      @select="handleClickMenuItem"
   />
 </template>
 
