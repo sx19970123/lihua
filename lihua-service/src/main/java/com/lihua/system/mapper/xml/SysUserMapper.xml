@@ -131,7 +131,7 @@
 
 
     <select id="findExportData" resultMap="findExportDataMap">
-        SELECT DISTINCT
+        SELECT
             sys_user.username,
             sys_user.nickname,
             sys_user.gender,

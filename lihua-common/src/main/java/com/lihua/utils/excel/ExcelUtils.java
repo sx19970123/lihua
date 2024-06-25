@@ -1,10 +1,8 @@
 package com.lihua.utils.excel;
 
-import com.github.liaochong.myexcel.core.DefaultExcelBuilder;
 import com.github.liaochong.myexcel.core.DefaultStreamExcelBuilder;
 import com.github.liaochong.myexcel.utils.FileExportUtil;
 import com.lihua.config.LihuaConfig;
-import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.FileException;
 import com.lihua.exception.ServiceException;
 import com.lihua.utils.spring.SpringUtils;

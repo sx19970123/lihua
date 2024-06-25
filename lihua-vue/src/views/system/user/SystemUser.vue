@@ -83,6 +83,19 @@
               </template>
               新 增
             </a-button>
+
+<!--            <a-button type="primary" ghost>-->
+<!--              <template #icon>-->
+<!--                <ExportOutlined />-->
+<!--              </template>-->
+<!--              导出-->
+<!--            </a-button>-->
+<!--            <a-button type="primary" ghost>-->
+<!--              <template #icon>-->
+<!--                <ImportOutlined />-->
+<!--              </template>-->
+<!--              导入-->
+<!--            </a-button>-->
             <a-popconfirm title="删除后不可恢复，是否删除？"
                           :open="openDeletePopconfirm"
                           ok-text="确 定"
@@ -98,6 +111,20 @@
                 <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
               </a-button>
             </a-popconfirm>
+            <a-dropdown>
+              <template #overlay>
+                <a-menu @click="handleClickExcelBtn">
+                  <a-menu-item key="export"><ExportOutlined /> 批量导出</a-menu-item>
+                  <a-menu-item key="import"><ImportOutlined /> 批量导入</a-menu-item>
+                  <a-menu-item key="template"><DownloadOutlined /> 模板下载</a-menu-item>
+                </a-menu>
+              </template>
+              <a-button ghost type="primary">
+                Excel
+                <DownOutlined />
+              </a-button>
+            </a-dropdown>
+
           </a-flex>
         </template>
         <template #bodyCell="{column,record,text}">
@@ -302,7 +329,7 @@
 
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findPage, findById, save, deleteByIds, updateStatus} from "@/api/system/user/User.ts"
+import {findPage, findById, save, deleteByIds, updateStatus, exportExcel} from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/dict"
 import {reactive, ref, watch} from "vue";
 import CardSelect from "@/components/card-select/index.vue"
@@ -992,6 +1019,44 @@ const intiDelete = () => {
 }
 
 const {handleDelete,closePopconfirm,openPopconfirm,openDeletePopconfirm} = intiDelete()
+
+// 初始化excel导入导出相关操作
+const initExcel = () => {
+  const handleClickExcelBtn = ({key}: {key: string}) => {
+    switch (key) {
+      case 'export': {
+        handleExportExcel()
+        break
+      }
+      case 'import': {
+        handleImportExcel()
+        break
+      }
+      case 'template': {
+        handleDownloadTemplate()
+        break
+      }
+    }
+  }
+  // 导出excel
+  const handleExportExcel = () => {
+    exportExcel(userQuery.value)
+  }
+  // excel批量导入
+  const handleImportExcel = () => {
+
+  }
+  // 下载模板
+  const handleDownloadTemplate = () => {
+
+  }
+
+  return {
+    handleClickExcelBtn
+  }
+}
+
+const { handleClickExcelBtn } = initExcel()
 
 // 监听关键词筛选
 watch(() => deptKeyword.value, (value) => {

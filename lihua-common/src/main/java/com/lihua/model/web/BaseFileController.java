@@ -29,6 +29,15 @@ public class BaseFileController {
         }
     }
 
+    public static ResponseEntity<StreamingResponseBody> success(InputStream inputStream) {
+        try {
+            return success(inputStream, null);
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            throw new FileException(e.getMessage());
+        }
+    }
+
     public static ResponseEntity<StreamingResponseBody> success(InputStream inputStream, String fileName) throws UnsupportedEncodingException {
         if (!StringUtils.hasText(fileName)) {
             fileName = "attachment";

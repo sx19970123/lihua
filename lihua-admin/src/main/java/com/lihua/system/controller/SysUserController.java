@@ -60,8 +60,6 @@ public class SysUserController extends BaseController {
 
     @PostMapping("export")
     public ResponseEntity<StreamingResponseBody> exportExcel(@RequestBody SysUserDTO sysUserDTO) {
-        File file = sysUserService.exportExcel(sysUserDTO);
-        // 下载excel
-        return success(file);
+        return success(sysUserService.exportExcel(sysUserDTO));
     }
 }
