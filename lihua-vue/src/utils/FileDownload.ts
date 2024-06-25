@@ -13,10 +13,9 @@ export const download = (fun: Promise<ResponseType<string> & Blob>) => {
 
 const handleDownload = (url:string, filename:string) => {
     const link = document.createElement('a');
-    link.href = 'http://localhost:8080/system/file/download/' + url;
+    link.href = import.meta.env.VITE_APP_BASE_API + '/system/file/download/' + url;
     link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    console.log(import.meta.env.VITE_APP_BASE_API + '/system/user/download/' + url)
 }
