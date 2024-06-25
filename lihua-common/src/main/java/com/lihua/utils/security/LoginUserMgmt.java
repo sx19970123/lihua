@@ -68,11 +68,11 @@ public class LoginUserMgmt {
      */
     public static void setLoginUserCache(LoginUser loginUser) {
         // 记录过期时间
-        loginUser.setExpirationTime(DateUtils.now().plusMinutes(lihuaConfig().getExpireTime()));
+        loginUser.setExpirationTime(DateUtils.now().plusMinutes(lihuaConfig().getTokenExpireTime()));
         // 设置缓存
         redisCache().setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getUser().getId(),
                 loginUser,
-                lihuaConfig().getExpireTime(),
+                lihuaConfig().getTokenExpireTime(),
                 TimeUnit.MINUTES);
     }
 

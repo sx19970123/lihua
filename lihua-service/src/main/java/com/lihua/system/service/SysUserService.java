@@ -47,5 +47,5 @@ public interface SysUserService {
      * @param sysUserDTO
      * @return
      */
-    File exportExcel(SysUserDTO sysUserDTO);
+    String exportExcel(SysUserDTO sysUserDTO);
 }

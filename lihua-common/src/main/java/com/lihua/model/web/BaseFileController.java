@@ -1,5 +1,6 @@
 package com.lihua.model.web;
 
+import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.FileException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +21,9 @@ import java.nio.charset.StandardCharsets;
 public class BaseFileController {
 
     public static ResponseEntity<StreamingResponseBody> success(File file) {
+        if (!file.exists()) {
+            throw new FileException(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
+        }
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             return success(fileInputStream, file.getName());

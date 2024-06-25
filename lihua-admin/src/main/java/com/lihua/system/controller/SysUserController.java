@@ -6,6 +6,7 @@ import com.lihua.system.model.SysUserDTO;
 import com.lihua.system.model.SysUserVO;
 import com.lihua.system.service.SysUserService;
 import com.lihua.utils.excel.ExcelUtils;
+import com.lihua.utils.security.TemporaryTokenUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.ResponseEntity;
@@ -58,8 +59,11 @@ public class SysUserController extends BaseController {
         return success();
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("export")
-    public ResponseEntity<StreamingResponseBody> exportExcel(@RequestBody SysUserDTO sysUserDTO) {
-        return success(sysUserService.exportExcel(sysUserDTO));
+    public String exportExcel(@RequestBody SysUserDTO sysUserDTO) {
+        String path = sysUserService.exportExcel(sysUserDTO);
+        // 根据生成的excel路径生成临时token
+        return success(TemporaryTokenUtils.createTemporaryToken(path));
     }
 }

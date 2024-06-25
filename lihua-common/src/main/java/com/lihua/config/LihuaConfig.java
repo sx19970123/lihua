@@ -15,12 +15,17 @@ public class LihuaConfig {
     /**
      * redis 中 token 过期时间
      */
-    private Long expireTime;
+    private Long tokenExpireTime;
 
     /**
      * token 刷新阈值
      */
     private Long refreshThreshold;
+
+    /**
+     * 下载附件临时 token 过期时间
+     */
+    private Long temporaryTokenExpireTime;
 
     /**
      * 允许跨域最长时间

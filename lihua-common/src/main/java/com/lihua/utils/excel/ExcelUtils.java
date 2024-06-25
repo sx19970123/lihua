@@ -22,12 +22,13 @@ public class ExcelUtils {
 
     /**
      * excel 导出
-     * @param exportList
-     * @param clazz
-     * @param fileName
-     * @return
+     * @param exportList 需要导出文件的数据集合
+     * @param clazz 对应实体类class
+     * @param fileName 导出文件名称
+     * @return 生成excel文件的绝对路径
      */
-    public static <T> File excelExport(List<T> exportList, Class<T> clazz, String fileName) {
+    public static <T> String excelExport(List<T> exportList, Class<T> clazz, String fileName) {
+        // 创建 Workbook
         DefaultStreamExcelBuilder<T> excelBuilder = DefaultStreamExcelBuilder
                 .of(clazz)
                 .autoMerge()
@@ -37,14 +38,24 @@ public class ExcelUtils {
                 .start();
         excelBuilder.append(exportList);
         Workbook workbook = excelBuilder.build();
+
         File file = new File(handleFullFilePath(fileName));
+
+        // 判断父级目录是否存在，不存在的情况下自动创建
+        File parentDir = file.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs();
+        }
+
         try (excelBuilder) {
+            // 文件导出
             FileExportUtil.export(workbook, file);
         } catch (IOException e) {
             log.error(e.getMessage(),e);
             throw new FileException(e.getMessage());
         }
-        return file;
+
+        return file.getAbsolutePath();
     }
 
 

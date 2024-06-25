@@ -152,7 +152,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public File exportExcel(SysUserDTO sysUserDTO) {
+    public String exportExcel(SysUserDTO sysUserDTO) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
 
         // 部门id
