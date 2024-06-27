@@ -3,21 +3,15 @@ package com.lihua.system.controller;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.SysUserDTO;
-import com.lihua.system.model.SysUserVO;
 import com.lihua.system.service.SysUserService;
-import com.lihua.utils.excel.ExcelUtils;
-import com.lihua.utils.security.TemporaryTokenUtils;
+import com.lihua.utils.security.FileDownloadManager;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 @RestController
@@ -64,6 +58,6 @@ public class SysUserController extends BaseController {
     public String exportExcel(@RequestBody SysUserDTO sysUserDTO) {
         String path = sysUserService.exportExcel(sysUserDTO);
         // 根据生成的excel路径生成临时token
-        return success(TemporaryTokenUtils.createTemporaryToken(path));
+        return success(FileDownloadManager.addToDownloadableList(path));
     }
 }

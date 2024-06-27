@@ -2,23 +2,20 @@ package com.lihua.system.controller;
 
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
-import com.lihua.enums.ResultCodeEnum;
-import com.lihua.exception.FileException;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.service.SysFileService;
-import com.lihua.utils.security.TemporaryTokenUtils;
+import com.lihua.utils.security.FileDownloadManager;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("system/file")
@@ -34,16 +31,31 @@ public class SysFileController extends BaseController {
     private LihuaConfig lihuaConfig;
 
     /**
-     * 通过临时token下载附件
+     * 附件下载
      * 该接口无需springSecurity鉴权即可访问
      * 其他需要鉴权的接口请注意不要设置接口地址为/system/file/download/**
-     * @param temporaryToken
-     * @return
+     * @param filePath 文件路径，可以是被 split 分割的多个文件（多文件将打包下载）
+     * @return ResponseEntity 包含 StreamingResponseBody，用于文件下载
      */
-    @GetMapping("download/{temporaryToken}")
-    public ResponseEntity<StreamingResponseBody> download(@PathVariable("temporaryToken") String temporaryToken) {
-        String fileFullPathByTemporaryToken = TemporaryTokenUtils.getFileFullPathByTemporaryToken(temporaryToken);
-        return success(new File(fileFullPathByTemporaryToken));
+    @GetMapping("download/{filePath}")
+    public ResponseEntity<StreamingResponseBody> download(@PathVariable("filePath") String filePath, @RequestParam(name = "split", defaultValue = ",") String split) {
+        // 验证请求的文件是否允许下载
+        FileDownloadManager.isDownloadable(filePath, split);
+
+        String[] filePathArray = filePath.split(split);
+
+        // 单文件直接调用下载
+        if (filePathArray.length == 1) {
+            return success(new File(filePathArray[0]));
+        }
+
+        // 多文件创建文件集合
+        List<File> files = new ArrayList<>();
+        for (String path : filePathArray) {
+            files.add(new File(path));
+        }
+
+        return success(files);
     }
 
     @PostMapping("avatar")

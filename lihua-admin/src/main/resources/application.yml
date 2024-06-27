@@ -4,8 +4,8 @@ lihua:
   tokenExpireTime: 60
   # 令牌刷新阈值（分钟）距令牌过期15分钟内时，有新请求时对令牌进行刷新
   refreshThreshold: 15
-  # 下载用临时token过期时间（分钟），值 <= 0 为下载一次后立即失效
-  temporaryTokenExpireTime: -1
+  # 下载用临时token过期时间（分钟）。0：下载一次后立即失效；-1：不对静态资源进行安全限制
+  temporaryTokenExpireTime: 0
   # 允许跨域的最长时间
   corsMaxAge: 3600
   # 上传文件路径 mac windows 注意目录切换

@@ -19,10 +19,7 @@ public class SpringUtils implements ApplicationContextAware {
         applicationContext = context;
     }
 
-    public static <T> T getBean(String name) {
-        return (T) applicationContext.getBean(name);
-    }
-
+    // 通过clazz获取spring托管的bean
     public static <T> T getBean(Class<T> clazz) {
        return applicationContext.getBean(clazz);
     }

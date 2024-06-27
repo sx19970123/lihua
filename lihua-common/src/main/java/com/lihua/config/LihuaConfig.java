@@ -20,17 +20,17 @@ public class LihuaConfig {
     /**
      * token 刷新阈值
      */
-    private Long refreshThreshold;
+    private Integer refreshThreshold;
 
     /**
      * 下载附件临时 token 过期时间
      */
-    private Long temporaryTokenExpireTime;
+    private Integer temporaryTokenExpireTime;
 
     /**
      * 允许跨域最长时间
      */
-    private Long corsMaxAge;
+    private Integer corsMaxAge;
 
     /**
      * 文件上传路径

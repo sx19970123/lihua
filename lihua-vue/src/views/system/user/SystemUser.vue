@@ -346,7 +346,7 @@ import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import {useThemeStore} from "@/stores/modules/theme.ts";
-import {download} from "@/utils/FileDownload.ts";
+import {handleFunDownload} from "@/utils/FileDownload.ts";
 const themeStore = useThemeStore();
 const {sys_status,user_gender} = initDict("sys_status", "user_gender")
 const SHOW_ALL = TreeSelect.SHOW_ALL;
@@ -1041,8 +1041,7 @@ const initExcel = () => {
   }
   // 导出excel
   const handleExportExcel = () => {
-
-    download(exportExcel(userQuery.value))
+    handleFunDownload(exportExcel(userQuery.value))
   }
   // excel批量导入
   const handleImportExcel = () => {
