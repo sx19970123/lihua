@@ -14,16 +14,18 @@ type DownloadParam = {
 }
 
 // 传入请求下载接口的异步函数，自动处理下载
-export const handleFunDownload = (fun: Promise<ResponseType<any> & Blob>, param?: DownloadParam) => {
-    const spinInstance = Spin.service();
+export const handleFunDownload = (fun: Promise<ResponseType<string>> | Promise<Blob>, param?: DownloadParam) => {
+    const spinInstance = Spin.service({
+        tip: '努力加载资源中...'
+    });
 
-    fun.then((resp: ResponseType<any> & Blob) => {
+    fun.then((resp) => {
         // 函数返回值如果为二进制，则转为url进行下载
         // 需要在api中指定responseType:'blob'
         if (resp instanceof Blob) {
             downloadByBlob(resp, param?.fileName);
         } else {
-            const response = resp as ResponseType<string>;
+            const response = resp;
 
             if (response.code === 200) {
                 const data = response.data;

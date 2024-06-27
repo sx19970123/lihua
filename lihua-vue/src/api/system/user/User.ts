@@ -51,6 +51,5 @@ export const exportExcel = (data: SysUserDTO) => {
         url: 'system/user/export',
         method: "post",
         data: data,
-        responseType:'blob'
     })
 }
