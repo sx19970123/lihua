@@ -47,9 +47,10 @@ export const deleteByIds = (ids: string[]) => {
 
 // excel导出
 export const exportExcel = (data: SysUserDTO) => {
-    return request<string>({
+    return request({
         url: 'system/user/export',
         method: "post",
-        data: data
+        data: data,
+        responseType:'blob'
     })
 }

@@ -37,8 +37,8 @@ public class SysFileController extends BaseController {
      * @param filePath 文件路径，可以是被 split 分割的多个文件（多文件将打包下载）
      * @return ResponseEntity 包含 StreamingResponseBody，用于文件下载
      */
-    @GetMapping("download/{filePath}")
-    public ResponseEntity<StreamingResponseBody> download(@PathVariable("filePath") String filePath, @RequestParam(name = "split", defaultValue = ",") String split) {
+    @GetMapping("download")
+    public ResponseEntity<StreamingResponseBody> download(@RequestParam(name = "filePath") String filePath, @RequestParam(name = "split", defaultValue = ",") String split) {
         // 验证请求的文件是否允许下载
         FileDownloadManager.isDownloadable(filePath, split);
 
