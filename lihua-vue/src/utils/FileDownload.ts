@@ -14,7 +14,7 @@ type DownloadParam = {
 }
 
 // 传入请求下载接口的异步函数，自动处理下载
-export const handleFunDownload = (fun: Promise<ResponseType<string>> | Promise<Blob>, param?: DownloadParam) => {
+export const handleFunDownload = (fun: Promise<any>, param?: DownloadParam) => {
     const spinInstance = Spin.service({
         tip: '努力加载资源中...'
     });
