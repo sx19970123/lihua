@@ -1,6 +1,7 @@
 package com.lihua.utils.excel;
 
 import com.github.liaochong.myexcel.core.DefaultStreamExcelBuilder;
+import com.github.liaochong.myexcel.core.SaxExcelReader;
 import com.github.liaochong.myexcel.utils.FileExportUtil;
 import com.lihua.config.LihuaConfig;
 import com.lihua.exception.FileException;
@@ -12,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -56,6 +58,21 @@ public class ExcelUtils {
         }
 
         return file.getAbsolutePath();
+    }
+
+    /**
+     * excel 倒入
+     * @param inputStream 流
+     * @param clazz 接收文件类型class
+     * @return 倒入数据集合
+     * @param <T>
+     */
+    public static <T> List<T> importExport(InputStream inputStream, Class<T> clazz) {
+        return SaxExcelReader.of(clazz)
+                .sheet(0)
+                .rowFilter(row -> row.getRowNum() > 0)
+                .detectedMerge()
+                .read(inputStream);
     }
 
 

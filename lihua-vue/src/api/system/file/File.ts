@@ -21,3 +21,22 @@ export const upload = (file: Blob) => {
         }
     })
 }
+
+/**
+ * 多文件上传
+ * @param files
+ */
+export const uploads = (files: Array<Blob>) => {
+    const formData = new FormData();
+    files.forEach(file => {
+        formData.append('files', file)
+    })
+    return request<string[]>({
+        url: 'system/file/uploads',
+        method: 'post',
+        data: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+}

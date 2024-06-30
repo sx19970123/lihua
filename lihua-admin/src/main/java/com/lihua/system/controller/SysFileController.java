@@ -3,12 +3,9 @@ package com.lihua.system.controller;
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
 import com.lihua.model.web.BaseController;
-import com.lihua.system.service.SysFileService;
 import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.file.FileUploadUtils;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,9 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("system/file")
 public class SysFileController extends BaseController {
-
-    @Resource(name = "sysFileServiceImpl")
-    private SysFileService sysFileService;
 
     @Resource
     private RedisCache redisCache;
@@ -66,7 +60,6 @@ public class SysFileController extends BaseController {
      */
     @PostMapping("upload")
     public String upload(@RequestParam("file") MultipartFile file) {
-        String contentType = file.getContentType();
         return success(FileUploadUtils.upload(file));
     }
 
@@ -78,14 +71,5 @@ public class SysFileController extends BaseController {
     @PostMapping("uploads")
     public String uploads(@RequestParam("files") MultipartFile[] files) {
         return success(FileUploadUtils.upload(files));
-    }
-
-
-
-    @SneakyThrows
-    @GetMapping(value = "imagePreview/{fileName}")
-    public ResponseEntity<StreamingResponseBody> imagePreview(@PathVariable String fileName, HttpServletResponse response) {
-        File file = sysFileService.imagePreview(fileName);
-        return success(file);
     }
 }
