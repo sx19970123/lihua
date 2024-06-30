@@ -4,7 +4,7 @@ import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.SysUserDTO;
 import com.lihua.system.service.SysUserService;
-import com.lihua.utils.security.FileDownloadManager;
+import com.lihua.utils.file.FileDownloadUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,6 +58,6 @@ public class SysUserController extends BaseController {
     public String exportExcel(@RequestBody SysUserDTO sysUserDTO) {
         String path = sysUserService.exportExcel(sysUserDTO);
         // 根据生成的excel路径生成临时token
-        return success(FileDownloadManager.addToDownloadableList(path));
+        return success(FileDownloadUtils.addToDownloadableList(path));
     }
 }

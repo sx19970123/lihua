@@ -1,10 +1,9 @@
 import { defineStore } from "pinia";
 import {login, logout} from "@/api/system/login/Login.ts";
-import {saveTheme} from "@/api/system/profile/Profile.ts";
+import {getAvatar, saveTheme} from "@/api/system/profile/Profile.ts";
 import token from "@/utils/Token.ts";
 import { message } from "ant-design-vue";
 import router from "@/router";
-import {imagePreview} from "@/api/system/file/File.ts";
 import {getAuthInfo} from "@/api/system/auth/Auth.ts";
 import type { ResponseType } from "@/api/global/Type.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
@@ -188,7 +187,7 @@ export const useUserStore = defineStore('user', {
             if (avatar.type === 'image') {
                 // 当头像类型为 image 但 image不存在时，赋值默认头像
                 if (avatar.value) {
-                    imagePreview(avatar.value).then(resp => {
+                    getAvatar(avatar.value).then((resp: Blob) => {
                         avatar.url = URL.createObjectURL(resp)
                     }).catch(() => {
                         this.$state.avatar = this.getDefaultAvatar()

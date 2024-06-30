@@ -17,8 +17,8 @@ export interface AvatarType {
     type?: string,
     // 头像背景颜色
     backgroundColor?: string,
-    // 头像值： image地址链接/icon组件名称/text文本
+    // 头像值： image头像全路径/icon组件名称/text文本
     value?: string,
-    // 图片地址
+    // 访问头像url
     url?: string
 }

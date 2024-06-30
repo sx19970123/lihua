@@ -41,32 +41,32 @@ service.interceptors.response.use((resp) => {
 })
 
 // 数据返回统一封装样式
-function request<T>(config: AxiosRequestConfig): Promise<ResponseType<T>>;
-function request(config: AxiosRequestConfig): Promise<Blob>;
-function request<T>(config: AxiosRequestConfig) {
-    return new Promise<ResponseType<T> & Blob>((resolve, reject) => {
-        service
-            .request<ResponseType<T> & Blob>(config)
-            .then((response: AxiosResponse<ResponseType<T> & Blob>) => {
-                resolve(response.data)
-            })
-            .catch((err) => {
-                reject(err);
-            });
-    });
-}
-export default request
-
-// 数据返回统一封装样式
-// export default <T> (config: AxiosRequestConfig) => {
+// function request<T>(config: AxiosRequestConfig): Promise<ResponseType<T>>;
+// function request(config: AxiosRequestConfig): Promise<Blob>;
+// function request<T>(config: AxiosRequestConfig) {
 //     return new Promise<ResponseType<T> & Blob>((resolve, reject) => {
 //         service
-//           .request<ResponseType<T> & Blob>(config)
-//           .then((response: AxiosResponse<ResponseType<T> & Blob>) => {
-//               resolve(response.data)
-//           })
-//           .catch((err) => {
-//               reject(err);
-//           });
+//             .request<ResponseType<T> & Blob>(config)
+//             .then((response: AxiosResponse<ResponseType<T> & Blob>) => {
+//                 resolve(response.data)
+//             })
+//             .catch((err) => {
+//                 reject(err);
+//             });
 //     });
-// };
+// }
+// export default request
+
+// 数据返回统一封装样式
+export default <T> (config: AxiosRequestConfig) => {
+    return new Promise<ResponseType<T> & Blob>((resolve, reject) => {
+        service
+          .request<ResponseType<T> & Blob>(config)
+          .then((response: AxiosResponse<ResponseType<T> & Blob>) => {
+              resolve(response.data)
+          })
+          .catch((err) => {
+              reject(err);
+          });
+    });
+};

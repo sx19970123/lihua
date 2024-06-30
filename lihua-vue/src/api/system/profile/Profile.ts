@@ -31,6 +31,19 @@ export const updatePassword = (oldPassword: string,newPassword: string) => {
 }
 
 /**
+ * 获取用户头像
+ * @param fullAvatarPath
+ */
+export const getAvatar = (fullAvatarPath: string) => {
+    return request({
+        url: 'system/profile/avatar',
+        params: { fullAvatarPath: fullAvatarPath },
+        method: 'get',
+        responseType: 'blob'
+    })
+}
+
+/**
  * 设置默认部门
  * @param deptId
  */

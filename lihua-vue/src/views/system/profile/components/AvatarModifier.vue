@@ -61,7 +61,7 @@ import IconSelect from "@/components/icon-select/index.vue"
 import ImageCropper from "@/components/image-cropper/index.vue"
 import type {CropperDataType} from "@/components/image-cropper/CropperType.ts";
 import SysAvatar from "@/components/user-avatar/index.vue"
-import {uploadAvatar} from "@/api/system/file/File.ts";
+import {upload} from "@/api/system/file/File.ts";
 import {useUserStore} from "@/stores/modules/user";
 import {message, Modal} from 'ant-design-vue';
 import settings from "@/settings";
@@ -133,8 +133,7 @@ const handleOk = async () => {
   let updatedData: AvatarType = {
     type :'',
     backgroundColor :'',
-    value :'',
-    url : ''
+    value :''
   };
   try {
     switch (avatarType.value) {
@@ -146,17 +145,18 @@ const handleOk = async () => {
         if (!avatarUrl.value) {
           throw new Error('请上传头像');
         }
-        const blob = await cropperInstance.getBlob();
+        const blob = await cropperInstance.getBlob() as Blob;
+
         if (!blob) {
           throw new Error('获取 blob 数据失败');
         }
-        avatarUrl.value = URL.createObjectURL(blob as Blob);
-        const resp = await uploadAvatar(blob as Blob);
+
+        const resp = await upload(blob);
         if (resp.code !== 200) {
           throw new Error('头像上传失败');
         }
         updatedData = {
-          url: avatarUrl.value,
+          url: URL.createObjectURL(blob),
           value: resp.data,
           type: avatarType.value,
           backgroundColor: avatarColor.value
@@ -166,7 +166,6 @@ const handleOk = async () => {
       case "icon":
       case "text": {
         updatedData = {
-          url: '',
           value: avatarType.value === 'icon' ? avatarIcon.value : avatarText.value,
           type: avatarType.value,
           backgroundColor: avatarColor.value

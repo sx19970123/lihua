@@ -23,7 +23,6 @@
 import Basic from './components/ProfileBasicSetting.vue'
 import Individuation from './components/ProfileIndividuation.vue'
 import Security from './components/ProfileSecurity.vue'
-import Dept from './components/ProfileDept.vue'
 import {ref,markRaw} from "vue";
 import { useThemeStore } from "@/stores/modules/theme";
 const themeStore = useThemeStore()

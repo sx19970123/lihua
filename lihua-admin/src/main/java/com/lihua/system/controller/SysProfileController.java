@@ -1,5 +1,6 @@
 package com.lihua.system.controller;
 
+import com.lihua.config.LihuaConfig;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.security.AuthInfo;
 import com.lihua.model.security.CurrentDept;
@@ -10,14 +11,19 @@ import com.lihua.system.entity.SysUser;
 import com.lihua.system.entity.validation.ProfileValidation;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.system.service.SysUserDeptService;
+import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+
+import java.io.File;
 
 @RestController
 @RequestMapping("system/profile")
@@ -47,6 +53,16 @@ public class SysProfileController extends BaseController {
     @PostMapping("theme")
     public String saveTheme(@RequestBody @Validated(ProfileValidation.ProfileThemeValidation.class) SysUser sysUser) {
         return success(sysProfileService.saveTheme(sysUser.getTheme()));
+    }
+
+    /**
+     * 获取图片用户头像
+     * @param fullAvatarPath
+     * @return
+     */
+    @GetMapping("avatar")
+    public ResponseEntity<StreamingResponseBody> getAvatar(@RequestParam("fullAvatarPath") String fullAvatarPath) {
+        return success(new File(fullAvatarPath));
     }
 
     /**

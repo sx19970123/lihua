@@ -35,16 +35,31 @@
               :customRequest="handleCustomRequest"
               :beforeUpload="handleBeforeUpload"
           >
-            <a-button> <upload-outlined/> 上 传</a-button>
+            <a-popover content="上传图片">
+              <a-button type="primary" ghost> <upload-outlined/> 上 传</a-button>
+            </a-popover>
           </a-upload>
           <!--          向左旋转-->
-          <a-button @click="rotateLeft"><UndoOutlined /></a-button>
+          <a-popover content="向左旋转">
+            <a-button @click="rotateLeft"><UndoOutlined /></a-button>
+          </a-popover>
+
           <!--          向右旋转-->
-          <a-button @click="rotateRight"><RedoOutlined /></a-button>
+          <a-popover content="向右旋转">
+            <a-button @click="rotateRight"><RedoOutlined /></a-button>
+          </a-popover>
           <!--          放大-->
-          <a-button @click="changeScale(1)"><PlusOutlined /></a-button>
+          <a-popover content="放大">
+            <a-button @click="changeScale(1)"><PlusOutlined /></a-button>
+          </a-popover>
           <!--          缩小-->
-          <a-button @click="changeScale(-1)"><MinusOutlined /></a-button>
+          <a-popover content="缩小">
+            <a-button @click="changeScale(-1)"><MinusOutlined /></a-button>
+          </a-popover>
+          <!--          删除-->
+          <a-popover content="删除">
+            <a-button @click="deleteImg" danger><DeleteOutlined /></a-button>
+          </a-popover>
         </a-flex>
       </div>
     </a-flex>
@@ -58,6 +73,7 @@ import 'vue-cropper/dist/index.css'
 import {defineProps, getCurrentInstance, ref} from 'vue';
 import type {CropperDataType} from "@/components/image-cropper/CropperType.ts";
 import {message} from "ant-design-vue";
+import {cloneDeep} from 'lodash-es'
 // 获取vue-cropper实例进行方法调用
 const { proxy }  = getCurrentInstance() as any;
 
@@ -173,7 +189,7 @@ const props = defineProps({
 /**
  * 上传的图片
  */
-const img = ref<string>(props.modelValue as string)
+const img = ref<string | null>(props.modelValue as string)
 /**
  * 双向绑定
  */
@@ -217,7 +233,7 @@ const handleBeforeUpload = (file: File) => {
 const handleCustomRequest = ({file}:{file: File}) => {
   const url = URL.createObjectURL(file)
   img.value = url
-  emit('update:modelValue',url)
+  emit('update:modelValue', cloneDeep(url))
 }
 
 /**
@@ -242,4 +258,8 @@ const changeScale = (scale: number) => {
   proxy.$refs.cropper.changeScale(scale);
 }
 
+const deleteImg = () => {
+  img.value = null
+  emit('update:modelValue', null)
+}
 </script>

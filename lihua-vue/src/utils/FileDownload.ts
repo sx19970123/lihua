@@ -1,6 +1,6 @@
-import type { ResponseType } from "@/api/global/Type.ts";
 import { message } from "ant-design-vue";
 import Spin from '@/components/spin';
+import { defaultDownloadURL } from "@/api/system/file/File.ts";
 
 // http正则表达式
 const httpRegex = /^(https?:\/\/)[^\s$.?#].[^\s]*$/;
@@ -50,7 +50,7 @@ export const handleFunDownload = (fun: Promise<any>, param?: DownloadParam) => {
 
 // 通过文件路径下载
 export const downloadByPath = (filePath: string, split?: string) => {
-    const downURL = import.meta.env.VITE_APP_BASE_API + '/system/file/download?filePath=' + filePath;
+    const downURL = defaultDownloadURL + filePath;
     download(split ? downURL + "&split=" + split : downURL);
 }
 

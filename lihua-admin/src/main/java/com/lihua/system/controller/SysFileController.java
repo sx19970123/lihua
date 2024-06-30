@@ -4,7 +4,8 @@ import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.service.SysFileService;
-import com.lihua.utils.security.FileDownloadManager;
+import com.lihua.utils.file.FileDownloadUtils;
+import com.lihua.utils.file.FileUploadUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
@@ -40,7 +41,7 @@ public class SysFileController extends BaseController {
     @GetMapping("download")
     public ResponseEntity<StreamingResponseBody> download(@RequestParam(name = "filePath") String filePath, @RequestParam(name = "split", defaultValue = ",") String split) {
         // 验证请求的文件是否允许下载
-        FileDownloadManager.isDownloadable(filePath, split);
+        FileDownloadUtils.isDownloadable(filePath, split);
 
         String[] filePathArray = filePath.split(split);
 
@@ -58,11 +59,28 @@ public class SysFileController extends BaseController {
         return success(files);
     }
 
-    @PostMapping("avatar")
-    public String uploadAvatar(@RequestParam("avatarFile") MultipartFile file) {
-        String fileName = sysFileService.uploadAvatar(file);
-        return success(fileName);
+    /**
+     * 单文件上传
+     * @param file
+     * @return
+     */
+    @PostMapping("upload")
+    public String upload(@RequestParam("file") MultipartFile file) {
+        String contentType = file.getContentType();
+        return success(FileUploadUtils.upload(file));
     }
+
+    /**
+     * 多文件上传
+     * @param files
+     * @return
+     */
+    @PostMapping("uploads")
+    public String uploads(@RequestParam("files") MultipartFile[] files) {
+        return success(FileUploadUtils.upload(files));
+    }
+
+
 
     @SneakyThrows
     @GetMapping(value = "imagePreview/{fileName}")

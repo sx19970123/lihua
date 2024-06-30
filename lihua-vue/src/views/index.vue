@@ -42,7 +42,7 @@
                                    @card-click="handleClick"
                                    :hover-scale="1.01"
                                    :expanded-width="600"
-                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius':' 8px'}"
+                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','background-size': 'contain','border-radius':' 8px'}"
       >
         <template #overview>
           <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)">
@@ -75,7 +75,7 @@
                                    @card-click="handleClick"
                                    :hover-scale="1.01"
                                    :expanded-width="600"
-                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius':' 8px'}"
+                                   :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','background-size': 'contain','border-radius':' 8px'}"
       >
         <template #overview>
           <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
@@ -176,8 +176,6 @@ import CardShow from '@/components/card-show/index.vue'
 import {ref} from "vue";
 const middleComplete = ref<boolean>(false)
 const handleClick = (key:string,show:boolean) => {
-  console.log(key)
-  console.log(show)
   setTimeout(() => {
     middleComplete.value = true
   },1000)

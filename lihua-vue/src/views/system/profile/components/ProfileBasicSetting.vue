@@ -27,7 +27,7 @@
       </a-form-item>
       <a-form-item label="性别" name="gender">
         <a-radio-group v-model:value="profileInfo.gender">
-          <a-radio :value="item.value" v-for="item in sys_gender">{{item.label}}</a-radio>
+          <a-radio :value="item.value" v-for="item in user_gender">{{item.label}}</a-radio>
         </a-radio-group>
       </a-form-item>
       <a-form-item>
@@ -48,8 +48,9 @@ import {message} from "ant-design-vue";
 import type {ProfileInfo} from "@/api/system/profile/type/SysProfile.ts";
 import {saveBasics} from "@/api/system/profile/Profile.ts";
 import {initDict} from "@/utils/dict.ts"
+import {cloneDeep} from "lodash-es";
 const userStore = useUserStore()
-const {sys_gender} = initDict('sys_gender')
+const {user_gender} = initDict('user_gender')
 
 
 // 初始化数据
@@ -91,8 +92,12 @@ const init = () => {
  * @param values
  */
 const handleFinish = (values: {nickname: string,gender:string,email:string,phoneNumber:string}) => {
+  // 保存到数据库删除url属性
+  const avatar = cloneDeep(profileInfo.avatar)
+  delete avatar.url
+
   saveBasics({
-    avatar: JSON.stringify(profileInfo.avatar),
+    avatar: JSON.stringify(avatar),
     nickname: values.nickname,
     gender: values.gender,
     email: values.email,

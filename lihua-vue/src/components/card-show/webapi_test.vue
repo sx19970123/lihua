@@ -42,8 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { gsap } from 'gsap';
-import {onMounted, onUnmounted, ref, watch} from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import type { CSSProperties } from 'vue';
 
 // 接受父组件参数
@@ -122,50 +121,62 @@ const initClick = () => {
     if (showStatus.value === 'complete') {
       return;
     }
-    // todo 抛出函数
-    emits('cardClick', { key: props.cardKey, detailVisible: detailVisible})
+    // 抛出点击事件
+    emits('cardClick', { key: props.cardKey, detailVisible: detailVisible });
 
     // 只有就绪状态才可点击
     if (!detailVisible) {
-      return
+      return;
     }
+
     // 打开遮罩
-    showMask.value = true
-    const bounding = containerRef.value.getBoundingClientRect()
-    // 执行动画，先将缩放还原
-    gsap.to('.' + props.cardKey, {
-      scale: 1,
+    showMask.value = true;
+    const bounding = containerRef.value.getBoundingClientRect();
+
+    // 选择元素
+    const element = document.querySelector('.' + props.cardKey);
+
+    // 缩放还原动画
+    element.animate([
+      { transform: 'scale(1)' }
+    ], {
       duration: 0,
+      fill: 'forwards'
+    }).finished.then(() => {
       // 缩放还原后再进行主要动画
-      onComplete: () => {
-        // 关闭Y轴滚动条
-        hiddenOverflowY()
-        // 状态修改为进行时
-        showStatus.value = 'activity'
-        // container 设置为固定定位
-        style.value = {position: 'fixed'}
-        // 执行主要动画
-        gsap.fromTo('.' + props.cardKey, {
-          width: bounding.width,
-          left: bounding.left,
-          top:  bounding.top
-        },{
-          left: innerWidth.value / 2 - getDetailWidth() / 2,
-          top: props.expandedTop,
-          width: getDetailWidth(),
-          height: getDetailHeight(),
-          duration: 0.3,
-          ease: 'power1.out',
-          onComplete: () => {
-            // todo 抛出函数
-            if (props.autoComplete || props.isComplete) {
-              showStatus.value = 'complete'
-              emits('cardComplete', props.cardKey)
-            }
-          }
-        })
-      }
-    })
+
+      // 关闭Y轴滚动条
+      hiddenOverflowY();
+      // 状态修改为进行时
+      showStatus.value = 'activity';
+      // container 设置为固定定位
+      style.value = { position: 'fixed' };
+
+      // 主要动画
+      element.animate([
+        {
+          width: bounding.width + 'px',
+          left: bounding.left + 'px',
+          top: bounding.top + 'px'
+        },
+        {
+          left: (innerWidth.value / 2 - getDetailWidth() / 2) + 'px',
+          top: props.expandedTop + 'px',
+          width: getDetailWidth() + 'px',
+          height: getDetailHeight() + 'px'
+        }
+      ], {
+        duration: 300,
+        easing: 'ease-out',
+        fill: 'forwards'
+      }).finished.then(() => {
+        // 动画完成后执行
+        if (props.autoComplete || props.isComplete) {
+          showStatus.value = 'complete';
+          emits('cardComplete', props.cardKey);
+        }
+      });
+    });
   }
 
   // 关闭详情卡片
@@ -178,7 +189,7 @@ const initClick = () => {
     if (showStatus.value !== 'complete') {
       return;
     }
-    // todo 点击遮罩函数
+    // 抛出遮罩点击事件
     emits('maskClick', props.cardKey)
     const bounding = placeholderRef.value.getBoundingClientRect()
     // 状态修改为进行时
@@ -188,22 +199,26 @@ const initClick = () => {
     // 打开y轴滚动条
     showOverflowY()
     // 执行主要动画
-    gsap.to('.' + props.cardKey, {
-      width: bounding.width,
-      height: bounding.height,
-      top: bounding.top,
-      left: bounding.left,
-      duration: 0.3,
-      ease: 'power1.out',
-      onComplete: () => {
-        // 恢复 container 默认的静态布局
-        style.value = {position: 'static', width: '', height: '', top: '', left: ''}
-        // 动画执行完成后，状态修改为就绪
-        showStatus.value = 'ready'
-        // todo 抛出函数
-        emits('cardReady', props.cardKey)
+    const element = document.querySelector('.' + props.cardKey);
+    element.animate([
+      {
+        width: bounding.width + 'px',
+        height: bounding.height + 'px',
+        top: bounding.top + 'px',
+        left: bounding.left + 'px'
       }
-    })
+    ], {
+      duration: 300,
+      easing: 'ease-out',
+      fill: 'forwards'
+    }).finished.then(() => {
+      // 恢复 container 默认的静态布局
+      style.value = {position: 'static', width: '', height: '', top: '', left: ''}
+      // 动画执行完成后，状态修改为就绪
+      showStatus.value = 'ready'
+      // 抛出折叠完成事件
+      emits('cardReady', props.cardKey)
+    });
   }
 
   // 获取展开后高度
@@ -245,8 +260,7 @@ const initClick = () => {
     getDetailWidth
   }
 }
-const {showStatus, showMask, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard,getDetailWidth } = initClick()
-
+const { showStatus, showMask, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard, getDetailWidth } = initClick()
 
 // 加载鼠标在卡片悬浮相关逻辑
 const initHover = () => {
@@ -255,33 +269,37 @@ const initHover = () => {
   // 鼠标悬浮于卡片
   const handleMouseOverCard = () => {
     if (hoverStatus.value === 'ready' || showStatus.value === 'ready') {
-      // todo 抛出函数
+      // 抛出鼠标移入事件
       emits('cardReadyOver', props.cardKey)
 
       hoverStatus.value = 'activity'
       handleAddHoverStyle()
-      gsap.to('.' + props.cardKey, {
-        scale: props.hoverScale,
-        duration: 0.1,
-        onComplete: () => {
-          hoverStatus.value = 'complete'
-        }
-      })
+      const element = document.querySelector('.' + props.cardKey);
+      element.animate([
+        { transform: `scale(${props.hoverScale})` }
+      ], {
+        duration: 100,
+        fill: 'forwards'
+      }).finished.then(() => {
+        hoverStatus.value = 'complete'
+      });
     }
   }
   // 鼠标从卡片移出
   const handleMouseLeaveCard = () => {
     if (showStatus.value === 'ready') {
-      gsap.to('.' + props.cardKey, {
-        scale: 1,
-        duration: 0.1,
-        onComplete: () => {
-          hoverStatus.value = 'ready'
-          handleRemoveHoverStyle()
-          // todo 抛出函数
-          emits('cardReadyLeave', props.cardKey)
-        }
-      })
+      const element = document.querySelector('.' + props.cardKey);
+      element.animate([
+        { transform: 'scale(1)' }
+      ], {
+        duration: 100,
+        fill: 'forwards'
+      }).finished.then(() => {
+        hoverStatus.value = 'ready'
+        handleRemoveHoverStyle()
+        // 抛出鼠标移出事件
+        emits('cardReadyLeave', props.cardKey)
+      });
     }
   }
   // 添加 hover 样式
@@ -304,19 +322,19 @@ const initHover = () => {
   }
 }
 
-const {handleMouseOverCard, handleMouseLeaveCard } = initHover()
+const { handleMouseOverCard, handleMouseLeaveCard } = initHover()
 
 // 视口的宽度，用于定位展开后元素位置
 const innerWidth = ref<number>(window.innerWidth)
 
 // 监听窗口变化和键盘事件
 onMounted(() => {
-  window.addEventListener('resize', windowWidthResize)
+  window.addEventListener('resize', (event) => windowWidthResize(event))
   window.addEventListener("keydown", (event) => handleClose(event, 'keydown'));
 })
 // 卸载组件前删除监听函数
 onUnmounted(() => {
-  window.removeEventListener('resize', windowWidthResize)
+  window.removeEventListener('resize', (event) => windowWidthResize(event))
   window.removeEventListener("keydown", (event) => handleClose(event, 'keydown'));
 })
 

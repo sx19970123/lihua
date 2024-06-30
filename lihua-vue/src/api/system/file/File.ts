@@ -1,26 +1,23 @@
 import request from "@/utils/Request.ts";
 
 /**
- * 上传用户头像
- * @param avatar
+ * 默认下载url，拼接filePath可下载对应文件
  */
-export const uploadAvatar = (avatar: Blob) => {
+export const defaultDownloadURL = import.meta.env.VITE_APP_BASE_API + '/system/file/download?filePath='
+
+/**
+ * 单文件上传
+ * @param file
+ */
+export const upload = (file: Blob) => {
     const formData = new FormData();
-    formData.append('avatarFile',avatar)
+    formData.append('file', file)
     return request<string>({
-        url: 'system/file/avatar',
+        url: 'system/file/upload',
         method: 'post',
         data: formData,
         headers: {
             'Content-Type': 'multipart/form-data'
         }
-    })
-}
-
-export const imagePreview = (fileName: string) => {
-    return request({
-        url: `system/file/imagePreview/${fileName}`,
-        method: 'get',
-        responseType:'blob'
     })
 }
