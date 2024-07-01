@@ -53,3 +53,18 @@ export const exportExcel = (data: SysUserDTO) => {
         data: data,
     })
 }
+
+// excel 导入
+export const importExcel = (file: Blob) => {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    return request({
+        url: 'system/user/importExcel',
+        method: 'post',
+        data: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+}

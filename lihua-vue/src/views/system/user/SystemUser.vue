@@ -83,19 +83,6 @@
               </template>
               新 增
             </a-button>
-
-<!--            <a-button type="primary" ghost>-->
-<!--              <template #icon>-->
-<!--                <ExportOutlined />-->
-<!--              </template>-->
-<!--              导出-->
-<!--            </a-button>-->
-<!--            <a-button type="primary" ghost>-->
-<!--              <template #icon>-->
-<!--                <ImportOutlined />-->
-<!--              </template>-->
-<!--              导入-->
-<!--            </a-button>-->
             <a-popconfirm title="删除后不可恢复，是否删除？"
                           :open="openDeletePopconfirm"
                           ok-text="确 定"
@@ -115,7 +102,12 @@
               <template #overlay>
                 <a-menu @click="handleClickExcelBtn">
                   <a-menu-item key="export"><ExportOutlined /> 批量导出</a-menu-item>
-                  <a-menu-item key="import"><ImportOutlined /> 批量导入</a-menu-item>
+                  <a-upload :customRequest="handleCustomRequest"
+                            :showUploadList="false"
+                            accept=".xlsx,.xls"
+                  >
+                    <a-menu-item key="import"><ImportOutlined /> 批量导入</a-menu-item>
+                  </a-upload>
                   <a-menu-item key="template"><DownloadOutlined /> 模板下载</a-menu-item>
                 </a-menu>
               </template>
@@ -329,7 +321,7 @@
 
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findPage, findById, save, deleteByIds, updateStatus, exportExcel} from "@/api/system/user/User.ts"
+import {findPage, findById, save, deleteByIds, updateStatus, exportExcel, importExcel} from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/dict"
 import {reactive, ref, watch} from "vue";
 import CardSelect from "@/components/card-select/index.vue"
@@ -337,7 +329,7 @@ import dayjs from "dayjs";
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
-import {message, TreeSelect} from "ant-design-vue";
+import {message, TreeSelect, type UploadFile} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import {flattenTreeData} from "@/utils/Tree.ts";
 import type {Rule} from "ant-design-vue/es/form";
@@ -347,6 +339,7 @@ import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import {handleFunDownload} from "@/utils/FileDownload.ts";
+import {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 const themeStore = useThemeStore();
 const {sys_status,user_gender} = initDict("sys_status", "user_gender")
 const SHOW_ALL = TreeSelect.SHOW_ALL;
@@ -1030,7 +1023,7 @@ const initExcel = () => {
         break
       }
       case 'import': {
-        handleImportExcel()
+        handleCustomRequest()
         break
       }
       case 'template': {
@@ -1044,8 +1037,11 @@ const initExcel = () => {
     handleFunDownload(exportExcel(userQuery.value))
   }
   // excel批量导入
-  const handleImportExcel = () => {
-
+  const handleCustomRequest = async (uploadRequest: UploadRequestOption) => {
+    if (uploadRequest) {
+      const file = uploadRequest.file
+      const resp = await importExcel(file)
+    }
   }
   // 下载模板
   const handleDownloadTemplate = () => {
@@ -1053,11 +1049,12 @@ const initExcel = () => {
   }
 
   return {
-    handleClickExcelBtn
+    handleClickExcelBtn,
+    handleCustomRequest
   }
 }
 
-const { handleClickExcelBtn } = initExcel()
+const { handleClickExcelBtn, handleCustomRequest } = initExcel()
 
 // 监听关键词筛选
 watch(() => deptKeyword.value, (value) => {

@@ -3,14 +3,18 @@ package com.lihua.system.controller;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.SysUserDTO;
+import com.lihua.system.model.SysUserVO;
 import com.lihua.system.service.SysUserService;
+import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.SneakyThrows;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -59,5 +63,14 @@ public class SysUserController extends BaseController {
         String path = sysUserService.exportExcel(sysUserDTO);
         // 根据生成的excel路径生成临时token
         return success(FileDownloadUtils.addToDownloadableList(path));
+    }
+
+    @SneakyThrows
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("import")
+    public String importExcel(@RequestParam("file") MultipartFile file) {
+        List<SysUserVO> sysUserVOS = ExcelUtils.importExport(file.getInputStream(), SysUserVO.class);
+
+        return success(sysUserVOS);
     }
 }
