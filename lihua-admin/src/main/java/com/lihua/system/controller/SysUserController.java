@@ -2,8 +2,8 @@ package com.lihua.system.controller;
 
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
-import com.lihua.system.model.SysUserDTO;
-import com.lihua.system.model.SysUserVO;
+import com.lihua.system.model.dto.SysUserDTO;
+import com.lihua.system.model.vo.SysUserVO;
 import com.lihua.system.service.SysUserService;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;

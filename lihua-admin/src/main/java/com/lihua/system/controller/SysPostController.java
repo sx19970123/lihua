@@ -1,9 +1,8 @@
 package com.lihua.system.controller;
 
 import com.lihua.model.web.BaseController;
-import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysPost;
-import com.lihua.system.model.SysPostDTO;
+import com.lihua.system.model.dto.SysPostDTO;
 import com.lihua.system.service.SysPostService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;

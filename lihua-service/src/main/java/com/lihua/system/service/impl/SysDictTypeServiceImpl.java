@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
 import com.lihua.system.entity.SysDictType;
 import com.lihua.system.mapper.SysDictTypeMapper;
-import com.lihua.system.model.SysDictTypeDTO;
+import com.lihua.system.model.dto.SysDictTypeDTO;
 import com.lihua.system.service.SysDictDataService;
 import com.lihua.system.service.SysDictTypeService;
 import com.lihua.utils.security.LoginUserContext;

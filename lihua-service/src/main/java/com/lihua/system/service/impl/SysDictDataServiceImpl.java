@@ -7,7 +7,7 @@ import com.lihua.exception.ServiceException;
 import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.system.entity.SysDictData;
 import com.lihua.system.mapper.SysDictDataMapper;
-import com.lihua.system.model.SysDictDataDTO;
+import com.lihua.system.model.dto.SysDictDataDTO;
 import com.lihua.system.service.SysDictDataService;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.security.LoginUserContext;

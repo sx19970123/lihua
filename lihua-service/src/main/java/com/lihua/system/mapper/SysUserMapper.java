@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.system.entity.SysUser;
-import com.lihua.system.model.SysUserDeptDTO;
-import com.lihua.system.model.SysUserVO;
+import com.lihua.system.model.dto.SysUserDeptDTO;
+import com.lihua.system.model.vo.SysUserVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

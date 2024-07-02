@@ -3,7 +3,7 @@
 <mapper namespace="com.lihua.system.mapper.SysUserMapper">
 
 
-    <resultMap id="findByIdMap" type="com.lihua.system.model.SysUserVO">
+    <resultMap id="findByIdMap" type="com.lihua.system.model.vo.SysUserVO">
         <result column="id" property="id" />
         <result column="username" property="username" />
         <result column="nickname" property="nickname" />
@@ -26,7 +26,7 @@
         </collection>
     </resultMap>
 
-    <resultMap id="findExportDataMap" type="com.lihua.system.model.SysUserVO">
+    <resultMap id="findExportDataMap" type="com.lihua.system.model.vo.SysUserVO">
         <result column="username" property="username" />
         <result column="nickname" property="nickname" />
         <result column="gender" property="gender" />
@@ -64,7 +64,7 @@
             del_flag = '0' AND username = #{username}
     </select>
 
-    <select id="findPage" resultType="com.lihua.system.model.SysUserVO">
+    <select id="findPage" resultType="com.lihua.system.model.vo.SysUserVO">
         SELECT DISTINCT
             sys_user.id,
             sys_user.username,
@@ -81,7 +81,7 @@
         ${ew.customSqlSegment}
     </select>
 
-    <select id="findUserDeptByUserIds" resultType="com.lihua.system.model.SysUserDeptDTO">
+    <select id="findUserDeptByUserIds" resultType="com.lihua.system.model.dto.SysUserDeptDTO">
         SELECT
             sys_user_dept.user_id as userId,
             sys_dept.name as deptName

@@ -2,7 +2,7 @@ package com.lihua.system.controller;
 
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysRole;
-import com.lihua.system.model.SysRoleDTO;
+import com.lihua.system.model.dto.SysRoleDTO;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.system.service.SysRoleService;
 import com.lihua.utils.security.LoginUserContext;

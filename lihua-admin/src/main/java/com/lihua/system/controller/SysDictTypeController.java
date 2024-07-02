@@ -2,7 +2,7 @@ package com.lihua.system.controller;
 
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysDictType;
-import com.lihua.system.model.SysDictTypeDTO;
+import com.lihua.system.model.dto.SysDictTypeDTO;
 import com.lihua.system.service.SysDictTypeService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;

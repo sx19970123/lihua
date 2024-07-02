@@ -1,7 +1,7 @@
 package com.lihua.system.service;
 
 import com.lihua.system.entity.SysDept;
-import com.lihua.system.model.SysDeptVO;
+import com.lihua.system.model.vo.SysDeptVO;
 
 import java.util.List;
 

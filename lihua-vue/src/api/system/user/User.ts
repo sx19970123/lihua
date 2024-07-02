@@ -1,6 +1,7 @@
 import request from "@/utils/Request.ts";
 import type {PageResponseType} from "@/api/global/Type.ts";
 import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
+import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 
 // 分页查询列表
 export const findPage = (data: SysUserDTO) => {
@@ -54,13 +55,21 @@ export const exportExcel = (data: SysUserDTO) => {
     })
 }
 
+// 生成导入模板
+export const excelTemplate = () => {
+    return request({
+        url: 'system/user/template',
+        method: 'get'
+    })
+}
+
 // excel 导入
-export const importExcel = (file: Blob) => {
+export const importExcel = (file:  string | Blob | RcFile) => {
     const formData = new FormData()
     formData.append('file', file)
 
     return request({
-        url: 'system/user/importExcel',
+        url: 'system/user/import',
         method: 'post',
         data: formData,
         headers: {

@@ -1,4 +1,4 @@
-package com.lihua.system.model;
+package com.lihua.system.model.vo;
 
 import com.github.liaochong.myexcel.core.annotation.ExcelColumn;
 import com.github.liaochong.myexcel.core.annotation.ExcelModel;

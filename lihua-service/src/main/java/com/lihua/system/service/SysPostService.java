@@ -2,10 +2,9 @@ package com.lihua.system.service;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysPost;
-import com.lihua.system.model.SysPostDTO;
-import com.lihua.system.model.SysPostVO;
+import com.lihua.system.model.dto.SysPostDTO;
+import com.lihua.system.model.vo.SysPostVO;
 
 import java.util.List;
 import java.util.Map;

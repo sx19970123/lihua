@@ -1,4 +1,4 @@
-package com.lihua.system.model;
+package com.lihua.system.model.vo;
 
 import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysPost;

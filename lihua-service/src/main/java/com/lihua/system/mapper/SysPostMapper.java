@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.lihua.model.security.CurrentPost;
 import com.lihua.system.entity.SysPost;
-import com.lihua.system.model.SysPostVO;
+import com.lihua.system.model.vo.SysPostVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

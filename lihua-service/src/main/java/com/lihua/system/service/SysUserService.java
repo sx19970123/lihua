@@ -1,10 +1,9 @@
 package com.lihua.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.lihua.system.model.SysUserDTO;
-import com.lihua.system.model.SysUserVO;
+import com.lihua.system.model.dto.SysUserDTO;
+import com.lihua.system.model.vo.SysUserVO;
 
-import java.io.File;
 import java.util.List;
 
 public interface SysUserService {

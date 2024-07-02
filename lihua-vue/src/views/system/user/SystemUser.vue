@@ -321,7 +321,16 @@
 
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findPage, findById, save, deleteByIds, updateStatus, exportExcel, importExcel} from "@/api/system/user/User.ts"
+import {
+  findPage,
+  findById,
+  save,
+  deleteByIds,
+  updateStatus,
+  exportExcel,
+  importExcel,
+  excelTemplate
+} from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/dict"
 import {reactive, ref, watch} from "vue";
 import CardSelect from "@/components/card-select/index.vue"
@@ -1022,10 +1031,6 @@ const initExcel = () => {
         handleExportExcel()
         break
       }
-      case 'import': {
-        handleCustomRequest()
-        break
-      }
       case 'template': {
         handleDownloadTemplate()
         break
@@ -1045,7 +1050,7 @@ const initExcel = () => {
   }
   // 下载模板
   const handleDownloadTemplate = () => {
-
+    excelTemplate()
   }
 
   return {

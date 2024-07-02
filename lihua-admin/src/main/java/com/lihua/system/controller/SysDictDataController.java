@@ -3,7 +3,7 @@ package com.lihua.system.controller;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysDictData;
-import com.lihua.system.model.SysDictDataDTO;
+import com.lihua.system.model.dto.SysDictDataDTO;
 import com.lihua.system.service.SysDictDataService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;

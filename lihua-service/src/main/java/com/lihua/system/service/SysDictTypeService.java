@@ -2,7 +2,7 @@ package com.lihua.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.system.entity.SysDictType;
-import com.lihua.system.model.SysDictTypeDTO;
+import com.lihua.system.model.dto.SysDictTypeDTO;
 
 import java.util.List;
 
