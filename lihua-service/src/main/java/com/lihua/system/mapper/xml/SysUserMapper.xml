@@ -153,4 +153,12 @@
         LEFT JOIN sys_role ON sys_role.id = sys_user_role.role_id and sys_role.del_flag = '0' and sys_role.status = '0'
         ${ew.customSqlSegment}
     </select>
+
+    <select id="findUsername" resultType="java.lang.String">
+        SELECT username FROM sys_user WHERE username IN
+        <foreach collection="usernameList" item="username" open="(" separator="," close=")">
+            #{username}
+        </foreach>
+        AND sys_user.del_flag = '0'
+    </select>
 </mapper>

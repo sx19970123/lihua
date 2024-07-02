@@ -29,7 +29,7 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户名
      */
-    @ExcelColumn(order = 0, index = 0, title = "用户信息->用户名", width = 6)
+    @ExcelColumn(order = 0, index = 0, title = "用户信息->*用户名", width = 6)
     @NotNull(message = "用户名不能为空")
     private String username;
 
@@ -43,7 +43,7 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户名称
      */
-    @ExcelColumn(order = 1, index = 1, title = "用户信息->用户昵称", width = 6)
+    @ExcelColumn(order = 1, index = 1, title = "用户信息->*用户昵称", width = 6)
     private String nickname;
 
     /**
@@ -153,4 +153,10 @@ public class SysUserVO extends BaseEntity {
     @IgnoreColumn
     private List<String> roleNameList;
 
+    /**
+     * excel 批量导入异常说明
+     * 数据导入后，因异常无法入库的数据错误描述
+     */
+    @ExcelColumn(order = 11)
+    private String importErrorMsg;
 }

@@ -79,7 +79,7 @@ public class FileDownloadUtils {
         String[] pathArray = fileFullPath.split(split);
 
         // 根据配置设置 redis 缓存
-        long expireTime = lihuaConfig.getTemporaryTokenExpireTime();
+        long expireTime = lihuaConfig.getFileDownloadExpireTime();
         for (String path : pathArray) {
             String key = SysBaseEnum.TEMPORARY_TOKEN_REDIS_PREFIX + path;
             if (expireTime == 0) {
@@ -116,7 +116,7 @@ public class FileDownloadUtils {
         RedisCache redisCache = SpringUtils.getBean(RedisCache.class);
         LihuaConfig lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
 
-        if (lihuaConfig.getTemporaryTokenExpireTime() == -1) {
+        if (lihuaConfig.getFileDownloadExpireTime() == -1) {
             return;
         }
 
@@ -132,7 +132,7 @@ public class FileDownloadUtils {
         }
 
         // 删除本次下载许可
-        if (lihuaConfig.getTemporaryTokenExpireTime() == 0) {
+        if (lihuaConfig.getFileDownloadExpireTime() == 0) {
             for (String path : pathArray) {
                 redisCache.delete(SysBaseEnum.TEMPORARY_TOKEN_REDIS_PREFIX + path);
             }

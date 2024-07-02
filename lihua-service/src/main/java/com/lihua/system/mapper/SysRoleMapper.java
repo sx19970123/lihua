@@ -6,6 +6,7 @@ import com.lihua.system.entity.SysRole;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface SysRoleMapper extends BaseMapper<SysRole> {
     // 根据用户id查询角色信息
@@ -26,6 +27,6 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     SysRole findById(String roleId);
     // 根据用户id查询对应角色编码
     List<String> selectCodeByUserId(@Param("userId") String userId);
-
-
+    // 根据角色名称查询角色信息
+    List<SysRole> findByRoleNames(@Param("roleNameSet") Set<String> roleNameSet);
 }

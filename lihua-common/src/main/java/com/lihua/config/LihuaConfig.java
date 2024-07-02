@@ -23,9 +23,9 @@ public class LihuaConfig {
     private Integer refreshThreshold;
 
     /**
-     * 下载附件临时 token 过期时间
+     * 下载附件链接过期时间
      */
-    private Integer temporaryTokenExpireTime;
+    private Integer fileDownloadExpireTime;
 
     /**
      * 允许跨域最长时间

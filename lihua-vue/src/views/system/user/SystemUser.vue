@@ -623,6 +623,8 @@ const initSave = () => {
       await formRef.value.validate()
       modalActive.saveLoading = true
       sysUserDTO.value.deptIdList = handleDeptIdList()
+      sysUserDTO.value.phoneNumber === "" ? sysUserDTO.value.phoneNumber = undefined : sysUserDTO.value.phoneNumber
+      sysUserDTO.value.email === "" ? sysUserDTO.value.email = undefined : sysUserDTO.value.email
       const resp = await save(sysUserDTO.value)
       if (resp.code === 200) {
         message.success(resp.msg)

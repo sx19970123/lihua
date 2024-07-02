@@ -29,4 +29,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     // 查询导出用户列表
     List<SysUserVO> findExportData(@Param(Constants.WRAPPER) QueryWrapper<SysUser> queryWrapper);
+
+    // 查询已存在的用户名
+    List<String> findUsername(@Param("usernameList") List<String> usernameList);
 }
