@@ -41,7 +41,10 @@
             <result column="code"/>
         </collection>
         <collection property="deptLabelList" ofType="java.lang.String">
-            <result column="name"/>
+            <result column="deptName"/>
+        </collection>
+        <collection property="roleNameList" ofType="java.lang.String">
+            <result column="roleName"/>
         </collection>
     </resultMap>
 
@@ -129,7 +132,6 @@
         OR EXISTS (SELECT 1 FROM sys_user WHERE phone_number = #{phoneNumber} AND del_flag = '0'))
     </select>
 
-
     <select id="findExportData" resultMap="findExportDataMap">
         SELECT
             sys_user.username,
@@ -141,11 +143,14 @@
             sys_user.remark,
             sys_dept.id,
             sys_dept.code,
-            sys_dept.name
+            sys_dept.name as deptName,
+            sys_role.name as roleName
         FROM
             sys_user
         LEFT JOIN sys_user_dept ON sys_user_dept.user_id = sys_user.id
-        LEFT JOIN sys_dept ON sys_dept.id = sys_user_dept.dept_id
+        LEFT JOIN sys_dept ON sys_dept.id = sys_user_dept.dept_id and sys_dept.del_flag = '0' and sys_dept.status = '0'
+        LEFT JOIN sys_user_role ON sys_user.id = sys_user_role.user_id
+        LEFT JOIN sys_role ON sys_role.id = sys_user_role.role_id and sys_role.del_flag = '0' and sys_role.status = '0'
         ${ew.customSqlSegment}
     </select>
 </mapper>

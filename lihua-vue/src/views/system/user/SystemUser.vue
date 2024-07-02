@@ -98,25 +98,24 @@
                 <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
               </a-button>
             </a-popconfirm>
-            <a-dropdown>
-              <template #overlay>
-                <a-menu @click="handleClickExcelBtn">
-                  <a-menu-item key="export"><ExportOutlined /> 批量导出</a-menu-item>
-                  <a-upload :customRequest="handleCustomRequest"
-                            :showUploadList="false"
-                            accept=".xlsx,.xls"
-                  >
-                    <a-menu-item key="import"><ImportOutlined /> 批量导入</a-menu-item>
-                  </a-upload>
-                  <a-menu-item key="template"><DownloadOutlined /> 模板下载</a-menu-item>
-                </a-menu>
+            <a-button ghost type="primary" @click="handleExportExcel">
+              <template #icon>
+                <ExportOutlined />
               </template>
+              导出
+            </a-button>
+            <a-upload :customRequest="handleCustomRequest"
+                      :beforeUpload="handleBeforeUpdate"
+                      :showUploadList="false"
+                      accept=".xlsx,.xls"
+            >
               <a-button ghost type="primary">
-                Excel
-                <DownOutlined />
+                <template #icon>
+                  <ImportOutlined />
+                </template>
+                导入
               </a-button>
-            </a-dropdown>
-
+            </a-upload>
           </a-flex>
         </template>
         <template #bodyCell="{column,record,text}">
@@ -328,17 +327,16 @@ import {
   deleteByIds,
   updateStatus,
   exportExcel,
-  importExcel,
-  excelTemplate
+  importExcel
 } from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/dict"
-import {reactive, ref, watch} from "vue";
+import {createVNode, h, reactive, ref, watch} from "vue";
 import CardSelect from "@/components/card-select/index.vue"
 import dayjs from "dayjs";
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
-import {message, TreeSelect, type UploadFile} from "ant-design-vue";
+import {message, TreeSelect, Modal} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import {flattenTreeData} from "@/utils/Tree.ts";
 import type {Rule} from "ant-design-vue/es/form";
@@ -348,7 +346,9 @@ import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import {handleFunDownload} from "@/utils/FileDownload.ts";
-import {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
+import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
+import Spin from "@/components/spin";
+import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 const themeStore = useThemeStore();
 const {sys_status,user_gender} = initDict("sys_status", "user_gender")
 const SHOW_ALL = TreeSelect.SHOW_ALL;
@@ -1025,41 +1025,53 @@ const {handleDelete,closePopconfirm,openPopconfirm,openDeletePopconfirm} = intiD
 
 // 初始化excel导入导出相关操作
 const initExcel = () => {
-  const handleClickExcelBtn = ({key}: {key: string}) => {
-    switch (key) {
-      case 'export': {
-        handleExportExcel()
-        break
-      }
-      case 'template': {
-        handleDownloadTemplate()
-        break
-      }
-    }
-  }
   // 导出excel
   const handleExportExcel = () => {
     handleFunDownload(exportExcel(userQuery.value))
   }
-  // excel批量导入
-  const handleCustomRequest = async (uploadRequest: UploadRequestOption) => {
-    if (uploadRequest) {
-      const file = uploadRequest.file
-      const resp = await importExcel(file)
+  // 文件上传前校验格式
+  const handleBeforeUpdate = (file: File) => {
+    const fileName = file.name
+    if (!fileName.endsWith(".xls") && !fileName.endsWith(".xlsx")) {
+      message.warn("请上传 .xls 或 .xlsx 类型的文件")
+      return false
     }
   }
-  // 下载模板
-  const handleDownloadTemplate = () => {
-    excelTemplate()
+  // excel批量导入
+  const handleCustomRequest = async (uploadRequest: UploadRequestOption) => {
+    if (!uploadRequest) {
+      return
+    }
+    const spinInstance = Spin.service({
+      tip: '数据处理中，请稍等...'
+    })
+
+    // 将文件上传至后端
+    const resp = await importExcel(uploadRequest.file)
+    if (resp.code === 200) {
+      // 部分成功可下载导入失败的数据集
+      Modal.confirm({
+        title: '导入完成，部分数据未成功导入',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '共解析到100条数据，成功导入80条，失败20条。点击“确定”下载失败数据集。',
+        onOk: () => {
+          console.log('ok')
+        }
+      })
+    } else {
+      message.error(resp.msg)
+    }
+    spinInstance.close()
   }
 
   return {
-    handleClickExcelBtn,
+    handleExportExcel,
+    handleBeforeUpdate,
     handleCustomRequest
   }
 }
 
-const { handleClickExcelBtn, handleCustomRequest } = initExcel()
+const { handleExportExcel, handleBeforeUpdate, handleCustomRequest } = initExcel()
 
 // 监听关键词筛选
 watch(() => deptKeyword.value, (value) => {

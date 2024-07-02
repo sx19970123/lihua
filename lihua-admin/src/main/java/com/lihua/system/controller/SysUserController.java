@@ -1,6 +1,7 @@
 package com.lihua.system.controller;
 
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.dto.SysUserDTO;
 import com.lihua.system.model.vo.SysUserVO;
@@ -61,7 +62,6 @@ public class SysUserController extends BaseController {
     @PostMapping("export")
     public String exportExcel(@RequestBody SysUserDTO sysUserDTO) {
         String path = sysUserService.exportExcel(sysUserDTO);
-        // 根据生成的excel路径生成临时token
         return success(FileDownloadUtils.addToDownloadableList(path));
     }
 
@@ -69,8 +69,7 @@ public class SysUserController extends BaseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
     public String importExcel(@RequestParam("file") MultipartFile file) {
-        List<SysUserVO> sysUserVOS = ExcelUtils.importExport(file.getInputStream(), SysUserVO.class);
-
-        return success(sysUserVOS);
+        List<SysUserVO> sysUserVOS = ExcelUtils.importExport(file.getInputStream(), SysUserVO.class, 1);
+        return success(sysUserService.importExcel(sysUserVOS));
     }
 }

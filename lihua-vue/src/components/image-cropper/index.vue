@@ -74,7 +74,7 @@ import {defineProps, getCurrentInstance, ref} from 'vue';
 import type {CropperDataType} from "@/components/image-cropper/CropperType.ts";
 import {message} from "ant-design-vue";
 import {cloneDeep} from 'lodash-es'
-import {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
+import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 // 获取vue-cropper实例进行方法调用
 const { proxy }  = getCurrentInstance() as any;
 
@@ -234,9 +234,13 @@ const handleBeforeUpload = (file: File) => {
 const handleCustomRequest = (uploadRequest: UploadRequestOption) => {
   if (uploadRequest) {
     const file = uploadRequest.file
-    const url = URL.createObjectURL(file)
-    img.value = url
-    emit('update:modelValue', cloneDeep(url))
+    if (file instanceof Blob) {
+      const url = URL.createObjectURL(file)
+      img.value = url
+      emit('update:modelValue', cloneDeep(url))
+    } else {
+      message.error("头像上传失败")
+    }
   }
 
 }
@@ -263,6 +267,9 @@ const changeScale = (scale: number) => {
   proxy.$refs.cropper.changeScale(scale);
 }
 
+/**
+ * 删除
+ */
 const deleteImg = () => {
   img.value = null
   emit('update:modelValue', null)

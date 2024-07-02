@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
+import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.system.entity.*;
 import com.lihua.system.mapper.SysUserMapper;
 import com.lihua.system.model.dto.SysUserDTO;
@@ -198,8 +199,9 @@ public class SysUserServiceImpl implements SysUserService {
         Map<String, List<String>> postGroupByDeptId = postList
                 .stream()
                 .collect(Collectors.groupingBy(SysPost::getDeptId,Collectors.mapping(SysPost::getName, Collectors.toList())));
-        // 根据deptId顺序设置岗位名称
+
         exportList.forEach(export -> {
+            // 根据deptId顺序设置岗位名称
             List<String> postNameLis = export.getDeptIdList()
                     .stream()
                     .map(deptId -> {
@@ -207,10 +209,32 @@ public class SysUserServiceImpl implements SysUserService {
                         return String.join("、", postNames);
                     }).toList();
             export.setPostLabelList(postNameLis);
+            // 角色名称
+            export.setRoleName(String.join("、",export.getRoleNameList()));
         });
 
         // 导出excel
         return ExcelUtils.excelExport(exportList, SysUserVO.class, "系统用户");
+    }
+
+    @Override
+    public ExcelImportResult importExcel(List<SysUserVO> sysUserVOS) {
+        // 1. 获取全部username，去数据库中查询，查询出相同的username则进行记录
+
+        // 2. 获取全部role name，去数据库中查询，查询出数据库存在的 role 数据
+
+        // 3. 获取全部dept name，去数据库中查询，查询出数据库存在的 dept 数据
+
+        // 4. 获取全部post name，去数据库中查询，查询出数据库存在的 post 数据
+
+        // 5. 循环处理数据：username、dept name判断是否匹配，
+        //                  role 使用、分割，判断是否匹配，
+        //                  post 判断对应dept中的岗位是否匹配
+        //                  全部判断完成后，将数据分为可导入/有问题两部分
+        //                  分别导入和导出
+
+
+        return null;
     }
 
     // 处理用户所属部门

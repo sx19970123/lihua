@@ -29,7 +29,7 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户名
      */
-    @ExcelColumn(order = 0, title = "用户信息->用户名")
+    @ExcelColumn(order = 0, index = 0, title = "用户信息->用户名", width = 6)
     @NotNull(message = "用户名不能为空")
     private String username;
 
@@ -43,7 +43,7 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户名称
      */
-    @ExcelColumn(order = 1, title = "用户信息->用户昵称")
+    @ExcelColumn(order = 1, index = 1, title = "用户信息->用户昵称", width = 6)
     private String nickname;
 
     /**
@@ -55,14 +55,14 @@ public class SysUserVO extends BaseEntity {
     /**
      * 性别
      */
-    @ExcelColumn(order = 2,title = "用户信息->性别", writeConverter = SysDictWriteConverter.class)
+    @ExcelColumn(order = 2, index = 2,title = "用户信息->性别", writeConverter = SysDictWriteConverter.class)
     @ExcelWriteConverterDictTypeCode("user_gender")
     private String gender;
 
     /**
      * 用户状态
      */
-    @ExcelColumn(order = 3, title = "用户信息->状态", writeConverter = SysDictWriteConverter.class)
+    @ExcelColumn(order = 3, index = 3, title = "用户信息->状态", writeConverter = SysDictWriteConverter.class)
     @ExcelWriteConverterDictTypeCode("sys_status")
     private String status;
 
@@ -75,40 +75,46 @@ public class SysUserVO extends BaseEntity {
     /**
      * 手机号码
      */
-    @ExcelColumn(order = 4, title = "用户信息->手机号码")
+    @ExcelColumn(order = 4, index = 4, title = "用户信息->手机号码", width = 6)
     private String phoneNumber;
 
     /**
      * 邮箱
      */
-    @ExcelColumn(order = 5, title = "用户信息->邮箱")
+    @ExcelColumn(order = 5, index = 5, title = "用户信息->邮箱", width = 10)
     private String email;
 
     /**
      * 备注
      */
-    @ExcelColumn(order = 6, title = "用户信息->备注")
+    @ExcelColumn(order = 6, index = 6, title = "用户信息->备注", width = 10)
     private String remark;
+
+    /**
+     * 角色名称
+     */
+    @ExcelColumn(order = 7, index = 7, title = "用户信息->角色", width = 15)
+    private String roleName;
 
     /**
      * 所属部门名称集合
      */
     @MultiColumn(classType = String.class)
-    @ExcelColumn(order = 7, title = "部门信息->部门名称")
+    @ExcelColumn(order = 8, index = 8, title = "部门信息->部门名称", width = 10)
     private List<String> deptLabelList;
 
     /**
      * 所属部门编码集合
      */
     @MultiColumn(classType = String.class)
-    @ExcelColumn(order = 8, title = "部门信息->部门编码")
+    @ExcelColumn(order = 9, index = 9, title = "部门信息->部门编码", width = 10)
     private List<String> deptCodeList;
 
     /**
      * 所属部门下的岗位名称
      */
     @MultiColumn(classType = String.class)
-    @ExcelColumn(order = 9, title = "部门信息->岗位")
+    @ExcelColumn(order = 10, index = 10, title = "部门信息->岗位", width = 10)
     private List<String> postLabelList;
 
     /**
@@ -140,5 +146,11 @@ public class SysUserVO extends BaseEntity {
      */
     @IgnoreColumn
     private List<String> postIdList;
+
+    /**
+     * 角色名称集合
+     */
+    @IgnoreColumn
+    private List<String> roleNameList;
 
 }

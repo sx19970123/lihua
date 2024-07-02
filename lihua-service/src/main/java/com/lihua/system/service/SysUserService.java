@@ -1,6 +1,7 @@
 package com.lihua.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.system.model.dto.SysUserDTO;
 import com.lihua.system.model.vo.SysUserVO;
 
@@ -47,4 +48,11 @@ public interface SysUserService {
      * @return
      */
     String exportExcel(SysUserDTO sysUserDTO);
+
+    /**
+     * excel 批量导入
+     * @param sysUserVOS
+     * @return
+     */
+    ExcelImportResult importExcel(List<SysUserVO> sysUserVOS);
 }

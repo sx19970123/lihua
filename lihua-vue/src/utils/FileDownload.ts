@@ -16,7 +16,7 @@ type DownloadParam = {
 // 传入请求下载接口的异步函数，自动处理下载
 export const handleFunDownload = (fun: Promise<any>, param?: DownloadParam) => {
     const spinInstance = Spin.service({
-        tip: '努力加载资源中...'
+        tip: '努力加载中...'
     });
 
     fun.then((resp) => {
@@ -50,7 +50,7 @@ export const handleFunDownload = (fun: Promise<any>, param?: DownloadParam) => {
 
 // 通过文件路径下载
 export const downloadByPath = (filePath: string, split?: string) => {
-    const downURL = defaultDownloadURL + filePath;
+    const downURL = defaultDownloadURL + encodeURIComponent(filePath);
     download(split ? downURL + "&split=" + split : downURL);
 }
 

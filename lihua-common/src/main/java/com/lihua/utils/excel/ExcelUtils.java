@@ -34,8 +34,9 @@ public class ExcelUtils {
         DefaultStreamExcelBuilder<T> excelBuilder = DefaultStreamExcelBuilder
                 .of(clazz)
                 .autoMerge()
-                // 自定义表头样式，详见：https://github.com/liaochong/myexcel/wiki/Style-support
-                .style( "cell->border-style:thin","title->background-color:rgb(217,217,217);vertical-align:center;text-align:center;border-style:thin")
+                // 自定义样式，详见：https://github.com/liaochong/myexcel/wiki/Style-support
+                .style("cell->border-style:thin;text-align:center;vertical-align:center",
+                        "title->background-color:rgb(217,217,217);vertical-align:center;text-align:center;border-style:thin")
                 .titleRowHeight(30)
                 .start();
         excelBuilder.append(exportList);
@@ -64,13 +65,16 @@ public class ExcelUtils {
      * excel 倒入
      * @param inputStream 流
      * @param clazz 接收文件类型class
+     * @param rowNum 从0开始数，对应第一行，1对应第二行，程序中设置未大于 rowNum
+     *               即设置为 0 的话，从表格中第二行开始读取
+     *               设置为 1 的话，从表格中第三行开始读取
+     *               根据表头层级数量进行指定，即表头层级数 - 1
      * @return 倒入数据集合
      * @param <T>
      */
-    public static <T> List<T> importExport(InputStream inputStream, Class<T> clazz) {
+    public static <T> List<T> importExport(InputStream inputStream, Class<T> clazz, int rowNum) {
         return SaxExcelReader.of(clazz)
-                .sheet(0)
-                .rowFilter(row -> row.getRowNum() > 0)
+                .rowFilter(row -> row.getRowNum() > rowNum)
                 .detectedMerge()
                 .read(inputStream);
     }

@@ -55,14 +55,6 @@ export const exportExcel = (data: SysUserDTO) => {
     })
 }
 
-// 生成导入模板
-export const excelTemplate = () => {
-    return request({
-        url: 'system/user/template',
-        method: 'get'
-    })
-}
-
 // excel 导入
 export const importExcel = (file:  string | Blob | RcFile) => {
     const formData = new FormData()
