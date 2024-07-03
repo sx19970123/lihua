@@ -157,6 +157,6 @@ public class SysUserVO extends BaseEntity {
      * excel 批量导入异常说明
      * 数据导入后，因异常无法入库的数据错误描述
      */
-    @ExcelColumn(order = 11)
+    @ExcelColumn(order = 11, title = "系统提示")
     private String importErrorMsg;
 }
