@@ -383,7 +383,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
             if (StringUtils.hasText(sysUserVO.getEmail())) {
                 emailCountMap.put(sysUserVO.getEmail(), emailCountMap.getOrDefault(sysUserVO.getEmail(),0) + 1);
-                if (emailCountMap.get(sysUserVO.getPhoneNumber()) > 1) {
+                if (emailCountMap.get(sysUserVO.getEmail()) > 1) {
                     emailRepeatSet.add(sysUserVO.getEmail());
                 }
             }
