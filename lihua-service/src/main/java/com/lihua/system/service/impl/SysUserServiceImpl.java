@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.exception.ServiceException;
+import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.system.entity.*;
 import com.lihua.system.mapper.SysDeptMapper;
@@ -17,6 +18,7 @@ import com.lihua.system.model.dto.SysUserDeptDTO;
 import com.lihua.system.model.vo.SysDeptVO;
 import com.lihua.system.model.vo.SysUserVO;
 import com.lihua.system.service.*;
+import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
@@ -255,7 +257,30 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             }
         }
 
-        // 2. 获取全部role name，去数据库中查询，查询出数据库存在的 role 数据
+        List<SysDictDataVO> sysStatus = DictUtils.getDictData("sys_status");
+        List<SysDictDataVO> userGender = DictUtils.getDictData("user_gender");
+        String genderJoin = userGender.stream().map(SysDictDataVO::getLabel).collect(Collectors.joining("、"));
+        String statusJoin = sysStatus.stream().map(SysDictDataVO::getLabel).collect(Collectors.joining("、"));
+        // 2. 验证涉及到的数据字典相关，并将label转换为value
+        importUserVos = importUserVos.stream().filter(sysUserVO -> {
+            List<SysDictDataVO> gender = userGender.stream().filter(ug -> ug.getLabel().equals(sysUserVO.getGender())).toList();
+            List<SysDictDataVO> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysUserVO.getStatus())).toList();
+            if (gender.isEmpty()) {
+                sysUserVO.setImportErrorMsg("请填写用户性别或用户性别不合法，可输入项为：" + genderJoin);
+                errorUserVos.add(sysUserVO);
+                return false;
+            }
+            if (status.isEmpty()) {
+                sysUserVO.setImportErrorMsg("请填写用户状态或用户状态不合法，可输入项为：" + statusJoin);
+                errorUserVos.add(sysUserVO);
+                return false;
+            }
+            sysUserVO.setGender(gender.get(0).getValue());
+            sysUserVO.setStatus(status.get(0).getValue());
+            return true;
+        }).toList();
+
+        // 3. 获取全部role name，去数据库中查询，查询出数据库存在的 role 数据
         Set<String> roleNameSet = new HashSet<>();
         importUserVos.forEach(sysUserVO -> {
             if (StringUtils.hasText(sysUserVO.getRoleName())) {
@@ -285,7 +310,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             }).toList();
         }
 
-        // 3. 获取全部dept name，去数据库中查询，查询出数据库存在的 dept 数据
+        // 4. 获取全部dept name，去数据库中查询，查询出数据库存在的 dept 数据
         Set<String> deptNameSet = new HashSet<>();
         importUserVos.forEach(sysUserVO -> {
             List<String> deptLabelList = sysUserVO.getDeptLabelList();
@@ -315,7 +340,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             sysDepts = new ArrayList<>();
         }
 
-        // 4. 匹配岗位数据
+        // 5. 匹配岗位数据
         importUserVos = importUserVos.stream().filter(sysUserVO -> {
             List<String> deptLabelList = sysUserVO.getDeptLabelList();
             List<String> postLabelList = sysUserVO.getPostLabelList();
@@ -364,7 +389,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             return true;
         }).toList();
 
-        // 5. 处理完毕后获得两批数据：通过校验可导入 / 数据存在异常需用户重新处理
+        // 6. 处理完毕后获得两批数据：通过校验可导入 / 数据存在异常需用户重新处理
         // 导出错误数据集
         String errExcelPath = null;
         if (!errorUserVos.isEmpty()) {

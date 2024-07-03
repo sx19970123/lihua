@@ -23,9 +23,15 @@ public class SysDictWriteConverter implements CustomWriteConverter<String, Strin
 
         // 通过字典类型编码和字典value获取label
         if (StringUtils.hasText(dictTypeCode)) {
-            return DictUtils.getLabel(dictTypeCode, dictValue);
+            String label = DictUtils.getLabel(dictTypeCode, dictValue);
+
+            if (StringUtils.hasText(label)) {
+                return label;
+            }
+
+            return dictValue;
         }
 
-        return null;
+        return dictValue;
     }
 }
