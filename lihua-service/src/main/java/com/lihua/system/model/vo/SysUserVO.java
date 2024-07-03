@@ -55,14 +55,14 @@ public class SysUserVO extends BaseEntity {
     /**
      * 性别
      */
-    @ExcelColumn(order = 2, index = 2,title = "用户信息->性别", writeConverter = SysDictWriteConverter.class)
+    @ExcelColumn(order = 2, index = 2,title = "用户信息->*性别", writeConverter = SysDictWriteConverter.class)
     @ExcelWriteConverterDictTypeCode("user_gender")
     private String gender;
 
     /**
      * 用户状态
      */
-    @ExcelColumn(order = 3, index = 3, title = "用户信息->状态", writeConverter = SysDictWriteConverter.class)
+    @ExcelColumn(order = 3, index = 3, title = "用户信息->*状态", writeConverter = SysDictWriteConverter.class)
     @ExcelWriteConverterDictTypeCode("sys_status")
     private String status;
 
@@ -157,6 +157,6 @@ public class SysUserVO extends BaseEntity {
      * excel 批量导入异常说明
      * 数据导入后，因异常无法入库的数据错误描述
      */
-    @ExcelColumn(order = 11, title = "系统提示")
+    @ExcelColumn(order = 11, title = "系统提示", style = {"cell->color:red"})
     private String importErrorMsg;
 }
