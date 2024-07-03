@@ -156,8 +156,24 @@
 
     <select id="findUsername" resultType="java.lang.String">
         SELECT username FROM sys_user WHERE username IN
-        <foreach collection="usernameList" item="username" open="(" separator="," close=")">
+        <foreach collection="usernameSet" item="username" open="(" separator="," close=")">
             #{username}
+        </foreach>
+        AND sys_user.del_flag = '0'
+    </select>
+
+    <select id="findPhoneNumber" resultType="java.lang.String">
+        SELECT phone_number FROM sys_user WHERE phone_number IN
+        <foreach collection="phoneNumberSet" item="phoneNumber" open="(" separator="," close=")">
+            #{phoneNumber}
+        </foreach>
+        AND sys_user.del_flag = '0'
+    </select>
+
+    <select id="findEmail" resultType="java.lang.String">
+        SELECT email FROM sys_user WHERE email IN
+        <foreach collection="emailSet" item="email" open="(" separator="," close=")">
+            #{email}
         </foreach>
         AND sys_user.del_flag = '0'
     </select>

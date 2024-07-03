@@ -11,6 +11,7 @@ import com.lihua.system.model.vo.SysUserVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
@@ -31,5 +32,11 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     List<SysUserVO> findExportData(@Param(Constants.WRAPPER) QueryWrapper<SysUser> queryWrapper);
 
     // 查询已存在的用户名
-    List<String> findUsername(@Param("usernameList") List<String> usernameList);
+    Set<String> findUsername(@Param("usernameSet") Set<String> usernameSet);
+
+    // 查询已存在的电话号码
+    Set<String> findPhoneNumber(@Param("phoneNumberSet") Set<String> phoneNumberSet);
+
+    // 查询已存在的邮箱
+    Set<String> findEmail(@Param("emailSet") Set<String> emailSet);
 }

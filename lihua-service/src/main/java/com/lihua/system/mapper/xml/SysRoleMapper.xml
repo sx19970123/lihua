@@ -70,16 +70,12 @@
         sys_role.status = '0' AND sys_role.del_flag = '0'
     </select>
 
-    <select id="findByRoleNames" resultType="com.lihua.system.entity.SysRole">
+    <select id="findAllRole" resultType="com.lihua.system.entity.SysRole">
         SELECT
         <include refid="selectRoleItem"/>
         FROM
         sys_role
-        WHERE name IN
-        <foreach collection="roleNameSet" item="roleName" open="(" separator="," close=")">
-            #{roleName}
-        </foreach>
-        AND sys_role.del_flag = '0'
+        WHERE del_flag = '0'
     </select>
 
     <delete id="deleteRoleMenuByRoleId">

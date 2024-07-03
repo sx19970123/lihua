@@ -27,6 +27,6 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     SysRole findById(String roleId);
     // 根据用户id查询对应角色编码
     List<String> selectCodeByUserId(@Param("userId") String userId);
-    // 根据角色名称查询角色信息
-    List<SysRole> findByRoleNames(@Param("roleNameSet") Set<String> roleNameSet);
+    // 查询所有角色，包含已停用状态
+    List<SysRole> findAllRole();
 }

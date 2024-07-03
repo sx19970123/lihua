@@ -17,6 +17,6 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
     // 查询部门信息（admin）
     List<CurrentDept> selectAllDept(@Param("userId") String userId);
 
-    // 通过部门名称查询部门信息
-    List<SysDeptVO> findByDeptNames(@Param("deptNameSet") Set<String> deptNameSet);
+    // 查询所有部门及其岗位（包括停用）
+    List<SysDeptVO> findAllDept();
 }
