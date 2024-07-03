@@ -297,6 +297,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             // 过滤匹配到数据库中存在角色名称的数据（角色为空的数据不进行过滤）
             importUserVos = importUserVos.stream().filter(sysUserVO -> {
                 if (StringUtils.hasText(sysUserVO.getRoleName())) {
+                    if (sysUserVO.getRoleName().contains("超级管理员")) {
+                        sysUserVO.setImportErrorMsg("不允许导入超级管理员角色用户");
+                        errorUserVos.add(sysUserVO);
+                        return false;
+                    }
+
                     String[] roleNames = sysUserVO.getRoleName().split("、");
                     for (String roleName : roleNames) {
                         if (!allRoleNameList.contains(roleName)) {
