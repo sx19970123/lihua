@@ -84,7 +84,7 @@
                 </a-button>
               </a-popconfirm>
 
-              <a-button @click="handleExpanded">
+              <a-button type="primary" ghost @click="handleExpanded">
                 <template #icon>
                   <Unfold v-if="expandedRowKeys.length === 0"/>
                   <PickUp v-else/>

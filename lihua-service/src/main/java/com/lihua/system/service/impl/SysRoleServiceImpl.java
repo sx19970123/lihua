@@ -58,8 +58,10 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public String save(SysRole sysRole) {
         String id;
-        // 保存role表数据
+        // 唯一性数据校验
         checkRoleCode(sysRole);
+        checkRoleName(sysRole);
+        // 保存role表数据
         if (StringUtils.hasText(sysRole.getId())) {
             id = update(sysRole);
         } else {
@@ -106,6 +108,22 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
         if (!sysRoles.get(0).getId().equals(sysRole.getId())) {
             throw new ServiceException("角色编码已存在");
+        }
+    }
+
+    private void checkRoleName(SysRole sysRole) {
+        QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysRole::getName,sysRole.getName());
+
+        List<SysRole> sysRoles = sysRoleMapper.selectList(queryWrapper);
+        if (sysRoles.isEmpty()) {
+            return;
+        }
+        if (sysRoles.size() > 1) {
+            throw new ServiceException("角色名称已存在");
+        }
+        if (!sysRoles.get(0).getId().equals(sysRole.getId())) {
+            throw new ServiceException("角色名称已存在");
         }
     }
 

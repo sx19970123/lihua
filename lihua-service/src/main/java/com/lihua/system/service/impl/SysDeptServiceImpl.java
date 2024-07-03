@@ -89,6 +89,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public String save(SysDept sysDept) {
         checkDeptCode(sysDept);
+        checkDeptName(sysDept);
         if (StringUtils.hasText(sysDept.getId())) {
             return updateById(sysDept);
         } else {
@@ -210,11 +211,29 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
 
         if (sysDeptList.size() > 1) {
-            throw new ServiceException("单位编码已存在");
+            throw new ServiceException("部门编码已存在");
         }
 
         if (!sysDeptList.get(0).getId().equals(sysDept.getId())) {
-            throw new ServiceException("单位编码已存在");
+            throw new ServiceException("部门编码已存在");
+        }
+    }
+
+    private void checkDeptName(SysDept sysDept) {
+        QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysDept::getName,sysDept.getName());
+        List<SysDept> sysDeptList = sysDeptMapper.selectList(queryWrapper);
+
+        if (sysDeptList.isEmpty()) {
+            return;
+        }
+
+        if (sysDeptList.size() > 1) {
+            throw new ServiceException("部门名称已存在");
+        }
+
+        if (!sysDeptList.get(0).getId().equals(sysDept.getId())) {
+            throw new ServiceException("部门名称已存在");
         }
     }
 }

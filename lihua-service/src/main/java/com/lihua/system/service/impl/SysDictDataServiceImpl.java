@@ -85,6 +85,8 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         checkSysStatus(sysDictData);
         // 检查字典值是否重复
         checkValue(sysDictData);
+        // 检查字典名称是否重复
+        checkLabel(sysDictData);
 
         String id;
         if (StringUtils.hasText(sysDictData.getId())) {
@@ -217,6 +219,23 @@ public class SysDictDataServiceImpl implements SysDictDataService {
             } else {
                 if (!sysDictDataList.get(0).getId().equals(sysDictData.getId())) {
                     throw new ServiceException("当前字典值已存在");
+                }
+            }
+        }
+    }
+
+    private void checkLabel(SysDictData sysDictData) {
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(SysDictData::getLabel,sysDictData.getLabel())
+                .eq(SysDictData::getDictTypeCode,sysDictData.getDictTypeCode());
+        List<SysDictData> sysDictDataList = sysDictDataMapper.selectList(queryWrapper);
+        if (!sysDictDataList.isEmpty()) {
+            if (sysDictDataList.size() > 1) {
+                throw new ServiceException("当前字典标签已存在");
+            } else {
+                if (!sysDictDataList.get(0).getId().equals(sysDictData.getId())) {
+                    throw new ServiceException("当前字典标签已存在");
                 }
             }
         }
