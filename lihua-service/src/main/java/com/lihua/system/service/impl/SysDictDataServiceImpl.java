@@ -67,15 +67,6 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     @Override
     public List<SysDictDataVO> findDictOptionList(String dictTypeCode) {
         List<SysDictDataVO> dictData = DictUtils.getDictData(dictTypeCode);
-        if (dictData == null || dictData.isEmpty()) {
-            Integer i = resetCache(dictTypeCode);
-            if (i == 0) {
-                return new ArrayList<>();
-            } else {
-                findDictOptionList(dictTypeCode);
-            }
-
-        }
         return TreeUtils.buildTree(dictData);
     }
 
@@ -95,7 +86,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
             id = insert(sysDictData);
         }
         // 更新缓存
-        resetCache(sysDictData.getDictTypeCode());
+        DictUtils.resetCacheDict(sysDictData.getDictTypeCode());
         return id;
     }
 
@@ -110,7 +101,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
                 .eq(SysDictData::getDictTypeCode,oldTypeCode);
         sysDictDataMapper.update(updateWrapper);
         // 缓存新数据 删除旧缓存
-        resetCache(newTypeCode);
+        DictUtils.resetCacheDict(newTypeCode);
         DictUtils.removeDictCache(oldTypeCode);
     }
 
@@ -124,49 +115,24 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         checkChildren(ids);
         checkStatus(ids);
 
-        // 删除数据库数据前先刷新redis 缓存
+        // 删除数据
+        sysDictDataMapper.deleteBatchIds(ids);
+
+        // 查询删除数据对应的type code
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .in(SysDictData::getId,ids)
                 .select(SysDictData::getDictTypeCode);
         List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
 
+        // 重新缓存数据
         if (!sysDictData.isEmpty()) {
-            sysDictData.forEach(data -> {
-                resetCache(data.getDictTypeCode());
-            });
+            sysDictData
+                .stream()
+                .map(SysDictData::getDictTypeCode)
+                .distinct()
+                .forEach(DictUtils::resetCacheDict);
         }
-
-        // 删除数据
-        sysDictDataMapper.deleteBatchIds(ids);
-    }
-
-    private Integer resetCache(String dictTypeCode) {
-        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda()
-                .select(SysDictData::getId,SysDictData::getLabel,SysDictData::getValue,SysDictData::getParentId,SysDictData::getTagStyle,SysDictData::getDictTypeCode)
-                .eq(SysDictData::getDictTypeCode,dictTypeCode)
-                .eq(SysDictData::getStatus,"0")
-                .eq(SysDictData::getDelFlag,"0")
-                .orderByAsc(SysDictData::getSort);
-
-        List<SysDictData> activityList = sysDictDataMapper.selectList(queryWrapper);
-
-        // 数据为空时删除redis 缓存
-        if (activityList.isEmpty()) {
-            DictUtils.removeDictCache(dictTypeCode);
-        } else {
-            List<SysDictDataVO> list = new ArrayList<>();
-            activityList.forEach(item -> {
-                SysDictDataVO sysDictDataVO = new SysDictDataVO();
-                BeanUtils.copyProperties(item,sysDictDataVO);
-                list.add(sysDictDataVO);
-            });
-            DictUtils.setDictCache(dictTypeCode,list);
-        }
-
-        // 返回本次缓存的数据数量
-        return activityList.size();
     }
 
     private String insert(SysDictData sysDictData) {

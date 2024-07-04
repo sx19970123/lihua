@@ -345,7 +345,7 @@ import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import {useThemeStore} from "@/stores/modules/theme.ts";
-import {handleFunDownload} from "@/utils/FileDownload.ts";
+import {downloadByPath, handleFunDownload} from "@/utils/FileDownload.ts";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
@@ -1051,15 +1051,24 @@ const initExcel = () => {
     // 将文件上传至后端
     const resp = await importExcel(uploadRequest.file)
     if (resp.code === 200) {
-      // 部分成功可下载导入失败的数据集
-      Modal.confirm({
-        title: '导入完成，部分数据未成功导入',
-        icon: createVNode(ExclamationCircleOutlined),
-        content: '共解析到100条数据，成功导入80条，失败20条。点击“确定”下载失败数据集。',
-        onOk: () => {
-          console.log('ok')
-        }
-      })
+      const data = resp.data
+      // 是否完全导入成功
+      if (data.allSuccess) {
+        message.success(resp.msg);
+      } else {
+        // 部分成功可下载导入失败的数据集
+        Modal.confirm({
+          title: '导入完成，部分数据未成功导入',
+          icon: createVNode(ExclamationCircleOutlined),
+          content: `共解析到 ${data.readCount} 条数据，成功导入 ${data.successCount} 条，失败 ${data.errorCount} 条。点击“确定”下载失败数据集。`,
+          onOk: () => {
+            // 下载导入失败excel
+            downloadByPath(data.errorExcelPath)
+          }
+        })
+      }
+      // 导入完成后刷新页面
+      await initPage()
     } else {
       message.error(resp.msg)
     }

@@ -2,6 +2,7 @@ package com.lihua.utils.dict;
 
 import com.lihua.cache.RedisCache;
 import com.lihua.enums.SysBaseEnum;
+import com.lihua.mapper.CommonMapper;
 import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.utils.spring.SpringUtils;
 
@@ -20,7 +21,7 @@ public class DictUtils {
      */
     public static String getLabel(String dictTypeCode,String value) {
         List<SysDictDataVO> dictDataList = getDictData(dictTypeCode);
-        if (dictDataList == null || dictDataList.isEmpty()) {
+        if (dictDataList.isEmpty()) {
             return null;
         }
 
@@ -56,10 +57,32 @@ public class DictUtils {
     public static List<SysDictDataVO> getDictData(String dictTypeCode) {
         RedisCache redisCache = initRedis();
         Object dictCache = redisCache.getCacheObject(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
+
+        // 缓存数据为空时，尝试从数据库再次获取，数据库未查询到数据时，返回空集合
+        // 查询到数据时，再次调用自身返回字典数据
         if (dictCache == null) {
-            return new ArrayList<>();
+            int i = resetCacheDict(dictTypeCode);
+            if (i == 0) {
+                return new ArrayList<>();
+            }
+            return getDictData(dictTypeCode);
         }
+
         return (List<SysDictDataVO>) dictCache;
+    }
+
+    /**
+     * 重新缓存字典
+     */
+    public static int resetCacheDict(String dictTypeCode) {
+        CommonMapper commonMapper = initMapper();
+        List<SysDictDataVO> sysDictDataVOList = commonMapper.findByDictTypeCode(dictTypeCode);
+        if (sysDictDataVOList.isEmpty()) {
+            removeDictCache(dictTypeCode);
+        } else {
+            DictUtils.setDictCache(dictTypeCode,sysDictDataVOList);
+        }
+        return sysDictDataVOList.size();
     }
 
     /**
@@ -68,4 +91,12 @@ public class DictUtils {
     private static RedisCache initRedis() {
         return  SpringUtils.getBean(RedisCache.class);
     }
+
+    /**
+     * 加载commonMapper
+     */
+    private static CommonMapper initMapper() {
+        return SpringUtils.getBean(CommonMapper.class);
+    }
+
 }

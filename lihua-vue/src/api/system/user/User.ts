@@ -1,5 +1,5 @@
 import request from "@/utils/Request.ts";
-import type {PageResponseType} from "@/api/global/Type.ts";
+import type {ExcelImportResult, PageResponseType} from "@/api/global/Type.ts";
 import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
 import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 
@@ -60,7 +60,7 @@ export const importExcel = (file:  string | Blob | RcFile) => {
     const formData = new FormData()
     formData.append('file', file)
 
-    return request({
+    return request<ExcelImportResult>({
         url: 'system/user/import',
         method: 'post',
         data: formData,

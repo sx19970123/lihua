@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lihua.mapper.CommonMapper">
+
+    <select id="findByDictTypeCode" resultType="com.lihua.model.dict.SysDictDataVO">
+        SELECT
+            id,
+            parent_id,
+            dict_type_code,
+            label,
+            value,
+            sort,
+            tag_style,
+            remark
+            FROM
+            sys_dict_data
+        WHERE
+            dict_type_code = #{dictTypeCode} AND status = '0' AND del_flag = '0'
+    </select>
+</mapper>
