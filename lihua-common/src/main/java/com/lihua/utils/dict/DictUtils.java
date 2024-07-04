@@ -5,6 +5,7 @@ import com.lihua.enums.SysBaseEnum;
 import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.utils.spring.SpringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,9 +53,13 @@ public class DictUtils {
     /**
      * 获取字典缓存数据
      */
-    public static  List<SysDictDataVO> getDictData(String dictTypeCode) {
+    public static List<SysDictDataVO> getDictData(String dictTypeCode) {
         RedisCache redisCache = initRedis();
-        return redisCache.getCacheObject(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
+        Object dictCache = redisCache.getCacheObject(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
+        if (dictCache == null) {
+            return new ArrayList<>();
+        }
+        return (List<SysDictDataVO>) dictCache;
     }
 
     /**
