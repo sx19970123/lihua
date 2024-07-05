@@ -151,6 +151,12 @@ public class SysDeptServiceImpl implements SysDeptService {
         return status;
     }
 
+    @Override
+    public String exportExcel(SysDept sysDept) {
+
+        return "";
+    }
+
     // 检查状态
     private void checkStatus(List<String> ids) {
         QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();

@@ -57,4 +57,11 @@ public interface SysDeptService {
      * @return
      */
     String updateStatus(String id, String currentStatus);
+
+    /**
+     * 导出excel
+     * @param sysDept
+     * @return
+     */
+    String exportExcel(SysDept sysDept);
 }

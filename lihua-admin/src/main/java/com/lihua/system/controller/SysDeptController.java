@@ -4,6 +4,7 @@ import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysDept;
 import com.lihua.system.service.SysDeptService;
 import com.lihua.system.service.SysUserDeptService;
+import com.lihua.utils.file.FileDownloadUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,4 +60,12 @@ public class SysDeptController extends BaseController {
     public String deptTreeOption() {
         return success(sysDeptService.deptTreeOption());
     }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping
+    public String exportExcel(@RequestBody SysDept sysDept) {
+        String path = sysDeptService.exportExcel(sysDept);
+        return success(FileDownloadUtils.addToDownloadableList(path));
+    }
 }
+
