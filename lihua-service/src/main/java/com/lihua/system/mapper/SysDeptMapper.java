@@ -19,4 +19,10 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
 
     // 查询所有部门及其岗位（包括停用）
     List<SysDeptVO> findAllDept();
+
+    // 查询对应部门名称在数据库中是否存在
+    Set<String> findDeptNameByNames(@Param("deptNameSet") Set<String> deptNameSet);
+
+    // 查询对应部门编码在数据库中是否存在
+    Set<String> findDeptCodeByCodes(@Param("deptCodeSet") Set<String> deptCodeSet);
 }

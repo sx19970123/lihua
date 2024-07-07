@@ -77,6 +77,25 @@
              </template>
              {{!expandedRowKeys.length ? '展 开' : '折 叠'}}
            </a-button>
+
+           <a-button ghost type="primary" @click="handleExportExcel">
+             <template #icon>
+               <ExportOutlined />
+             </template>
+             导出
+           </a-button>
+<!--           <a-upload :customRequest="handleCustomRequest"
+                     :beforeUpload="handleBeforeUpdate"
+                     :showUploadList="false"
+                     accept=".xlsx,.xls"
+           >
+             <a-button ghost type="primary">
+               <template #icon>
+                 <ImportOutlined />
+               </template>
+               导入
+             </a-button>
+           </a-upload>-->
          </a-flex>
        </template>
        <template #bodyCell="{column,record,text}">
@@ -198,7 +217,15 @@
 <script setup lang="ts">
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deleteData, getDeptOption, findById, findList, save, updateStatus} from "@/api/system/dept/Dept.ts";
+import {
+  deleteData,
+  getDeptOption,
+  findById,
+  findList,
+  save,
+  updateStatus,
+  exportExcel
+} from "@/api/system/dept/Dept.ts";
 import {reactive, ref} from "vue";
 import {message} from "ant-design-vue";
 import {initDict} from "@/utils/dict.ts";
@@ -208,6 +235,7 @@ import {useRouter} from "vue-router";
 import {flattenTreeData} from "@/utils/Tree.ts";
 import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
+import {handleFunDownload} from "@/utils/FileDownload.ts";
 const {sys_status} = initDict("sys_status")
 const router = useRouter()
 const initSearch = () => {
@@ -246,6 +274,7 @@ const initSearch = () => {
       title: '部门名称',
       key: 'name',
       dataIndex: 'name',
+      ellipsis: true
     },
     {
       title: '部门编码',
@@ -257,6 +286,7 @@ const initSearch = () => {
       key: 'sort',
       dataIndex: 'sort',
       align: 'right',
+      width: '100px'
     },
     {
       title: '状态',
@@ -605,6 +635,20 @@ const initDelete = () => {
 }
 
 const {openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm} = initDelete()
+
+// 初始化excel导入导出相关操作
+const initExcel = () => {
+  // 导出excel
+  const handleExportExcel = () => {
+    handleFunDownload(exportExcel(deptQuery.value))
+  }
+
+  return {
+    handleExportExcel
+  }
+}
+
+const { handleExportExcel } = initExcel()
 
 // 跳转至岗位页面
 const handleSkipRoute = (event: MouseEvent, id: string) => {

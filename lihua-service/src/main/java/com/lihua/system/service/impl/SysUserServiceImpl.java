@@ -413,9 +413,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             collectEmail.add(sysUserVO.getEmail());
         });
 
+        if (collectUsername.isEmpty()) {
+            throw new ServiceException("当前excel中用户名为空，请检查数据");
+        }
+
         usernameDbSet = sysUserMapper.findUsername(collectUsername);
-        phoneNumberDbSet = sysUserMapper.findPhoneNumber(collectPhoneNumber);
-        emailDbSet = sysUserMapper.findEmail(collectEmail);
+        if (!collectPhoneNumber.isEmpty()) {
+            phoneNumberDbSet = sysUserMapper.findPhoneNumber(collectPhoneNumber);
+        }
+        if (!collectEmail.isEmpty()) {
+            emailDbSet = sysUserMapper.findEmail(collectEmail);
+        }
     }
 
     /**
@@ -460,13 +468,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     private boolean filterUsername(SysUserVO sysUserVO,
                                    List<SysUserVO> errorUserVos,
                                    Set<String> usernames) {
-        if (usernames.contains(sysUserVO.getUsername())) {
-            sysUserVO.setImportErrorMsg("用户名已存在");
+        if (!StringUtils.hasText(sysUserVO.getUsername())) {
+            sysUserVO.setImportErrorMsg("请填写用户名");
             errorUserVos.add(sysUserVO);
             return false;
         }
-        if (!StringUtils.hasText(sysUserVO.getUsername())) {
-            sysUserVO.setImportErrorMsg("请填写用户名");
+
+        if (usernames.contains(sysUserVO.getUsername())) {
+            sysUserVO.setImportErrorMsg("用户名已存在");
             errorUserVos.add(sysUserVO);
             return false;
         }
@@ -483,13 +492,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     private boolean filterPhoneNumber(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, Set<String> phoneNumberDbSet) {
         String phoneNumber = sysUserVO.getPhoneNumber();
         if (StringUtils.hasText(phoneNumber)) {
-            if (phoneNumberDbSet.contains(sysUserVO.getPhoneNumber())) {
-                sysUserVO.setImportErrorMsg("手机号码已存在");
+            if (!PHONE_NUMBER_PATTERN.matcher(phoneNumber).matches()) {
+                sysUserVO.setImportErrorMsg("手机号码格式错误，请检查数据");
                 errorUserVos.add(sysUserVO);
                 return false;
             }
-            if (!PHONE_NUMBER_PATTERN.matcher(phoneNumber).matches()) {
-                sysUserVO.setImportErrorMsg("手机号码格式错误，请检查数据");
+
+            if (phoneNumberDbSet.contains(sysUserVO.getPhoneNumber())) {
+                sysUserVO.setImportErrorMsg("手机号码已存在");
                 errorUserVos.add(sysUserVO);
                 return false;
             }
@@ -507,13 +517,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     private boolean filterEmail(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, Set<String> emailDbSet) {
         String email = sysUserVO.getEmail();
         if (StringUtils.hasText(email)) {
-            if (emailDbSet.contains(sysUserVO.getEmail())) {
-                sysUserVO.setImportErrorMsg("电子邮箱已存在");
+            if (!EMAIL_PATTERN.matcher(email).matches()) {
+                sysUserVO.setImportErrorMsg("电子邮箱格式错误，请检查数据");
                 errorUserVos.add(sysUserVO);
                 return false;
             }
-            if (!EMAIL_PATTERN.matcher(email).matches()) {
-                sysUserVO.setImportErrorMsg("电子邮箱格式错误，请检查数据");
+
+            if (emailDbSet.contains(sysUserVO.getEmail())) {
+                sysUserVO.setImportErrorMsg("电子邮箱已存在");
                 errorUserVos.add(sysUserVO);
                 return false;
             }

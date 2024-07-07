@@ -5,6 +5,7 @@
     <resultMap id="findAllDeptMap" type="com.lihua.system.model.vo.SysDeptVO">
         <result column="deptId" property="id"/>
         <result column="deptName" property="name"/>
+        <result column="deptCode" property="code"/>
         <collection property="sysPostList" ofType="com.lihua.system.entity.SysPost">
             <result column="postId" property="id"/>
             <result column="postName" property="name"/>
@@ -64,11 +65,38 @@
         SELECT
             sys_dept.name as deptName,
             sys_dept.id as deptId,
+            sys_dept.code as deptCode,
             sys_post.NAME as postName,
             sys_post.id as postId
         FROM
         sys_dept
         LEFT JOIN sys_post ON sys_post.dept_id = sys_dept.id AND sys_post.del_flag = '0'
         WHERE sys_dept.del_flag = '0'
+    </select>
+
+    <select id="findDeptNameByNames" resultType="java.lang.String">
+        SELECT
+            sys_dept.name
+        FROM
+            sys_dept
+        WHERE
+        sys_dept.name IN
+        <foreach collection="deptNameSet" item="deptName" open="(" separator="," close=")">
+            #{deptName}
+        </foreach>
+        sys_dept.del_flag = '0'
+    </select>
+
+    <select id="findDeptCodeByCodes" resultType="java.lang.String">
+        SELECT
+        sys_dept.code
+        FROM
+        sys_dept
+        WHERE
+        sys_dept.code IN
+        <foreach collection="deptCodeSet" item="deptCode" open="(" separator="," close=")">
+            #{deptCode}
+        </foreach>
+        sys_dept.del_flag = '0'
     </select>
 </mapper>

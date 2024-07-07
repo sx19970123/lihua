@@ -69,3 +69,15 @@ export const getDeptOption = () => {
     method: 'get',
   })
 }
+
+/**
+ * 部门导出excel
+ * @param data
+ */
+export const exportExcel = (data: SysDept) => {
+  return request<String>({
+    url: 'system/dept/export',
+    method: 'post',
+    data: data
+  })
+}
