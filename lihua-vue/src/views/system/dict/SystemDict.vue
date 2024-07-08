@@ -81,6 +81,12 @@
                 <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
               </a-button>
             </a-popconfirm>
+            <a-button type="primary" ghost @click="handleReloadCache" :loading="loadCache">
+              <template #icon>
+                <RedoOutlined />
+              </template>
+              刷新缓存
+            </a-button>
           </a-flex>
         </template>
         <template #bodyCell="{column,record,text}">
@@ -201,7 +207,7 @@ import {reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
 import type {ResponseType } from "@/api/global/Type.ts"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {deleteData, findById, findPage, save, updateStatus} from "@/api/system/dict/DictType.ts";
+import {deleteData, findById, findPage, reloadCache, save, updateStatus} from "@/api/system/dict/DictType.ts";
 import dayjs from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";
@@ -554,4 +560,30 @@ const initDictConfig = () => {
   }
 }
 const {drawerAction,openDictConfig} = initDictConfig()
+
+// 处理刷新缓存
+const initLoadCache = () => {
+  // 刷新缓存loading
+  const loadCache = ref<boolean>(false)
+
+  // 执行刷新缓存
+  const handleReloadCache = async () => {
+    loadCache.value = true
+    const resp = await reloadCache()
+    if (resp.code === 200) {
+      message.success(resp.msg)
+    } else {
+      message.error(resp.msg)
+    }
+    loadCache.value = false
+  }
+
+  return {
+    handleReloadCache,
+    loadCache
+  }
+}
+
+const {handleReloadCache, loadCache} = initLoadCache()
+
 </script>

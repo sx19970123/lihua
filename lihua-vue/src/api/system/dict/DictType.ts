@@ -59,3 +59,13 @@ export const deleteData = (ids: Array<string>) => {
     data: ids
   })
 }
+
+/**
+ * 刷新缓存
+ */
+export const reloadCache = () => {
+  return request({
+    url: 'system/dictType/reload/cache',
+    method: 'post'
+  })
+}

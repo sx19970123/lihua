@@ -76,4 +76,10 @@ public class SysDictTypeController extends BaseController {
         return success();
     }
 
+    @PostMapping("reload/cache")
+    public String reloadCache() {
+        sysDictTypeService.reloadCache();
+        return success();
+    }
+
 }

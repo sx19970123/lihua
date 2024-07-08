@@ -368,7 +368,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             String namePath = deptVO.getNamePath();
             for (String errorParentName : errorParentNameSet) {
                 if (namePath.contains(errorParentName)) {
-                    deptVO.setImportErrorMsg("父级部门 " + errorParentName + " 存在异常，请检查对应父级部门数据");
+                    deptVO.setImportErrorMsg("父级部门 " + errorParentName + " 存在异常或不存在，请检查对应父级部门数据");
                     errorDeptVos.add(deptVO);
                     return false;
                 }

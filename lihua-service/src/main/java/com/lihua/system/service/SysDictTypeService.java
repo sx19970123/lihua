@@ -44,4 +44,10 @@ public interface SysDictTypeService {
      * @return
      */
     String updateStatus(String id, String currentStatus);
+
+    /**
+     * 刷新字典缓存
+     */
+    void reloadCache();
+
 }

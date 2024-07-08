@@ -88,11 +88,12 @@
                <a-popover title="导入说明">
                  <template #content>
                    <a-space direction="vertical">
-                     <a-typography-text>1. 数据导入模板参考导出功能下载的excel文档</a-typography-text>
-                     <a-typography-text>2. 部门数据以名称/编码为准全局唯一，遇重复数据将无法导入</a-typography-text>
+                     <a-typography-text>1. 请参考“导出功能”下载的Excel作为导入模板</a-typography-text>
+                     <a-typography-text>2. 以名称和编码为准，保证全局唯一性。遇到重复数据将无法导入</a-typography-text>
                      <a-typography-text>3. 带有*标记的为必填字段</a-typography-text>
-                     <a-typography-text>4. 部门名称路径列描述了部门间的层级关系，以/分隔，最后一级为当前部门，顶级部门与部门名称相同</a-typography-text>
-                     <a-typography-text>5. 无法导入的数据会将异常数据收集导出并标记错误信息，可修改后直接进行导入</a-typography-text>
+                     <a-typography-text>4. 部门名称路径列描述了部门间的层级关系，以“/”分隔，最后一级为当前部门，顶级部门与部门名称相同</a-typography-text>
+                     <a-typography-text>5. 无法导入的数据会被收集并导出，同时标记错误信息，修改后可重新导入</a-typography-text>
+                     <a-typography-text>6. Excel表内的岗位信息不会被保存，如需导入，请前往“岗位管理”模块进行操作</a-typography-text>
                    </a-space>
                  </template>
                  <a-upload :customRequest="handleCustomRequest"

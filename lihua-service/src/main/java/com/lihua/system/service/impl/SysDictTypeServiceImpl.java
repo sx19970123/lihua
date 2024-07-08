@@ -10,6 +10,7 @@ import com.lihua.system.mapper.SysDictTypeMapper;
 import com.lihua.system.model.dto.SysDictTypeDTO;
 import com.lihua.system.service.SysDictDataService;
 import com.lihua.system.service.SysDictTypeService;
+import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -120,6 +121,14 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
                 .eq(SysDictType::getId, id);
         sysDictTypeMapper.update(null, updateWrapper);
         return status;
+    }
+
+    @Override
+    public void reloadCache() {
+        QueryWrapper<SysDictType> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().select(SysDictType::getCode);
+        List<SysDictType> sysDictTypes = sysDictTypeMapper.selectList(queryWrapper);
+        sysDictTypes.forEach(dictType -> DictUtils.resetCacheDict(dictType.getCode()));
     }
 
     private void checkDictData(List<String> ids) {
