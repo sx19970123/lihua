@@ -11,7 +11,6 @@ import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysPost;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.model.vo.SysDeptVO;
-import com.lihua.system.model.vo.SysUserVO;
 import com.lihua.system.service.SysDeptService;
 import com.lihua.system.service.SysPostService;
 import com.lihua.system.service.SysUserDeptService;
@@ -27,6 +26,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -215,7 +215,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             }
 
             // 过滤部门名称（已存在，未填写）
-            boolean filterDeptName = filterDeptName(sysDeptVO, errorDeptVos, deptNameRepeatSet);
+            boolean filterDeptName = filterDeptName(sysDeptVO, errorDeptVos, deptNameDbSet);
             if (!filterDeptName) {
                 return false;
             }
@@ -286,15 +286,22 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     private void batchInsert(List<SysDeptVO> importDeptVos) {
         List<SysDept> sysDeptList = new ArrayList<>();
         Map<String, SysDept> deptNameToDeptMap = new HashMap<>();
-
+        LocalDateTime now = LocalDateTime.now();
         // 创建部门对象并生成 ID
+        AtomicInteger index = new AtomicInteger(1);
         importDeptVos.forEach(deptVO -> {
             SysDept sysDept = new SysDept();
             BeanUtils.copyProperties(deptVO, sysDept);
             String id = String.valueOf(IdWorker.getId(sysDept));
             sysDept.setId(id);
+            sysDept.setDelFlag("0");
+            sysDept.setCreateTime(LocalDateTime.now());
+            sysDept.setCreateTime(now);
+            sysDept.setCreateId(LoginUserContext.getUserId());
+            sysDept.setSort(index.get());
             sysDeptList.add(sysDept);
             deptNameToDeptMap.put(sysDept.getName(), sysDept);
+            index.getAndIncrement();
         });
 
         // 设置父级 ID
@@ -500,8 +507,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         }
 
         // 查询数据库相关数据
-        deptNameDbSet = sysDeptMapper.findDeptNameByNames(collectDeptName);
-        deptCodeDbSet = sysDeptMapper.findDeptCodeByCodes(collectDeptCode);
+        deptNameDbSet.addAll(sysDeptMapper.findDeptNameByNames(collectDeptName));
+        deptCodeDbSet.addAll(sysDeptMapper.findDeptCodeByCodes(collectDeptCode));
     }
 
     // 过滤表格内重复数据

@@ -84,7 +84,7 @@
         <foreach collection="deptNameSet" item="deptName" open="(" separator="," close=")">
             #{deptName}
         </foreach>
-        sys_dept.del_flag = '0'
+        AND sys_dept.del_flag = '0'
     </select>
 
     <select id="findDeptCodeByCodes" resultType="java.lang.String">
@@ -97,6 +97,6 @@
         <foreach collection="deptCodeSet" item="deptCode" open="(" separator="," close=")">
             #{deptCode}
         </foreach>
-        sys_dept.del_flag = '0'
+        AND sys_dept.del_flag = '0'
     </select>
 </mapper>

@@ -1,5 +1,7 @@
 import request from "@/utils/Request.ts";
 import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
+import type {ExcelImportResult} from "@/api/global/Type.ts";
+import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 
 /**
  * 列表查询
@@ -79,5 +81,23 @@ export const exportExcel = (data: SysDept) => {
     url: 'system/dept/export',
     method: 'post',
     data: data
+  })
+}
+
+/**
+ * excel 导入
+ * @param file
+ */
+export const importExcel = (file:  string | Blob | RcFile) => {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  return request<ExcelImportResult>({
+    url: 'system/dept/import',
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
   })
 }

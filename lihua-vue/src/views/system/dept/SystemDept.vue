@@ -77,25 +77,45 @@
              </template>
              {{!expandedRowKeys.length ? '展 开' : '折 叠'}}
            </a-button>
-
-           <a-button ghost type="primary" @click="handleExportExcel">
+           <div v-show="showMore">
+             <a-flex :gap="8">
+               <a-button ghost type="primary" @click="handleExportExcel">
+                 <template #icon>
+                   <ExportOutlined />
+                 </template>
+                 导出
+               </a-button>
+               <a-popover title="导入说明">
+                 <template #content>
+                   <a-space direction="vertical">
+                     <a-typography-text>1. 数据导入模板参考导出功能下载的excel文档</a-typography-text>
+                     <a-typography-text>2. 部门数据以名称/编码为准全局唯一，遇重复数据将无法导入</a-typography-text>
+                     <a-typography-text>3. 带有*标记的为必填字段</a-typography-text>
+                     <a-typography-text>4. 部门名称路径列描述了部门间的层级关系，以/分隔，最后一级为当前部门，顶级部门与部门名称相同</a-typography-text>
+                     <a-typography-text>5. 无法导入的数据会将异常数据收集导出并标记错误信息，可修改后直接进行导入</a-typography-text>
+                   </a-space>
+                 </template>
+                 <a-upload :customRequest="handleCustomRequest"
+                           :beforeUpload="handleBeforeUpdate"
+                           :showUploadList="false"
+                           accept=".xlsx,.xls"
+                 >
+                   <a-button ghost type="primary">
+                     <template #icon>
+                       <ImportOutlined />
+                     </template>
+                     导入
+                   </a-button>
+                 </a-upload>
+               </a-popover>
+             </a-flex>
+           </div>
+           <a-button ghost type="primary" @click="showMore = !showMore">
              <template #icon>
-               <ExportOutlined />
+               <DoubleLeftOutlined v-if="showMore" />
+               <DoubleRightOutlined v-else />
              </template>
-             导出
            </a-button>
-<!--           <a-upload :customRequest="handleCustomRequest"
-                     :beforeUpload="handleBeforeUpdate"
-                     :showUploadList="false"
-                     accept=".xlsx,.xls"
-           >
-             <a-button ghost type="primary">
-               <template #icon>
-                 <ImportOutlined />
-               </template>
-               导入
-             </a-button>
-           </a-upload>-->
          </a-flex>
        </template>
        <template #bodyCell="{column,record,text}">
@@ -224,10 +244,10 @@ import {
   findList,
   save,
   updateStatus,
-  exportExcel
+  exportExcel, importExcel
 } from "@/api/system/dept/Dept.ts";
-import {reactive, ref} from "vue";
-import {message} from "ant-design-vue";
+import {createVNode, reactive, ref} from "vue";
+import {message, Modal} from "ant-design-vue";
 import {initDict} from "@/utils/dict.ts";
 import {cloneDeep} from "lodash-es";
 import type {Rule} from "ant-design-vue/es/form";
@@ -235,9 +255,15 @@ import {useRouter} from "vue-router";
 import {flattenTreeData} from "@/utils/Tree.ts";
 import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
-import {handleFunDownload} from "@/utils/FileDownload.ts";
+import {downloadByPath, handleFunDownload} from "@/utils/FileDownload.ts";
+import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
+import Spin from "@/components/spin";
+import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 const {sys_status} = initDict("sys_status")
 const router = useRouter()
+// 显示更多按钮
+const showMore = ref<boolean>(false)
+
 const initSearch = () => {
   // 选中的数据id集合
   const selectedIds = ref<Array<string>>([])
@@ -642,13 +668,57 @@ const initExcel = () => {
   const handleExportExcel = () => {
     handleFunDownload(exportExcel(deptQuery.value))
   }
+  // 文件上传前校验格式
+  const handleBeforeUpdate = (file: File) => {
+    const fileName = file.name
+    if (!fileName.endsWith(".xls") && !fileName.endsWith(".xlsx")) {
+      message.warn("请上传 .xls 或 .xlsx 类型的文件")
+      return false
+    }
+  }
+  // excel批量导入
+  const handleCustomRequest = async (uploadRequest: UploadRequestOption) => {
+    if (!uploadRequest) {
+      return
+    }
+    const spinInstance = Spin.service({
+      tip: '数据处理中，请稍等...'
+    })
 
+    // 将文件上传至后端
+    const resp = await importExcel(uploadRequest.file)
+    if (resp.code === 200) {
+      const data = resp.data
+      // 是否完全导入成功
+      if (data.allSuccess) {
+        message.success(resp.msg);
+      } else {
+        // 部分成功可下载导入失败的数据集
+        Modal.confirm({
+          title: '导入完成，部分数据未成功导入',
+          icon: createVNode(ExclamationCircleOutlined),
+          content: `共解析到 ${data.readCount} 条数据，成功导入 ${data.successCount} 条，失败 ${data.errorCount} 条。点击“确定”下载失败数据集。`,
+          onOk: () => {
+            // 下载导入失败excel
+            downloadByPath(data.errorExcelPath)
+          }
+        })
+      }
+      // 导入完成后刷新页面
+      await initList()
+    } else {
+      message.error(resp.msg)
+    }
+    spinInstance.close()
+  }
   return {
-    handleExportExcel
+    handleExportExcel,
+    handleBeforeUpdate,
+    handleCustomRequest
   }
 }
 
-const { handleExportExcel } = initExcel()
+const { handleExportExcel, handleBeforeUpdate, handleCustomRequest } = initExcel()
 
 // 跳转至岗位页面
 const handleSkipRoute = (event: MouseEvent, id: string) => {
