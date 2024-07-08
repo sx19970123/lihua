@@ -75,8 +75,8 @@ import * as Icons from "@ant-design/icons-vue";
 import {cloneDeep} from "lodash-es";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 const themeStore = useThemeStore();
-// 读取icon目录下图标
-const modules = import.meta.glob("../icon/**/*.vue")
+// 读取icon目录下图标(../icon/目录名/组件名.vue)
+const modules = import.meta.glob("../icon/*/*.vue")
 
 const icons: Record<string, Component> = Icons
 // 三种图标类型集合
