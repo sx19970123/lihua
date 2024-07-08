@@ -2,6 +2,8 @@ package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.excel.ExcelImportResult;
@@ -9,11 +11,13 @@ import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysPost;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.model.vo.SysDeptVO;
+import com.lihua.system.model.vo.SysUserVO;
 import com.lihua.system.service.SysDeptService;
 import com.lihua.system.service.SysPostService;
 import com.lihua.system.service.SysUserDeptService;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
+import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
@@ -27,7 +31,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-public class SysDeptServiceImpl implements SysDeptService {
+public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
 
     @Resource
     private SysDeptMapper sysDeptMapper;
@@ -95,17 +99,17 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public String save(SysDept sysDept) {
+    public String saveDept(SysDept sysDept) {
         checkDeptCode(sysDept);
         checkDeptName(sysDept);
         if (StringUtils.hasText(sysDept.getId())) {
-            return updateById(sysDept);
+            return updateDeptById(sysDept);
         } else {
             return insert(sysDept);
         }
     }
 
-    private String updateById(SysDept sysDept) {
+    private String updateDeptById(SysDept sysDept) {
         sysDept.setUpdateId(LoginUserContext.getUserId());
         sysDept.setUpdateTime(LocalDateTime.now());
         sysDeptMapper.updateById(sysDept);
@@ -240,36 +244,173 @@ public class SysDeptServiceImpl implements SysDeptService {
                 return false;
             }
 
-            // 过滤父子部门
-            // 1. namePath的最后一位一定是当前的DeptName
-            // 2. namePath只有一位时，当前部门为root节点
-            // 3. 除了root节点外，前两级节点一定在表格/数据库中存在
-            // 目标：找到当前节点的上一级节点作为parentId
-            // 注意：a 当上一级节点为数据库中存在的节点时，无需特殊处理
-            //      b 当上一级节点为表格内数据时，需验证该节点是否合法，即当parent节点无法保存时，其子节点必然无法保存
-            //      即 a/b/c/d 中，b出现异常，则表格内 c d 均无法保存
-
+            // 过滤namePath（验证部门名称路径的最后是否为部门名称）
+            boolean filterNamePath = filterNamePath(sysDeptVO, errorDeptVos);
+            if (!filterNamePath) {
+                return false;
+            }
 
             return true;
         }).toList();
 
-        // 2. 部门路径名称必须包含部门名称，且当前部门名称必须为部门路径名称最后
+        // 获取数据库中全部父级name-id
+        List<SysDept> dbParentDeptList = getAllDbParentDeptList(importDeptVos);
+        // 分配上级部门
+        importDeptVos = filterParentDept(importDeptVos, dbParentDeptList, errorDeptVos);
 
-        // 3. 验证状态
+        // 处理完毕后获得两批数据：通过校验可导入 / 数据存在异常需用户重新处理
+        // 导出错误数据集
+        String errExcelPath = null;
+        if (!errorDeptVos.isEmpty()) {
+            String errExcelName = LoginUserContext.getUserId() + "_导入失败_" + UUID.randomUUID().toString().replace("-","");
+            // 导出excel
+            errExcelPath = ExcelUtils.excelExport(errorDeptVos, SysDeptVO.class, errExcelName);
+            // 添加excel到可下载队列
+            FileDownloadUtils.addToDownloadableList(errExcelPath);
+        }
 
-        // 4. 验证邮箱/电话格式
+        // 插入数据
+        if (!importDeptVos.isEmpty()) {
+            batchInsert(importDeptVos);
+        }
 
-        // 确定层级关系
-        // 将部门名称路径下的部门名称进行拆分成set集合
-        // 去数据库中查询名称 + id
-        // 部门名称路径 split length - 1 即上级部门，从而获取到对应的pid
-        // 数据库没有的情况下， 待分配完成id再进行匹配
+        // 返回汇总的导入结果
+        return new ExcelImportResult(sysDeptVOS.size() == importDeptVos.size(),
+                sysDeptVOS.size(),
+                importDeptVos.size(),
+                errorDeptVos.size(),
+                errExcelPath);
+    }
 
-        // 当某个部门上级无法导入时，下级也会因为上级匹配id不存在而导入失败，配置完成上级导入的名称即可
+    // 批量插入
+    private void batchInsert(List<SysDeptVO> importDeptVos) {
+        List<SysDept> sysDeptList = new ArrayList<>();
+        Map<String, SysDept> deptNameToDeptMap = new HashMap<>();
 
-        // 过程为：单元格内去重-通过数据库去重-路径名称、状态、格式校验-确定层级关系-过滤层级断层的数据（注意，断层数据所有子数据都无法导入）-导入正常数据，导出异常数据
+        // 创建部门对象并生成 ID
+        importDeptVos.forEach(deptVO -> {
+            SysDept sysDept = new SysDept();
+            BeanUtils.copyProperties(deptVO, sysDept);
+            String id = String.valueOf(IdWorker.getId(sysDept));
+            sysDept.setId(id);
+            sysDeptList.add(sysDept);
+            deptNameToDeptMap.put(sysDept.getName(), sysDept);
+        });
 
-        return null;
+        // 设置父级 ID
+        importDeptVos.forEach(deptVO -> {
+            String[] allParentArray = deptVO.getNamePath().split("/");
+            if (allParentArray.length > 1) {
+                String parentName = allParentArray[allParentArray.length - 2];
+                SysDept parentDept = deptNameToDeptMap.get(parentName);
+                if (parentDept != null && !StringUtils.hasText(deptVO.getParentId())) {
+                    SysDept currentDept = deptNameToDeptMap.get(deptVO.getName());
+                    if (currentDept != null) {
+                        currentDept.setParentId(parentDept.getId());
+                    }
+                }
+            } else {
+                // 如果没有父级，则设置为根节点
+                SysDept currentDept = deptNameToDeptMap.get(deptVO.getName());
+                if (currentDept != null) {
+                    currentDept.setParentId("0");
+                }
+            }
+        });
+
+        // 批量插入
+        saveBatch(sysDeptList);
+    }
+
+    // 分配上级部门id
+    private List<SysDeptVO> filterParentDept(List<SysDeptVO> importDeptVos, List<SysDept> dbParentDeptList, List<SysDeptVO> errorDeptVos) {
+        // 使用 Map 存储数据库中的部门名称和对应的 ID
+        Map<String, String> dbParentMap = dbParentDeptList.stream()
+                .collect(Collectors.toMap(SysDept::getName, SysDept::getId));
+
+        // 提取所有待匹配的部门名称集合
+        Set<String> nameSet = importDeptVos.stream().map(SysDeptVO::getName).collect(Collectors.toSet());
+
+        // 有问题的部门名称
+        Set<String> errorParentNameSet = new HashSet<>();
+
+        // 分配 parentId 并标记异常部门
+        importDeptVos.forEach(deptVO -> {
+            String namePath = deptVO.getNamePath();
+            String[] parentArray = namePath.split("/");
+            String parentName = parentArray.length > 1 ? parentArray[parentArray.length - 2] : null;
+
+            if (namePath.equals(deptVO.getName())) {
+                // 根节点
+                deptVO.setParentId("0");
+            } else if (parentName != null && dbParentMap.containsKey(parentName)) {
+                // 数据库中存在的上级部门
+                deptVO.setParentId(dbParentMap.get(parentName));
+            } else if (parentName != null && !nameSet.contains(parentName)) {
+                // 异常部门
+                errorParentNameSet.add(parentName);
+            }
+        });
+
+        // 最终过滤掉父级部门异常的数据
+        return importDeptVos.stream().filter(deptVO -> {
+            if (StringUtils.hasText(deptVO.getParentId())) {
+                return true;
+            }
+
+            String namePath = deptVO.getNamePath();
+            for (String errorParentName : errorParentNameSet) {
+                if (namePath.contains(errorParentName)) {
+                    deptVO.setImportErrorMsg("父级部门 " + errorParentName + " 存在异常，请检查对应父级部门数据");
+                    errorDeptVos.add(deptVO);
+                    return false;
+                }
+            }
+            return true;
+        }).toList();
+    }
+
+    // 获取全部数据库中存在的父级id
+    private List<SysDept> getAllDbParentDeptList(List<SysDeptVO> importDeptVos) {
+
+        if (importDeptVos.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 将所有parentName取出放入set集合
+        Set<String> parentNameSet = new HashSet<>();
+        List<String> list = importDeptVos.stream().map(SysDeptVO::getNamePath).toList();
+        list.forEach(item -> {
+            String[] parentNameArray = item.split("/");
+            parentNameSet.addAll(Arrays.asList(parentNameArray));
+        });
+
+        // 数据库中查询出已保存的父级部门
+        QueryWrapper<SysDept> wrapper = new QueryWrapper<>();
+        wrapper.lambda().in(SysDept::getName, parentNameSet)
+                        .eq(SysDept::getDelFlag, "0")
+                        .select(SysDept::getId, SysDept::getName);
+
+        return sysDeptMapper.selectList(wrapper);
+    }
+
+    // 过滤验证部门名称路径
+    private boolean filterNamePath(SysDeptVO sysDeptVO, List<SysDeptVO> errorDeptVos) {
+        String namePath = sysDeptVO.getNamePath();
+
+        if (!StringUtils.hasText(namePath)) {
+            sysDeptVO.setImportErrorMsg("部门名称路径为空，请检查数据");
+            errorDeptVos.add(sysDeptVO);
+            return false;
+        }
+
+        if (!namePath.endsWith(sysDeptVO.getName())) {
+            sysDeptVO.setImportErrorMsg("部门名称路径最后一级必须为当前部门名称，请检查数据");
+            errorDeptVos.add(sysDeptVO);
+            return false;
+        }
+
+        return true;
     }
 
     // 过滤邮箱

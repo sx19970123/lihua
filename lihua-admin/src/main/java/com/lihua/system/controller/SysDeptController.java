@@ -37,7 +37,7 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     public String save(@RequestBody @Validated SysDept sysDept) {
-        return success(sysDeptService.save(sysDept));
+        return success(sysDeptService.saveDept(sysDept));
     }
 
     @GetMapping("{id}")

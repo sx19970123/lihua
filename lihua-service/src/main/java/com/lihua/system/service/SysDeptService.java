@@ -29,7 +29,7 @@ public interface SysDeptService {
      * @param sysDept
      * @return
      */
-    String save(SysDept sysDept);
+    String saveDept(SysDept sysDept);
 
     /**
      * 根据id查询单位
