@@ -103,13 +103,13 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         checkDeptCode(sysDept);
         checkDeptName(sysDept);
         if (StringUtils.hasText(sysDept.getId())) {
-            return updateDeptById(sysDept);
+            return update(sysDept);
         } else {
             return insert(sysDept);
         }
     }
 
-    private String updateDeptById(SysDept sysDept) {
+    private String update(SysDept sysDept) {
         sysDept.setUpdateId(LoginUserContext.getUserId());
         sysDept.setUpdateTime(LocalDateTime.now());
         sysDeptMapper.updateById(sysDept);
@@ -187,7 +187,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     public ExcelImportResult importExcel(List<SysDeptVO> sysDeptVOS) {
         // 无法倒入的部门列表
         List<SysDeptVO> errorDeptVos = new ArrayList<>();
-        // 可倒入的部门列表
+        // 可导入的部门列表
         List<SysDeptVO> importDeptVos = new ArrayList<>();
 
         // sysDeptVOS中存在的重复数据（name、code）
@@ -295,7 +295,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             String id = String.valueOf(IdWorker.getId(sysDept));
             sysDept.setId(id);
             sysDept.setDelFlag("0");
-            sysDept.setCreateTime(LocalDateTime.now());
             sysDept.setCreateTime(now);
             sysDept.setCreateId(LoginUserContext.getUserId());
             sysDept.setSort(index.get());

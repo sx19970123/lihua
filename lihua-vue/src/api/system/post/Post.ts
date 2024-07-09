@@ -1,6 +1,7 @@
 import request from "@/utils/Request.ts";
-import type {MapResponseType, PageResponseType} from "@/api/global/Type.ts";
+import type {ExcelImportResult, MapResponseType, PageResponseType} from "@/api/global/Type.ts";
 import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
+import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 
 /**
  * 分页查询
@@ -8,7 +9,7 @@ import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPos
  */
 export const findPage = (data: SysPostDTO) => {
     return request<PageResponseType<SysPostVO>>({
-        url: "/system/post/page",
+        url: "system/post/page",
         data: data,
         method: "post",
     })
@@ -20,7 +21,7 @@ export const findPage = (data: SysPostDTO) => {
  */
 export const save = (data: SysPost) => {
     return request<string>({
-        url: '/system/post',
+        url: 'system/post',
         data: data,
         method: 'post',
     })
@@ -32,7 +33,7 @@ export const save = (data: SysPost) => {
  */
 export const findById = (id: string) => {
     return request<SysPost>({
-        url: '/system/post/' + id,
+        url: 'system/post/' + id,
         method: 'get'
     })
 }
@@ -55,7 +56,7 @@ export const updateStatus = (id: string, status: string) => {
  */
 export const deleteData = (ids: Array<String>) => {
     return request({
-        url: '/system/post',
+        url: 'system/post',
         data: ids,
         method: 'delete'
     })
@@ -67,7 +68,7 @@ export const deleteData = (ids: Array<String>) => {
  */
 export const getPostOptionByDeptId = (deptIds: string[]) => {
     return request<MapResponseType<String,SysPost>>({
-        url: '/system/post/option',
+        url: 'system/post/option',
         method: 'post',
         data: deptIds
     })
@@ -79,8 +80,26 @@ export const getPostOptionByDeptId = (deptIds: string[]) => {
  */
 export const exportExcel = (data: SysPostDTO) => {
     return request<string>({
-        url: '/system/post/export',
+        url: 'system/post/export',
         method: 'post',
         data: data
+    })
+}
+
+/**
+ * excel 导入
+ * @param file
+ */
+export const importExcel = (file:  string | Blob | RcFile) => {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    return request<ExcelImportResult>({
+        url: 'system/post/import',
+        method: 'post',
+        data: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
     })
 }

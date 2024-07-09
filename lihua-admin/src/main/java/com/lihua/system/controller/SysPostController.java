@@ -3,13 +3,17 @@ package com.lihua.system.controller;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysPost;
 import com.lihua.system.model.dto.SysPostDTO;
+import com.lihua.system.model.vo.SysPostVO;
 import com.lihua.system.service.SysPostService;
+import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.SneakyThrows;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,7 +38,7 @@ public class SysPostController extends BaseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     public String save(@RequestBody @Validated SysPost sysPost) {
-        return success(sysPostService.save(sysPost));
+        return success(sysPostService.savePost(sysPost));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")
@@ -62,4 +66,11 @@ public class SysPostController extends BaseController {
         return success(FileDownloadUtils.addToDownloadableList(path));
     }
 
+    @SneakyThrows
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("import")
+    public String importExcel(@RequestParam("file") MultipartFile file) {
+        List<SysPostVO> sysPostVOList = ExcelUtils.importExport(file.getInputStream(), SysPostVO.class, 0);
+        return success(sysPostService.importExcel(sysPostVOList));
+    }
 }

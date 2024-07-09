@@ -2,10 +2,12 @@ package com.lihua.system.service;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.system.entity.SysPost;
 import com.lihua.system.model.dto.SysPostDTO;
 import com.lihua.system.model.vo.SysPostVO;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +32,7 @@ public interface SysPostService {
      * @param sysPost
      * @return
      */
-    String save(SysPost sysPost);
+    String savePost(SysPost sysPost);
 
     /**
      * 根据主键删除
@@ -73,4 +75,11 @@ public interface SysPostService {
      * @return
      */
     String exportExcel(SysPostDTO dto);
+
+    /**
+     * excel 导入
+     * @param sysPostVOList
+     * @return
+     */
+    ExcelImportResult importExcel(List<SysPostVO> sysPostVOList);
 }

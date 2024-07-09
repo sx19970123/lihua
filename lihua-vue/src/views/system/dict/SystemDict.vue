@@ -509,6 +509,8 @@ const initDelete = () => {
         // id 不存在则清空选中数据
         if (!id) {
           selectedIds.value = []
+        } else {
+          selectedIds.value = selectedIds.value.filter(item => item !== id)
         }
         await initPage()
       } else {

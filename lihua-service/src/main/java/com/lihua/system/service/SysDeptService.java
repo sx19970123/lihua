@@ -72,5 +72,5 @@ public interface SysDeptService {
      * @param sysUserVOS
      * @return
      */
-    ExcelImportResult importExcel (List<SysDeptVO> sysUserVOS);
+    ExcelImportResult importExcel(List<SysDeptVO> sysUserVOS);
 }

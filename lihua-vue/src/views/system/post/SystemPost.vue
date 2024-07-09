@@ -247,18 +247,20 @@
 <script setup lang="ts">
 
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
-import {reactive, ref, watch} from "vue";
+import {createVNode, reactive, ref, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {initDict} from "@/utils/dict.ts";
-import {deleteData, exportExcel, findById, findPage, save, updateStatus} from "@/api/system/post/Post.ts";
+import {deleteData, exportExcel, findById, findPage, importExcel, save, updateStatus} from "@/api/system/post/Post.ts";
 import {useRoute} from "vue-router";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTreeData} from "@/utils/Tree.ts";
-import {message, Spin} from "ant-design-vue";
+import {message, Modal} from "ant-design-vue";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
-import {handleFunDownload} from "@/utils/FileDownload.ts";
+import {downloadByPath, handleFunDownload} from "@/utils/FileDownload.ts";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
+import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
+import Spin from "@/components/spin";
 const {sys_status} = initDict("sys_status")
 const route = useRoute();
 
@@ -579,6 +581,8 @@ const initDelete = () => {
         // id 不存在则清空选中数据
         if (!id) {
           selectedIds.value = []
+        } else {
+          selectedIds.value = selectedIds.value.filter(item => item !== id)
         }
         await initPage()
       } else {
@@ -624,29 +628,29 @@ const initExcel = () => {
     })
 
     // 将文件上传至后端
-    // const resp = await importExcel(uploadRequest.file)
-    // if (resp.code === 200) {
-    //   const data = resp.data
-    //   // 是否完全导入成功
-    //   if (data.allSuccess) {
-    //     message.success(resp.msg);
-    //   } else {
-    //     // 部分成功可下载导入失败的数据集
-    //     Modal.confirm({
-    //       title: '导入完成，部分数据未成功导入',
-    //       icon: createVNode(ExclamationCircleOutlined),
-    //       content: `共解析到 ${data.readCount} 条数据，成功导入 ${data.successCount} 条，失败 ${data.errorCount} 条。点击“确定”下载失败数据集。`,
-    //       onOk: () => {
-    //         // 下载导入失败excel
-    //         downloadByPath(data.errorExcelPath)
-    //       }
-    //     })
-    //   }
-    //   // 导入完成后刷新页面
-    //   await initList()
-    // } else {
-    //   message.error(resp.msg)
-    // }
+    const resp = await importExcel(uploadRequest.file)
+    if (resp.code === 200) {
+      const data = resp.data
+      // 是否完全导入成功
+      if (data.allSuccess) {
+        message.success(resp.msg);
+      } else {
+        // 部分成功可下载导入失败的数据集
+        Modal.confirm({
+          title: '导入完成，部分数据未成功导入',
+          icon: createVNode(ExclamationCircleOutlined),
+          content: `共解析到 ${data.readCount} 条数据，成功导入 ${data.successCount} 条，失败 ${data.errorCount} 条。点击“确定”下载失败数据集。`,
+          onOk: () => {
+            // 下载导入失败excel
+            downloadByPath(data.errorExcelPath)
+          }
+        })
+      }
+      // 导入完成后刷新页面
+      await initPage()
+    } else {
+      message.error(resp.msg)
+    }
     spinInstance.close()
   }
   return {
