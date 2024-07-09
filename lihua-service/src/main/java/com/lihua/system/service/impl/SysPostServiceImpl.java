@@ -10,6 +10,7 @@ import com.lihua.system.mapper.SysPostMapper;
 import com.lihua.system.model.dto.SysPostDTO;
 import com.lihua.system.model.vo.SysPostVO;
 import com.lihua.system.service.SysPostService;
+import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -29,32 +30,8 @@ public class SysPostServiceImpl implements SysPostService {
     @Override
     public IPage<SysPostVO> findPage(SysPostDTO dto) {
         IPage<SysPostVO> iPage = new Page<>(dto.getPageNum(), dto.getPageSize());
-
-        QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
-
-        // 岗位名称
-        if (StringUtils.hasText(dto.getName())) {
-            queryWrapper.like("sys_post.name",dto.getName());
-        }
-        // 岗位编码
-        if (StringUtils.hasText(dto.getCode())) {
-            queryWrapper.like("sys_post.code",dto.getCode());
-        }
-        // 岗位状态
-        if (StringUtils.hasText(dto.getStatus())) {
-            queryWrapper.like("sys_post.status",dto.getStatus());
-        }
-        // 所属单位
-        if (StringUtils.hasText(dto.getDeptId())) {
-            queryWrapper.like("sys_post.dept_id",dto.getDeptId());
-        }
-        queryWrapper.eq("sys_post.del_flag", "0");
-        queryWrapper
-                .lambda()
-                .orderByAsc(SysPost::getSort);
-
+        QueryWrapper<SysPost> queryWrapper = getQueryWrapper(dto);
         sysPostMapper.findPage(iPage,queryWrapper);
-
         return iPage;
     }
 
@@ -154,6 +131,44 @@ public class SysPostServiceImpl implements SysPostService {
                 .eq(SysPost::getId, id);
         sysPostMapper.update(null, updateWrapper);
         return status;
+    }
+
+    @Override
+    public String exportExcel(SysPostDTO dto) {
+        QueryWrapper<SysPost> queryWrapper = getQueryWrapper(dto);
+        List<SysPostVO> sysPostVOList = sysPostMapper.findPage(queryWrapper);
+        return ExcelUtils.excelExport(sysPostVOList, SysPostVO.class, "系统岗位");
+    }
+
+    /**
+     * 获取查询列表/导出excel相关的QueryWrapper
+     * @param dto
+     * @return
+     */
+    private QueryWrapper<SysPost> getQueryWrapper(SysPostDTO dto) {
+        QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
+
+        // 岗位名称
+        if (StringUtils.hasText(dto.getName())) {
+            queryWrapper.like("sys_post.name",dto.getName());
+        }
+        // 岗位编码
+        if (StringUtils.hasText(dto.getCode())) {
+            queryWrapper.like("sys_post.code",dto.getCode());
+        }
+        // 岗位状态
+        if (StringUtils.hasText(dto.getStatus())) {
+            queryWrapper.like("sys_post.status",dto.getStatus());
+        }
+        // 所属单位
+        if (StringUtils.hasText(dto.getDeptId())) {
+            queryWrapper.like("sys_post.dept_id",dto.getDeptId());
+        }
+        queryWrapper.eq("sys_post.del_flag", "0");
+        queryWrapper
+                .lambda()
+                .orderByAsc(SysPost::getSort);
+        return queryWrapper;
     }
 
     private void checkPostCode(SysPost sysPost) {

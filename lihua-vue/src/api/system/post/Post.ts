@@ -72,3 +72,15 @@ export const getPostOptionByDeptId = (deptIds: string[]) => {
         data: deptIds
     })
 }
+
+/**
+ * excel导出
+ * @param data
+ */
+export const exportExcel = (data: SysPostDTO) => {
+    return request<string>({
+        url: '/system/post/export',
+        method: 'post',
+        data: data
+    })
+}

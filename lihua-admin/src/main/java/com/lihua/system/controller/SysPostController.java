@@ -4,6 +4,7 @@ import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysPost;
 import com.lihua.system.model.dto.SysPostDTO;
 import com.lihua.system.service.SysPostService;
+import com.lihua.utils.file.FileDownloadUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,6 +53,13 @@ public class SysPostController extends BaseController {
     @PostMapping("option")
     public String getPostOptionByDeptId(@RequestBody @NotEmpty(message = "部门集合为空") List<String> deptIds) {
         return success(sysPostService.getPostOptionByDeptId(deptIds));
+    }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("export")
+    public String exportExcel(SysPostDTO dto) {
+        String path = sysPostService.exportExcel(dto);
+        return success(FileDownloadUtils.addToDownloadableList(path));
     }
 
 }

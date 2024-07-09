@@ -1,7 +1,7 @@
 package com.lihua.system.model.vo;
 
 import com.github.liaochong.myexcel.core.annotation.ExcelColumn;
-import com.github.liaochong.myexcel.core.annotation.IgnoreColumn;
+import com.github.liaochong.myexcel.core.annotation.ExcelModel;
 import com.lihua.system.entity.SysDept;
 import com.lihua.system.entity.SysPost;
 import lombok.Data;
@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
+@ExcelModel(sheetName = "部门信息",includeAllField = false)
 @Data
 public class SysDeptVO extends SysDept {
 
@@ -35,6 +36,5 @@ public class SysDeptVO extends SysDept {
     /**
      * 岗位信息
      */
-    @IgnoreColumn
     private List<SysPost> sysPostList;
 }

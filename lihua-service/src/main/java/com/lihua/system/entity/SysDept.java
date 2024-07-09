@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.github.liaochong.myexcel.core.annotation.ExcelColumn;
-import com.github.liaochong.myexcel.core.annotation.IgnoreColumn;
+import com.github.liaochong.myexcel.core.annotation.ExcelModel;
 import com.lihua.model.BaseEntity;
 import com.lihua.utils.excel.annotation.ExcelWriteConverterDictTypeCode;
 import com.lihua.utils.excel.converter.SysDictWriteConverter;
@@ -16,19 +16,18 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
+@ExcelModel(includeAllField = false)
 @Data
 public class SysDept extends BaseEntity {
     /**
      * 主键
      */
-    @IgnoreColumn
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
     /**
      * 父级id
      */
-    @IgnoreColumn
     @NotNull(message = "请选择上级节点")
     private String parentId;
 
@@ -57,7 +56,6 @@ public class SysDept extends BaseEntity {
     /**
      * 排序
      */
-    @IgnoreColumn
     @NotNull(message = "请输入排序")
     private Integer sort;
 
@@ -70,7 +68,7 @@ public class SysDept extends BaseEntity {
     /**
      * 联系电话
      */
-    @ExcelColumn(order = 5, index = 5, title = "联系电话", width = 6)
+    @ExcelColumn(order = 5, index = 5, title = "联系电话", width = 8)
     @Pattern(regexp = "^1[3-9]\\d{9}$",
             message = "请输入正确的手机号码")
     private String phoneNumber;
@@ -78,7 +76,7 @@ public class SysDept extends BaseEntity {
     /**
      * 邮箱
      */
-    @ExcelColumn(order = 6, index = 6, title = "邮箱", width = 6)
+    @ExcelColumn(order = 6, index = 6, title = "邮箱", width = 10)
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             message = "请输入正确的邮箱地址")
     private String email;
@@ -92,7 +90,6 @@ public class SysDept extends BaseEntity {
     /**
      * 逻辑删除标志
      */
-    @IgnoreColumn
     private String delFlag;
 
     /**
@@ -104,7 +101,6 @@ public class SysDept extends BaseEntity {
     /**
      * 子集
      */
-    @IgnoreColumn
     @TableField(exist = false)
     private List<SysDept> children;
 }

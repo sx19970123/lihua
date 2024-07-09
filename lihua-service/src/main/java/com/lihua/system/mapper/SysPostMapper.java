@@ -16,6 +16,8 @@ public interface SysPostMapper extends BaseMapper<SysPost> {
     IPage<SysPostVO> findPage(@Param("iPage") IPage<SysPostVO> iPage,
                               @Param(Constants.WRAPPER) QueryWrapper<SysPost> queryWrapper);
 
+    List<SysPostVO> findPage(@Param(Constants.WRAPPER) QueryWrapper<SysPost> queryWrapper);
+
     Long postUserCount(@Param("ids") List<String> ids);
 
     List<CurrentPost> selectByUserId(@Param("userId") String userId);

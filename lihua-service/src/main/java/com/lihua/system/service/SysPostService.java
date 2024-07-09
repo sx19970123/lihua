@@ -66,4 +66,11 @@ public interface SysPostService {
      * @return
      */
     String updateStatus(String id, String currentStatus);
+
+    /**
+     * excel 导出
+     * @param dto
+     * @return
+     */
+    String exportExcel(SysPostDTO dto);
 }

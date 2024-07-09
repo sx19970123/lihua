@@ -2,7 +2,6 @@ package com.lihua.system.model.vo;
 
 import com.github.liaochong.myexcel.core.annotation.ExcelColumn;
 import com.github.liaochong.myexcel.core.annotation.ExcelModel;
-import com.github.liaochong.myexcel.core.annotation.IgnoreColumn;
 import com.github.liaochong.myexcel.core.annotation.MultiColumn;
 import com.lihua.utils.excel.annotation.ExcelWriteConverterDictTypeCode;
 import com.lihua.model.BaseEntity;
@@ -18,12 +17,11 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ExcelModel(sheetName = "用户信息",excludeParent = true)
+@ExcelModel(sheetName = "用户信息",includeAllField = false)
 public class SysUserVO extends BaseEntity {
     /**
      * 主键
      */
-    @IgnoreColumn
     private String id;
 
     /**
@@ -36,7 +34,6 @@ public class SysUserVO extends BaseEntity {
     /**
      * 密码
      */
-    @IgnoreColumn
     @NotNull(message = "密码不能为空")
     private String password;
 
@@ -49,7 +46,6 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户头像
      */
-    @IgnoreColumn
     private String avatar;
 
     /**
@@ -69,13 +65,12 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户应用系统主题
      */
-    @IgnoreColumn
     private String theme;
 
     /**
      * 手机号码
      */
-    @ExcelColumn(order = 4, index = 4, title = "用户信息->手机号码", width = 6)
+    @ExcelColumn(order = 4, index = 4, title = "用户信息->手机号码", width = 8)
     private String phoneNumber;
 
     /**
@@ -120,37 +115,31 @@ public class SysUserVO extends BaseEntity {
     /**
      * 所属部门id集合
      */
-    @IgnoreColumn
     private List<String> deptIdList;
 
     /**
      * 默认单位id
      */
-    @IgnoreColumn
     private String defaultDeptId;
 
     /**
      * 默认单位集合（用于sql接收数据）
      */
-    @IgnoreColumn
     private List<String> defaultDeptIdList;
 
     /**
      * 所属角色id集合
      */
-    @IgnoreColumn
     private List<String> roleIdList;
 
     /**
      * 所属岗位id集合
      */
-    @IgnoreColumn
     private List<String> postIdList;
 
     /**
      * 角色名称集合
      */
-    @IgnoreColumn
     private List<String> roleNameList;
 
     /**

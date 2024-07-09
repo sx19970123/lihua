@@ -1,6 +1,5 @@
 package com.lihua.model;
 
-import com.github.liaochong.myexcel.core.annotation.IgnoreColumn;
 import lombok.Data;
 
 import java.io.Serial;
@@ -18,24 +17,20 @@ public class BaseEntity implements Serializable {
     /**
      * 创建人
      */
-    @IgnoreColumn
     private String createId;
 
     /**
      * 创建时间
      */
-    @IgnoreColumn
     private LocalDateTime createTime;
 
     /**
      * 更新人
      */
-    @IgnoreColumn
     private String updateId;
 
     /**
      * 更新时间
      */
-    @IgnoreColumn
     private LocalDateTime updateTime;
 }
