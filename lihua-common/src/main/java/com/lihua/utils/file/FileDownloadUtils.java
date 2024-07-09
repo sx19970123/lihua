@@ -130,13 +130,6 @@ public class FileDownloadUtils {
                 throw new FileException(ResultCodeEnum.ACCESS_EXPIRED_ERROR);
             }
         }
-
-        // 删除本次下载许可
-        if (lihuaConfig.getFileDownloadExpireTime() == 0) {
-            for (String path : pathArray) {
-                redisCache.delete(SysBaseEnum.TEMPORARY_TOKEN_REDIS_PREFIX + path);
-            }
-        }
     }
 
     /**
