@@ -66,11 +66,8 @@ export const useUserStore = defineStore('user', {
                 login(username,password,captchaVerification).then((resp:ResponseType<string>) => {
                     if (resp.code === 200) {
                         setToken(resp.data)
-                        resolve(resp)
-                    } else {
-                        message.error(resp.msg)
-                        reject(resp.msg)
                     }
+                    resolve(resp)
                 }).catch(error => {
                     reject(error)
                 })

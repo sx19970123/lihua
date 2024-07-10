@@ -152,7 +152,6 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
       loginLoading.value = false
     }
   } catch (error) {
-    message.error("无法访问服务器，请检查网络连接");
     console.error("登录失败:", error);
     // 处理登录失败的逻辑，例如显示错误提示
     loginLoading.value = false
