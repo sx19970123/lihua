@@ -1,11 +1,8 @@
 package com.lihua.system.controller;
 
-import com.lihua.cache.RedisCache;
-import com.lihua.config.LihuaConfig;
 import com.lihua.model.web.BaseController;
 import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.file.FileUploadUtils;
-import jakarta.annotation.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,12 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("system/file")
 public class SysFileController extends BaseController {
-
-    @Resource
-    private RedisCache redisCache;
-
-    @Resource
-    private LihuaConfig lihuaConfig;
 
     /**
      * 附件下载
