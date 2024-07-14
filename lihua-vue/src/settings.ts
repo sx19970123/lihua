@@ -8,10 +8,11 @@ export default {
      * 默认语言
      */
     defaultLocalLanguage: 'cn',
+
     /**
-     * 暗色模式
+     * 暗色模式 true； 亮色模式 false
      */
-    dataTheme: localStorage.getItem("dataTheme") === 'dark',
+    isDarkTheme: localStorage.getItem("dataTheme") === 'dark',
 
     /**
      * 顶部栏背景颜色

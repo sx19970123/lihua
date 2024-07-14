@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-editor/>
+    <editor/>
   </div>
 </template>
 <script setup lang="ts">
-import VEditor from "@/components/v-editor/index.vue"
+import Editor from "@/components/editor/index.vue"
 
 </script>
 <style scoped>

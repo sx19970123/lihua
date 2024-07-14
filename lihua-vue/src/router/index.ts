@@ -7,15 +7,15 @@ import Iframe from '@/components/iframe/index.vue'
  * 说明：静态路由基于vue router，在项目中进行了逻辑定制
  * 1. meta 中 visible 设置为 true 的菜单/页面将会在导航中显示
  * 2. 显示的菜单中
- *    component 为 Layout 的层级将不进行显示
- *    component 为 MiddleView 的层级将显示为菜单
- *    component 为 Iframe 的层级将显示为链接地址，同时需要指定 meta.linkOpenType ('inner' | 'new-page')
- *    component 为 () => import('@/views/**.vue') 的层级显示为一般组件
+ *    components 为 Layout 的层级将不进行显示
+ *    components 为 MiddleView 的层级将显示为菜单
+ *    components 为 Iframe 的层级将显示为链接地址，同时需要指定 meta.linkOpenType ('inner' | 'new-page')
+ *    components 为 () => import('@/views/**.vue') 的层级显示为一般组件
  * 3. 页面中更详细的配置见 meta 配置
  */
 
 /**
- * component................................................配置详情
+ * components................................................配置详情
  * Layout...................................................页面在layout下，如果存在的话，为路由书中的最顶级节点
  * MiddleView...............................................对应导航菜单，指定component为MiddleView的话，导航中为菜单
  * Iframe...................................................对应导航中链接类型的页面，需要在meta中指定linkOpenType

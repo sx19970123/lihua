@@ -1,8 +1,8 @@
 <template>
   <div style="padding-right: 16px;">
-    <a-switch v-model:checked="themeStore.dataTheme"
+    <a-switch v-model:checked="themeStore.isDarkTheme"
               @change="handleChangeTheme"
-              :style="{'background': themeStore.dataTheme ? '#00008B' : '#2196F3'}">
+              :style="{'background': themeStore.isDarkTheme ? '#00008B' : '#2196F3'}">
       <template #checkedChildren>
         <Moon/>
       </template>
