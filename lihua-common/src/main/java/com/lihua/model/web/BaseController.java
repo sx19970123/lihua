@@ -18,6 +18,14 @@ public class BaseController {
         return success(SUCCESS.getDefaultMsg(), null);
     }
 
+    public static <T> String success(ResultCodeEnum resultCodeEnum, T data) {
+        return response(resultCodeEnum, resultCodeEnum.getDefaultMsg(), data);
+    }
+
+    public static <T> String success(ResultCodeEnum resultCodeEnum, String msg, T data) {
+        return response(resultCodeEnum, msg, data);
+    }
+
     public static <T> String success(T data) {
         return success(SUCCESS.getDefaultMsg(), data);
     }
