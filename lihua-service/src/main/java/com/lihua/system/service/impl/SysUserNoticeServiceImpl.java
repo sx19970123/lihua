@@ -22,9 +22,9 @@ public class SysUserNoticeServiceImpl extends ServiceImpl<SysUserNoticeMapper, S
     }
 
     @Override
-    public void deleteByUserIds(String noticeId) {
+    public void deleteByNoticeIds(List<String> noticeIds) {
         QueryWrapper<SysUserNotice> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(SysUserNotice::getNoticeId, noticeId);
+        queryWrapper.lambda().in(SysUserNotice::getNoticeId, noticeIds);
         remove(queryWrapper);
     }
 }

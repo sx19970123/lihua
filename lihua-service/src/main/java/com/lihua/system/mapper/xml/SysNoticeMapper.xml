@@ -8,7 +8,7 @@
         <result column="type" property="type"/>
         <result column="status" property="status"/>
         <result column="priority" property="priority"/>
-        <result column="context" property="context"/>
+        <result column="content" property="content"/>
         <result column="remark" property="remark"/>
         <collection property="userIdList" ofType="java.lang.String">
             <result column="user_id"/>
@@ -22,7 +22,7 @@
             sys_notice.type,
             sys_notice.status,
             sys_notice.priority,
-            sys_notice.context,
+            sys_notice.content,
             sys_notice.remark,
             sys_user_notice.user_id
         FROM

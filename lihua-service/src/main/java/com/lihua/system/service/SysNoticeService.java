@@ -5,6 +5,8 @@ import com.lihua.system.entity.SysNotice;
 import com.lihua.system.model.dto.SysNoticeDTO;
 import com.lihua.system.model.vo.SysNoticeVO;
 
+import java.util.List;
+
 public interface SysNoticeService {
 
     /**
@@ -46,6 +48,6 @@ public interface SysNoticeService {
      * 删除消息
      * @param ids
      */
-    void deleteByIds(String ids);
+    void deleteByIds(List<String> ids);
 
 }

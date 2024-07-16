@@ -8,5 +8,5 @@ public interface SysUserNoticeService {
 
     void save(List<SysUserNotice> sysUserNotices);
 
-    void deleteByUserIds(String noticeId);
+    void deleteByNoticeIds(List<String> noticeIds);
 }

@@ -6,6 +6,8 @@ import com.lihua.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysNotice extends BaseEntity {
@@ -27,7 +29,7 @@ public class SysNotice extends BaseEntity {
     private String type;
 
     /**
-     * 状态： 未发布/已发布/已撤销
+     * 状态： 未发布 0 / 已发布 1 / 已撤销 2
      */
     private String status;
 
@@ -39,7 +41,12 @@ public class SysNotice extends BaseEntity {
     /**
      * 内容
      */
-    private String context;
+    private String content;
+
+    /**
+     * 发布时间
+     */
+    private LocalDateTime releaseTime;
 
     /**
      * 逻辑删除标识

@@ -1,8 +1,10 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lihua.exception.ServiceException;
 import com.lihua.system.entity.SysNotice;
 import com.lihua.system.entity.SysUserNotice;
 import com.lihua.system.mapper.SysNoticeMapper;
@@ -19,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -82,24 +85,67 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         } else {
             id = update(sysNoticeDTO);
         }
-
+        // 保存关联表
         saveUserNotice(id, sysNoticeDTO.getUserIdList());
         return id;
     }
 
     @Override
     public String release(String id) {
-        return "";
+        String status = getStatus(id);
+        if (!"0".equals(status)) {
+            throw new ServiceException("仅未发布状态数据可发布");
+        }
+        // 更新状态等信息
+        UpdateWrapper<SysNotice> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.lambda().eq(SysNotice::getId, id)
+                        .set(SysNotice::getStatus, "1")
+                        .set(SysNotice::getReleaseTime, LocalDateTime.now())
+                        .set(SysNotice::getUpdateTime, LocalDateTime.now())
+                        .set(SysNotice::getUpdateId, LoginUserContext.getUserId());
+        sysNoticeMapper.update(updateWrapper);
+        // todo sse 推送数据
+
+        return id;
     }
 
     @Override
+    @Transactional
     public String revoke(String id) {
-        return "";
+        String status = getStatus(id);
+        if (!"1".equals(status)) {
+            throw new ServiceException("仅发布状态数据可撤销");
+        }
+
+        // 更新状态等信息
+        UpdateWrapper<SysNotice> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.lambda().eq(SysNotice::getId, id)
+                .set(SysNotice::getStatus, "0")
+                .set(SysNotice::getUpdateTime, LocalDateTime.now())
+                .set(SysNotice::getUpdateId, LoginUserContext.getUserId());
+        sysNoticeMapper.update(updateWrapper);
+        // 删除用户关联表数据
+        sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
+        return id;
     }
 
     @Override
-    public void deleteByIds(String ids) {
+    @Transactional
+    public void deleteByIds(List<String> ids) {
+        QueryWrapper<SysNotice> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(SysNotice::getStatus, "1")
+                .in(SysNotice::getId, ids);
 
+        Long count = sysNoticeMapper.selectCount(queryWrapper);
+
+        if (count > 0) {
+            throw new ServiceException("已发布数据无法删除");
+        }
+
+        sysNoticeMapper.deleteBatchIds(ids);
+        // 删除用户关联表数据
+        sysUserNoticeService.deleteByNoticeIds(ids);
     }
 
     /**
@@ -138,13 +184,30 @@ public class SysNoticeServiceImpl implements SysNoticeService {
      */
     private void saveUserNotice(String id, List<String> userIdList) {
         List<SysUserNotice> sysUserNotices = new ArrayList<>();
-        LocalDateTime now = LocalDateTime.now();
-        String createId = LoginUserContext.getUserId();
-        sysUserNoticeService.deleteByUserIds(id);
+        sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
         userIdList.forEach(userId -> {
-            SysUserNotice sysUserNotice = new SysUserNotice(userId, id, "0", "0", null, now, createId);
+            SysUserNotice sysUserNotice = new SysUserNotice(userId, id, "0", "0", null);
             sysUserNotices.add(sysUserNotice);
         });
         sysUserNoticeService.save(sysUserNotices);
+    }
+
+    /**
+     * 获取通知公告状态
+     * @param id
+     * @return
+     */
+    private String getStatus(String id) {
+        QueryWrapper<SysNotice> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .select(SysNotice::getStatus)
+                .eq(SysNotice::getId, id);
+
+        SysNotice sysNotice = sysNoticeMapper.selectOne(queryWrapper);
+        if (sysNotice != null) {
+            return sysNotice.getStatus();
+        }
+
+        return null;
     }
 }

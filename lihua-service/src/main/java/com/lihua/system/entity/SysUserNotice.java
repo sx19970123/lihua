@@ -33,14 +33,4 @@ public class SysUserNotice {
      * 已读时间
      */
     private LocalDateTime readTime;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createTime;
-
-    /**
-     * 创建人
-     */
-    private String createId;
 }
