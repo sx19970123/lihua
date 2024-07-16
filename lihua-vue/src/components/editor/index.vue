@@ -1,5 +1,10 @@
 <template>
-  <div id="editor"/>
+  <div>
+    <!--    编辑器-->
+    <div id="editor" v-show="!props.preview"/>
+    <!--    预览html-->
+    <div v-if="props.preview" v-html="previewHTML"/>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -8,12 +13,29 @@ import 'vditor/dist/index.css';
 import {onMounted, ref, watch} from "vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import token from "@/utils/Token.ts"
-import {download} from "@/utils/FileDownload.ts";
+import {message} from "ant-design-vue";
+// 暗色模式主题
 const themeStore = useThemeStore();
 const isDarkTheme = themeStore.isDarkTheme
+// 编辑器
 const editor = ref()
+// 文件上传 url 前缀
 const baseURL = import.meta.env.VITE_APP_BASE_API
 
+// 定义prop传参
+const props = defineProps<{
+  modelValue?: string,
+  height?: string,
+  width?: string,
+  preview?: boolean
+}>()
+// 定义抛出emits函数
+const emits = defineEmits(['update:modelValue'])
+
+// 预览html
+const previewHTML = ref<string>()
+
+// 链接转图片返回数据类型
 type LinkToImgType = {
   code: number,
   data: {
@@ -23,10 +45,22 @@ type LinkToImgType = {
   msg: string
 }
 
+// 文件上传返回数据类型
+type UploadType = {
+  code: number,
+  data: {
+    errFiles: string[],
+    succMap: {
+      [key: string]: string
+    }
+  },
+  msg: string
+}
+
 onMounted(() => {
   editor.value =  new Vditor('editor', {
-    height: '80vh',                                                         // 高
-    width: '100%',                                                          // 宽
+    height: props.height ? props.height : '400px',                                                         // 高
+    width: props.width ? props.width : '100%',                                                          // 宽
     mode: 'wysiwyg',                                                        // 默认模式：所见即所得
     theme: isDarkTheme ? 'dark' : 'classic',                                // 编辑器主题
     icon: 'ant',                                                            // 图标风格
@@ -38,30 +72,40 @@ onMounted(() => {
       hide: false,                                                          // 隐藏工具栏
       pin: true                                                             // 固定工具栏
     },
-    value: 'hello world',                                                   // 默认值
+    after() {                                                               // 编辑器初始化后的钩子函数
+      if (props.modelValue) {
+        editor.value.setValue(props.modelValue)                             // v-model 赋值
+      }
+      showPreviewHTML()                                                     // 显示预览
+    },
+    input(value) {                                                          // 输入后值后的钩子函数
+      emits('update:modelValue', value)                               // 双向绑定编辑器内容
+    },
     counter: {
       enable: true,                                                         // 启用计数器
       type: 'markdown'                                                      // 计数器类型
     },
-    link: {
-      click(bom: Element) {
-        handleClickLink(bom)
-      },
+    outline: {                                                              // 大纲配置
+      enable: true,                                                         // 启用大纲
+      position: 'left'                                                      // 大纲位置
     },
     upload: {
       url: baseURL + '/system/file/editor/uploads',                         // 文件上传接口
       headers: {'token': token.getToken()},                                 // 请求头获取token
       fieldName: 'files',                                                   // 文件上传接口参数名
-      format(files, responseText) {
-        return responseText;
+      format(files, responseText) {                                         // 处理文件上传接口返回
+        const resp:UploadType = JSON.parse(responseText)
+        return handleUpload(resp);
+      },
+      error() {                                                             // 文件上传失败处理
+          message.error("文件上传异常")
       },
       linkToImgUrl: baseURL + '/system/file/editor/uploadByUrl',            // url图片上传接口
       linkToImgFormat: (responseText: string) => {                          // 处理url图片上传接口返回
         const resp:LinkToImgType = JSON.parse(responseText)
-        // 处理链接转换图片
         return handleLinkToImg(resp)
       },
-    }
+    },
   })
 })
 
@@ -77,12 +121,23 @@ const handleLinkToImg = (resp: LinkToImgType): string => {
   return JSON.stringify(resp)
 }
 
-const handleClickLink = (linkElement: Element) => {
-  if (linkElement instanceof HTMLAnchorElement) {
-    const filePath = linkElement.attributes.getNamedItem("href")?.value
-    if (filePath) {
-      download(baseURL + "/system/file/download/editor?filePath=" + encodeURIComponent(filePath))
+// 处理文件上传返回格式
+const handleUpload = (resp: UploadType): string => {
+  if (resp.code === 0) {
+    const succMap = resp.data.succMap
+    for (let key in succMap) {
+      if (succMap[key]) {
+        succMap[key] = baseURL + "/system/file/download/editor?filePath=" + encodeURIComponent(succMap[key])
+      }
     }
+  }
+  return JSON.stringify(resp)
+}
+
+// 显示暴露html
+const showPreviewHTML = () => {
+  if (props.preview) {
+    previewHTML.value = editor.value.getHTML()
   }
 }
 
@@ -99,7 +154,3 @@ watch(() => themeStore.isDarkTheme,(value) => {
   }
 })
 </script>
-
-<style scoped>
-
-</style>
