@@ -1,7 +1,7 @@
 <template>
   <a-dropdown v-model:open="open" trigger="click">
     <a-tooltip title="默认部门">
-      <span class="header-right-item header-right" style="max-width: 130px">
+      <span class="header-right-item header-right" style="max-width: 130px" v-if="userStore.defaultDeptCode">
         <a-typography-text ellipsis :content="userStore.defaultDeptName" style="vertical-align: middle"/>
       </span>
     </a-tooltip>
