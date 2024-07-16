@@ -35,11 +35,11 @@ public class LoginUserMgmt {
      * @return
      */
     public static LoginUser getLoginUser(String token) {
-        try {
-            JwtUtils.verify(token);
-        } catch (Exception e) {
-            throw new ServiceException("无效的token");
-        }
+//        try {
+//            JwtUtils.verify(token);
+//        } catch (Exception e) {
+//            throw new ServiceException("无效的token");
+//        }
 
         String decode = JwtUtils.decode(token);
         log.debug("\n当前用户token为：{}\n解密后主键id为：{}", token, decode);

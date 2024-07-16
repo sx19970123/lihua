@@ -91,7 +91,7 @@ onMounted(() => {
     },
     upload: {
       url: baseURL + '/system/file/editor/uploads',                         // 文件上传接口
-      headers: {'token': token.getToken()},                                 // 请求头获取token
+      headers: {'Authorization': 'Bearer ' + token.getToken()},                                 // 请求头获取token
       fieldName: 'files',                                                   // 文件上传接口参数名
       format(files, responseText) {                                         // 处理文件上传接口返回
         const resp:UploadType = JSON.parse(responseText)
@@ -134,7 +134,7 @@ const handleUpload = (resp: UploadType): string => {
   return JSON.stringify(resp)
 }
 
-// 显示暴露html
+// 显示预览html
 const showPreviewHTML = () => {
   if (props.preview) {
     previewHTML.value = editor.value.getHTML()

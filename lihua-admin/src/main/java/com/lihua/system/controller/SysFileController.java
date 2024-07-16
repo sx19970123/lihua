@@ -160,7 +160,6 @@ public class SysFileController extends BaseController {
     public String editorUpload(@RequestParam("files") MultipartFile[] files) {
         // 上传文件
         List<String> upload = FileUploadUtils.upload(files, true);
-
         // 构建返回
         EditorFileModel editorFileModel = new EditorFileModel();
         Map<String, String> map = new HashMap<>();

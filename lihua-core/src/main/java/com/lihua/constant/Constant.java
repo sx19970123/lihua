@@ -8,6 +8,6 @@ import lombok.Getter;
 public enum Constant {
     REDIS_LOCK("REDIS_LOCK"),
     ERROR_MSG("ERROR_MSG"),
-    TOKEN("token");
+    TOKEN("Authorization");
     private String code;
 }

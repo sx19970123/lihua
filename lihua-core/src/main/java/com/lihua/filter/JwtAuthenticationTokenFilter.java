@@ -25,7 +25,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader(Constant.TOKEN.getCode());
         if (StringUtils.hasText(token)) {
-            LoginUser loginUser = LoginUserMgmt.getLoginUser(token);
+            LoginUser loginUser = LoginUserMgmt.getLoginUser(token.replace("Bearer ", ""));
             if (loginUser != null) {
                 // 将用户信息存入上下文
                 SecurityContextHolder
