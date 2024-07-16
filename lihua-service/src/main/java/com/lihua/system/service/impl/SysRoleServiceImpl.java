@@ -43,7 +43,7 @@ public class SysRoleServiceImpl implements SysRoleService {
             queryWrapper.lambda().eq(SysRole::getStatus,sysRoleDTO.getStatus());
         }
         // 按雪花算法id排序
-        queryWrapper.lambda().orderByDesc(SysRole::getId);
+        queryWrapper.lambda().orderByDesc(SysRole::getCreateTime);
         sysRoleMapper.selectPage(iPage,queryWrapper);
 
         return iPage;

@@ -1,4 +1,4 @@
-package com.lihua.system.entity.validation;
+package com.lihua.system.model.validation;
 
 public class MenuValidation {
 

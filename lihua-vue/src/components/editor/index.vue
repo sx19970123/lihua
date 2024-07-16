@@ -59,8 +59,8 @@ type UploadType = {
 
 onMounted(() => {
   editor.value =  new Vditor('editor', {
-    height: props.height ? props.height : '400px',                                                         // 高
-    width: props.width ? props.width : '100%',                                                          // 宽
+    height: props.height ? props.height : '400px',                          // 高
+    width: props.width ? props.width : '100%',                              // 宽
     mode: 'wysiwyg',                                                        // 默认模式：所见即所得
     theme: isDarkTheme ? 'dark' : 'classic',                                // 编辑器主题
     icon: 'ant',                                                            // 图标风格

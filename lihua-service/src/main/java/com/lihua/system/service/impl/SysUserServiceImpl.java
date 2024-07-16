@@ -95,7 +95,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             queryWrapper.between("sys_user.create_time", sysUserDTO.getCreateTimeList().get(0),sysUserDTO.getCreateTimeList().get(1));
         }
 
-        queryWrapper.eq("del_flag","0").orderByDesc("id");
+        queryWrapper.eq("del_flag","0").orderByDesc("sys_user.create_time");
 
         iPage = sysUserMapper.findPage(iPage, queryWrapper);
 

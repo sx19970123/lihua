@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysMenu;
-import com.lihua.system.entity.validation.*;
+import com.lihua.system.model.validation.MenuValidation;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.utils.json.JsonUtils;
 import jakarta.annotation.Resource;

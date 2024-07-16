@@ -59,6 +59,8 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
                     .lambda()
                     .between(SysDictType::getCreateTime,dictTypeDTO.getStartEndTime().get(0),dictTypeDTO.getStartEndTime().get(1));
         }
+        // 创建时间排序
+        queryWrapper.lambda().orderByDesc(SysDictType::getCreateTime);
 
         sysDictTypeMapper.selectPage(page,queryWrapper);
         return page;
