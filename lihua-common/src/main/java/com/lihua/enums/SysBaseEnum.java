@@ -15,7 +15,10 @@ public enum SysBaseEnum {
      * redis缓存字典数据前缀
      */
     DICT_DATA_REDIS_PREFIX("REDIS_CACHE_DICT_DATA:"),
-
+    /**
+     * redis 分布式锁 key
+     */
+    REDIS_LOCK("REDIS_LOCK"),
     /**
      * redis缓存临时token前缀
      */

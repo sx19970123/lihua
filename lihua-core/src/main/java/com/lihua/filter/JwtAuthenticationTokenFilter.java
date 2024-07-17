@@ -1,8 +1,8 @@
 package com.lihua.filter;
 
-import com.lihua.constant.Constant;
 import com.lihua.model.security.LoginUser;
-import com.lihua.utils.security.LoginUserMgmt;
+import com.lihua.utils.security.LoginUserManager;
+import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,16 +23,18 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = request.getHeader(Constant.TOKEN.getCode());
+        // 获取token
+        String token = WebUtils.getToken(request);
+
         if (StringUtils.hasText(token)) {
-            LoginUser loginUser = LoginUserMgmt.getLoginUser(token.replace("Bearer ", ""));
+            LoginUser loginUser = LoginUserManager.getLoginUser(token);
             if (loginUser != null) {
                 // 将用户信息存入上下文
                 SecurityContextHolder
                         .getContext()
                         .setAuthentication(new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities()));
                 // 判断过期时间进行重新缓存
-                LoginUserMgmt.verifyLoginUserCache();
+                LoginUserManager.verifyLoginUserCache();
             } else {
                 throw new ServletException("认证信息过期失效");
             }
@@ -40,7 +42,5 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request,response);
     }
-
-
 
 }

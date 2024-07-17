@@ -6,6 +6,7 @@ import { useThemeStore } from "@/stores/modules/theme";
 import token from "@/utils/Token.ts"
 import { init } from "@/utils/AppInit.ts";
 import {hasRouteRole} from "@/utils/Auth.ts";
+import {close, connect} from "@/utils/ServerSentEvents.ts";
 const { getToken } = token
 NProgress.configure({
     showSpinner: true
@@ -25,7 +26,8 @@ router.beforeEach(async (to, from, next) => {
             if (!userStore.userInfo.id) {
                 // 拉取登录用户数据，并初始化 store
                 await init();
-
+                // 连接到sse
+                connect()
                 // 判断用户是否拥有静态路由中指定的角色
                 if (hasRouteRole(to?.meta?.role as string[])) {
                     next({ ...to, replace: true });

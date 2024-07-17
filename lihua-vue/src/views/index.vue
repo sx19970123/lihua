@@ -174,6 +174,10 @@
 <script setup lang="ts">
 import CardShow from '@/components/card-show/index.vue'
 import {ref} from "vue";
+import {handleSseMessage} from "@/utils/ServerSentEvents.ts";
+handleSseMessage((msg: string) => {
+  console.log("msg==", msg)
+})
 const middleComplete = ref<boolean>(false)
 const handleClick = (key:string,show:boolean) => {
   setTimeout(() => {

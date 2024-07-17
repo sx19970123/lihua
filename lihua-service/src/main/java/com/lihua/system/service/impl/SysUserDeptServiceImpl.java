@@ -11,7 +11,7 @@ import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.mapper.SysUserDeptMapper;
 import com.lihua.system.service.SysUserDeptService;
 import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.security.LoginUserMgmt;
+import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -102,7 +102,7 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
         loginUser.setDeptList(deptList)
                 .setDeptTree(TreeUtils.buildTree(new ArrayList<>(deptList)));
 
-        LoginUserMgmt.setLoginUserCache(loginUser);
+        LoginUserManager.setLoginUserCache(loginUser);
 
     }
 

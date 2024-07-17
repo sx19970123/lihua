@@ -3,7 +3,6 @@ package com.lihua.utils.security;
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
 import com.lihua.enums.SysBaseEnum;
-import com.lihua.exception.ServiceException;
 import com.lihua.model.security.LoginUser;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.spring.SpringUtils;
@@ -11,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class LoginUserMgmt {
+public class LoginUserManager {
 
     /**
      * 获取spring容器中的redis缓存

@@ -2,7 +2,7 @@ import Cookies from "js-cookie"
 import {encrypt,decrypt} from "./Crypto.ts"
 
 
-const TOKEN_KEY: string = "token"
+const TOKEN_KEY: string = "lihua_token"
 
 const USERNAME_KEY: string = "lihua_username"
 

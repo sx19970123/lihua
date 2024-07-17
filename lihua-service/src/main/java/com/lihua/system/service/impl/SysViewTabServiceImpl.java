@@ -11,7 +11,7 @@ import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysViewTabMapper;
 import com.lihua.system.service.SysViewTabService;
 import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.security.LoginUserMgmt;
+import com.lihua.utils.security.LoginUserManager;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -121,7 +121,7 @@ public class SysViewTabServiceImpl implements SysViewTabService {
             }
         }
         // 更新LoginUser缓存
-        LoginUserMgmt.setLoginUserCache(loginUser);
+        LoginUserManager.setLoginUserCache(loginUser);
         return starView;
     }
 }

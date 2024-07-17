@@ -10,7 +10,7 @@ import com.lihua.system.mapper.SysUserMapper;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.security.LoginUserMgmt;
+import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -54,7 +54,7 @@ public class SysProfileServiceImpl implements SysProfileService {
             currentUser.setNickname(sysUser.getNickname());
             LoginUser loginUser = LoginUserContext.getLoginUser();
             loginUser.setUser(currentUser);
-            LoginUserMgmt.setLoginUserCache(loginUser);
+            LoginUserManager.setLoginUserCache(loginUser);
         }
 
         return currentUser.getId();
@@ -73,7 +73,7 @@ public class SysProfileServiceImpl implements SysProfileService {
         int update = sysUserMapper.update(updateWrapper);
         if (update == 1) {
             currentUser.setPassword(password);
-            LoginUserMgmt.setLoginUserCache(loginUser);
+            LoginUserManager.setLoginUserCache(loginUser);
         }
         return currentUser.getId();
     }
@@ -89,7 +89,7 @@ public class SysProfileServiceImpl implements SysProfileService {
         int update = sysUserMapper.update(updateWrapper);
         if (update == 1) {
             currentUser.setTheme(theme);
-            LoginUserMgmt.setLoginUserCache(loginUser);
+            LoginUserManager.setLoginUserCache(loginUser);
         }
         return currentUser.getId();
     }

@@ -10,10 +10,10 @@ lihua:
   corsMaxAge: 3600
   # 上传文件路径 mac windows 注意目录切换
   #uploadFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
-  #uploadFilePath: 'D:/home/lihua/'
+  uploadFilePath: 'D:/home/lihua/'
   # 文件导出路径
-  exportFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
-  #exportFilePath: 'D:/home/lihua/export/'
+  #exportFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
+  exportFilePath: 'D:/home/lihua/export/'
   # 启用验证码
   enableVerificationCode: false
 server:
@@ -24,6 +24,7 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
   application:
     name: lihua
 

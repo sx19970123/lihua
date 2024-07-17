@@ -10,7 +10,7 @@ import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.system.service.SysViewTabService;
 import com.lihua.utils.security.JwtUtils;
-import com.lihua.utils.security.LoginUserMgmt;
+import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -116,7 +116,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             .setAuthorities(authorities);
 
         // 设置redis缓存
-        LoginUserMgmt.setLoginUserCache(loginUser);
+        LoginUserManager.setLoginUserCache(loginUser);
     }
 
     private void handleSetViewTabKey(List<CurrentViewTab> currentViewTabList,List<CurrentRouter> routerList) {
