@@ -249,7 +249,7 @@
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {createVNode, reactive, ref, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {initDict} from "@/utils/dict.ts";
+import {initDict} from "@/utils/Dict.ts";
 import {deleteData, exportExcel, findById, findPage, importExcel, save, updateStatus} from "@/api/system/post/Post.ts";
 import {useRoute} from "vue-router";
 import type {Rule} from "ant-design-vue/es/form";

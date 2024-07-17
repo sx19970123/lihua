@@ -1,6 +1,9 @@
 package com.lihua.utils.security;
 
+import com.lihua.cache.RedisCache;
+import com.lihua.enums.SysBaseEnum;
 import com.lihua.model.security.*;
+import com.lihua.utils.spring.SpringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -12,6 +15,8 @@ import java.util.List;
  * 获取当前登录用户工具类
  */
 public class LoginUserContext implements Serializable {
+
+    private static RedisCache redisCache;
 
     /**
      * 获取当前登录用户 id
@@ -151,6 +156,16 @@ public class LoginUserContext implements Serializable {
     }
 
     /**
+     * 判断当前 userId 用户是否为登陆状态
+     * @param userId
+     * @return
+     */
+    public static boolean isLogin(String userId) {
+        initCache();
+        return redisCache.hasKey(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId);
+    }
+
+    /**
      * 获取当前登录用户 Authentication
      * @return
      */
@@ -158,4 +173,12 @@ public class LoginUserContext implements Serializable {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
+    /**
+     * 从spring容器中获取 redisCache
+     */
+    private static void initCache() {
+        if (redisCache == null) {
+            redisCache = SpringUtils.getBean(RedisCache.class);
+        }
+    }
 }

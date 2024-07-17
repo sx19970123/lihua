@@ -249,7 +249,7 @@ import {
 } from "@/api/system/dept/Dept.ts";
 import {createVNode, reactive, ref} from "vue";
 import {message, Modal} from "ant-design-vue";
-import {initDict} from "@/utils/dict.ts";
+import {initDict} from "@/utils/Dict.ts";
 import {cloneDeep} from "lodash-es";
 import type {Rule} from "ant-design-vue/es/form";
 import {useRouter} from "vue-router";

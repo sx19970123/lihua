@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import {initDict} from "@/utils/dict"
+import {initDict} from "@/utils/Dict.ts"
 import {ref} from "vue";
 import {changeLanguage} from "@/utils/i18n";
 const selectKeys = ref<Array<string>>([localStorage.getItem("language") || 'cn'])

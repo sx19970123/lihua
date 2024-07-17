@@ -212,7 +212,7 @@ import dayjs from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";
 import DictData from "./dictData/index.vue"
-import { initDict } from "@/utils/dict";
+import { initDict } from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 
 const { sys_status,sys_dict_type } = initDict("sys_status","sys_dict_type")

@@ -203,7 +203,7 @@ import {nextTick, reactive, ref} from "vue";
 import type { UnwrapRef } from 'vue';
 import {message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
-import {initDict, reLoadDict} from "@/utils/dict";
+import {initDict, reLoadDict} from "@/utils/Dict.ts";
 import dictTag from "@/components/dict-tag/index.vue"
 import type {SysDictDataType, SysDictDataTypeDTO} from "@/api/system/dict/type/SysDictDataType.ts";
 

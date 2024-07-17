@@ -33,6 +33,12 @@ public class LihuaConfig {
     private Integer corsMaxAge;
 
     /**
+     * ServerSentEvents 连接过期时间
+     * 过期后客户端在线的情况下会发起自动重连
+     */
+    private Long sseExpireTime;
+
+    /**
      * 文件上传路径
      */
     private String uploadFilePath;

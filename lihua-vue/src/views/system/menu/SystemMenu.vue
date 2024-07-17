@@ -319,7 +319,7 @@
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
 import {deleteData, findById, findList, menuTreeOption, save, updateStatus} from "@/api/system/menu/Menu.ts";
 import {reactive, ref} from "vue";
-import {initDict} from "@/utils/dict.ts";
+import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
 import { flattenTreeData} from "@/utils/Tree.ts"

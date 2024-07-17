@@ -49,7 +49,10 @@ public class SecurityConfig {
             authorizeHttpRequestsCustomizer
                     // 对于异步分发权限放开（涉及文件下载返回 ResponseEntity<StreamingResponseBody> 的情况）
                     .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
-                    .requestMatchers("/system/login/**","/captcha/**","/system/file/download/**").permitAll()
+                    .requestMatchers("/system/login/**",
+                            "/captcha/**",
+                            "/system/sse/connect/**",
+                            "/system/file/download/**").permitAll()
                     .anyRequest().authenticated();
         });
 

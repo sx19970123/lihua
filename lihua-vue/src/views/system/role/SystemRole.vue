@@ -197,7 +197,7 @@
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {reactive, ref, watch} from "vue";
 import {deleteData, findById, findPage, save, updateStatus} from "@/api/system/role/Role.ts";
-import {initDict} from "@/utils/dict.ts";
+import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
 import {menuTreeOption} from "@/api/system/menu/Menu.ts";
 import type {Rule} from "ant-design-vue/es/form";

@@ -351,7 +351,7 @@ import {
   exportExcel,
   importExcel
 } from "@/api/system/user/User.ts"
-import {initDict} from "@/utils/dict"
+import {initDict} from "@/utils/Dict.ts"
 import {createVNode, h, reactive, ref, watch} from "vue";
 import CardSelect from "@/components/card-select/index.vue"
 import dayjs from "dayjs";

@@ -35,6 +35,8 @@ router.beforeEach(async (to, from, next) => {
                     next("/403");
                 }
             } else {
+                // 连接到sse
+                connect()
                 if (hasRouteRole(to?.meta?.role as string[])) {
                     next();
                 } else {
@@ -44,11 +46,13 @@ router.beforeEach(async (to, from, next) => {
         } catch (error) {
             console.error(error);
             userStore.clearUserInfo();
+            await close()
             next("/login");
         }
     } else {
         // token 失效后重置主题后重定向到登陆页
         themeStore.resetState();
+        await close()
         if (to.path !== "/login") {
             next("/login");
         } else {

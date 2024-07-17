@@ -1,12 +1,15 @@
 import {handleClose} from "@/api/system/sse/ServerSentEvents.ts";
-
-export let eventSource: EventSource
+import {useUserStore} from "@/stores/modules/user.ts";
+import token from "@/utils/Token.ts"
+const { getToken } = token
+export let eventSource: EventSource | null
 
 // 连接到SSE服务
 export const connect = () => {
     if (!eventSource) {
+        const userStore = useUserStore()
         console.log("Server-Sent Events 开始连接")
-        eventSource = new EventSource(import.meta.env.VITE_APP_BASE_API + "/system/sse/connect")
+        eventSource = new EventSource(import.meta.env.VITE_APP_BASE_API + "/system/sse/connect/" + userStore.userId)
     }
 
     eventSource.onerror = (event) => {
@@ -17,9 +20,15 @@ export const connect = () => {
 // 关闭SSE服务连接
 export const close = async () => {
     if (eventSource) {
-        eventSource.close()
-        await handleClose()
+        const userStore = useUserStore()
         console.log("Server-Sent Events 关闭连接")
+        // 关闭 eventSource 连接
+        eventSource.close()
+        eventSource = null
+        // 主动退出情况下，通知后端释放sse资源
+        if (getToken() && userStore.userId) {
+            await handleClose()
+        }
     }
 }
 

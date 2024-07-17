@@ -47,7 +47,7 @@ import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import type {ProfileInfo} from "@/api/system/profile/type/SysProfile.ts";
 import {saveBasics} from "@/api/system/profile/Profile.ts";
-import {initDict} from "@/utils/dict.ts"
+import {initDict} from "@/utils/Dict.ts"
 import {cloneDeep} from "lodash-es";
 const userStore = useUserStore()
 const {user_gender} = initDict('user_gender')

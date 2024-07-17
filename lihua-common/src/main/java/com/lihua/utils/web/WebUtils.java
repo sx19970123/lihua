@@ -34,17 +34,7 @@ public class WebUtils {
         // 获取 token
         String token = request.getHeader(ConstantEnum.TOKEN_KEY.getValue());
         if (StringUtils.hasText(token)) {
-            return token.replace(ConstantEnum.TOKEN_PREFIX.getValue(), "");
-        }
-
-        // 从 cookie 获取 token
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (ConstantEnum.COOKIE_TOKEN_KEY.getValue().equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
+            return token.replace(ConstantEnum.TOKEN_PREFIX.getValue(), "").trim();
         }
 
         return null;
