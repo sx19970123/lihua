@@ -22,6 +22,7 @@
             sys_notice.type,
             sys_notice.status,
             sys_notice.priority,
+            sys_notice.all_user,
             sys_notice.content,
             sys_notice.remark,
             sys_user_notice.user_id

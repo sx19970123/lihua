@@ -11,7 +11,7 @@
  Target Server Version : 80200 (8.2.0)
  File Encoding         : 65001
 
- Date: 16/07/2024 21:26:23
+ Date: 18/07/2024 22:59:36
 */
 
 SET NAMES utf8mb4;
@@ -273,6 +273,7 @@ CREATE TABLE `sys_notice` (
   `type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '类型：通知、公告',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '状态：未发布、已发布、已撤销',
   `priority` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '优先级：高、中、低',
+  `all_user` char(1) DEFAULT NULL COMMENT '是否发送给全部用户',
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '文章内容',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '逻辑删除标志',
   `create_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '创建人id',
@@ -437,7 +438,7 @@ CREATE TABLE `sys_user` (
 -- Records of sys_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"value\":\"/Users/shangxuan/项目/lihuaFile/upload/d7fc1c0d262347d4a7ef02836623a4f6.png\",\"type\":\"image\",\"backgroundColor\":\"rgb(245, 34, 45)\"}', '1', '0', '{\"layoutType\":\"header-sider\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":false,\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"zoom\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(22, 119, 255)\"}}}', '0', NULL, '2024-06-02 16:57:25', '1', '2024-07-16 20:13:37', '2651518588@qq.com', '15510916240', NULL);
+INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1', 'admin', '$2a$10$Z4TZ6xukbmrYLsvPC1R7SupnvyRhhRbPGtIuwK4rBx9EzQPA6pXEO', 'Yukino', '{\"value\":\"/Users/shangxuan/项目/lihuaFile/upload/d7fc1c0d262347d4a7ef02836623a4f6.png\",\"type\":\"image\",\"backgroundColor\":\"rgb(245, 34, 45)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":false,\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"zoom\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(22, 119, 255)\"}}}', '0', NULL, '2024-06-02 16:57:25', '1', '2024-07-18 15:02:06', '2651518588@qq.com', '15510916240', NULL);
 INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1797128547345416194', 'test1', '$2a$10$OJXhWjRgz798CP2N5fNLdeD4h52u2G2xWhOXdoztSE/.9JCEZddjq', '1', NULL, '1', '1', NULL, '1', '1', '2024-06-02 19:04:52', '1', NULL, NULL, NULL, NULL);
 INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1797128759258431489', 'test2', '$2a$10$ZVDo0mUk3I.tCY/VmD842erHe4tuDa55WUFC5zmYwVEbioz9YNUAW', '1', NULL, '1', '1', NULL, '1', '1', '2024-06-02 19:04:48', '1', NULL, NULL, NULL, NULL);
 INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1797128798873632770', 'test3', '$2a$10$bNtr0VPzG5eO2Kikn6pB2.isk5wp91kHDZmhqqwEeMNXZRb1Vq6Ru', '1', NULL, '1', '1', NULL, '1', '1', '2024-06-02 19:04:45', '1', NULL, NULL, NULL, NULL);
@@ -452,7 +453,7 @@ INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gen
 INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1797150775353098241', 'test', '$2a$10$XMz3TwLfxeykvHUAIQeTquWaFHyNoQ3p886i.8JLJTDW3Pg4TltM2', '测试', NULL, '1', '1', NULL, '1', '1', '2024-06-02 14:18:36', '1', NULL, NULL, NULL, NULL);
 INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1797159025205149697', 'ceshi', '$2a$10$YMo8GiyaRxKSMR2ceaqq5uLiYl.CVZ5zX4Ijh5Bm.qpa8njiNuamW', '1', NULL, '1', '1', '{\"layoutType\":\"sider-header\",\"showViewTabs\":true,\"dataTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderWith\":200,\"originSiderWith\":200,\"routeTransition\":\"zoom\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"#2196F3\"}}}', '1', '1', '2024-06-02 14:59:36', '1797159025205149697', '2024-06-02 14:57:56', NULL, NULL, NULL);
 INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1803778815383932929', '测试', '$2a$10$IsOpPChSIlFncSKxcxLyqeHe6lON4HT1p0NSu1uS3u8UE6Terhmh2', 'nickname', NULL, '1', '1', NULL, '1', '1', '2024-06-20 21:15:57', '1', '2024-06-20 21:16:13', NULL, NULL, NULL);
-INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1807687880993570818', 'yukino', '$2a$10$Sz.ZAEbiHpsYZ7N9aYMAGu6K14ZLbMMbycywtW2gZpOLy8uf1IyBq', 'Yukino', NULL, '1', '0', NULL, '0', '1', '2024-07-02 13:42:05', '1', NULL, NULL, NULL, NULL);
+INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1807687880993570818', 'yukino', '$2a$10$Sz.ZAEbiHpsYZ7N9aYMAGu6K14ZLbMMbycywtW2gZpOLy8uf1IyBq', 'Yukino', '{\"value\":\"NintendoSwitch\",\"type\":\"icon\",\"backgroundColor\":\"rgb(245, 34, 45)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":false,\"siderWith\":200,\"originSiderWith\":200,\"routeTransition\":\"zoom\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"#2196F3\"}}}', '0', '1', '2024-07-17 19:29:08', '1807687880993570818', '2024-07-17 19:55:44', NULL, NULL, NULL);
 INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1808304695918637057', 'yukino1', '$2a$10$ultCi7UfLc1tctO2VoVfNuLIQtmwJ0YZ8UpVCN.w2yDBn6LaBJAcy', 'Yukino1', NULL, '1', '1', NULL, '1', '1', '2024-07-03 09:00:11', '1', '2024-07-03 09:03:47', NULL, NULL, NULL);
 INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1808304696329678850', 'admin2', '$2a$10$z7YMzaIi5yVMocoIUk2Yr.T6tj09QEo47YzV80YCMsKigD4gBvy/u', 'Yukino2', NULL, '1', '1', NULL, '1', '1', '2024-07-03 09:00:11', '1', '2024-07-03 09:03:48', '2651518588@qq.com', '15510916240', NULL);
 INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `avatar`, `gender`, `status`, `theme`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `email`, `phone_number`, `remark`) VALUES ('1808305923444617217', 'yukino1', '$2a$10$D1QJQcisinVIkNf6q9MBIOGZ3O2LJdgLD1vDxjKDTXl5VHQpxb2em', 'Yukino1', NULL, '1', '1', NULL, '1', '1', '2024-07-03 09:05:04', '1', '2024-07-03 09:05:27', NULL, NULL, NULL);
@@ -485,8 +486,8 @@ CREATE TABLE `sys_user_dept` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `sys_user_dept` (`user_id`, `dept_id`, `create_time`, `create_id`, `default_dept`) VALUES ('1', '1810226204790657025', '2024-07-08 16:59:47', '1', '0');
-INSERT INTO `sys_user_dept` (`user_id`, `dept_id`, `create_time`, `create_id`, `default_dept`) VALUES ('1807687880993570818', '1', '2024-07-02 13:42:05', '1', '1');
-INSERT INTO `sys_user_dept` (`user_id`, `dept_id`, `create_time`, `create_id`, `default_dept`) VALUES ('1807687880993570818', '2', '2024-07-02 13:42:05', '1', '1');
+INSERT INTO `sys_user_dept` (`user_id`, `dept_id`, `create_time`, `create_id`, `default_dept`) VALUES ('1807687880993570818', '1810226204790657025', '2024-07-17 19:29:08', '1', '1');
+INSERT INTO `sys_user_dept` (`user_id`, `dept_id`, `create_time`, `create_id`, `default_dept`) VALUES ('1807687880993570818', '1810226204790657026', '2024-07-17 19:29:08', '1', '1');
 COMMIT;
 
 -- ----------------------------
@@ -526,9 +527,10 @@ CREATE TABLE `sys_user_post` (
 BEGIN;
 INSERT INTO `sys_user_post` (`user_id`, `post_id`, `create_time`, `create_id`) VALUES ('1', '1', '2024-06-02 16:57:25', '1');
 INSERT INTO `sys_user_post` (`user_id`, `post_id`, `create_time`, `create_id`) VALUES ('1', '3', '2024-06-02 16:57:25', '1');
-INSERT INTO `sys_user_post` (`user_id`, `post_id`, `create_time`, `create_id`) VALUES ('1807687880993570818', '1', '2024-07-02 13:42:05', '1');
-INSERT INTO `sys_user_post` (`user_id`, `post_id`, `create_time`, `create_id`) VALUES ('1807687880993570818', '2', '2024-07-02 13:42:05', '1');
-INSERT INTO `sys_user_post` (`user_id`, `post_id`, `create_time`, `create_id`) VALUES ('1807687880993570818', '3', '2024-07-02 13:42:05', '1');
+INSERT INTO `sys_user_post` (`user_id`, `post_id`, `create_time`, `create_id`) VALUES ('1807687880993570818', '1', '2024-07-17 19:29:08', '1');
+INSERT INTO `sys_user_post` (`user_id`, `post_id`, `create_time`, `create_id`) VALUES ('1807687880993570818', '1810589506918060035', '2024-07-17 19:29:08', '1');
+INSERT INTO `sys_user_post` (`user_id`, `post_id`, `create_time`, `create_id`) VALUES ('1807687880993570818', '2', '2024-07-17 19:29:08', '1');
+INSERT INTO `sys_user_post` (`user_id`, `post_id`, `create_time`, `create_id`) VALUES ('1807687880993570818', '3', '2024-07-17 19:29:08', '1');
 COMMIT;
 
 -- ----------------------------
@@ -550,6 +552,7 @@ BEGIN;
 INSERT INTO `sys_user_role` (`user_id`, `role_id`, `create_time`, `create_id`) VALUES ('1', '1', '2024-06-02 16:57:25', '1');
 INSERT INTO `sys_user_role` (`user_id`, `role_id`, `create_time`, `create_id`) VALUES ('1797150775353098241', '1', '2024-06-02 14:18:36', '1');
 INSERT INTO `sys_user_role` (`user_id`, `role_id`, `create_time`, `create_id`) VALUES ('1797159025205149697', '1', '2024-06-02 14:59:36', '1797159025205149697');
+INSERT INTO `sys_user_role` (`user_id`, `role_id`, `create_time`, `create_id`) VALUES ('1807687880993570818', '1779067819464077314', '2024-07-17 19:29:08', '1');
 COMMIT;
 
 -- ----------------------------

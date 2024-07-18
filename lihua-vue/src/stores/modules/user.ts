@@ -198,7 +198,7 @@ export const useUserStore = defineStore('user', {
         },
         // 默认头像
         getDefaultAvatar() {
-            return {type: 'text', backgroundColor: 'rgb(191, 191, 191)', value: this.$state.username, url: ''}
+            return {type: 'text', backgroundColor: 'rgb(191, 191, 191)', value: this.$state.nickname, url: ''}
         }
     },
     getters: {

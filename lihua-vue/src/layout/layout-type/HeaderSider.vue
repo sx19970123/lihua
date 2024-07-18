@@ -56,14 +56,14 @@ const props = defineProps<{  showLayout: boolean }>()
   line-height: 48px;
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%);
-  box-shadow: 0 1px 4px rgba(0,21,41,.12);
+  box-shadow: var(--lihua-layout-light-box-shadow);
 }
 .hs-sider {
   position: sticky;
   height: calc(100vh - 48px);
   z-index: 3;
   top: 0;
-  box-shadow: 0 1px 4px rgba(0,21,41,.12);
+  box-shadow: var(--lihua-layout-light-box-shadow);
 }
 .sider-content {
   height: calc(100vh - 48px - 48px);
@@ -99,10 +99,10 @@ const props = defineProps<{  showLayout: boolean }>()
 }
 [data-theme = dark] {
   .hs-header {
-    box-shadow: 0 1px 4px rgba(150, 150, 150,.1);
+    box-shadow: var(--lihua-layout-dark-box-shadow);
   }
   .hs-sider {
-    box-shadow: 0 1px 4px rgba(150, 150, 150,.1);
+    box-shadow: var(--lihua-layout-dark-box-shadow);
   }
 }
 </style>

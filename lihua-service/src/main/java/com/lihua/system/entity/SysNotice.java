@@ -39,6 +39,11 @@ public class SysNotice extends BaseEntity {
     private String priority;
 
     /**
+     * 是否发送给全部用户
+     */
+    private String allUser;
+
+    /**
      * 内容
      */
     private String content;

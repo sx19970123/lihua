@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lihua.enums.ServerSentEventsEnum;
 import com.lihua.exception.ServiceException;
+import com.lihua.model.sse.ServerSentEventsResult;
 import com.lihua.system.entity.SysNotice;
 import com.lihua.system.entity.SysUserNotice;
 import com.lihua.system.mapper.SysNoticeMapper;
@@ -13,6 +15,7 @@ import com.lihua.system.model.vo.SysNoticeVO;
 import com.lihua.system.service.SysNoticeService;
 import com.lihua.system.service.SysUserNoticeService;
 import com.lihua.utils.security.LoginUserContext;
+import com.lihua.utils.sse.ServerSentEventsManager;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -104,8 +107,17 @@ public class SysNoticeServiceImpl implements SysNoticeService {
                         .set(SysNotice::getUpdateTime, LocalDateTime.now())
                         .set(SysNotice::getUpdateId, LoginUserContext.getUserId());
         sysNoticeMapper.update(updateWrapper);
-        // todo sse 推送数据
 
+        // 获取发送的消息 id title
+        QueryWrapper<SysNotice> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(SysNotice::getId, id)
+                .select(SysNotice::getId, SysNotice::getTitle);
+        SysNotice sysNotice = sysNoticeMapper.selectOne(queryWrapper);
+        // 获取被推送的用户id
+        List<String> userIds = sysUserNoticeService.findUserIds(id);
+        // sse 推送数据
+        ServerSentEventsManager.send(userIds, new ServerSentEventsResult<SysNotice>(ServerSentEventsEnum.SSE_NOTICE, sysNotice));
         return id;
     }
 

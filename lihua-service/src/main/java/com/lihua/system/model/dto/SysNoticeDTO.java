@@ -40,6 +40,12 @@ public class SysNoticeDTO extends BaseDTO {
     private String priority;
 
     /**
+     * 是否发送给全部用户
+     */
+    @NotNull(message = "请选择发送用户")
+    private String allUser;
+
+    /**
      * 内容
      */
     private String context;

@@ -15,22 +15,27 @@
 import {defineProps} from 'vue';
 
 const { type, backgroundColor, value, size } = defineProps({
+  // 头像类型
   type: {
     type: String,
     default: ''
   },
+  // 背景颜色
   backgroundColor: {
     type: String,
     default: ''
   },
+  // 头像值（图标/文本）
   value: {
     type: String,
     default: ''
   },
+  // 头像尺寸
   size: {
     type: Number,
     default: 32
   },
+  // 头像链接（图片）
   url: {
     type: String,
     default: ''
@@ -39,7 +44,3 @@ const { type, backgroundColor, value, size } = defineProps({
 
 defineEmits(['update:type', 'update:backgroundColor', 'update:value', 'update:size', 'update:url']);
 </script>
-
-<style scoped>
-/* 可以添加样式 */
-</style>

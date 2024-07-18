@@ -27,4 +27,14 @@ public class SysUserNoticeServiceImpl extends ServiceImpl<SysUserNoticeMapper, S
         queryWrapper.lambda().in(SysUserNotice::getNoticeId, noticeIds);
         remove(queryWrapper);
     }
+
+    @Override
+    public List<String> findUserIds(String noticeId) {
+        QueryWrapper<SysUserNotice> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(SysUserNotice::getNoticeId, noticeId)
+                .select(SysUserNotice::getUserId);
+        List<SysUserNotice> sysUserNotices = sysUserNoticeMapper.selectList(queryWrapper);
+        return sysUserNotices.stream().map(SysUserNotice::getUserId).toList();
+    }
 }

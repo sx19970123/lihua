@@ -46,7 +46,7 @@ const props = defineProps<{  showLayout: boolean }>()
   padding: 0;
   height: 48px;
   line-height: 48px;
-  box-shadow: 0 1px 4px rgba(0,21,41,.12);
+  box-shadow: var(--lihua-layout-light-box-shadow);
 }
 .logo {
   padding: 0 16px 0 16px;
@@ -68,7 +68,7 @@ const props = defineProps<{  showLayout: boolean }>()
 }
 [data-theme = dark] {
   .hc-layout-header {
-    box-shadow: 0 1px 4px rgba(255, 255, 255,.12);
+    box-shadow: var(--lihua-layout-dark-box-shadow);
   }
 }
 </style>

@@ -54,7 +54,7 @@ const props = defineProps<{  showLayout: boolean }>()
   line-height: 48px;
 }
 .sh-head {
-  box-shadow: 0 1px 4px rgba(0,21,41,.12);
+  box-shadow: var(--lihua-layout-light-box-shadow);
   padding-right: 32px;
 }
 .sh-sider {
@@ -62,7 +62,7 @@ const props = defineProps<{  showLayout: boolean }>()
   height: 100vh;
   top: 0;
   z-index: 2;
-  box-shadow: 0 1px 4px rgba(0,21,41,.12);
+  box-shadow: var(--lihua-layout-light-box-shadow);
 }
 .logo {
   margin: 16px;
@@ -79,10 +79,10 @@ const props = defineProps<{  showLayout: boolean }>()
 }
 [data-theme = dark] {
   .sh-sider {
-    box-shadow: 0 1px 4px rgba(150, 150, 150,.1);
+    box-shadow: var(--lihua-layout-dark-box-shadow);
   }
   .sh-head {
-    box-shadow: 0 1px 4px rgba(150, 150, 150,.1);
+    box-shadow: var(--lihua-layout-dark-box-shadow);
   }
 }
 </style>

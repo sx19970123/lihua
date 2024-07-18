@@ -8,3 +8,17 @@
 @import "overwrite-ant.css";
 /* 自定义通用css */
 @import "custom.css";
+
+/* 全局css变量 */
+:root {
+    /* 亮色模式阴影*/
+    --lihua-layout-light-box-shadow:
+            0 1px 2px 0 rgba(0, 0, 0, 0.03),
+            0 1px 6px -1px rgba(0, 0, 0, 0.02),
+            0 2px 4px 0 rgba(0, 0, 0, 0.02);
+    /* 暗色模式阴影*/
+    --lihua-layout-dark-box-shadow:
+            0 1px 2px 0 rgba(255, 255, 255, 0.03),
+            0 1px 6px -1px rgba(255, 255, 255, 0.02),
+            0 2px 4px 0 rgba(255, 255, 255, 0.02);
+}
