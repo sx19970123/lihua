@@ -410,12 +410,12 @@ const initSearch = () => {
     postQuery,
     selectedIds,
     postRowSelectionType,
+    tableLoad,
+    postTotal,
     handleRowClick,
     queryPage,
     initPage,
-    reloadPage,
-    tableLoad,
-    postTotal
+    reloadPage
   }
 }
 const { postColumn,postList,postQuery,selectedIds,postRowSelectionType,handleRowClick,initPage,queryPage,reloadPage,tableLoad,postTotal } = initSearch()

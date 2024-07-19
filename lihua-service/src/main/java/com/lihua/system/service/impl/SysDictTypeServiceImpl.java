@@ -100,7 +100,9 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
         if (!oldDictType.getCode().equals(sysDictType.getCode())) {
             sysDictDataService.updateDataTypeCode(oldDictType.getCode(),sysDictType.getCode());
         }
-
+        // 修改后删除缓存数据
+        DictUtils.removeDictCache(oldDictType.getCode());
+        DictUtils.removeDictCache(sysDictType.getCode());
         return sysDictType.getId();
     }
 
@@ -108,7 +110,16 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     public void deleteByIds(List<String> ids) {
         checkDictData(ids);
         checkStatus(ids);
+
+        // 获取对应code
+        QueryWrapper<SysDictType> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().in(SysDictType::getId, ids)
+                        .select(SysDictType::getCode);
+        List<SysDictType> sysDictTypes = sysDictTypeMapper.selectList(queryWrapper);
+        // 删除数据库数据
         sysDictTypeMapper.deleteBatchIds(ids);
+        // 删除redis数据
+        sysDictTypes.forEach(dictType -> DictUtils.removeDictCache(dictType.getCode()));
     }
 
     @Override
@@ -122,6 +133,11 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
                 .set(SysDictType::getUpdateTime, LocalDateTime.now())
                 .eq(SysDictType::getId, id);
         sysDictTypeMapper.update(null, updateWrapper);
+
+        // 删除对应缓存
+        String code = sysDictTypeMapper.selectById(id).getCode();
+        DictUtils.removeDictCache(code);
+
         return status;
     }
 

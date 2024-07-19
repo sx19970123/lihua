@@ -79,11 +79,13 @@ public class DictUtils {
      * 重新缓存字典
      */
     public static int resetCacheDict(String dictTypeCode) {
+        // 删除缓存
+        removeDictCache(dictTypeCode);
+        // 加载mapper
         initMapper();
+        // 查询数据添加缓存
         List<SysDictDataVO> sysDictDataVOList = commonMapper.findByDictTypeCode(dictTypeCode);
-        if (sysDictDataVOList.isEmpty()) {
-            removeDictCache(dictTypeCode);
-        } else {
+        if (!sysDictDataVOList.isEmpty()) {
             DictUtils.setDictCache(dictTypeCode,sysDictDataVOList);
         }
         return sysDictDataVOList.size();

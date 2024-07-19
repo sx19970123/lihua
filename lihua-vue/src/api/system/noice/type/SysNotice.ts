@@ -61,7 +61,7 @@ export interface SysNoticeDTO extends SysNotice {
     /**
      * 指定用户
      */
-    userIdList: string[]
+    userIdList: string[];
 
     /**
      * 当前页数

@@ -85,8 +85,8 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         } else {
             id = insert(sysDictData);
         }
-        // 更新缓存
-        DictUtils.resetCacheDict(sysDictData.getDictTypeCode());
+        // 删除缓存
+        DictUtils.removeDictCache(sysDictData.getDictTypeCode());
         return id;
     }
 
@@ -100,9 +100,6 @@ public class SysDictDataServiceImpl implements SysDictDataService {
                 .set(SysDictData::getUpdateTime,LocalDateTime.now())
                 .eq(SysDictData::getDictTypeCode,oldTypeCode);
         sysDictDataMapper.update(updateWrapper);
-        // 缓存新数据 删除旧缓存
-        DictUtils.resetCacheDict(newTypeCode);
-        DictUtils.removeDictCache(oldTypeCode);
     }
 
     @Override
@@ -125,13 +122,13 @@ public class SysDictDataServiceImpl implements SysDictDataService {
                 .select(SysDictData::getDictTypeCode);
         List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
 
-        // 重新缓存数据
+        // 删除缓存
         if (!sysDictData.isEmpty()) {
             sysDictData
                 .stream()
                 .map(SysDictData::getDictTypeCode)
                 .distinct()
-                .forEach(DictUtils::resetCacheDict);
+                .forEach(DictUtils::removeDictCache);
         }
     }
 

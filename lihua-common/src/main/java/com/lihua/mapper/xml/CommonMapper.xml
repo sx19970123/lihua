@@ -4,17 +4,22 @@
 
     <select id="findByDictTypeCode" resultType="com.lihua.model.dict.SysDictDataVO">
         SELECT
-            id,
-            parent_id,
-            dict_type_code,
-            label,
-            value,
-            sort,
-            tag_style,
-            remark
-            FROM
-            sys_dict_data
+            sys_dict_data.id,
+            sys_dict_data.parent_id,
+            sys_dict_data.dict_type_code,
+            sys_dict_data.label,
+            sys_dict_data.value,
+            sys_dict_data.sort,
+            sys_dict_data.tag_style,
+            sys_dict_data.remark
+        FROM
+            sys_dict_type
+        LEFT JOIN sys_dict_data ON sys_dict_type.code = sys_dict_data.dict_type_code
         WHERE
-            dict_type_code = #{dictTypeCode} AND status = '0' AND del_flag = '0'
+            sys_dict_type.code = #{dictTypeCode} AND
+            sys_dict_type.status = '0' AND
+            sys_dict_type.del_flag = '0' AND
+            sys_dict_data.status = '0' AND
+            sys_dict_data.del_flag = '0'
     </select>
 </mapper>
