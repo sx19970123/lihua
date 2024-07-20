@@ -297,12 +297,12 @@
             >
               <template #content="{item, isSelected, color}">
                 <a-flex align="center" justify="space-between">
-                  <a-typography-title :level="5" style="margin: 0">{{item.deptName}}</a-typography-title>
+                  <a-typography-title :level="5" style="margin: 0">{{item?.deptName}}</a-typography-title>
                   <a-tag v-if="isSelected" :color="color">默认</a-tag>
                 </a-flex>
                 <div style="margin-top: 16px;">
-                  <div v-if="item.postList && item.postList.length > 0">
-                    <a-checkable-tag v-for="post in item.postList"
+                  <div v-if="item?.postList && item?.postList.length > 0">
+                    <a-checkable-tag v-for="post in item?.postList"
                                      @change="(checked: boolean) => handleSelectPostId(post.id, checked)"
                                      @click.stop="() => {}"
                                      :key="post.id"
@@ -618,11 +618,13 @@ const initSave = () => {
   }
 
   // 前往下一表单页面
-  const toNextForm = (nextSegmentedValue: 'basic' | 'dept' | 'post') => {
-    if (nextSegmentedValue === 'post') {
-      toPostForm()
+  const toNextForm = (nextSegmentedValue?: 'basic' | 'dept' | 'post') => {
+    if (nextSegmentedValue) {
+      if (nextSegmentedValue === 'post') {
+        toPostForm()
+      }
+      segmented.value = nextSegmentedValue
     }
-    segmented.value = nextSegmentedValue
   }
 
   // 重置表单
@@ -1072,7 +1074,6 @@ const initExcel = () => {
     const spinInstance = Spin.service({
       tip: '数据处理中，请稍等...'
     })
-
     // 将文件上传至后端
     const resp = await importExcel(uploadRequest.file)
     if (resp.code === 200) {

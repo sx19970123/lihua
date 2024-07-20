@@ -478,8 +478,8 @@ const initSave = () => {
   }
 
   // 获取排序
-  const getSort = (deptList: Array<SysDept>): number => {
-    const sorts = deptList.map(item => item.sort)
+  const getSort = (deptList?: Array<SysDept>): number => {
+    const sorts = deptList?.map(item => item.sort)
     if (sorts && sorts.length > 0) {
       const max = Math.max(...sorts as number[])
       return max + 1
@@ -685,7 +685,7 @@ const initExcel = () => {
       return
     }
     const spinInstance = Spin.service({
-      tip: '数据处理中，请稍等...'
+      tip: "数据处理中，请稍等..."
     })
 
     // 将文件上传至后端
