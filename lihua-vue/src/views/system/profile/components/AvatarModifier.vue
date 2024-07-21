@@ -32,7 +32,7 @@
           <a-radio value="text">文本</a-radio>
         </a-radio-group>
         <!--        颜色选取-->
-        <color-select v-model="avatarColor" v-if="avatarType !== 'image'" :items="avatarBackgroundColor"/>
+        <color-select v-model="avatarColor" v-if="avatarType !== 'image'" :dataSource="avatarBackgroundColor"/>
         <!--        图标选取-->
         <icon-select v-if="avatarType === 'icon'" v-model="avatarIcon" size="large"/>
         <!--        文本编辑-->

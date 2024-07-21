@@ -25,9 +25,9 @@ export interface SysNotice {
     priority?: string;
 
     /**
-     * 是否发送给全部用户
+     * 发送的用户范围
      */
-    allUser?: string;
+    userScope?: string;
 
     /**
      * 内容
@@ -54,14 +54,14 @@ export interface SysNoticeVO extends SysNotice {
     /**
      * 指定用户
      */
-    userIdList: string[]
+    userIdList?: string[]
 }
 
 export interface SysNoticeDTO extends SysNotice {
     /**
      * 指定用户
      */
-    userIdList: string[];
+    userIdList?: string[];
 
     /**
      * 当前页数

@@ -6,6 +6,7 @@
         <result column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="type" property="type"/>
+        <result column="user_scope" property="userScope"/>
         <result column="status" property="status"/>
         <result column="priority" property="priority"/>
         <result column="content" property="content"/>
@@ -22,7 +23,7 @@
             sys_notice.type,
             sys_notice.status,
             sys_notice.priority,
-            sys_notice.all_user,
+            sys_notice.user_scope,
             sys_notice.content,
             sys_notice.remark,
             sys_user_notice.user_id

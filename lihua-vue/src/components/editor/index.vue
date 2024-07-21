@@ -68,6 +68,9 @@ onMounted(() => {
       theme: {current: isDarkTheme ? 'dark' : 'light'},                     // 内容主题
       hljs: {style: isDarkTheme ? 'solarized-dark256' : 'solarized-light'}, // 代码块主题
     },
+    fullscreen: {
+      index: 1100                                                           // 全屏层级
+    },
     toolbarConfig: {
       hide: false,                                                          // 隐藏工具栏
       pin: true                                                             // 固定工具栏
@@ -86,7 +89,7 @@ onMounted(() => {
       type: 'markdown'                                                      // 计数器类型
     },
     outline: {                                                              // 大纲配置
-      enable: true,                                                         // 启用大纲
+      enable: false,                                                         // 启用大纲
       position: 'left'                                                      // 大纲位置
     },
     upload: {

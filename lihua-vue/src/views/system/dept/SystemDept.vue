@@ -2,21 +2,21 @@
  <div>
    <a-flex :gap="16" vertical v-hasRole="['ROLE_admin']">
      <!--检索条件-->
-     <a-card :style="{border: 'none'}">
+     <a-card :style="{border: 'none'}" :body-style="{'padding-bottom': '0'}">
        <a-form :colon="false" :model="deptQuery">
          <a-space size="small">
-           <a-form-item class="form-item-single-line" label="部门名称" name="name">
+           <a-form-item label="部门名称" name="name">
              <a-input placeholder="请输入部门名称" v-model:value="deptQuery.name" allow-clear/>
            </a-form-item>
-           <a-form-item class="form-item-single-line" label="部门编码" name="code">
+           <a-form-item label="部门编码" name="code">
              <a-input placeholder="请输入部门编码" v-model:value="deptQuery.code" allow-clear/>
            </a-form-item>
-           <a-form-item class="form-item-single-line" label="部门状态" name="status">
+           <a-form-item label="部门状态" name="status">
              <a-select style="width: 120px;" placeholder="请选择" v-model:value="deptQuery.status" allow-clear>
                <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
              </a-select>
            </a-form-item>
-           <a-form-item class="form-item-single-line">
+           <a-form-item>
              <a-button type="primary" @click="initList" :loading="tableLoad">
                <template #icon>
                  <SearchOutlined />
@@ -24,7 +24,7 @@
                查 询
              </a-button>
            </a-form-item>
-           <a-form-item class="form-item-single-line">
+           <a-form-item>
              <a-button @click="resetList" :loading="tableLoad">
                <template #icon>
                  <RedoOutlined />

@@ -41,7 +41,7 @@ public class SysNotice extends BaseEntity {
     /**
      * 是否发送给全部用户
      */
-    private String allUser;
+    private String userScope;
 
     /**
      * 内容

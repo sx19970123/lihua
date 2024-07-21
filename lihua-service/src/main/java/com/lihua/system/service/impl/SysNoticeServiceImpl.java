@@ -48,7 +48,10 @@ public class SysNoticeServiceImpl implements SysNoticeService {
                 SysNotice::getType,
                 SysNotice::getStatus,
                 SysNotice::getRemark,
-                SysNotice::getCreateTime);
+                SysNotice::getCreateTime,
+                SysNotice::getPriority,
+                SysNotice::getUserScope
+                );
 
         // 标题
         if (StringUtils.hasText(sysNoticeDTO.getTitle())) {
