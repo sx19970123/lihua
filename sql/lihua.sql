@@ -11,7 +11,7 @@
  Target Server Version : 80200 (8.2.0)
  File Encoding         : 65001
 
- Date: 21/07/2024 22:02:52
+ Date: 21/07/2024 22:05:10
 */
 
 SET NAMES utf8mb4;
@@ -145,7 +145,7 @@ INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `valu
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1814191692868669441', '0', 'sys_notice_type', '公告', '1', 2, NULL, '0', '1', '2024-07-19 14:53:00', '1', '2024-07-20 17:53:15', '0', 'success');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1814598957863034882', '0', 'sys_notice_type', '测试', '2', 3, NULL, '1', '1', '2024-07-20 17:51:20', '1', '2024-07-20 17:52:25', '1', 'default');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1814602689115856897', '0', 'sys_notice_user_scope', '全部用户', '0', 1, NULL, '0', '1', '2024-07-20 18:06:09', NULL, NULL, '0', 'processing');
-INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1814602691913457666', '0', 'sys_notice_user_scope', '自选用户', '1', 2, NULL, '0', '1', '2024-07-20 18:06:10', NULL, NULL, '0', 'success');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1814602691913457666', '0', 'sys_notice_user_scope', '指定用户', '1', 2, NULL, '0', '1', '2024-07-20 18:06:10', '1', '2024-07-21 22:04:21', '0', 'success');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1814603526915497986', '0', 'sys_notice_priority', '紧急', '0', 1, NULL, '0', '1', '2024-07-20 18:09:29', '1', '2024-07-21 20:59:43', '0', '#ff4d4f');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1814603528811323393', '0', 'sys_notice_priority', '高', '1', 2, NULL, '0', '1', '2024-07-20 18:09:30', '1', '2024-07-21 20:59:44', '0', '#faad14');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES ('1814603531445346306', '0', 'sys_notice_priority', '中', '2', 3, NULL, '0', '1', '2024-07-20 18:09:30', '1', '2024-07-21 20:59:44', '0', '#1677ff');
@@ -197,7 +197,7 @@ INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `remark`, `create_id`
 INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES ('1814191109734584322', '公告状态', 'sys_notice_status', '0', '系统公告状态字典', '1', '2024-07-19 14:50:41', NULL, NULL, '0', '0');
 INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES ('1814191516905033729', '公告类型', 'sys_notice_type', '0', '系统公告类型字典', '1', '2024-07-19 14:52:18', '1', '2024-07-19 14:52:32', '0', '0');
 INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES ('1814602561218945026', '用户范围', 'sys_notice_user_scope', '0', '通知公告接收消息的用户范围', '1', '2024-07-20 18:05:39', NULL, NULL, '0', '0');
-INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES ('1814603011422953473', '优先级', 'sys_notice_priority', '0', '通知公告优先级', '1', '2024-07-20 18:07:26', '1', '2024-07-20 18:12:39', '0', '0');
+INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES ('1814603011422953473', '优先程度', 'sys_notice_priority', '0', '通知公告优先程度', '1', '2024-07-20 18:07:26', '1', '2024-07-21 22:04:09', '0', '0');
 COMMIT;
 
 -- ----------------------------
