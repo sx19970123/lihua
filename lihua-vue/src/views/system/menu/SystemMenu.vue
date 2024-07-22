@@ -235,13 +235,16 @@
             <template #cancelButton></template>
             <template #okButton></template>
             <a-flex :gap="6">
-              <a-popover :content="sysMenu.icon" placement="bottom">
+              <a-tooltip placement="bottom">
+                <template #title v-if="sysMenu.icon">
+                  {{sysMenu.icon}}
+                </template>
                 <a-input style="max-width: 140px;" @focus="(event: any) => event.target.blur()" :value="sysMenu.icon" placeholder="选择图标">
                   <template #prefix>
                     <component :is="sysMenu.icon" v-if="sysMenu.icon"/>
                   </template>
                 </a-input>
-              </a-popover>
+              </a-tooltip>
               <a-button @click="modalActive.openIconSelect = true">
                 <template #icon>
                   <SearchOutlined />

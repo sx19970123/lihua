@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.lihua.model.CommonTree;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.system.entity.SysUser;
 import com.lihua.system.model.dto.SysUserDeptDTO;
@@ -39,4 +40,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     // 查询已存在的邮箱
     Set<String> findEmail(@Param("emailSet") Set<String> emailSet);
+
+    // 用户树选项
+    List<CommonTree> selectUserOption();
 }

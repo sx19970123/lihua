@@ -3,8 +3,8 @@
     <template v-for="item in data.dataSource">
       <a-tooltip :title="item.name">
         <div class="color-block" :style="{ background: item.color }" @click="selectedColor(item)">
-          <div v-if="data.modelValue">
-            <CheckOutlined class="color-selected" v-if="item.color === data.modelValue"/>
+          <div v-if="data.color">
+            <CheckOutlined class="color-selected" v-if="item.color === data.color"/>
           </div>
           <div v-else-if="data.value">
             <CheckOutlined class="color-selected" v-if="item.key === data.value"/>
@@ -21,15 +21,15 @@ type ColorSelectItem = { name: string, color: string, key?: string }
 // 接收全部颜色 items 和 双向绑定的颜色值 modelValue
 const data = defineProps<{
   dataSource: Array<ColorSelectItem>
-  modelValue?: string
+  color?: string
   value?: string
 }>();
 // 使用 update:modelValue 定义 更新 v-model 方法
-const emits = defineEmits(['update:modelValue','update:value','click'])
+const emits = defineEmits(['update:color','update:value','click'])
 
 // 点击对应颜色返回颜色值，赋值给v-model。执行 @click 方法
 const selectedColor = ({color, key}: ColorSelectItem) => {
-  emits('update:modelValue',color)
+  emits('update:color',color)
   emits('update:value',key)
   emits('click',color,data.dataSource)
 };

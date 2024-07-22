@@ -1,7 +1,6 @@
 package com.lihua.system.controller;
 
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.dto.SysUserDTO;
 import com.lihua.system.model.vo.SysUserVO;
@@ -65,6 +64,11 @@ public class SysUserController extends BaseController {
         return success(FileDownloadUtils.addToDownloadableList(path));
     }
 
+    @GetMapping("option")
+    public String userOption() {
+        return success(sysUserService.userOption());
+    }
+
     @SneakyThrows
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
@@ -72,4 +76,5 @@ public class SysUserController extends BaseController {
         List<SysUserVO> sysUserVOS = ExcelUtils.importExport(file.getInputStream(), SysUserVO.class, 1);
         return success(sysUserService.importExcel(sysUserVOS));
     }
+
 }

@@ -1,5 +1,5 @@
 import request from "@/utils/Request.ts";
-import type {ExcelImportResult, PageResponseType} from "@/api/global/Type.ts";
+import type {CommonTree, ExcelImportResult, PageResponseType} from "@/api/global/Type.ts";
 import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
 import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 
@@ -43,6 +43,14 @@ export const deleteByIds = (ids: string[]) => {
         url: 'system/user',
         method: 'delete',
         data: ids
+    })
+}
+
+// 获取用户树形选项数据
+export const getUserOption = () => {
+    return request<CommonTree[]>({
+        url: 'system/user/option',
+        method: 'get'
     })
 }
 

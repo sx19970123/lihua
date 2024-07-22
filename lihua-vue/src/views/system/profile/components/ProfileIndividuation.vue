@@ -7,7 +7,7 @@
         <head-theme-switch/>
       </a-form-item>
       <a-form-item label="主题颜色">
-        <color-select :dataSource="colorList" v-model="themeStore.colorPrimary" @click="themeStore.changeColorPrimary"/>
+        <color-select :dataSource="colorList" v-model:color="themeStore.colorPrimary" @click="themeStore.changeColorPrimary"/>
       </a-form-item>
       <a-form-item label="导航颜色" v-if="!themeStore.isDarkTheme">
         <nav-color-select v-model="themeStore.siderTheme" @click="themeStore.changeSiderTheme"/>

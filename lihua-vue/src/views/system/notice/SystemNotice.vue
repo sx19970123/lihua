@@ -144,7 +144,7 @@
       </a-table>
     </a-flex>
 <!--    模态框-->
-    <a-modal v-model:open="modalActive.open" width="888px">
+    <a-modal v-model:open="modalActive.open" width="900px">
       <template #title>
         <div style="margin-bottom: 24px">
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
@@ -152,26 +152,55 @@
       </template>
       <a-form :colon="false" ref="formRef" :model="sysNoticeVO" :label-col="{span: 2}">
         <a-form-item label="公告标题" :wrapper-col="{span: 8}">
-          <a-input placeholder="请输入标题"/>
+          <a-input v-model:value="sysNoticeVO.title" placeholder="请输入标题"/>
         </a-form-item>
         <a-form-item label="优先程度" :wrapper-col="{span: 8}">
-          <color-select v-model:value="sysNoticeVO.priority" :data-source="priorityOption" @click="() => console.log(sysNoticeVO.priority)"/>
+          <color-select v-model:value="sysNoticeVO.priority" :data-source="priorityOption"/>
         </a-form-item>
         <a-form-item label="公告类型">
-          <a-radio-group>
+          <a-radio-group v-model:value="sysNoticeVO.type">
             <a-radio v-for="item in sys_notice_type" :value="item.value">{{item.label}}</a-radio>
           </a-radio-group>
         </a-form-item>
         <a-form-item label="用户范围" :wrapper-col="{span: 8}">
-          <a-radio-group>
+          <a-radio-group v-model:value="sysNoticeVO.userScope">
             <a-radio v-for="item in sys_notice_user_scope" :value="item.value">{{item.label}}</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="指定用户" :wrapper-col="{span: 8}" v-show="false">
-          <a-cascader/>
+        <a-form-item label="指定用户" :wrapper-col="{span: 8}" v-if="sysNoticeVO.userScope === '1'">
+          <a-tree-select
+                      v-model:value="sysNoticeVO.userIdList"
+                      v-model:searchValue="searchValue"
+                      :defaultValue="sysNoticeVO.userIdList"
+                      :show-checked-strategy="Cascader.SHOW_CHILD"
+                      :tree-data="userOption"
+                      tree-checkable
+                      multiple
+                      @change="() => console.log(searchValue)"
+          >
+            <template #title="{ value: val, label }">
+              <b v-if="val === 'parent 1-1'" style="color: #08c">sss</b>
+              <template v-else>
+                <template
+                    v-for="(fragment, i) in label
+            .toString()
+            .split(new RegExp(`(?<=${searchValue})|(?=${searchValue})`, 'i'))"
+                >
+          <span
+              v-if="fragment.toLowerCase() === searchValue.toLowerCase()"
+              :key="i"
+              style="color: #08c"
+          >
+            {{ fragment }}
+          </span>
+                  <template v-else>{{ fragment }}</template>
+                </template>
+              </template>
+            </template>
+          </a-tree-select>
         </a-form-item>
         <a-form-item label="内容">
-          <editor height="300px"/>
+          <editor height="300px" v-model="sysNoticeVO.content"/>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -184,10 +213,13 @@ import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/noice/type
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {findPage} from "@/api/system/noice/Notice.ts";
 import DictTag from "@/components/dict-tag/index.vue"
-import {message} from "ant-design-vue";
+import {Cascader, message} from "ant-design-vue";
 import dayjs from "dayjs";
 import Editor from "@/components/editor/index.vue"
 import ColorSelect from "@/components/color-select/index.vue"
+import {getUserOption} from "@/api/system/user/User.ts";
+import type {CommonTree} from "@/api/global/Type.ts";
+
 const {sys_notice_type, sys_notice_status, 	sys_notice_user_scope, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_status", "sys_notice_user_scope", "sys_notice_priority")
 // 查询列表
 const initSearch = () => {
@@ -240,15 +272,15 @@ const initSearch = () => {
       align: 'center'
     },
     {
-      title: '优先级',
-      key: 'priority',
-      dataIndex: 'priority',
-      align: 'center'
-    },
-    {
       title: '发送范围',
       key: 'userScope',
       dataIndex: 'userScope',
+      align: 'center'
+    },
+    {
+      title: '优先级',
+      key: 'priority',
+      dataIndex: 'priority',
       align: 'center'
     },
     {
@@ -261,7 +293,8 @@ const initSearch = () => {
       title: '创建时间',
       key: 'createTime',
       dataIndex: 'createTime',
-      align: 'center'
+      align: 'center',
+      width: '150px'
     },
     {
       title: '操作',
@@ -344,7 +377,7 @@ const initSave = () => {
     color: string,
     key?: string
   }>>([])
-
+  // 处理优先级字典数据
   const handlePriorityOption = () => {
     const dictPriority = sys_notice_priority.value
     dictPriority.forEach(item => {
@@ -356,8 +389,26 @@ const initSave = () => {
     })
   }
 
+  // 用户选项
+  const userOption = ref<Array<CommonTree>>([])
+  const handleUserOption = async () => {
+    const resp = await getUserOption()
+    if (resp.code === 200) {
+      userOption.value = resp.data
+    } else {
+      message.error(resp.msg)
+    }
+  }
+  handleUserOption()
 
-  const sysNoticeVO = ref<SysNoticeVO>({})
+  const searchValue = ref<string>('')
+
+  const sysNoticeVO = ref<SysNoticeVO>({
+    type: '0',
+    status: '0',
+    priority: '2',
+    userScope: '0'
+  })
 
   // 处理模态框状态
   const handleModalStatus = (title?: string) => {
@@ -373,11 +424,17 @@ const initSave = () => {
     modalActive,
     priorityOption,
     sysNoticeVO,
+    userOption,
+    searchValue,
     handleModalStatus,
     handlePriorityOption
   }
 }
-const {modalActive, priorityOption, sysNoticeVO, handleModalStatus, handlePriorityOption} = initSave()
+const {modalActive, priorityOption, sysNoticeVO, userOption, searchValue, handleModalStatus, handlePriorityOption} = initSave()
+
+watch(() => searchValue, ()=> {
+  console.log(searchValue)
+})
 </script>
 <style scoped>
 

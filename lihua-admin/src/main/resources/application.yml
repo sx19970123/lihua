@@ -11,11 +11,11 @@ lihua:
   # sse 过期时长（86400000 毫秒 24小时），超过连接时长前端在线情况会自动发起重连
   sseExpireTime: 86400000
   # 上传文件路径 mac windows 注意目录切换
-  uploadFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
-  #uploadFilePath: 'D:/home/lihua/'
+  #uploadFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
+  uploadFilePath: 'D:/home/lihua/'
   # 文件导出路径
-  exportFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
-  #exportFilePath: 'D:/home/lihua/export/'
+  #exportFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
+  exportFilePath: 'D:/home/lihua/export/'
   # 启用验证码
   enableVerificationCode: false
 server:

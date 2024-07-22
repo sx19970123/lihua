@@ -1,10 +1,12 @@
 package com.lihua.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lihua.model.CommonTree;
 import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.system.model.dto.SysUserDTO;
 import com.lihua.system.model.vo.SysUserVO;
 
+import java.io.File;
 import java.util.List;
 
 public interface SysUserService {
@@ -55,4 +57,11 @@ public interface SysUserService {
      * @return
      */
     ExcelImportResult importExcel(List<SysUserVO> sysUserVOS);
+
+    /**
+     * 系统用户选项（根据部门选择）
+     * @return
+     */
+    List<CommonTree> userOption();
+
 }

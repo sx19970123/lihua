@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.exception.ServiceException;
+import com.lihua.model.CommonTree;
 import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.system.entity.*;
@@ -23,6 +24,7 @@ import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
+import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -360,6 +362,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                 importUserVos.size(),
                 errorUserVos.size(),
                 errExcelPath);
+    }
+
+    @Override
+    public List<CommonTree> userOption() {
+        List<CommonTree> commonTrees = sysUserMapper.selectUserOption();
+        return TreeUtils.buildTree(commonTrees);
     }
 
     /**
