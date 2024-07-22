@@ -168,36 +168,16 @@
           </a-radio-group>
         </a-form-item>
         <a-form-item label="指定用户" :wrapper-col="{span: 8}" v-if="sysNoticeVO.userScope === '1'">
-          <a-tree-select
-                      v-model:value="sysNoticeVO.userIdList"
-                      v-model:searchValue="searchValue"
-                      :defaultValue="sysNoticeVO.userIdList"
-                      :show-checked-strategy="Cascader.SHOW_CHILD"
-                      :tree-data="userOption"
-                      tree-checkable
-                      multiple
-                      @change="() => console.log(searchValue)"
-          >
-            <template #title="{ value: val, label }">
-              <b v-if="val === 'parent 1-1'" style="color: #08c">sss</b>
-              <template v-else>
-                <template
-                    v-for="(fragment, i) in label
-            .toString()
-            .split(new RegExp(`(?<=${searchValue})|(?=${searchValue})`, 'i'))"
-                >
-          <span
-              v-if="fragment.toLowerCase() === searchValue.toLowerCase()"
-              :key="i"
-              style="color: #08c"
-          >
-            {{ fragment }}
-          </span>
-                  <template v-else>{{ fragment }}</template>
+          <a-flex :gap="6">
+            <a-select/>
+            <a-popover>
+              <a-button>
+                <template #icon>
+                  <SearchOutlined />
                 </template>
-              </template>
-            </template>
-          </a-tree-select>
+              </a-button>
+            </a-popover>
+          </a-flex>
         </a-form-item>
         <a-form-item label="内容">
           <editor height="300px" v-model="sysNoticeVO.content"/>

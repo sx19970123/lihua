@@ -1,6 +1,9 @@
 <template>
   <a-flex vertical :gap="16">
-    <a-flex :gap="16" vertical>
+
+    <user-select/>
+
+    <a-flex :gap="16" vertical v-show="false">
       <card-show cardKey="s1"
                  style="width: 100%"
                  :auto-complete="false"
@@ -34,7 +37,7 @@
         </template>
       </card-show>
     </a-flex>
-    <a-row :gutter="16">
+    <a-row v-show="false" :gutter="16">
       <a-col :span="6"> <card-show cardKey="s2"
                                    style="width: 100%"
                                    :auto-complete="false"
@@ -167,7 +170,7 @@
           </a-card>
         </template>
       </card-show></a-col>
-    </a-row>
+    </a-row >
   </a-flex>
 </template>
 
@@ -175,6 +178,7 @@
 import CardShow from '@/components/card-show/index.vue'
 import {ref} from "vue";
 import {handleSseMessage} from "@/utils/ServerSentEvents.ts";
+import UserSelect from "@/components/user-select/index.vue"
 handleSseMessage((msg: string) => {
   console.log("msg==", msg)
 })
