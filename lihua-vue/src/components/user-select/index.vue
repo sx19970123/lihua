@@ -5,11 +5,10 @@
 <!--        部门检索组件-->
         <div class="full-width">
           <a-spin :spinning="loadingTree">
-            <a-input placeholder="检索部门树"
+            <a-input placeholder="请输入部门名称"
                      v-model:value="deptKeyword"
                      allowClear
                      @change="handleChangeKeyword"
-                     :bordered="false"
                      class="dept-keyword-input">
               <template #suffix>
                 <SearchOutlined :style="{color: themeStore.isDarkTheme ? 'rgba(255, 255, 255, 0.45)' : 'rgba(0, 0, 0, 0.45)'}"/>
