@@ -268,6 +268,10 @@ const { userColumn, userRowSelectionType, handleRowClick } = initUserTable()
 .full-width {
   width: 100%;
 }
+/* 表格滚动条缩短 */
+:deep(.ant-table-body) {
+  scrollbar-width: thin
+}
 </style>
 <style>
 [data-theme="dark"] {
