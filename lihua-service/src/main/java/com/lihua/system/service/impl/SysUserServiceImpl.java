@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.exception.ServiceException;
-import com.lihua.model.CommonTree;
 import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.system.entity.*;
@@ -365,9 +364,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     }
 
     @Override
-    public List<CommonTree> userOption() {
-        List<CommonTree> commonTrees = sysUserMapper.selectUserOption();
-        return TreeUtils.buildTree(commonTrees);
+    public List<SysUser> userOption(String deptId) {
+        return sysUserMapper.findOptionByDeptId(deptId);
     }
 
     /**

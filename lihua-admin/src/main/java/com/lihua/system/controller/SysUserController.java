@@ -64,9 +64,9 @@ public class SysUserController extends BaseController {
         return success(FileDownloadUtils.addToDownloadableList(path));
     }
 
-    @GetMapping("option")
-    public String userOption() {
-        return success(sysUserService.userOption());
+    @GetMapping("option/{deptId}")
+    public String userOption(@PathVariable("deptId") String deptId) {
+        return success(sysUserService.userOption(deptId));
     }
 
     @SneakyThrows

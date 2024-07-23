@@ -46,10 +46,10 @@ export const deleteByIds = (ids: string[]) => {
     })
 }
 
-// 获取用户树形选项数据
-export const getUserOption = () => {
-    return request<CommonTree[]>({
-        url: 'system/user/option',
+// 根据部门id获取用户选项
+export const getUserOption = (deptId: string) => {
+    return request<SysUser[]>({
+        url: 'system/user/option/' + deptId,
         method: 'get'
     })
 }

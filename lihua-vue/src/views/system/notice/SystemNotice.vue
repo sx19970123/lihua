@@ -144,7 +144,7 @@
       </a-table>
     </a-flex>
 <!--    模态框-->
-    <a-modal v-model:open="modalActive.open" width="900px">
+    <a-modal v-model:open="modalActive.open" width="900px" @ok="() => console.log(sysNoticeVO.userIdList)">
       <template #title>
         <div style="margin-bottom: 24px">
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
@@ -168,16 +168,7 @@
           </a-radio-group>
         </a-form-item>
         <a-form-item label="指定用户" :wrapper-col="{span: 8}" v-if="sysNoticeVO.userScope === '1'">
-          <a-flex :gap="6">
-            <a-select/>
-            <a-popover>
-              <a-button>
-                <template #icon>
-                  <SearchOutlined />
-                </template>
-              </a-button>
-            </a-popover>
-          </a-flex>
+          <user-select v-model:user-id="sysNoticeVO.userIdList"/>
         </a-form-item>
         <a-form-item label="内容">
           <editor height="300px" v-model="sysNoticeVO.content"/>
@@ -193,12 +184,11 @@ import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/noice/type
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {findPage} from "@/api/system/noice/Notice.ts";
 import DictTag from "@/components/dict-tag/index.vue"
-import {Cascader, message} from "ant-design-vue";
+import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import Editor from "@/components/editor/index.vue"
 import ColorSelect from "@/components/color-select/index.vue"
-import {getUserOption} from "@/api/system/user/User.ts";
-import type {CommonTree} from "@/api/global/Type.ts";
+import UserSelect from "@/components/user-select/index.vue"
 
 const {sys_notice_type, sys_notice_status, 	sys_notice_user_scope, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_status", "sys_notice_user_scope", "sys_notice_priority")
 // 查询列表
@@ -369,19 +359,6 @@ const initSave = () => {
     })
   }
 
-  // 用户选项
-  const userOption = ref<Array<CommonTree>>([])
-  const handleUserOption = async () => {
-    const resp = await getUserOption()
-    if (resp.code === 200) {
-      userOption.value = resp.data
-    } else {
-      message.error(resp.msg)
-    }
-  }
-  handleUserOption()
-
-  const searchValue = ref<string>('')
 
   const sysNoticeVO = ref<SysNoticeVO>({
     type: '0',
@@ -404,17 +381,14 @@ const initSave = () => {
     modalActive,
     priorityOption,
     sysNoticeVO,
-    userOption,
-    searchValue,
-    handleModalStatus,
-    handlePriorityOption
+    handleModalStatus
   }
 }
-const {modalActive, priorityOption, sysNoticeVO, userOption, searchValue, handleModalStatus, handlePriorityOption} = initSave()
+const {modalActive, priorityOption, sysNoticeVO, handleModalStatus} = initSave()
 
-watch(() => searchValue, ()=> {
-  console.log(searchValue)
-})
+watch(() => sysNoticeVO.value.userIdList, (value)=> {
+  console.log('value-=',value)
+},{deep: true})
 </script>
 <style scoped>
 

@@ -1,91 +1,130 @@
 <template>
-  <div style="width: 750px;">
+  <div :style="{width: props.width + 'px'}">
     <a-card>
       <a-flex>
 <!--        部门检索组件-->
         <div class="full-width">
-          <a-input placeholder="检索部门树"
-                   v-model:value="deptKeyword"
-                   allowClear
-                   @change="handleChangeKeyword"
-                   class="dept-keyword-input"/>
-          <a-divider class="divider"/>
-          <a-tree
-              :tree-data="sysDeptList"
-              :field-names="{children:'children', title:'name', key: 'id' }"
-              v-model:checked-keys="deptIdList"
-              v-model:expanded-keys="expandKeys"
-              @select="handleClickTree"
-          >
-            <template  #title="{ name }">
-              <div v-if="name.indexOf(deptKeyword) > -1">
-                <span>{{name.substring(0,name.indexOf(deptKeyword))}}</span>
-                <span :style="{'color':  themeStore.colorPrimary}">{{deptKeyword}}</span>
-                <span>{{name.substring(name.indexOf(deptKeyword) + deptKeyword.length)}}</span>
-              </div>
-              <span v-else>{{ name }}</span>
-            </template>
-          </a-tree>
+          <a-spin :spinning="loadingTree">
+            <a-input placeholder="检索部门树"
+                     v-model:value="deptKeyword"
+                     allowClear
+                     @change="handleChangeKeyword"
+                     :bordered="false"
+                     class="dept-keyword-input">
+              <template #suffix>
+                <SearchOutlined :style="{color: themeStore.isDarkTheme ? 'rgba(255, 255, 255, 0.45)' : 'rgba(0, 0, 0, 0.45)'}"/>
+              </template>
+            </a-input>
+            <a-divider class="divider"/>
+            <div class="scrollbar" :style="{height: props.height + 'px'}">
+              <a-tree
+                  :tree-data="sysDeptList"
+                  :field-names="{children:'children', title:'name', key: 'id' }"
+                  default-expand-all
+                  v-model:checked-keys="deptIdList"
+                  v-model:expanded-keys="expandKeys"
+                  @select="handleClickTree"
+              >
+                <template  #title="{ name }">
+                  <div v-if="name.indexOf(deptKeyword) > -1">
+                    <span>{{name.substring(0,name.indexOf(deptKeyword))}}</span>
+                    <span :style="{'color':  themeStore.colorPrimary}">{{deptKeyword}}</span>
+                    <span>{{name.substring(name.indexOf(deptKeyword) + deptKeyword.length)}}</span>
+                  </div>
+                  <span v-else>{{ name }}</span>
+                </template>
+              </a-tree>
+            </div>
+          </a-spin>
         </div>
 <!--        用户勾选组件-->
           <a-table :columns="userColumn"
+                   :loading="loadingUser"
+                   row-key="id"
                    :row-selection="userRowSelectionType"
+                   :custom-row="handleRowClick"
                    size="small"
+                   row-class-name="hover-cursor-pointer"
                    class="full-width scrollbar"
                    :pagination="false"
-                   :scroll="{y:200}"
-                   :data-source="[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},]"
-          >
-          </a-table>
-
+                   :scroll="{y: props.height}"
+                   :data-source="userList"
+          />
 <!--        已选用户组件-->
         <div class="full-width">
           <div class="user-show-title">
             <a-flex justify="space-between">
               <div>
-                已选10人
+                 {{selectedIds.length}} 人
               </div>
-              <a-button size="small" danger type="text">
+              <a-button size="small"
+                        danger
+                        type="text"
+                        :disabled="selectedIds.length === 0"
+                        @click="() => selectedIds.length = 0"
+              >
                 <template #icon>
                   <DeleteOutlined />
                 </template>
-                清空选择
+                 全部清空
               </a-button>
             </a-flex>
           </div>
           <a-divider class="divider"/>
-          <div style="height: 200px" class="scrollbar user-show-group">
+          <div :style="{height: props.height + 'px'}" class="scrollbar user-show-group">
             <a-flex wrap="wrap" gap="small">
-              <user-show class="user-show" :avatar-json="json" nickname="yukino"/>
-              <user-show class="user-show" :avatar-json="json" nickname="yukino"/>
-              <user-show class="user-show" :avatar-json="json" nickname="yukino"/>
-              <user-show class="user-show" :avatar-json="json" nickname="yukino"/>
-              <user-show class="user-show" :avatar-json="json" nickname="yukino"/>
-              <user-show class="user-show" :avatar-json="json" nickname="yukino"/>
-              <user-show class="user-show" :avatar-json="json" nickname="yukino"/>
-              <user-show class="user-show" :avatar-json="json" nickname="yukino"/>
-              <user-show class="user-show" :avatar-json="json" nickname="yukino"/>
-              <user-show class="user-show" :avatar-json="json" nickname="yukino"/>
+              <user-show class="user-show"
+                         @click="handleCancelSelect(user)"
+                         v-for="user in selectUsers"
+                         :avatar-json="user.avatar"
+                         :nickname="user.nickname"/>
             </a-flex>
           </div>
         </div>
       </a-flex>
-
     </a-card>
   </div>
 </template>
 <script lang="ts" setup>
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {flattenTreeData} from "@/utils/Tree.ts";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import {cloneDeep} from "lodash-es";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import type {SysUserVO} from "@/api/system/user/type/SysUser.ts";
+import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import UserShow from "@/components/user-show/index.vue"
+import {getUserOption} from "@/api/system/user/User.ts";
+import {message} from "ant-design-vue";
 const themeStore = useThemeStore();
-const json = "{\"value\":\"NintendoSwitch\",\"type\":\"icon\",\"backgroundColor\":\"rgb(245, 34, 45)\"}"
+
+const props = defineProps({
+  height: {
+    type: Number,
+    default: 150
+  },
+  width: {
+    type: Number,
+    default: 750
+  },
+  user: {
+    type: Array<SysUser>
+  },
+  userId: {
+    type: Array<String>
+  },
+  avatar:{
+    type: Array<String>
+  },
+  nickname:{
+    type: Array<String>
+  }
+})
+
+const emits = defineEmits(['update:user','update:userId','update:avatar','update:nickname'])
+
+// 部门相关
 const initDeptTree = () => {
   // 选中的deptIds
   const deptIdList = ref<string[]>([])
@@ -101,8 +140,11 @@ const initDeptTree = () => {
   const deptKeyword = ref<string>('')
   // 部门树配置信息
   const expandKeys = ref<string[]>([])
+  // 树加载
+  const loadingTree = ref<boolean>(false)
   // 初始化部门数据
   const initDept = async () => {
+    loadingTree.value = true
     const resp = await getDeptOption()
     if (resp.code === 200) {
       // 单位树
@@ -114,7 +156,10 @@ const initDeptTree = () => {
       // 获取全部部门id
       const mapIds = flattenDeptList.filter(item => item.id).map(item => item.id)
       deptIds.push(... (mapIds as string[]))
+    } else {
+      message.error(resp.msg)
     }
+    loadingTree.value = false
   }
 
   // 处理展开折叠
@@ -151,39 +196,44 @@ const initDeptTree = () => {
     }
   }
 
-  // 点击部门节点
-  const handleClickTree = (checkedKeys: string[]) => {
-    console.log(checkedKeys)
-  }
-
   initDept()
   return {
     deptIdList,
     deptKeyword,
     sysDeptList,
     expandKeys,
-    handleChangeKeyword,
-    handleClickTree
+    loadingTree,
+    handleChangeKeyword
   }
 }
-const  {
-  deptIdList,
-  deptKeyword,
-  sysDeptList,
-  expandKeys,
-  handleChangeKeyword,
-  handleClickTree
-} = initDeptTree()
+const  { deptIdList, deptKeyword, sysDeptList, expandKeys, loadingTree, handleChangeKeyword } = initDeptTree()
 
+// 用户相关
 const initUserTable = () => {
   // 选中的数据id集合
   const selectedIds = ref<Array<string>>([])
+  // 选中的用户集合
+  const selectUsers = ref<SysUser[]>([])
+  // 用户加载
+  const loadingUser = ref<boolean>(false)
+  // 用户列表
+  const userList = ref<SysUser[]>([])
+  // 列表列
+  const userColumn: ColumnsType = [
+    {
+      title: '用户名',
+      key: 'username',
+      dataIndex: 'username'
+    },
+    {
+      title: '用户昵称',
+      key: 'nickname',
+      dataIndex: 'nickname'
+    }
+  ]
   // 列表勾选对象
   const userRowSelectionType = {
-
     type: 'checkbox',
-    // 支持跨页勾选
-    preserveSelectedRowKeys: true,
     // 指定选中id的数据集合，操作完后可手动清空
     selectedRowKeys: selectedIds,
     onChange: (ids: Array<string>) => {
@@ -191,7 +241,7 @@ const initUserTable = () => {
     },
   }
   // 点击数据行选中
-  const handleRowClick = (record:SysUserVO) => {
+  const handleRowClick = (record:SysUser) => {
     return {
       onClick: () => {
         if (record.id) {
@@ -206,23 +256,48 @@ const initUserTable = () => {
     }
   }
 
-  const userColumn: ColumnsType = [
-    {
-      title: '用户名',
-    },
-    {
-      title: '用户昵称',
+  // 点击部门节点
+  const handleClickTree = async (checkedKeys: string[]) => {
+    if (checkedKeys.length > 0) {
+      loadingUser.value = true
+      const resp = await getUserOption(checkedKeys[0])
+      if (resp.code === 200) {
+        userList.value = resp.data
+      } else {
+        message.error(resp.msg)
+      }
+      loadingUser.value = false
     }
-  ]
+  }
+
+  // 取消选中用户
+  const handleCancelSelect = (user: SysUser) => {
+    selectedIds.value = selectedIds.value.filter(id => id !== user.id)
+  }
 
   return {
     userColumn,
     userRowSelectionType,
+    userList,
+    selectedIds,
+    selectUsers,
+    loadingUser,
+    handleCancelSelect,
+    handleClickTree,
     handleRowClick
   }
 }
+const { userColumn, userRowSelectionType, userList, selectedIds, selectUsers, loadingUser, handleCancelSelect, handleClickTree, handleRowClick } = initUserTable()
 
-const { userColumn, userRowSelectionType, handleRowClick } = initUserTable()
+// 监听选中用户id获取selectUsers
+watch(() => selectedIds.value, (value) => {
+  selectUsers.value = userList.value.filter(user => value.includes(user.id))
+  emits('update:nickname', selectUsers.value.map(user => user.nickname))
+  emits('update:userId', selectUsers.value.map(user => user.id))
+  emits('update:avatar', selectUsers.value.map(user => user.avatar))
+  emits('update:user', selectUsers)
+}, {deep: true})
+
 </script>
 
 <style scoped>
