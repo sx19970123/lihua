@@ -1,6 +1,6 @@
 <template>
   <div :style="{width: props.width + 'px'}">
-    <a-card>
+    <a-card :bordered="props.bordered" :body-style="props.bodyStyle" style="box-shadow: none;">
       <a-flex>
 <!--        部门检索组件-->
         <div class="full-width">
@@ -94,7 +94,7 @@ import {cloneDeep} from "lodash-es";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import UserShow from "@/components/user-show/index.vue"
-import {getUserOption} from "@/api/system/user/User.ts";
+import {getUserOption, getUserOptionByUserIds} from "@/api/system/user/User.ts";
 import {message} from "ant-design-vue";
 const themeStore = useThemeStore();
 
@@ -107,11 +107,17 @@ const props = defineProps({
     type: Number,
     default: 750
   },
-  user: {
-    type: Array<SysUser>
+  bordered: {
+    type: Boolean,
+    default: true
+  },
+  bodyStyle: {
+    type: Object,
+    default: {}
   },
   userId: {
-    type: Array<String>
+    type: Array<String>,
+    required: true
   },
   avatar:{
     type: Array<String>
@@ -121,7 +127,7 @@ const props = defineProps({
   }
 })
 
-const emits = defineEmits(['update:user','update:userId','update:avatar','update:nickname'])
+const emits = defineEmits(['update:userId','update:avatar','update:nickname','change'])
 
 // 部门相关
 const initDeptTree = () => {
@@ -217,6 +223,8 @@ const initUserTable = () => {
   const loadingUser = ref<boolean>(false)
   // 用户列表
   const userList = ref<SysUser[]>([])
+  // 查询过的全部数据
+  const allUserList = ref<SysUser[]>([])
   // 列表列
   const userColumn: ColumnsType = [
     {
@@ -233,8 +241,11 @@ const initUserTable = () => {
   // 列表勾选对象
   const userRowSelectionType = {
     type: 'checkbox',
+    // 跨页勾选
+    preserveSelectedRowKeys: true,
     // 指定选中id的数据集合，操作完后可手动清空
     selectedRowKeys: selectedIds,
+    // 点击复选框触发
     onChange: (ids: Array<string>) => {
       selectedIds.value = ids
     },
@@ -262,6 +273,8 @@ const initUserTable = () => {
       const resp = await getUserOption(checkedKeys[0])
       if (resp.code === 200) {
         userList.value = resp.data
+        const newList = userList.value.filter(item => !allUserList.value.map(item => item.id).includes(item.id))
+        allUserList.value.push(...newList)
       } else {
         message.error(resp.msg)
       }
@@ -278,6 +291,7 @@ const initUserTable = () => {
     userColumn,
     userRowSelectionType,
     userList,
+    allUserList,
     selectedIds,
     selectUsers,
     loadingUser,
@@ -286,15 +300,30 @@ const initUserTable = () => {
     handleRowClick
   }
 }
-const { userColumn, userRowSelectionType, userList, selectedIds, selectUsers, loadingUser, handleCancelSelect, handleClickTree, handleRowClick } = initUserTable()
+const { userColumn, userRowSelectionType, userList, allUserList, selectedIds, selectUsers, loadingUser, handleCancelSelect, handleClickTree, handleRowClick } = initUserTable()
 
+// 用户id回显相关
+const initModelUserId = async () => {
+  const userIds = props.userId
+  if (!userIds) {
+    return
+  }
+
+  // 根据id获取用户信息（id、昵称、头像、部门）
+  const resp = await getUserOptionByUserIds(userIds)
+  if (resp.code === 200) {
+    allUserList.value = resp.data
+    selectedIds.value = resp.data.map(user => user.id)
+  }
+}
+initModelUserId()
 // 监听选中用户id获取selectUsers
 watch(() => selectedIds.value, (value) => {
-  selectUsers.value = userList.value.filter(user => value.includes(user.id ? user.id : ''))
+  selectUsers.value = allUserList.value.filter(user => value.includes(user.id ? user.id : ''))
   emits('update:nickname', selectUsers.value.map(user => user.nickname))
   emits('update:userId', selectUsers.value.map(user => user.id))
   emits('update:avatar', selectUsers.value.map(user => user.avatar))
-  emits('update:user', selectUsers)
+  emits('change', selectUsers)
 }, {deep: true})
 
 </script>

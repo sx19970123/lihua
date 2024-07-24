@@ -42,4 +42,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     // 根据deptId查询用户
     List<SysUser> findOptionByDeptId(@Param("deptId") String deptId);
+
+    List<SysUser> findOptionByUserIds(@Param("userIdList") List<String> userIdList);
 }

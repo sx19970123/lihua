@@ -21,18 +21,24 @@ import UserAvatar from '@/components/user-avatar/index.vue'
 import {useUserStore} from "@/stores/modules/user.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import {ref} from "vue";
+import {getAvatar} from "@/api/system/profile/Profile.ts";
 const userStore = useUserStore();
 
 const props = defineProps<{
   avatarJson?: string,
   nickname?: string
 }>()
-
 // 回显头像
 const avatar = ref<AvatarType>({})
 try {
   if (props.avatarJson) {
     avatar.value = JSON.parse(props.avatarJson)
+    // 处理图片类型头像
+    if (avatar.value.type === 'image') {
+      getAvatar(avatar.value.value).then((resp:Blob) => {
+        avatar.value.url = URL.createObjectURL(resp)
+      })
+    }
   } else {
     avatar.value = userStore.getDefaultAvatar()
     avatar.value.value = props.nickname

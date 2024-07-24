@@ -63,4 +63,11 @@ public interface SysUserService {
      */
     List<SysUser> userOption(String deptId);
 
+    /**
+     * 系统用户选项（根据用户id集合）
+     * @param userIdList
+     * @return
+     */
+    List<SysUser> userOption(List<String> userIdList);
+
 }

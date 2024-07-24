@@ -69,6 +69,11 @@ public class SysUserController extends BaseController {
         return success(sysUserService.userOption(deptId));
     }
 
+    @PostMapping("option")
+    public String userOption(@RequestBody List<String> userIds) {
+        return success(sysUserService.userOption(userIds));
+    }
+
     @SneakyThrows
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")

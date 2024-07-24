@@ -144,7 +144,7 @@
       </a-table>
     </a-flex>
 <!--    模态框-->
-    <a-modal v-model:open="modalActive.open" width="900px" @ok="() => console.log(sysNoticeVO.userIdList)">
+    <a-modal v-model:open="modalActive.open" width="960px" @ok="() => console.log(sysNoticeVO.userIdList)">
       <template #title>
         <div style="margin-bottom: 24px">
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
@@ -168,7 +168,28 @@
           </a-radio-group>
         </a-form-item>
         <a-form-item label="指定用户" :wrapper-col="{span: 8}" v-if="sysNoticeVO.userScope === '1'">
-          <user-select v-model:user-id="sysNoticeVO.userIdList"/>
+          <a-flex :gap="8">
+            <a-input placeholder="请选择用户"/>
+<!--            <a-card :body-style="{padding: '4px 11px 4px 11px'}" style="min-height: 32px">-->
+<!--              <a-typography-text type="secondary"> 点击右侧按钮选择用户 </a-typography-text>-->
+<!--            </a-card>-->
+            <a-popover trigger="click">
+              <template #content>
+                <user-select :bordered="false"
+                             :width="700"
+                             :body-style="{padding: '8px'}"
+                             v-model:user-id="sysNoticeVO.userIdList"
+                />
+              </template>
+              <a-button>
+                <template #icon>
+                  <SearchOutlined />
+                </template>
+              </a-button>
+            </a-popover>
+          </a-flex>
+
+<!--          <user-select v-model:user-id="sysNoticeVO.userIdList" @change="(data) => console.log(data)"/>-->
         </a-form-item>
         <a-form-item label="内容">
           <editor height="300px" v-model="sysNoticeVO.content"/>
@@ -364,7 +385,8 @@ const initSave = () => {
     type: '0',
     status: '0',
     priority: '2',
-    userScope: '0'
+    userScope: '0',
+    userIdList: ['1']
   })
 
   // 处理模态框状态

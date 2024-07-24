@@ -368,6 +368,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         return sysUserMapper.findOptionByDeptId(deptId);
     }
 
+    @Override
+    public List<SysUser> userOption(List<String> userIdList) {
+        return sysUserMapper.findOptionByUserIds(userIdList);
+    }
+
     /**
      * 循环 sysUserVOS 记录重复数据
      * @return

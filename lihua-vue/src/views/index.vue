@@ -1,7 +1,7 @@
 <template>
   <a-flex vertical :gap="16">
 
-    <user-select/>
+    <user-select :bordered="false" :box-shadow="false" />
 
     <a-flex :gap="16" vertical v-show="false">
       <card-show cardKey="s1"

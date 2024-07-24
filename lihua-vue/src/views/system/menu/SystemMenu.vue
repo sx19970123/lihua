@@ -220,12 +220,12 @@
         <a-form-item label="菜单图标" name="icon" v-if="sysMenu.menuType !== 'perms'" :wrapper-col="{span: 16}">
           <a-popconfirm trigger="click"
                      arrow-point-at-center
-                     placement="topRight"
+
                      v-model:open="modalActive.openIconSelect"
           >
             <template #title>
               <icon-select width="416px"
-                           max-height="300px"
+                           max-height="228px"
                            size="small"
                            v-model="sysMenu.icon"
                            @click="modalActive.openIconSelect = false"

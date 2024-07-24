@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import {defineProps} from 'vue';
 
-const { type, backgroundColor, value, size } = defineProps({
+const { type, backgroundColor, value, size, url } = defineProps({
   // 头像类型
   type: {
     type: String,
@@ -41,6 +41,5 @@ const { type, backgroundColor, value, size } = defineProps({
     default: ''
   }
 });
-
 defineEmits(['update:type', 'update:backgroundColor', 'update:value', 'update:size', 'update:url']);
 </script>
