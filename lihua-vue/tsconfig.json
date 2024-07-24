@@ -13,7 +13,7 @@
   ],
   "compilerOptions": {
     "allowJs": true,
-    "composite": true,
+    "composite": false,
     "noEmit": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
@@ -22,6 +22,6 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
   }
 }

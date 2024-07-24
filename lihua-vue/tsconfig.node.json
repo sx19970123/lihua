@@ -1,15 +1,11 @@
 {
   "extends": "@tsconfig/node18/tsconfig.json",
   "include": [
-    "vite.config.*",
-    "vitest.config.*",
-    "cypress.config.*",
-    "nightwatch.conf.*",
-    "playwright.config.*"
+    "vite.config.ts"
   ],
   "compilerOptions": {
     "allowJs": true,
-    "composite": true,
+    "composite": false,
     "noEmit": true,
     "module": "ESNext",
     "allowImportingTsExtensions": true,

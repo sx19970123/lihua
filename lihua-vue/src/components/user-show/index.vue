@@ -24,19 +24,25 @@ import {ref} from "vue";
 const userStore = useUserStore();
 
 const props = defineProps<{
-  avatarJson: string,
-  nickname: string
+  avatarJson?: string,
+  nickname?: string
 }>()
 
 // 回显头像
 const avatar = ref<AvatarType>({})
 try {
-  avatar.value = JSON.parse(props.avatarJson)
+  if (props.avatarJson) {
+    avatar.value = JSON.parse(props.avatarJson)
+  } else {
+    avatar.value = userStore.getDefaultAvatar()
+    avatar.value.value = props.nickname
+  }
 } catch (e) {
   console.error("头像获取异常，重置为默认头像")
   avatar.value = userStore.getDefaultAvatar()
   avatar.value.value = props.nickname
 }
+
 </script>
 
 <style>

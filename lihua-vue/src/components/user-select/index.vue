@@ -290,7 +290,7 @@ const { userColumn, userRowSelectionType, userList, selectedIds, selectUsers, lo
 
 // 监听选中用户id获取selectUsers
 watch(() => selectedIds.value, (value) => {
-  selectUsers.value = userList.value.filter(user => value.includes(user.id))
+  selectUsers.value = userList.value.filter(user => value.includes(user.id ? user.id : ''))
   emits('update:nickname', selectUsers.value.map(user => user.nickname))
   emits('update:userId', selectUsers.value.map(user => user.id))
   emits('update:avatar', selectUsers.value.map(user => user.avatar))

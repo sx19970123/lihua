@@ -64,6 +64,7 @@ onMounted(() => {
     mode: 'wysiwyg',                                                        // 默认模式：所见即所得
     theme: isDarkTheme ? 'dark' : 'classic',                                // 编辑器主题
     icon: 'ant',                                                            // 图标风格
+    cdn:'/vditor',                                                          // 自定义cdn地址，指向项目中public/vditor 下目录
     preview: {
       theme: {current: isDarkTheme ? 'dark' : 'light'},                     // 内容主题
       hljs: {style: isDarkTheme ? 'solarized-dark256' : 'solarized-light'}, // 代码块主题

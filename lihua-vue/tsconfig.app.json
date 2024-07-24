@@ -5,7 +5,7 @@
   "compilerOptions": {
     "allowJs": true,
     "allowImportingTsExtensions": true,
-    "composite": true,
+    "composite": false,
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
