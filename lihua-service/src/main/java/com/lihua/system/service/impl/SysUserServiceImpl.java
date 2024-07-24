@@ -423,12 +423,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             throw new ServiceException("当前excel中用户名为空，请检查数据");
         }
 
-        usernameDbSet = sysUserMapper.findUsername(collectUsername);
+
+        usernameDbSet.addAll(sysUserMapper.findUsername(collectUsername));
         if (!collectPhoneNumber.isEmpty()) {
-            phoneNumberDbSet = sysUserMapper.findPhoneNumber(collectPhoneNumber);
+            phoneNumberDbSet.addAll(sysUserMapper.findPhoneNumber(collectPhoneNumber));
         }
         if (!collectEmail.isEmpty()) {
-            emailDbSet = sysUserMapper.findEmail(collectEmail);
+            emailDbSet.addAll(sysUserMapper.findEmail(collectEmail));
         }
     }
 
