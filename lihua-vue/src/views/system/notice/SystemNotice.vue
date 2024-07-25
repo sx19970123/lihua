@@ -173,12 +173,12 @@
 <!--            <a-card :body-style="{padding: '4px 11px 4px 11px'}" style="min-height: 32px">-->
 <!--              <a-typography-text type="secondary"> 点击右侧按钮选择用户 </a-typography-text>-->
 <!--            </a-card>-->
-            <a-popover trigger="click">
+            <a-popover trigger="click" destroyTooltipOnHide>
               <template #content>
                 <user-select :bordered="false"
                              :width="700"
                              :body-style="{padding: '8px'}"
-                             v-model:user-id="sysNoticeVO.userIdList"
+                             v-model:value="sysNoticeVO.userIdList"
                 />
               </template>
               <a-button>
@@ -188,7 +188,6 @@
               </a-button>
             </a-popover>
           </a-flex>
-
 <!--          <user-select v-model:user-id="sysNoticeVO.userIdList" @change="(data) => console.log(data)"/>-->
         </a-form-item>
         <a-form-item label="内容">
@@ -407,10 +406,6 @@ const initSave = () => {
   }
 }
 const {modalActive, priorityOption, sysNoticeVO, handleModalStatus} = initSave()
-
-watch(() => sysNoticeVO.value.userIdList, (value)=> {
-  console.log('value-=',value)
-},{deep: true})
 </script>
 <style scoped>
 

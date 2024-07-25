@@ -60,7 +60,7 @@
                         danger
                         type="text"
                         :disabled="selectedIds.length === 0"
-                        @click="() => selectedIds.length = 0"
+                        @click="() => selectedIds = []"
               >
                 <template #icon>
                   <DeleteOutlined />
@@ -87,7 +87,7 @@
 <script lang="ts" setup>
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {flattenTreeData} from "@/utils/Tree.ts";
-import {ref, watch} from "vue";
+import {onBeforeUnmount, onMounted, onUpdated, ref, watch} from "vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import {cloneDeep} from "lodash-es";
@@ -115,9 +115,8 @@ const props = defineProps({
     type: Object,
     default: {}
   },
-  userId: {
+  value: {
     type: Array<String>,
-    required: true
   },
   avatar:{
     type: Array<String>
@@ -127,7 +126,7 @@ const props = defineProps({
   }
 })
 
-const emits = defineEmits(['update:userId','update:avatar','update:nickname','change'])
+const emits = defineEmits(['update:value','update:avatar','update:nickname','change'])
 
 // 部门相关
 const initDeptTree = () => {
@@ -223,8 +222,6 @@ const initUserTable = () => {
   const loadingUser = ref<boolean>(false)
   // 用户列表
   const userList = ref<SysUser[]>([])
-  // 查询过的全部数据
-  const allUserList = ref<SysUser[]>([])
   // 列表列
   const userColumn: ColumnsType = [
     {
@@ -255,12 +252,13 @@ const initUserTable = () => {
     return {
       onClick: () => {
         if (record.id) {
-          const selected = selectedIds.value
+          const selected = cloneDeep(selectedIds.value)
           if (selected.includes(record.id)) {
             selected.splice(selected.indexOf(record.id),1)
           } else {
             selected.push(record.id)
           }
+          selectedIds.value = selected
         }
       }
     }
@@ -273,8 +271,6 @@ const initUserTable = () => {
       const resp = await getUserOption(checkedKeys[0])
       if (resp.code === 200) {
         userList.value = resp.data
-        const newList = userList.value.filter(item => !allUserList.value.map(item => item.id).includes(item.id))
-        allUserList.value.push(...newList)
       } else {
         message.error(resp.msg)
       }
@@ -291,7 +287,6 @@ const initUserTable = () => {
     userColumn,
     userRowSelectionType,
     userList,
-    allUserList,
     selectedIds,
     selectUsers,
     loadingUser,
@@ -300,11 +295,11 @@ const initUserTable = () => {
     handleRowClick
   }
 }
-const { userColumn, userRowSelectionType, userList, allUserList, selectedIds, selectUsers, loadingUser, handleCancelSelect, handleClickTree, handleRowClick } = initUserTable()
+const { userColumn, userRowSelectionType, userList, selectedIds, selectUsers, loadingUser, handleCancelSelect, handleClickTree, handleRowClick } = initUserTable()
 
 // 用户id回显相关
 const initModelUserId = async () => {
-  const userIds = props.userId
+  const userIds = props.value
   if (!userIds) {
     return
   }
@@ -312,20 +307,32 @@ const initModelUserId = async () => {
   // 根据id获取用户信息（id、昵称、头像、部门）
   const resp = await getUserOptionByUserIds(userIds)
   if (resp.code === 200) {
-    allUserList.value = resp.data
-    selectedIds.value = resp.data.map(user => user.id)
+    userList.value = resp.data
+    selectedIds.value = resp.data.filter(user => user.id !== undefined).map(user => user.id) as string[]
   }
 }
-initModelUserId()
-// 监听选中用户id获取selectUsers
-watch(() => selectedIds.value, (value) => {
-  selectUsers.value = allUserList.value.filter(user => value.includes(user.id ? user.id : ''))
-  emits('update:nickname', selectUsers.value.map(user => user.nickname))
-  emits('update:userId', selectUsers.value.map(user => user.id))
-  emits('update:avatar', selectUsers.value.map(user => user.avatar))
-  emits('change', selectUsers)
-}, {deep: true})
 
+
+// 监听选中用户id获取selectUsers进行已选头像的显示和双向绑定赋值
+watch(() => selectedIds.value, (value, oldValue) => {
+  // 新增
+  if (value.length > oldValue.length) {
+    selectUsers.value = userList.value.filter(user => value.includes(user.id ? user.id : ''))
+  } else {
+    // 减少，获取到减少的id，从 selectUsers中删除对应数据
+    const decreaseIds = oldValue.filter(old => !value.includes(old))
+    selectUsers.value = selectUsers.value.filter(user => user.id && !decreaseIds.includes(user.id))
+  }
+
+  emits('update:nickname', selectUsers.value.map(user => user.nickname))
+  emits('update:value', selectUsers.value.map(user => user.id))
+  emits('update:avatar', selectUsers.value.map(user => user.avatar))
+  emits('change', selectUsers.value)
+})
+
+onMounted(() => {
+  initModelUserId()
+})
 </script>
 
 <style scoped>

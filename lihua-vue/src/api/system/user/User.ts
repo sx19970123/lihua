@@ -55,7 +55,7 @@ export const getUserOption = (deptId: string) => {
 }
 
 // 根据用户id集合获取用户选项
-export const getUserOptionByUserIds = (userIds: string[]) => {
+export const getUserOptionByUserIds = (userIds: String[]) => {
     return request<SysUser[]>({
         url: 'system/user/option',
         method: 'post',

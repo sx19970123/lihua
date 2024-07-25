@@ -34,7 +34,7 @@ try {
   if (props.avatarJson) {
     avatar.value = JSON.parse(props.avatarJson)
     // 处理图片类型头像
-    if (avatar.value.type === 'image') {
+    if (avatar.value.value && avatar.value.type === 'image') {
       getAvatar(avatar.value.value).then((resp:Blob) => {
         avatar.value.url = URL.createObjectURL(resp)
       })
