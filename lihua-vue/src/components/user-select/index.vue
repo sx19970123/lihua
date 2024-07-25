@@ -39,15 +39,15 @@
 <!--        用户勾选组件-->
           <a-table :columns="userColumn"
                    :loading="loadingUser"
-                   row-key="id"
                    :row-selection="userRowSelectionType"
                    :custom-row="handleRowClick"
-                   size="small"
-                   row-class-name="hover-cursor-pointer"
-                   class="full-width scrollbar"
                    :pagination="false"
                    :scroll="{y: props.height}"
                    :data-source="userList"
+                   row-class-name="hover-cursor-pointer"
+                   class="full-width scrollbar"
+                   size="small"
+                   row-key="id"
           />
 <!--        已选用户组件-->
         <div class="full-width">
@@ -87,7 +87,7 @@
 <script lang="ts" setup>
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {flattenTreeData} from "@/utils/Tree.ts";
-import {onBeforeUnmount, onMounted, onUpdated, ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import {cloneDeep} from "lodash-es";

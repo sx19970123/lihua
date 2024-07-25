@@ -48,7 +48,7 @@ public class SysNoticeDTO extends BaseDTO {
     /**
      * 内容
      */
-    private String context;
+    private String content;
 
     /**
      * 逻辑删除标识

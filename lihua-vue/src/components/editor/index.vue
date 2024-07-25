@@ -90,8 +90,11 @@ onMounted(() => {
       type: 'markdown'                                                      // 计数器类型
     },
     outline: {                                                              // 大纲配置
-      enable: false,                                                         // 启用大纲
+      enable: false,                                                        // 关闭大纲
       position: 'left'                                                      // 大纲位置
+    },
+    cache: {                                                                 // 缓存配置
+      enable: false                                                          // 关闭缓存
     },
     upload: {
       url: baseURL + '/system/file/editor/uploads',                         // 文件上传接口
@@ -156,5 +159,9 @@ watch(() => themeStore.isDarkTheme,(value) => {
         value ? 'solarized-dark256' : 'solarized-light'
     )
   }
+})
+
+watch(() => props.modelValue, () => {
+  editor.value.setValue(props.modelValue ? props.modelValue : '')
 })
 </script>

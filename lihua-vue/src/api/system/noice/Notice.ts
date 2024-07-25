@@ -28,7 +28,7 @@ export const findById = (id: string) => {
  * 保存数据
  * @param data
  */
-export const save = (data: SysNoticeDTO) => {
+export const save = (data: SysNoticeVO) => {
     return request<string>({
         url: "/system/notice",
         method: "post",

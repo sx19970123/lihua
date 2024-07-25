@@ -98,7 +98,7 @@
             {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
           </template>
           <template v-if="column.key === 'action'">
-            <a-button type="link" size="small" >
+            <a-button type="link" size="small" @click="(event:MouseEvent) => selectById(event, record.id)">
               <template #icon>
                 <EditOutlined />
               </template>
@@ -144,15 +144,15 @@
       </a-table>
     </a-flex>
 <!--    模态框-->
-    <a-modal v-model:open="modalActive.open" width="960px">
+    <a-modal v-model:open="modalActive.open" :width="960" @ok="saveNotice">
       <template #title>
         <div style="margin-bottom: 24px">
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
         </div>
       </template>
-      <a-form :colon="false" ref="formRef" :model="sysNoticeVO" :label-col="{span: 2}">
-        <a-form-item label="公告标题" :wrapper-col="{span: 8}">
-          <a-input v-model:value="sysNoticeVO.title" placeholder="请输入标题"/>
+      <a-form :colon="false" ref="formRef" :rules="noticeRoles" :model="sysNoticeVO" :label-col="{span: 2}">
+        <a-form-item label="公告标题" name="title" :wrapper-col="{span: 8}">
+          <a-input v-model:value="sysNoticeVO.title" placeholder="请输入标题" :maxlength="80" show-count/>
         </a-form-item>
         <a-form-item label="优先程度" :wrapper-col="{span: 8}">
           <color-select v-model:value="sysNoticeVO.priority" :data-source="priorityOption"/>
@@ -167,33 +167,36 @@
             <a-radio v-for="item in sys_notice_user_scope" :value="item.value">{{item.label}}</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="指定用户" :wrapper-col="{span: 8}" v-if="sysNoticeVO.userScope === '1'">
+        <a-form-item label="指定用户" name="userIdList" :wrapper-col="{span: 10}" v-if="sysNoticeVO.userScope === '1'">
           <a-flex :gap="8">
-            <a-tooltip>
-              <template #title>
-                {{selectUserInfo}}
-              </template>
-              <a-input placeholder="请选择用户"
-                       readonly
-                       v-model:value="selectUserInfo"
-                       :addon-after="'共' + sysNoticeVO.userIdList?.length + '人'" />
-            </a-tooltip>
-
-            <a-popover trigger="click" destroyTooltipOnHide>
-              <template #content>
-                <user-select :bordered="false"
-                             :width="700"
-                             :body-style="{padding: '8px'}"
-                             v-model:value="sysNoticeVO.userIdList"
-                             @change="handleSelectUserInfo"
-                />
-              </template>
-              <a-button>
-                <template #icon>
-                  <SearchOutlined />
+            <a-form-item-rest>
+              <a-tooltip>
+                <template #title>
+                  {{selectUserInfo}}
                 </template>
-              </a-button>
-            </a-popover>
+                <a-input placeholder="请选择用户"
+                         readonly
+                         v-model:value="selectUserInfo"
+                         :addon-after="sysNoticeVO.userIdList?.length + ' 人'" />
+              </a-tooltip>
+            </a-form-item-rest>
+            <a-form-item-rest>
+              <a-popover trigger="click" destroyTooltipOnHide>
+                <template #content>
+                  <user-select :bordered="false"
+                               :width="700"
+                               :body-style="{padding: '8px'}"
+                               v-model:value="sysNoticeVO.userIdList"
+                               @change="handleSelectUserInfo"
+                  />
+                </template>
+                <a-button>
+                  <template #icon>
+                    <SearchOutlined />
+                  </template>
+                </a-button>
+              </a-popover>
+            </a-form-item-rest>
           </a-flex>
         </a-form-item>
         <a-form-item label="内容">
@@ -208,7 +211,7 @@ import {initDict} from "@/utils/Dict.ts";
 import {reactive, ref, watch} from "vue";
 import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/noice/type/SysNotice.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findPage} from "@/api/system/noice/Notice.ts";
+import {findById, findPage, save} from "@/api/system/noice/Notice.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
@@ -216,6 +219,8 @@ import Editor from "@/components/editor/index.vue"
 import ColorSelect from "@/components/color-select/index.vue"
 import UserSelect from "@/components/user-select/index.vue"
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
+import type {Rule} from "ant-design-vue/es/form";
+import {getUserOptionByUserIds} from "@/api/system/user/User.ts";
 const {sys_notice_type, sys_notice_status, 	sys_notice_user_scope, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_status", "sys_notice_user_scope", "sys_notice_priority")
 // 查询列表
 const initSearch = () => {
@@ -290,7 +295,7 @@ const initSearch = () => {
       key: 'createTime',
       dataIndex: 'createTime',
       align: 'center',
-      width: '150px'
+      width: '160px'
     },
     {
       title: '操作',
@@ -353,6 +358,7 @@ const {selectedIds, noticeRowSelectionType, noticeColumn, noticeQuery, noticeLis
 
 // 表单保存
 const initSave = () => {
+  const formRef = ref()
 
   // 模态框状态
   type modalActiveType = {
@@ -360,7 +366,6 @@ const initSave = () => {
     saveLoading: boolean, // 点击保存按钮加载
     title: string // 模态框标题
   }
-
   const modalActive = reactive<modalActiveType>({
     open: false,
     saveLoading: false,
@@ -399,12 +404,17 @@ const initSave = () => {
     selectUserInfo.value = nicknameList.join("、") ;
   };
 
-  const sysNoticeVO = ref<SysNoticeVO>({
-    type: '0',
-    status: '0',
-    priority: '2',
-    userScope: '0',
-  })
+  const noticeRoles: Record<string, Rule[]> = {
+    title: [
+      {required: true, message: "请填写标题", trigger: "change"}
+    ],
+    userIdList: [
+      {required: true, message: "请选择接收用户", trigger: "change"}
+    ]
+  }
+
+  // notice表单对象
+  const sysNoticeVO = ref<SysNoticeVO>({})
 
   // 处理模态框状态
   const handleModalStatus = (title?: string) => {
@@ -415,17 +425,60 @@ const initSave = () => {
     if (title) {
       modalActive.title = title
     }
+    // 重置表单
+    sysNoticeVO.value = {
+      type: '0',
+      status: '0',
+      priority: '2',
+      userScope: '0',
+      userIdList: [],
+      content: ''
+    }
+    // 清空回显用户
+    handleSelectUserInfo([])
+  }
+
+  // 保存消息通知
+  const saveNotice = async () => {
+    await formRef.value.validate()
+
+    const resp = await save(sysNoticeVO.value);
+    if (resp.code === 200) {
+      message.success(resp.msg)
+      modalActive.open = false
+      await initPage()
+    } else {
+      message.error(resp.msg)
+    }
+  }
+
+  const selectById = async (event:MouseEvent, id: string) => {
+    event.stopPropagation()
+    const resp = await findById(id)
+    if (resp.code === 200) {
+      handleModalStatus("修改通知公告")
+      sysNoticeVO.value = resp.data
+
+      if (resp.data.userScope === '1' && resp.data.userIdList?.length > 0) {
+        const selectUserList = await getUserOptionByUserIds(resp.data.userIdList)
+        handleSelectUserInfo(selectUserList.data)
+      }
+    }
   }
   return {
     modalActive,
     priorityOption,
     sysNoticeVO,
     selectUserInfo,
+    formRef,
+    noticeRoles,
     handleSelectUserInfo,
-    handleModalStatus
+    handleModalStatus,
+    saveNotice,
+    selectById
   }
 }
-const {modalActive, priorityOption, sysNoticeVO, selectUserInfo, handleSelectUserInfo, handleModalStatus} = initSave()
+const {modalActive, priorityOption, sysNoticeVO, selectUserInfo, formRef, noticeRoles, handleSelectUserInfo, handleModalStatus, saveNotice, selectById} = initSave()
 </script>
 <style scoped>
 
