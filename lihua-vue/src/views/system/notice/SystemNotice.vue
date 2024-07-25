@@ -144,7 +144,7 @@
       </a-table>
     </a-flex>
 <!--    模态框-->
-    <a-modal v-model:open="modalActive.open" width="960px" @ok="() => console.log(sysNoticeVO.userIdList)">
+    <a-modal v-model:open="modalActive.open" width="960px">
       <template #title>
         <div style="margin-bottom: 24px">
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
@@ -169,16 +169,23 @@
         </a-form-item>
         <a-form-item label="指定用户" :wrapper-col="{span: 8}" v-if="sysNoticeVO.userScope === '1'">
           <a-flex :gap="8">
-            <a-input placeholder="请选择用户"/>
-<!--            <a-card :body-style="{padding: '4px 11px 4px 11px'}" style="min-height: 32px">-->
-<!--              <a-typography-text type="secondary"> 点击右侧按钮选择用户 </a-typography-text>-->
-<!--            </a-card>-->
+            <a-tooltip>
+              <template #title>
+                {{selectUserInfo}}
+              </template>
+              <a-input placeholder="请选择用户"
+                       readonly
+                       v-model:value="selectUserInfo"
+                       :addon-after="'共' + sysNoticeVO.userIdList?.length + '人'" />
+            </a-tooltip>
+
             <a-popover trigger="click" destroyTooltipOnHide>
               <template #content>
                 <user-select :bordered="false"
                              :width="700"
                              :body-style="{padding: '8px'}"
                              v-model:value="sysNoticeVO.userIdList"
+                             @change="handleSelectUserInfo"
                 />
               </template>
               <a-button>
@@ -188,7 +195,6 @@
               </a-button>
             </a-popover>
           </a-flex>
-<!--          <user-select v-model:user-id="sysNoticeVO.userIdList" @change="(data) => console.log(data)"/>-->
         </a-form-item>
         <a-form-item label="内容">
           <editor height="300px" v-model="sysNoticeVO.content"/>
@@ -209,7 +215,7 @@ import dayjs from "dayjs";
 import Editor from "@/components/editor/index.vue"
 import ColorSelect from "@/components/color-select/index.vue"
 import UserSelect from "@/components/user-select/index.vue"
-
+import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 const {sys_notice_type, sys_notice_status, 	sys_notice_user_scope, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_status", "sys_notice_user_scope", "sys_notice_priority")
 // 查询列表
 const initSearch = () => {
@@ -379,13 +385,25 @@ const initSave = () => {
     })
   }
 
+  // 选择用户范围描述
+  const selectUserInfo = ref<String>('')
+
+  // 处理显示已选择用户
+  const handleSelectUserInfo = (userList: SysUser[]) => {
+    const length = userList.length;
+    if (length === 0) {
+      selectUserInfo.value = ''
+      return;
+    }
+    const nicknameList = userList.map(user => user.nickname);
+    selectUserInfo.value = nicknameList.join("、") ;
+  };
 
   const sysNoticeVO = ref<SysNoticeVO>({
     type: '0',
     status: '0',
     priority: '2',
     userScope: '0',
-    userIdList: ['1']
   })
 
   // 处理模态框状态
@@ -402,10 +420,12 @@ const initSave = () => {
     modalActive,
     priorityOption,
     sysNoticeVO,
+    selectUserInfo,
+    handleSelectUserInfo,
     handleModalStatus
   }
 }
-const {modalActive, priorityOption, sysNoticeVO, handleModalStatus} = initSave()
+const {modalActive, priorityOption, sysNoticeVO, selectUserInfo, handleSelectUserInfo, handleModalStatus} = initSave()
 </script>
 <style scoped>
 

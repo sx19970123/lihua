@@ -101,7 +101,7 @@ const themeStore = useThemeStore();
 const props = defineProps({
   height: {
     type: Number,
-    default: 150
+    default: 151
   },
   width: {
     type: Number,
