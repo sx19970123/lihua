@@ -109,13 +109,13 @@
               编辑
             </a-button>
             <a-divider type="vertical"/>
-            <a-button type="link" size="small" v-if="record.status === '1'">
+            <a-button type="link" size="small" v-if="record.status === '1'" @click="(event:MouseEvent) => handleRevoke(event, record.id)">
               <template #icon>
                 <Cancel />
               </template>
               撤销
             </a-button>
-            <a-button type="link" size="small" v-else>
+            <a-button type="link" size="small" v-else @click="(event:MouseEvent) => handleRelease(event, record.id)">
               <template #icon>
                 <PublishAir />
               </template>
@@ -176,7 +176,7 @@
           <a-flex :gap="8">
             <a-form-item-rest>
               <a-tooltip>
-                <template #title v-if="sysNoticeVO.userIdList?.length > 0">
+                <template #title v-if="sysNoticeVO.userIdList && sysNoticeVO.userIdList?.length > 0">
                   {{selectUserInfo}}
                 </template>
                 <a-input placeholder="请选择用户"
@@ -216,7 +216,7 @@ import {initDict} from "@/utils/Dict.ts";
 import {reactive, ref} from "vue";
 import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/noice/type/SysNotice.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deleteByIds, findById, findPage, save} from "@/api/system/noice/Notice.ts";
+import {deleteByIds, findById, findPage, release, revoke, save} from "@/api/system/noice/Notice.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
@@ -457,6 +457,7 @@ const initSave = () => {
     }
   }
 
+  // 根据id查询通知
   const selectById = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
     const resp = await findById(id)
@@ -464,9 +465,12 @@ const initSave = () => {
       handleModalStatus("修改通知公告")
       sysNoticeVO.value = resp.data
 
-      if (resp.data.userScope === '1' && resp.data.userIdList?.length > 0) {
-        const selectUserList = await getUserOptionByUserIds(resp.data.userIdList)
-        handleSelectUserInfo(selectUserList.data)
+      if (resp.data.userScope === '1') {
+        const length = resp.data?.userIdList?.length
+        if (length && length > 0) {
+          const selectUserList = await getUserOptionByUserIds(resp.data.userIdList as string[])
+          handleSelectUserInfo(selectUserList.data)
+        }
       }
     }
   }
@@ -532,6 +536,32 @@ const initDelete = () => {
 }
 
 const { openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm } = initDelete()
+
+// 处理文章发布
+const handleRelease = async (event:MouseEvent, id: string) => {
+  event.stopPropagation()
+  const resp = await release(id)
+  if (resp.code === 200) {
+    await initPage()
+    message.success(resp.msg)
+  } else {
+    message.error(resp.msg)
+  }
+}
+
+// 处理文章撤销
+const handleRevoke = async (event:MouseEvent, id: string) => {
+  event.stopPropagation()
+  const resp = await revoke(id)
+  if (resp.code === 200) {
+    await initPage()
+    message.success(resp.msg)
+  } else {
+    message.error(resp.msg)
+  }
+}
+
+
 </script>
 <style scoped>
 

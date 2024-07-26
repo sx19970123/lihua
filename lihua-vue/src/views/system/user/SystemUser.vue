@@ -149,6 +149,7 @@
           </template>
           <template v-if="column.key === 'status'">
             <a-switch v-model:checked="record.statusIsNormal"
+                      :disabled="record.username === 'admin'"
                       @change="(checked: boolean | string | number, event: MouseEvent) => handleUpdateStatus(event,record.id, text)"
                       @click="(checked: boolean | string | number, event: MouseEvent) => { event.stopPropagation(); record.updateStatusLoading = true }"
                       :loading="record.updateStatusLoading">

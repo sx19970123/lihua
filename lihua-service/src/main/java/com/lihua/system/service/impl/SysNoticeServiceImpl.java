@@ -113,6 +113,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     }
 
     @Override
+    @Transactional
     public String release(String id) {
         String status = getStatus(id);
         if (!"0".equals(status)) {
