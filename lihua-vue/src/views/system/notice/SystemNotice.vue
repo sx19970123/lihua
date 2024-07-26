@@ -64,8 +64,12 @@
             </a-button>
             <a-popconfirm title="删除后不可恢复，是否删除？"
                           ok-text="确 定"
-                          cancel-text="取 消">
-              <a-button danger>
+                          cancel-text="取 消"
+                          @confirm="handleDelete(undefined)"
+                          :open="openDeletePopconfirm"
+                          @cancel="closePopconfirm"
+            >
+              <a-button danger @click="openPopconfirm">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
@@ -122,8 +126,9 @@
                           placement="bottomRight"
                           ok-text="确 定"
                           cancel-text="取 消"
+                          @confirm="handleDelete(record.id)"
             >
-              <a-button type="link" size="small" danger>
+              <a-button type="link" size="small" danger @click="(event:MouseEvent) => event.stopPropagation()">
                 <template #icon>
                   <DeleteOutlined />
                 </template>
@@ -167,11 +172,11 @@
             <a-radio v-for="item in sys_notice_user_scope" :value="item.value">{{item.label}}</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="指定用户" name="userIdList" :wrapper-col="{span: 10}" v-if="sysNoticeVO.userScope === '1'">
+        <a-form-item label="指定用户" name="userIdList" :wrapper-col="{span: 8}" v-if="sysNoticeVO.userScope === '1'">
           <a-flex :gap="8">
             <a-form-item-rest>
               <a-tooltip>
-                <template #title>
+                <template #title v-if="sysNoticeVO.userIdList?.length > 0">
                   {{selectUserInfo}}
                 </template>
                 <a-input placeholder="请选择用户"
@@ -208,10 +213,10 @@
 </template>
 <script setup lang="ts">
 import {initDict} from "@/utils/Dict.ts";
-import {reactive, ref, watch} from "vue";
+import {reactive, ref} from "vue";
 import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/noice/type/SysNotice.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {findById, findPage, save} from "@/api/system/noice/Notice.ts";
+import {deleteByIds, findById, findPage, save} from "@/api/system/noice/Notice.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
@@ -409,7 +414,7 @@ const initSave = () => {
       {required: true, message: "请填写标题", trigger: "change"}
     ],
     userIdList: [
-      {required: true, message: "请选择接收用户", trigger: "change"}
+      {required: true, message: "请选择用户", trigger: "change"}
     ]
   }
 
@@ -479,6 +484,54 @@ const initSave = () => {
   }
 }
 const {modalActive, priorityOption, sysNoticeVO, selectUserInfo, formRef, noticeRoles, handleSelectUserInfo, handleModalStatus, saveNotice, selectById} = initSave()
+
+const initDelete = () => {
+  // 显示删除提示
+  const openDeletePopconfirm = ref<boolean>(false);
+  // 打开删除提示框
+  const openPopconfirm = () => {
+    if (selectedIds.value && selectedIds.value.length > 0) {
+      openDeletePopconfirm.value = true
+    } else {
+      message.warning("请勾选数据")
+    }
+  }
+  // 关闭删除提示框
+  const closePopconfirm = () => {
+    openDeletePopconfirm.value = false
+  }
+  // 处理删除数据
+  const handleDelete = async (id?: string) => {
+    const deleteIds = id ? [id] : [...selectedIds.value];
+    if (deleteIds.length > 0) {
+      const resp = await deleteByIds(deleteIds)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        // id 不存在则清空选中数据
+        if (!id) {
+          selectedIds.value = []
+        } else {
+          selectedIds.value = selectedIds.value.filter(item => item !== id)
+        }
+        await initPage()
+      } else {
+        message.error(resp.msg)
+      }
+    } else {
+      message.warning("请勾选数据")
+    }
+
+  }
+
+  return {
+    openDeletePopconfirm,
+    closePopconfirm,
+    handleDelete,
+    openPopconfirm
+  }
+}
+
+const { openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm } = initDelete()
 </script>
 <style scoped>
 

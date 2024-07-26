@@ -14,6 +14,7 @@ import com.lihua.system.model.dto.SysNoticeDTO;
 import com.lihua.system.model.vo.SysNoticeVO;
 import com.lihua.system.service.SysNoticeService;
 import com.lihua.system.service.SysUserNoticeService;
+import com.lihua.system.service.SysUserService;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.sse.ServerSentEventsManager;
 import jakarta.annotation.Resource;
@@ -35,6 +36,9 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
     @Resource
     private SysUserNoticeService sysUserNoticeService;
+
+    @Resource
+    private SysUserService sysUserService;
 
     @Override
     public IPage<SysNotice> findPage(SysNoticeDTO sysNoticeDTO) {
@@ -78,7 +82,19 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
     @Override
     public SysNoticeVO findById(String id) {
-        return sysNoticeMapper.findById(id);
+        // 查询 SysNotice 表
+        SysNotice sysNotice = sysNoticeMapper.selectById(id);
+        SysNoticeVO sysNoticeVO = new SysNoticeVO();
+        BeanUtils.copyProperties(sysNotice, sysNoticeVO);
+
+        // 用户范围为全部的情况下，直接返回
+        if ("0".equals(sysNotice.getUserScope())) {
+            return sysNoticeVO;
+        }
+        // 指定用户情况下，查询关联用户后返回
+        List<String> userIds = sysUserNoticeService.findUserIds(id);
+        sysNoticeVO.setUserIdList(userIds);
+        return sysNoticeVO;
     }
 
     @Override
@@ -92,7 +108,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             id = update(sysNoticeDTO);
         }
         // 保存关联表
-        saveUserNotice(id, sysNoticeDTO.getUserIdList());
+        saveUserNotice(id, sysNoticeDTO.getUserScope(), sysNoticeDTO.getUserIdList());
         return id;
     }
 
@@ -197,13 +213,26 @@ public class SysNoticeServiceImpl implements SysNoticeService {
      * @param id
      * @param userIdList
      */
-    private void saveUserNotice(String id, List<String> userIdList) {
+    private void saveUserNotice(String id, String userScope, List<String> userIdList) {
         List<SysUserNotice> sysUserNotices = new ArrayList<>();
+        // 删除所有关联关系
         sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
+
+        // 用户范围为全部用户时，从数据库查询出全部用户
+        if ("0".equals(userScope)) {
+            userIdList = sysUserService.findAllUserIds();
+        }
+
+        if (userIdList == null || userIdList.isEmpty()) {
+            throw new ServiceException("指定用户不存在");
+        }
+
         userIdList.forEach(userId -> {
             SysUserNotice sysUserNotice = new SysUserNotice(userId, id, "0", "0", null);
             sysUserNotices.add(sysUserNotice);
         });
+
+        // 批量保存
         sysUserNoticeService.save(sysUserNotices);
     }
 

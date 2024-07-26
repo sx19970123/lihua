@@ -62,7 +62,7 @@ export const revoke = (id: string) => {
  */
 export const deleteByIds = (ids: string[]) => {
     return request({
-        url: '/system/notice/deleteByIds',
+        url: '/system/notice',
         method: 'delete',
         data: ids
     })

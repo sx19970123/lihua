@@ -23,7 +23,6 @@ import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
-import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -371,6 +370,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     @Override
     public List<SysUser> userOption(List<String> userIdList) {
         return sysUserMapper.findOptionByUserIds(userIdList);
+    }
+
+    @Override
+    public List<String> findAllUserIds() {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().select(SysUser::getId)
+                .eq(SysUser::getDelFlag, "0");
+        return sysUserMapper.selectList(queryWrapper).stream().map(SysUser::getId).toList();
     }
 
     /**

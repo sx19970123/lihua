@@ -70,4 +70,9 @@ public interface SysUserService {
      */
     List<SysUser> userOption(List<String> userIdList);
 
+    /**
+     * 获取全部用户 id，包括停用用户
+     * @return
+     */
+    List<String> findAllUserIds();
 }

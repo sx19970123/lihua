@@ -4,6 +4,7 @@ import com.lihua.system.entity.SysNotice;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -13,5 +14,5 @@ public class SysNoticeVO extends SysNotice {
     /**
      * 指定用户
      */
-    private List<String> userIdList;
+    private List<String> userIdList = new ArrayList<>();
 }
