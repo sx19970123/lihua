@@ -107,8 +107,13 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         } else {
             id = update(sysNoticeDTO);
         }
-        // 保存关联表
-        saveUserNotice(id, sysNoticeDTO.getUserScope(), sysNoticeDTO.getUserIdList());
+        // 指定用户范围时，保存关联表
+        if ("1".equals(sysNoticeDTO.getUserScope())) {
+            // 删除所有关联关系
+            sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
+            saveUserNotice(id, sysNoticeDTO.getUserIdList());
+        }
+
         return id;
     }
 
@@ -117,7 +122,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     public String release(String id) {
         String status = getStatus(id);
         if (!"0".equals(status)) {
-            throw new ServiceException("仅未发布状态数据可发布");
+            throw new ServiceException("仅未发布状态消息通知可发布");
         }
         // 更新状态等信息
         UpdateWrapper<SysNotice> updateWrapper = new UpdateWrapper<>();
@@ -132,12 +137,22 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         QueryWrapper<SysNotice> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .eq(SysNotice::getId, id)
-                .select(SysNotice::getId, SysNotice::getTitle);
+                .select(SysNotice::getId, SysNotice::getTitle, SysNotice::getUserScope);
         SysNotice sysNotice = sysNoticeMapper.selectOne(queryWrapper);
+
+        if ("0".equals(sysNotice.getUserScope())) {
+            // 发送范围为全部用户时，删除所有关联关系批量插入
+            sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
+            saveUserNotice(id, sysUserService.findAllUserIds());
+        } else {
+            // 发送范围为指定用户时，重置star和read状态
+            sysUserNoticeService.resetStatus(id);
+        }
+
         // 获取被推送的用户id
         List<String> userIds = sysUserNoticeService.findUserIds(id);
         // sse 推送数据
-        ServerSentEventsManager.send(userIds, new ServerSentEventsResult<SysNotice>(ServerSentEventsEnum.SSE_NOTICE, sysNotice));
+        ServerSentEventsManager.send(userIds, new ServerSentEventsResult<>(ServerSentEventsEnum.SSE_NOTICE, sysNotice));
         return id;
     }
 
@@ -146,7 +161,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     public String revoke(String id) {
         String status = getStatus(id);
         if (!"1".equals(status)) {
-            throw new ServiceException("仅发布状态数据可撤销");
+            throw new ServiceException("仅发布状态消息通知可撤销");
         }
 
         // 更新状态等信息
@@ -156,8 +171,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
                 .set(SysNotice::getUpdateTime, LocalDateTime.now())
                 .set(SysNotice::getUpdateId, LoginUserContext.getUserId());
         sysNoticeMapper.update(updateWrapper);
-        // 删除用户关联表数据
-        sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
         return id;
     }
 
@@ -172,7 +185,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         Long count = sysNoticeMapper.selectCount(queryWrapper);
 
         if (count > 0) {
-            throw new ServiceException("已发布数据无法删除");
+            throw new ServiceException("已发布消息通知无法删除");
         }
 
         sysNoticeMapper.deleteBatchIds(ids);
@@ -201,6 +214,11 @@ public class SysNoticeServiceImpl implements SysNoticeService {
      * @return
      */
     private String update(SysNoticeDTO sysNoticeDTO) {
+        String status = getStatus(sysNoticeDTO.getId());
+        if ("1".equals(status)) {
+            throw new ServiceException("已发布消息通知无法编辑");
+        }
+
         SysNotice sysNotice = new SysNotice();
         BeanUtils.copyProperties(sysNoticeDTO, sysNotice);
         sysNotice.setUpdateId(LoginUserContext.getUserId());
@@ -214,15 +232,8 @@ public class SysNoticeServiceImpl implements SysNoticeService {
      * @param id
      * @param userIdList
      */
-    private void saveUserNotice(String id, String userScope, List<String> userIdList) {
+    private void saveUserNotice(String id, List<String> userIdList) {
         List<SysUserNotice> sysUserNotices = new ArrayList<>();
-        // 删除所有关联关系
-        sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
-
-        // 用户范围为全部用户时，从数据库查询出全部用户
-        if ("0".equals(userScope)) {
-            userIdList = sysUserService.findAllUserIds();
-        }
 
         if (userIdList == null || userIdList.isEmpty()) {
             throw new ServiceException("指定用户不存在");

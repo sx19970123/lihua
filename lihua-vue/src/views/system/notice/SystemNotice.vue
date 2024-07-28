@@ -82,7 +82,7 @@
 
         <template #bodyCell="{column,record,text}">
           <template v-if="column.key === 'title'">
-            <a-typography-link>
+            <a-typography-link @click="(event:MouseEvent) => showPreview(event, record.id)">
               {{text}}
             </a-typography-link>
           </template>
@@ -102,7 +102,7 @@
             {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
           </template>
           <template v-if="column.key === 'action'">
-            <a-button type="link" size="small" @click="(event:MouseEvent) => selectById(event, record.id)">
+            <a-button type="link" size="small" @click="(event:MouseEvent) => selectById(event, record.id, record.status)">
               <template #icon>
                 <EditOutlined />
               </template>
@@ -148,8 +148,8 @@
         </template>
       </a-table>
     </a-flex>
-<!--    模态框-->
-    <a-modal v-model:open="modalActive.open" :width="960" @ok="saveNotice">
+<!--    保存修改模态框-->
+    <a-modal v-model:open="modalActive.open" :width="960" @ok="saveNotice" destroy-on-close>
       <template #title>
         <div style="margin-bottom: 24px">
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
@@ -209,6 +209,10 @@
         </a-form-item>
       </a-form>
     </a-modal>
+<!--    公告预览-->
+    <a-modal v-model:open="previewModelOpen" :footer="false" :width="960" destroy-on-close>
+      <notice-preview :notice-id="previewNoticeId" :show-read-user="true"/>
+    </a-modal>
   </div>
 </template>
 <script setup lang="ts">
@@ -223,6 +227,7 @@ import dayjs from "dayjs";
 import Editor from "@/components/editor/index.vue"
 import ColorSelect from "@/components/color-select/index.vue"
 import UserSelect from "@/components/user-select/index.vue"
+import NoticePreview from "@/components/notice-preview/index.vue"
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {getUserOptionByUserIds} from "@/api/system/user/User.ts";
@@ -458,8 +463,12 @@ const initSave = () => {
   }
 
   // 根据id查询通知
-  const selectById = async (event:MouseEvent, id: string) => {
+  const selectById = async (event:MouseEvent, id: string, status: string) => {
     event.stopPropagation()
+    if (status === '1') {
+      message.error('已发布消息通知无法编辑')
+      return
+    }
     const resp = await findById(id)
     if (resp.code === 200) {
       handleModalStatus("修改通知公告")
@@ -536,6 +545,25 @@ const initDelete = () => {
 }
 
 const { openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm } = initDelete()
+
+// 初始化预览
+const initPreview = () => {
+  const previewModelOpen = ref<boolean>(false)
+  const previewNoticeId = ref<string>('')
+
+  const showPreview = async (event:MouseEvent, id: string) => {
+    event.stopPropagation()
+    previewNoticeId.value = id
+    previewModelOpen.value = true
+  }
+  return {
+    previewModelOpen,
+    previewNoticeId,
+    showPreview
+  }
+}
+
+const { previewModelOpen, previewNoticeId, showPreview } = initPreview()
 
 // 处理文章发布
 const handleRelease = async (event:MouseEvent, id: string) => {

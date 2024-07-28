@@ -41,22 +41,3 @@ export interface ExcelImportResult {
     // 导入失败excel文件路径
     errorExcelPath: string
 }
-
-/**
- *  通用的树形结构
- *  对应 ant design 中 a-cascader、a-tree-select、a-tree 组件数据结构
- */
-export interface CommonTree {
-    // 标签
-    label: string,
-    // 值
-    value: string,
-    // 子节点
-    children: Array<CommonTree>,
-    // id，用于后端构建树形结构
-    id: string,
-    // 父级id，用于后端构建树形结构
-    parentId: string,
-    // 类型，可自定义扩展
-    type: string
-}

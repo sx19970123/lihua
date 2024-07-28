@@ -177,10 +177,16 @@
 <script setup lang="ts">
 import CardShow from '@/components/card-show/index.vue'
 import {ref} from "vue";
-import {handleSseMessage} from "@/utils/ServerSentEvents.ts";
+import {handleSseMessage, type SSEResponseType} from "@/utils/ServerSentEvents.ts";
 import UserSelect from "@/components/user-select/index.vue"
-handleSseMessage((msg: string) => {
-  console.log("msg==", msg)
+import {notification} from "ant-design-vue";
+import type {SysNotice} from "@/api/system/noice/type/SysNotice.ts";
+
+handleSseMessage((response: SSEResponseType<SysNotice>) => {
+  notification.open({
+    message: "收到一条新通知",
+    description: response.data.title
+  })
 })
 const middleComplete = ref<boolean>(false)
 const handleClick = (key:string,show:boolean) => {

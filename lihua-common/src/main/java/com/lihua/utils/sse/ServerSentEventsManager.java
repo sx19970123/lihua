@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -65,9 +66,12 @@ public class ServerSentEventsManager {
      * 发送消息
      */
     public static <T> void send(List<String> userIds, ServerSentEventsResult<T> serverSentEventsResult) {
-        userIds.forEach(userId -> {
-            send(userId, serverSentEventsResult);
-        });
+        // 全部在线状态的用户id
+        Set<String> allActiveUserId = SSE_CACHE.keySet();
+        // 过滤出已登陆用户id，推送消息
+        userIds.stream()
+                .filter(allActiveUserId::contains)
+                .forEach(userId -> send(userId, serverSentEventsResult));
     }
 
     /**

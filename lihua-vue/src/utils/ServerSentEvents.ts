@@ -33,10 +33,20 @@ export const close = async () => {
 }
 
 // 处理SSE返回数据，从callback函数中获取
-export const handleSseMessage = (callback: Function) => {
+export const handleSseMessage = <T> (callback: MessageCallbackType<T>) => {
     if (eventSource) {
         eventSource.onmessage = (event) => {
-            callback(event.data as string)
+            const data = JSON.parse(event.data) as SSEResponseType<T>
+            callback(data)
         }
     }
+}
+
+// sse 消息callback 函数类型
+export type MessageCallbackType<T> = (response: SSEResponseType<T>) => void
+
+// 处理SSE返回类型
+export interface SSEResponseType<T> {
+    type: string;
+    data: T;
 }

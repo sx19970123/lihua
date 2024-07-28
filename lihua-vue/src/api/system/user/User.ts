@@ -1,5 +1,5 @@
 import request from "@/utils/Request.ts";
-import type {CommonTree, ExcelImportResult, PageResponseType} from "@/api/global/Type.ts";
+import type {ExcelImportResult, PageResponseType} from "@/api/global/Type.ts";
 import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
 import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 

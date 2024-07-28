@@ -43,5 +43,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     // 根据deptId查询用户
     List<SysUser> findOptionByDeptId(@Param("deptId") String deptId);
 
+    // 根据用户id获取用户头像/昵称等信息
     List<SysUser> findOptionByUserIds(@Param("userIdList") List<String> userIdList);
 }

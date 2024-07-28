@@ -3,6 +3,7 @@ package com.lihua.system.controller;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.dto.SysNoticeDTO;
 import com.lihua.system.service.SysNoticeService;
+import com.lihua.system.service.SysUserNoticeService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,9 @@ public class SysNoticeController extends BaseController {
 
     @Resource
     private SysNoticeService sysNoticeService;
+
+    @Resource
+    private SysUserNoticeService sysUserNoticeService;
 
     @PostMapping("page")
     public String findPage(@RequestBody SysNoticeDTO sysNoticeDTO) {
@@ -39,6 +43,11 @@ public class SysNoticeController extends BaseController {
     @PostMapping("revoke/{id}")
     public String revoke(@PathVariable("id") String id) {
         return success(sysNoticeService.revoke(id));
+    }
+
+    @GetMapping("readInfo/{id}")
+    public String findReadInfo(@PathVariable("id") String id) {
+        return success(sysUserNoticeService.findReadInfo(id));
     }
 
     @DeleteMapping

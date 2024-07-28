@@ -1,8 +1,10 @@
 package com.lihua.system.service;
 
+import com.lihua.system.entity.SysUser;
 import com.lihua.system.entity.SysUserNotice;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SysUserNoticeService {
 
@@ -24,4 +26,17 @@ public interface SysUserNoticeService {
      * @return
      */
     List<String> findUserIds(String noticeId);
+
+    /**
+     * 获取notice已读未读用户
+     * @param noticeId
+     * @return
+     */
+    Map<String,List<SysUser>> findReadInfo(String noticeId);
+
+    /**
+     * 重制 notice 关联表状态
+     * @param noticeId
+     */
+    void resetStatus(String noticeId);
 }

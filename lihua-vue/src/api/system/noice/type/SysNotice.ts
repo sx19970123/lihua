@@ -48,13 +48,28 @@ export interface SysNotice {
      * 备注
      */
     remark?: string;
+
+    /**
+     * 创建时间
+     */
+    createTime?: Date;
+
+    /**
+     * 创建人id
+     */
+    createId?:string
 }
 
 export interface SysNoticeVO extends SysNotice {
     /**
      * 指定用户
      */
-    userIdList?: string[]
+    userIdList?: string[];
+
+    /**
+     * 创建用户
+     */
+    createUser?: string;
 }
 
 export interface SysNoticeDTO extends SysNotice {

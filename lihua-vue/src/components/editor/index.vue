@@ -1,10 +1,6 @@
 <template>
-  <div>
     <!--    编辑器-->
-    <div id="editor" v-show="!props.preview"/>
-    <!--    预览html-->
-    <div v-if="props.preview" v-html="previewHTML"/>
-  </div>
+    <div id="editor"/>
 </template>
 
 <script setup lang="ts">
@@ -26,14 +22,10 @@ const baseURL = import.meta.env.VITE_APP_BASE_API
 const props = defineProps<{
   modelValue?: string,
   height?: string,
-  width?: string,
-  preview?: boolean
+  width?: string
 }>()
 // 定义抛出emits函数
 const emits = defineEmits(['update:modelValue'])
-
-// 预览html
-const previewHTML = ref<string>()
 
 // 链接转图片返回数据类型
 type LinkToImgType = {
@@ -64,7 +56,7 @@ onMounted(() => {
     mode: 'wysiwyg',                                                        // 默认模式：所见即所得
     theme: isDarkTheme ? 'dark' : 'classic',                                // 编辑器主题
     icon: 'ant',                                                            // 图标风格
-    cdn:'/vditor',                                                          // 自定义cdn地址，指向项目中public/vditor 下目录
+    cdn:'/vditor/normal',                                                          // 自定义cdn地址，指向项目中public/vditor 下目录
     preview: {
       theme: {current: isDarkTheme ? 'dark' : 'light'},                     // 内容主题
       hljs: {style: isDarkTheme ? 'solarized-dark256' : 'solarized-light'}, // 代码块主题
@@ -80,7 +72,6 @@ onMounted(() => {
       if (props.modelValue) {
         editor.value.setValue(props.modelValue)                             // v-model 赋值
       }
-      showPreviewHTML()                                                     // 显示预览
     },
     input(value) {                                                          // 输入后值后的钩子函数
       emits('update:modelValue', value)                               // 双向绑定编辑器内容
@@ -116,7 +107,6 @@ onMounted(() => {
   })
 })
 
-
 // 处理链接转换为图片
 const handleLinkToImg = (resp: LinkToImgType): string => {
   if (resp.code === 0) {
@@ -141,13 +131,6 @@ const handleUpload = (resp: UploadType): string => {
   return JSON.stringify(resp)
 }
 
-// 显示预览html
-const showPreviewHTML = () => {
-  if (props.preview) {
-    previewHTML.value = editor.value.getHTML()
-  }
-}
-
 // 切换亮暗主题
 watch(() => themeStore.isDarkTheme,(value) => {
   const editorValue = editor.value
@@ -159,9 +142,5 @@ watch(() => themeStore.isDarkTheme,(value) => {
         value ? 'solarized-dark256' : 'solarized-light'
     )
   }
-})
-
-watch(() => props.modelValue, () => {
-  editor.value.setValue(props.modelValue ? props.modelValue : '')
 })
 </script>
