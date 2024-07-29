@@ -193,7 +193,10 @@ const initList = () => {
     if (open) {
       query.value.pageNum = 1
       userNoticeList.value = []
+      // 查询列表
       initNoticeList()
+      // 查询未读数量
+      handleUnReadCount()
     }
   }
 
@@ -248,7 +251,6 @@ const initList = () => {
       })
       loading.value = false
     }
-    await handleUnReadCount()
   }
 
   return {
