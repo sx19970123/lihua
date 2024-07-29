@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lihua.system.mapper.SysNoticeMapper">
+
+    <select id="findListByUserId" resultType="com.lihua.system.model.vo.SysUserNoticeVO">
+        SELECT
+            sys_notice.id as noticeId,
+            sys_notice.title,
+            sys_notice.type,
+            sys_notice.priority,
+            sys_notice.release_time,
+            sys_user_notice.read_flag,
+            sys_user_notice.star_flag
+        FROM sys_notice
+        LEFT JOIN sys_user_notice ON sys_user_notice.notice_id = sys_notice.id
+        WHERE sys_notice.status = '1' AND sys_notice.del_flag = '0' AND sys_user_notice.user_id = #{userId}
+    </select>
 </mapper>

@@ -2,6 +2,7 @@ import request from "@/utils/Request.ts"
 import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/noice/type/SysNotice.ts";
 import type {MapResponseType, PageResponseType} from "@/api/global/Type.ts";
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
+import type {SysUserNoticeVO} from "@/api/system/noice/type/SysUserNotice.ts";
 
 /**
  * 分页查询
@@ -77,5 +78,18 @@ export const deleteByIds = (ids: string[]) => {
         url: '/system/notice',
         method: 'delete',
         data: ids
+    })
+}
+
+/**
+ * 用户查询消息通知
+ * @param userId
+ * @param data
+ */
+export const findListByUserId = (userId: string, data: SysNoticeDTO) => {
+    return request<PageResponseType<SysUserNoticeVO>>({
+        url: 'system/notice/list/' + userId,
+        method: 'post',
+        data: data
     })
 }

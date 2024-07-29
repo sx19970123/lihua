@@ -12,6 +12,7 @@ import com.lihua.system.entity.SysUserNotice;
 import com.lihua.system.mapper.SysNoticeMapper;
 import com.lihua.system.model.dto.SysNoticeDTO;
 import com.lihua.system.model.vo.SysNoticeVO;
+import com.lihua.system.model.vo.SysUserNoticeVO;
 import com.lihua.system.service.SysNoticeService;
 import com.lihua.system.service.SysUserNoticeService;
 import com.lihua.system.service.SysUserService;
@@ -191,6 +192,13 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         sysNoticeMapper.deleteBatchIds(ids);
         // 删除用户关联表数据
         sysUserNoticeService.deleteByNoticeIds(ids);
+    }
+
+    @Override
+    public IPage<SysUserNoticeVO> findListByUserId(String userId, SysNoticeDTO sysNoticeDTO) {
+        IPage<SysUserNoticeVO> iPage = new Page<>(sysNoticeDTO.getPageNum(), sysNoticeDTO.getPageSize());
+        sysNoticeMapper.findListByUserId(userId, iPage);
+        return iPage;
     }
 
     /**

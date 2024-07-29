@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.system.entity.SysNotice;
 import com.lihua.system.model.dto.SysNoticeDTO;
 import com.lihua.system.model.vo.SysNoticeVO;
+import com.lihua.system.model.vo.SysUserNoticeVO;
 
 import java.util.List;
 
@@ -50,4 +51,11 @@ public interface SysNoticeService {
      */
     void deleteByIds(List<String> ids);
 
+    /**
+     * 用户查询消息通知
+     * @param userId
+     * @param sysNoticeDTO
+     * @return
+     */
+    IPage<SysUserNoticeVO> findListByUserId(String userId, SysNoticeDTO sysNoticeDTO);
 }

@@ -1,6 +1,7 @@
 package com.lihua.system.controller;
 
 import com.lihua.model.web.BaseController;
+import com.lihua.system.entity.SysNotice;
 import com.lihua.system.model.dto.SysNoticeDTO;
 import com.lihua.system.service.SysNoticeService;
 import com.lihua.system.service.SysUserNoticeService;
@@ -54,5 +55,10 @@ public class SysNoticeController extends BaseController {
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysNoticeService.deleteByIds(ids);
      return success();
+    }
+
+    @PostMapping("list/{userId}")
+    public String findListByUserId(@PathVariable("userId") String userId, @RequestBody SysNoticeDTO sysNoticeDTO) {
+        return success(sysNoticeService.findListByUserId(userId, sysNoticeDTO));
     }
 }

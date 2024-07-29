@@ -95,13 +95,16 @@
 <script setup lang="ts">
 import {handleSseMessage, type SSEResponseType} from "@/utils/ServerSentEvents.ts";
 import NoticePreview from "@/components/notice-preview/index.vue"
-import type {SysNotice} from "@/api/system/noice/type/SysNotice.ts";
+import type {SysNotice, SysNoticeDTO} from "@/api/system/noice/type/SysNotice.ts";
 import {Button, notification} from "ant-design-vue";
 import {h, ref} from "vue";
 import {MessageOutlined, NotificationOutlined} from "@ant-design/icons-vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useUserStore} from "@/stores/modules/user.ts";
 import {getDictLabel, initDict} from "@/utils/Dict.ts";
+import {findListByUserId} from "@/api/system/noice/Notice.ts";
 const themeStore = useThemeStore();
+const userStore = useUserStore()
 const noticeId = ref<string>('')
 const previewModelOpen = ref<boolean>(false)
 const {sys_notice_type} = initDict("sys_notice_type")
@@ -147,6 +150,15 @@ handleSseMessage((response: SSEResponseType<SysNotice>) => {
   })
 })
 
+const initNoticeList = async () => {
+  const query = ref<SysNoticeDTO>({
+    pageNum: 0,
+    pageSize: 5,
+  })
+  const resp = await findListByUserId(userStore.userId,query.value)
+  console.log("fanhui===",resp)
+}
+initNoticeList()
 // 显示消息详情
 const showNoticeInfo = (id: string) => {
   noticeId.value = id
