@@ -121,6 +121,8 @@ const handleReadInfo = async (noticeId: string) => {
     const readInfoData = resp.data
     const unRead = readInfoData["0"] as SysUser[]
     const read = readInfoData["1"] as SysUser[]
+    console.log("unRead", unRead)
+    console.log("read", read)
     // 未读
     if (unRead) {
       unreadUserList.value = unRead

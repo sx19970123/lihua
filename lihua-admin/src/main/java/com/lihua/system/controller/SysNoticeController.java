@@ -57,7 +57,7 @@ public class SysNoticeController extends BaseController {
         return success(sysNoticeService.findListByUserId(userId, sysNoticeDTO));
     }
 
-    @GetMapping("readInfo/{id}")
+    @GetMapping("readInfo/{noticeId}")
     public String findReadInfo(@PathVariable("noticeId") String noticeId) {
         return success(sysUserNoticeService.findReadInfo(noticeId));
     }
