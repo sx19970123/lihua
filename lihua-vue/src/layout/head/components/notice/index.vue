@@ -2,7 +2,7 @@
   <div>
     <a-dropdown trigger="click" placement="bottom">
       <template  #overlay>
-        <a-card :body-style="{padding: 0}" style="width: 340px;">
+        <a-card :body-style="{padding: 0, width: '340px'}">
           <a-tabs centered>
             <a-tab-pane key="1">
               <template #tab>
@@ -13,28 +13,33 @@
               </template>
               <a-list item-layout="horizontal"
                       :data-source="data"
-                      style="max-height: 400px"
                       :split="false"
-                      class="scrollbar">
+                      class="notice-list scrollbar"
+              >
                 <template #renderItem="{ item }">
                   <a-list-item class="notice-list-item">
                     <a-list-item-meta>
+<!--                      发布时间-->
                       <template #description>
                         2020-11-11
                       </template>
+<!--                      标题-->
                       <template #title>
                         <a-flex justify="space-between" align="flex-start">
                           <a-tooltip :title="item.title">
-                            <a-typography-text ellipsis style="width: 130px">
+                            <a-typography-text class="notice-title" ellipsis>
                               {{ item.title }}
                             </a-typography-text>
                           </a-tooltip>
-                          <a-rate :count="1" style="margin-top: -6px; margin-bottom: -6px"/>
+<!--                      标星-->
+                          <a-rate :count="1" class="notice-star"/>
+<!--                      优先级-->
                           <a-tag color="#ff4d4f">
                             紧急
                           </a-tag>
                         </a-flex>
                       </template>
+<!--                      头像-->
                       <template #avatar>
                         <a-badge dot>
                           <a-avatar :style="{'background-color': themeStore.colorPrimary}">
@@ -44,6 +49,12 @@
                       </template>
                     </a-list-item-meta>
                   </a-list-item>
+                </template>
+<!--                      加载更多-->
+                <template #loadMore>
+                  <a-flex align="center" justify="center">
+                    <a-button type="text">加载更多</a-button>
+                  </a-flex>
                 </template>
               </a-list>
             </a-tab-pane>
@@ -58,6 +69,7 @@
           </a-tabs>
         </a-card>
       </template>
+<!--                      通知公告主体-->
       <div class="header-right-item header-right">
         <a-tooltip title="通知公告">
           <a-badge count="1" :offset="[-4,4]" style="color: #FFFFFF">
@@ -68,6 +80,7 @@
         </a-tooltip>
       </div>
     </a-dropdown>
+<!--                      详情dialog-->
     <a-modal v-model:open="previewModelOpen"
              :footer="false"
              :width="960"
@@ -89,7 +102,7 @@ import {MessageOutlined, NotificationOutlined} from "@ant-design/icons-vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import {getDictLabel, initDict} from "@/utils/Dict.ts";
 const themeStore = useThemeStore();
-const noticeId = ref<string>()
+const noticeId = ref<string>('')
 const previewModelOpen = ref<boolean>(false)
 const {sys_notice_type} = initDict("sys_notice_type")
 interface DataItem {
@@ -119,10 +132,12 @@ handleSseMessage((response: SSEResponseType<SysNotice>) => {
       type: "text",
       size: "small",
       onClick: () => {
-        // 显示详情
-        showNoticeInfo(id)
-        // 关闭消息提醒
-        notification.close(id)
+        if (id) {
+          // 显示详情
+          showNoticeInfo(id)
+          // 关闭消息提醒
+          notification.close(id)
+        }
       },
     }, {
       default: () => '查看详情'
@@ -144,6 +159,16 @@ const showNoticeInfo = (id: string) => {
   background-color: rgba(0, 0, 0, 0.06);
   cursor: pointer;
   border-radius: 8px;
+}
+.notice-list {
+  max-height: 400px
+}
+.notice-title {
+  width: 130px
+}
+.notice-star {
+  margin-top: -6px;
+  margin-bottom: -6px;
 }
 </style>
 <style>

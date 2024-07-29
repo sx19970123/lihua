@@ -32,7 +32,7 @@ export const initDict = (...dictTypeCodes: string[]) => {
 }
 
 // 根据 option 集合 和 value 获取字典 label
-export const getDictLabel = (option: SysDictDataType[], value: string) => {
+export const getDictLabel = (option: SysDictDataType[], value?: string) => {
   const filter = option.filter(dict => dict.value === value)
   if (filter.length > 0) {
     return filter[0].label
