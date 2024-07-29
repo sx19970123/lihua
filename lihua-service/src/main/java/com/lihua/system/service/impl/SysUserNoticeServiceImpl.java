@@ -8,6 +8,8 @@ import com.lihua.system.entity.SysUserNotice;
 import com.lihua.system.mapper.SysUserNoticeMapper;
 import com.lihua.system.service.SysUserNoticeService;
 import com.lihua.system.service.SysUserService;
+import com.lihua.utils.date.DateUtils;
+import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -85,4 +87,30 @@ public class SysUserNoticeServiceImpl extends ServiceImpl<SysUserNoticeMapper, S
                 .set(SysUserNotice::getReadTime, null);
         sysUserNoticeMapper.update(updateWrapper);
     }
+
+    @Override
+    public void changeStar(String noticeId, String star) {
+        UpdateWrapper<SysUserNotice> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.lambda().set(SysUserNotice::getStarFlag, star)
+                        .eq(SysUserNotice::getNoticeId, noticeId)
+                        .eq(SysUserNotice::getUserId, LoginUserContext.getUserId());
+        sysUserNoticeMapper.update(updateWrapper);
+    }
+
+    @Override
+    public void changeRead(String noticeId) {
+        UpdateWrapper<SysUserNotice> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.lambda()
+                .set(SysUserNotice::getReadFlag, "1")
+                .set(SysUserNotice::getReadTime, DateUtils.now())
+                .eq(SysUserNotice::getNoticeId, noticeId)
+                .eq(SysUserNotice::getUserId, LoginUserContext.getUserId());
+        sysUserNoticeMapper.update(updateWrapper);
+    }
+
+    @Override
+    public int findUnReadCount() {
+        return sysUserNoticeMapper.findUnReadCount(LoginUserContext.getUserId());
+    }
+
 }

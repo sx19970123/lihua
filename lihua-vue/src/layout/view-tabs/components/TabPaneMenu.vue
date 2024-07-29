@@ -1,5 +1,5 @@
 <template>
-  <a-dropdown :trigger="['contextmenu']">
+  <a-dropdown :trigger="['contextmenu']" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
     <span>
       <component :is="tabPane.tab.icon"/>
       {{ tabPane.tab.label }}

@@ -27,4 +27,9 @@ export interface SysUserNoticeVO {
      * 标星标记
      */
     starFlag?: string;
+
+    /**
+     * 标星标记（number类型）
+     */
+    starFlagNumber?: number;
 }

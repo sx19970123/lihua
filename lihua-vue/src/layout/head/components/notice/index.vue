@@ -1,64 +1,23 @@
 <template>
   <div>
-    <a-dropdown trigger="click" placement="bottom">
-      <template  #overlay>
-        <a-card :body-style="{padding: 0, width: '340px'}">
-          <a-tabs centered>
-            <a-tab-pane key="1">
+    <a-dropdown trigger="click"
+                placement="bottom"
+                v-model:open="open"
+                @openChange="handleChangeNoticeList"
+                :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode"
+    >
+      <template #overlay>
+        <div class="notice-card">
+          <a-tabs centered @change="handleChangeTabs">
+            <a-tab-pane key="ALL">
               <template #tab>
                 <span>
                   <MessageOutlined />
                 </span>
                 全部通知
               </template>
-              <a-list item-layout="horizontal"
-                      :data-source="data"
-                      :split="false"
-                      class="notice-list scrollbar"
-              >
-                <template #renderItem="{ item }">
-                  <a-list-item class="notice-list-item">
-                    <a-list-item-meta>
-<!--                      发布时间-->
-                      <template #description>
-                        2020-11-11
-                      </template>
-<!--                      标题-->
-                      <template #title>
-                        <a-flex justify="space-between" align="flex-start">
-                          <a-tooltip :title="item.title">
-                            <a-typography-text class="notice-title" ellipsis>
-                              {{ item.title }}
-                            </a-typography-text>
-                          </a-tooltip>
-<!--                      标星-->
-                          <a-rate :count="1" class="notice-star"/>
-<!--                      优先级-->
-                          <a-tag color="#ff4d4f">
-                            紧急
-                          </a-tag>
-                        </a-flex>
-                      </template>
-<!--                      头像-->
-                      <template #avatar>
-                        <a-badge dot>
-                          <a-avatar :style="{'background-color': themeStore.colorPrimary}">
-                            <MessageOutlined />
-                          </a-avatar>
-                        </a-badge>
-                      </template>
-                    </a-list-item-meta>
-                  </a-list-item>
-                </template>
-<!--                      加载更多-->
-                <template #loadMore>
-                  <a-flex align="center" justify="center">
-                    <a-button type="text">加载更多</a-button>
-                  </a-flex>
-                </template>
-              </a-list>
             </a-tab-pane>
-            <a-tab-pane key="3">
+            <a-tab-pane key="STAR">
               <template #tab>
                 <span>
                   <StarOutlined />
@@ -67,12 +26,65 @@
               </template>
             </a-tab-pane>
           </a-tabs>
-        </a-card>
+<!--          通知列表-->
+          <a-list item-layout="horizontal"
+                  :data-source="userNoticeList"
+                  :loading="loading"
+                  :split="false"
+                  class="notice-list scrollbar"
+          >
+            <template #renderItem="{ item }">
+              <a-list-item class="notice-list-item" @click="readNoticeDetail(item.readFlag, item.noticeId)">
+                <a-list-item-meta>
+                  <!--                      发布时间-->
+                  <template #description>
+                    {{ handleTime(dayjs(item.releaseTime).format('YYYY-MM-DD HH:mm')) }}
+                  </template>
+                  <!--                      标题-->
+                  <template #title>
+                    <a-flex justify="space-between" align="flex-start">
+                      <a-tooltip :title="item.title">
+                        <a-typography-text class="notice-title" ellipsis>
+                          {{ item.title }}
+                        </a-typography-text>
+                      </a-tooltip>
+                      <!--                      标星-->
+                      <a-rate :count="1"
+                              class="notice-star"
+                              v-model:value="item.starFlagNumber"
+                              @click="(event:MouseEvent) => event.stopPropagation()"
+                              @change="(value: number) => handleStar(item.noticeId, value)" />
+                      <!--                      优先级-->
+                      <dict-tag :dict-data-option="sys_notice_priority" :dict-data-value="item.priority"/>
+                    </a-flex>
+                  </template>
+                  <!--                      头像-->
+                  <template #avatar>
+                    <a-badge :dot="item.readFlag === '0'">
+                      <a-avatar :style="{'background-color': themeStore.colorPrimary}">
+                        <MessageOutlined v-if="item.type === '0'"/>
+                        <NotificationOutlined v-else/>
+                      </a-avatar>
+                    </a-badge>
+                  </template>
+                </a-list-item-meta>
+              </a-list-item>
+            </template>
+            <!--                      加载更多-->
+            <template #loadMore v-if="userNoticeList.length > 0">
+              <a-flex align="center" justify="center">
+                <a-button type="text" class="more-btn" @click="queryMore" :disabled="total === userNoticeList.length">
+                  {{total === userNoticeList.length ? '没有更多' : '加载更多'}}
+                </a-button>
+              </a-flex>
+            </template>
+          </a-list>
+        </div>
       </template>
 <!--                      通知公告主体-->
-      <div class="header-right-item header-right">
+      <div class="header-right-item header-right" @click="() => open = true">
         <a-tooltip title="通知公告">
-          <a-badge count="1" :offset="[-4,4]" style="color: #FFFFFF">
+          <a-badge :count="unReadCount" :offset="[-4,4]" style="color: #FFFFFF">
             <a-avatar :size="32" style="background-color: rgba(0,0,0,0)">
               <BellOutlined class="icon-default-color"/>
             </a-avatar>
@@ -95,39 +107,48 @@
 <script setup lang="ts">
 import {handleSseMessage, type SSEResponseType} from "@/utils/ServerSentEvents.ts";
 import NoticePreview from "@/components/notice-preview/index.vue"
+import DictTag from "@/components/dict-tag/index.vue"
 import type {SysNotice, SysNoticeDTO} from "@/api/system/noice/type/SysNotice.ts";
-import {Button, notification} from "ant-design-vue";
+import {Button, message, notification} from "ant-design-vue";
 import {h, ref} from "vue";
 import {MessageOutlined, NotificationOutlined} from "@ant-design/icons-vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import {useUserStore} from "@/stores/modules/user.ts";
 import {getDictLabel, initDict} from "@/utils/Dict.ts";
-import {findListByUserId} from "@/api/system/noice/Notice.ts";
+import {findListByUserId, read, star, findUnReadCount} from "@/api/system/noice/Notice.ts";
+import type {SysUserNoticeVO} from "@/api/system/noice/type/SysUserNotice.ts";
+import {handleTime} from "@/utils/HandleDate.ts";
+import dayjs from "dayjs";
+
 const themeStore = useThemeStore();
 const userStore = useUserStore()
-const noticeId = ref<string>('')
+
 const previewModelOpen = ref<boolean>(false)
-const {sys_notice_type} = initDict("sys_notice_type")
-interface DataItem {
-  title: string;
+const {sys_notice_type, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_priority")
+
+// 未读计数
+const unReadCount = ref<number>(0)
+// 查询未读数量
+const handleUnReadCount = async () => {
+  const resp = await findUnReadCount()
+  if (resp.code === 200) {
+    unReadCount.value = resp.data
+  } else {
+    message.error(resp.msg)
+  }
 }
-const data: DataItem[] = [
-  {
-    title: 'Ant Design Title TitleTitle TitleTitle1',
-  },
-  {
-    title: 'Ant Design Title 2',
-  },
-  {
-    title: 'Ant Design Title 3',
-  },
-  {
-    title: 'Ant Design Title 4',
-  },
-];
-// 接收消息通知
+handleUnReadCount()
+
+// 处理消息通知
 handleSseMessage((response: SSEResponseType<SysNotice>) => {
+  // 通知类型为 SSE_NOTICE 进行后续处理
+  if (response.type !== 'SSE_NOTICE') {
+    return
+  }
   const {id, title, type} = response.data
+  // 新未读消息计数 + 1
+  unReadCount.value++
+  // 弹出消息通知
   notification.open({
     message: '您有一条新' + getDictLabel(sys_notice_type.value, type),
     description: title,
@@ -137,9 +158,11 @@ handleSseMessage((response: SSEResponseType<SysNotice>) => {
       onClick: () => {
         if (id) {
           // 显示详情
-          showNoticeInfo(id)
+          showNoticeDetail(id)
           // 关闭消息提醒
           notification.close(id)
+          // 处理已读
+          handleRead(id)
         }
       },
     }, {
@@ -150,23 +173,154 @@ handleSseMessage((response: SSEResponseType<SysNotice>) => {
   })
 })
 
-const initNoticeList = async () => {
+// 初始化列表查询
+const initList = () => {
+  const open = ref<boolean>(false)
+  const loading = ref<boolean>(false)
+  // notice 列表数据
+  const userNoticeList = ref<SysUserNoticeVO[]>([])
+  // 全部数量
+  const total = ref<number>(0)
+
+  // 分页查询
   const query = ref<SysNoticeDTO>({
-    pageNum: 0,
+    pageNum: 1,
     pageSize: 5,
   })
-  const resp = await findListByUserId(userStore.userId,query.value)
-  console.log("fanhui===",resp)
+
+  // 处理展开关闭Notice
+  const handleChangeNoticeList = (open: boolean) => {
+    if (open) {
+      query.value.pageNum = 1
+      userNoticeList.value = []
+      initNoticeList()
+    }
+  }
+
+  const queryMore = () => {
+    query.value.pageNum++
+    initNoticeList()
+  }
+
+  // 查询star
+  const queryStar = () => {
+    query.value.pageNum = 1
+    query.value.star = '1'
+    userNoticeList.value = []
+    initNoticeList()
+  }
+
+  // 查询全部
+  const queryAll = () => {
+    query.value.pageNum = 1
+    query.value.star = undefined
+    userNoticeList.value = []
+    initNoticeList()
+  }
+
+  // 切换tab时查询不同数据
+  const handleChangeTabs = (key: string) => {
+    switch (key) {
+      case 'ALL': {
+        queryAll()
+        break
+      }
+      case 'STAR': {
+        queryStar()
+        break
+      }
+    }
+  }
+
+  // 查询列表
+  const initNoticeList = async () => {
+    loading.value = true
+    const resp = await findListByUserId(userStore.userId,query.value)
+    if (resp.code === 200) {
+      total.value = resp.data.total
+      resp.data.records.forEach(item => {
+        // 处理标星回显
+        if (item.starFlag) {
+          item.starFlagNumber = Number.parseInt(item.starFlag)
+        }
+        // 向列表中push
+        userNoticeList.value.push(item)
+      })
+      loading.value = false
+    }
+    await handleUnReadCount()
+  }
+
+  return {
+    open,
+    userNoticeList,
+    total,
+    loading,
+    handleChangeTabs,
+    handleChangeNoticeList,
+    queryMore
+  }
 }
-initNoticeList()
-// 显示消息详情
-const showNoticeInfo = (id: string) => {
-  noticeId.value = id
-  previewModelOpen.value = true
+const {open, userNoticeList, total, loading, handleChangeTabs, handleChangeNoticeList, queryMore} = initList()
+
+// 初始化notice详情所需数据
+const initNoticeDetail = () => {
+  const noticeId = ref<string>('')
+
+  const readNoticeDetail = (readFlag: string, id: string) => {
+    // 显示详情
+    showNoticeDetail(id)
+    // 处理已读
+    if (readFlag === '0') {
+      handleRead(id)
+    }
+  }
+
+  // 显示消息详情
+  const showNoticeDetail = (id: string) => {
+    noticeId.value = id
+    previewModelOpen.value = true
+    open.value = false
+  }
+
+  return {
+    noticeId,
+    readNoticeDetail,
+    showNoticeDetail
+  }
+}
+const {noticeId, readNoticeDetail, showNoticeDetail} = initNoticeDetail()
+
+// 处理标星
+const handleStar = async (noticeId: string, value: number) => {
+  const resp = await star(noticeId, value.toString())
+  if (resp.code === 200) {
+    message.success(resp.msg)
+  } else {
+    message.error(resp.msg)
+  }
+}
+// 处理已读
+const handleRead = (id: string) => {
+  read(id).then(resp => {
+    if (resp.code === 200) {
+      unReadCount.value--
+    } else {
+      message.error(resp.msg)
+    }
+  })
 }
 
 </script>
 <style scoped>
+.notice-card {
+  width: 340px;
+  max-height: 500px;
+  box-shadow: var(--lihua-light-box-shadow);
+  padding: 8px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
 .notice-list-item:hover {
   background-color: rgba(0, 0, 0, 0.06);
   cursor: pointer;
@@ -179,14 +333,20 @@ const showNoticeInfo = (id: string) => {
   width: 130px
 }
 .notice-star {
-  margin-top: -6px;
-  margin-bottom: -6px;
+  margin-top: -5px;
+  margin-bottom: -5px;
+}
+.more-btn {
+  width: 100%;
 }
 </style>
 <style>
 [data-theme = 'dark'] {
   .notice-list-item:hover {
     background-color: rgba(255, 255, 255, 0.12)
+  }
+  .notice-card {
+    background-color: #1f1f1f;
   }
 }
 </style>

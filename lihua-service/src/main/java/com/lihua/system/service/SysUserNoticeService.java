@@ -3,6 +3,7 @@ package com.lihua.system.service;
 import com.lihua.system.entity.SysUser;
 import com.lihua.system.entity.SysUserNotice;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -39,4 +40,24 @@ public interface SysUserNoticeService {
      * @param noticeId
      */
     void resetStatus(String noticeId);
+
+    /**
+     * 用户添加star
+     * @param noticeId
+     * @param star 0/1
+     * @return
+     */
+    void changeStar(String noticeId, String star);
+
+    /**
+     * 用户已读
+     * @param noticeId
+     */
+    void changeRead(String noticeId);
+
+    /**
+     * 获取未读消息总数
+     * @return
+     */
+    int findUnReadCount();
 }

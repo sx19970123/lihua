@@ -46,11 +46,6 @@ public class SysNoticeController extends BaseController {
         return success(sysNoticeService.revoke(id));
     }
 
-    @GetMapping("readInfo/{id}")
-    public String findReadInfo(@PathVariable("id") String id) {
-        return success(sysUserNoticeService.findReadInfo(id));
-    }
-
     @DeleteMapping
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysNoticeService.deleteByIds(ids);
@@ -60,5 +55,27 @@ public class SysNoticeController extends BaseController {
     @PostMapping("list/{userId}")
     public String findListByUserId(@PathVariable("userId") String userId, @RequestBody SysNoticeDTO sysNoticeDTO) {
         return success(sysNoticeService.findListByUserId(userId, sysNoticeDTO));
+    }
+
+    @GetMapping("readInfo/{id}")
+    public String findReadInfo(@PathVariable("noticeId") String noticeId) {
+        return success(sysUserNoticeService.findReadInfo(noticeId));
+    }
+
+    @PostMapping("star/{noticeId}/{star}")
+    public String changeStar(@PathVariable("noticeId") String noticeId, @PathVariable("star") String star) {
+        sysUserNoticeService.changeStar(noticeId, star);
+        return success();
+    }
+
+    @PostMapping("read/{noticeId}")
+    public String changeRead(@PathVariable("noticeId") String noticeId) {
+        sysUserNoticeService.changeRead(noticeId);
+        return success();
+    }
+
+    @GetMapping("unread/count")
+    public String findUnReadCount() {
+        return success(sysUserNoticeService.findUnReadCount());
     }
 }

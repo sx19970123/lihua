@@ -197,8 +197,16 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     @Override
     public IPage<SysUserNoticeVO> findListByUserId(String userId, SysNoticeDTO sysNoticeDTO) {
         IPage<SysUserNoticeVO> iPage = new Page<>(sysNoticeDTO.getPageNum(), sysNoticeDTO.getPageSize());
-        sysNoticeMapper.findListByUserId(userId, iPage);
-        return iPage;
+        QueryWrapper<SysUserNoticeVO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("sys_user_notice.user_id", userId)
+                        .eq("sys_notice.status", "1")
+                        .eq("sys_notice.del_flag", "0")
+                        .orderByDesc("sys_notice.release_time");
+        // 是否查询star
+        if ("1".equals(sysNoticeDTO.getStar())) {
+            queryWrapper.eq("sys_user_notice.star_flag", sysNoticeDTO.getStar());
+        }
+        return sysNoticeMapper.findListByUserId(iPage, queryWrapper);
     }
 
     /**

@@ -93,3 +93,37 @@ export const findListByUserId = (userId: string, data: SysNoticeDTO) => {
         data: data
     })
 }
+
+/**
+ * 消息通知添加取消 star
+ * @param noticeId
+ * @param star
+ */
+export const star = (noticeId: string, star: string) => {
+    return request({
+        url: '/system/notice/star/' + noticeId + '/' + star,
+        method: 'post'
+    })
+}
+
+/**
+ * 消息通知设置已读
+ * @param noticeId
+ * @param star
+ */
+export const read = (noticeId: string) => {
+    return request({
+        url: '/system/notice/read/' + noticeId,
+        method: 'post'
+    })
+}
+
+/**
+ * 获取未读消息总数
+ */
+export const findUnReadCount = () => {
+    return request<number>({
+        url: '/system/notice/unread/count',
+        method: 'get'
+    })
+}

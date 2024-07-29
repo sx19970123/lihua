@@ -6,6 +6,7 @@ import com.lihua.system.model.dto.SysNoticeDTO;
 import com.lihua.system.model.vo.SysNoticeVO;
 import com.lihua.system.model.vo.SysUserNoticeVO;
 
+import java.io.File;
 import java.util.List;
 
 public interface SysNoticeService {

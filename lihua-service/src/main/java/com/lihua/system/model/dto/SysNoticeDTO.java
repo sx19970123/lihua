@@ -64,4 +64,9 @@ public class SysNoticeDTO extends BaseDTO {
      * 用户id集合
      */
     private List<String> userIdList;
+
+    /**
+     * star 数据
+     */
+    private String star;
 }

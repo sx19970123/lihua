@@ -1,14 +1,14 @@
 <template>
-  <a-dropdown v-model:open="open" trigger="click">
+  <a-dropdown v-model:open="open" trigger="click" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
     <a-tooltip title="默认部门">
-      <span class="header-right-item header-right" style="max-width: 130px" v-if="userStore.defaultDeptCode">
+      <span class="header-right-item header-right" style="max-width: 130px">
         <a-typography-text ellipsis :content="userStore.defaultDeptName" style="vertical-align: middle"/>
       </span>
     </a-tooltip>
     <template #overlay>
-        <a-card :body-style="{padding: '8px'}">
-          <default-dept @dept-select="() => open = false"/>
-        </a-card>
+      <div class="default-dept-card scrollbar">
+        <default-dept @dept-select="() => open = false"/>
+      </div>
     </template>
   </a-dropdown>
 </template>
@@ -21,4 +21,20 @@ const userStore = useUserStore();
 const open = ref<boolean>(false)
 </script>
 
+<style scoped>
+.default-dept-card {
+  max-height: 500px;
+  box-shadow: var(--lihua-light-box-shadow);
+  padding: 8px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+</style>
+<style>
+[data-theme=dark] {
+  .default-dept-card {
+    background-color: #1f1f1f;
+  }
+}
+</style>
 

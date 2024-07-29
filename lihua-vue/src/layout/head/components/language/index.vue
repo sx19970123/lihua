@@ -1,5 +1,5 @@
 <template>
-  <a-dropdown>
+  <a-dropdown :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
     <div class="header-right-item header-right">
       <a-avatar :size="32" style="background-color: rgba(0,0,0,0)">
         <I18n style="font-size: 20px" class="icon-default-color"/>

@@ -87,4 +87,9 @@ export interface SysNoticeDTO extends SysNotice {
      * 每页记录数
      */
     pageSize: number;
+
+    /**
+     * 是否查询star数据
+     */
+    star?: '1'
 }

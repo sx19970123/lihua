@@ -4,7 +4,7 @@
       <ExpandOutlined v-if="viewTabsStore.showLayout" />
       <CompressOutlined v-else />
     </button>
-    <a-dropdown>
+    <a-dropdown :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
       <button class="ant-tabs-nav-more">
         <MoreOutlined />
       </button>
@@ -77,7 +77,7 @@
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import {ref, watch} from "vue";
 import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
-import dayjs from "dayjs";
+import {handleTime} from "@/utils/HandleDate.ts";
 const viewTabsStore = useViewTabsStore()
 const emits = defineEmits(['routeSkip','cancelKeepAlive'])
 /**
@@ -162,24 +162,6 @@ const handleStarList = (totalViewTabs: Array<StarViewType>) => {
 }
 // 第一次加载页面时的处理
 handleStarList(viewTabsStore.totalViewTabs)
-
-/**
- * 处理日期，当天隐藏日期
- * @param time
- */
-const handleTime = (time: string) => {
-  if (time) {
-    if (time.substring(0, 10) === dayjs().format('YYYY-MM-DD')) {
-      return '今天 ' + time.substring(11)
-    } else if (time.substring(0,10) === dayjs().subtract(1,'day').format('YYYY-MM-DD')) {
-      return '昨天 ' + time.substring(11)
-    } else if (time.substring(0,10) === dayjs().subtract(2,'day').format('YYYY-MM-DD')) {
-      return '前天 ' + time.substring(11)
-    } else {
-      return time
-    }
-  }
-}
 
 /**
  * 控制layout显示关闭
