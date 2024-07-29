@@ -30,6 +30,16 @@ export const initDict = (...dictTypeCodes: string[]) => {
     return toRefs(resDictOption.value)
   })()
 }
+
+// 根据 option 集合 和 value 获取字典 label
+export const getDictLabel = (option: SysDictDataType[], value: string) => {
+  const filter = option.filter(dict => dict.value === value)
+  if (filter.length > 0) {
+    return filter[0].label
+  }
+  return value
+}
+
 // 重新从后端拉取对应字典
 export const reLoadDict = (code: string) => {
   return new Promise((resolve, reject) => {

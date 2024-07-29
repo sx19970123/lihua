@@ -134,9 +134,14 @@
            </a-switch>
          </template>
          <template v-if="column.key === 'post'">
-           <a-typography-link @click="(event: MouseEvent) => handleSkipRoute(event, record.id)">
-             {{ record.sysPostList?.map((sysPost:SysPost) => sysPost.name).join("、") }}
-           </a-typography-link>
+           <a-tooltip placement="topLeft">
+             <template #title>
+               {{ record.sysPostList?.map((sysPost:SysPost) => sysPost.name).join("、") }}
+             </template>
+             <a-typography-link @click="(event: MouseEvent) => handleSkipRoute(event, record.id)">
+               {{ record.sysPostList?.map((sysPost:SysPost) => sysPost.name).join("、") }}
+             </a-typography-link>
+           </a-tooltip>
          </template>
          <template v-if="column.key === 'action'">
            <a-button type="link" size="small" @click="(event: MouseEvent) => selectById(event,record.id)">

@@ -24,13 +24,13 @@
 /** 顶部右侧鼠标悬停修改背景颜色 */
 [data-theme = 'light']{
     .header-right:hover {
-        background: #f3f3f3;
+        background: rgba(0, 0, 0, 0.06);
     }
 }
 
 [data-theme = 'dark'] {
     .header-right:hover {
-        background: #292929;
+        background: rgba(255, 255, 255, 0.12);
     }
 }
 

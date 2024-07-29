@@ -82,9 +82,14 @@
 
         <template #bodyCell="{column,record,text}">
           <template v-if="column.key === 'title'">
-            <a-typography-link @click="(event:MouseEvent) => showPreview(event, record.id)">
-              {{text}}
-            </a-typography-link>
+            <a-tooltip placement="topLeft" ellipsis>
+              <template #title>
+                {{text}}
+              </template>
+              <a-typography-link @click="(event:MouseEvent) => showPreview(event, record.id)">
+                {{text}}
+              </a-typography-link>
+            </a-tooltip>
           </template>
           <template v-if="column.key === 'type'">
             <dict-tag :dict-data-option="sys_notice_type" :dict-data-value="text"/>
@@ -159,7 +164,7 @@
         <a-form-item label="公告标题" name="title" :wrapper-col="{span: 8}">
           <a-input v-model:value="sysNoticeVO.title" placeholder="请输入标题" :maxlength="80" show-count/>
         </a-form-item>
-        <a-form-item label="优先程度" :wrapper-col="{span: 8}">
+        <a-form-item label="优先级别" :wrapper-col="{span: 8}">
           <color-select v-model:value="sysNoticeVO.priority" :data-source="priorityOption"/>
         </a-form-item>
         <a-form-item label="公告类型">
@@ -268,7 +273,9 @@ const initSearch = () => {
     {
       title: '公告标题',
       key: 'title',
-      dataIndex: 'title'
+      dataIndex: 'title',
+      ellipsis: true,
+      width: '300px'
     },
     {
       title: '公告类型',
@@ -289,16 +296,10 @@ const initSearch = () => {
       align: 'center'
     },
     {
-      title: '优先级',
+      title: '优先级别',
       key: 'priority',
       dataIndex: 'priority',
       align: 'center'
-    },
-    {
-      title: '备注',
-      key: 'remark',
-      dataIndex: 'remark',
-      ellipsis: true
     },
     {
       title: '创建时间',

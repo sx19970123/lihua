@@ -137,7 +137,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         QueryWrapper<SysNotice> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .eq(SysNotice::getId, id)
-                .select(SysNotice::getId, SysNotice::getTitle, SysNotice::getUserScope);
+                .select(SysNotice::getId, SysNotice::getTitle, SysNotice::getType, SysNotice::getUserScope);
         SysNotice sysNotice = sysNoticeMapper.selectOne(queryWrapper);
 
         if ("0".equals(sysNotice.getUserScope())) {
