@@ -122,8 +122,8 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     @Transactional
     public String release(String id) {
         String status = getStatus(id);
-        if (!"0".equals(status)) {
-            throw new ServiceException("仅未发布状态消息通知可发布");
+        if ("1".equals(status)) {
+            throw new ServiceException("该消息通知已发布");
         }
         // 更新状态等信息
         UpdateWrapper<SysNotice> updateWrapper = new UpdateWrapper<>();
@@ -168,7 +168,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         // 更新状态等信息
         UpdateWrapper<SysNotice> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda().eq(SysNotice::getId, id)
-                .set(SysNotice::getStatus, "0")
+                .set(SysNotice::getStatus, "2")
                 .set(SysNotice::getUpdateTime, LocalDateTime.now())
                 .set(SysNotice::getUpdateId, LoginUserContext.getUserId());
         sysNoticeMapper.update(updateWrapper);
