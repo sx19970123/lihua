@@ -125,6 +125,7 @@
             <a-flex justify="flex-end">
               <a-pagination v-model:current="roleQuery.pageNum"
                             v-model:page-size="roleQuery.pageSize"
+                            show-size-changer
                             :total="roleTotal"
                             :show-total="(total:number) => `共 ${total} 条`"
                             @change="initPage"

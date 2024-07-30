@@ -146,6 +146,7 @@
           <a-flex justify="flex-end">
             <a-pagination v-model:current="noticeQuery.pageNum"
                           v-model:page-size="noticeQuery.pageSize"
+                          show-size-changer
                           :total="noticeTotal"
                           :show-total="(total:number) => `共 ${total} 条`"
                           @change="initPage"/>

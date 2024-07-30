@@ -143,6 +143,7 @@
           <a-flex justify="flex-end">
             <a-pagination v-model:current="dictTypeQuery.pageNum"
                           v-model:page-size="dictTypeQuery.pageSize"
+                          show-size-changer
                           :total="dictTypeTotal"
                           :show-total="(total:number) => `共 ${total} 条`"
                           @change="queryPage"/>
