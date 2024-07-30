@@ -2,103 +2,94 @@ package com.lihua.utils.sse;
 
 import com.lihua.config.LihuaConfig;
 import com.lihua.model.sse.ServerSentEventsResult;
-import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.spring.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class ServerSentEventsManager {
 
     private static LihuaConfig lihuaConfig;
+    private static final Map<String, SseEmitter> SSE_CACHE = new ConcurrentHashMap<>();
 
-    private final static Map<String, SseEmitter> SSE_CACHE = new ConcurrentHashMap<>();
-
-    /**
-     * 创建连接
-     */
-    public static SseEmitter create(String userId) {
-
-        if (!SSE_CACHE.containsKey(userId)) {
-            // 实例化 SseEmitter 
-            SseEmitter sseEmitter = getSseEmitter(userId);
-            // 缓存 SseEmitter
-            SSE_CACHE.put(userId, sseEmitter);
-            log.info("Server-Sent Events：用户：{} 连接成功，当前连接总数为：{}", userId, SSE_CACHE.size());
+    // 创建或获取 SseEmitter 实例
+    public static SseEmitter create(String clientKey) {
+        // clientKey 已连接情况下直接返回 SseEmitter， 否则创建新的连接
+        return SSE_CACHE.computeIfAbsent(clientKey, (key) -> {
+            SseEmitter sseEmitter = initializeSseEmitter(key);
+            log.info("Server-Sent Events: 客户端：{} 连接成功，当前连接总数为：{}",
+                    key, SSE_CACHE.size() + 1);
             return sseEmitter;
-        }
-
-        return SSE_CACHE.get(userId);
+        });
     }
 
-    /**
-     * 关闭连接
-     */
-    public static void close() {
-        String userId = LoginUserContext.getUserId();
-        if (SSE_CACHE.containsKey(userId)) {
-            SSE_CACHE.get(userId).complete();
-            SSE_CACHE.remove(userId);
-            log.info("Server-Sent Events：用户：{} 由客户端关闭连接，当前连接总数为：{}", userId, SSE_CACHE.size());
+    // 关闭指定客户端的连接
+    public static void close(String clientKey) {
+        SseEmitter sseEmitter = SSE_CACHE.remove(clientKey);
+        if (sseEmitter != null) {
+            sseEmitter.complete();
+            log.info("Server-Sent Events: 客户端：{} 由客户端发起关闭连接，当前连接总数为：{}",
+                    clientKey, SSE_CACHE.size());
         }
     }
 
-    /**
-     * 发送消息
-     */
-    public static <T> void send(String userId, ServerSentEventsResult<T> serverSentEventsResult) {
-        if (SSE_CACHE.containsKey(userId)) {
-            SseEmitter sseEmitter = SSE_CACHE.get(userId);
-            try {
-                sseEmitter.send(serverSentEventsResult);
-            } catch (Exception e) {
-                SSE_CACHE.remove(userId);
-            }
-        }
+    // 向所有已连接的客户端发送消息
+    public static <T> void send(ServerSentEventsResult<T> serverSentEventsResult) {
+        SSE_CACHE.forEach((key, sseEmitter) -> sendMessage(sseEmitter, key, serverSentEventsResult));
     }
 
-    /**
-     * 发送消息
-     */
+    // 向指定的用户列表发送消息
     public static <T> void send(List<String> userIds, ServerSentEventsResult<T> serverSentEventsResult) {
-        // 全部在线状态的用户id
-        Set<String> allActiveUserId = SSE_CACHE.keySet();
-        // 过滤出已登陆用户id，推送消息
-        userIds.stream()
-                .filter(allActiveUserId::contains)
-                .forEach(userId -> send(userId, serverSentEventsResult));
+        userIds.forEach(userId -> {
+            SSE_CACHE.forEach((key, sseEmitter) -> {
+                if (key.startsWith(userId)) {
+                    sendMessage(sseEmitter, key, serverSentEventsResult);
+                }
+            });
+        });
     }
 
-    /**
-     * 创建 SseEmitter
-     * @param userId
-     * @return
-     */
-    private static SseEmitter getSseEmitter(String userId) {
-        lihuaConfig();
+    // 向指定单个用户发送消息
+    public static <T> void send(String userId, ServerSentEventsResult<T> serverSentEventsResult) {
+        send(Collections.singletonList(userId), serverSentEventsResult);
+    }
+
+    // 发送消息的辅助方法，处理异常
+    private static <T> void sendMessage(SseEmitter sseEmitter, String clientKey, ServerSentEventsResult<T> result) {
+        try {
+            sseEmitter.send(result);
+        } catch (IOException e) {
+            SSE_CACHE.remove(clientKey);
+            log.error("Server-Sent Events: 向客户端：{} 发送消息失败", clientKey, e);
+        }
+    }
+
+    // 初始化 SseEmitter 实例并设置生命周期事件
+    private static SseEmitter initializeSseEmitter(String clientKey) {
+        loadLihuaConfig();
         SseEmitter sseEmitter = new SseEmitter(lihuaConfig.getSseExpireTime());
 
-        // 指定 SseEmitter 生命周期，完成/超时时释放cache
         sseEmitter.onCompletion(() -> {
-            SSE_CACHE.remove(userId);
-            log.info("Server-Sent Events：用户：{} 断开连接，当前连接总数为：{}", userId, SSE_CACHE.size());
+            SSE_CACHE.remove(clientKey);
+            log.info("Server-Sent Events: 客户端：{} 断开连接，当前连接总数为：{}", clientKey, SSE_CACHE.size());
         });
+
         sseEmitter.onTimeout(() -> {
-            SSE_CACHE.remove(userId);
-            log.info("Server-Sent Events：用户：{} 连接超时，当前连接总数为：{}", userId, SSE_CACHE.size());
+            SSE_CACHE.remove(clientKey);
+            log.info("Server-Sent Events: 客户端：{} 连接超时，当前连接总数为：{}", clientKey, SSE_CACHE.size());
         });
+
         return sseEmitter;
     }
 
-    /**
-     * 加载配置文件
-     */
-    private static void lihuaConfig() {
+    // 加载 LihuaConfig 配置
+    private static void loadLihuaConfig() {
         if (lihuaConfig == null) {
             lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
         }

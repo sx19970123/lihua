@@ -275,7 +275,6 @@ const initSearch = () => {
       key: 'title',
       dataIndex: 'title',
       ellipsis: true,
-      width: '300px'
     },
     {
       title: '公告类型',

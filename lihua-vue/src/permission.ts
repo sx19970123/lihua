@@ -27,7 +27,7 @@ router.beforeEach(async (to, from, next) => {
                 // 拉取登录用户数据，并初始化 store
                 await init();
                 // 连接到sse
-                connect()
+                await connect()
                 // 判断用户是否拥有静态路由中指定的角色
                 if (hasRouteRole(to?.meta?.role as string[])) {
                     next({ ...to, replace: true });
@@ -36,7 +36,7 @@ router.beforeEach(async (to, from, next) => {
                 }
             } else {
                 // 连接到sse
-                connect()
+                await connect()
                 if (hasRouteRole(to?.meta?.role as string[])) {
                     next();
                 } else {

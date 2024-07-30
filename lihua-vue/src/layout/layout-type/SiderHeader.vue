@@ -47,6 +47,7 @@ const props = defineProps<{  showLayout: boolean }>()
 
 <style scoped>
 .sh-header {
+  z-index: 1;
   height: auto;
   padding: 0;
   backdrop-filter: saturate(180%) blur(20px);
