@@ -218,40 +218,32 @@
           <a-input-number v-model:value="sysMenu.sort" style="width: 140px;" placeholder="升序排列"/>
         </a-form-item>
         <a-form-item label="菜单图标" name="icon" v-if="sysMenu.menuType !== 'perms'" :wrapper-col="{span: 16}">
-          <a-popconfirm trigger="click"
-                     arrow-point-at-center
-
-                     v-model:open="modalActive.openIconSelect"
-          >
-            <template #title>
-              <icon-select width="416px"
-                           max-height="228px"
-                           size="small"
-                           v-model="sysMenu.icon"
-                           @click="modalActive.openIconSelect = false"
-              />
-            </template>
-            <template #icon></template>
-            <template #cancelButton></template>
-            <template #okButton></template>
             <a-flex :gap="6">
               <a-tooltip placement="bottom">
                 <template #title v-if="sysMenu.icon">
                   {{sysMenu.icon}}
                 </template>
-                <a-input style="max-width: 140px;" @focus="(event: any) => event.target.blur()" :value="sysMenu.icon" placeholder="选择图标">
+                <a-input style="max-width: 140px;" readonly :value="sysMenu.icon" placeholder="选择图标">
                   <template #prefix>
                     <component :is="sysMenu.icon" v-if="sysMenu.icon"/>
                   </template>
                 </a-input>
               </a-tooltip>
-              <a-button @click="modalActive.openIconSelect = true">
+              <a-popover trigger="click">
+                <template #content>
+                  <icon-select width="416px"
+                               max-height="228px"
+                               size="small"
+                               v-model="sysMenu.icon"
+                  />
+                </template>
+              <a-button>
                 <template #icon>
                   <SearchOutlined />
                 </template>
               </a-button>
+              </a-popover>
             </a-flex>
-          </a-popconfirm>
         </a-form-item>
         <a-form-item label="打开方式" name="linkOpenType" v-if="sysMenu.menuType === 'link'">
           <a-radio-group v-model:value="sysMenu.linkOpenType">
@@ -541,14 +533,12 @@ const initSave = () => {
     saveLoading: boolean, // 点击保存按钮加载
     title: string, // 模态框标题
     moreSetting: boolean, // 表单更多设置显示隐藏开关
-    openIconSelect: boolean // 图标选择框开关
   }
   const modalActive = reactive<modalActiveType>( {
     open: false,
     saveLoading: false,
     title: '',
     moreSetting: false,
-    openIconSelect: false
   })
 
   // 表单
