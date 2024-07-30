@@ -46,8 +46,8 @@ export const useViewTabsStore = defineStore('viewTabs',{
             getStaticItem(staticRoutes,hasKeyRoutComponentList)
             // 根据定义的 viewTabSort 进行排序
             hasKeyRoutComponentList.sort((a, b) => {
-                const num1 = a.viewTabSort ? a.viewTabSort : 999
-                const num2 = b.viewTabSort ? b.viewTabSort : 999
+                const num1 = a.viewTabSort ? a.viewTabSort : 99999
+                const num2 = b.viewTabSort ? b.viewTabSort : 99999
                 return  num2 - num1
             })
             // 生成viewTab对象
@@ -238,7 +238,8 @@ const getStaticItem = (staticRoutes: any[], arr: Array<StarViewType>): void => {
                     link: route.meta?.link,
                     linkOpenType: route.meta?.linkOpenType,
                     viewTabSort: route.meta?.viewTabSort,
-                    routerPathKey: route.path
+                    routerPathKey: route.path,
+                    static: true
                 }
                 if (isEqual(route.component, Iframe)) {
                     item.menuType = 'link'

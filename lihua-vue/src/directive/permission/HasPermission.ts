@@ -1,6 +1,6 @@
 import { type App } from 'vue'
 import { useUserStore } from "@/stores/modules/user.ts";
-import { cloneDeep, isEqual } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
 const userStore = useUserStore()
 export default (app:App<Element>):void => {
   app.directive('hasPermission',{

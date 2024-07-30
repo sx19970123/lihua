@@ -52,7 +52,6 @@ const init = () => {
   }
 }
 const {viewTabs, activeKey} = init()
-
 /**
  * 监听路由变化进行切换 tab
  */

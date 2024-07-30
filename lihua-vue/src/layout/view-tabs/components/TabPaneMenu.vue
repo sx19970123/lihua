@@ -1,11 +1,11 @@
 <template>
-  <a-dropdown :trigger="['contextmenu']" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+  <a-dropdown :trigger="['contextmenu']">
     <span>
       <component :is="tabPane.tab.icon"/>
       {{ tabPane.tab.label }}
     </span>
     <template #overlay>
-      <a-menu @click="handleClickMenuTab">
+      <a-menu @click="handleClickMenuTab" v-rollDisable>
 <!--        <a-menu-item key="reload" :disabled="tabPane.tab.routerPathKey !== viewTabsStore.$state.activeKey">-->
 <!--          <RedoOutlined />-->
 <!--          刷新页面-->

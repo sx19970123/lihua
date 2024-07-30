@@ -8,7 +8,7 @@
             <!--logo-->
             <Logo class="logo"/>
             <!--导航-->
-            <Side class="sider"/>
+            <Side class="sider" v-rollDisable/>
             <!--页头-->
             <Head></Head>
           </a-flex>
