@@ -8,12 +8,18 @@ export let eventSource: EventSource | null
 // 连接到SSE服务
 export const connect = async () => {
     if (!eventSource) {
-        console.log("Server-Sent Events 开始连接")
+        console.log("Server-Sent Events 连接成功")
         eventSource = new EventSource(import.meta.env.VITE_APP_BASE_API + "/system/sse/connect/" + await createClientKey())
     }
 
     eventSource.onerror = (event) => {
         console.log("Server-Sent Events 连接中断", event)
+    }
+
+    eventSource.onopen = (event: Event) => {
+        setTimeout(() => {
+            console.log("Server-Sent Events 重连成功", event)
+        },500)
     }
 }
 

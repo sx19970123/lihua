@@ -42,7 +42,7 @@ public class SysNoticeDTO extends BaseDTO {
     /**
      * 是否发送给全部用户
      */
-    @NotNull(message = "请选择发送用户")
+    @NotNull(message = "请选择用户范围")
     private String userScope;
 
     /**

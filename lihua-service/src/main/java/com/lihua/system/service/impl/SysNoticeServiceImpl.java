@@ -101,6 +101,11 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     @Override
     @Transactional
     public String save(SysNoticeDTO sysNoticeDTO) {
+        if ("1".equals(sysNoticeDTO.getUserScope()) &&
+            (sysNoticeDTO.getUserIdList() == null || sysNoticeDTO.getUserIdList().isEmpty())) {
+            throw new ServiceException("请指定接收用户");
+        }
+
         sysNoticeDTO.setStatus("0");
         String id;
         if (!StringUtils.hasText(sysNoticeDTO.getId())) {

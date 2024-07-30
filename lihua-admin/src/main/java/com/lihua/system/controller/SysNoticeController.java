@@ -7,6 +7,7 @@ import com.lihua.system.service.SysNoticeService;
 import com.lihua.system.service.SysUserNoticeService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class SysNoticeController extends BaseController {
     }
 
     @PostMapping
-    public String save(@RequestBody SysNoticeDTO sysNoticeDTO) {
+    public String save(@RequestBody @Validated SysNoticeDTO sysNoticeDTO) {
         return success(sysNoticeService.save(sysNoticeDTO));
     }
 
