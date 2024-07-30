@@ -97,8 +97,6 @@ import {enable} from "@/api/system/captcha/Captcha.ts";
 import token from "@/utils/Token.ts"
 import HeadThemeSwitch from "@/components/light-dark-switch/index.vue"
 import type {ResponseType} from "@/api/global/Type.ts";
-import {useRoute} from "vue-router";
-const route = useRoute()
 const router = useRouter()
 const verifyRef = ref<InstanceType<typeof Verify>>()
 const rememberMe = ref<boolean>(token.enableRememberMe())

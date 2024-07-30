@@ -1,5 +1,5 @@
 <template>
-  <div class="logo">
+  <div class="logo unselectable" @click="goHome">
     <a-flex gap="middle" align="center" justify="center" v-if="themeStore.layoutType === 'header-sider' || themeStore.layoutType === 'header-content' || !permissionStore.collapsed">
       <div>
         <a-avatar :style="{ backgroundColor: '#f56a00'}">
@@ -23,9 +23,15 @@
 <script setup lang="ts">
 import { usePermissionStore } from "@/stores/modules/permission";
 import { useThemeStore } from "@/stores/modules/theme";
-
+import {useRouter} from 'vue-router'
+const router = useRouter()
 const permissionStore = usePermissionStore()
 const themeStore = useThemeStore()
+
+// 点击回到首页
+const goHome = async () => {
+  await router.push("/index");
+}
 </script>
 
 <style scoped>
