@@ -147,7 +147,7 @@ handleSseMessage((response: SSEResponseType<SysNotice>) => {
   }
   const {id, title, type} = response.data
   // 新未读消息计数 + 1
-  unReadCount.value++
+  handleUnReadCount()
   // 弹出消息通知
   notification.open({
     message: '您有一条新' + getDictLabel(sys_notice_type.value, type),
@@ -306,7 +306,7 @@ const handleStar = async (noticeId: string, value: number) => {
 const handleRead = (id: string) => {
   read(id).then(resp => {
     if (resp.code === 200) {
-      unReadCount.value--
+      handleUnReadCount()
     } else {
       message.error(resp.msg)
     }
