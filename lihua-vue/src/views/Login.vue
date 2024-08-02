@@ -2,10 +2,10 @@
   <a-flex class="login-background" justify="center" align="center">
     <a-flex class="login-content" justify="space-around" align="center">
       <div class="slogan">
-        <a-typography-title style="margin-top: 64px;margin-right: 64px;margin-left: 64px">狸花猫</a-typography-title>
-        <a-typography-title :level="2" style="margin-right: 64px;margin-left: 64px">基于SpringBoot 3.2 和 vue3.0 的
-          后台管理系统
-        </a-typography-title>
+        <a-typography-title style="margin-top: 64px;margin-right: 64px;margin-left: 64px">狸花猫后台管理系统</a-typography-title>
+<!--        <a-typography-title :level="2" style="margin-right: 64px;margin-left: 64px">基于SpringBoot 3.2 和 vue3.0 的-->
+<!--          后台管理系统-->
+<!--        </a-typography-title>-->
       </div>
       <div class="form">
         <transition name="card" mode="out-in">
@@ -226,7 +226,8 @@ const {showForm, showCard} = transition()
   position: relative;
   width: 100%;
   height: 100vh;
-  background-image: url("../assets/images/login-background.jpg");
+  /**background-image: url("../assets/images/login-background.jpg");*/
+  background-image:linear-gradient(-135deg,#C2FFD8 10%,#465EFB 100%);
   background-size: cover;
   background-position: center;
 }

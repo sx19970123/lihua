@@ -2,7 +2,10 @@
   <a-dropdown v-model:open="open" trigger="click" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
     <a-tooltip title="默认部门">
       <span class="header-right-item header-right" style="max-width: 130px">
-        <a-typography-text ellipsis :content="userStore.defaultDeptName" style="vertical-align: middle"/>
+        <a-typography-text ellipsis
+                           class="text-default-color"
+                           :content="userStore.defaultDeptName"
+                           style="vertical-align: middle"/>
       </span>
     </a-tooltip>
     <template #overlay>
