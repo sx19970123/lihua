@@ -12,10 +12,10 @@ lihua:
   sseExpireTime: 28800000
   # 上传文件路径 mac windows 注意目录切换
   #uploadFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
-  uploadFilePath: 'D:/home/lihua/'
+  uploadFilePath: 'C:/home/lihua/'
   # 文件导出路径
   #exportFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
-  exportFilePath: 'D:/home/lihua/export/'
+  exportFilePath: 'C:/home/lihua/export/'
   # 启用验证码
   enableVerificationCode: false
 server:

@@ -3,7 +3,9 @@ package com.lihua.system.controller;
 import com.anji.captcha.model.common.ResponseModel;
 import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
+import com.lihua.annotation.Log;
 import com.lihua.config.LihuaConfig;
+import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.security.AuthInfo;
 import com.lihua.model.security.CurrentDept;
@@ -36,6 +38,7 @@ public class SysAuthenticationController extends BaseController {
      * @return
      */
     @PostMapping("login")
+    @Log(description = "用户登录", type = LogTypeEnum.LOGIN)
     public String login(@RequestBody @Valid CurrentUser currentUser, String captchaVerification) {
         // 开启验证码情况下进行验证
         if (lihuaConfig.getEnableVerificationCode() != null && lihuaConfig.getEnableVerificationCode()) {

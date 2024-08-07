@@ -270,6 +270,7 @@ const {showForm, showCard} = transition()
 }
 
 .login-card {
+  max-width: 380px;
   margin: 64px;
   border-radius: 24px;
 }
