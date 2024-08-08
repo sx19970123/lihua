@@ -1,5 +1,7 @@
 package com.lihua.system.controller;
 
+import com.lihua.annotation.Log;
+import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.dto.SysUserDTO;
@@ -59,6 +61,7 @@ public class SysUserController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("export")
+    @Log(description = "文件导出", type = LogTypeEnum.EXPORT)
     public String exportExcel(@RequestBody SysUserDTO sysUserDTO) {
         String path = sysUserService.exportExcel(sysUserDTO);
         return success(FileDownloadUtils.addToDownloadableList(path));
@@ -77,6 +80,7 @@ public class SysUserController extends BaseController {
     @SneakyThrows
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
+    @Log(description = "文件上传", type = LogTypeEnum.IMPORT)
     public String importExcel(@RequestParam("file") MultipartFile file) {
         List<SysUserVO> sysUserVOS = ExcelUtils.importExport(file.getInputStream(), SysUserVO.class, 1);
         return success(sysUserService.importExcel(sysUserVOS));

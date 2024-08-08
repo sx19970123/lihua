@@ -1,6 +1,8 @@
 package com.lihua.system.controller;
 
+import com.lihua.annotation.Log;
 import com.lihua.config.LihuaConfig;
+import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.FileException;
 import com.lihua.model.web.BaseController;
@@ -45,6 +47,7 @@ public class SysFileController extends BaseController {
      * @return ResponseEntity 包含 StreamingResponseBody，用于文件下载
      */
     @GetMapping("download")
+    @Log(description = "文件下载", type = LogTypeEnum.EXPORT)
     public ResponseEntity<StreamingResponseBody> download(@RequestParam(name = "filePath") String filePath, @RequestParam(name = "split", defaultValue = ",") String split) {
         // 验证请求的文件是否允许下载
         FileDownloadUtils.isDownloadable(filePath, split);

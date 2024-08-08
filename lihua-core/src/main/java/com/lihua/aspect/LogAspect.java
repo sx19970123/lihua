@@ -1,7 +1,7 @@
 package com.lihua.aspect;
 
 import com.lihua.annotation.Log;
-import com.lihua.utils.security.LoginUserContext;
+import com.lihua.system.service.SysLogService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
@@ -22,9 +22,17 @@ import java.time.LocalDateTime;
 @Component
 public class LogAspect {
 
+    // 获取http请求
     @Resource
     private HttpServletRequest request;
 
+    // 登录日志service
+    @Resource(name = "sysLoginLogService")
+    private SysLogService sysLoginLogService;
+
+    // 操作日志service
+    @Resource(name = "sysOperateLogService")
+    private SysLogService sysOperateLogService;
 
     /**
      * 后置通知，方法执行完成后将操作记录到数据库
@@ -32,11 +40,42 @@ public class LogAspect {
     @SneakyThrows
     @Around("@annotation(log)")
     public Object around(ProceedingJoinPoint proceedingJoinPoint, Log log) {
+        // 记录开始时间
         LocalDateTime startTime = LocalDateTime.now();
-        // 所有参数
-        Object[] args = proceedingJoinPoint.getArgs();
         // 执行方法
-        Signature signature = proceedingJoinPoint.getSignature();
+        Object proceed = proceedingJoinPoint.proceed();
+        // 方法执行的毫秒数
+        long millis = Duration.between(startTime, LocalDateTime.now()).toMillis();
+
+        handleLog(proceedingJoinPoint);
+
+        if (proceed instanceof String) {
+            System.out.println("返回值" + proceed);
+        } else {
+            System.out.println("返回对象" + proceed.getClass().getName());
+        }
+
+
+
+        System.out.println(millis);
+        System.out.println(proceedingJoinPoint);
+        System.out.println(log);
+        System.out.println("后置通知");
+
+        return proceed;
+    }
+
+    @AfterThrowing("@annotation(log)")
+    public void afterThrowing(JoinPoint joinPoint, Log log) {
+        System.out.println("异常通知");
+        handleLog(joinPoint);
+    }
+
+    private void handleLog(JoinPoint joinPoint) {
+        // 所有参数
+        Object[] args = joinPoint.getArgs();
+        // 执行方法
+        Signature signature = joinPoint.getSignature();
         // 方法名
         String name = signature.getName();
         // 全限定类名
@@ -54,34 +93,6 @@ public class LogAspect {
 
         LocalDateTime now = LocalDateTime.now();
 
-        // 返回结果
-        Object proceed = null;
-
-        proceed = proceedingJoinPoint.proceed();
-        handleLog(proceedingJoinPoint);
-
-
-        LocalDateTime endTime = LocalDateTime.now();
-
-        Duration between = Duration.between(startTime, endTime);
-
-        // 执行毫秒数
-        long millis = between.toMillis();
-        System.out.println(millis);
-        System.out.println(proceedingJoinPoint);
-        System.out.println(log);
-        System.out.println("后置通知");
-
-        return proceed;
-    }
-
-    @AfterThrowing("@annotation(log)")
-    public void afterThrowing(JoinPoint joinPoint, Log log) {
-        System.out.println("异常通知");
-        handleLog(joinPoint);
-    }
-
-    private void handleLog(JoinPoint joinPoint) {
 
     }
 
