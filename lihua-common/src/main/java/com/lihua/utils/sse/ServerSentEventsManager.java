@@ -15,8 +15,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ServerSentEventsManager {
 
-    private static LihuaConfig lihuaConfig;
+    private final static LihuaConfig lihuaConfig;
+
     private static final Map<String, SseEmitter> SSE_CACHE = new ConcurrentHashMap<>();
+
+    static {
+        lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
+    }
+
 
     // 创建或获取 SseEmitter 实例
     public static SseEmitter create(String clientKey) {
@@ -72,7 +78,7 @@ public class ServerSentEventsManager {
 
     // 初始化 SseEmitter 实例并设置生命周期事件
     private static SseEmitter initializeSseEmitter(String clientKey) {
-        loadLihuaConfig();
+
         SseEmitter sseEmitter = new SseEmitter(lihuaConfig.getSseExpireTime());
 
         sseEmitter.onCompletion(() -> {
@@ -86,12 +92,5 @@ public class ServerSentEventsManager {
         });
 
         return sseEmitter;
-    }
-
-    // 加载 LihuaConfig 配置
-    private static void loadLihuaConfig() {
-        if (lihuaConfig == null) {
-            lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
-        }
     }
 }

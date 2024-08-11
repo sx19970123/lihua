@@ -3,6 +3,7 @@ package com.lihua.system.model.vo;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
  * 系统日志
  */
 @Data
+@Accessors(chain = true)
 public class SysLogVO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -28,9 +30,14 @@ public class SysLogVO implements Serializable {
     private String description;
 
     /**
-     * 业务类型
+     * 业务类型编码
      */
-    private String type;
+    private String typeCode;
+
+    /**
+     * 业务类型描述
+     */
+    private String typeMsg;
 
     /**
      * 包类名
@@ -78,6 +85,11 @@ public class SysLogVO implements Serializable {
     private String errorMsg;
 
     /**
+     * 异常堆栈信息
+     */
+    private String errorStack;
+
+    /**
      * 请求URL
      */
     private String url;
@@ -91,4 +103,9 @@ public class SysLogVO implements Serializable {
      * 删除标识
      */
     private String delFlag;
+
+    /**
+     * 日志执行状态
+     */
+    private String executeStatus;
 }

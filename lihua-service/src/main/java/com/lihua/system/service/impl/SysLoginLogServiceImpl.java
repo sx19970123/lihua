@@ -22,11 +22,10 @@ public class SysLoginLogServiceImpl implements SysLogService {
 
     @Override
     @Async
-    public String insert(SysLogVO sysLogVO) {
+    public void insert(SysLogVO sysLogVO) {
         SysLoginLog sysLoginLog = new SysLoginLog();
         BeanUtils.copyProperties(sysLogVO, sysLoginLog);
         sysLoginLogMapper.insert(sysLoginLog);
-        return sysLoginLog.getId();
     }
 
     @Override
@@ -36,8 +35,8 @@ public class SysLoginLogServiceImpl implements SysLogService {
         QueryWrapper<SysLoginLog> queryWrapper = new QueryWrapper<>();
 
         // 类型
-        if (StringUtils.hasText(sysLogDTO.getType())) {
-            queryWrapper.lambda().eq(SysLogVO::getType, sysLogDTO.getType());
+        if (StringUtils.hasText(sysLogDTO.getTypeCode())) {
+            queryWrapper.lambda().eq(SysLogVO::getTypeCode, sysLogDTO.getTypeCode());
         }
 
         // 描述

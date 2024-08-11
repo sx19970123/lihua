@@ -16,9 +16,14 @@ public class DictUtils {
 
     private static final String DICT_DATA_REDIS_PREFIX = SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue();
 
-    private static CommonMapper commonMapper;
+    private static final CommonMapper commonMapper;
 
-    private static RedisCache redisCache;
+    private static final RedisCache redisCache;
+
+    static {
+        redisCache = SpringUtils.getBean(RedisCache.class);
+        commonMapper = SpringUtils.getBean(CommonMapper.class);
+    }
 
     /**
      * 根据字典 value 和 字典type_code 获取字典label
@@ -42,7 +47,6 @@ public class DictUtils {
      * 设置字典缓存
      */
     public static <T> void setDictCache(String dictTypeCode, List<SysDictDataVO> dictValue) {
-        initRedis();
         redisCache.setCacheObject(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode, dictValue);
     }
 
@@ -51,7 +55,6 @@ public class DictUtils {
      * 删除字典缓存
      */
     public static void removeDictCache(String dictTypeCode) {
-        initRedis();
         redisCache.delete(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
     }
 
@@ -59,7 +62,6 @@ public class DictUtils {
      * 获取字典缓存数据
      */
     public static List<SysDictDataVO> getDictData(String dictTypeCode) {
-        initRedis();
         Object dictCache = redisCache.getCacheObject(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
 
         // 缓存数据为空时，尝试从数据库再次获取，数据库未查询到数据时，返回空集合
@@ -81,8 +83,6 @@ public class DictUtils {
     public static int resetCacheDict(String dictTypeCode) {
         // 删除缓存
         removeDictCache(dictTypeCode);
-        // 加载mapper
-        initMapper();
         // 查询数据添加缓存
         List<SysDictDataVO> sysDictDataVOList = commonMapper.findByDictTypeCode(dictTypeCode);
         if (!sysDictDataVOList.isEmpty()) {
@@ -91,22 +91,5 @@ public class DictUtils {
         return sysDictDataVOList.size();
     }
 
-    /**
-     * 加载redis缓存
-     */
-    private static void initRedis() {
-        if (redisCache == null) {
-            redisCache = SpringUtils.getBean(RedisCache.class);
-        }
-    }
-
-    /**
-     * 加载commonMapper
-     */
-    private static void initMapper() {
-        if (commonMapper == null) {
-            commonMapper = SpringUtils.getBean(CommonMapper.class);
-        }
-    }
 
 }

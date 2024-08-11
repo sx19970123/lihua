@@ -3,6 +3,7 @@ package com.lihua.model.web;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.json.JsonUtils;
+import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -62,6 +63,7 @@ public class BaseController {
         return response(resultCodeEnum, msg, data);
     }
 
+    @SneakyThrows
     private static <T> String response(ResultCodeEnum resultCodeEnum, String msg, T data) {
         return JsonUtils.toJson(ControllerResponse.wrap(resultCodeEnum, msg, data));
     }

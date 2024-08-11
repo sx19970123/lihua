@@ -12,13 +12,12 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class LoginUserManager {
 
-    /**
-     * 获取spring容器中的redis缓存
-     * @return
-     */
-    private static RedisCache redisCache() {
-        return SpringUtils.getBean(RedisCache.class);
+    private static final RedisCache redisCache;
+
+    static {
+        redisCache = SpringUtils.getBean(RedisCache.class);
     }
+
 
     /**
      * 获取spring容器中的配置信息
@@ -44,7 +43,7 @@ public class LoginUserManager {
         log.debug("\n当前用户token为：{}\n解密后主键id为：{}", token, decode);
 
         try {
-            return redisCache().getCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
+            return redisCache.getCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
         } catch (Exception e) {
             log.error("从redis获取LoginUser发生异常，请检查redis状态", e);
         }
@@ -69,7 +68,7 @@ public class LoginUserManager {
         // 记录过期时间
         loginUser.setExpirationTime(DateUtils.now().plusMinutes(lihuaConfig().getTokenExpireTime()));
         // 设置缓存
-        redisCache().setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getUser().getId(),
+        redisCache.setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getUser().getId(),
                 loginUser,
                 lihuaConfig().getTokenExpireTime(),
                 TimeUnit.MINUTES);
@@ -81,7 +80,7 @@ public class LoginUserManager {
      */
     public static void removeLoginUserCache(String token) {
         String decode = JwtUtils.decode(token);
-        redisCache().delete(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
+        redisCache.delete(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
     }
 
 }

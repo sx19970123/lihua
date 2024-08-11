@@ -28,7 +28,7 @@ public class SysLogDTO extends BaseDTO {
     /**
      * 业务类型
      */
-    private String type;
+    private String typeCode;
 
     /**
      * 包类名

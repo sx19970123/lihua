@@ -1,49 +1,58 @@
 package com.lihua.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum LogTypeEnum {
 
     /**
      * 登录
      */
-    LOGIN,
+    LOGIN("LOGIN", "登录"),
     /**
      * 退出
      */
-    LOGOUT,
+    LOGOUT("LOGOUT","退出登录"),
     /**
      * 保存
      */
-    SAVE,
+    SAVE("SAVE","保存数据"),
     /**
      * 批量导入
      */
-    IMPORT,
+    IMPORT("IMPORT","批量导入"),
     /**
      * 批量导出
      */
-    EXPORT,
+    EXPORT("EXPORT","批量导出"),
     /**
      * 删除
      */
-    DELETE,
+    DELETE("DELETE","删除数据"),
     /**
      * 列表查询
      */
-    QUERY_LIST,
+    QUERY_LIST("QUERY_LIST","列表查询"),
     /**
      * 分页查询
      */
-    QUERY_PAGE,
+    QUERY_PAGE("QUERY_PAGE","分页查询"),
     /**
      * 单条查询
      */
-    QUERY_ONE,
+    QUERY_ONE("QUERY_ONE","单条查询"),
     /**
      * 附件下载
      */
-    DOWNLOAD,
+    DOWNLOAD("DOWNLOAD","附件下载"),
     /**
      * 其他
      */
-    OTHER,
+    OTHER("OTHER","其他");
+
+    private final String code;
+
+    private final String msg;
 }
