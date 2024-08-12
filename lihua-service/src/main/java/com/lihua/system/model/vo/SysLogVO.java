@@ -60,6 +60,11 @@ public class SysLogVO implements Serializable {
     private String createId;
 
     /**
+     * 操作人姓名
+     */
+    private String createName;
+
+    /**
      * 创建时间（操作时间）
      */
     private LocalDateTime createTime;

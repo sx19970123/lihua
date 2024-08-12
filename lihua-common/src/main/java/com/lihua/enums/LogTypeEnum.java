@@ -12,10 +12,6 @@ public enum LogTypeEnum {
      */
     LOGIN("LOGIN", "登录"),
     /**
-     * 退出
-     */
-    LOGOUT("LOGOUT","退出登录"),
-    /**
      * 保存
      */
     SAVE("SAVE","保存数据"),

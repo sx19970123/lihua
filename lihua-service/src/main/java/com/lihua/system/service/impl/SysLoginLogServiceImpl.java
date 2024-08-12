@@ -39,14 +39,24 @@ public class SysLoginLogServiceImpl implements SysLogService {
             queryWrapper.lambda().eq(SysLogVO::getTypeCode, sysLogDTO.getTypeCode());
         }
 
+        // 操作人姓名
+        if (!StringUtils.hasText(sysLogDTO.getCreateName())) {
+            queryWrapper.lambda().like(SysLogVO::getCreateName, sysLogDTO.getCreateName());
+        }
+
+        // 执行状态
+        if (!StringUtils.hasText(sysLogDTO.getExecuteStatus())) {
+            queryWrapper.lambda().eq(SysLogVO::getExecuteStatus, sysLogDTO.getExecuteStatus());
+        }
+
         // 描述
         if (StringUtils.hasText(sysLogDTO.getDescription())) {
             queryWrapper.lambda().like(SysLogVO::getDescription, sysLogDTO.getDescription());
         }
 
         // 执行时间范围
-        if (sysLogDTO.getStartTime() != null && sysLogDTO.getEndTime() != null) {
-            queryWrapper.lambda().between(SysLogVO::getCreateTime, sysLogDTO.getStartTime(), sysLogDTO.getEndTime());
+        if (sysLogDTO.getCreateTimeList() != null && !sysLogDTO.getCreateTimeList().isEmpty()) {
+            queryWrapper.lambda().between(SysLogVO::getCreateTime, sysLogDTO.getCreateTimeList().get(0), sysLogDTO.getCreateTimeList().get(1));
         }
 
         sysLoginLogMapper.selectPage(iPage, queryWrapper);

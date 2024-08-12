@@ -7,6 +7,8 @@ import com.lihua.system.service.SysLogService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.*;
+
 @RequestMapping("system/log")
 @RestController
 public class SysLogController extends BaseController {
@@ -43,6 +45,11 @@ public class SysLogController extends BaseController {
     @GetMapping("option")
     public String getLogTypeOption() {
         // 获取日志类型下拉选项
-        return success(LogTypeEnum.values());
+        List<Map<String, String>> maps = Arrays
+                .stream(LogTypeEnum.values())
+                .map(value -> Map.of("value",  value.getCode(), "label", value.getMsg()))
+                .toList();
+        return success(maps);
     }
+
 }

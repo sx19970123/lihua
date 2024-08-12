@@ -8,6 +8,7 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 系统日志
@@ -51,14 +52,14 @@ public class SysLogDTO extends BaseDTO {
     private String createId;
 
     /**
-     * 开始时间
+     * 操作人姓名
      */
-    private LocalDateTime startTime;
+    private String createName;
 
     /**
-     * 结束时间
+     * 创建时间集合
      */
-    private LocalDateTime endTime;
+    private List<LocalDateTime> createTimeList;
 
     /**
      * 执行耗时
@@ -94,4 +95,9 @@ public class SysLogDTO extends BaseDTO {
      * 删除标识
      */
     private String delFlag;
+
+    /**
+     * 日志执行状态
+     */
+    private String executeStatus;
 }

@@ -140,6 +140,7 @@ public class LogAspect {
         try {
             // 无登录状态下获取用户id异常
             sysLogVO.setCreateId(LoginUserContext.getUserId());
+            sysLogVO.setCreateName(LoginUserContext.getUser().getNickname());
         } catch (Exception e) {
             log.error(e.getMessage());
         }
