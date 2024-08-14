@@ -89,7 +89,7 @@
 <script setup lang="ts">
 import {useUserStore} from "@/stores/modules/user"
 import {useRouter} from 'vue-router'
-import {reactive, ref, watch} from "vue"
+import {reactive, ref} from "vue"
 import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
 import type {Rule} from "ant-design-vue/es/form";

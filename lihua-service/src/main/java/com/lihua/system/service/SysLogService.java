@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.system.model.dto.SysLogDTO;
 import com.lihua.system.model.vo.SysLogVO;
 
+import java.util.List;
+
 public interface SysLogService {
 
     /**
@@ -25,4 +27,14 @@ public interface SysLogService {
      * @return
      */
     SysLogVO findById(String id);
+
+    /**
+     * 根据 id 删除日志
+     */
+    void deleteByIds(List<String> ids);
+
+    /**
+     * 清空日志
+     */
+    void clearLog();
 }

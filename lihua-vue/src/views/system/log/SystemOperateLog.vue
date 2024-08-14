@@ -7,17 +7,17 @@
         <a-row :gutter="16">
           <a-col>
             <a-form-item label="日志描述">
-              <a-input v-model:value="logQuery.description" placeholder="请输入日志描述"/>
+              <a-input v-model:value="logQuery.description" placeholder="请输入日志描述" allow-clear/>
             </a-form-item>
           </a-col>
           <a-col>
             <a-form-item label="操作人员">
-              <a-input v-model:value="logQuery.createName" placeholder="请输入操作人员"/>
+              <a-input v-model:value="logQuery.createName" placeholder="请输入操作人员" allow-clear/>
             </a-form-item>
           </a-col>
           <a-col>
             <a-form-item label="操作类型">
-              <a-select v-model:value="logQuery.typeCode" placeholder="请选择" style="width: 120px">
+              <a-select v-model:value="logQuery.typeCode" placeholder="请选择" style="width: 120px" allow-clear>
                 <a-select-option :value="item.value" v-for="item in logTypeOption">{{item.label}}</a-select-option>
               </a-select>
             </a-form-item>
@@ -31,7 +31,7 @@
           </a-col>
           <a-col>
             <a-form-item label="操作时间">
-              <a-range-picker allowClear v-model:value="logQuery.createTimeList"/>
+              <a-range-picker allowClear v-model:value="logQuery.createTimeList" />
             </a-form-item>
           </a-col>
           <a-col>
@@ -66,17 +66,65 @@
          :custom-row="handleRowClick"
          row-key="id"
      >
+       <template #title>
+         <a-flex :gap="8">
+           <a-popconfirm title="删除后不可恢复，是否删除？"
+                         :open="openDeletePopconfirm"
+                         ok-text="确 定"
+                         cancel-text="取 消"
+                         @confirm="handleDelete"
+                         @cancel="closePopconfirm"
+           >
+             <a-button danger @click="openPopconfirm">
+               <template #icon>
+                 <DeleteOutlined />
+               </template>
+               删 除
+               <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
+             </a-button>
+           </a-popconfirm>
+
+           <a-popconfirm title="清空后不可恢复，是否清空？">
+             <template #okButton>
+               <a-button size="small" type="primary">
+                 <a-statistic-countdown
+                     format="s"
+                     :value="Date.now() + 1000 * 6"
+                     :value-style="{'font-size': '14px', 'color': '#fff'}"
+                     @finish="handleClearFinish"
+                 />
+               </a-button>
+             </template>
+             <a-button danger type="primary">
+               <template #icon>
+                 <DeleteOutlined />
+               </template>
+               清 空
+             </a-button>
+           </a-popconfirm>
+         </a-flex>
+       </template>
       <template #bodyCell="{column,record,text}">
-        <template v-if="column.key === 'executeStatus'">
+        <template v-if="column.key === 'executeStatus' && text">
           <dict-tag :dict-data-option="sys_log_status" :dict-data-value="text"></dict-tag>
         </template>
         <template v-if="column.key === 'createTime'">
           {{dayjs(text).format('YYYY-MM-DD HH:mm:ss')}}
         </template>
         <template v-if="column.key === 'executeTime'">
-          {{text}} 毫秒
+          {{text ? text + ' 毫秒' : ''}}
         </template>
       </template>
+       <template #footer>
+         <a-flex justify="flex-end">
+           <a-pagination v-model:current="logQuery.pageNum"
+                         v-model:page-size="logQuery.pageSize"
+                         show-size-changer
+                         :total="logTotal"
+                         :show-total="(total:number) => `共 ${total} 条`"
+                         @change="initPage"/>
+         </a-flex>
+       </template>
      </a-table>
    </a-flex>
  </div>
@@ -85,12 +133,13 @@
 <script setup lang="ts">
 import {initDict} from "@/utils/Dict"
 import {ref} from "vue";
-import {findPage, getLogTypeOption} from "@/api/system/log/Log.ts";
+import {findOperatePage, getLogTypeOption, deleteOperateByIds} from "@/api/system/log/Log.ts";
 import {message} from "ant-design-vue";
 import DictTag from "@/components/dict-tag/index.vue";
 import type {SysLog, SysLogDTO} from "@/api/system/log/type/SysLog.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import dayjs from "dayjs";
+
 const {sys_log_status} = initDict("sys_log_status")
 
 
@@ -195,7 +244,7 @@ const initSearch = () => {
 
   const initPage = async () => {
     tableLoad.value = true
-    const resp = await findPage(logQuery.value)
+    const resp = await findOperatePage(logQuery.value)
     if (resp.code === 200) {
       logTotal.value = resp.data.total
       logList.value = resp.data.records
@@ -211,14 +260,76 @@ const initSearch = () => {
     tableLoad,
     logList,
     logQuery,
+    logTotal,
     logRowSelectionType,
+    selectedIds,
     handleRowClick,
-    queryPage
+    queryPage,
+    initPage
   }
 }
 
-const {logTypeOption, logColumn, tableLoad, logList, logQuery, logRowSelectionType, handleRowClick, queryPage} = initSearch()
+const {logTypeOption, logColumn, tableLoad, logList, logQuery, logTotal, logRowSelectionType, selectedIds, handleRowClick, queryPage, initPage} = initSearch()
 
+
+// 删除日志
+const initDelete = () => {
+  // 显示删除提示
+  const openDeletePopconfirm = ref<boolean>(false);
+  // 打开删除提示框
+  const openPopconfirm = () => {
+    if (selectedIds.value && selectedIds.value.length > 0) {
+      openDeletePopconfirm.value = true
+    } else {
+      message.warning("请勾选数据")
+    }
+  }
+  // 关闭删除提示框
+  const closePopconfirm = () => {
+    openDeletePopconfirm.value = false
+  }
+  // 处理删除逻辑
+  const handleDelete = async () => {
+    const deleteIds = [...selectedIds.value]
+
+    if (deleteIds.length > 0) {
+      const resp = await deleteOperateByIds(deleteIds)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        selectedIds.value = []
+        await initPage()
+      } else {
+        message.error(resp.msg)
+      }
+    } else {
+      message.warning("请勾选数据")
+    }
+    closePopconfirm()
+  }
+
+  return {
+    openDeletePopconfirm,
+    closePopconfirm,
+    handleDelete,
+    openPopconfirm
+  }
+}
+
+const {openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm} = initDelete()
+
+
+const initClear = () => {
+  const handleClearFinish = () => {
+
+  }
+
+
+  return {
+    handleClearFinish
+  }
+}
+
+const {handleClearFinish} = initClear()
 </script>
 
 

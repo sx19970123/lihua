@@ -14,6 +14,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 @Service("sysLoginLogService")
 public class SysLoginLogServiceImpl implements SysLogService {
 
@@ -34,18 +36,13 @@ public class SysLoginLogServiceImpl implements SysLogService {
 
         QueryWrapper<SysLoginLog> queryWrapper = new QueryWrapper<>();
 
-        // 类型
-        if (StringUtils.hasText(sysLogDTO.getTypeCode())) {
-            queryWrapper.lambda().eq(SysLogVO::getTypeCode, sysLogDTO.getTypeCode());
-        }
-
         // 操作人姓名
-        if (!StringUtils.hasText(sysLogDTO.getCreateName())) {
+        if (StringUtils.hasText(sysLogDTO.getCreateName())) {
             queryWrapper.lambda().like(SysLogVO::getCreateName, sysLogDTO.getCreateName());
         }
 
         // 执行状态
-        if (!StringUtils.hasText(sysLogDTO.getExecuteStatus())) {
+        if (StringUtils.hasText(sysLogDTO.getExecuteStatus())) {
             queryWrapper.lambda().eq(SysLogVO::getExecuteStatus, sysLogDTO.getExecuteStatus());
         }
 
@@ -66,5 +63,15 @@ public class SysLoginLogServiceImpl implements SysLogService {
     @Override
     public SysLogVO findById(String id) {
         return sysLoginLogMapper.selectById(id);
+    }
+
+    @Override
+    public void deleteByIds(List<String> ids) {
+        sysLoginLogMapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    public void clearLog() {
+        sysLoginLogMapper.delete(new QueryWrapper<>());
     }
 }

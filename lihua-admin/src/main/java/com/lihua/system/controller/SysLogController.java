@@ -5,6 +5,7 @@ import com.lihua.model.web.BaseController;
 import com.lihua.system.model.dto.SysLogDTO;
 import com.lihua.system.service.SysLogService;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -13,43 +14,71 @@ import java.util.*;
 @RestController
 public class SysLogController extends BaseController {
 
-    // 登录日志service
-    @Resource(name = "sysLoginLogService")
-    private SysLogService sysLoginLogService;
-
     // 操作日志service
     @Resource(name = "sysOperateLogService")
     private SysLogService sysOperateLogService;
 
+    // 登录日志service
+    @Resource(name = "sysLoginLogService")
+    private SysLogService sysLoginLogService;
 
-    @PostMapping("page")
-    public String findPage(@RequestBody SysLogDTO sysLogDTO) {
-        // 分页查询登录日志
-        if (LogTypeEnum.LOGIN.getCode().equals(sysLogDTO.getTypeCode())) {
-            return success(sysLoginLogService.findPage(sysLogDTO));
-        }
-        // 分页查询操作日志
-        return success(sysOperateLogService.findPage(sysLogDTO));
-    }
-
-    @GetMapping("{typeCode}/{id}")
-    public String findById(@PathVariable("typeCode") String typeCode, @PathVariable("id") String id) {
-        // 查询登录日志详情
-        if (LogTypeEnum.LOGIN.getCode().equals(typeCode)) {
-            return success(sysLoginLogService.findById(id));
-        }
-        // 查询操作详情
-        return success(sysOperateLogService.findById(id));
-    }
 
     @GetMapping("option")
     public String getLogTypeOption() {
         // 获取日志类型下拉选项
         List<Map<String, String>> maps = Arrays
                 .stream(LogTypeEnum.values())
+                .filter(value -> !"LOGIN".equals(value.getCode()))
                 .map(value -> Map.of("value",  value.getCode(), "label", value.getMsg()))
                 .toList();
         return success(maps);
+    }
+
+    // 操作日志------------------------------------------------------------
+    @PostMapping("operate/page")
+    public String findOperatePage(@RequestBody SysLogDTO sysLogDTO) {
+        return success(sysOperateLogService.findPage(sysLogDTO));
+    }
+
+    @GetMapping("operate/{id}")
+    public String findOperateById(@PathVariable("id") String id) {
+        return success(sysOperateLogService.findById(id));
+    }
+
+    @DeleteMapping("operate")
+    public String deleteOperateByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
+        sysOperateLogService.deleteByIds(ids);
+        return success();
+    }
+
+    @DeleteMapping("operate/clear")
+    public String clearOperateLog() {
+        sysOperateLogService.clearLog();
+        return success();
+    }
+
+    @PostMapping("login/page")
+    public String findLoginPage(@RequestBody SysLogDTO sysLogDTO) {
+        return success(sysLoginLogService.findPage(sysLogDTO));
+    }
+
+    // 登录日志------------------------------------------------------------
+    @GetMapping("login/{id}")
+    public String findLoginById(@PathVariable("id") String id) {
+        return success(sysLoginLogService.findById(id));
+    }
+
+
+    @DeleteMapping("login")
+    public String deleteLoginByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
+        sysLoginLogService.deleteByIds(ids);
+        return success();
+    }
+
+    @DeleteMapping("login/clear")
+    public String clearLoginLog() {
+        sysLoginLogService.clearLog();
+        return success();
     }
 
 }

@@ -14,6 +14,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 @Service("sysOperateLogService")
 public class SysOperateLogServiceImpl implements SysLogService {
 
@@ -40,12 +42,12 @@ public class SysOperateLogServiceImpl implements SysLogService {
         }
 
         // 操作人姓名
-        if (!StringUtils.hasText(sysLogDTO.getCreateName())) {
+        if (StringUtils.hasText(sysLogDTO.getCreateName())) {
             queryWrapper.lambda().like(SysLogVO::getCreateName, sysLogDTO.getCreateName());
         }
 
         // 执行状态
-        if (!StringUtils.hasText(sysLogDTO.getExecuteStatus())) {
+        if (StringUtils.hasText(sysLogDTO.getExecuteStatus())) {
             queryWrapper.lambda().eq(SysLogVO::getExecuteStatus, sysLogDTO.getExecuteStatus());
         }
 
@@ -66,5 +68,15 @@ public class SysOperateLogServiceImpl implements SysLogService {
     @Override
     public SysLogVO findById(String id) {
         return sysOperateLogMapper.selectById(id);
+    }
+
+    @Override
+    public void deleteByIds(List<String> ids) {
+        sysOperateLogMapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    public void clearLog() {
+        sysOperateLogMapper.delete(new QueryWrapper<>());
     }
 }
