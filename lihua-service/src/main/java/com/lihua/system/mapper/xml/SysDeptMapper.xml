@@ -19,10 +19,6 @@
         </foreach>
     </select>
 
-    <sql id="selectDeptItem">
-
-    </sql>
-
     <select id="selectByUserId" resultType="com.lihua.model.security.CurrentDept">
         SELECT
             id,
