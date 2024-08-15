@@ -1,8 +1,5 @@
 <template>
   <a-flex vertical :gap="16">
-
-    <user-select :bordered="false" :box-shadow="false"/>
-
     <a-flex :gap="16" vertical v-show="true">
       <card-show cardKey="s1"
                  style="width: 100%"
@@ -11,21 +8,15 @@
                  @card-click="handleClick"
                  :hover-scale="1.01"
                  :expanded-width="1000"
-                 :middle-style="{'background-image':'linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%)','border-radius': '8px'}"
+                 :middle-style="{'background-color':'rgba(255,255,255,0.3)','backdrop-filter':' blur(20px)','border-radius': '8px'}"
       >
         <template #overview>
-          <a-card style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
+          <a-card  style="border: none;background-color: rgba(255,255,255,0.3); backdrop-filter: blur(20px)">
             <a-typography-title>HELLO WORLD</a-typography-title>
           </a-card>
         </template>
-        <template #middle>
-          <a-flex vertical justify="center" :gap="8">
-            <component is="Sun" style="font-size: 70px;"/>
-            <a-typography-text style="margin: auto">加载中</a-typography-text>
-          </a-flex>
-        </template>
         <template #detail>
-          <a-card class="scrollbar" id="test" style="border: none;background-image:linear-gradient(135deg,#C2FFD8 10%,#465EFB 100%);">
+          <a-card class="scrollbar" id="test" style="border: none;background-color: rgba(255,255,255,0.3); backdrop-filter: blur(20px)">
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>
             <a-typography-title>HELLO WORLD</a-typography-title>

@@ -67,6 +67,7 @@
                           cancel-text="取 消"
                           @confirm="handleDelete"
                           @cancel="closePopconfirm"
+                          @open-change="(open: boolean) => !open ? closePopconfirm(): ''"
             >
               <a-button danger @click="openPopconfirm">
                 <template #icon>
@@ -87,6 +88,7 @@
             <a-popconfirm title="清空后不可恢复，是否清空？"
                           :open="openClearPopconfirm"
                           @cancel="handleCloseClearPopconfirm"
+                          @open-change="(open: boolean) => !open ? handleCloseClearPopconfirm(): ''"
             >
               <template #okButton>
                 <a-button size="small" type="primary" :disabled="countdown" @click="handleClear">
@@ -363,7 +365,6 @@ const initDelete = () => {
   const openPopconfirm = () => {
     if (selectedIds.value && selectedIds.value.length > 0) {
       openDeletePopconfirm.value = true
-      handleCloseClearPopconfirm()
     } else {
       message.warning("请勾选数据")
     }
@@ -415,7 +416,6 @@ const initClear = () => {
   const handleOpenClearPopconfirm = () => {
     countdown.value = true
     openClearPopconfirm.value = true
-    closePopconfirm()
   }
   // 处理关闭提示框
   const handleCloseClearPopconfirm = () => {
@@ -426,6 +426,7 @@ const initClear = () => {
     const resp = await clearLoginLog()
     if (resp.code === 200) {
       message.success(resp.msg);
+      selectedIds.value = []
       await initPage()
     } else {
       message.error(resp.msg);

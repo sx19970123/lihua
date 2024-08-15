@@ -68,6 +68,7 @@
                           @confirm="handleDelete(undefined)"
                           :open="openDeletePopconfirm"
                           @cancel="closePopconfirm"
+                          @open-change="(open: boolean) => !open ? closePopconfirm(): ''"
             >
               <a-button danger @click="openPopconfirm">
                 <template #icon>

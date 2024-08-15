@@ -71,6 +71,7 @@
                             cancel-text="取 消"
                             @confirm="handleDelete(undefined)"
                             @cancel="closePopconfirm"
+                            @open-change="(open: boolean) => !open ? closePopconfirm(): ''"
               >
                 <template #title>
                   删除后对应角色解绑，不可恢复。<br/>是否继续？

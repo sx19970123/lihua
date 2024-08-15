@@ -79,6 +79,7 @@
                           cancel-text="取 消"
                           @confirm="handleDelete(undefined)"
                           @cancel="closePopconfirm"
+                          @open-change="(open: boolean) => !open ? closePopconfirm(): ''"
             >
               <a-button danger @click="openPopconfirm">
                 <template #icon>
