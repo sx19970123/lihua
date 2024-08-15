@@ -1,5 +1,7 @@
 package com.lihua.system.controller;
 
+import com.lihua.annotation.Log;
+import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysDept;
 import com.lihua.system.model.vo.SysDeptVO;
@@ -36,6 +38,7 @@ public class SysDeptController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
+    @Log(description = "保存部门数据", type = LogTypeEnum.SAVE)
     public String save(@RequestBody @Validated SysDept sysDept) {
         return success(sysDeptService.saveDept(sysDept));
     }
@@ -47,12 +50,14 @@ public class SysDeptController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
+    @Log(description = "更新部门状态", type = LogTypeEnum.UPDATE_STATUS)
     public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
         return success(sysDeptService.updateStatus(id, currentStatus));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
+    @Log(description = "删除部门数据", type = LogTypeEnum.DELETE)
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysDeptService.deleteByIds(ids);
         return success();
@@ -69,6 +74,7 @@ public class SysDeptController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("export")
+    @Log(description = "批量导出部门", type = LogTypeEnum.EXPORT)
     public String exportExcel(@RequestBody SysDept sysDept) {
         String path = sysDeptService.exportExcel(sysDept);
         return success(FileDownloadUtils.addToDownloadableList(path));
@@ -77,6 +83,7 @@ public class SysDeptController extends BaseController {
     @SneakyThrows
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
+    @Log(description = "批量入部门", type = LogTypeEnum.IMPORT)
     public String importExcel(@RequestParam("file") MultipartFile file) {
         List<SysDeptVO> sysUserVOS = ExcelUtils.importExport(file.getInputStream(), SysDeptVO.class, 0);
         return success(sysDeptService.importExcel(sysUserVOS));

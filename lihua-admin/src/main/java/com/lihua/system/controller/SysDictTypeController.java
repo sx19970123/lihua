@@ -1,5 +1,7 @@
 package com.lihua.system.controller;
 
+import com.lihua.annotation.Log;
+import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysDictType;
 import com.lihua.system.model.dto.SysDictTypeDTO;
@@ -48,6 +50,7 @@ public class SysDictTypeController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
+    @Log(description = "保存字典类型", type = LogTypeEnum.SAVE)
     public String save(@RequestBody @Validated SysDictType sysDictType) {
         return success(sysDictTypeService.save(sysDictType));
     }
@@ -60,6 +63,7 @@ public class SysDictTypeController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
+    @Log(description = "修在字典类型状态", type = LogTypeEnum.UPDATE_STATUS)
     public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
         return success(sysDictTypeService.updateStatus(id, currentStatus));
     }
@@ -71,6 +75,7 @@ public class SysDictTypeController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
+    @Log(description = "删除字典类型数据", type = LogTypeEnum.DELETE)
     public String delete(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysDictTypeService.deleteByIds(ids);
         return success();

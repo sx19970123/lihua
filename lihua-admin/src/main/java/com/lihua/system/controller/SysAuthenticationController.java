@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("system")
 public class SysAuthenticationController extends BaseController {
+
     @Resource
     private SysAuthenticationService sysAuthenticationService;
 
@@ -38,7 +39,7 @@ public class SysAuthenticationController extends BaseController {
      * @return
      */
     @PostMapping("login")
-    @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password"}, recordResult = false)
+    @Log(description = "用戶登录", type = LogTypeEnum.LOGIN, excludeParams = {"password"}, recordResult = false)
     public String login(@RequestBody @Valid CurrentUser currentUser, String captchaVerification) {
         // 开启验证码情况下进行验证
         if (lihuaConfig.getEnableVerificationCode() != null && lihuaConfig.getEnableVerificationCode()) {

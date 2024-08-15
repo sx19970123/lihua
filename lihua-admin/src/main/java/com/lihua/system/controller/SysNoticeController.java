@@ -1,5 +1,7 @@
 package com.lihua.system.controller;
 
+import com.lihua.annotation.Log;
+import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysNotice;
 import com.lihua.system.model.dto.SysNoticeDTO;
@@ -33,21 +35,25 @@ public class SysNoticeController extends BaseController {
     }
 
     @PostMapping
+    @Log(description = "保存通知公告", type = LogTypeEnum.SAVE)
     public String save(@RequestBody @Validated SysNoticeDTO sysNoticeDTO) {
         return success(sysNoticeService.save(sysNoticeDTO));
     }
 
     @PostMapping("release/{id}")
+    @Log(description = "发布通知公告", type = LogTypeEnum.OTHER)
     public String release(@PathVariable("id") String id) {
         return success(sysNoticeService.release(id));
     }
 
     @PostMapping("revoke/{id}")
+    @Log(description = "撤回通知公告", type = LogTypeEnum.OTHER)
     public String revoke(@PathVariable("id") String id) {
         return success(sysNoticeService.revoke(id));
     }
 
     @DeleteMapping
+    @Log(description = "删除通知公告", type = LogTypeEnum.DELETE)
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysNoticeService.deleteByIds(ids);
      return success();

@@ -47,7 +47,7 @@ public class SysFileController extends BaseController {
      * @return ResponseEntity 包含 StreamingResponseBody，用于文件下载
      */
     @GetMapping("download")
-    @Log(description = "文件下载", type = LogTypeEnum.EXPORT)
+    @Log(description = "附件下载", type = LogTypeEnum.DOWNLOAD)
     public ResponseEntity<StreamingResponseBody> download(@RequestParam(name = "filePath") String filePath, @RequestParam(name = "split", defaultValue = ",") String split) {
         // 验证请求的文件是否允许下载
         FileDownloadUtils.isDownloadable(filePath, split);
@@ -89,6 +89,7 @@ public class SysFileController extends BaseController {
      * @return
      */
     @PostMapping("upload")
+    @Log(description = "单文件上传", type = LogTypeEnum.UPLOAD)
     public String upload(@RequestParam("file") MultipartFile file) {
         return success(FileUploadUtils.upload(file));
     }
@@ -99,6 +100,7 @@ public class SysFileController extends BaseController {
      * @return
      */
     @PostMapping("uploads")
+    @Log(description = "多文件上传", type = LogTypeEnum.UPLOAD)
     public String uploads(@RequestParam("files") MultipartFile[] files) {
         return success(FileUploadUtils.upload(files));
     }

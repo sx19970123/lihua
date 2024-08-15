@@ -1,5 +1,7 @@
 package com.lihua.system.controller;
 
+import com.lihua.annotation.Log;
+import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysUser;
@@ -34,6 +36,7 @@ public class SysProfileController extends BaseController {
      * @return
      */
     @PostMapping("basics")
+    @Log(description = "保存个人信息", type = LogTypeEnum.SAVE)
     public String saveBasics(@RequestBody @Validated(ProfileValidation.ProfileSaveValidation.class) SysUser sysUser) {
         return success(sysProfileService.saveBasics(sysUser));
     }
@@ -65,6 +68,7 @@ public class SysProfileController extends BaseController {
      * @return
      */
     @PostMapping("password")
+    @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword"})
     public String updatePassword(@NotNull(message = "旧密码不能为空") String oldPassword,
                                  @NotNull(message = "新密码不能为空") @Size(min = 6, max = 22, message = "密码长度为6-22字符") String newPassword) {
         if (!SecurityUtils.matchesPassword(oldPassword,LoginUserContext.getUser().getPassword())) {

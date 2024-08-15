@@ -1,6 +1,8 @@
 package com.lihua.system.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.lihua.annotation.Log;
+import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysMenu;
@@ -54,12 +56,14 @@ public class SysMenuController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("directory")
+    @Log(description = "保存菜单数据", type = LogTypeEnum.SAVE)
     public String saveDirectory(@RequestBody @Validated(MenuValidation.MenuDirectoryValidation.class) SysMenu sysMenu) {
         return success(sysMenuService.save(sysMenu));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("page")
+    @Log(description = "保存页面数据", type = LogTypeEnum.SAVE)
     public String savePage(@RequestBody @Validated(MenuValidation.MenuPageValidation.class) SysMenu sysMenu) {
         // 校验 query 是否为json参数
         if (StringUtils.hasText(sysMenu.getQuery())) {
@@ -76,18 +80,21 @@ public class SysMenuController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("link")
+    @Log(description = "保存链接数据", type = LogTypeEnum.SAVE)
     public String saveLink(@RequestBody @Validated(MenuValidation.MenuLinkValidation.class) SysMenu sysMenu) {
         return success(sysMenuService.save(sysMenu));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("perms")
+    @Log(description = "保存权限数据", type = LogTypeEnum.SAVE)
     public String savePerms(@RequestBody @Validated(MenuValidation.MenuPermsValidation.class) SysMenu sysMenu) {
         return success(sysMenuService.save(sysMenu));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
+    @Log(description = "更新菜单状态", type = LogTypeEnum.UPDATE_STATUS)
     public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
         return success(sysMenuService.updateStatus(id, currentStatus));
     }
@@ -99,6 +106,7 @@ public class SysMenuController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
+    @Log(description = "删除菜单数据", type = LogTypeEnum.DELETE)
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysMenuService.deleteByIds(ids);
         return success();

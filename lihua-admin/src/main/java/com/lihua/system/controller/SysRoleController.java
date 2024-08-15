@@ -1,5 +1,7 @@
 package com.lihua.system.controller;
 
+import com.lihua.annotation.Log;
+import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysRole;
 import com.lihua.system.model.dto.SysRoleDTO;
@@ -50,6 +52,7 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
+    @Log(description = "保存角色信息", type = LogTypeEnum.SAVE)
     public String save(@RequestBody @Validated SysRole sysRole) {
         return success(sysRoleService.save(sysRole));
     }
@@ -62,6 +65,7 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
+    @Log(description = "更新角色状态", type = LogTypeEnum.UPDATE_STATUS)
     public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
         return success(sysRoleService.updateStatus(id, currentStatus));
     }
@@ -73,6 +77,7 @@ public class SysRoleController extends BaseController {
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
+    @Log(description = "删除角色数据", type = LogTypeEnum.DELETE)
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysRoleService.deleteByIds(ids);
         return success();

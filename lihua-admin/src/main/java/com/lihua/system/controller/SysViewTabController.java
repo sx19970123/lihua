@@ -1,5 +1,7 @@
 package com.lihua.system.controller;
 
+import com.lihua.annotation.Log;
+import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysViewTab;
 import com.lihua.system.service.SysViewTabService;
@@ -18,6 +20,7 @@ public class SysViewTabController extends BaseController {
     private SysViewTabService sysViewTabService;
 
     @PostMapping
+    @Log(description = "变更收藏/锁定", type = LogTypeEnum.OTHER)
     public String save(@RequestBody @Validated SysViewTab sysViewTab) {
         return success(sysViewTabService.save(sysViewTab));
     }

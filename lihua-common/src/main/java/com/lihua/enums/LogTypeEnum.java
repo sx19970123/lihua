@@ -16,6 +16,10 @@ public enum LogTypeEnum {
      */
     SAVE("SAVE","保存数据"),
     /**
+     * 保存
+     */
+    UPDATE_STATUS("UPDATE_STATUS","更新状态"),
+    /**
      * 批量导入
      */
     IMPORT("IMPORT","批量导入"),
@@ -43,6 +47,10 @@ public enum LogTypeEnum {
      * 附件下载
      */
     DOWNLOAD("DOWNLOAD","附件下载"),
+    /**
+     * 文件上传
+     */
+    UPLOAD("UPLOAD","文件上传"),
     /**
      * 其他
      */
