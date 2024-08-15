@@ -106,7 +106,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public String updateStatus(String id, String currentStatus) {
+    public String updateStatus(List<String> ids, String currentStatus) {
         UpdateWrapper<SysMenu> updateWrapper = new UpdateWrapper<>();
         String status = "0".equals(currentStatus) ? "1" : "0";
 
@@ -114,7 +114,7 @@ public class SysMenuServiceImpl implements SysMenuService {
                 .set(SysMenu::getStatus, status)
                 .set(SysMenu::getUpdateId, LoginUserContext.getUserId())
                 .set(SysMenu::getUpdateTime, LocalDateTime.now())
-                .eq(SysMenu::getId, id);
+                .in(SysMenu::getId, ids);
         sysMenuMapper.update(null, updateWrapper);
         return status;
     }

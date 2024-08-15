@@ -38,13 +38,14 @@ export const save = (data:SysMenu) => {
 
 /**
  * 修改状态
- * @param id
+ * @param ids
  * @param status
  */
-export const updateStatus = (id: string, status: string) => {
+export const updateStatus = (ids: string[], status: string) => {
   return request<string>({
-    url: 'system/menu/updateStatus/' + id + '/' + status,
-    method: 'post'
+    url: 'system/menu/updateStatus/' + status,
+    method: 'post',
+    data: ids
   })
 }
 

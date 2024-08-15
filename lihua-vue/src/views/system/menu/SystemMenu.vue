@@ -105,7 +105,7 @@
             <!--            状态-->
             <template v-if="column.key === 'status'">
               <a-switch v-model:checked="record.statusIsNormal"
-                        @change="(checked: boolean | string | number, event: MouseEvent) => handleUpdateStatus(event,record.id, text)"
+                        @change="(checked: boolean | string | number, event: MouseEvent) => handleUpdateStatus(event, record ,text)"
                         @click="(checked: boolean | string | number, event: MouseEvent) => { event.stopPropagation(); record.updateStatusLoading = true }"
                         :loading="record.updateStatusLoading">
                 <template #checkedChildren>
@@ -605,9 +605,19 @@ const initSave = () => {
   }
 
   // 修改菜单状态
-  const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
+  const handleUpdateStatus = async (event: MouseEvent, sysMenuVO: SysMenuVO, status: string) => {
     event.stopPropagation()
-    const resp = await updateStatus(id, status)
+    let menuIds = ['']
+    if (status == '0') {
+      const flattenMenuVo:SysMenuVO[] = []
+      flattenTreeData([sysMenuVO], flattenMenuVo)
+      // 获取当前及子节点 id
+      menuIds = flattenMenuVo.map(menu => menu.id) as string[]
+    } else {
+      menuIds = [sysMenuVO.id ? sysMenuVO.id : '']
+    }
+
+    const resp = await updateStatus(menuIds as string[], status)
     let newStatus: string = ''
     if (resp.code === 200) {
       newStatus = resp.data
@@ -617,7 +627,8 @@ const initSave = () => {
       message.error(resp.msg)
     }
     // 重新赋值
-    handleMenuStatus(menuList.value, id, newStatus)
+    menuIds.forEach(id => handleMenuStatus(menuList.value, id, newStatus))
+
   }
 
   // 回显菜单状态

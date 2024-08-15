@@ -1,9 +1,9 @@
 <template>
   <a-flex vertical :gap="16">
 
-    <user-select :bordered="false" :box-shadow="false" />
+    <user-select :bordered="false" :box-shadow="false"/>
 
-    <a-flex :gap="16" vertical v-show="false">
+    <a-flex :gap="16" vertical v-show="true">
       <card-show cardKey="s1"
                  style="width: 100%"
                  :auto-complete="false"
@@ -37,7 +37,7 @@
         </template>
       </card-show>
     </a-flex>
-    <a-row v-show="false" :gutter="16">
+    <a-row v-show="true" :gutter="16">
       <a-col :span="6"> <card-show cardKey="s2"
                                    style="width: 100%"
                                    :auto-complete="false"

@@ -93,10 +93,10 @@ public class SysMenuController extends BaseController {
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")
-    @PostMapping("updateStatus/{id}/{currentStatus}")
+    @PostMapping("updateStatus/{currentStatus}")
     @Log(description = "更新菜单状态", type = LogTypeEnum.UPDATE_STATUS)
-    public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
-        return success(sysMenuService.updateStatus(id, currentStatus));
+    public String updateStatus(@PathVariable("currentStatus") String currentStatus,@RequestBody List<String> ids) {
+        return success(sysMenuService.updateStatus(ids, currentStatus));
     }
 
     /**

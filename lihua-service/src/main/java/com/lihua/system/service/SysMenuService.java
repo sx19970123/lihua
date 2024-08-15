@@ -42,9 +42,9 @@ public interface SysMenuService {
 
     /**
      * 修改菜单状态
-     * @param id
+     * @param ids
      * @param currentStatus
      * @return
      */
-    String updateStatus(String id, String currentStatus);
+    String updateStatus(List<String> ids, String currentStatus);
 }

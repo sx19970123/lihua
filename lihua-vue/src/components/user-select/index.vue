@@ -73,10 +73,12 @@
           <div :style="{height: props.height + 'px'}" class="scrollbar user-show-group">
             <a-flex wrap="wrap" gap="small">
               <user-show class="user-show"
+                         :key="user.id"
                          @click="handleCancelSelect(user)"
                          v-for="user in selectUsers"
                          :avatar-json="user.avatar"
                          :nickname="user.nickname"/>
+
             </a-flex>
           </div>
         </div>
