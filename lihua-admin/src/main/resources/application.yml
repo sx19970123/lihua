@@ -11,11 +11,11 @@ lihua:
   # sse 过期时长（28800000 毫秒 8小时），超过连接时长前端在线情况会自动发起重连
   sseExpireTime: 28800000
   # 上传文件路径 mac windows 注意目录切换
-  #uploadFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
-  uploadFilePath: 'D:/home/lihua/'
+  #uploadFilePath: /Users/shangxuan/项目/lihuaFile/upload/
+  uploadFilePath: D:/home/lihua/
   # 文件导出路径
-  #exportFilePath: '/Users/shangxuan/项目/lihuaFile/upload/'
-  exportFilePath: 'D:/home/lihua/export/'
+  #exportFilePath: /Users/shangxuan/项目/lihuaFile/upload/
+  exportFilePath: D:/home/lihua/export/
   # 启用验证码
   enableVerificationCode: false
 server:
@@ -81,10 +81,13 @@ mybatis-plus:
 
 # 日志配置
 logging:
+  file:
+    name: D:/home/lihua/logs/lihua.log
   level:
     com.lihua: debug
     org.springframework: info
 
+# aj 验证码
 aj:
   captcha:
     # 自定义滑块背景图，原图尺寸为310*155，格式必须为png，存放在lihua-captcha模块的resource/images/custom-jigsaw/original目录下
