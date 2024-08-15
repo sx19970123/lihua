@@ -2,10 +2,13 @@ package com.lihua.aspect;
 
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
+import com.lihua.model.security.CurrentUser;
+import com.lihua.model.security.LoginUser;
 import com.lihua.system.model.vo.SysLogVO;
 import com.lihua.system.service.SysLogService;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.LoginUserContext;
+import com.lihua.utils.security.LoginUserManager;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
@@ -22,6 +25,7 @@ import java.lang.reflect.Parameter;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * 处理系统日志
@@ -125,11 +129,13 @@ public class LogAspect {
                 .setExecuteStatus("0");
 
         // 返回值
-        if (resultObject instanceof String) {
-            sysLogVO.setResult(String.valueOf(resultObject));
-        } else if (resultObject != null) {
-            sysLogVO.setResult(resultObject.getClass().getName());
+        if (logAnnotation.recordResult()) {
+            String result = (resultObject instanceof String) ?
+                    (String) resultObject :
+                    (resultObject != null) ? resultObject.getClass().getName() : null;
+            sysLogVO.setResult(result);
         }
+
         // 执行异常
         if (exception != null) {
             sysLogVO.setErrorMsg(exception.getMessage())
@@ -137,19 +143,31 @@ public class LogAspect {
                     .setExecuteStatus("1");
         }
 
-        try {
-            // 无登录状态下获取用户id异常
-            sysLogVO.setCreateId(LoginUserContext.getUserId());
-            sysLogVO.setCreateName(LoginUserContext.getUser().getNickname());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-
         // 日志插入数据库
         // 登录日志单独保存
         if ("LOGIN".equals(type.getCode())) {
+            // 从登录成功的返回值中获取token，拿到用户信息
+            if (resultObject != null) {
+                Map<String, String> loginSuccessResultMap = JsonUtils.toObject(resultObject.toString(), Map.class);
+                String token = loginSuccessResultMap.get("data");
+                LoginUser loginUser = LoginUserManager.getLoginUser(token);
+                sysLogVO.setCreateId(loginUser.getUser().getId());
+                sysLogVO.setCreateName(loginUser.getUser().getNickname());
+            }
+            // 登录参数中获取 username
+            List<Object> currentUserList = Stream.of(joinPoint.getArgs())
+                    .filter(arg -> arg instanceof CurrentUser)
+                    .toList();
+            if (!currentUserList.isEmpty()) {
+                CurrentUser currentUser = (CurrentUser) currentUserList.get(0);
+                sysLogVO.setUsername(currentUser.getUsername());
+            }
+
             sysLoginLogService.insert(sysLogVO);
         } else {
+            sysLogVO.setCreateId(LoginUserContext.getUserId());
+            sysLogVO.setCreateName(LoginUserContext.getUser().getNickname());
+            sysLogVO.setUsername(LoginUserContext.getUser().getUsername());
             sysOperateLogService.insert(sysLogVO);
         }
     }

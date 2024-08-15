@@ -39,18 +39,35 @@ export const deleteOperateByIds = (ids: string[]) => {
 // 清空操作日志
 export const clearOperateLog = () => {
     return request<SysLog>({
-        url: 'system/log/login/clear',
+        url: 'system/log/operate/clear',
         method: "delete"
     })
 }
 
+// 导出操作日志
+export const excelOperateExport = (data: SysLogDTO) => {
+    return request<string>({
+        url: 'system/log/operate/export',
+        method: 'post',
+        data: data
+    })
+}
 
+
+// 导出登录日志
+export const excelLoginExport = (data: SysLogDTO) => {
+    return request<string>({
+        url: 'system/log/login/export',
+        method: 'post',
+        data: data
+    })
+}
 
 
 // 清空登录日志
 export const clearLoginLog = () => {
     return request<SysLog>({
-        url: 'system/log/operate/clear',
+        url: 'system/log/login/clear',
         method: "delete"
     })
 }
@@ -81,5 +98,3 @@ export const findLoginPage = (data: SysLogDTO) => {
         data: data
     })
 }
-
-// 删除日志

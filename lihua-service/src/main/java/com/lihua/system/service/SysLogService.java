@@ -29,6 +29,13 @@ public interface SysLogService {
     SysLogVO findById(String id);
 
     /**
+     * 导出 excel
+     * @param sysLogDTO
+     * @return
+     */
+    String exportExcel(SysLogDTO sysLogDTO);
+
+    /**
      * 根据 id 删除日志
      */
     void deleteByIds(List<String> ids);

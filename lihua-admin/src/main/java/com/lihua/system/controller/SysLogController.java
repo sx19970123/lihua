@@ -4,6 +4,7 @@ import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.dto.SysLogDTO;
 import com.lihua.system.service.SysLogService;
+import com.lihua.utils.file.FileDownloadUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.web.bind.annotation.*;
@@ -57,12 +58,20 @@ public class SysLogController extends BaseController {
         return success();
     }
 
+    @PostMapping("operate/export")
+    public String exportOperateExcel(@RequestBody SysLogDTO sysLogDTO) {
+        String path = sysOperateLogService.exportExcel(sysLogDTO);
+        return success(FileDownloadUtils.addToDownloadableList(path));
+    }
+
+
+    // 登录日志------------------------------------------------------------
+
     @PostMapping("login/page")
     public String findLoginPage(@RequestBody SysLogDTO sysLogDTO) {
         return success(sysLoginLogService.findPage(sysLogDTO));
     }
 
-    // 登录日志------------------------------------------------------------
     @GetMapping("login/{id}")
     public String findLoginById(@PathVariable("id") String id) {
         return success(sysLoginLogService.findById(id));
@@ -79,6 +88,12 @@ public class SysLogController extends BaseController {
     public String clearLoginLog() {
         sysLoginLogService.clearLog();
         return success();
+    }
+
+    @PostMapping("login/export")
+    public String exportLoginExcel(@RequestBody SysLogDTO sysLogDTO) {
+        String path = sysLoginLogService.exportExcel(sysLogDTO);
+        return success(FileDownloadUtils.addToDownloadableList(path));
     }
 
 }

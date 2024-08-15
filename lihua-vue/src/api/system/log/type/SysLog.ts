@@ -45,6 +45,11 @@ export interface SysLog {
     createName?: string;
 
     /**
+     * 用户名
+     */
+    username?: string;
+
+    /**
      * 创建时间（操作时间）
      */
     createTime?: Date;
@@ -95,41 +100,12 @@ export interface SysLog {
     executeStatus?: string;
 }
 
-export interface SysLogDTO {
-    /**
-     * 业务描述
-     */
-    description?: string;
-
-    /**
-     * 业务类型编码
-     */
-    typeCode?: string;
-
-    /**
-     * 创建人姓名
-     */
-    createName?: string;
-
-    /**
-     * 日志执行状态
-     */
-    executeStatus?: string;
+export interface SysLogDTO extends SysLog {
 
     /**
      * 创建时间集合
      */
-    createTimeList?: Date[]
-
-    /**
-     * 创建开始时间
-     */
-    createStartTime?: Date;
-
-    /**
-     * 创建结束时间
-     */
-    createEndTime?: Date;
+    createTimeList?: Date[];
 
     /**
      * 当前页数

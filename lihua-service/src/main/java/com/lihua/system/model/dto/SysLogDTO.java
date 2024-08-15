@@ -57,6 +57,11 @@ public class SysLogDTO extends BaseDTO {
     private String createName;
 
     /**
+     * 用户名
+     */
+    private String username;
+
+    /**
      * 创建时间集合
      */
     private List<LocalDateTime> createTimeList;

@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * excel导入导出工具类
@@ -90,7 +91,8 @@ public class ExcelUtils {
         if (fileName.startsWith("/")) {
             fileName = fileName.substring(1);
         }
-
+        // 文件名后拼接uuid
+        fileName = fileName + "_" + UUID.randomUUID().toString().replace("-","");
         // 未指定文件后缀指定为xlsx
         if (!fileName.endsWith(".xls") && !fileName.endsWith(".xlsx")) {
             fileName = fileName + ".xlsx";

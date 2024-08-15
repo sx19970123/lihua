@@ -4,6 +4,7 @@ import com.lihua.cache.RedisCache;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.model.security.*;
 import com.lihua.utils.spring.SpringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -15,9 +16,14 @@ import java.util.List;
 /**
  * 获取当前登录用户工具类
  */
+@Slf4j
 public class LoginUserContext implements Serializable {
 
     private static RedisCache redisCache;
+
+    static {
+        redisCache = SpringUtils.getBean(RedisCache.class);
+    }
 
     /**
      * 获取当前登录用户 id
@@ -145,7 +151,12 @@ public class LoginUserContext implements Serializable {
      * @return
      */
     public static CurrentUser getUser() {
-        return getLoginUser().getUser();
+        try {
+            return getLoginUser().getUser();
+        } catch (Exception e) {
+            log.error("获取当前登录用户失败，返回空用户");
+            return new CurrentUser();
+        }
     }
 
     /**
@@ -165,7 +176,6 @@ public class LoginUserContext implements Serializable {
         if (!StringUtils.hasText(userId)) {
             return false;
         }
-        initCache();
         return redisCache.hasKey(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId);
     }
 
@@ -177,12 +187,5 @@ public class LoginUserContext implements Serializable {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
-    /**
-     * 从spring容器中获取 redisCache
-     */
-    private static void initCache() {
-        if (redisCache == null) {
-            redisCache = SpringUtils.getBean(RedisCache.class);
-        }
-    }
+
 }

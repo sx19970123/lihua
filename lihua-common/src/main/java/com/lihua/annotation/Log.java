@@ -29,4 +29,9 @@ public @interface Log {
      */
     String[] excludeParams() default {};
 
+    /**
+     * 记录返回结果
+     * @return
+     */
+    boolean recordResult() default true;
 }
