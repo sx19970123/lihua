@@ -166,50 +166,53 @@ const handleGenerateStaticMenuData = (staticRoutes: any[]) :ItemType[] => {
 const handleGenerateMenuData = (sidebarRouters:RouterType[]):ItemType[]  => {
     const childrenItemType: ItemType[] = []
     sidebarRouters.forEach(sidebar => {
-        // 菜单类型生成的对象包含children
-        if (sidebar.type === 'directory') {
-            if (sidebar.children && sidebar.children.length > 0) {
-                const resp = handleGenerateMenuData(sidebar.children)
-                // 存在子集
-                if (resp && resp.length > 0) {
-                    const menuItem:ItemType  = {
+        // 是否显示菜单
+        if (sidebar.meta.visible) {
+            // 菜单类型生成的对象包含children
+            if (sidebar.type === 'directory') {
+                if (sidebar.children && sidebar.children.length > 0) {
+                    const resp = handleGenerateMenuData(sidebar.children)
+                    // 存在子集
+                    if (resp && resp.length > 0) {
+                        const menuItem: ItemType = {
+                            key: sidebar.key,
+                            icon: () => sidebar.meta.icon ? h(Icon, {icon: sidebar.meta.icon}) : h('template'),
+                            label: sidebar.meta.label,
+                            children: resp,
+                            type: isSiderGroup()
+                        }
+                        childrenItemType.push(menuItem)
+                    }
+                } else {
+                    // 不存在子集
+                    const menuItem: ItemType = {
                         key: sidebar.key,
-                        icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
+                        icon: () => sidebar.meta.icon ? h(Icon, {icon: sidebar.meta.icon}) : h('template'),
                         label: sidebar.meta.label,
-                        children: resp,
+                        children: [],
                         type: isSiderGroup()
                     }
                     childrenItemType.push(menuItem)
                 }
-            } else {
-                // 不存在子集
-                const menuItem:ItemType  = {
-                    key: sidebar.key,
-                    icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
+            } else if (sidebar.type === 'layout') {
+                if (sidebar.children && sidebar.children.length > 0) {
+                    const resp = handleGenerateMenuData(sidebar.children)
+                    resp.forEach(item => {
+                        childrenItemType.push(item)
+                    })
+                }
+            }
+            // 其余类型（页面/静态路由）
+            else {
+                const menuItem: ItemType = {
+                    key: sidebar.key ? sidebar.key : sidebar.path,
+                    icon: () => sidebar.meta.icon ? h(Icon, {icon: sidebar.meta.icon}) : h('template'),
                     label: sidebar.meta.label,
-                    children: [],
-                    type: isSiderGroup()
+                    danger: sidebar.danger,
+                    title: sidebar.meta.title
                 }
                 childrenItemType.push(menuItem)
             }
-        } else if(sidebar.type === 'layout') {
-            if (sidebar.children && sidebar.children.length > 0) {
-                const resp = handleGenerateMenuData(sidebar.children)
-                resp.forEach(item => {
-                    childrenItemType.push(item)
-                })
-            }
-        }
-        // 其余类型（页面/静态路由）
-        else {
-            const menuItem:ItemType  = {
-                key: sidebar.key ? sidebar.key : sidebar.path,
-                icon: () => sidebar.meta.icon ? h(Icon,{icon: sidebar.meta.icon}) : h('template'),
-                label: sidebar.meta.label,
-                danger: sidebar.danger,
-                title: sidebar.meta.title
-            }
-            childrenItemType.push(menuItem)
         }
     })
 

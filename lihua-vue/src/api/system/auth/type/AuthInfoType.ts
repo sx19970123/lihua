@@ -70,5 +70,6 @@ export interface MetaType {
     cache: boolean | null,
     title: string,
     skip: boolean,
-    linkOpenType: string
+    linkOpenType: string,
+    visible: boolean
 }
