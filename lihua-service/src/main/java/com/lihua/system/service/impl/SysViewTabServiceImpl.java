@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,14 +39,22 @@ public class SysViewTabServiceImpl implements SysViewTabService {
 
         // 获取收藏菜单数据
         QueryWrapper<SysViewTab> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(SysViewTab::getUserId,userId)
-                .in(SysViewTab::getMenuId,
-                        routerVOList
-                        .stream()
-                        .filter(routerVO -> "page".equals(routerVO.getType()) || "link".equals(routerVO.getType()))
-                        .map(CurrentRouter::getId)
-                        .collect(Collectors.toSet())
-                ).and(wrapper -> wrapper.eq(SysViewTab::getAffix,"1").or().eq(SysViewTab::getStar,"1"));
+        Set<String> menuIds = routerVOList
+                .stream()
+                .filter(routerVO -> "page".equals(routerVO.getType()) || "link".equals(routerVO.getType()))
+                .map(CurrentRouter::getId)
+                .collect(Collectors.toSet());
+
+        if (menuIds.isEmpty()) {
+            throw new ServiceException("请联系管理员为角色分配页面");
+        }
+
+        queryWrapper.lambda()
+                .eq(SysViewTab::getUserId,userId)
+                .in(SysViewTab::getMenuId, menuIds)
+                .and(wrapper -> wrapper.eq(SysViewTab::getAffix,"1")
+                        .or()
+                        .eq(SysViewTab::getStar,"1"));
 
         List<SysViewTab> sysUserStarViews = sysUserStarViewMapper.selectList(queryWrapper);
 
