@@ -7,6 +7,7 @@ import com.lihua.model.web.BaseController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -84,4 +85,12 @@ public class GlobalExceptionHandle extends BaseController {
         return error(ResultCodeEnum.PARAMS_ERROR,e.getMessage());
     }
 
+    /**
+     * 权限不足全局处理
+     * @return
+     */
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public String handleAuthorizationDeniedException() {
+        return error(ResultCodeEnum.ACCESS_ERROR);
+    }
 }

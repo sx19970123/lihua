@@ -14,9 +14,9 @@ public enum ResultCodeEnum {
     EDITOR_SUCCESS(0,"成功"),
     AUTHENTICATION_EXPIRED(401,"身份验证过期，请重新登陆"),
     PARAMS_MISSING(402,"参数缺失或不完整"),
-    PARAMS_ERROR(403,"参数格式异常"),
+    ACCESS_ERROR (403,"用户权限不足"),
     RESOURCE_NOT_FOUND_ERROR(404,"请求的资源不存在"),
-    ACCESS_ERROR (405,"访问权限不足"),
+    PARAMS_ERROR(405,"参数格式异常"),
     ACCESS_EXPIRED_ERROR (406,"请求资源权限过期"),
 
     ERROR (500,"业务异常"),

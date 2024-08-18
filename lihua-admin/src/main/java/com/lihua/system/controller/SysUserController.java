@@ -39,6 +39,7 @@ public class SysUserController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
+    @Log(description = "保存用户数据", type = LogTypeEnum.SAVE)
     public String save(@RequestBody @Validated SysUserDTO sysUserDTO) {
         if (!StringUtils.hasText(sysUserDTO.getId()) && !StringUtils.hasText(sysUserDTO.getPassword())) {
             return error(ResultCodeEnum.PARAMS_MISSING, "请输入密码");
@@ -48,12 +49,14 @@ public class SysUserController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
+    @Log(description = "更新用户状态", type = LogTypeEnum.UPDATE_STATUS)
     public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
         return success(sysUserService.updateStatus(id, currentStatus));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
+    @Log(description = "删除用户数据", type = LogTypeEnum.DELETE)
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysUserService.deleteByIds(ids);
         return success();
@@ -61,6 +64,7 @@ public class SysUserController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("export")
+    @Log(description = "批量导出用户信息", type = LogTypeEnum.EXPORT)
     public String exportExcel(@RequestBody SysUserDTO sysUserDTO) {
         String path = sysUserService.exportExcel(sysUserDTO);
         return success(FileDownloadUtils.addToDownloadableList(path));
@@ -79,6 +83,7 @@ public class SysUserController extends BaseController {
     @SneakyThrows
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
+    @Log(description = "批量导入用户信息", type = LogTypeEnum.IMPORT)
     public String importExcel(@RequestParam("file") MultipartFile file) {
         List<SysUserVO> sysUserVOS = ExcelUtils.importExport(file.getInputStream(), SysUserVO.class, 1);
         return success(sysUserService.importExcel(sysUserVOS));

@@ -33,7 +33,7 @@ for (const i in icons) {
     app.component(i,icons[i])
 }
 
-// 倒入自定义图标
+// 导入自定义图标
 const modules = import.meta.glob("./components/icon/**/*.vue")
 for (let path in modules) {
     modules[path]().then((module:any) => {
@@ -46,6 +46,21 @@ for (let path in modules) {
             }
         }
     });
+}
+
+// 导入登录后配置组件
+const loginSettingComponents = import.meta.glob("./components/login-setting/*/*.vue")
+for (const path in loginSettingComponents) {
+    loginSettingComponents[path]().then((module: any) => {
+        if (module && module.default) {
+            // 组件名
+            const match = path.match(/\/([^/]+)\.vue$/)
+            if (match) {
+                // 注册组件
+                app.component(match[1], defineComponent(module.default));
+            }
+        }
+    })
 }
 
 // 是用全局自定义icon组件
