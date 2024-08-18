@@ -24,7 +24,6 @@ public class SysLoginLogServiceImpl implements SysLogService {
     private SysLoginLogMapper sysLoginLogMapper;
 
     @Override
-    @Async
     public void insert(SysLogVO sysLogVO) {
         SysLoginLog sysLoginLog = new SysLoginLog();
         BeanUtils.copyProperties(sysLogVO, sysLoginLog);
