@@ -1,5 +1,5 @@
 <template>
-  <a-flex class="login-background" justify="center" align="center">
+  <a-flex class="login-background" id="login-container" justify="center" align="center">
     <a-flex class="login-content" justify="space-around" align="center">
       <div class="slogan">
         <a-typography-title style="margin-top: 64px;margin-right: 64px;margin-left: 64px">狸花猫后台管理系统</a-typography-title>
@@ -89,7 +89,7 @@
 <script setup lang="ts">
 import {useUserStore} from "@/stores/modules/user"
 import {useRouter} from 'vue-router'
-import {reactive, ref} from "vue"
+import {onMounted, reactive, ref} from "vue"
 import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
 import type {Rule} from "ant-design-vue/es/form";
@@ -156,6 +156,7 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
   }
 };
 
+// 触发登录
 const handleFinish = () => {
   if (enableCaptcha.value) {
     showVerify()
@@ -219,6 +220,26 @@ const transition = () => {
   }
 }
 const {showForm, showCard} = transition()
+
+// 指定背景动画起始秒数
+const nowDynamicBackground = () => {
+  // 获取当前时间
+  const now = new Date();
+  // 今天的起始时间
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+  // 当前时间的毫秒数
+  const secondsSinceStartOfDay = (now.getTime() - startOfDay.getTime()) / 1000;
+  const htmlElement = document.querySelector(".login-background") as HTMLElement
+  // 设置 login-background 背景动画起始秒数
+  if (htmlElement) {
+    htmlElement.style.animationDelay = secondsSinceStartOfDay + 's'
+  }
+}
+
+onMounted(() => {
+  nowDynamicBackground()
+})
+
 </script>
 
 <style>
@@ -228,8 +249,19 @@ const {showForm, showCard} = transition()
   height: 100vh;
   /**background-image: url("../assets/images/login-background.jpg");*/
   background-image:linear-gradient(-135deg,#C2FFD8 10%,#465EFB 100%);
-  background-size: cover;
-  background-position: center;
+  background-size: 200% 200%;
+  animation: gradientAnimation 86400s ease infinite;
+}
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 [data-theme = dark] {
