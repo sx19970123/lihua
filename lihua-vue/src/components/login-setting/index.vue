@@ -20,6 +20,9 @@ const carouselRef = ref()
 const componentList = [
     'LoginSettingStart',
     'LoginSettingResetPassword',
+    'LoginSettingIndividuation',
+    'LoginSettingBaseInfo',
+    'LoginSettingDefaultDept',
     'LoginSettingComplete'
 ]
 
