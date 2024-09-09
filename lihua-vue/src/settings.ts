@@ -123,6 +123,11 @@ export default {
     routeTransition: 'zoom',
 
     /**
+     * 灰色模式 none active
+     */
+    grayModel: 'none',
+
+    /**
      * ant 主题配置
      */
     themeConfig: {

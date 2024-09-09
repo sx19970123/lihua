@@ -63,16 +63,17 @@
 }
 
 /**
-    灰度模式 todo 后续考虑管理员开启关闭全局灰度模式
+    灰色模式 由管理员统一开启
  */
-/*html {*/
-/*    -webkit-filter: grayscale(100%);*/
-/*    -moz-filter: grayscale(100%);*/
-/*    -ms-filter: grayscale(100%);*/
-/*    -o-filter: grayscale(100%);*/
-/*    filter: grayscale(100%);*/
-/*    filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);*/
-/*}*/
+[enable-gray-model = 'active'] {
+    body {
+        -webkit-filter: grayscale(100%);
+        -moz-filter: grayscale(100%);
+        -o-filter: grayscale(100%);
+        filter: grayscale(100%);
+        filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+    }
+}
 
 /**
     文本不可选中

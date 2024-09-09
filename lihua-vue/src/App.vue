@@ -19,23 +19,14 @@
 import {getBrowserType, getBrowserMajorVersion} from "@/utils/Browser.ts"
 import { useThemeStore } from "@/stores/modules/theme"
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
-import enUS from 'ant-design-vue/es/locale/en_US';
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
 const themeStore = useThemeStore()
 
-// 国际化配置
+// 配置中文
 const local = ref(zhCN)
-const lang = localStorage.getItem("language") || 'cn'
-if (lang === 'cn') {
-  dayjs.locale(zhCN.locale)
-  //local.value = zhCN
-}
-if (lang === 'en') {
-  dayjs.locale(enUS.locale)
-  //local.value = enUS
-}
+dayjs.locale(zhCN.locale)
 
 // 当浏览器版本过低时，显示浏览器兼容性提示
 const showOldBrowserAlert = () => {

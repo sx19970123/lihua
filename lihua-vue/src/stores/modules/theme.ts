@@ -80,6 +80,11 @@ export const useThemeStore = defineStore('theme',{
         const routeTransition: string = settings.routeTransition
 
         /**
+         * 灰色模式
+         */
+        const grayModel: string = settings.grayModel
+
+        /**
          * ant 主题配置
          */
         const themeConfig = settings.themeConfig
@@ -101,6 +106,7 @@ export const useThemeStore = defineStore('theme',{
             siderWith,
             originSiderWith,
             routeTransition,
+            grayModel,
             themeConfig
         }
     },
@@ -266,6 +272,7 @@ export const useThemeStore = defineStore('theme',{
             this.$state.routeTransition = settings.routeTransition
             this.$state.themeConfig = settings.themeConfig
             this.$state.siderGroup = settings.siderGroup
+            this.$state.grayModel = settings.grayModel
             this.changeDataDark()
         },
         // 折叠侧边栏
@@ -276,6 +283,10 @@ export const useThemeStore = defineStore('theme',{
         // 展开侧边栏
         unfoldSiderWidth() {
             this.siderWith = this.originSiderWith
+        },
+        // 是否开启灰色模式
+        enableGrayModel() {
+            document.documentElement.setAttribute("enable-gray-model",this.$state.isDarkTheme ? 'none' : 'active')
         }
     },
 })

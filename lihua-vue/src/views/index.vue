@@ -1,6 +1,6 @@
 <template>
   <div>
-    <login-setting/>
+<!--    <login-setting/>-->
 <!--<a-button @click="prev">上一步</a-button>-->
 <!--<a-button @click="next">下一步</a-button>-->
     <a-flex vertical :gap="16" v-if="false">

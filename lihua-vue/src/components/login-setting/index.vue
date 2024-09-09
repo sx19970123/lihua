@@ -14,28 +14,37 @@
 </template>
 
 <script setup lang="ts">
-
 import {ref} from "vue";
 const carouselRef = ref()
-const componentList = [
-    'LoginSettingStart',
-    'LoginSettingResetPassword',
-    'LoginSettingIndividuation',
-    'LoginSettingBaseInfo',
-    'LoginSettingDefaultDept',
-    'LoginSettingComplete'
-]
 
+// 需要加载的设置项集合
+const componentList = ref<string[]>(
+    [
+      'LoginSettingStart',
+      // 'LoginSettingResetPassword',
+      // 'LoginSettingDefaultDept',
+      'LoginSettingComplete'
+    ]
+)
+// 接收需要加载的配置项
+const props = defineProps<{
+  componentNames: string[];
+}>()
+
+// 组合配置项
+componentList.value.splice(1, 0, ...props.componentNames)
+console.log(componentList.value)
+// 上一页
 const handleBack = () => {
   carouselRef.value.prev()
 }
-
+// 跳过
 const handleSkip = (loading:boolean) => {
   if (!loading) {
     carouselRef.value.next()
   }
 }
-
+// 下一页
 const handleNext = (loading:boolean) => {
   if (!loading) {
     carouselRef.value.next()

@@ -1,11 +1,12 @@
 <template>
   <a-flex class="login-background" id="login-container" justify="center" align="center">
-    <a-flex class="login-content" justify="space-around" align="center">
+    <transition name="down" mode="in-out">
+      <a-flex class="login-content" justify="space-around" align="center" v-if="!showSetting">
       <div class="slogan">
         <a-typography-title style="margin-top: 64px;margin-right: 64px;margin-left: 64px">狸花猫后台管理系统</a-typography-title>
-<!--        <a-typography-title :level="2" style="margin-right: 64px;margin-left: 64px">基于SpringBoot 3.2 和 vue3.0 的-->
-<!--          后台管理系统-->
-<!--        </a-typography-title>-->
+        <a-typography-title :level="2" style="margin-right: 64px;margin-left: 64px">基于SpringBoot 3.X 和 vue3.X 的
+          后台管理系统
+        </a-typography-title>
       </div>
       <div class="form">
         <transition name="card" mode="out-in">
@@ -71,6 +72,7 @@
         </transition>
       </div>
     </a-flex>
+    </transition>
     <!--    验证码-->
     <transition name="verify" mode="out-in">
       <verify
@@ -83,6 +85,9 @@
       />
     </transition>
     <head-theme-switch class="head-theme-switch"/>
+      <transition name="verify" mode="out-in">
+        <login-setting :component-names="settingComponentNames" v-if="showSetting"></login-setting>
+      </transition>
   </a-flex>
 </template>
 
@@ -96,11 +101,14 @@ import type {Rule} from "ant-design-vue/es/form";
 import {enable} from "@/api/system/captcha/Captcha.ts";
 import token from "@/utils/Token.ts"
 import HeadThemeSwitch from "@/components/light-dark-switch/index.vue"
+import LoginSetting from "@/components/login-setting/index.vue"
 import type {ResponseType} from "@/api/global/Type.ts";
+import {init} from "@/utils/AppInit.ts"
 const router = useRouter()
 const verifyRef = ref<InstanceType<typeof Verify>>()
 const rememberMe = ref<boolean>(token.enableRememberMe())
-
+const showSetting = ref<boolean>(false)
+const settingComponentNames = ref<string[]>([])
 // 用户登录
 interface LoginFormType {
   username: string,
@@ -120,14 +128,14 @@ const loginRoles: Record<string, Rule[]> = {
 }
 
 // 启用记住账号后赋值账号密码
-const init = () => {
+const initLogin = () => {
   if (rememberMe.value) {
     const usernamePassword = token.getUsernamePassword()
     loginForm.username = usernamePassword.username
     loginForm.password = usernamePassword.password
   }
 }
-init()
+initLogin()
 
 // 登录请求
 const login = async ({captchaVerification}: { captchaVerification: string }) => {
@@ -142,8 +150,16 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
       } else {
         token.forgetMe()
       }
-      message.success("登录成功")
-      await router.push("/index");
+      await init()
+      // 判断是否需要在登录前进行设置
+      const settingComponents = userStore.checkLoginAfter()
+      if (settingComponents.length > 0) {
+        showSetting.value = true
+        settingComponentNames.value.push(...settingComponents)
+      } else {
+        message.success("登录成功")
+        await router.push("/index");
+      }
       // 路由跳转完成后的后续逻辑可以放在这里
     } else {
       message.error(msg);

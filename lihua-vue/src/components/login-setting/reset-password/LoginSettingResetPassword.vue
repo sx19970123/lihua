@@ -135,11 +135,8 @@ const handleNext = async (loading:Ref<boolean>) => {
 }
 // 跳过
 const handleSkip = (loading:Ref<boolean>) => {
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-    emits('skip', loading.value)
-  }, 1000)
+  loading.value = false
+  emits('skip', loading.value)
 }
 </script>
 

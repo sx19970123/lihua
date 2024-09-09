@@ -17,7 +17,7 @@ import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBa
 import router from "@/router";
 
 const toIndex = async () => {
-  await router.push("/system/user")
+  await router.push("/index")
 }
 </script>
 

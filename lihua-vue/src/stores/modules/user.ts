@@ -161,6 +161,17 @@ export const useUserStore = defineStore('user', {
             removeToken()
             router.push({name: "Login", state: {msg: msg}})
         },
+        // 登录成功后检查是否需要进行相关配置
+        checkLoginAfter(): string[] {
+            const needSettingComponentNames = []
+
+            // 默认部门不存在，需要选择部门
+            if (!this.$state.defaultDept.code) {
+                needSettingComponentNames.push("LoginSettingDefaultDept")
+            }
+
+            return needSettingComponentNames;
+        },
         // 更新默认部门
         updateDefaultDept(defaultDept: SysDept) {
             this.$state.defaultDept = defaultDept
