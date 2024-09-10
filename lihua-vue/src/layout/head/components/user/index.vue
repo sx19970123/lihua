@@ -37,6 +37,13 @@
             <span>数据更新</span>
           </a-flex>
         </a-menu-item>
+        <a-menu-divider v-hasRole="['ROLE_admin']"/>
+        <a-menu-item key="admin-setting" v-hasRole="['ROLE_admin']">
+          <a-flex :gap="8">
+            <SettingOutlined />
+            <span>系统设置</span>
+          </a-flex>
+        </a-menu-item>
         <a-menu-divider/>
         <a-menu-item danger key="logout">
           <a-flex :gap="8">
@@ -69,6 +76,10 @@ const handleClickMenu = async ({key}: {key: string}) => {
       userInfo()
       break
     }
+    case 'admin-setting': {
+      settingPage()
+      break
+    }
     case 'user-data-update': {
       const resp = await reloadData()
       if (resp.code === 200) {
@@ -97,6 +108,12 @@ const handleClickMenu = async ({key}: {key: string}) => {
 const userInfo = () => {
   router.push('/profile')
 }
+
+// 跳转至设置页面
+const settingPage = () => {
+  router.push('/setting')
+}
+
 // 退出登陆
 const logout = () => {
   userStore.handleLogout()

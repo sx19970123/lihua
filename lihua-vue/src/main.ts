@@ -16,15 +16,12 @@ import "@/static/css/index.css"
 
 import Icon from "@/components/icon/index.vue"
 
-// i18n
-import i18n from "@/utils/i18n/index"
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
 app.use(Antd)
-app.use(i18n)
 // 指令
 directive(app)
 // ant 自带图标

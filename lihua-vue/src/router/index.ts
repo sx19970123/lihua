@@ -74,6 +74,18 @@ const routers = [
           viewTab: true,
           visible: false
         },
+      },
+      {
+        path: '/setting',
+        component: () => import("@/views/system/setting/index.vue"),
+        meta: {
+          label: "系统设置",
+          icon: "SettingOutlined",
+          cache: false,
+          affix: false,
+          viewTab: true,
+          visible: false
+        }
       }
     ],
   },

@@ -15,6 +15,11 @@ public enum SysBaseEnum {
      * redis缓存字典数据前缀
      */
     DICT_DATA_REDIS_PREFIX("REDIS_CACHE_DICT_DATA:"),
+
+    /**
+     * 系统设置redis前缀
+     */
+    SYSTEM_SETTING_REDIS_PREFIX("REDIS_CACHE_SYSTEM_SETTING:"),
     /**
      * redis 分布式锁 key
      */
