@@ -1,17 +1,17 @@
 /*
  Navicat Premium Dump SQL
 
- Source Server         : MySql
+ Source Server         : 127.0.0.1
  Source Server Type    : MySQL
- Source Server Version : 90001 (9.0.1)
+ Source Server Version : 80400 (8.4.0)
  Source Host           : localhost:3306
  Source Schema         : lihua
 
  Target Server Type    : MySQL
- Target Server Version : 90001 (9.0.1)
+ Target Server Version : 80400 (8.4.0)
  File Encoding         : 65001
 
- Date: 10/09/2024 07:28:33
+ Date: 10/09/2024 20:50:22
 */
 
 SET NAMES utf8mb4;
@@ -345,7 +345,7 @@ CREATE TABLE `sys_login_setting`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '删除标识',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录后设置管理表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录后设置管理表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_login_setting
@@ -610,10 +610,10 @@ DROP TABLE IF EXISTS `sys_setting`;
 CREATE TABLE `sys_setting`  (
   `id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '主键id',
   `setting_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '设置名称',
-  `setting_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '设置编码',
+  `setting_component_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '设置组件名称',
   `setting_json` varbinary(2000) NULL DEFAULT NULL COMMENT '设置参数',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户和登陆后设置关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户和登陆后设置关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_setting
@@ -649,7 +649,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$vLVH1gQyW3G2Ij1KN/E59..WrL4qNbmN3DrQUqRXqMoidwqoY5DzC', 'admin', '{\"value\":\"/Users/shangxuan/项目/lihuaFile/upload/4e00f2cf6aeb447590a68cc5f5a05605.png\",\"type\":\"image\",\"backgroundColor\":\"rgb(245, 34, 45)\"}', '1', '0', '{\"layoutType\":\"header-sider\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":true,\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"breathe\",\"grayModel\":\"none\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(22, 119, 255)\"}}}', '0', NULL, '2024-06-02 16:57:25', '1', '2024-09-09 22:39:55', '2651518588@qq.com', '15510916240', NULL);
+INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$vLVH1gQyW3G2Ij1KN/E59..WrL4qNbmN3DrQUqRXqMoidwqoY5DzC', 'admin', '{\"value\":\"/Users/shangxuan/项目/lihuaFile/upload/4e00f2cf6aeb447590a68cc5f5a05605.png\",\"type\":\"image\",\"backgroundColor\":\"rgb(245, 34, 45)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":true,\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"breathe\",\"grayModel\":\"none\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(22, 119, 255)\"}}}', '0', NULL, '2024-06-02 16:57:25', '1', '2024-09-10 20:41:51', '2651518588@qq.com', '15510916240', NULL);
 INSERT INTO `sys_user` VALUES ('1807687880993570818', 'yukino', '$2a$10$Sz.ZAEbiHpsYZ7N9aYMAGu6K14ZLbMMbycywtW2gZpOLy8uf1IyBq', 'Yukino', '{\"value\":\"NintendoSwitch\",\"type\":\"icon\",\"backgroundColor\":\"rgb(245, 34, 45)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":false,\"siderWith\":200,\"originSiderWith\":200,\"routeTransition\":\"zoom\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"#2196F3\"}}}', '0', '1', '2024-08-18 18:50:47', '1', '2024-09-09 22:24:59', NULL, NULL, NULL);
 
 -- ----------------------------
