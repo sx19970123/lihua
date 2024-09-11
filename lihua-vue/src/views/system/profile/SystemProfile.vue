@@ -47,11 +47,8 @@ const activeComponent = ref(markRaw(Individuation))
 const selectedKeys = ref(['Individuation'])
 // 点击菜单切换组件
 const handleChangeUserMenu = ({key}: {key: string}) => {
-  allComponents.value.forEach(item => {
-    if (item.name === key) {
-      activeComponent.value = markRaw(item.com)
-    }
-  })
+  const target = allComponents.value.filter(item => item.name === key)[0]
+  activeComponent.value = target.com
 }
 </script>
 

@@ -1,16 +1,14 @@
 export interface SystemSetting {
     /**
-     * 主键
+     * 设置组件名称（数据库主键）
      */
-    id: string,
+    settingComponentName?: string,
+
     /**
      * 设置名称
      */
-    settingName: string,
-    /**
-     * 设置组件名称
-     */
-    settingComponentName: string,
+    settingName?: string,
+
     /**
      * 设置json
      */

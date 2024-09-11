@@ -18,12 +18,15 @@
 <script setup lang="ts">
 import {getBrowserType, getBrowserMajorVersion} from "@/utils/Browser.ts"
 import { useThemeStore } from "@/stores/modules/theme"
+import {useSettingStore} from "@/stores/modules/setting.ts";
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import {ref} from "vue";
 import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
 const themeStore = useThemeStore()
-
+// 初始化系统配置
+const settingStore = useSettingStore()
+settingStore.init()
 // 配置中文
 const local = ref(zhCN)
 dayjs.locale(zhCN.locale)

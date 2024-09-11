@@ -54,7 +54,8 @@ public class SecurityConfig {
                     .requestMatchers("/system/login/**",
                             "/captcha/**",
                             "/system/sse/connect/**",
-                            "/system/file/download/**").permitAll()
+                            "/system/file/download/**",
+                            "/system/setting").permitAll()
                     .anyRequest().authenticated();
         });
 

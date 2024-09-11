@@ -374,6 +374,9 @@ import {downloadByPath, handleFunDownload} from "@/utils/FileDownload.ts";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
+import {useSettingStore} from "@/stores/modules/setting.ts";
+import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
+const settingStore = useSettingStore()
 const themeStore = useThemeStore();
 const {sys_status,user_gender} = initDict("sys_status", "user_gender")
 const SHOW_ALL = TreeSelect.SHOW_ALL;
@@ -636,7 +639,8 @@ const initSave = () => {
     sysUserDTO.value = {
       gender: '1',
       status: '0',
-      deptIdList: []
+      deptIdList: [],
+      password: settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")?.defaultPassword
     }
     // 分段器设置为默认
     segmented.value = 'basic'

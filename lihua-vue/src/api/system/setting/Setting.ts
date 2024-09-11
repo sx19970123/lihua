@@ -7,7 +7,7 @@ import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
  */
 export const insert = (setting :SystemSetting) => {
     return request({
-        url: "/api/system/setting",
+        url: "system/setting",
         method: "POST",
         data: setting
     })
@@ -18,7 +18,7 @@ export const insert = (setting :SystemSetting) => {
  */
 export const findList = () => {
     return request<SystemSetting[]>({
-        url: "/api/system/setting",
+        url: "system/setting",
         method: "GET",
     })
 }

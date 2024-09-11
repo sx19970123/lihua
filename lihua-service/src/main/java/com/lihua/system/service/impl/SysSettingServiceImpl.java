@@ -7,7 +7,9 @@ import com.lihua.system.mapper.SysSettingMapper;
 import com.lihua.system.service.SysSettingService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.lihua.enums.SysBaseEnum.SYSTEM_SETTING_REDIS_PREFIX;
@@ -24,25 +26,37 @@ public class SysSettingServiceImpl implements SysSettingService {
     private final String REDIS_SETTING_KEY = SYSTEM_SETTING_REDIS_PREFIX.getValue();
 
     @Override
+    @Transactional
     public String insert(SysSetting sysSetting) {
+        sysSettingMapper.deleteById(sysSetting.getSettingComponentName());
         sysSettingMapper.insert(sysSetting);
         // 新增后重新缓存
-        reCacheSetting(findList());
-        return sysSetting.getId();
+        reCacheSetting(getSettingList());
+        return sysSetting.getSettingComponentName();
     }
 
     @Override
     public List<SysSetting> findList() {
         Object cacheObject = redisCache.getCacheObject(REDIS_SETTING_KEY);
 
-        // 缓存中数据为空则查询数据库后进行缓存
         if (cacheObject == null) {
-            List<SysSetting> sysSettings = sysSettingMapper.selectList(new QueryWrapper<>());
-            reCacheSetting(sysSettings);
-            return sysSettings;
+            return getSettingList();
         }
 
-        return (List<SysSetting>) cacheObject;
+        List<SysSetting> sysSettingList = (List<SysSetting>) cacheObject;
+
+        // 缓存中数据为空则查询数据库后进行缓存
+        if (sysSettingList.isEmpty()) {
+            return getSettingList();
+        }
+
+        return sysSettingList;
+    }
+
+    private List<SysSetting> getSettingList() {
+        List<SysSetting> sysSettings = sysSettingMapper.selectList(new QueryWrapper<>());
+        reCacheSetting(sysSettings);
+        return sysSettings;
     }
 
     // 重新缓存系统设置
