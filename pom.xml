@@ -16,7 +16,7 @@
 
         <mysql.version>8.2.0</mysql.version>
         <druid.version>1.1.6</druid.version>
-        <mybatis-plus.version>3.5.6</mybatis-plus.version>
+        <mybatis-plus.version>3.5.7</mybatis-plus.version>
         <jwt.version>3.10.3</jwt.version>
         <hutool.version>5.8.25</hutool.version>
         <myexcel.version>4.5.0</myexcel.version>
@@ -88,7 +88,20 @@
             <groupId>com.github.liaochong</groupId>
             <artifactId>myexcel</artifactId>
             <version>${myexcel.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-compress</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <!-- myexcel中commons-compress会造成漏洞攻击，屏蔽后手动引入高版本依赖 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.26.0</version>
+        </dependency>
+
         <!--        表单验证-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
