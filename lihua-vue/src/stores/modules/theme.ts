@@ -285,8 +285,9 @@ export const useThemeStore = defineStore('theme',{
             this.siderWith = this.originSiderWith
         },
         // 是否开启灰色模式
-        enableGrayModel() {
-            document.documentElement.setAttribute("enable-gray-model",this.$state.isDarkTheme ? 'none' : 'active')
+        enableGrayModel(enable?: boolean) {
+            this.$state.grayModel = enable ? 'active' : 'none'
+            document.documentElement.setAttribute("enable-gray-model",this.$state.grayModel)
         }
     },
 })

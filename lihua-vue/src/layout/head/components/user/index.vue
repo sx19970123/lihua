@@ -37,8 +37,8 @@
             <span>数据更新</span>
           </a-flex>
         </a-menu-item>
-        <a-menu-divider v-hasRole="['ROLE_admin']"/>
-        <a-menu-item key="admin-setting" v-hasRole="['ROLE_admin']">
+        <a-menu-divider v-if="isAdmin"/>
+        <a-menu-item key="admin-setting" v-if="isAdmin">
           <a-flex :gap="8">
             <SettingOutlined />
             <span>系统设置</span>
@@ -64,11 +64,14 @@ import {message} from "ant-design-vue";
 import {reloadData} from "@/api/system/auth/Auth.ts";
 import { init } from "@/utils/AppInit.ts";
 import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
+import {ref} from "vue";
 const viewTabsStore = useViewTabsStore()
 
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
+
+const isAdmin = ref<boolean>(userStore.$state.roleCodes.filter(item => item === 'ROLE_admin').length > 0)
 // 处理点击个人中心按钮
 const handleClickMenu = async ({key}: {key: string}) => {
   switch (key) {

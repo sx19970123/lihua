@@ -9,7 +9,6 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.lihua.enums.SysBaseEnum.SYSTEM_SETTING_REDIS_PREFIX;
@@ -51,6 +50,19 @@ public class SysSettingServiceImpl implements SysSettingService {
         }
 
         return sysSettingList;
+    }
+
+    @Override
+    public SysSetting getSysSettingByComponentName(String componentName) {
+        List<SysSetting> settings = findList()
+                .stream()
+                .filter(item -> componentName.equals(item.getSettingComponentName()))
+                .toList();
+        if (settings.isEmpty()) {
+            return null;
+        }
+
+        return settings.get(0);
     }
 
     private List<SysSetting> getSettingList() {

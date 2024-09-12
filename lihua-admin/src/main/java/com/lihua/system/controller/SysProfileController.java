@@ -115,17 +115,13 @@ public class SysProfileController extends BaseController {
      * @return
      */
     private boolean isDefaultPassword(String newPassword) {
-        List<SysSetting> settings = sysSettingService
-                .findList()
-                .stream()
-                .filter(item -> "DefaultPasswordSetting".equals(item.getSettingComponentName()))
-                .toList();
+        SysSetting setting = sysSettingService.getSysSettingByComponentName("DefaultPasswordSetting");
 
-        if (settings.isEmpty()) {
+        if (setting == null) {
             return false;
         }
 
-        String settingJson = settings.get(0).getSettingJson();
+        String settingJson = setting.getSettingJson();
         HashMap<String, String> map = JsonUtils.toObject(settingJson, HashMap.class);
         String defaultPassword = map.get("defaultPassword");
 

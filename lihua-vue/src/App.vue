@@ -20,13 +20,15 @@ import {getBrowserType, getBrowserMajorVersion} from "@/utils/Browser.ts"
 import { useThemeStore } from "@/stores/modules/theme"
 import {useSettingStore} from "@/stores/modules/setting.ts";
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
+import type {GrayModel} from "@/api/system/setting/type/GrayModel.ts";
 const themeStore = useThemeStore()
 // 初始化系统配置
 const settingStore = useSettingStore()
 settingStore.init()
+
 // 配置中文
 const local = ref(zhCN)
 dayjs.locale(zhCN.locale)
@@ -56,5 +58,15 @@ const showOldBrowserAlert = () => {
 }
 
 const isOldBrowser = showOldBrowserAlert()
+
+// 监听 settingStore 中的 GrayModelSetting，进入系统进行灰色模式的切换
+watch(() => settingStore.getSetting<GrayModel>("GrayModelSetting"), (newValue) => {
+  if (newValue?.closeTime && dayjs() > dayjs(newValue.closeTime)) {
+    themeStore.enableGrayModel(false)
+  } else {
+    themeStore.enableGrayModel(newValue?.enable)
+  }
+})
+
 </script>
 

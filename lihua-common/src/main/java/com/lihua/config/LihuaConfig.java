@@ -49,12 +49,6 @@ public class LihuaConfig {
     private String exportFilePath;
 
     /**
-     * 启用验证码
-     */
-    private Boolean enableVerificationCode;
-
-
-    /**
      * 判断 exportFilePath 结尾是否为 /
      */
     public String getExportFilePath() {

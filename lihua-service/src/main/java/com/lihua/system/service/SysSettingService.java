@@ -18,4 +18,11 @@ public interface SysSettingService {
      * @return
      */
     List<SysSetting> findList();
+
+    /**
+     * 根据组件名称获取配置
+     * @param componentName
+     * @return
+     */
+    SysSetting getSysSettingByComponentName(String componentName);
 }
