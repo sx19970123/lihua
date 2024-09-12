@@ -1,0 +1,112 @@
+<template>
+  <div style="margin: 8px">
+    <a-form layout="vertical" :model="settingForm" @finish="handleFinish" :rules="rules">
+      <a-form-item label="定期修改密码">
+        <template #tooltip>
+          <a-tooltip>
+            <template #title>
+              设置系统用户多长时间需要修改密码
+            </template>
+            <QuestionCircleOutlined style="margin-left: 4px"/>
+          </a-tooltip>
+        </template>
+        <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
+      </a-form-item>
+      <div v-if="settingForm.enable">
+        <a-form-item label="周期" name="interval">
+          <a-input-number style="width: 150px"
+                          :precision="0"
+                          :min="1"
+                          placeholder="请输入"
+                          v-model:value="settingForm.interval">
+            <template #addonAfter>
+              <a-select style="width: 60px" v-model:value="settingForm.unit">
+                <a-select-option value="day">天</a-select-option>
+                <a-select-option value="week">周</a-select-option>
+                <a-select-option value="month">月</a-select-option>
+                <a-select-option value="year">年</a-select-option>
+              </a-select>
+            </template>
+          </a-input-number>
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" html-type="submit">提 交</a-button>
+        </a-form-item>
+      </div>
+    </a-form>
+  </div>
+</template>
+
+<script setup lang="ts">
+import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
+import {useSettingStore} from "@/stores/modules/setting.ts";
+import {getCurrentInstance, onMounted, ref} from "vue";
+import type {IntervalUpdatePassword} from "@/api/system/setting/type/IntervalUpdatePassword.ts";
+import type {Rule} from "ant-design-vue/es/form";
+import {message} from "ant-design-vue";
+const componentName = getCurrentInstance()?.type.__name
+const settingStore = useSettingStore();
+const init = () => {
+  const settings = settingStore.settings
+  const targetSetting = settings.filter(item => item.settingComponentName === componentName) as SystemSetting[]
+  if (componentName && targetSetting.length === 0) {
+    settingStore.save(setting.value)
+  } else {
+    settingForm.value = JSON.parse(targetSetting[0].settingJson)
+  }
+}
+
+// 定期修改密码表单
+const settingForm = ref<IntervalUpdatePassword>({
+  enable: false,
+  unit: 'month'
+})
+
+// 保存到数据库中的对象
+const setting = ref<SystemSetting>({
+  settingName: '定期修改密码',
+  settingComponentName: componentName,
+  settingJson: JSON.stringify(settingForm.value)
+})
+
+// 表单验证
+const rules: Record<string, Rule[]> = {
+  interval: [
+    { required: true,message: "请输入修改密码周期",trigger: 'change'},
+  ]
+}
+
+// 处理改变switch开关
+const handleChangeSwitch = () => {
+  // 为 ture 则返回，关闭时才发送请求
+  if (settingForm.value.enable) {
+    return;
+  }
+
+  settingForm.value = {
+    enable: false,
+    unit: 'month'
+  }
+  handleFinish()
+}
+
+// 处理保存设置
+const handleFinish = async () => {
+  setting.value.settingJson = JSON.stringify(settingForm.value)
+  const resp = await settingStore.save(setting.value)
+
+  if (resp.code === 200) {
+    message.success(resp.msg)
+  } else {
+    message.error(resp.msg)
+  }
+}
+
+onMounted(() => init())
+</script>
+
+<style scoped>
+.form-item-width {
+  width: 270px;
+}
+</style>

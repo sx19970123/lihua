@@ -4,7 +4,6 @@ import com.anji.captcha.model.common.ResponseModel;
 import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
 import com.lihua.annotation.Log;
-import com.lihua.config.LihuaConfig;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.security.AuthInfo;
@@ -13,11 +12,14 @@ import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.service.SysAuthenticationService;
+import com.lihua.system.service.SysSettingService;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("system")
@@ -30,7 +32,7 @@ public class SysAuthenticationController extends BaseController {
     private CaptchaService captchaService;
 
     @Resource
-    private LihuaConfig lihuaConfig;
+    private SysSettingService sysSettingService;
 
     /**
      * 用户登录
@@ -42,7 +44,7 @@ public class SysAuthenticationController extends BaseController {
     @Log(description = "用戶登录", type = LogTypeEnum.LOGIN, excludeParams = {"password"}, recordResult = false)
     public String login(@RequestBody @Valid CurrentUser currentUser, String captchaVerification) {
         // 开启验证码情况下进行验证
-        if (lihuaConfig.getEnableVerificationCode() != null && lihuaConfig.getEnableVerificationCode()) {
+        if (sysSettingService.enableCaptcha()) {
             CaptchaVO captchaVO = new CaptchaVO();
             captchaVO.setCaptchaVerification(captchaVerification);
             ResponseModel verificationModel = captchaService.verification(captchaVO);
@@ -50,7 +52,11 @@ public class SysAuthenticationController extends BaseController {
                 return error(ResultCodeEnum.ERROR, verificationModel.getRepMsg());
             }
         }
-        return success(sysAuthenticationService.login(currentUser));
+
+        // 调用登录返回token和配置（如果需要的话）
+        Map<String, String> login = sysAuthenticationService.login(currentUser);
+
+        return success(ResultCodeEnum.SUCCESS, login.get("setting"), login.get("token"));
     }
 
     /**

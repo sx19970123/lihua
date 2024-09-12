@@ -3,6 +3,7 @@ package com.lihua.model.security;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 系统用户
@@ -65,4 +66,9 @@ public class CurrentUser implements Serializable {
      * 备注
      */
     private String remark;
+
+    /**
+     * 密码更新时间
+     */
+    private LocalDateTime passwordUpdateTime;
 }

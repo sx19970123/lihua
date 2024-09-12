@@ -790,11 +790,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     // 新增用户
     private String insert(SysUser sysUser) {
+        LocalDateTime now = LocalDateTime.now();
         // 密码加密
         sysUser.setPassword(SecurityUtils.encryptPassword(sysUser.getPassword()));
         sysUser.setCreateId(LoginUserContext.getUserId());
-        sysUser.setCreateTime(LocalDateTime.now());
+        sysUser.setCreateTime(now);
         sysUser.setDelFlag("0");
+        sysUser.setPasswordUpdateTime(now);
         sysUserMapper.insert(sysUser);
         return sysUser.getId();
     }

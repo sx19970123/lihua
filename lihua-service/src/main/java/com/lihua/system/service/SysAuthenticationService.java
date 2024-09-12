@@ -3,6 +3,8 @@ package com.lihua.system.service;
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.security.CurrentUser;
 
+import java.util.Map;
+
 public interface SysAuthenticationService {
 
     /**
@@ -10,7 +12,7 @@ public interface SysAuthenticationService {
      * @param currentUser
      * @return
      */
-    String login(CurrentUser currentUser);
+    Map<String, String> login(CurrentUser currentUser);
 
     /**
      * 缓存用户登录信息

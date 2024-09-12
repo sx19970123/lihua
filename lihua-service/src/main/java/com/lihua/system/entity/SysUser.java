@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysUser extends BaseEntity {
@@ -89,5 +91,10 @@ public class SysUser extends BaseEntity {
      * 备注
      */
     private String remark;
+
+    /**
+     * 密码更新时间
+     */
+    private LocalDateTime passwordUpdateTime;
 
 }

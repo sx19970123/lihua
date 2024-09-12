@@ -2,13 +2,16 @@ package com.lihua.system.service.impl;
 
 import com.lihua.cache.RedisCache;
 import com.lihua.model.security.*;
+import com.lihua.system.entity.SysSetting;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysPostMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysMenuService;
+import com.lihua.system.service.SysSettingService;
 import com.lihua.system.service.SysViewTabService;
+import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.tree.TreeUtils;
@@ -19,8 +22,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -52,17 +58,114 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Resource
     private SysDeptMapper sysDeptMapper;
 
+    @Resource
+    private SysSettingService sysSettingService;
+
     private final String patternComponentName =  "([^/]+)\\.vue$";
 
     @Override
-    public String login(CurrentUser currentUser) {
+    public Map<String, String> login(CurrentUser currentUser) {
+        Map<String, String> map = new HashMap<>();
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(currentUser.getUsername(), currentUser.getPassword()));
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         // 处理登录用户信息，将用户基本数据存入 LoginUser 后存入 redis
         cacheUserLoginDetails(loginUser);
+        // 检查登录后的必要配置
+        List<String> loginSettingComponentNameList = checkLoginSetting(loginUser, currentUser.getPassword());
+
+        // 返回需要配置的组件名称
+        if (!loginSettingComponentNameList.isEmpty()) {
+            map.put("setting", String.join(",", loginSettingComponentNameList));
+        }
+        // 返回token
+        map.put("token", JwtUtils.create(loginUser.getUser().getId()));
         // 根据username 生成jwt 返回
-        return JwtUtils.create(loginUser.getUser().getId());
+        return map;
     }
+
+    /**
+     * 登录后必要信息校验，对应于前端 components/login-setting 下的组件进行处理
+     * LoginSettingResetPassword：登陆后修改密码
+     * LoginSettingDefaultDept：登录后选择默认部门
+     * @param loginUser
+     */
+    private List<String> checkLoginSetting(LoginUser loginUser, String password) {
+        List<String> loginSettingComponentNameList = new ArrayList<>();
+
+        // 检查密码
+        checkUpdatePassword(loginSettingComponentNameList, loginUser, password);
+        // 检查默认部门
+        checkDefaultDept(loginSettingComponentNameList, loginUser);
+
+        return loginSettingComponentNameList;
+    }
+
+    // 判断是否需要修改密码（登录密码与默认密码相同 或 到达管理员配置的修改密码时间）
+    public void checkUpdatePassword(List<String> loginSettingComponentNameList, LoginUser loginUser, String password) {
+
+        // 获取默认密码
+        SysSetting defaultPasswordSetting = sysSettingService.getSysSettingByComponentName("DefaultPasswordSetting");
+        Map<String, String> defaultPasswordMap = JsonUtils.toObject(defaultPasswordSetting.getSettingJson(), Map.class);
+        if (defaultPasswordMap.get("defaultPassword").equals(password)) {
+            loginSettingComponentNameList.add("LoginSettingResetPassword");
+            return;
+        }
+
+        // 获取定期修改密码配置
+        SysSetting intervalUpdatePasswordSetting = sysSettingService.getSysSettingByComponentName("IntervalUpdatePasswordSetting");
+        Map<String,Object> intervalUpdatePasswordMap = JsonUtils.toObject(intervalUpdatePasswordSetting.getSettingJson(), Map.class);
+
+
+        Boolean enable = (Boolean) intervalUpdatePasswordMap.get("enable");
+
+        if (!enable) {
+            return;
+        }
+
+        // 更新周期
+        Integer interval = (Integer) intervalUpdatePasswordMap.get("interval");
+
+        // 周期单位
+        String unit = (String) intervalUpdatePasswordMap.get("unit");
+
+        // 上次更新密码时间
+        LocalDateTime passwordUpdateTime = loginUser.getUser().getPasswordUpdateTime();
+
+        LocalDateTime targetTime = null;
+        switch (unit) {
+            case "day": {
+                targetTime = passwordUpdateTime.plusDays(interval);
+                break;
+            }
+            case "week": {
+                targetTime = passwordUpdateTime.plusWeeks(interval);
+                break;
+            }
+            case "month": {
+                targetTime = passwordUpdateTime.plusMonths(interval);
+                break;
+            }
+            case "year": {
+                targetTime = passwordUpdateTime.plusYears(interval);
+                break;
+            }
+        }
+
+        // 当前时间在目标时间之后，需要修改密码
+       if ( LocalDateTime.now().isAfter(targetTime)) {
+           loginSettingComponentNameList.add("LoginSettingResetPassword");
+       }
+    }
+
+    // 判断是否存在默认部门
+    private void checkDefaultDept(List<String> loginSettingComponentNameList, LoginUser loginUser) {
+        List<CurrentDept> deptList = loginUser.getDeptList();
+        List<CurrentDept> defDeptList = deptList.stream().filter(item -> "0".equals(item.getDefaultDept())).toList();
+        if (defDeptList.isEmpty()) {
+            loginSettingComponentNameList.add("LoginSettingDefaultDept");
+        }
+    }
+
 
     /**
      * 根据业务需要，可将用户数据存入 LoginUser 业务中可直接获取使用

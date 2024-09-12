@@ -5,15 +5,19 @@ import com.lihua.cache.RedisCache;
 import com.lihua.system.entity.SysSetting;
 import com.lihua.system.mapper.SysSettingMapper;
 import com.lihua.system.service.SysSettingService;
+import com.lihua.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static com.lihua.enums.SysBaseEnum.SYSTEM_SETTING_REDIS_PREFIX;
 
 @Service
+@Slf4j
 public class SysSettingServiceImpl implements SysSettingService {
 
     @Resource
@@ -63,6 +67,42 @@ public class SysSettingServiceImpl implements SysSettingService {
         }
 
         return settings.get(0);
+    }
+
+    @Override
+    public boolean enableCaptcha() {
+        SysSetting verificationCodeSetting = getSysSettingByComponentName("VerificationCodeSetting");
+
+        if (verificationCodeSetting == null) {
+            return true;
+        }
+
+        // 获取具体配置后解析json返回是否启用验证码
+        // 出现任何值为空都认为需要验证码
+        String settingJson = verificationCodeSetting.getSettingJson();
+
+        try {
+            if (org.springframework.util.StringUtils.hasText(settingJson)) {
+                HashMap<String, Boolean> map = JsonUtils.toObject(settingJson, HashMap.class);
+
+                if (map == null) {
+                    return true;
+                }
+
+                Boolean enable = map.get("enable");
+
+                if (enable == null) {
+                    return true;
+                }
+
+                return enable;
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return true;
+        }
+
+        return true;
     }
 
     private List<SysSetting> getSettingList() {

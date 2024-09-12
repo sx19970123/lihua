@@ -54,6 +54,11 @@ export interface SysUser {
      * 备注
      */
     remark?: string;
+
+    /**
+     * 密码修改时间
+     */
+    passwordUpdateTime?: Date;
 }
 
 export interface SysUserVO extends SysUser{

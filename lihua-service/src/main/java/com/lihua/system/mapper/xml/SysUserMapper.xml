@@ -60,7 +60,8 @@
             phone_number,
             email,
             remark,
-            status
+            status,
+            password_update_time
         FROM
             sys_user
         WHERE

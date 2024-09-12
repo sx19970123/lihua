@@ -25,4 +25,10 @@ public interface SysSettingService {
      * @return
      */
     SysSetting getSysSettingByComponentName(String componentName);
+
+    /**
+     * 是否启用验证码
+     * @return
+     */
+    boolean enableCaptcha();
 }

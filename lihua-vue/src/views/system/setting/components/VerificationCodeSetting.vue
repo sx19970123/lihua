@@ -61,7 +61,3 @@ const handleChangeSwitch = async () => {
 
 onMounted(() => init())
 </script>
-
-<style scoped>
-
-</style>

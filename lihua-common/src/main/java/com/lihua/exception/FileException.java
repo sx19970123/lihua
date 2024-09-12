@@ -2,6 +2,9 @@ package com.lihua.exception;
 
 import com.lihua.enums.ResultCodeEnum;
 
+/**
+ * 文件相关异常
+ */
 public class FileException extends RuntimeException {
 
     public FileException() {}

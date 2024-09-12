@@ -38,7 +38,8 @@ export interface UserInfoType {
     username?: string,
     theme?: string,
     email?: string,
-    phoneNumber?: string
+    phoneNumber?: string,
+    passwordUpdateTime?: Date
 }
 
 

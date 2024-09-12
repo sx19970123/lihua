@@ -151,11 +151,10 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
         token.forgetMe()
       }
       await init()
-      // 判断是否需要在登录前进行设置
-      const settingComponents = userStore.checkLoginAfter()
-      if (settingComponents.length > 0) {
+      // 当需要进行登录后设置的情况下，需要的 ComponentName 会在msg中以,分割形式传递
+      if (msg) {
         showSetting.value = true
-        settingComponentNames.value.push(...settingComponents)
+        settingComponentNames.value.push(...msg.split(","))
       } else {
         message.success("登录成功")
         await router.push("/index");

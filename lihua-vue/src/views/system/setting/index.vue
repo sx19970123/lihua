@@ -10,7 +10,7 @@
             <a-menu-item key="SignInSetting"> 自助注册</a-menu-item>
             <a-menu-item key="VerificationCodeSetting"> 登录验证码</a-menu-item>
             <a-menu-item key="DefaultPasswordSetting"> 默认密码</a-menu-item>
-            <a-menu-item key="UpdatePasswordSetting"> 定期修改密码</a-menu-item>
+            <a-menu-item key="IntervalUpdatePassword"> 定期修改密码</a-menu-item>
             <a-menu-item key="GrayModelSetting"> 灰色模式</a-menu-item>
           </a-menu>
         </a-col>
@@ -29,7 +29,7 @@ import {useThemeStore} from "@/stores/modules/theme.ts";
 import DefaultPasswordSetting from "@/views/system/setting/components/DefaultPasswordSetting.vue";
 import GrayModelSetting from "@/views/system/setting/components/GrayModelSetting.vue";
 import SignInSetting from "@/views/system/setting/components/SignInSetting.vue";
-import UpdatePasswordSetting from "@/views/system/setting/components/UpdatePasswordSetting.vue";
+import UpdatePasswordSetting from "@/views/system/setting/components/IntervalUpdatePasswordSetting.vue";
 import VerificationCodeSetting from "@/views/system/setting/components/VerificationCodeSetting.vue";
 import {markRaw, ref} from "vue";
 
@@ -49,7 +49,7 @@ const allComponents = ref([
     com: markRaw(SignInSetting)
   },
   {
-    name: 'UpdatePasswordSetting',
+    name: 'IntervalUpdatePassword',
     com: markRaw(UpdatePasswordSetting)
   },
   {
