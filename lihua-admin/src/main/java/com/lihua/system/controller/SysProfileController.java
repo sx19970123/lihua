@@ -3,11 +3,15 @@ package com.lihua.system.controller;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.exception.ServiceException;
 import com.lihua.model.web.BaseController;
+import com.lihua.system.entity.SysSetting;
 import com.lihua.system.entity.SysUser;
 import com.lihua.system.model.validation.ProfileValidation;
 import com.lihua.system.service.SysProfileService;
+import com.lihua.system.service.SysSettingService;
 import com.lihua.system.service.SysUserDeptService;
+import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
@@ -19,6 +23,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
 @RestController
 @RequestMapping("system/profile")
@@ -29,6 +37,9 @@ public class SysProfileController extends BaseController {
 
     @Resource
     private SysUserDeptService sysUserDeptService;
+
+    @Resource
+    private SysSettingService sysSettingService;
 
     /**
      * 保存基础信息
@@ -71,11 +82,18 @@ public class SysProfileController extends BaseController {
     @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword"})
     public String updatePassword(@NotNull(message = "旧密码不能为空") String oldPassword,
                                  @NotNull(message = "新密码不能为空") @Size(min = 6, max = 22, message = "密码长度为6-22字符") String newPassword) {
-        if (!SecurityUtils.matchesPassword(oldPassword,LoginUserContext.getUser().getPassword())) {
+        String currentPassword  = LoginUserContext.getUser().getPassword();
+
+        if (!SecurityUtils.matchesPassword(oldPassword, currentPassword)) {
             return error(ResultCodeEnum.ERROR,"旧密码输入错误");
         }
-        if (SecurityUtils.matchesPassword(newPassword,LoginUserContext.getUser().getPassword())) {
+
+        if (SecurityUtils.matchesPassword(newPassword, currentPassword)) {
             return error(ResultCodeEnum.ERROR,"新密码不能与旧密码相同");
+        }
+
+        if (isDefaultPassword(newPassword)) {
+            return  error(ResultCodeEnum.ERROR,"新密码不能为默认密码");
         }
 
         return success(sysProfileService.updatePassword(newPassword));
@@ -91,4 +109,26 @@ public class SysProfileController extends BaseController {
         return success(sysUserDeptService.setDefaultDept(id));
     }
 
+    /**
+     * 判断密码是否为默认密码
+     * @param newPassword
+     * @return
+     */
+    private boolean isDefaultPassword(String newPassword) {
+        List<SysSetting> settings = sysSettingService
+                .findList()
+                .stream()
+                .filter(item -> "DefaultPasswordSetting".equals(item.getSettingComponentName()))
+                .toList();
+
+        if (settings.isEmpty()) {
+            return false;
+        }
+
+        String settingJson = settings.get(0).getSettingJson();
+        HashMap<String, String> map = JsonUtils.toObject(settingJson, HashMap.class);
+        String defaultPassword = map.get("defaultPassword");
+
+        return defaultPassword != null && defaultPassword.equals(newPassword);
+    }
 }
