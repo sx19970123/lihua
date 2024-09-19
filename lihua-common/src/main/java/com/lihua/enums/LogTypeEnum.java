@@ -12,6 +12,10 @@ public enum LogTypeEnum {
      */
     LOGIN("LOGIN", "登录"),
     /**
+     * 注册
+     */
+    REGISTER("REGISTER", "注册"),
+    /**
      * 保存
      */
     SAVE("SAVE","保存数据"),

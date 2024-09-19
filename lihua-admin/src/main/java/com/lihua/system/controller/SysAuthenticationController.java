@@ -11,6 +11,7 @@ import com.lihua.model.security.CurrentDept;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.web.BaseController;
+import com.lihua.system.model.dto.SysRegisterDTO;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysSettingService;
 import com.lihua.utils.security.LoginUserContext;
@@ -41,7 +42,7 @@ public class SysAuthenticationController extends BaseController {
      * @return
      */
     @PostMapping("login")
-    @Log(description = "用戶登录", type = LogTypeEnum.LOGIN, excludeParams = {"password"}, recordResult = false)
+    @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password"}, recordResult = false)
     public String login(@RequestBody @Valid CurrentUser currentUser, String captchaVerification) {
         // 开启验证码情况下进行验证
         if (sysSettingService.enableCaptcha()) {
@@ -89,5 +90,34 @@ public class SysAuthenticationController extends BaseController {
     public String reloadData() {
         sysAuthenticationService.cacheUserLoginDetails(LoginUserContext.getLoginUser());
         return success();
+    }
+
+    /**
+     * 检查用户名是否重复
+     * @param username
+     * @return
+     */
+    @PostMapping("checkUserName/{username}")
+    public String checkUserName(@PathVariable("username") String username) {
+        return success(sysAuthenticationService.checkUserName(username));
+    }
+
+    @PostMapping("register")
+    @Log(description = "用户注册", type = LogTypeEnum.REGISTER, excludeParams = {"password", "confirmPassword"}, recordResult = false)
+    public String register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO, String captchaVerification) {
+        // 校验两次密码输入是否相同
+        if (!sysRegisterDTO.getPassword().equals(sysRegisterDTO.getConfirmPassword())) {
+            return error(ResultCodeEnum.ERROR, "两次输入的密码不一致");
+        }
+        // 校验验证码
+        CaptchaVO captchaVO = new CaptchaVO();
+        captchaVO.setCaptchaVerification(captchaVerification);
+        ResponseModel verificationModel = captchaService.verification(captchaVO);
+        if (!verificationModel.isSuccess()) {
+            return error(ResultCodeEnum.ERROR, verificationModel.getRepMsg());
+        }
+
+        // 注册
+        return success(sysAuthenticationService.register(sysRegisterDTO.getUsername(), sysRegisterDTO.getPassword()));
     }
 }

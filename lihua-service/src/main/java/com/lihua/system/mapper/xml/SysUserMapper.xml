@@ -206,4 +206,9 @@
         AND del_flag = '0'
         AND status = '0'
     </select>
+
+    <select id="checkUserName" resultType="java.lang.String">
+        SELECT username FROM sys_user WHERE username = #{username}
+        AND sys_user.del_flag = '0'
+    </select>
 </mapper>

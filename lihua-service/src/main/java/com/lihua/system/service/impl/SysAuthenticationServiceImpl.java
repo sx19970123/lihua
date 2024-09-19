@@ -3,30 +3,24 @@ package com.lihua.system.service.impl;
 import com.lihua.cache.RedisCache;
 import com.lihua.model.security.*;
 import com.lihua.system.entity.SysSetting;
-import com.lihua.system.mapper.SysDeptMapper;
-import com.lihua.system.mapper.SysMenuMapper;
-import com.lihua.system.mapper.SysPostMapper;
-import com.lihua.system.mapper.SysRoleMapper;
-import com.lihua.system.service.SysAuthenticationService;
-import com.lihua.system.service.SysMenuService;
-import com.lihua.system.service.SysSettingService;
-import com.lihua.system.service.SysViewTabService;
+import com.lihua.system.entity.SysUser;
+import com.lihua.system.mapper.*;
+import com.lihua.system.service.*;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.LoginUserManager;
+import com.lihua.utils.security.SecurityUtils;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -60,6 +54,10 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Resource
     private SysSettingService sysSettingService;
+
+    @Resource
+    private SysUserMapper sysUserMapper;
+
 
     private final String patternComponentName =  "([^/]+)\\.vue$";
 
@@ -220,6 +218,27 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
         // 设置redis缓存
         LoginUserManager.setLoginUserCache(loginUser);
+    }
+
+    @Override
+    public boolean checkUserName(String username) {
+        return sysUserMapper.checkUserName(username) == null;
+    }
+
+    @Override
+    @Transactional
+    public String register(String username, String password) {
+        // 用户注册
+        SysUser sysUser = new SysUser();
+        sysUser.setUsername(username);
+        sysUser.setPassword(SecurityUtils.encryptPassword(password));
+        sysUser.setCreateTime(LocalDateTime.now());
+        sysUser.setDelFlag("0");
+        sysUser.setStatus("0");
+        sysUserMapper.insert(sysUser);
+
+        // todo 根据管理员配置，插入角色/部门关联
+        return sysUser.getId();
     }
 
     private void handleSetViewTabKey(List<CurrentViewTab> currentViewTabList,List<CurrentRouter> routerList) {
