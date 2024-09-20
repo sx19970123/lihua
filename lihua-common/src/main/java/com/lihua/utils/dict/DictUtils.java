@@ -18,7 +18,7 @@ public class DictUtils {
 
     private static final CommonMapper commonMapper;
 
-    private static final RedisCache redisCache;
+    private static final RedisCache<List<SysDictDataVO>> redisCache;
 
     static {
         redisCache = SpringUtils.getBean(RedisCache.class);
@@ -62,7 +62,7 @@ public class DictUtils {
      * 获取字典缓存数据
      */
     public static List<SysDictDataVO> getDictData(String dictTypeCode) {
-        Object dictCache = redisCache.getCacheObject(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
+        List<SysDictDataVO> dictCache = redisCache.getCacheObject(SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
 
         // 缓存数据为空时，尝试从数据库再次获取，数据库未查询到数据时，返回空集合
         // 查询到数据时，再次调用自身返回字典数据
@@ -74,7 +74,7 @@ public class DictUtils {
             return getDictData(dictTypeCode);
         }
 
-        return (List<SysDictDataVO>) dictCache;
+        return dictCache;
     }
 
     /**

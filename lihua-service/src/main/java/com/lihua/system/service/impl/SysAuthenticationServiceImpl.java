@@ -5,6 +5,7 @@ import com.lihua.model.security.*;
 import com.lihua.system.entity.SysSetting;
 import com.lihua.system.entity.SysUser;
 import com.lihua.system.mapper.*;
+import com.lihua.system.model.dto.SysSettingDTO;
 import com.lihua.system.service.*;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.JwtUtils;
@@ -103,28 +104,29 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
         // 获取默认密码
         SysSetting defaultPasswordSetting = sysSettingService.getSysSettingByComponentName("DefaultPasswordSetting");
-        Map<String, String> defaultPasswordMap = JsonUtils.toObject(defaultPasswordSetting.getSettingJson(), Map.class);
-        if (defaultPasswordMap.get("defaultPassword").equals(password)) {
+        SysSettingDTO.DefaultPasswordSetting passwordSetting = JsonUtils.toObject(defaultPasswordSetting.getSettingJson(), SysSettingDTO.DefaultPasswordSetting.class);
+        if (passwordSetting.getDefaultPassword().equals(password)) {
             loginSettingComponentNameList.add("LoginSettingResetPassword");
             return;
         }
 
         // 获取定期修改密码配置
         SysSetting intervalUpdatePasswordSetting = sysSettingService.getSysSettingByComponentName("IntervalUpdatePasswordSetting");
-        Map<String,Object> intervalUpdatePasswordMap = JsonUtils.toObject(intervalUpdatePasswordSetting.getSettingJson(), Map.class);
+        SysSettingDTO.IntervalUpdatePasswordSetting updatePasswordSetting = JsonUtils.toObject(intervalUpdatePasswordSetting.getSettingJson(), SysSettingDTO.IntervalUpdatePasswordSetting.class);
 
 
-        Boolean enable = (Boolean) intervalUpdatePasswordMap.get("enable");
+
+        Boolean enable = updatePasswordSetting.isEnable();
 
         if (!enable) {
             return;
         }
 
         // 更新周期
-        Integer interval = (Integer) intervalUpdatePasswordMap.get("interval");
+        Integer interval = updatePasswordSetting.getInterval();
 
         // 周期单位
-        String unit = (String) intervalUpdatePasswordMap.get("unit");
+        String unit = updatePasswordSetting.getUnit();
 
         // 上次更新密码时间
         LocalDateTime passwordUpdateTime = loginUser.getUser().getPasswordUpdateTime();

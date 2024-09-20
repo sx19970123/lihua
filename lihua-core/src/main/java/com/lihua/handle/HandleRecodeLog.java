@@ -105,8 +105,10 @@ public class HandleRecodeLog {
                 Map<String, String> loginSuccessResultMap = JsonUtils.toObject(resultObject.toString(), Map.class);
                 String token = loginSuccessResultMap.get("data");
                 LoginUser loginUser = LoginUserManager.getLoginUser(token);
-                sysLogVO.setCreateId(loginUser.getUser().getId());
-                sysLogVO.setCreateName(loginUser.getUser().getNickname());
+                if (loginUser != null) {
+                    sysLogVO.setCreateId(loginUser.getUser().getId());
+                    sysLogVO.setCreateName(loginUser.getUser().getNickname());
+                }
             }
             // 登录参数中获取 username
             List<Object> currentUserList = Stream.of(joinPoint.getArgs())

@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class LoginUserManager {
 
-    private static final RedisCache redisCache;
+    private static final RedisCache<LoginUser> redisCache;
 
     static {
         redisCache = SpringUtils.getBean(RedisCache.class);

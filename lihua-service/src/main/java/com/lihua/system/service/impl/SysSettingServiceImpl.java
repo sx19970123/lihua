@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.cache.RedisCache;
 import com.lihua.system.entity.SysSetting;
 import com.lihua.system.mapper.SysSettingMapper;
+import com.lihua.system.model.dto.SysSettingDTO;
 import com.lihua.system.service.SysSettingService;
 import com.lihua.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
@@ -11,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static com.lihua.enums.SysBaseEnum.SYSTEM_SETTING_REDIS_PREFIX;
@@ -24,7 +24,7 @@ public class SysSettingServiceImpl implements SysSettingService {
     private SysSettingMapper sysSettingMapper;
 
     @Resource
-    private RedisCache redisCache;
+    private RedisCache<List<SysSetting>> redisCache;
 
     private final String REDIS_SETTING_KEY = SYSTEM_SETTING_REDIS_PREFIX.getValue();
 
@@ -40,13 +40,11 @@ public class SysSettingServiceImpl implements SysSettingService {
 
     @Override
     public List<SysSetting> findList() {
-        Object cacheObject = redisCache.getCacheObject(REDIS_SETTING_KEY);
+        List<SysSetting> sysSettingList = redisCache.getCacheObject(REDIS_SETTING_KEY);
 
-        if (cacheObject == null) {
+        if (sysSettingList == null) {
             return getSettingList();
         }
-
-        List<SysSetting> sysSettingList = (List<SysSetting>) cacheObject;
 
         // 缓存中数据为空则查询数据库后进行缓存
         if (sysSettingList.isEmpty()) {
@@ -83,19 +81,13 @@ public class SysSettingServiceImpl implements SysSettingService {
 
         try {
             if (org.springframework.util.StringUtils.hasText(settingJson)) {
-                HashMap<String, Boolean> map = JsonUtils.toObject(settingJson, HashMap.class);
+                SysSettingDTO sysSettingDTO = JsonUtils.toObject(settingJson, SysSettingDTO.class);
 
-                if (map == null) {
+                if (sysSettingDTO == null) {
                     return true;
                 }
 
-                Boolean enable = map.get("enable");
-
-                if (enable == null) {
-                    return true;
-                }
-
-                return enable;
+                return sysSettingDTO.isEnable();
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);

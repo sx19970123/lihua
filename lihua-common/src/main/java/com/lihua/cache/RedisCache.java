@@ -1,40 +1,36 @@
 package com.lihua.cache;
 
 import jakarta.annotation.Resource;
-import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class RedisCache {
-    @Resource
-    private RedisTemplate<String,Object> redisTemplate;
+public class RedisCache<T> {
 
+    @Resource
+    private RedisTemplate<String, T> redisTemplate;
 
     /**
-     * 缓存基本对象：Integer、String、Object
+     * 缓存数据
      * @param key 缓存key
      * @param value 缓存值
-     * @param <T>
      */
-    public <T> void setCacheObject(String key,T value) {
-        redisTemplate.opsForValue().set(key,value);
+    public void setCacheObject(String key,T value) {
+        redisTemplate.opsForValue().set(key, value);
     }
 
     /**
-     * 缓存基本对象：Integer、String、Object
+     * 缓存数据
      * @param key 缓存key
      * @param value 缓存值
      * @param timeout 过期时间
      * @param timeUnit 时间单位
-     * @param <T>
      */
-    public <T> void setCacheObject(String key,T value,Long timeout,TimeUnit timeUnit) {
+    public void setCacheObject(String key,T value,Long timeout,TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key,value,timeout,timeUnit);
     }
 
@@ -43,8 +39,9 @@ public class RedisCache {
      * @param key
      * @return
      */
-    public <T> T getCacheObject(String key) {
-        return (T) redisTemplate.opsForValue().get(key);
+    public T getCacheObject(String key) {
+        ValueOperations<String, T> operations = redisTemplate.opsForValue();
+        return operations.get(key);
     }
 
 

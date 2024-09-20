@@ -73,7 +73,7 @@ public class FileDownloadUtils {
      * @return 原路径
      */
     public static String addToDownloadableList(String fileFullPath, String split) {
-        RedisCache redisCache = SpringUtils.getBean(RedisCache.class);
+        RedisCache<String> redisCache = SpringUtils.getBean(RedisCache.class);
         LihuaConfig lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
 
         String[] pathArray = fileFullPath.split(split);

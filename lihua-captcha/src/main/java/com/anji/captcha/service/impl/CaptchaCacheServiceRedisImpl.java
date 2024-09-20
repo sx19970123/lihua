@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class CaptchaCacheServiceRedisImpl implements CaptchaCacheService {
 
     @Resource
-    private RedisCache redisCache;
+    private RedisCache<String> redisCache;
 
     @Override
     public void set(String s, String s1, long l) {

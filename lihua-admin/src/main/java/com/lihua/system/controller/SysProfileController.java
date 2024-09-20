@@ -7,6 +7,7 @@ import com.lihua.exception.ServiceException;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysSetting;
 import com.lihua.system.entity.SysUser;
+import com.lihua.system.model.dto.SysSettingDTO;
 import com.lihua.system.model.validation.ProfileValidation;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.system.service.SysSettingService;
@@ -122,9 +123,8 @@ public class SysProfileController extends BaseController {
         }
 
         String settingJson = setting.getSettingJson();
-        HashMap<String, String> map = JsonUtils.toObject(settingJson, HashMap.class);
-        String defaultPassword = map.get("defaultPassword");
-
+        SysSettingDTO.DefaultPasswordSetting defaultPasswordSetting = JsonUtils.toObject(settingJson, SysSettingDTO.DefaultPasswordSetting.class);
+        String defaultPassword = defaultPasswordSetting.getDefaultPassword();
         return defaultPassword != null && defaultPassword.equals(newPassword);
     }
 }
