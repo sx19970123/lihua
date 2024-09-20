@@ -324,18 +324,6 @@ onMounted(() => {
   }
 }
 
-[data-theme = dark] {
-  .login-background:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-}
-
 @media screen and (max-width: 1000px) {
   .slogan {
     transition: all 0.8s ease-in-out;
@@ -410,5 +398,19 @@ onMounted(() => {
 
 .verify-leave-to {
   opacity: 0;
+}
+</style>
+
+<style>
+[data-theme = dark] {
+  .login-background:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
 }
 </style>
