@@ -1,9 +1,8 @@
 package com.lihua.system.service.impl;
 
-import com.lihua.cache.RedisCache;
+import com.lihua.exception.ServiceException;
 import com.lihua.model.security.*;
-import com.lihua.system.entity.SysSetting;
-import com.lihua.system.entity.SysUser;
+import com.lihua.system.entity.*;
 import com.lihua.system.mapper.*;
 import com.lihua.system.model.dto.SysSettingDTO;
 import com.lihua.system.service.*;
@@ -28,9 +27,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class SysAuthenticationServiceImpl implements SysAuthenticationService {
-
-    @Resource
-    private RedisCache redisCache;
 
     @Resource
     private AuthenticationManager authenticationManager;
@@ -58,6 +54,15 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Resource
     private SysUserMapper sysUserMapper;
+
+    @Resource
+    private SysUserRoleService sysUserRoleService;
+
+    @Resource
+    private SysUserPostService sysUserPostService;
+
+    @Resource
+    private SysUserDeptService sysUserDeptService;
 
 
     private final String patternComponentName =  "([^/]+)\\.vue$";
@@ -116,7 +121,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
 
 
-        Boolean enable = updatePasswordSetting.isEnable();
+        boolean enable = updatePasswordSetting.isEnable();
 
         if (!enable) {
             return;
@@ -230,16 +235,56 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Override
     @Transactional
     public String register(String username, String password) {
+        SysSetting setting = sysSettingService.getSysSettingByComponentName("SignInSetting");
+
+        if (setting == null) {
+            throw new ServiceException("注册配置不存在");
+        }
+
+        // 自助注册配置
+        SysSettingDTO.SignInSetting signInSetting = JsonUtils.toObject(setting.getSettingJson(), SysSettingDTO.SignInSetting.class);
+
+        if (!signInSetting.isEnable()) {
+            throw new ServiceException("用户注册未开放");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+
         // 用户注册
         SysUser sysUser = new SysUser();
         sysUser.setUsername(username);
         sysUser.setPassword(SecurityUtils.encryptPassword(password));
-        sysUser.setCreateTime(LocalDateTime.now());
+        sysUser.setCreateTime(now);
         sysUser.setDelFlag("0");
         sysUser.setStatus("0");
+        sysUser.setRegisterType("1");
         sysUserMapper.insert(sysUser);
 
-        // todo 根据管理员配置，插入角色/部门关联
+        // 用户角色关联表
+        List<String> roleIds = signInSetting.getRoleIds();
+        if (!roleIds.isEmpty()) {
+            List<SysUserRole> sysUserRoles = new ArrayList<>(roleIds.size());
+            roleIds.forEach(roleId -> sysUserRoles.add(new SysUserRole(sysUser.getId(), roleId, now, null)));
+            sysUserRoleService.save(sysUserRoles);
+        }
+
+        // 用户部门关联表
+        List<String> deptIds = signInSetting.getDeptIds();
+        if (!deptIds.isEmpty()) {
+            String defaultDeptId = signInSetting.getDefaultDeptId();
+            List<SysUserDept> sysUserDeptList  = new ArrayList<>(deptIds.size());
+            deptIds.forEach(deptId -> sysUserDeptList.add(new SysUserDept(sysUser.getId(), deptId, now, null, deptId.equals(defaultDeptId) ? "0" : "1")));
+            sysUserDeptService.save(sysUserDeptList);
+        }
+
+        // 用户岗位关联表
+        List<String> postIds = signInSetting.getPostIds();
+        if (!postIds.isEmpty()) {
+            List<SysUserPost> sysUserPosts  = new ArrayList<>(postIds.size());
+            postIds.forEach(postId -> sysUserPosts.add(new SysUserPost(sysUser.getId(), postId, now, null)));
+            sysUserPostService.save(sysUserPosts);
+        }
+
         return sysUser.getId();
     }
 

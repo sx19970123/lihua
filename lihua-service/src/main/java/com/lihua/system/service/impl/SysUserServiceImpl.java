@@ -796,6 +796,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         sysUser.setCreateId(LoginUserContext.getUserId());
         sysUser.setCreateTime(now);
         sysUser.setDelFlag("0");
+        sysUser.setRegisterType("0");
         sysUser.setPasswordUpdateTime(now);
         sysUserMapper.insert(sysUser);
         return sysUser.getId();

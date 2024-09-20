@@ -59,6 +59,11 @@ export interface SysUser {
      * 密码修改时间
      */
     passwordUpdateTime?: Date;
+
+    /**
+     * 注册类型
+     */
+    registerType?: string;
 }
 
 export interface SysUserVO extends SysUser{

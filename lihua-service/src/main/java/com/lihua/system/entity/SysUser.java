@@ -97,4 +97,9 @@ public class SysUser extends BaseEntity {
      */
     private LocalDateTime passwordUpdateTime;
 
+    /**
+     * 注册类型
+     */
+    private String registerType;
+
 }
