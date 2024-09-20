@@ -6,7 +6,7 @@
           <div class="register-title">
             <a-typography-title :level="2">欢迎注册狸花猫</a-typography-title>
             <a-typography-text>已有账户？</a-typography-text>
-            <a-typography-link @click="goLogin">前往登录
+            <a-typography-link @click="goLogin(false)">前往登录
               <RightOutlined/>
             </a-typography-link>
           </div>
@@ -86,8 +86,8 @@ import Verify from "@/components/verifition/index.vue";
 
 // 向父组件抛出切登录方法
 const emits = defineEmits(['goLogin'])
-const goLogin = () => {
-  emits('goLogin')
+const goLogin = (clearLoginForm: boolean) => {
+  emits('goLogin', clearLoginForm)
 }
 
 // 控制表单动画
@@ -190,8 +190,17 @@ const loadVerify = () => {
 }
 
 // 用户注册
-const handleRegister = ({captchaVerification}: { captchaVerification: string }) => {
-  register(userRegister.value.username,userRegister.value.password,userRegister.value.confirmPassword, captchaVerification)
+const handleRegister = async ({captchaVerification}: { captchaVerification: string }) => {
+  const resp = await register(userRegister.value.username,userRegister.value.password,userRegister.value.confirmPassword, captchaVerification)
+
+  if (resp.code === 200) {
+    message.success("注册成功，即将前往登录")
+    setTimeout(() => {
+      goLogin(true)
+    },1000)
+  } else {
+    message.error(resp.msg)
+  }
 }
 </script>
 

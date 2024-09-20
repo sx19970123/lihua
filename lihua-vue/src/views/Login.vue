@@ -18,10 +18,13 @@
                   <div class="login-title">
                     <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
                     <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
-                    <a-typography-text>没有账户？</a-typography-text>
-                    <a-typography-link @click="showLogin = false">快速注册
-                      <RightOutlined/>
-                    </a-typography-link>
+<!--                    根据配置显示注册-->
+                    <div v-if="settingStore.getSetting<SignIn>('SignInSetting')?.enable">
+                      <a-typography-text>没有账户？</a-typography-text>
+                      <a-typography-link @click="showLogin = false">快速注册
+                        <RightOutlined/>
+                      </a-typography-link>
+                    </div>
                   </div>
                   <a-form :model="loginForm" @finish="handleFinish" :rules="loginRoles">
                     <a-form-item name="username" hasFeedback>
@@ -71,6 +74,7 @@
                 </div>
               </transition>
             </a-card>
+<!--            用户注册-->
             <user-register v-else @go-login="handleShowLogin"/>
           </transition>
         </div>
@@ -95,6 +99,7 @@
 
 <script setup lang="ts">
 import {useUserStore} from "@/stores/modules/user"
+import {useSettingStore} from "@/stores/modules/setting.ts";
 import {useRouter} from 'vue-router'
 import {onMounted, reactive, ref} from "vue"
 import {message} from "ant-design-vue";
@@ -107,11 +112,14 @@ import LoginSetting from "@/components/login-setting/index.vue"
 import UserRegister from "@/components/user-register/index.vue"
 import type {ResponseType} from "@/api/global/Type.ts";
 import {init} from "@/utils/AppInit.ts"
+import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
 const router = useRouter()
 const verifyRef = ref<InstanceType<typeof Verify>>()
 const rememberMe = ref<boolean>(token.enableRememberMe())
 const showSetting = ref<boolean>(false)
 const settingComponentNames = ref<string[]>([])
+const settingStore = useSettingStore()
+
 // 用户登录
 interface LoginFormType {
   username: string,
@@ -239,9 +247,17 @@ const transition = () => {
 const {showForm, showCard} = transition()
 
 // 从注册页面切换到登录页面
-const handleShowLogin = () => {
+const handleShowLogin = (clearLoginForm: boolean) => {
   showLogin.value = true
   showForm.value = false
+
+  // 根据参数清空表单
+  if (clearLoginForm) {
+    loginForm.username = ''
+    loginForm.password = ''
+    rememberMe.value = false
+  }
+
   setTimeout(() => {
     showForm.value = true
   }, 100)

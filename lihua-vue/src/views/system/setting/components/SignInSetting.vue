@@ -281,8 +281,8 @@ const initPostData = () => {
   // 加载loading
   const postLoading = ref<boolean>(false)
 
-  // 进入岗位页面加载部门
-  const toPostForm = async () => {
+  // 加载部门
+  const loadPost = async () => {
     try {
       postLoading.value = true
       await initPostByDeptIds(handleDeptIdList())
@@ -351,7 +351,6 @@ const initPostData = () => {
 
     // 新选中的部门id集合
     const newDeptIds = deptIds.filter(item => !originDeptIds.includes(item))
-
     // 后端查询新部门及岗位数据
     const resp = await getPostOptionByDeptId(newDeptIds)
     if (resp.code === 200) {
@@ -363,7 +362,6 @@ const initPostData = () => {
           postList: sysPostsToPostOptional(data[deptId])
         })
       })
-
       // 回显部门
       if (settingForm.value.postIds) {
         initPostTag(settingForm.value.postIds)
@@ -426,14 +424,13 @@ const initPostData = () => {
   return {
     sysPostList,
     postLoading,
-    initPostTag,
-    toPostForm,
+    loadPost,
     handleSelectPostId,
     initPostByDeptIds,
     handleDeptIdList
   }
 }
-const {sysPostList, postLoading, initPostTag, toPostForm ,handleSelectPostId,} = initPostData()
+const {sysPostList, postLoading, loadPost ,handleSelectPostId,} = initPostData()
 
 // 处理开关switch
 const handleChangeSwitch = () => {
@@ -493,18 +490,21 @@ watch(() => deptKeyword.value, (value) => {
 
 // 监听反向选中标签，显示岗位
 watch(() => settingForm.value.deptIds, (value) => {
-  toPostForm()
   let ids: string[] = [];
   if (Array.isArray(value)) {
     // 如果 value 是数组
     ids = value;
+    // 加载岗位
+    loadPost()
+    // 更新 deptTreeSetting 的 checked 状态
+    deptTreeSetting.value.checked = ids.length === flattenDeptList.length;
   } else if (value && typeof value === 'object' && 'checked' in value) {
     // 如果 value 是包含 checked 属性的对象
     ids = (value as { checked: string[] }).checked;
+    // 当settingForm.value.deptIds为对象时，提取值重新赋值，这时会再次触发watch，再次触发时执行后续逻辑
+    settingForm.value.deptIds = ids
   }
 
-  // 更新 deptTreeSetting 的 checked 状态
-  deptTreeSetting.value.checked = ids.length === flattenDeptList.length;
 })
 onMounted(() => {
   init()
