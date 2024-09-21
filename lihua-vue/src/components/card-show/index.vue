@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { gsap } from 'gsap';
-import {onMounted, onUnmounted, ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, useTemplateRef, watch} from "vue";
 import type { CSSProperties } from 'vue';
 
 // 接受父组件参数
@@ -102,11 +102,11 @@ const emits = defineEmits(['cardClick','cardComplete','cardReady','cardReadyOver
 
 const initClick = () => {
   // 占位元素的ref
-  const placeholderRef = ref()
+  const placeholderRef = useTemplateRef<HTMLElement>("placeholderRef")
   // 容器元素ref
-  const containerRef = ref()
+  const containerRef = useTemplateRef<HTMLElement>("containerRef")
   // 详情ref
-  const detailRef = ref()
+  const detailRef = useTemplateRef<HTMLElement>("detailRef")
 
   // 展示的状态
   const showStatus = ref<StatusType>('ready')
@@ -131,7 +131,7 @@ const initClick = () => {
     }
     // 打开遮罩
     showMask.value = true
-    const bounding = containerRef.value.getBoundingClientRect()
+    const bounding = containerRef.value?.getBoundingClientRect()
     // 执行动画，先将缩放还原
     gsap.to('.' + props.cardKey, {
       scale: 1,
@@ -146,9 +146,9 @@ const initClick = () => {
         style.value = {position: 'fixed'}
         // 执行主要动画
         gsap.fromTo('.' + props.cardKey, {
-          width: bounding.width,
-          left: bounding.left,
-          top:  bounding.top
+          width: bounding?.width,
+          left: bounding?.left,
+          top:  bounding?.top
         },{
           left: innerWidth.value / 2 - getDetailWidth() / 2,
           top: props.expandedTop,
@@ -180,7 +180,7 @@ const initClick = () => {
     }
     // todo 点击遮罩函数
     emits('maskClick', props.cardKey)
-    const bounding = placeholderRef.value.getBoundingClientRect()
+    const bounding = placeholderRef.value?.getBoundingClientRect()
     // 状态修改为进行时
     showStatus.value = 'activity'
     // 关闭遮罩
@@ -189,10 +189,10 @@ const initClick = () => {
     showOverflowY()
     // 执行主要动画
     gsap.to('.' + props.cardKey, {
-      width: bounding.width,
-      height: bounding.height,
-      top: bounding.top,
-      left: bounding.left,
+      width: bounding?.width,
+      height: bounding?.height,
+      top: bounding?.top,
+      left: bounding?.left,
       duration: 0.3,
       ease: 'power1.out',
       onComplete: () => {
@@ -208,10 +208,15 @@ const initClick = () => {
 
   // 获取展开后高度
   const getDetailHeight = () => {
-    detailRef.value.style.display = 'block'
-    const bounding = detailRef.value.getBoundingClientRect()
-    detailRef.value.style.display = 'none'
-    return bounding.height
+    const ref = detailRef.value
+    if (ref) {
+      ref.style.display = 'block'
+      const bounding = ref.getBoundingClientRect()
+      ref.style.display = 'none'
+      return bounding?.height
+    }
+
+    return 0;
   }
 
   // 获取展开后的宽度
@@ -219,10 +224,16 @@ const initClick = () => {
     if (props.expandedWidth) {
       return props.expandedWidth
     }
-    detailRef.value.style.display = 'block'
-    const bounding = detailRef.value.getBoundingClientRect()
-    detailRef.value.style.display = 'none'
-    return bounding.width
+    const ref = detailRef.value
+
+    if (ref) {
+      ref.style.display = 'block'
+      const bounding = ref.getBoundingClientRect()
+      ref.style.display = 'none'
+      return bounding.width
+    }
+
+    return 0;
   }
 
   const hiddenOverflowY = () => {

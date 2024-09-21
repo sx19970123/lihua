@@ -355,13 +355,13 @@ import {
   importExcel
 } from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/Dict.ts"
-import {createVNode, h, reactive, ref, watch} from "vue";
+import {createVNode, h, reactive, ref, useTemplateRef, watch} from "vue";
 import CardSelect from "@/components/card-select/index.vue"
 import dayjs from "dayjs";
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
-import {message, TreeSelect, Modal} from "ant-design-vue";
+import {message, TreeSelect, Modal, type FormInstance} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import {flattenTreeData} from "@/utils/Tree.ts";
 import type {Rule} from "ant-design-vue/es/form";
@@ -545,7 +545,7 @@ initPage()
 // 数据保存相关
 const initSave = () => {
   // 表单实例
-  const formRef = ref()
+  const formRef = useTemplateRef<FormInstance>("formRef")
 
   // 表单验证
   const userRules: Record<string, Rule[]> = {

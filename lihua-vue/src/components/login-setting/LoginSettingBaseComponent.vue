@@ -45,7 +45,7 @@ import {useThemeStore} from "@/stores/modules/theme.ts";
 import {ref} from "vue";
 const themeStore = useThemeStore();
 // 父组件传值配置
-const {icon, title, description, skip, skipMsg, back, mainBtnTitle, showMainBtnIcon} = withDefaults(defineProps<{
+const { icon, title, description, skip = true, skipMsg, back = true, mainBtnTitle = '下一步', showMainBtnIcon = true } = defineProps<{
   // 图标
   icon: string;
   // 标题
@@ -62,13 +62,7 @@ const {icon, title, description, skip, skipMsg, back, mainBtnTitle, showMainBtnI
   mainBtnTitle?: string;
   // 下一步图标
   showMainBtnIcon?: boolean;
-
-}>(), {
-  skip: true,
-  back: true,
-  mainBtnTitle: '下一步',
-  showMainBtnIcon: true
-})
+}>()
 
 // 主按钮加载
 const mainBtnLoading = ref<boolean>(false)

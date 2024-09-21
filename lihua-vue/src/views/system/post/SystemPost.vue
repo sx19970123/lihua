@@ -249,14 +249,14 @@
 <script setup lang="ts">
 
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
-import {createVNode, reactive, ref, watch} from "vue";
+import {createVNode, reactive, ref, useTemplateRef, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {initDict} from "@/utils/Dict.ts";
 import {deleteData, exportExcel, findById, findPage, importExcel, save, updateStatus} from "@/api/system/post/Post.ts";
 import {useRoute} from "vue-router";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTreeData} from "@/utils/Tree.ts";
-import {message, Modal} from "ant-design-vue";
+import {type FormInstance, message, Modal} from "ant-design-vue";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
 import {downloadByPath, handleFunDownload} from "@/utils/FileDownload.ts";
@@ -426,7 +426,7 @@ const { postColumn,postList,postQuery,selectedIds,postRowSelectionType,handleRow
 // 保存岗位
 const initSave = () => {
 
-  const formRef = ref()
+  const formRef = useTemplateRef<FormInstance>("formRef")
 
   const sysPost = ref<SysPost>({
     status: '0'

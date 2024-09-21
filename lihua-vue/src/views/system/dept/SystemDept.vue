@@ -253,8 +253,8 @@ import {
   updateStatus,
   exportExcel, importExcel
 } from "@/api/system/dept/Dept.ts";
-import {createVNode, reactive, ref} from "vue";
-import {message, Modal} from "ant-design-vue";
+import {createVNode, reactive, ref, useTemplateRef} from "vue";
+import {type FormInstance, message, Modal} from "ant-design-vue";
 import {initDict} from "@/utils/Dict.ts";
 import {cloneDeep} from "lodash-es";
 import type {Rule} from "ant-design-vue/es/form";
@@ -441,7 +441,7 @@ const initSave = () => {
     ]
   }
   // 表单
-  const formRef = ref()
+  const formRef = useTemplateRef<FormInstance>("formRef")
 
   // 模态框状态
   type modalActiveType = {

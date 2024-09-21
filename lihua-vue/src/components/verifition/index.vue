@@ -33,7 +33,7 @@
  * */
 import VerifySlide from './Verify/VerifySlide.vue'
 import VerifyPoints from './Verify/VerifyPoints.vue'
-import {computed, ref, watch, toRefs, watchEffect} from 'vue';
+import {computed, ref, watch, toRefs, watchEffect, useTemplateRef} from 'vue';
 
 export default {
   name: 'Vue2Verify',
@@ -84,7 +84,7 @@ export default {
     const verifyType = ref(undefined)
     const componentType = ref(undefined)
 
-    const instance = ref({})
+    const instance = useTemplateRef("instance")
 
     const showBox = computed(() => {
       if (mode.value == 'pop') {

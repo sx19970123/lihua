@@ -224,12 +224,12 @@
 </template>
 <script setup lang="ts">
 import {initDict} from "@/utils/Dict.ts";
-import {reactive, ref} from "vue";
+import {reactive, ref, useTemplateRef} from "vue";
 import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/noice/type/SysNotice.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {deleteByIds, findById, findPage, release, revoke, save} from "@/api/system/noice/Notice.ts";
 import DictTag from "@/components/dict-tag/index.vue"
-import {message} from "ant-design-vue";
+import {type FormInstance, message} from "ant-design-vue";
 import dayjs from "dayjs";
 import Editor from "@/components/editor/index.vue"
 import ColorSelect from "@/components/color-select/index.vue"
@@ -370,7 +370,7 @@ const {selectedIds, noticeRowSelectionType, noticeColumn, noticeQuery, noticeLis
 
 // 表单保存
 const initSave = () => {
-  const formRef = ref()
+  const formRef = useTemplateRef<FormInstance>("formRef")
 
   // 模态框状态
   type modalActiveType = {

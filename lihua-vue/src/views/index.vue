@@ -1,9 +1,6 @@
 <template>
   <div>
-<!--    <login-setting/>-->
-<!--<a-button @click="prev">上一步</a-button>-->
-<!--<a-button @click="next">下一步</a-button>-->
-    <a-flex vertical :gap="16" v-if="false">
+    <a-flex vertical :gap="16">
       <a-flex :gap="16" vertical v-show="true">
         <card-show cardKey="s1"
                    style="width: 100%"
@@ -174,7 +171,6 @@
 <script setup lang="ts">
 import CardShow from '@/components/card-show/index.vue'
 import {ref} from "vue";
-import LoginSetting from "@/components/login-setting/index.vue";
 const middleComplete = ref<boolean>(false)
 const handleClick = (key:string,show:boolean) => {
   setTimeout(() => {

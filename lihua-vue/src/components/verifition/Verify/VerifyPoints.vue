@@ -51,7 +51,18 @@
 import {resetSize, _code_chars, _code_color1, _code_color2} from '../utils/Util.ts'
 import {aesEncrypt} from "../utils/Ase.ts"
 import {reqGet, reqCheck} from "../api/index.ts"
-import {computed, onMounted, reactive, ref, watch, nextTick, toRefs, watchEffect, getCurrentInstance} from 'vue';
+import {
+  computed,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+  nextTick,
+  toRefs,
+  watchEffect,
+  getCurrentInstance,
+  useTemplateRef
+} from 'vue';
 
 export default {
   name: 'VerifyPoints',
@@ -135,7 +146,7 @@ export default {
         return false
       }
     })
-    const canvas = ref(null)
+    const canvas = useTemplateRef("canvas")
     const canvasClick = (e) => {
       checkPosArr.push(getMousePos(canvas, e));
       if (num.value == checkNum.value) {

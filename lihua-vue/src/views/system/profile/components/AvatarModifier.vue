@@ -55,7 +55,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, useTemplateRef} from "vue";
 import ColorSelect from "@/components/color-select/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
 import ImageCropper from "@/components/image-cropper/index.vue"
@@ -124,7 +124,7 @@ const {
 } = init()
 
 // 头像选择ref
-const imageCropperRef = ref<InstanceType<typeof ImageCropper>>()
+const imageCropperRef = useTemplateRef<InstanceType<typeof ImageCropper>>("imageCropperRef")
 
 /**
  * 处理确认数据

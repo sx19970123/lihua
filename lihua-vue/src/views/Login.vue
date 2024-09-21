@@ -101,7 +101,7 @@
 import {useUserStore} from "@/stores/modules/user"
 import {useSettingStore} from "@/stores/modules/setting.ts";
 import {useRouter} from 'vue-router'
-import {onMounted, reactive, ref} from "vue"
+import {onMounted, reactive, ref, useTemplateRef} from "vue"
 import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
 import type {Rule} from "ant-design-vue/es/form";
@@ -114,7 +114,7 @@ import type {ResponseType} from "@/api/global/Type.ts";
 import {init} from "@/utils/AppInit.ts"
 import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
 const router = useRouter()
-const verifyRef = ref<InstanceType<typeof Verify>>()
+const verifyRef = useTemplateRef<InstanceType<typeof Verify>>("verifyRef")
 const rememberMe = ref<boolean>(token.enableRememberMe())
 const showSetting = ref<boolean>(false)
 const settingComponentNames = ref<string[]>([])

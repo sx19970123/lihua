@@ -78,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, useTemplateRef} from "vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
@@ -179,7 +179,7 @@ const handleFinish = () => {
 }
 
 // 验证码
-const verifyRef = ref<InstanceType<typeof Verify>>()
+const verifyRef = useTemplateRef<InstanceType<typeof Verify>>("verifyRef")
 const captchaType = ref<string>('blockPuzzle')
 // 随机加载滑块/点击验证码
 const loadVerify = () => {

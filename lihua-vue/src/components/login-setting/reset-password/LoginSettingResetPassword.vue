@@ -41,14 +41,14 @@
 
 <script setup lang="ts">
 import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
-import type {Ref} from "vue";
+import {type Ref, useTemplateRef} from "vue";
 
 import {reactive, ref} from "vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {updatePassword} from "@/api/system/profile/Profile.ts";
-import {message} from "ant-design-vue";
+import {type FormInstance, message} from "ant-design-vue";
 const passwordLevel = ref<number>(0)
-const resetPasswordRef = ref()
+const resetPasswordRef = useTemplateRef<FormInstance>("resetPasswordRef")
 // 向外抛出函数
 const emits = defineEmits(['back', 'skip', 'next'])
 
@@ -119,7 +119,7 @@ const handleChange = () => {
 
 // 修改密码后进入下一步
 const handleNext = async (loading:Ref<boolean>) => {
-  await resetPasswordRef.value.validate()
+  await resetPasswordRef.value?.validate()
   loading.value = true
   const resp = await updatePassword(password.oldPassword,password.newPassword)
   if (resp.code === 200) {

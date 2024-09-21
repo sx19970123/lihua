@@ -17,7 +17,7 @@
       <a-form-item label="手机号码" name="phoneNumber">
         <a-input class="form-item-width" placeholder="请输入手机号码" v-model:value="profileInfo.phoneNumber" allow-clear/>
       </a-form-item>
-      <a-form-item label="电子邮箱" name="email" ref="email">
+      <a-form-item label="电子邮箱" name="email">
         <a-auto-complete class="form-item-width" placeholder="请输入电子邮箱"  v-model:value="profileInfo.email" @search="emailHandleSearch" :options="emailOptions" allow-clear>
           <template #option="{ value: val }">
             {{ val.split('@')[0] }} @

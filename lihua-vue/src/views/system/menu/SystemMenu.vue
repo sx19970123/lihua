@@ -314,13 +314,13 @@
 // 列表查询相关
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
 import {deleteData, findById, findList, menuTreeOption, save, updateStatus} from "@/api/system/menu/Menu.ts";
-import {reactive, ref} from "vue";
+import {reactive, ref, useTemplateRef} from "vue";
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
 import { flattenTreeData} from "@/utils/Tree.ts"
 import type {Rule} from "ant-design-vue/es/form";
-import {message} from "ant-design-vue";
+import {type FormInstance, message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import { useThemeStore } from "@/stores/modules/theme";
 import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
@@ -543,7 +543,7 @@ const initSave = () => {
   })
 
   // 表单
-  const formRef = ref()
+  const formRef = useTemplateRef<FormInstance>("formRef")
 
   // 打开模态框（打开modal时会重制表单，应在方法最开始调用）
   const handleModelStatus = (title?: string) => {

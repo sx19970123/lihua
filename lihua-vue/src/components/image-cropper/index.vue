@@ -2,7 +2,7 @@
   <div>
     <a-flex vertical :gap="8">
       <div :style="{ height: props.height,width: props.wight}">
-        <vue-cropper ref="cropper"
+        <vue-cropper ref="cropperRef"
                      :img="img"
                      :outputSize="props.outputSize"
                      :outputType="props.outputType"
@@ -70,13 +70,12 @@
 <script setup lang="ts">
 import {VueCropper} from "vue-cropper";
 import 'vue-cropper/dist/index.css'
-import {defineProps, getCurrentInstance, ref} from 'vue';
+import {defineProps, ref, useTemplateRef} from 'vue';
 import type {CropperDataType} from "@/components/image-cropper/CropperType.ts";
 import {message} from "ant-design-vue";
 import {cloneDeep} from 'lodash-es'
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
-// 获取vue-cropper实例进行方法调用
-const { proxy }  = getCurrentInstance() as any;
+const cropperRef = useTemplateRef<InstanceType<typeof VueCropper>>("cropperRef")
 
 const props = defineProps({
   // 裁剪图片的地址 url 地址, base64, blob
@@ -201,9 +200,9 @@ const emit = defineEmits(['update:change','update:modelValue'])
 defineExpose({
   getBlob: () => {
     return new Promise((resolve, reject)=> {
-        proxy.$refs.cropper.getCropBlob((data: Blob) => {
+      cropperRef.value.getCropBlob((data: Blob) => {
           resolve(data)
-        })
+      })
     })
   }
 })
@@ -249,14 +248,14 @@ const handleCustomRequest = (uploadRequest: UploadRequestOption) => {
  * 左旋转
  */
 const rotateLeft = () => {
-  proxy.$refs.cropper.rotateLeft();
+  cropperRef.value.rotateLeft();
 }
 
 /**
  * 右旋转
  */
 const rotateRight = () => {
-  proxy.$refs.cropper.rotateRight();
+  cropperRef.value.rotateRight();
 }
 
 /**
@@ -264,7 +263,7 @@ const rotateRight = () => {
  * @param scale
  */
 const changeScale = (scale: number) => {
-  proxy.$refs.cropper.changeScale(scale);
+  cropperRef.value.changeScale(scale);
 }
 
 /**

@@ -14,8 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
-const carouselRef = ref()
+import {ref, useTemplateRef} from "vue";
+import type {CarouselRef} from "ant-design-vue/es/carousel";
+
+const carouselRef = useTemplateRef<CarouselRef>("carouselRef")
 
 // 需要加载的设置项集合
 const componentList = ref<string[]>(
@@ -34,18 +36,18 @@ componentList.value.splice(1, 0, ...props.componentNames)
 
 // 上一页
 const handleBack = () => {
-  carouselRef.value.prev()
+  carouselRef.value?.prev()
 }
 // 跳过
 const handleSkip = (loading:boolean) => {
   if (!loading) {
-    carouselRef.value.next()
+    carouselRef.value?.next()
   }
 }
 // 下一页
 const handleNext = (loading:boolean) => {
   if (!loading) {
-    carouselRef.value.next()
+    carouselRef.value?.next()
   }
 
 }
