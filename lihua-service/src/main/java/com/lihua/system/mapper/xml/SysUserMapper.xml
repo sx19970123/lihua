@@ -61,7 +61,8 @@
             email,
             remark,
             status,
-            password_update_time
+            password_update_time,
+            register_type
         FROM
             sys_user
         WHERE

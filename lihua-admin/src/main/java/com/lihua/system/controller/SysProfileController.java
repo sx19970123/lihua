@@ -3,7 +3,6 @@ package com.lihua.system.controller;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.exception.ServiceException;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysSetting;
 import com.lihua.system.entity.SysUser;
@@ -24,10 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-
-import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
 @RestController
 @RequestMapping("system/profile")

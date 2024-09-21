@@ -1,5 +1,5 @@
 <template>
-  <a-flex class="login-background" id="login-container" justify="center" align="center">
+  <a-flex class="login-background" justify="center" align="center">
       <a-flex class="login-content" justify="space-around" align="center" v-if="!showSetting">
 <!--        左侧标题-->
         <div class="slogan">
@@ -91,7 +91,7 @@
       />
     </transition>
     <head-theme-switch class="head-theme-switch"/>
-      <transition name="verify" mode="out-in">
+      <transition name="fade" mode="out-in">
         <login-setting :component-names="settingComponentNames" v-if="showSetting"></login-setting>
       </transition>
   </a-flex>
@@ -146,7 +146,6 @@ const initLogin = () => {
     loginForm.password = usernamePassword.password
   }
 }
-
 
 // 登录请求
 const login = async ({captchaVerification}: { captchaVerification: string }) => {
@@ -219,7 +218,6 @@ const captcha = async () => {
   }
 }
 
-
 // 判断重定向回来的参数，给用户合适的提示
 // 提示信息显示完成后销毁，刷新页面时不再提示
 const handleRedirect = () => {
@@ -263,26 +261,10 @@ const handleShowLogin = (clearLoginForm: boolean) => {
   }, 100)
 }
 
-// 指定背景动画起始秒数
-const nowDynamicBackground = () => {
-  // 获取当前时间
-  const now = new Date();
-  // 今天的起始时间
-  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-  // 当前时间的毫秒数
-  const secondsSinceStartOfDay = (now.getTime() - startOfDay.getTime()) / 1000;
-  const htmlElement = document.querySelector(".login-background") as HTMLElement
-  // 设置 login-background 背景动画起始秒数
-  if (htmlElement) {
-    htmlElement.style.animationDelay = secondsSinceStartOfDay + 's'
-  }
-}
-
 // 显示登录/注册组件
 const showLogin = ref<boolean>(true)
 
 onMounted(() => {
-  nowDynamicBackground()
   initLogin()
   handleRedirect()
   captcha()
@@ -295,10 +277,9 @@ onMounted(() => {
   position: relative;
   width: 100%;
   height: 100vh;
-  /**background-image: url("../assets/images/login-background.jpg");*/
   background-image:linear-gradient(-135deg,#C2FFD8 10%,#465EFB 100%);
   background-size: 200% 200%;
-  animation: gradientAnimation 86400s ease infinite;
+  animation: gradientAnimation 30s ease infinite;
 }
 
 .slogan-title {
@@ -403,14 +384,8 @@ onMounted(() => {
 
 <style>
 [data-theme = dark] {
-  .login-background:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+  .login-background {
+    background-image: linear-gradient(-135deg, #1F7A56 0%, #2C3690 100%);
   }
 }
 </style>

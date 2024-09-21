@@ -98,10 +98,25 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
         // 检查密码
         checkUpdatePassword(loginSettingComponentNameList, loginUser, password);
+        // 检查是否为自助注册并首次登录用户
+        checkNewUserBasicInfo(loginSettingComponentNameList, loginUser);
         // 检查默认部门
         checkDefaultDept(loginSettingComponentNameList, loginUser);
 
         return loginSettingComponentNameList;
+    }
+
+    // 判断是否需要完善用户信息
+    private void checkNewUserBasicInfo(List<String> loginSettingComponentNameList, LoginUser loginUser) {
+        String registerType = loginUser.getUser().getRegisterType();
+
+        if ("0".equals(registerType)) {
+            return;
+        }
+
+        if (loginUser.getUser().getNickname() == null && loginUser.getUser().getGender() == null) {
+            loginSettingComponentNameList.add("LoginSettingUserBasics");
+        }
     }
 
     // 判断是否需要修改密码（登录密码与默认密码相同 或 到达管理员配置的修改密码时间）

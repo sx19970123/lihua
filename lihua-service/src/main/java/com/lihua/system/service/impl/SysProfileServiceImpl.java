@@ -130,7 +130,7 @@ public class SysProfileServiceImpl implements SysProfileService {
         if (sysUsers.get(0).getId().equals(userId)) {
             return;
         }
-        throw new ServiceException("当前手机号码已存在");
+        throw new ServiceException("当前邮箱已存在");
     }
 
 }

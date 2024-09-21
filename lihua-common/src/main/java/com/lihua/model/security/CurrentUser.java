@@ -71,4 +71,11 @@ public class CurrentUser implements Serializable {
      * 密码更新时间
      */
     private LocalDateTime passwordUpdateTime;
+
+    /**
+     * 注册类型
+     * 0：管理员注册
+     * 1：自助注册
+     */
+    private String registerType;
 }

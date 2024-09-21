@@ -11,7 +11,7 @@ export const saveTheme = (themeJson: string) => {
     })
 }
 
-export const saveBasics = (userInfo: {avatar: string,nickname: string,gender:string,email:string,phoneNumber:string}) => {
+export const saveBasics = (userInfo: {avatar?: string,nickname?: string,gender?:string,email?:string,phoneNumber?:string}) => {
     return request({
         url: '/system/profile/basics',
         data: userInfo,

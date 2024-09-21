@@ -21,8 +21,6 @@ const carouselRef = ref()
 const componentList = ref<string[]>(
     [
       'LoginSettingStart',
-      // 'LoginSettingResetPassword',
-      // 'LoginSettingDefaultDept',
       'LoginSettingComplete'
     ]
 )
@@ -33,7 +31,7 @@ const props = defineProps<{
 
 // 组合配置项
 componentList.value.splice(1, 0, ...props.componentNames)
-console.log(componentList.value)
+
 // 上一页
 const handleBack = () => {
   carouselRef.value.prev()

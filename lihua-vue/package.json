@@ -24,10 +24,10 @@
     "lodash": "^4.17.21",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
-    "vditor": "^3.10.4",
-    "vue": "^3.4.35",
+    "vditor": "^3.10.6",
+    "vue": "^3.5.7",
     "vue-cropper": "^1.0.9",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.4.5"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.2",

@@ -9,21 +9,18 @@
   >
     <template #content>
       <a-form :colon="false" ref="resetPasswordRef" :model="password" :rules="rules">
-        <a-form-item label="" name="oldPassword">
-          <a-input-password class="form-item-width"
-                            placeholder="请输入旧密码"
+        <a-form-item name="oldPassword">
+          <a-input-password placeholder="请输入旧密码"
                             v-model:value="password.oldPassword"
                             />
         </a-form-item>
-        <a-form-item label="" name="newPassword">
-          <a-input-password class="form-item-width"
-                            v-model:value="password.newPassword"
+        <a-form-item name="newPassword">
+          <a-input-password v-model:value="password.newPassword"
                             placeholder="请输入新密码"
                             @change="handleChange"
                             />
           <div>
-            <a-progress class="form-item-width"
-                        style="margin: 0"
+            <a-progress style="margin: 0"
                         :showInfo="false"
                         :size="[90,3]"
                         :steps="3"
@@ -31,7 +28,7 @@
                         :strokeColor="['#ff4d4f','#faad14','#52c41a']"/>
           </div>
         </a-form-item>
-        <a-form-item label="" name="confirmPassword" >
+        <a-form-item name="confirmPassword" >
           <a-input-password class="form-item-width"
                             placeholder="请再次输入新密码"
                             v-model:value="password.confirmPassword"

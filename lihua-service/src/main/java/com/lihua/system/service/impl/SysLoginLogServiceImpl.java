@@ -67,6 +67,8 @@ public class SysLoginLogServiceImpl implements SysLogService {
             queryWrapper.lambda().between(SysLogVO::getCreateTime, sysLogDTO.getCreateTimeList().get(0), sysLogDTO.getCreateTimeList().get(1));
         }
 
+        queryWrapper.lambda().orderByDesc(SysLogVO::getId);
+
         sysLoginLogMapper.selectPage(iPage, queryWrapper);
         return iPage;
     }
