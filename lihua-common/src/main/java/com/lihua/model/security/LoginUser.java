@@ -73,6 +73,11 @@ public class LoginUser implements UserDetails {
     private LocalDateTime expirationTime;
 
 
+    /**
+     * redis 中对应的缓存key
+     */
+    private String cacheKey;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         permissionList = authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());

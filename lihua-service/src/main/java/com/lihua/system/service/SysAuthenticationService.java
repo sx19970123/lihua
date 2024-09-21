@@ -15,13 +15,29 @@ public interface SysAuthenticationService {
      * @param currentUser
      * @return
      */
-    Map<String, String> login(CurrentUser currentUser);
+    LoginUser login(CurrentUser currentUser);
 
     /**
-     * 缓存用户登录信息
+     * 登录后必要信息校验，对应于前端 components/login-setting 下的组件进行处理
      * @param loginUser
+     * @param password
+     * @return
      */
-    void cacheUserLoginDetails(LoginUser loginUser);
+    String checkLoginSetting(LoginUser loginUser, String password);
+
+    /**
+     * 缓存用户信息
+     * @param loginUser
+     * @return redis缓存key
+     */
+    String cacheLoginUserInfo(LoginUser loginUser);
+
+    /**
+     * 缓存用户信息并返回token
+     * @param loginUser 登录用户信息
+     * @return token
+     */
+    String cacheAndCreateToken(LoginUser loginUser);
 
     /**
      * 检查用户名是否重复

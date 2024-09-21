@@ -7,6 +7,9 @@ import com.lihua.model.security.LoginUser;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.spring.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -33,17 +36,14 @@ public class LoginUserManager {
      * @return
      */
     public static LoginUser getLoginUser(String token) {
-//        try {
-//            JwtUtils.verify(token);
-//        } catch (Exception e) {
-//            throw new ServiceException("无效的token");
-//        }
 
         String decode = JwtUtils.decode(token);
-        log.debug("\n当前用户token为：{}\n解密后主键id为：{}", token, decode);
+        log.debug("\ntoken：【{}】\ndecode：【{}】", token, decode);
 
         try {
-            return redisCache.getCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
+            LoginUser loginUser = redisCache.getCacheObject(decode);
+            loginUser.setCacheKey(decode);
+            return loginUser;
         } catch (Exception e) {
             log.error("从redis获取LoginUser发生异常，请检查redis状态", e);
         }
@@ -56,22 +56,33 @@ public class LoginUserManager {
     public static void verifyLoginUserCache() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
         if (DateUtils.differenceMinute(loginUser.getExpirationTime(),DateUtils.now()) < lihuaConfig().getRefreshThreshold()) {
-            setLoginUserCache(loginUser);
+            redisCache.setExpire(loginUser.getCacheKey(), lihuaConfig().getTokenExpireTime(), TimeUnit.MINUTES);
         }
     }
 
     /**
      * 设置 redis 缓存
-     * @param loginUser
+     * @param loginUser 登录用户信息
+     * @return redis缓存key
      */
-    public static void setLoginUserCache(LoginUser loginUser) {
+    public static String setLoginUserCache(LoginUser loginUser) {
         // 记录过期时间
         loginUser.setExpirationTime(DateUtils.now().plusMinutes(lihuaConfig().getTokenExpireTime()));
+
+        // 当 loginUser 的 cacheKey 不存在，即为新登录用户，重新生成cacheKey，其余情况均为刷新缓存
+        String cacheKey = loginUser.getCacheKey();
+        if (!StringUtils.hasText(cacheKey)) {
+            cacheKey = getLoginUserKey(loginUser.getUser().getId());
+        }
+
         // 设置缓存
-        redisCache.setCacheObject(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + loginUser.getUser().getId(),
+        redisCache.setCacheObject(cacheKey,
                 loginUser,
                 lihuaConfig().getTokenExpireTime(),
                 TimeUnit.MINUTES);
+
+        // 缓存key
+        return cacheKey;
     }
 
     /**
@@ -80,7 +91,20 @@ public class LoginUserManager {
      */
     public static void removeLoginUserCache(String token) {
         String decode = JwtUtils.decode(token);
-        redisCache.delete(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + decode);
+        redisCache.delete(decode);
+    }
+
+    /**
+     * 获取 redis 存储的用户key
+     * 用户key由四部分组成 1. 固定前缀 2. 无 - uuid随机数 3.用户id 4.当前时间戳，中间由:连接
+     * @param userId
+     * @return
+     */
+    private static String getLoginUserKey(String userId) {
+        return SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue()
+                + UUID.randomUUID().toString().replace("-", "") + ":"
+                + userId + ":"
+                + System.currentTimeMillis();
     }
 
 }

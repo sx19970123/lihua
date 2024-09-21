@@ -1,6 +1,5 @@
 package com.lihua.handle;
 
-import com.lihua.enums.ConstantEnum;
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.web.BaseController;
 import com.lihua.utils.security.LoginUserManager;

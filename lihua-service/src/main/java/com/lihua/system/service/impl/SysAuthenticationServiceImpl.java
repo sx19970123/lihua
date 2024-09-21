@@ -68,32 +68,14 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     private final String patternComponentName =  "([^/]+)\\.vue$";
 
     @Override
-    public Map<String, String> login(CurrentUser currentUser) {
-        Map<String, String> map = new HashMap<>();
+    public LoginUser login(CurrentUser currentUser) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(currentUser.getUsername(), currentUser.getPassword()));
-        LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-        // 处理登录用户信息，将用户基本数据存入 LoginUser 后存入 redis
-        cacheUserLoginDetails(loginUser);
-        // 检查登录后的必要配置
-        List<String> loginSettingComponentNameList = checkLoginSetting(loginUser, currentUser.getPassword());
-
-        // 返回需要配置的组件名称
-        if (!loginSettingComponentNameList.isEmpty()) {
-            map.put("setting", String.join(",", loginSettingComponentNameList));
-        }
-        // 返回token
-        map.put("token", JwtUtils.create(loginUser.getUser().getId()));
-        // 根据username 生成jwt 返回
-        return map;
+        return  (LoginUser) authenticate.getPrincipal();
     }
 
-    /**
-     * 登录后必要信息校验，对应于前端 components/login-setting 下的组件进行处理
-     * LoginSettingResetPassword：登陆后修改密码
-     * LoginSettingDefaultDept：登录后选择默认部门
-     * @param loginUser
-     */
-    private List<String> checkLoginSetting(LoginUser loginUser, String password) {
+
+    @Override
+    public String checkLoginSetting(LoginUser loginUser, String password) {
         List<String> loginSettingComponentNameList = new ArrayList<>();
 
         // 检查密码
@@ -103,8 +85,15 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         // 检查默认部门
         checkDefaultDept(loginSettingComponentNameList, loginUser);
 
-        return loginSettingComponentNameList;
+        // 将对应组件名称处理为逗号分割返回
+        String loginSettingComponentName = null;
+        if (!loginSettingComponentNameList.isEmpty()) {
+            loginSettingComponentName = String.join(",", loginSettingComponentNameList);
+        }
+
+        return loginSettingComponentName;
     }
+
 
     // 判断是否需要完善用户信息
     private void checkNewUserBasicInfo(List<String> loginSettingComponentNameList, LoginUser loginUser) {
@@ -187,12 +176,8 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     }
 
 
-    /**
-     * 根据业务需要，可将用户数据存入 LoginUser 业务中可直接获取使用
-     * @param loginUser
-     */
     @Override
-    public void cacheUserLoginDetails(LoginUser loginUser) {
+    public String cacheLoginUserInfo(LoginUser loginUser) {
         String id = loginUser.getUser().getId();
         // 角色信息
         boolean isAdmin = isAdmin(id);
@@ -239,7 +224,13 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             .setAuthorities(authorities);
 
         // 设置redis缓存
-        LoginUserManager.setLoginUserCache(loginUser);
+        return LoginUserManager.setLoginUserCache(loginUser);
+    }
+
+    @Override
+    public String cacheAndCreateToken(LoginUser loginUser) {
+        String redisKey = cacheLoginUserInfo(loginUser);
+        return JwtUtils.create(redisKey);
     }
 
     @Override

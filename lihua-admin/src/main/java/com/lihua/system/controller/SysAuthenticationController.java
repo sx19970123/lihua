@@ -14,12 +14,14 @@ import com.lihua.model.web.BaseController;
 import com.lihua.system.model.dto.SysRegisterDTO;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysSettingService;
+import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -54,10 +56,14 @@ public class SysAuthenticationController extends BaseController {
             }
         }
 
-        // 调用登录返回token和配置（如果需要的话）
-        Map<String, String> login = sysAuthenticationService.login(currentUser);
+        // 1.用户登录
+        LoginUser loginUser = sysAuthenticationService.login(currentUser);
+        // 2.生成token
+        String token = sysAuthenticationService.cacheAndCreateToken(loginUser);
+        // 3.根据登录的用户信息，判断是否需要进行登陆后配置
+        String loginSettingComponentName = sysAuthenticationService.checkLoginSetting(loginUser, currentUser.getPassword());
 
-        return success(ResultCodeEnum.SUCCESS, login.get("setting"), login.get("token"));
+        return success(ResultCodeEnum.SUCCESS, loginSettingComponentName, token);
     }
 
     /**
@@ -88,7 +94,7 @@ public class SysAuthenticationController extends BaseController {
      */
     @PostMapping("reloadData")
     public String reloadData() {
-        sysAuthenticationService.cacheUserLoginDetails(LoginUserContext.getLoginUser());
+        sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser());
         return success();
     }
 
