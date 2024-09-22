@@ -6,6 +6,7 @@ import com.lihua.system.entity.SysUser;
 import com.lihua.system.model.dto.SysUserDTO;
 import com.lihua.system.model.vo.SysUserVO;
 
+import java.io.File;
 import java.util.List;
 
 public interface SysUserService {
@@ -75,4 +76,11 @@ public interface SysUserService {
      * @return
      */
     List<String> findAllUserIds();
+
+    /**
+     * 重置密码
+     * @param sysUser
+     * @return
+     */
+    String resetPassword(SysUser sysUser);
 }

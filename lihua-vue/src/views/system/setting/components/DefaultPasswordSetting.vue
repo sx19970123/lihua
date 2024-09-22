@@ -10,19 +10,7 @@
             <QuestionCircleOutlined style="margin-left: 4px"/>
           </a-tooltip>
         </template>
-        <a-input-password placeholder="请输入默认密码"
-                          v-model:value="settingForm.defaultPassword"
-                          @change="handleChange"
-        ></a-input-password>
-        <div>
-          <a-progress class="form-item-width"
-                      style="margin: 0"
-                      :showInfo="false"
-                      :size="[90,3]"
-                      :steps="3"
-                      :percent="passwordLevel"
-                      :strokeColor="['#ff4d4f','#faad14','#52c41a']"/>
-        </div>
+        <password-input class="form-item-width" v-model:value="settingForm.defaultPassword" placeholder="请输入默认密码" :size="90"/>
       </a-form-item>
       <a-form-item>
         <a-button type="primary" html-type="submit">提 交</a-button>
@@ -38,6 +26,7 @@ import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
+import PasswordInput from "@/components/password-input/index.vue";
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
 
@@ -63,30 +52,6 @@ const setting = ref<SystemSetting>({
   settingComponentName: componentName,
   settingJson: JSON.stringify(settingForm.value)
 })
-
-// 密码强度级别
-const passwordLevel = ref<number>(0)
-
-// 处理显示密码强度
-const handleChange = () => {
-  const weakRegex = /^(?=.*[a-zA-Z])[\w!@#$%^&*]{6,}$/;
-  const mediumRegex = /^(?=.*\d)(?=.*[a-zA-Z])[\w!@#$%^&*]{8,}$/;
-  const strongRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?=.*[\w!@#$%^&*]).{10,}$/;
-  const password = settingForm.value.defaultPassword
-  if (password) {
-    if (weakRegex.test(password)){
-      passwordLevel.value = 30
-    }
-    if (mediumRegex.test(password)){
-      passwordLevel.value = 60
-    }
-    if (strongRegex.test(password)){
-      passwordLevel.value = 90
-    }
-  } else {
-    passwordLevel.value = 0
-  }
-}
 
 const rules: Record<string, Rule[]> = {
   defaultPassword: [

@@ -46,6 +46,19 @@ export const deleteByIds = (ids: string[]) => {
     })
 }
 
+// 重置密码
+export const resetPassword = (userId?: string, username?: string, password?: string) => {
+    return request<string>({
+        url: 'system/user/resetPassword',
+        method: 'post',
+        data: {
+            id: userId,
+            username: username,
+            password: password
+        }
+    })
+}
+
 // 根据部门id获取用户选项
 export const getUserOption = (deptId: string) => {
     return request<SysUser[]>({

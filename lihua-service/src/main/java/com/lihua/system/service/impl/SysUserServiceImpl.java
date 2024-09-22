@@ -22,6 +22,7 @@ import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
+import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +35,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static com.lihua.enums.ResultCodeEnum.ACCESS_ERROR;
 
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  implements SysUserService {
@@ -378,6 +381,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         queryWrapper.lambda().select(SysUser::getId)
                 .eq(SysUser::getDelFlag, "0");
         return sysUserMapper.selectList(queryWrapper).stream().map(SysUser::getId).toList();
+    }
+
+    @Override
+    public String resetPassword(SysUser sysUser) {
+        LocalDateTime now = LocalDateTime.now();
+        UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.lambda()
+                        .eq(SysUser::getId, sysUser.getId())
+                        .eq(SysUser::getUsername,sysUser.getUsername())
+                        .set(SysUser::getPassword, SecurityUtils.encryptPassword(sysUser.getPassword()))
+                        .set(SysUser::getPasswordUpdateTime, now)
+                        .set(SysUser::getUpdateId, LoginUserContext.getUserId())
+                        .set(SysUser::getUpdateTime, now);
+        sysUserMapper.update(updateWrapper);
+        return sysUser.getId();
     }
 
     /**

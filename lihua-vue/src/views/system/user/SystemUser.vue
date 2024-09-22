@@ -69,7 +69,6 @@
                :data-source="userList"
                :loading="queryLoading"
                :pagination="false"
-
                :row-selection="userRowSelectionType"
                row-class-name="hover-cursor-pointer"
                :custom-row="handleRowClick"
@@ -168,6 +167,13 @@
                 <EditOutlined />
               </template>
               编辑
+            </a-button>
+            <a-divider type="vertical"/>
+            <a-button type="link" size="small" @click="(event: MouseEvent) => handleOpenResetPasswordModel(event, record)">
+              <template #icon>
+                <KeyOutlined />
+              </template>
+              重置密码
             </a-button>
             <a-divider type="vertical"/>
             <a-popconfirm title="删除后不可恢复，是否删除？"
@@ -338,6 +344,27 @@
         </a-popover>
       </template>
     </a-modal>
+
+<!--    重置密码-->
+     <a-modal v-model:open="showResetPassword" width="400px">
+       <template #title>
+         <div style="margin-bottom: 24px">
+           <a-typography-title :level="4">重置{{targetUserInfo.nickname ? targetUserInfo.nickname + '的' : ''}}密码</a-typography-title>
+         </div>
+       </template>
+       <a-form :model="resetPasswordForm" :rules="defaultPasswordRules" ref="resetPasswordRef">
+         <a-form-item name="password" class="form-item-single-line">
+           <password-input v-model:value="resetPasswordForm.password" placeholder="请输入密码" :size="116"/>
+         </a-form-item>
+         <div style="margin-top: 8px;">
+           <a-checkbox v-model:checked="useDefaultPassword" @change="handleChangeUseDefaultPassword">使用默认密码</a-checkbox>
+         </div>
+       </a-form>
+       <template #footer>
+         <a-button @click="showResetPassword = false">关 闭</a-button>
+         <a-button type="primary" @click="handleResetPassword" :loading="resetPasswordLoading">保 存</a-button>
+       </template>
+     </a-modal>
   </div>
 </template>
 
@@ -352,11 +379,12 @@ import {
   deleteByIds,
   updateStatus,
   exportExcel,
-  importExcel
+  importExcel, resetPassword
 } from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/Dict.ts"
-import {createVNode, h, reactive, ref, useTemplateRef, watch} from "vue";
+import {createVNode, onMounted, reactive, ref, useTemplateRef, watch} from "vue";
 import CardSelect from "@/components/card-select/index.vue"
+import PasswordInput from "@/components/password-input/index.vue"
 import dayjs from "dayjs";
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
@@ -471,7 +499,7 @@ const initSearch = () => {
       key: 'action',
       dataIndex: 'action',
       align: 'center',
-      width: '190px'
+      width: '292px'
     }
   ]
 
@@ -540,7 +568,6 @@ const initSearch = () => {
   }
 }
 const {userColumn,userQuery,userList,userTotal,queryLoading,userRowSelectionType,selectedIds,handleRowClick,initPage,queryPage,resetPage } = initSearch()
-initPage()
 
 // 数据保存相关
 const initSave = () => {
@@ -652,7 +679,7 @@ const initSave = () => {
   // 保存用户信息
   const saveUser = async () => {
     try {
-      await formRef.value.validate()
+      await formRef.value?.validate()
       modalActive.saveLoading = true
       sysUserDTO.value.deptIdList = handleDeptIdList()
       sysUserDTO.value.phoneNumber === "" ? sysUserDTO.value.phoneNumber = undefined : sysUserDTO.value.phoneNumber
@@ -1010,6 +1037,7 @@ const initPostData = () => {
 }
 const {sysPostList, postLoading, initPostTag, toPostForm ,handleSelectPostId,initPostByDeptIds,handleDeptIdList} = initPostData()
 
+// 删除
 const intiDelete = () => {
   // 显示删除提示
   const openDeletePopconfirm = ref<boolean>(false);
@@ -1056,7 +1084,6 @@ const intiDelete = () => {
     openDeletePopconfirm
   }
 }
-
 const {handleDelete,closePopconfirm,openPopconfirm,openDeletePopconfirm} = intiDelete()
 
 // 初始化excel导入导出相关操作
@@ -1114,8 +1141,81 @@ const initExcel = () => {
     handleCustomRequest
   }
 }
-
 const { handleExportExcel, handleBeforeUpdate, handleCustomRequest } = initExcel()
+
+// 重置密码
+const initResetPassword = () => {
+  // 控制重置密码模态框
+  const showResetPassword = ref<boolean>(false)
+  // 目标用户
+  const targetUserInfo = ref<SysUserVO>({})
+  // 使用默认密码开关
+  const useDefaultPassword = ref<boolean>(true)
+  // 正在保存按钮加载
+  const resetPasswordLoading = ref<boolean>(false)
+  // 表单实例
+  const resetPasswordRef = useTemplateRef<FormInstance>("resetPasswordRef")
+  // 是否使用默认密码
+  const handleChangeUseDefaultPassword = () => {
+    if (!useDefaultPassword.value) {
+      resetPasswordForm.value.password = ''
+      resetPasswordRef.value?.validate()
+    } else {
+      resetPasswordForm.value.password = settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")?.defaultPassword
+      resetPasswordRef.value?.clearValidate()
+    }
+  }
+  // 表单验证
+  const defaultPasswordRules: Record<string, Rule[]> = {
+    password: [
+      {required: true, message: "请填写密码", trigger: ['blur', 'change']},
+      { min: 6, max: 30, message: '密码长度6-30位', trigger: ['blur', 'change']}
+    ]
+  }
+  // 重置密码表单
+  const resetPasswordForm = ref<{
+    password?: string
+  }>({
+    password: settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")?.defaultPassword
+  })
+  // 触发打开模态框
+  const handleOpenResetPasswordModel = (event: MouseEvent, targetUser: SysUserVO) => {
+    event.stopPropagation()
+    targetUserInfo.value = targetUser
+    showResetPassword.value = true
+  }
+  // 处理修改密码
+  const handleResetPassword = async () => {
+    await resetPasswordRef.value?.validate()
+    resetPasswordLoading.value = true
+    const resp = await resetPassword(targetUserInfo.value.id, targetUserInfo.value.username, resetPasswordForm.value.password)
+    if (resp.code === 200) {
+      showResetPassword.value = false
+      message.success(resp.msg)
+    } else {
+      message.error(resp.msg)
+    }
+
+    resetPasswordLoading.value = false
+  }
+
+  return {
+    showResetPassword,
+    targetUserInfo,
+    resetPasswordForm,
+    useDefaultPassword,
+    defaultPasswordRules,
+    resetPasswordLoading,
+    handleChangeUseDefaultPassword,
+    handleOpenResetPasswordModel,
+    handleResetPassword
+  }
+}
+const {showResetPassword, targetUserInfo, resetPasswordForm, useDefaultPassword, defaultPasswordRules, resetPasswordLoading, handleChangeUseDefaultPassword, handleOpenResetPasswordModel, handleResetPassword} = initResetPassword()
+
+onMounted(() => {
+  initPage()
+})
 
 // 监听关键词筛选
 watch(() => deptKeyword.value, (value) => {

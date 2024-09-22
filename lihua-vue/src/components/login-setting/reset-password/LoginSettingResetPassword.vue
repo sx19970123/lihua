@@ -8,33 +8,24 @@
                                 @back="emits('back')"
   >
     <template #content>
-      <a-form :colon="false" ref="resetPasswordRef" :model="password" :rules="rules">
-        <a-form-item name="oldPassword">
-          <a-input-password placeholder="请输入旧密码"
-                            v-model:value="password.oldPassword"
-                            />
-        </a-form-item>
-        <a-form-item name="newPassword">
-          <a-input-password v-model:value="password.newPassword"
-                            placeholder="请输入新密码"
-                            @change="handleChange"
-                            />
-          <div>
-            <a-progress style="margin: 0"
-                        :showInfo="false"
-                        :size="[90,3]"
-                        :steps="3"
-                        :percent="passwordLevel"
-                        :strokeColor="['#ff4d4f','#faad14','#52c41a']"/>
-          </div>
-        </a-form-item>
-        <a-form-item name="confirmPassword" >
-          <a-input-password class="form-item-width"
-                            placeholder="请再次输入新密码"
-                            v-model:value="password.confirmPassword"
-                         />
-        </a-form-item>
-      </a-form>
+      <div style="width: 280px">
+        <a-form :colon="false" ref="resetPasswordRef" :model="password" :rules="rules">
+          <a-form-item name="oldPassword">
+            <a-input-password placeholder="请输入旧密码"
+                              v-model:value="password.oldPassword"
+            />
+          </a-form-item>
+          <a-form-item name="newPassword">
+            <password-input class="form-item-width" v-model:value="password.newPassword" placeholder="请输入新密码" :size="92"/>
+          </a-form-item>
+          <a-form-item name="confirmPassword" >
+            <a-input-password class="form-item-width"
+                              placeholder="请再次输入新密码"
+                              v-model:value="password.confirmPassword"
+            />
+          </a-form-item>
+        </a-form>
+      </div>
     </template>
   </login-setting-base-component>
 </template>
@@ -43,11 +34,11 @@
 import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
 import {type Ref, useTemplateRef} from "vue";
 
-import {reactive, ref} from "vue";
+import {reactive} from "vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {updatePassword} from "@/api/system/profile/Profile.ts";
 import {type FormInstance, message} from "ant-design-vue";
-const passwordLevel = ref<number>(0)
+import PasswordInput from "@/components/password-input/index.vue";
 const resetPasswordRef = useTemplateRef<FormInstance>("resetPasswordRef")
 // 向外抛出函数
 const emits = defineEmits(['back', 'skip', 'next'])
@@ -94,28 +85,6 @@ const rules: Record<string, Rule[]> = {
   ]
 }
 
-/**
- * 处理密码强度提示
- */
-const handleChange = () => {
-  const weakRegex = /^(?=.*[a-zA-Z])[\w!@#$%^&*]{6,}$/;
-  const mediumRegex = /^(?=.*\d)(?=.*[a-zA-Z])[\w!@#$%^&*]{8,}$/;
-  const strongRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?=.*[\w!@#$%^&*]).{10,}$/;
-  const newPassword = password.newPassword
-  if (newPassword) {
-    if (weakRegex.test(newPassword)){
-      passwordLevel.value = 30
-    }
-    if (mediumRegex.test(newPassword)){
-      passwordLevel.value = 60
-    }
-    if (strongRegex.test(newPassword)){
-      passwordLevel.value = 90
-    }
-  } else {
-    passwordLevel.value = 0
-  }
-}
 
 // 修改密码后进入下一步
 const handleNext = async (loading:Ref<boolean>) => {

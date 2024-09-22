@@ -4,7 +4,9 @@ import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
+import com.lihua.system.entity.SysUser;
 import com.lihua.system.model.dto.SysUserDTO;
+import com.lihua.system.model.validation.ProfileValidation;
 import com.lihua.system.model.vo.SysUserVO;
 import com.lihua.system.service.SysUserService;
 import com.lihua.utils.excel.ExcelUtils;
@@ -60,6 +62,13 @@ public class SysUserController extends BaseController {
     public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysUserService.deleteByIds(ids);
         return success();
+    }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("resetPassword")
+    @Log(description = "重置密码", type = LogTypeEnum.SAVE, excludeParams = {"password"})
+    public String resetPassword(@RequestBody @Validated(ProfileValidation.ResetPassword.class) SysUser sysUser) {
+        return success(sysUserService.resetPassword(sysUser));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")

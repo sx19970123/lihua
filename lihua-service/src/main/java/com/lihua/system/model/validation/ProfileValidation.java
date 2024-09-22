@@ -7,4 +7,7 @@ public class ProfileValidation {
 
     // 验证保存主题
     public interface ProfileThemeValidation{}
+
+    // 验证重置密码
+    public interface ResetPassword{}
 }
