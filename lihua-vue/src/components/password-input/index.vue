@@ -33,18 +33,19 @@ const handleChangePassword = () => {
   const strongRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?=.*[\w!@#$%^&*]).{10,}$/;
   const passwordValue = password.value
   if (passwordValue) {
-    if (weakRegex.test(passwordValue)){
-      passwordLevel.value = 30
-    }
-    if (mediumRegex.test(passwordValue)){
-      passwordLevel.value = 60
-    }
-    if (strongRegex.test(passwordValue)){
+    if (strongRegex.test(passwordValue) ){
       passwordLevel.value = 90
+    } else if (mediumRegex.test(passwordValue)){
+      passwordLevel.value = 60
+    } else if (weakRegex.test(passwordValue)){
+      passwordLevel.value = 30
+    } else {
+      passwordLevel.value = 10
     }
   } else {
     passwordLevel.value = 10
   }
+
 
   emits('update:value', passwordValue)
 }

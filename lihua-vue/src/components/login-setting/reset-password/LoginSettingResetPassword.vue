@@ -3,6 +3,7 @@
                                 description="为了确保您的账户安全，请修改密码"
                                 icon="LockOutlined"
                                 skip-msg="可在个人中心 - 安全设置进行设置"
+                                :skip="false"
                                 @next="handleNext"
                                 @skip="handleSkip"
                                 @back="emits('back')"
