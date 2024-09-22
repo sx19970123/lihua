@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -52,6 +53,16 @@ public class RedisCache<T> {
      */
     public Boolean hasKey(String key) {
         return redisTemplate.hasKey(key);
+    }
+
+    /**
+     * 根据前缀获取存在的keys
+     * @param prefix
+     * @return
+     */
+    public Set<String> keys(String prefix) {
+        Set<String> keys = redisTemplate.keys(prefix + "*");
+        return keys;
     }
 
     /**

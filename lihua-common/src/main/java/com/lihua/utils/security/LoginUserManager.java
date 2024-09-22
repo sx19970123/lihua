@@ -3,6 +3,7 @@ package com.lihua.utils.security;
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
 import com.lihua.enums.SysBaseEnum;
+import com.lihua.exception.ServiceException;
 import com.lihua.model.security.LoginUser;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.spring.SpringUtils;
@@ -96,15 +97,34 @@ public class LoginUserManager {
 
     /**
      * 获取 redis 存储的用户key
-     * 用户key由四部分组成 1. 固定前缀 2. 无 - uuid随机数 3.用户id 4.当前时间戳，中间由:连接
+     * 用户key由四部分组成 1.固定前缀 2.用户id 3.当前时间戳 4.uuid随机数，中间由:连接
      * @param userId
      * @return
      */
     private static String getLoginUserKey(String userId) {
         return SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue()
-                + UUID.randomUUID().toString().replace("-", "") + ":"
                 + userId + ":"
-                + System.currentTimeMillis();
+                + System.currentTimeMillis() + ":"
+                + UUID.randomUUID().toString().replace("-", "");
+
+    }
+
+    /**
+     * 通过缓存cacheKey获取用户id
+     * @param cacheKey
+     * @return
+     */
+    public static String getUserIdByCacheKey(String cacheKey) {
+        if (!StringUtils.hasText(cacheKey)) {
+            throw new ServiceException("空的 cacheKey");
+        }
+        String[] keySplit = cacheKey.split(":");
+
+        if (keySplit.length != 4) {
+            throw new ServiceException("无效的 cacheKey");
+        }
+
+        return keySplit[1];
     }
 
 }

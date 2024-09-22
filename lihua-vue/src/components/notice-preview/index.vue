@@ -46,7 +46,7 @@
           </a-space>
         </a-flex>
         <!--    文章内容-->
-        <div id="preview"/>
+        <div id="previewDom"/>
       </a-flex>
     </div>
   </a-spin>
@@ -56,6 +56,7 @@
 import {onMounted, ref, watch} from "vue";
 import {findById, findReadInfo} from "@/api/system/noice/Notice.ts";
 import Vditor from "vditor";
+import 'vditor/dist/index.css';
 import UserShow from "@/components/user-show/index.vue"
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import type {SysNoticeVO} from "@/api/system/noice/type/SysNotice.ts";
@@ -87,11 +88,13 @@ const preview = async () => {
   if (resp.code === 200) {
     notice.value = resp.data
     // 通知内容回显
-    const dom = document.getElementById('preview')
+    const dom = document.getElementById('previewDom')
     if (dom instanceof HTMLDivElement && resp.data.content) {
       await Vditor.preview(dom, resp.data.content, {
         mode: themeStore.isDarkTheme ? "dark" : "light",
-        cdn: themeStore.isDarkTheme ?'/vditor/preview' : '/vditor/normal',
+        cdn: '/vditor',
+        theme: {current: themeStore.isDarkTheme ? 'dark' : 'light'},                     // 内容主题
+        hljs: {style: themeStore.isDarkTheme ? 'solarized-dark256' : 'solarized-light'}, // 代码块主题
       })
     }
     spinning.value = false
@@ -121,8 +124,6 @@ const handleReadInfo = async (noticeId: string) => {
     const readInfoData = resp.data
     const unRead = readInfoData["0"] as SysUser[]
     const read = readInfoData["1"] as SysUser[]
-    console.log("unRead", unRead)
-    console.log("read", read)
     // 未读
     if (unRead) {
       unreadUserList.value = unRead

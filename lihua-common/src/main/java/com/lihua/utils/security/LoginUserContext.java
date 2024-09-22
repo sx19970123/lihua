@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 获取当前登录用户工具类
@@ -19,7 +20,7 @@ import java.util.List;
 @Slf4j
 public class LoginUserContext implements Serializable {
 
-    private static RedisCache redisCache;
+    private static RedisCache<String> redisCache;
 
     static {
         redisCache = SpringUtils.getBean(RedisCache.class);
@@ -176,7 +177,11 @@ public class LoginUserContext implements Serializable {
         if (!StringUtils.hasText(userId)) {
             return false;
         }
-        return redisCache.hasKey(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId);
+
+        // 根据redisKey规则，通过前缀+userId+: 获取用户登录key
+        Set<String> keys = redisCache.keys(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId + ":");
+
+        return !keys.isEmpty();
     }
 
     /**
