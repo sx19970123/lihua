@@ -35,10 +35,30 @@ spring:
 
   # 数据源配置
   datasource:
+    #使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/lihua
     username: root
     password: 123456
+    druid:
+      stat-view-servlet:
+        enabled: true
+        reset-enable: false
+        url-pattern: "/druid/*"
+        login-username: admin
+        login-password: 123456
+        allow:
+      filter:
+        stat:
+          enabled: true
+          # 慢SQL记录
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
 
   # redis配置
   data:

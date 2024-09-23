@@ -1,6 +1,5 @@
 package com.lihua.config;
 
-import com.lihua.enums.ConstantEnum;
 import com.lihua.enums.SysBaseEnum;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -35,16 +35,11 @@ const handleClickMenuItem = ({ key }: {key: string}) => {
   const targetRoute = viewTabsStore.totalViewTabs.filter(tab => tab.routerPathKey === key)
   if (targetRoute && targetRoute.length > 0) {
     const routeInfo = targetRoute[0]
-    // 新窗口外链类型
-    if (routeInfo.menuType === 'link' && routeInfo.linkOpenType === 'new-page') {
-      window.open(routeInfo.link)
-    } else {
-      // 其他类型路由跳转
-      router.push({
-        path: routeInfo.routerPathKey,
-        query: routeInfo.query ? JSON.parse(routeInfo.query) : undefined,
-      })
-    }
+    // 路由跳转
+    router.push({
+      path: routeInfo.routerPathKey,
+      query: routeInfo.query ? JSON.parse(routeInfo.query) : undefined,
+    })
   }
 }
 

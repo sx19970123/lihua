@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -58,7 +59,8 @@ public class SecurityConfig {
                             "/system/file/download/**", // 文件下载
                             "/system/setting", // 系统设置
                             "/system/checkUserName/**", // 检查用户名
-                            "/system/register/**" // 注册
+                            "/system/register/**", // 注册
+                            "/druid/**"
                     ).permitAll()
                     .anyRequest().authenticated();
         });
@@ -67,6 +69,9 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .cors(AbstractHttpConfigurer::disable);
+
+        // 允许通过iframe访问
+        http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
 
         // 基于前后端分离token 认证 无需session
         http.sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
