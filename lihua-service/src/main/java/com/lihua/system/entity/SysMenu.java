@@ -64,7 +64,7 @@ public class SysMenu extends BaseEntity {
      */
     @NotNull(message = "请输入组件路径",
             groups =  MenuValidation.MenuPageValidation.class )
-    @Pattern(regexp = "^/[A-Za-z0-9]+(?:[./][A-Za-z0-9]+)*\\.vue$",
+    @Pattern(regexp = "^/[A-Za-z0-9-]+(?:[./][A-Za-z0-9-]+)*\\.vue$",
             message = "请输入正确的组件路径",
             groups =  MenuValidation.MenuPageValidation.class )
     private String componentPath;

@@ -10,6 +10,9 @@ import com.lihua.utils.spring.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -75,7 +78,7 @@ public class LoginUserManager {
         if (!StringUtils.hasText(cacheKey)) {
             cacheKey = getLoginUserKey(loginUser.getUser().getId());
         }
-
+        loginUser.setCacheKey(cacheKey);
         // 设置缓存
         redisCache.setCacheObject(cacheKey,
                 loginUser,
@@ -125,6 +128,24 @@ public class LoginUserManager {
         }
 
         return keySplit[1];
+    }
+
+    /**
+     * 通过缓存key获取用户登录时间
+     * @param cacheKey
+     * @return
+     */
+    public static LocalDateTime getLoginTimeByCacheKey(String cacheKey) {
+        if (!StringUtils.hasText(cacheKey)) {
+            throw new ServiceException("空的 cacheKey");
+        }
+        String[] keySplit = cacheKey.split(":");
+
+        if (keySplit.length != 4) {
+            throw new ServiceException("无效的 cacheKey");
+        }
+
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(keySplit[2])), ZoneId.systemDefault());
     }
 
 }

@@ -73,8 +73,6 @@ public class SysAuthenticationController extends BaseController {
     @GetMapping("info")
     public String getUserInfo() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
-        loginUser.getUser().setPassword(null);
-
         // 前端 store 用户数据
         AuthInfo authInfo = new AuthInfo();
         authInfo.setUserInfo(loginUser.getUser() != null ? loginUser.getUser() : new CurrentUser());

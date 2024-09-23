@@ -495,7 +495,7 @@ const initSave = () => {
 
   // 保存岗位数据
   const savePost = async () => {
-    await formRef.value.validate()
+    await formRef.value?.validate()
 
     // 设置岗位编码
     const flattenTreeList: Array<SysDept> = []

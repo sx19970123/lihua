@@ -78,6 +78,11 @@ public class LoginUser implements UserDetails {
      */
     private String cacheKey;
 
+    /**
+     * 登录 ip
+     */
+    private String ipAddress;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         permissionList = authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());

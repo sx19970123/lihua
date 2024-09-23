@@ -15,7 +15,7 @@
     "allowJs": true,
     "composite": false,
     "noEmit": true,
-    "module": "ESNext",
+    "module": "esnext",
     "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "types": ["vite/client"],

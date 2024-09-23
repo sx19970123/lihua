@@ -12,6 +12,7 @@ import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.security.SecurityUtils;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -64,6 +65,8 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Resource
     private SysUserDeptService sysUserDeptService;
 
+    @Resource
+    private HttpServletRequest httpServletRequest;
 
     private final String patternComponentName =  "([^/]+)\\.vue$";
 
@@ -123,8 +126,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         SysSetting intervalUpdatePasswordSetting = sysSettingService.getSysSettingByComponentName("IntervalUpdatePasswordSetting");
         SysSettingDTO.IntervalUpdatePasswordSetting updatePasswordSetting = JsonUtils.toObject(intervalUpdatePasswordSetting.getSettingJson(), SysSettingDTO.IntervalUpdatePasswordSetting.class);
 
-
-
         boolean enable = updatePasswordSetting.isEnable();
 
         if (!enable) {
@@ -179,6 +180,8 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Override
     public String cacheLoginUserInfo(LoginUser loginUser) {
         String id = loginUser.getUser().getId();
+        // 缓存中隐藏密码
+        loginUser.getUser().setPassword(null);
         // 角色信息
         boolean isAdmin = isAdmin(id);
 
@@ -221,6 +224,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             .setDeptList(deptList)
             .setDeptTree(TreeUtils.buildTree(new ArrayList<>(deptList)))
             .setPostList(postList)
+            .setIpAddress(httpServletRequest.getRemoteAddr())
             .setAuthorities(authorities);
 
         // 设置redis缓存
