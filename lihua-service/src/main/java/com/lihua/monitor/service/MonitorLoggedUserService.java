@@ -19,5 +19,5 @@ public interface MonitorLoggedUserService {
      * @param cacheKey
      * @return
      */
-    String forceLogout(String cacheKey);
+    void forceLogout(List<String> cacheKey);
 }

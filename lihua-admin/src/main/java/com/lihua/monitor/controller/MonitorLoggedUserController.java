@@ -7,6 +7,8 @@ import com.lihua.monitor.service.MonitorLoggedUserService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("monitor/loggedUser")
 public class MonitorLoggedUserController extends BaseController {
@@ -19,10 +21,11 @@ public class MonitorLoggedUserController extends BaseController {
         return success(monitorLoggedUserService.findList(username, nickname));
     }
 
-    @DeleteMapping("{cacheKey}")
+    @DeleteMapping
     @Log(description = "强退用户", type = LogTypeEnum.OTHER)
-    public String forceLogout(@PathVariable("cacheKey") String cacheKey) {
-        return success(monitorLoggedUserService.forceLogout(cacheKey));
+    public String forceLogout(@RequestBody List<String> cacheKeys) {
+        monitorLoggedUserService.forceLogout(cacheKeys);
+        return success();
     }
 
 

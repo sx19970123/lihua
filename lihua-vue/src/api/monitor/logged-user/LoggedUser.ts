@@ -14,9 +14,10 @@ export const findList = (username?: string, nickname?: string) => {
 }
 
 // 强退用户
-export const forceLogout = (cacheKey: string) => {
+export const forceLogout = (cacheKeys: string[]) => {
     return request({
-        url: "monitor/loggedUser/" + cacheKey,
-        method: "DELETE"
+        url: "monitor/loggedUser",
+        method: "DELETE",
+        data: cacheKeys
     })
 }
