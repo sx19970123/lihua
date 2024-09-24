@@ -1,17 +1,17 @@
 /*
  Navicat Premium Dump SQL
 
- Source Server         : 127.0.0.1
+ Source Server         : MySql
  Source Server Type    : MySQL
- Source Server Version : 80400 (8.4.0)
+ Source Server Version : 90001 (9.0.1)
  Source Host           : localhost:3306
  Source Schema         : lihua
 
  Target Server Type    : MySQL
- Target Server Version : 80400 (8.4.0)
+ Target Server Version : 90001 (9.0.1)
  File Encoding         : 65001
 
- Date: 24/09/2024 20:55:43
+ Date: 24/09/2024 22:57:50
 */
 
 SET NAMES utf8mb4;
@@ -453,6 +453,29 @@ INSERT INTO `sys_login_log` VALUES ('1838486787784577026', '用户登录', 'LOGI
 INSERT INTO `sys_login_log` VALUES ('1838508093460582402', '用户登录', 'LOGIN', '登录', 'com.lihua.system.controller.SysAuthenticationController', 'login', '0:0:0:0:0:0:0:1', 'admin', 'admin', '1', '2024-09-24 17:17:42', 328, '{\"currentUser\":\"{\\\"id\\\":null,\\\"username\\\":\\\"admin\\\",\\\"nickname\\\":null,\\\"avatar\\\":null,\\\"gender\\\":null,\\\"status\\\":null,\\\"theme\\\":null,\\\"phoneNumber\\\":null,\\\"email\\\":null,\\\"remark\\\":null,\\\"passwordUpdateTime\\\":null,\\\"registerType\\\":null}\",\"captchaVerification\":\"\\\"VXQ4e5Th2Lxe871kvj723C3ClYBWgOVtXOQseFndOt2RkOT53Mo+d+Tj+3jsn+XPDP+Hik1Kn9u4aqFAq1+zHTGyvC7zoUmCiGT/kx4AkJw=\\\"\"}', NULL, NULL, NULL, '/system/login', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', '0', '0');
 INSERT INTO `sys_login_log` VALUES ('1838509877809778689', '用户登录', 'LOGIN', '登录', 'com.lihua.system.controller.SysAuthenticationController', 'login', '0:0:0:0:0:0:0:1', 'admin', 'admin', '1', '2024-09-24 17:24:47', 160, '{\"currentUser\":\"{\\\"id\\\":null,\\\"username\\\":\\\"admin\\\",\\\"nickname\\\":null,\\\"avatar\\\":null,\\\"gender\\\":null,\\\"status\\\":null,\\\"theme\\\":null,\\\"phoneNumber\\\":null,\\\"email\\\":null,\\\"remark\\\":null,\\\"passwordUpdateTime\\\":null,\\\"registerType\\\":null}\",\"captchaVerification\":\"\\\"WIvsCol6f8UHl7LfR1SrW0CCSMJHU9ypaR6r11YnlJSe/aDxpWkHJ4jKjD/ikQvewPLM//i6wq79oaDzJUYCjBYRu6fHuIa0HlpQVoHq66A=\\\"\"}', NULL, NULL, NULL, '/system/login', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', '0', '0');
 INSERT INTO `sys_login_log` VALUES ('1838523470232072193', '用户登录', 'LOGIN', '登录', 'com.lihua.system.controller.SysAuthenticationController', 'login', '0:0:0:0:0:0:0:1', 'admin', 'admin', '1', '2024-09-24 18:18:48', 394, '{\"currentUser\":\"{\\\"id\\\":null,\\\"username\\\":\\\"admin\\\",\\\"nickname\\\":null,\\\"avatar\\\":null,\\\"gender\\\":null,\\\"status\\\":null,\\\"theme\\\":null,\\\"phoneNumber\\\":null,\\\"email\\\":null,\\\"remark\\\":null,\\\"passwordUpdateTime\\\":null,\\\"registerType\\\":null}\",\"captchaVerification\":\"\\\"AhuPuZtDIoU7m9YmSUbQFICBdcvx2ZlR94xj1NSgHYmHUumcegPG5J8bXd1xvjK8whNhf4H61L62zVYdbTDxq1+hWLGjAVjxuTl1aK/Sxd0=\\\"\"}', NULL, NULL, NULL, '/system/login', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', '0', '0');
+INSERT INTO `sys_login_log` VALUES ('1838574528967118850', '用户登录', 'LOGIN', '登录', 'com.lihua.system.controller.SysAuthenticationController', 'login', '0:0:0:0:0:0:0:1', 'admin', 'admin', '1', '2024-09-24 21:41:41', 753, '{\"currentUser\":\"{\\\"id\\\":null,\\\"username\\\":\\\"admin\\\",\\\"nickname\\\":null,\\\"avatar\\\":null,\\\"gender\\\":null,\\\"status\\\":null,\\\"theme\\\":null,\\\"phoneNumber\\\":null,\\\"email\\\":null,\\\"remark\\\":null,\\\"passwordUpdateTime\\\":null,\\\"registerType\\\":null}\",\"captchaVerification\":\"\\\"n7XyV9wfCl50eUvv246UhVDh4LILDRnvZE/31qZcvBT1E0JjCtz7rGteR2qvxu+F3CwnY6e5sE2+GJ2KtwQXmuN4yPI/sz04WjsErchGjjI=\\\"\"}', NULL, NULL, NULL, '/system/login', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', '0', '0');
+
+-- ----------------------------
+-- Table structure for sys_login_setting
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_login_setting`;
+CREATE TABLE `sys_login_setting`  (
+  `id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '主键',
+  `component_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组件名称',
+  `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '设置描述',
+  `sort` int NULL DEFAULT NULL COMMENT '排序',
+  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '状态',
+  `create_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人id',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `update_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '更新人id',
+  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '删除标识',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录后设置管理表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_login_setting
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -526,6 +549,7 @@ INSERT INTO `sys_menu` VALUES ('1823518320191033346', '1777538040162844673', '�
 INSERT INTO `sys_menu` VALUES ('1838036266821033985', '0', '系统监控', '系统监控', 'directory', '/monitor', NULL, '0', '0', 'directory', 'FundViewOutlined', 4, '1', '2024-09-23 10:02:50', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1838036487672111105', '1838036266821033985', '数据监控', '数据监控', 'page', '/druid', '/monitor/druid/MonitorDruid.vue', '0', '0', 'link', 'DatabaseOutlined', 1, '1', '2024-09-23 10:03:42', '1', '2024-09-23 13:23:49', '0', NULL, '0', '', NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1838487275271753729', '1838036266821033985', '在线用户', '在线用户', 'page', '/loggedUser', '/monitor/logged-user/MonitorLoggedUser.vue', '0', '0', 'page', 'UserOutlined', 0, '1', '2024-09-24 15:54:59', '1', '2024-09-24 18:23:11', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1838581685913554946', '1838036266821033985', '服务监控', '服务监控', 'page', '/server', '/monitor/server/MonitorServer.vue', '0', '0', 'page', 'CloudServerOutlined', 2, '1', '2024-09-24 22:10:08', '1', '2024-09-24 22:10:43', '0', NULL, '0', NULL, NULL, '0', 'inner');
 
 -- ----------------------------
 -- Table structure for sys_notice
@@ -1122,7 +1146,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$nNbuRTSjdwO44LZ1zpYXOua4yZA1FPDhIIud78w0T4j0Bh.u2fiNG', 'admin', '{\"value\":\"PixelCat\",\"type\":\"icon\",\"backgroundColor\":\"rgb(19, 194, 194)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":true,\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"breathe\",\"grayModel\":\"none\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(22, 119, 255)\"}}}', '0', NULL, '2024-06-02 16:57:25', '1', '2024-09-23 08:36:33', '2024-09-19 13:38:09', '2651518588@qq.com', '15510916240', NULL, NULL);
+INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$nNbuRTSjdwO44LZ1zpYXOua4yZA1FPDhIIud78w0T4j0Bh.u2fiNG', 'admin', '{\"value\":\"PixelCat\",\"type\":\"icon\",\"backgroundColor\":\"rgb(19, 194, 194)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":true,\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"breathe\",\"grayModel\":\"none\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(22, 119, 255)\"}}}', '0', NULL, '2024-06-02 16:57:25', '1', '2024-09-24 22:52:33', '2024-09-19 13:38:09', '2651518588@qq.com', '15510916240', NULL, NULL);
 INSERT INTO `sys_user` VALUES ('1807687880993570818', 'yukino', '$2a$10$Sz.ZAEbiHpsYZ7N9aYMAGu6K14ZLbMMbycywtW2gZpOLy8uf1IyBq', 'Yukino', '{\"value\":\"NintendoSwitch\",\"type\":\"icon\",\"backgroundColor\":\"rgb(245, 34, 45)\"}', '1', '0', '{\"layoutType\":\"sider-header\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":false,\"colorPrimary\":\"rgb(22, 119, 255)\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":false,\"siderWith\":200,\"originSiderWith\":200,\"routeTransition\":\"zoom\",\"grayModel\":\"active\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"#2196F3\"}}}', '0', '1', '2024-08-18 18:50:47', '1', '2024-09-19 13:37:02', NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `sys_user` VALUES ('1836700761273561089', 'admin123', '$2a$10$MQOH0krr9loFyOM9RobJTunnVUxAovAb3BSfgDf/281BVg2fIKB7O', NULL, NULL, NULL, '0', NULL, '0', NULL, '2024-09-19 17:36:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `sys_user` VALUES ('1837005831718461441', 'admin1', '$2a$10$YTZuu/6Xl290npv4RNoM/.t59ndyneu9RkCxbkA3iwuE8ufusf.em', 'Yukino', NULL, NULL, '0', NULL, '0', NULL, '2024-09-20 14:09:48', '1', NULL, NULL, NULL, NULL, NULL, '1');

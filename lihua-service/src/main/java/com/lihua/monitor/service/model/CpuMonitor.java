@@ -21,7 +21,6 @@ public class CpuMonitor {
      */
     private String sysUse;
 
-
     /**
      * 用户使用率
      */

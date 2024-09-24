@@ -22,4 +22,9 @@ public class DiskMonitor {
      */
     private String free;
 
+    /**
+     * 使用率
+     */
+    private String usagePercentage;
+
 }

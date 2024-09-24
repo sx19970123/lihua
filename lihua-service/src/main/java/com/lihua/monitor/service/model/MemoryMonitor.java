@@ -25,6 +25,6 @@ public class MemoryMonitor {
     /**
      * 使用率
      */
-    private String UsagePercentage;
+    private String usagePercentage;
 
 }

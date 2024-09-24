@@ -1,5 +1,6 @@
 package com.lihua.monitor.service.impl;
 import com.lihua.monitor.service.model.*;
+import lombok.SneakyThrows;
 import oshi.SystemInfo;
 import com.lihua.monitor.service.MonitorServerService;
 import org.springframework.stereotype.Service;
@@ -14,28 +15,33 @@ import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class MonitorServerServiceImpl implements MonitorServerService {
 
-    SystemInfo systemInfo = new SystemInfo();
-    HardwareAbstractionLayer hardware = systemInfo.getHardware();
-    CentralProcessor processor = hardware.getProcessor();
+    private final SystemInfo systemInfo = new SystemInfo();
+    private final HardwareAbstractionLayer hardware = systemInfo.getHardware();
+    private final CentralProcessor processor = hardware.getProcessor();
+    private final double convertConstant = 1024.0 * 1024.0 * 1024.0;
 
     @Override
     public ServerInfo serverInfo() {
-        getCpuInfo();
-
-
-        return null;
+        return new ServerInfo()
+                .setCpuMonitor(getCpuInfo())
+                .setJvmMonitor(jvmInfo())
+                .setDiskMonitor(diskInfo())
+                .setMemoryMonitor(getMemoryInfo());
     }
 
     // 获取cpu信息
+    @SneakyThrows
     private CpuMonitor getCpuInfo() {
         CpuMonitor cpu = new CpuMonitor();
         int physicalCores = processor.getPhysicalProcessorCount();
         int logicalCores = processor.getLogicalProcessorCount();
         long[] prevTicks = processor.getSystemCpuLoadTicks();
+        TimeUnit.SECONDS.sleep(1);
         long[] ticks = processor.getSystemCpuLoadTicks();
         long nice = ticks[CentralProcessor.TickType.NICE.getIndex()] - prevTicks[CentralProcessor.TickType.NICE.getIndex()];
         long irq = ticks[CentralProcessor.TickType.IRQ.getIndex()] - prevTicks[CentralProcessor.TickType.IRQ.getIndex()];
@@ -49,10 +55,10 @@ public class MonitorServerServiceImpl implements MonitorServerService {
 
         cpu.setPhysicalCores(String.valueOf(physicalCores))
             .setLogicalCores(String.valueOf(logicalCores))
-            .setSysUse(new DecimalFormat("#.##").format(cSys * 1.0 / totalCpu))
-            .setUserUse(new DecimalFormat("#.##").format(user * 1.0 / totalCpu))
-            .setAwait(new DecimalFormat("#.##").format(user * 1.0 / totalCpu))
-            .setFree(new DecimalFormat("#.##").format(idle * 1.0 / totalCpu));
+            .setSysUse(new DecimalFormat("#.##").format(cSys * 1.0 / totalCpu * 100))
+            .setUserUse(new DecimalFormat("#.##").format(user * 1.0 / totalCpu * 100))
+            .setAwait(new DecimalFormat("#.##").format(user * 1.0 / totalCpu * 100))
+            .setFree(new DecimalFormat("#.##").format(idle * 1.0 / totalCpu * 100));
 
         return cpu;
     }
@@ -66,14 +72,11 @@ public class MonitorServerServiceImpl implements MonitorServerService {
         long availableMemory = memory.getAvailable();
         long usedMemory = totalMemory - availableMemory;
 
-        double convertConstant = 1024.0 * 1024.0 * 1024.0;
-
         return monitor.setTotal(new DecimalFormat("#.##").format(totalMemory / convertConstant))
                 .setAvailable(new DecimalFormat("#.##").format(availableMemory / convertConstant))
                 .setUsed(new DecimalFormat("#.##").format(usedMemory / convertConstant))
-                .setUsagePercentage(new DecimalFormat("#.##").format(Double.valueOf(monitor.getUsed())/Double.valueOf(monitor.getTotal()) * 100));
+                .setUsagePercentage(new DecimalFormat("#.##").format(Double.parseDouble(monitor.getUsed())/Double.parseDouble(monitor.getTotal()) * 100));
     }
-
 
     // 获取jvm信息
     private JvmMonitor jvmInfo() {
@@ -91,37 +94,35 @@ public class MonitorServerServiceImpl implements MonitorServerService {
     private DiskMonitor diskInfo() {
         DiskMonitor diskMonitor = new DiskMonitor();
         File file = new File("/");
-        double convertConstant = 1024.0 * 1024.0 * 1024.0;
+
         // 获取总空间、可用空间和已用空间
-        long totalSpace = file.getTotalSpace(); // 总空间（字节）
-        long freeSpace = file.getFreeSpace();   // 可用空间（字节）
-        long usedSpace = totalSpace - freeSpace; // 已用空间（字节）
+        long totalSpace = file.getTotalSpace();
+        long freeSpace = file.getFreeSpace();
+        long usedSpace = totalSpace - freeSpace;
 
         return diskMonitor.setTotal(new DecimalFormat("#.##").format(totalSpace / convertConstant))
                 .setUsed(new DecimalFormat("#.##").format(usedSpace / convertConstant))
-                .setFree(new DecimalFormat("#.##").format(freeSpace / convertConstant));
+                .setFree(new DecimalFormat("#.##").format(freeSpace / convertConstant))
+                .setUsagePercentage(new DecimalFormat("#.##").format(Double.parseDouble(diskMonitor.getUsed())/Double.parseDouble(diskMonitor.getTotal()) * 100));
 
     }
-
 
     // 毫秒数转为 天-时-分
     private String convertMsToDHM(long milliseconds) {
-        long seconds = milliseconds / 1000; // 转换为秒
-        long days = seconds / (24 * 3600); // 计算天数
-        seconds %= (24 * 3600); // 剩余的秒数
-        long hours = seconds / 3600; // 计算小时
-        seconds %= 3600; // 剩余的秒数
-        long minutes = seconds / 60; // 计算分钟
+        // 转换为秒
+        long seconds = milliseconds / 1000;
+        // 计算天数
+        long days = seconds / (24 * 3600);
+        // 剩余的秒数
+        seconds %= (24 * 3600);
+        // 计算小时
+        long hours = seconds / 3600;
+        // 剩余的秒数
+        seconds %= 3600;
+        // 计算分钟
+        long minutes = seconds / 60;
+
         return String.format("%d天%d小时%d分钟", days, hours, minutes);
     }
-
-
-    public static void main(String[] args) {
-        MonitorServerServiceImpl monitorServerService = new MonitorServerServiceImpl();
-       monitorServerService.diskInfo();
-
-    }
-
-
 
 }
