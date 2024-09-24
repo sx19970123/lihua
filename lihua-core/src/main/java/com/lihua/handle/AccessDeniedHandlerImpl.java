@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 public class AccessDeniedHandlerImpl extends BaseController implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) {
-        System.out.println("权限不足处理器");
         WebUtils.renderJson(response,error(ResultCodeEnum.ACCESS_ERROR));
     }
 }

@@ -26,7 +26,6 @@ public class LambdaTreeUtils {
         List<String> parentKeyList = getParentKeyList(originCollection, getKeyMethod, getParentKeyMethod);
         parentKeyList.forEach(parentKey -> {
             respTreeList.addAll(build(originCollection,getKeyMethod,getParentKeyMethod,getChildrenMethod,setChildrenMethod,parentKey));
-            System.out.println(originCollection.size());
         });
         return respTreeList;
     }

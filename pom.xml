@@ -20,6 +20,7 @@
         <jwt.version>3.10.3</jwt.version>
         <hutool.version>5.8.25</hutool.version>
         <myexcel.version>4.5.0</myexcel.version>
+        <oshi.version>6.6.4</oshi.version>
     </properties>
 
     <parent>
@@ -95,18 +96,24 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- myexcel中commons-compress会造成漏洞攻击，屏蔽后手动引入高版本依赖 -->
+        <!--        myexcel中commons-compress会造成漏洞攻击，屏蔽后手动引入高版本依赖 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.26.0</version>
         </dependency>
-
         <!--        表单验证-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+        <!--        服务器信息监控 -->
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>${oshi.version}</version>
+        </dependency>
+
     </dependencies>
 
     <modules>
