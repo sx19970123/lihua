@@ -115,6 +115,9 @@
         <a-descriptions-item label="执行时长" :span="1">{{logInfo.executeTime ? logInfo.executeTime + ' 毫秒' : ''}}</a-descriptions-item>
         <a-descriptions-item label="请求地址" :span="2">{{logInfo.url}}</a-descriptions-item>
         <a-descriptions-item label="用户 ip" :span="1">{{logInfo.ipAddress}}</a-descriptions-item>
+        <a-descriptions-item label="缓存key" :span="3">
+          {{logInfo.cacheKey}}
+        </a-descriptions-item>
         <a-descriptions-item label="操作环境" :span="3">
           {{logInfo.userAgent}}
         </a-descriptions-item>

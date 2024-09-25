@@ -125,6 +125,7 @@ public class HandleRecodeLog {
             sysLogVO.setCreateId(LoginUserContext.getUserId());
             sysLogVO.setCreateName(LoginUserContext.getUser().getNickname());
             sysLogVO.setUsername(LoginUserContext.getUser().getUsername());
+            sysLogVO.setCacheKey(LoginUserContext.getLoginUser().getCacheKey());
             sysOperateLogService.insert(sysLogVO);
         }
     }
