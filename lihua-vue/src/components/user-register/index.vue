@@ -2,7 +2,7 @@
   <div>
     <a-card class="register">
       <transition name="form" mode="out-in">
-        <div style="margin: 16px">
+        <div style="margin: 16px" v-show="show">
           <div class="register-title">
             <a-typography-title :level="2">欢迎注册狸花猫</a-typography-title>
             <a-typography-text>已有账户？</a-typography-text>
@@ -78,12 +78,16 @@ import type {Rule} from "ant-design-vue/es/form";
 import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
-
+const show = ref<boolean>(false)
 // 向父组件抛出切登录方法
 const emits = defineEmits(['goLogin'])
 const goLogin = (clearLoginForm: boolean) => {
   emits('goLogin', clearLoginForm)
 }
+
+setTimeout(() => {
+  show.value = true
+}, 100)
 
 // 用户注册实体
 const userRegister = ref<{
@@ -196,20 +200,4 @@ const handleRegister = async ({captchaVerification}: { captchaVerification: stri
   opacity: 0;
 }
 
-.verify-enter-active {
-  transition: all 0.3s ease-in-out;
-}
-
-.verify-enter-from {
-  transform: translateY(10px);
-  opacity: 0;
-}
-
-.verify-leave-active {
-  transition: all 0.25s ease-out;
-}
-
-.verify-leave-to {
-  opacity: 0;
-}
 </style>
