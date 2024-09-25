@@ -13,16 +13,14 @@ import com.lihua.model.security.LoginUser;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.dto.SysRegisterDTO;
 import com.lihua.system.service.SysAuthenticationService;
+import com.lihua.system.service.SysProfileService;
 import com.lihua.system.service.SysSettingService;
-import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("system")
@@ -36,6 +34,9 @@ public class SysAuthenticationController extends BaseController {
 
     @Resource
     private SysSettingService sysSettingService;
+
+    @Resource
+    private SysProfileService sysProfileService;
 
     /**
      * 用户登录
@@ -60,10 +61,19 @@ public class SysAuthenticationController extends BaseController {
         LoginUser loginUser = sysAuthenticationService.login(currentUser);
         // 2.生成token
         String token = sysAuthenticationService.cacheAndCreateToken(loginUser);
-        // 3.根据登录的用户信息，判断是否需要进行登陆后配置
-        String loginSettingComponentName = sysAuthenticationService.checkLoginSetting(loginUser, currentUser.getPassword());
+        return success(ResultCodeEnum.SUCCESS, token);
+    }
 
-        return success(ResultCodeEnum.SUCCESS, loginSettingComponentName, token);
+
+    /**
+     * 检擦登录配置
+     * @return
+     */
+    @GetMapping("checkLoginSetting")
+    public String checkLoginSetting() {
+        String loginSettingComponentName = sysAuthenticationService
+                .checkLoginSetting(LoginUserContext.getLoginUser(), sysProfileService.getPassword());
+        return success(loginSettingComponentName);
     }
 
     /**

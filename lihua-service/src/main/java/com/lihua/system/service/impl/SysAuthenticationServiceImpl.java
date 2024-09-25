@@ -117,7 +117,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         // 获取默认密码
         SysSetting defaultPasswordSetting = sysSettingService.getSysSettingByComponentName("DefaultPasswordSetting");
         SysSettingDTO.DefaultPasswordSetting passwordSetting = JsonUtils.toObject(defaultPasswordSetting.getSettingJson(), SysSettingDTO.DefaultPasswordSetting.class);
-        if (passwordSetting.getDefaultPassword().equals(password)) {
+        if (SecurityUtils.matchesPassword(passwordSetting.getDefaultPassword(), password)) {
             loginSettingComponentNameList.add("LoginSettingResetPassword");
             return;
         }
@@ -268,6 +268,8 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         sysUser.setDelFlag("0");
         sysUser.setStatus("0");
         sysUser.setRegisterType("1");
+        sysUser.setPasswordUpdateTime(now);
+
         sysUserMapper.insert(sysUser);
 
         // 用户角色关联表

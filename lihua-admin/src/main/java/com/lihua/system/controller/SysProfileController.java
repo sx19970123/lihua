@@ -78,7 +78,8 @@ public class SysProfileController extends BaseController {
     @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword"})
     public String updatePassword(@NotNull(message = "旧密码不能为空") String oldPassword,
                                  @NotNull(message = "新密码不能为空") @Size(min = 6, max = 22, message = "密码长度为6-22字符") String newPassword) {
-        String currentPassword  = LoginUserContext.getUser().getPassword();
+        // 获取旧密码
+        String currentPassword = sysProfileService.getPassword();
 
         if (!SecurityUtils.matchesPassword(oldPassword, currentPassword)) {
             return error(ResultCodeEnum.ERROR,"旧密码输入错误");

@@ -7,6 +7,7 @@
                  @back="handleBack"
                  @skip="handleSkip"
                  @next="handleNext"
+                 @goLogin="emits('goLogin')"
       />
     </a-carousel>
   </div>
@@ -18,7 +19,7 @@ import {ref, useTemplateRef} from "vue";
 import type {CarouselRef} from "ant-design-vue/es/carousel";
 
 const carouselRef = useTemplateRef<CarouselRef>("carouselRef")
-
+const emits = defineEmits(['goLogin'])
 // 需要加载的设置项集合
 const componentList = ref<string[]>(
     [
@@ -49,7 +50,6 @@ const handleNext = (loading:boolean) => {
   if (!loading) {
     carouselRef.value?.next()
   }
-
 }
 </script>
 

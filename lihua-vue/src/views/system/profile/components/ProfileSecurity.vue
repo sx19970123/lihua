@@ -7,7 +7,12 @@
                           v-model:value="password.oldPassword"/>
       </a-form-item>
       <a-form-item label="新密码" name="newPassword">
-        <password-input class="form-item-width" v-model:value="password.newPassword" placeholder="请输入新密码" :size="90"/>
+        <password-input class="form-item-width"
+                        v-model:value="password.newPassword"
+                        placeholder="请输入新密码"
+                        :size="90"
+                        :show-progress="!!password.newPassword && password.newPassword.length >= 6"
+        />
       </a-form-item>
 
       <a-form-item label="确认密码" name="confirmPassword" >

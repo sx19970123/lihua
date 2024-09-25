@@ -6,16 +6,19 @@
                                 :back="false"
                                 :show-main-btn-icon="false"
                                 :skip="false"
+                                :showGoLoginBtn="true"
+                                @go-login="emits('goLogin')"
                                 @next="emits('next')"
 
-  />
+  >
+  </login-setting-base-component>
 </template>
 
 <script setup lang="ts">
 
 import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
 
-const emits = defineEmits(['next'])
+const emits = defineEmits(['next','goLogin'])
 
 
 </script>

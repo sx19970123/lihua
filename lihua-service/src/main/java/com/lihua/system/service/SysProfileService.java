@@ -24,4 +24,10 @@ public interface SysProfileService {
      * @return
      */
     String updatePassword(String newPassword);
+
+    /**
+     * 获取用户密码
+     * @return
+     */
+    String getPassword();
 }

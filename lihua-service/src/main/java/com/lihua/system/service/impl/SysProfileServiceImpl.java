@@ -83,6 +83,11 @@ public class SysProfileServiceImpl implements SysProfileService {
     }
 
     @Override
+    public String getPassword() {
+        return sysUserMapper.selectById(LoginUserContext.getUserId()).getPassword();
+    }
+
+    @Override
     public String saveTheme(String theme) {
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         LoginUser loginUser = LoginUserContext.getLoginUser();

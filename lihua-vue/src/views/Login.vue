@@ -34,7 +34,7 @@
                                placeholder="用户名"
                       >
                         <template #prefix>
-                          <UserOutlined style="color: rgba(0, 0, 0, 0.25)"/>
+                          <UserOutlined :style="!themeStore.$state.isDarkTheme ? 'color: rgba(0, 0, 0, 0.25)': 'color: rgba(255, 255, 255, 0.25)'"/>
                         </template>
                       </a-input>
                     </a-form-item>
@@ -44,7 +44,7 @@
                                         placeholder="密码"
                       >
                         <template #prefix>
-                          <LockOutlined style="color: rgba(0, 0, 0, 0.25)"/>
+                          <LockOutlined :style="!themeStore.$state.isDarkTheme ? 'color: rgba(0, 0, 0, 0.25)': 'color: rgba(255, 255, 255, 0.25)'"/>
                         </template>
                       </a-input-password>
                     </a-form-item>
@@ -92,7 +92,10 @@
     </transition>
     <head-theme-switch class="head-theme-switch"/>
       <transition name="fade" mode="out-in">
-        <login-setting :component-names="settingComponentNames" v-if="showSetting"></login-setting>
+        <login-setting :component-names="settingComponentNames"
+                       v-if="showSetting"
+                       @go-login="handleGoLogin"
+        ></login-setting>
       </transition>
   </a-flex>
 </template>
@@ -111,14 +114,18 @@ import HeadThemeSwitch from "@/components/light-dark-switch/index.vue"
 import LoginSetting from "@/components/login-setting/index.vue"
 import UserRegister from "@/components/user-register/index.vue"
 import type {ResponseType} from "@/api/global/Type.ts";
-import {init} from "@/utils/AppInit.ts"
 import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
+import {useThemeStore} from "@/stores/modules/theme.ts";
+import {init} from "@/utils/AppInit.ts";
+
 const router = useRouter()
 const verifyRef = useTemplateRef<InstanceType<typeof Verify>>("verifyRef")
 const rememberMe = ref<boolean>(token.enableRememberMe())
 const showSetting = ref<boolean>(false)
 const settingComponentNames = ref<string[]>([])
 const settingStore = useSettingStore()
+const userStore = useUserStore()
+const themeStore = useThemeStore()
 // 用户登录
 interface LoginFormType {
   username: string,
@@ -154,7 +161,6 @@ const initLogin = () => {
 const login = async ({captchaVerification}: { captchaVerification: string }) => {
   loginLoading.value = true
   try {
-    const userStore = useUserStore();
     const resp = await userStore.login(loginForm.username, loginForm.password, captchaVerification);
     const {code, msg} = resp as ResponseType<string>;
     if (code === 200) {
@@ -163,15 +169,26 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
       } else {
         token.forgetMe()
       }
-      await init()
-      // 当需要进行登录后设置的情况下，需要的 ComponentName 会在msg中以,分割形式传递
-      if (msg) {
-        showSetting.value = true
-        settingComponentNames.value.push(...msg.split(","))
+
+      // 检查是否需要登录后设置
+      const loginSettingResp = await userStore.checkLoginSetting()
+      if (loginSettingResp.code === 200) {
+        // 进入首页
+        if (loginSettingResp.data === null) {
+          message.success("登录成功")
+          await router.push("/index");
+        } else {
+          await init()
+          // 加载登录配置
+          showSetting.value = true
+          settingComponentNames.value.push(...loginSettingResp.data.split(","))
+          // 关闭登录卡片
+          show.value = false
+        }
       } else {
-        message.success("登录成功")
-        await router.push("/index");
+        message.error(loginSettingResp.msg)
       }
+      loginLoading.value = false
       // 路由跳转完成后的后续逻辑可以放在这里
     } else {
       message.error(msg);
@@ -230,6 +247,14 @@ const handleRedirect = () => {
   }
 }
 
+// 当需要登陆后配置时，刷新页面读取路由携带参数，加载配置页面
+const routerCheckLoginSetting = () => {
+  if (history.state.data) {
+      showSetting.value = true
+      settingComponentNames.value.push(...history.state.data.split(","))
+  }
+}
+
 // 动画效果
 const transition = () => {
   setTimeout(() => {
@@ -237,7 +262,7 @@ const transition = () => {
   }, 100)
 }
 
-// 从注册页面切换到登录页面
+// 从注册页面/配置页面切换到登录页面
 const handleShowLogin = (clearLoginForm: boolean) => {
   showLogin.value = true
   show.value = false
@@ -254,7 +279,28 @@ const handleShowLogin = (clearLoginForm: boolean) => {
   }, 100)
 }
 
+// 从配置页面退回到登录页面
+const handleGoLogin = async () => {
+  // 调用退出接口
+  await userStore.handleLogout()
+  // 关闭设置页面
+  showSetting.value = false
+  settingComponentNames.value = []
+  // 清空路由参数
+  if (history.state.data) {
+    history.state.data = undefined
+  }
+  // 没有勾选记住账号情况下清空账号密码
+  if (!rememberMe.value) {
+    loginForm.username = ''
+    loginForm.password = ''
+  }
+  // 登录卡片弹出动画
+  handleShowLogin(false)
+}
+
 onMounted(() => {
+  routerCheckLoginSetting()
   transition()
   initLogin()
   handleRedirect()

@@ -42,7 +42,7 @@
 
       <!-- 其他设置 -->
       <a-typography-title :level="5">其他设置</a-typography-title>
-      <a-form-item label="磨砂玻璃">
+      <a-form-item label="高级材质">
         <a-switch v-model:checked="themeStore.groundGlass" @change="themeStore.changeGroundGlass"></a-switch>
       </a-form-item>
       <a-form-item label="切换动画">

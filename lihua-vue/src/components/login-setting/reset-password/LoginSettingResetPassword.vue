@@ -12,12 +12,17 @@
       <div style="width: 280px">
         <a-form :colon="false" ref="resetPasswordRef" :model="password" :rules="rules">
           <a-form-item name="oldPassword">
-            <a-input-password placeholder="请输入旧密码"
-                              v-model:value="password.oldPassword"
+            <a-input-password
+                placeholder="请输入旧密码"
+                v-model:value="password.oldPassword"
             />
           </a-form-item>
           <a-form-item name="newPassword">
-            <password-input class="form-item-width" v-model:value="password.newPassword" placeholder="请输入新密码" :size="92"/>
+            <password-input class="form-item-width"
+                            v-model:value="password.newPassword"
+                            placeholder="请输入新密码" :size="92"
+                            :show-progress="!!password.newPassword && password.newPassword.length >= 6 && password.newPassword.length <= 30"
+            />
           </a-form-item>
           <a-form-item name="confirmPassword" >
             <a-input-password class="form-item-width"
@@ -106,7 +111,3 @@ const handleSkip = (loading:Ref<boolean>) => {
   emits('skip', loading.value)
 }
 </script>
-
-<style scoped>
-
-</style>

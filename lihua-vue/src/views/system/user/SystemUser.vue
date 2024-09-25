@@ -354,7 +354,10 @@
        </template>
        <a-form :model="resetPasswordForm" :rules="defaultPasswordRules" ref="resetPasswordRef">
          <a-form-item name="password" class="form-item-single-line">
-           <password-input v-model:value="resetPasswordForm.password" placeholder="请输入密码" :size="116"/>
+           <password-input v-model:value="resetPasswordForm.password"
+                           :show-progress="!!resetPasswordForm.password && resetPasswordForm.password.length >= 6"
+                           placeholder="请输入密码"
+                           :size="116"/>
          </a-form-item>
          <div style="margin-top: 8px;">
            <a-checkbox v-model:checked="useDefaultPassword" @change="handleChangeUseDefaultPassword">使用默认密码</a-checkbox>

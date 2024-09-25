@@ -55,3 +55,11 @@ export const register = (username: string,
         }
     })
 }
+
+// 登录后必要信息校验
+export const getLoginSetting = () => {
+    return request<string | null>({
+        url: '/system/checkLoginSetting',
+        method: 'get',
+    })
+}

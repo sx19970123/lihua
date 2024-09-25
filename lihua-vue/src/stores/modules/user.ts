@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import {login, logout} from "@/api/system/login/Login.ts";
+import { getLoginSetting, login, logout} from "@/api/system/login/Login.ts";
 import {getAvatar, saveTheme} from "@/api/system/profile/Profile.ts";
 import token from "@/utils/Token.ts";
 import { message } from "ant-design-vue";
@@ -73,6 +73,17 @@ export const useUserStore = defineStore('user', {
                     reject(error)
                 })
             })
+        },
+        // 检查用户登录设置
+        checkLoginSetting(): Promise<ResponseType<string | null>> {
+           return new Promise((resolve, reject) => {
+               // 登录后必要信息校验
+               getLoginSetting().then(resp => {
+                   resolve(resp)
+               }).catch(error => {
+                   reject(error)
+               })
+           })
         },
         // 获取用户信息
         getUserInfo ():Promise<ResponseType<AuthInfoType>> {
