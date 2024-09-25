@@ -8,6 +8,7 @@ import { init } from "@/utils/AppInit.ts";
 import {hasRouteRole} from "@/utils/Auth.ts";
 import {close, connect} from "@/utils/ServerSentEvents.ts";
 import {message} from "ant-design-vue";
+import Token from "@/utils/Token.ts";
 const { getToken } = token
 NProgress.configure({
     showSpinner: true
@@ -30,7 +31,7 @@ router.beforeEach(async (to, from, next) => {
                 // 连接到sse
                 await connect()
                 // 检查登录设置
-                if (to.fullPath === '/login') {
+                if (to.fullPath === '/login' || !Token.getLoginSettingResult()) {
                     const loginSettingResp = await userStore.checkLoginSetting()
                     if (loginSettingResp.code === 200) {
                         if (loginSettingResp.data !== null) {

@@ -7,7 +7,7 @@
                       :style="{height: height}"
     >
       <template #prefix v-if="prefixIcon">
-        <LockOutlined :style="!themeStore.$state.isDarkTheme ? 'color: rgba(0, 0, 0, 0.25)': 'color: rgba(255, 255, 255, 0.25)'"/>
+        <LockOutlined/>
       </template>
     </a-input-password>
     <a-progress style="margin: 0;"
@@ -22,9 +22,7 @@
 
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
 
-const themeStore = useThemeStore()
 const {value, placeholder, size = 90, height, prefixIcon = false, showProgress = true} = defineProps<{
   value?: string,
   placeholder?: string,

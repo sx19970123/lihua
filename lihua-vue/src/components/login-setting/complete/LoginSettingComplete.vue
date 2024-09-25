@@ -12,11 +12,12 @@
 </template>
 
 <script setup lang="ts">
-
 import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
 import router from "@/router";
+import Token from "@/utils/Token.ts";
 
 const toIndex = async () => {
+  Token.setLoginSettingResult()
   await router.push("/index")
 }
 </script>

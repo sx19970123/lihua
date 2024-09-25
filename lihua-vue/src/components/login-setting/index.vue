@@ -1,5 +1,5 @@
 <template>
-  <div class="login-setting">
+  <div class="login-setting scrollbar">
     <a-carousel style="width: 600px;border: none; border-radius: 8px;" :dots="false" ref="carouselRef">
       <component :is="component"
                  :key="index"
@@ -55,10 +55,8 @@ const handleNext = (loading:boolean) => {
 
 <style scoped>
 .login-setting{
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  margin: auto;
+  max-height: 100vh;
 }
 :deep(.slick-list) {
   border-radius: 8px;

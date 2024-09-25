@@ -10,6 +10,8 @@ const PASSWORD_KEY: string = "lihua_password"
 
 const REMEMBER_ME_KEY: string = "lihua_rememberMe"
 
+const LOGIN_SETTING_COMPLETE_KEY: string = "lihua_login_setting_complete"
+
 // token
 const getToken = ():string => {
     return Cookies.get(TOKEN_KEY)
@@ -76,6 +78,19 @@ const getUsernamePassword = () => {
     }
 }
 
+// 获取登陆后设置结果
+const getLoginSettingResult = (): boolean | undefined => {
+    return Cookies.get(LOGIN_SETTING_COMPLETE_KEY) as boolean | undefined
+}
+// 登录设置完成后记录结果
+const setLoginSettingResult = () => {
+    Cookies.set(LOGIN_SETTING_COMPLETE_KEY,true)
+}
+// 删除登陆后设置信息
+const removeLoginSettingResult = () => {
+    Cookies.remove(LOGIN_SETTING_COMPLETE_KEY)
+}
+
 export default {
     getToken,
     setToken,
@@ -83,5 +98,8 @@ export default {
     rememberMe,
     forgetMe,
     getUsernamePassword,
-    enableRememberMe
+    enableRememberMe,
+    getLoginSettingResult,
+    setLoginSettingResult,
+    removeLoginSettingResult
 }

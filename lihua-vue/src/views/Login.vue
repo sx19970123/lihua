@@ -1,83 +1,85 @@
 <template>
   <a-flex class="login-background" justify="center" align="center">
-      <a-flex class="login-content" justify="space-around" align="center" v-if="!showSetting">
+<!--      主题切换开关-->
+    <head-theme-switch class="head-theme-switch"/>
+    <a-flex class="login-content" justify="space-around" align="center" v-if="showContent">
 <!--        左侧标题-->
-        <div class="slogan">
-          <a-typography-title class="slogan-title">狸花猫后台管理系统</a-typography-title>
-          <a-typography-title :level="2" class="slogan-subhead">
-            基于SpringBoot 3.X 和 vue3.X 的
-            后台管理系统
-          </a-typography-title>
-        </div>
-        <div class="form">
-          <transition name="card" mode="out-in">
+      <div class="slogan" v-if="showContent">
+        <a-typography-title class="slogan-title">狸花猫后台管理系统</a-typography-title>
+        <a-typography-title :level="2" class="slogan-subhead">
+          基于SpringBoot 3.X 和 vue3.X 的
+          后台管理系统
+        </a-typography-title>
+      </div>
+      <div class="form">
+        <transition name="card" mode="out-in">
 <!--      右侧表单-->
-            <a-card class="login-card" v-if="showLogin" v-show="show">
-              <transition name="form" mode="out-in">
-                <div style="margin: 16px" v-if="show">
-                  <div class="login-title">
-                    <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
-                    <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
+          <a-card class="login-card" v-if="showLogin" v-show="show">
+            <transition name="form" mode="out-in">
+              <div style="margin: 16px" v-if="show">
+                <div class="login-title">
+                  <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
+                  <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
 <!--                    根据配置显示注册-->
-                    <div v-if="settingStore.getSetting<SignIn>('SignInSetting')?.enable">
-                      <a-typography-text>没有账户？</a-typography-text>
-                      <a-typography-link @click="showLogin = false">快速注册
-                        <RightOutlined/>
-                      </a-typography-link>
-                    </div>
+                  <div v-if="settingStore.getSetting<SignIn>('SignInSetting')?.enable">
+                    <a-typography-text>没有账户？</a-typography-text>
+                    <a-typography-link @click="showLogin = false">快速注册
+                      <RightOutlined/>
+                    </a-typography-link>
                   </div>
-                  <a-form :model="loginForm" @finish="handleFinish" :rules="loginRoles">
-                    <a-form-item name="username" hasFeedback>
-                      <a-input class="login-form-item"
-                               autocomplete="off"
-                               v-model:value="loginForm.username"
-                               placeholder="用户名"
-                      >
-                        <template #prefix>
-                          <UserOutlined :style="!themeStore.$state.isDarkTheme ? 'color: rgba(0, 0, 0, 0.25)': 'color: rgba(255, 255, 255, 0.25)'"/>
-                        </template>
-                      </a-input>
-                    </a-form-item>
-                    <a-form-item name="password" hasFeedback>
-                      <a-input-password class="login-form-item"
-                                        v-model:value="loginForm.password"
-                                        placeholder="密码"
-                      >
-                        <template #prefix>
-                          <LockOutlined :style="!themeStore.$state.isDarkTheme ? 'color: rgba(0, 0, 0, 0.25)': 'color: rgba(255, 255, 255, 0.25)'"/>
-                        </template>
-                      </a-input-password>
-                    </a-form-item>
-                    <a-form-item>
-                      <a-flex justify="space-between">
-                        <a-checkbox v-model:checked="rememberMe">记住账号</a-checkbox>
-                        <a-typography-link v-if="false">忘记密码</a-typography-link>
-                      </a-flex>
-                    </a-form-item>
-                    <a-form-item>
-                      <a-button html-type="submit"
-                                type="primary"
-                                class="login-form-item"
-                                :loading="loginLoading"
-                                style="width: 100%">登录
-                      </a-button>
-                    </a-form-item>
-                  </a-form>
-                  <a-divider plain v-if="false">其他方式</a-divider>
-                  <a-flex justify="space-around" v-if="false">
-                    <a-button size="large" shape="circle"><WeiboCircleOutlined /></a-button>
-                    <a-button size="large" shape="circle"><WechatOutlined /></a-button>
-                    <a-button size="large" shape="circle"><AlipayCircleOutlined /></a-button>
-                    <a-button size="large" shape="circle"><QqOutlined /></a-button>
-                    <a-button size="large" shape="circle"><GitlabOutlined /></a-button>
-                  </a-flex>
                 </div>
-              </transition>
-            </a-card>
+                <a-form :model="loginForm" @finish="handleFinish" :rules="loginRoles">
+                  <a-form-item name="username" hasFeedback>
+                    <a-input class="login-form-item"
+                             autocomplete="off"
+                             v-model:value="loginForm.username"
+                             placeholder="用户名"
+                    >
+                      <template #prefix>
+                        <UserOutlined/>
+                      </template>
+                    </a-input>
+                  </a-form-item>
+                  <a-form-item name="password" hasFeedback>
+                    <a-input-password class="login-form-item"
+                                      v-model:value="loginForm.password"
+                                      placeholder="密码"
+                    >
+                      <template #prefix>
+                        <LockOutlined/>
+                      </template>
+                    </a-input-password>
+                  </a-form-item>
+                  <a-form-item>
+                    <a-flex justify="space-between">
+                      <a-checkbox v-model:checked="rememberMe">记住账号</a-checkbox>
+                      <a-typography-link v-if="false">忘记密码</a-typography-link>
+                    </a-flex>
+                  </a-form-item>
+                  <a-form-item>
+                    <a-button html-type="submit"
+                              type="primary"
+                              class="login-form-item"
+                              :loading="loginLoading"
+                              style="width: 100%">登录
+                    </a-button>
+                  </a-form-item>
+                </a-form>
+                <a-divider plain v-if="false">其他方式</a-divider>
+                <a-flex justify="space-around" v-if="false">
+                  <a-button size="large" shape="circle"><WeiboCircleOutlined /></a-button>
+                  <a-button size="large" shape="circle"><WechatOutlined /></a-button>
+                  <a-button size="large" shape="circle"><AlipayCircleOutlined /></a-button>
+                  <a-button size="large" shape="circle"><QqOutlined /></a-button>
+                  <a-button size="large" shape="circle"><GitlabOutlined /></a-button>
+                </a-flex>
+              </div>
+            </transition>
+          </a-card>
 <!--            用户注册-->
-            <user-register v-else @go-login="handleShowLogin"/>
-          </transition>
-        </div>
+          <user-register v-else @go-login="handleShowLogin"/>
+        </transition>
+      </div>
     </a-flex>
     <!--    验证码-->
     <transition name="verify" mode="out-in">
@@ -90,14 +92,15 @@
           :imgSize="{ width: '330px', height: '155px' }"
       />
     </transition>
-    <head-theme-switch class="head-theme-switch"/>
-      <transition name="fade" mode="out-in">
-        <login-setting :component-names="settingComponentNames"
-                       v-if="showSetting"
-                       @go-login="handleGoLogin"
-        ></login-setting>
-      </transition>
+    <!--    登录设置-->
+    <transition name="setting" mode="out-in">
+      <login-setting :component-names="settingComponentNames"
+                     v-if="showSetting"
+                     @go-login="handleGoLogin"
+      ></login-setting>
+    </transition>
   </a-flex>
+
 </template>
 
 <script setup lang="ts">
@@ -115,17 +118,17 @@ import LoginSetting from "@/components/login-setting/index.vue"
 import UserRegister from "@/components/user-register/index.vue"
 import type {ResponseType} from "@/api/global/Type.ts";
 import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
-import {useThemeStore} from "@/stores/modules/theme.ts";
 import {init} from "@/utils/AppInit.ts";
+import Token from "@/utils/Token.ts";
 
 const router = useRouter()
 const verifyRef = useTemplateRef<InstanceType<typeof Verify>>("verifyRef")
 const rememberMe = ref<boolean>(token.enableRememberMe())
 const showSetting = ref<boolean>(false)
+const showContent = ref<boolean>(true)
 const settingComponentNames = ref<string[]>([])
 const settingStore = useSettingStore()
 const userStore = useUserStore()
-const themeStore = useThemeStore()
 // 用户登录
 interface LoginFormType {
   username: string,
@@ -181,6 +184,7 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
           await init()
           // 加载登录配置
           showSetting.value = true
+          showContent.value = false
           settingComponentNames.value.push(...loginSettingResp.data.split(","))
           // 关闭登录卡片
           show.value = false
@@ -188,6 +192,7 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
       } else {
         message.error(loginSettingResp.msg)
       }
+      Token.removeLoginSettingResult()
       loginLoading.value = false
       // 路由跳转完成后的后续逻辑可以放在这里
     } else {
@@ -250,8 +255,9 @@ const handleRedirect = () => {
 // 当需要登陆后配置时，刷新页面读取路由携带参数，加载配置页面
 const routerCheckLoginSetting = () => {
   if (history.state.data) {
-      showSetting.value = true
-      settingComponentNames.value.push(...history.state.data.split(","))
+    showSetting.value = true
+    showContent.value = false
+    settingComponentNames.value.push(...history.state.data.split(","))
   }
 }
 
@@ -295,8 +301,12 @@ const handleGoLogin = async () => {
     loginForm.username = ''
     loginForm.password = ''
   }
-  // 登录卡片弹出动画
-  handleShowLogin(false)
+  setTimeout(() => {
+    showContent.value = true
+    // 登录卡片弹出动画
+    handleShowLogin(false)
+  }, 760)
+
 }
 
 onMounted(() => {
@@ -314,6 +324,7 @@ onMounted(() => {
   position: relative;
   width: 100%;
   height: 100vh;
+  overflow: hidden;
   background-image:linear-gradient(-135deg,#C2FFD8 10%,#465EFB 100%);
   background-size: 200% 200%;
   animation: gradientAnimation 30s ease infinite;
@@ -417,6 +428,31 @@ onMounted(() => {
 .verify-leave-to {
   opacity: 0;
 }
+
+.setting-enter-active {
+  transition: all 0.75s ease-in-out;
+}
+.setting-enter-from {
+  transform: translateY(1000px); /* 从下方 100px 开始 */
+  opacity: 0; /* 初始透明度为 0，不可见 */
+}
+.setting-enter-to {
+  transform: translateY(0); /* 移动到原始位置 */
+  opacity: 1; /* 最终透明度为 1，完全可见 */
+}
+
+.setting-leave-active {
+  transition: all 0.75s ease-out;
+}
+.setting-leave-from {
+  transform: translateY(0); /* 从原始位置开始 */
+  opacity: 1; /* 初始透明度为 1 */
+}
+.setting-leave-to {
+  transform: translateY(1100px); /* 离开时向下移动 100px */
+  opacity: 0; /* 最终透明度为 0，完全消失 */
+}
+
 </style>
 
 <style>

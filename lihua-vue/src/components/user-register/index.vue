@@ -21,7 +21,7 @@
                        v-model:value="userRegister.username"
               >
                 <template #prefix>
-                  <UserOutlined :style="!themeStore.$state.isDarkTheme ? 'color: rgba(0, 0, 0, 0.25)': 'color: rgba(255, 255, 255, 0.25)'"/>
+                  <UserOutlined/>
                 </template>
               </a-input>
             </a-form-item>
@@ -42,7 +42,7 @@
                                 v-model:value="userRegister.confirmPassword"
               >
                 <template #prefix>
-                  <LockOutlined :style="!themeStore.$state.isDarkTheme ? 'color: rgba(0, 0, 0, 0.25)': 'color: rgba(255, 255, 255, 0.25)'"/>
+                  <LockOutlined/>
                 </template>
               </a-input-password>
             </a-form-item>
@@ -78,9 +78,7 @@ import type {Rule} from "ant-design-vue/es/form";
 import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
 
-const themeStore = useThemeStore()
 // 向父组件抛出切登录方法
 const emits = defineEmits(['goLogin'])
 const goLogin = (clearLoginForm: boolean) => {
