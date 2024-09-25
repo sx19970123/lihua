@@ -233,8 +233,6 @@ const transition = () => {
   const showForm = ref<boolean>(false)
   setTimeout(() => {
     showCard.value = true
-  }, 10)
-  setTimeout(() => {
     showForm.value = true
   }, 100)
   return {
