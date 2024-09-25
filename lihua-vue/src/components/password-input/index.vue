@@ -4,8 +4,14 @@
                       @change="handleChangePassword"
                       :placeholder="placeholder"
                       :maxlength="30"
-    />
-    <a-progress style="margin: 0"
+                      :style="{height: height}"
+    >
+      <template #prefix v-if="prefixIcon">
+        <LockOutlined style="color: rgba(0, 0, 0, 0.25)"/>
+      </template>
+    </a-input-password>
+    <a-progress style="margin: 0;"
+                v-show="showProgress"
                 :showInfo="false"
                 :size="[size,3]"
                 :steps="3"
@@ -17,10 +23,13 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 
-const {value, placeholder, size = 90} = defineProps<{
+const {value, placeholder, size = 90, height, prefixIcon = false, showProgress = true} = defineProps<{
   value?: string,
   placeholder?: string,
-  size?: number
+  size?: number,
+  height?: string,
+  prefixIcon?: boolean,
+  showProgress?: boolean
 }>()
 
 const password = ref<string | undefined>(value)

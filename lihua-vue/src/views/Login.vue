@@ -12,9 +12,9 @@
         <div class="form">
           <transition name="card" mode="out-in">
 <!--      右侧表单-->
-            <a-card class="login-card" v-if="showLogin" v-show="showCard">
+            <a-card class="login-card" v-if="showLogin" v-show="show">
               <transition name="form" mode="out-in">
-                <div style="margin: 16px" v-if="showForm">
+                <div style="margin: 16px" v-if="show">
                   <div class="login-title">
                     <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
                     <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
@@ -119,12 +119,15 @@ const rememberMe = ref<boolean>(token.enableRememberMe())
 const showSetting = ref<boolean>(false)
 const settingComponentNames = ref<string[]>([])
 const settingStore = useSettingStore()
-
 // 用户登录
 interface LoginFormType {
   username: string,
   password: string
 }
+// 显示登录卡片
+const show = ref<boolean>(false)
+// 显示登录/注册组件
+const showLogin = ref<boolean>(true)
 
 const loginForm = reactive<LoginFormType>({
   username: '',
@@ -229,23 +232,15 @@ const handleRedirect = () => {
 
 // 动画效果
 const transition = () => {
-  const showCard = ref<boolean>(false)
-  const showForm = ref<boolean>(false)
   setTimeout(() => {
-    showCard.value = true
-    showForm.value = true
+    show.value = true
   }, 100)
-  return {
-    showCard,
-    showForm
-  }
 }
-const {showForm, showCard} = transition()
 
 // 从注册页面切换到登录页面
 const handleShowLogin = (clearLoginForm: boolean) => {
   showLogin.value = true
-  showForm.value = false
+  show.value = false
 
   // 根据参数清空表单
   if (clearLoginForm) {
@@ -255,14 +250,12 @@ const handleShowLogin = (clearLoginForm: boolean) => {
   }
 
   setTimeout(() => {
-    showForm.value = true
+    show.value = true
   }, 100)
 }
 
-// 显示登录/注册组件
-const showLogin = ref<boolean>(true)
-
 onMounted(() => {
+  transition()
   initLogin()
   handleRedirect()
   captcha()
@@ -329,7 +322,7 @@ onMounted(() => {
 }
 
 .login-card {
-  max-width: 380px;
+  width: 380px;
   margin: 64px;
   border-radius: 24px;
 }

@@ -2,7 +2,7 @@
   <div>
     <a-card class="register">
       <transition name="form" mode="out-in">
-        <div style="margin: 16px" v-if="showForm">
+        <div style="margin: 16px">
           <div class="register-title">
             <a-typography-title :level="2">欢迎注册狸花猫</a-typography-title>
             <a-typography-text>已有账户？</a-typography-text>
@@ -10,7 +10,10 @@
               <RightOutlined/>
             </a-typography-link>
           </div>
-          <a-form :model="userRegister" :rules="rules" @finish="handleFinish">
+          <a-form :model="userRegister"
+                  :rules="rules"
+                  @finish="handleFinish"
+          >
             <a-form-item name="username" hasFeedback>
               <a-input class="register-form-item"
                        autocomplete="off"
@@ -22,26 +25,17 @@
                 </template>
               </a-input>
             </a-form-item>
-            <a-form-item class="form-item-single-line" name="password" hasFeedback>
-              <a-input-password class="register-form-item"
-                                placeholder="密码"
-                                v-model:value="userRegister.password"
-                                @change="handleChange"
-              >
-                <template #prefix>
-                  <LockOutlined style="color: rgba(0, 0, 0, 0.25)"/>
-                </template>
-              </a-input-password>
+            <a-form-item name="password" hasFeedback>
+              <password-input class="register-form-item"
+                              v-model:value="userRegister.password"
+                              :size="98"
+                              placeholder="密码"
+                              height="48px"
+                              prefixIcon
+                              :showProgress="!!userRegister.password"
+              />
             </a-form-item>
-            <a-flex style="margin-bottom: 16px;">
-              <a-progress class="form-item-width"
-                          style="margin: 8px"
-                          :showInfo="false"
-                          :size="[90,3]"
-                          :steps="3"
-                          :percent="passwordLevel"
-                          :strokeColor="['#ff4d4f','#faad14','#52c41a']"/>
-            </a-flex>
+
             <a-form-item name="confirmPassword" hasFeedback>
               <a-input-password class="register-form-item"
                                 placeholder="再次输入密码"
@@ -79,6 +73,7 @@
 
 <script setup lang="ts">
 import {ref, useTemplateRef} from "vue";
+import PasswordInput from "@/components/password-input/index.vue"
 import type {Rule} from "ant-design-vue/es/form";
 import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
@@ -89,12 +84,6 @@ const emits = defineEmits(['goLogin'])
 const goLogin = (clearLoginForm: boolean) => {
   emits('goLogin', clearLoginForm)
 }
-
-// 控制表单动画
-const showForm = ref<boolean>(false)
-setTimeout(() => {
-  showForm.value = true
-}, 100)
 
 // 用户注册实体
 const userRegister = ref<{
@@ -107,28 +96,6 @@ const userRegister = ref<{
   password: '',
   confirmPassword: ''
 })
-// 密码等级
-const passwordLevel = ref<number>(0)
-// 处理密码强度提示
-const handleChange = () => {
-  const weakRegex = /^(?=.*[a-zA-Z])[\w!@#$%^&*]{6,}$/;
-  const mediumRegex = /^(?=.*\d)(?=.*[a-zA-Z])[\w!@#$%^&*]{8,}$/;
-  const strongRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?=.*[\w!@#$%^&*]).{10,}$/;
-  const password = userRegister.value.password
-  if (password) {
-    if (weakRegex.test(password)){
-      passwordLevel.value = 30
-    }
-    if (mediumRegex.test(password)){
-      passwordLevel.value = 60
-    }
-    if (strongRegex.test(password)){
-      passwordLevel.value = 90
-    }
-  } else {
-    passwordLevel.value = 0
-  }
-}
 
 // 对比两次密码输入是否相同
 const equalToPassword = (rule: any, value: string, callback:Function) => {
@@ -206,7 +173,7 @@ const handleRegister = async ({captchaVerification}: { captchaVerification: stri
 
 <style scoped>
 .register {
-  max-width: 380px;
+  width: 380px;
   margin: 64px;
   border-radius: 24px;
 }
