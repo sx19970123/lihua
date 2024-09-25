@@ -79,6 +79,13 @@ public class SysLoginLogServiceImpl implements SysLogService {
     }
 
     @Override
+    public SysLogVO findByCacheKey(String cacheKey) {
+        QueryWrapper<SysLoginLog> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysLoginLog::getCacheKey, cacheKey);
+        return sysLoginLogMapper.selectOne(queryWrapper);
+    }
+
+    @Override
     public String exportExcel(SysLogDTO sysLogDTO) {
 
         QueryWrapper<SysLoginLog> queryWrapper = new QueryWrapper<>();

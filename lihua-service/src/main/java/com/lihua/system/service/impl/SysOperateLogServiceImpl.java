@@ -83,6 +83,11 @@ public class SysOperateLogServiceImpl implements SysLogService {
     }
 
     @Override
+    public SysLogVO findByCacheKey(String cacheKey) {
+        return null;
+    }
+
+    @Override
     public String exportExcel(SysLogDTO sysLogDTO) {
 
         QueryWrapper<SysOperateLog> queryWrapper = new QueryWrapper<>();

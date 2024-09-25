@@ -108,6 +108,7 @@ public class HandleRecodeLog {
                 if (loginUser != null) {
                     sysLogVO.setCreateId(loginUser.getUser().getId());
                     sysLogVO.setCreateName(loginUser.getUser().getNickname());
+                    sysLogVO.setCacheKey(loginUser.getCacheKey());
                 }
             }
             // 登录参数中获取 username

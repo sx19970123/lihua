@@ -139,4 +139,9 @@ public class SysLogVO implements Serializable {
      * 删除标识
      */
     private String delFlag;
+
+    /**
+     * 缓存key
+     */
+    private String cacheKey;
 }

@@ -62,12 +62,9 @@
       </template>
       <template #bodyCell="{column,record,text}">
         <template v-if="column.key === 'cacheKey'">
-          <a-tooltip placement="topLeft">
-            <template #title>
-              {{text}}
-            </template>
+          <a-typography-link @click="(event:MouseEvent) => selectByCacheKey(event, record.cacheKey)">
             {{text}}
-          </a-tooltip>
+          </a-typography-link>
         </template>
         <template v-if="column.key === 'loginTime'">
           {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
@@ -99,6 +96,32 @@
         </a-flex>
       </template>
     </a-table>
+
+    <!--   日志详情模态框-->
+    <a-modal cancelText="关 闭" v-model:open="openModal" width="1000px" :footer="null">
+      <a-descriptions title="登录日志" bordered :label-style="{width: '110px'}">
+        <a-descriptions-item label="业务描述" :span="1">
+          <a-badge status="success" v-if="logInfo.executeStatus === '0'"/>
+          <a-badge status="error" v-else/>
+          {{logInfo.description}}
+        </a-descriptions-item>
+        <a-descriptions-item label="业务类型" :span="1">{{logInfo.typeMsg}}</a-descriptions-item>
+        <a-descriptions-item label="用户名" :span="1">{{logInfo.username}}</a-descriptions-item>
+        <a-descriptions-item label="类名" :span="2">{{logInfo.className}}</a-descriptions-item>
+        <a-descriptions-item label="方法名" :span="1">{{logInfo.methodName}}</a-descriptions-item>
+        <a-descriptions-item label="参数" :span="3">{{logInfo.params}}</a-descriptions-item>
+        <a-descriptions-item label="操作人" :span="1">{{logInfo.createName}}</a-descriptions-item>
+        <a-descriptions-item label="操作时间" :span="1">{{dayjs(logInfo.createTime).format("YYYY-MM-DD HH:mm:ss")}}</a-descriptions-item>
+        <a-descriptions-item label="执行时长" :span="1">{{logInfo.executeTime ? logInfo.executeTime + ' 毫秒' : ''}}</a-descriptions-item>
+        <a-descriptions-item label="请求地址" :span="2">{{logInfo.url}}</a-descriptions-item>
+        <a-descriptions-item label="用户 ip" :span="1">{{logInfo.ipAddress}}</a-descriptions-item>
+        <a-descriptions-item label="操作环境" :span="3">
+          {{logInfo.userAgent}}
+        </a-descriptions-item>
+        <a-descriptions-item label="异常信息" :span="3" v-if="logInfo.executeStatus === '1'">{{logInfo.errorMsg}}</a-descriptions-item>
+        <a-descriptions-item label="异常堆栈" :span="3" v-if="logInfo.executeStatus === '1'">{{logInfo.errorStack}}</a-descriptions-item>
+      </a-descriptions>
+    </a-modal>
   </a-flex>
 </template>
 
@@ -109,6 +132,8 @@ import type {LoggedUserType} from "@/api/monitor/logged-user/type/LoggedUserType
 import {findList, forceLogout} from "@/api/monitor/logged-user/LoggedUser.ts";
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
+import type {SysLog} from "@/api/system/log/type/SysLog.ts";
+import {findLoginByCacheKey} from "@/api/system/log/Log.ts";
 const initSearch = () => {
   // 选中的数据id集合
   const logoutCacheKeys = ref<Array<string>>([])
@@ -144,8 +169,7 @@ const initSearch = () => {
     {
       title: '缓存键值',
       key: 'cacheKey',
-      dataIndex: 'cacheKey',
-      ellipsis: true
+      dataIndex: 'cacheKey'
     },
     {
       title: '用户名',
@@ -276,6 +300,40 @@ const handleConfirm = async (cacheKey?: string) => {
     message.error(resp.msg)
   }
 }
+
+
+// 初始化获取日志详情
+const initLogInfo = () => {
+  // 模态框
+  const openModal = ref<boolean>(false)
+  // 日志详情
+  const logInfo = ref<SysLog>({})
+  // 根据id查询日志详情
+  const selectByCacheKey = async (event:MouseEvent, id: string) => {
+    event.stopPropagation()
+    const resp = await findLoginByCacheKey(id)
+    if (resp.code === 200) {
+      logInfo.value = resp.data
+
+      if (!resp.data) {
+        message.error('用户信息不存在')
+      } else {
+        openModal.value = true
+      }
+
+    } else {
+      message.error(resp.msg)
+    }
+  }
+
+  return {
+    openModal,
+    logInfo,
+    selectByCacheKey
+  }
+}
+
+const {openModal, logInfo, selectByCacheKey} = initLogInfo()
 </script>
 
 <style scoped>

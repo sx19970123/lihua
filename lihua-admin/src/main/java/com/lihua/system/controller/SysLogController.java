@@ -84,6 +84,11 @@ public class SysLogController extends BaseController {
         return success(sysLoginLogService.findById(id));
     }
 
+    @GetMapping("login/cacheKey/{cacheKey}")
+    public String findLoginByCacheKey(@PathVariable("cacheKey") String cacheKey) {
+        return success(sysLoginLogService.findByCacheKey(cacheKey));
+    }
+
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping("login")
     @Log(description = "删除登录日志", type = LogTypeEnum.DELETE)

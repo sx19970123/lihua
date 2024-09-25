@@ -98,6 +98,11 @@ export interface SysLog {
      * 日志执行状态
      */
     executeStatus?: string;
+
+    /**
+     * 缓存key
+     */
+    cacheKey?: string;
 }
 
 export interface SysLogDTO extends SysLog {

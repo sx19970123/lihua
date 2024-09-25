@@ -29,6 +29,13 @@ public interface SysLogService {
     SysLogVO findById(String id);
 
     /**
+     * 根据缓存查询日志
+     * @param cacheKey
+     * @return
+     */
+    SysLogVO findByCacheKey(String cacheKey);
+
+    /**
      * 导出 excel
      * @param sysLogDTO
      * @return

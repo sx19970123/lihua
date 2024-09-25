@@ -90,6 +90,16 @@ export const findLoginById = (id: string) => {
     })
 }
 
+// 查询登录日志详情
+export const findLoginByCacheKey = (cacheKey: string) => {
+    return request<SysLog>({
+        url: 'system/log/login/cacheKey/' + cacheKey,
+        method: "get"
+    })
+}
+
+
+
 // 登录日志查询
 export const findLoginPage = (data: SysLogDTO) => {
     return request<PageResponseType<SysLog>>({
