@@ -21,7 +21,7 @@
                        v-model:value="userRegister.username"
               >
                 <template #prefix>
-                  <UserOutlined/>
+                  <UserOutlined class="input-prefix-icon-color"/>
                 </template>
               </a-input>
             </a-form-item>
@@ -42,7 +42,7 @@
                                 v-model:value="userRegister.confirmPassword"
               >
                 <template #prefix>
-                  <LockOutlined/>
+                  <LockOutlined class="input-prefix-icon-color"/>
                 </template>
               </a-input-password>
             </a-form-item>

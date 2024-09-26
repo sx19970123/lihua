@@ -7,7 +7,7 @@
                       :style="{height: height}"
     >
       <template #prefix v-if="prefixIcon">
-        <LockOutlined/>
+        <LockOutlined class="input-prefix-icon-color"/>
       </template>
     </a-input-password>
     <a-progress style="margin: 0;"

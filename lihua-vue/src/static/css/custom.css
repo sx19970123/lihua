@@ -34,13 +34,20 @@
  */
 [data-theme = 'light']{
     .icon-default-color {
-        color: #292929;
+        color: rgba(0, 0, 0, 0.88);
+    }
+
+    .input-prefix-icon-color {
+        color: rgba(0,0,0,0.25);
     }
 }
 
 [data-theme = 'dark'] {
     .icon-default-color {
-        color: #f3f3f3;
+        color:  rgba(255, 255, 255, 0.85);
+    }
+    .input-prefix-icon-color {
+        color: rgba(255,255,255,0.25);
     }
 }
 

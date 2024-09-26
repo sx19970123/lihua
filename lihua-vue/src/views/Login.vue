@@ -36,7 +36,7 @@
                              placeholder="用户名"
                     >
                       <template #prefix>
-                        <UserOutlined/>
+                        <UserOutlined class="input-prefix-icon-color"/>
                       </template>
                     </a-input>
                   </a-form-item>
@@ -46,7 +46,7 @@
                                       placeholder="密码"
                     >
                       <template #prefix>
-                        <LockOutlined/>
+                        <LockOutlined class="input-prefix-icon-color"/>
                       </template>
                     </a-input-password>
                   </a-form-item>
