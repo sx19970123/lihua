@@ -4,10 +4,10 @@
               @change="handleSwitch"
               :style="{'background': themeStore.isDarkTheme ? '#00008B' : '#2196F3'}">
       <template #checkedChildren>
-        <Moon/>
+        <Moon style="font-size: 14px"/>
       </template>
       <template #unCheckedChildren>
-        <Sun/>
+        <Sun style="font-size: 14px"/>
       </template>
     </a-switch>
   </div>
