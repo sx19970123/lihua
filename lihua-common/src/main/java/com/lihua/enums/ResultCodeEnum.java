@@ -18,8 +18,7 @@ public enum ResultCodeEnum {
     RESOURCE_NOT_FOUND_ERROR(404,"请求的资源不存在"),
     PARAMS_ERROR(405,"参数格式异常"),
     ACCESS_EXPIRED_ERROR (406,"请求资源权限过期"),
-    LOGIN_SETTING_ERROR (407,"需要完善信息"),
-
+    IP_ILLEGAL_ERROR(407, "暂时无法为该地区提供服务"),
     ERROR (500,"业务异常"),
     FILE_ERROR (501,"文件处理异常"),
     SERVER_UNAVAILABLE (503,"服务器维护中");

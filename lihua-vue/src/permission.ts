@@ -43,7 +43,8 @@ router.beforeEach(async (to, from, next) => {
                 }
                 // 判断用户是否拥有静态路由中指定的角色
                 if (hasRouteRole(to?.meta?.role as string[])) {
-                    next({ ...to, replace: true });
+                    // 已登录状态下，请求登陆页面自动跳转到首页
+                    to.path === "/login" ? next('/index') : next({ ...to, replace: true })
                 } else {
                     next("/403");
                 }
@@ -66,11 +67,12 @@ router.beforeEach(async (to, from, next) => {
         // token 失效后重置主题后重定向到登陆页
         themeStore.resetState();
         await close()
-        if (to.path !== "/login") {
-            next("/login");
+        if (to.path === "/407") {
+            next()
         } else {
-            next();
+            to.path !== "/login" ? next("/login") : next()
         }
+
     }
 
     NProgress.done();

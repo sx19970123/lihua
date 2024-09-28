@@ -7,7 +7,7 @@
     </a-button>
     <a-flex justify="center" align="center" vertical="vertical" :gap="16">
 <!--        图标-->
-      <setting-icon class="login-setting-icon" :icon="icon" :style="{color: themeStore.colorPrimary}"/>
+      <setting-icon class="login-setting-icon" :icon="icon" :style="{color: themeStore.getColorPrimary()}"/>
       <div class="login-setting-text">
 <!--        标题-->
         <a-typography-title :level="2">{{title}}</a-typography-title>

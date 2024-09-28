@@ -37,7 +37,7 @@ export const useThemeStore = defineStore('theme',{
         /**
          * 主要颜色
          */
-        const colorPrimary: string = settings.colorPrimary
+        const colorPrimary: string = settings.themeConfig.token.colorPrimary
 
         /**
          * 侧边栏背景颜色
@@ -88,7 +88,6 @@ export const useThemeStore = defineStore('theme',{
          * ant 主题配置
          */
         const themeConfig = settings.themeConfig
-
 
         return {
             layoutType,
@@ -144,7 +143,6 @@ export const useThemeStore = defineStore('theme',{
         },
         // 暗色模式
         changeDataDark() {
-            this.changeDocumentElement()
             let backgroundColor: string = ''
             // 暗色模式下，顶部颜色为黑色、侧边颜色为黑色，透明度根据磨砂效果控制
             if (this.$state.isDarkTheme) {
@@ -205,7 +203,6 @@ export const useThemeStore = defineStore('theme',{
         // 切换主要颜色
         changeColorPrimary() {
             this.themeConfig.token.colorPrimary = this.$state.colorPrimary
-            this.changeDocumentElement()
         },
         // 修改侧边栏颜色
         changeSiderTheme() {
@@ -250,9 +247,13 @@ export const useThemeStore = defineStore('theme',{
             this.$state.layoutBackgroundColor = value
         },
         // 修改html标签，标记当前颜色模式
-        changeDocumentElement() {
+        changeDocumentElement(colorPrimary: string) {
             document.documentElement.setAttribute("data-theme",this.$state.isDarkTheme ? 'dark' : 'light')
-            document.documentElement.style.setProperty("--colorPrimary", this.$state.colorPrimary)
+            document.documentElement.style.setProperty("--colorPrimary", colorPrimary)
+        },
+        // 获取当前主要颜色
+        getColorPrimary() {
+          return document.documentElement.style.getPropertyValue("--colorPrimary")
         },
         // 主题复原
         resetState() {
@@ -260,7 +261,7 @@ export const useThemeStore = defineStore('theme',{
             this.$state.componentSize = settings.componentSize
             this.$state.showViewTabs = settings.showViewTabs
             this.$state.isDarkTheme = localStorage.getItem("dataTheme") === "dark"
-            this.$state.colorPrimary = settings.colorPrimary
+            this.$state.colorPrimary = settings.themeConfig.token.colorPrimary
             this.$state.siderTheme = settings.siderTheme
             this.$state.groundGlass = settings.groundGlass
             this.$state.affixHead = settings.affixHead

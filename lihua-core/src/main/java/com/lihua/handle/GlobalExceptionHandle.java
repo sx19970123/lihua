@@ -2,6 +2,7 @@ package com.lihua.handle;
 
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.FileException;
+import com.lihua.exception.IpIllegalException;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.web.BaseController;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,17 @@ public class GlobalExceptionHandle extends BaseController {
     public String handleFileException(Exception e) {
         log.error(e.getMessage(), e);
         return error(ResultCodeEnum.FILE_ERROR, e.getMessage());
+    }
+
+    /**
+     * 捕获全局 IpIllegalException 异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(IpIllegalException.class)
+    public String handleIpIllegalException(Exception e) {
+        log.error(e.getMessage(), e);
+        return error(ResultCodeEnum.IP_ILLEGAL_ERROR);
     }
 
     /**

@@ -28,7 +28,7 @@
             <div class="text-ellipsis" v-if="props.size !== 'small'">
               <div>
                 <span>{{ icon.substring(0, icon.toLowerCase().indexOf(searchKeyword.toLowerCase())) }}</span>
-                <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.colorPrimary }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
+                <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.getColorPrimary() }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
                 <span>{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
               </div>
             </div>
@@ -39,7 +39,7 @@
             <component class="icon-size" :is="icon"/>
             <div class="text-ellipsis" v-if="props.size !== 'small'">
               <span>{{ icon.substring(0, icon.toLowerCase().indexOf(searchKeyword.toLowerCase())) }}</span>
-              <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.colorPrimary }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
+              <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.getColorPrimary() }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
               <span>{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
             </div>
           </a-flex>
@@ -49,7 +49,7 @@
             <component class="icon-size" :is="icon"/>
             <div class="text-ellipsis" v-if="props.size !== 'small'">
               <span>{{ icon.substring(0, icon.toLowerCase().indexOf(searchKeyword.toLowerCase())) }}</span>
-              <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.colorPrimary }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
+              <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.getColorPrimary() }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
               <span>{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
             </div>
           </a-flex>
@@ -59,7 +59,7 @@
             <component class="icon-size" :is="icon"/>
             <div class="text-ellipsis" v-if="props.size !== 'small'">
               <span>{{ icon.substring(0, icon.toLowerCase().indexOf(searchKeyword.toLowerCase())) }}</span>
-              <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.colorPrimary }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
+              <span :style="{ color: icon === modelValue ? '#1f1f1f' : themeStore.getColorPrimary() }">{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()), icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
               <span>{{ icon.substring(icon.toLowerCase().indexOf(searchKeyword.toLowerCase()) + searchKeyword.length) }}</span>
             </div>
           </a-flex>

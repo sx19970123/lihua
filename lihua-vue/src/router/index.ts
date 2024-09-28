@@ -84,7 +84,8 @@ const routers = [
           cache: false,
           affix: false,
           viewTab: true,
-          visible: false
+          visible: false,
+          role: ["ROLE_admin"]
         }
       }
     ],
@@ -93,17 +94,22 @@ const routers = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import("@/views/Login.vue")
+    component: () => import("@/views/Login.vue"),
   },
-  // 404
+  // 407
   {
-    path: "/:pathMatch(.*)*",
-    component: () => import("@/views/error/404/index.vue"),
+    path: "/407",
+    component: () => import("@/views/error/407/index.vue"),
   },
   // 403
   {
     path: "/403",
     component: () => import("@/views/error/403/index.vue"),
+  },
+  // 404
+  {
+    path: "/:pathMatch(.*)*",
+    component: () => import("@/views/error/404/index.vue"),
   },
 ]
 

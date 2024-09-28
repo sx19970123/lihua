@@ -27,7 +27,7 @@
                 <template  #title="{ name }">
                   <div v-if="name.indexOf(deptKeyword) > -1">
                     <span>{{name.substring(0,name.indexOf(deptKeyword))}}</span>
-                    <span :style="{'color':  themeStore.colorPrimary}">{{deptKeyword}}</span>
+                    <span :style="{'color':  themeStore.getColorPrimary()}">{{deptKeyword}}</span>
                     <span>{{name.substring(name.indexOf(deptKeyword) + deptKeyword.length)}}</span>
                   </div>
                   <span v-else>{{ name }}</span>

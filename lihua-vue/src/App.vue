@@ -24,7 +24,11 @@ import {ref, watch} from "vue";
 import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
 import type {GrayModel} from "@/api/system/setting/type/GrayModel.ts";
+import {theme} from "ant-design-vue";
+const { token } = theme.useToken()
 const themeStore = useThemeStore()
+// 应用html-root主题颜色
+themeStore.changeDocumentElement(token.value.colorPrimary)
 // 初始化系统配置
 const settingStore = useSettingStore()
 settingStore.init()
@@ -66,6 +70,11 @@ watch(() => settingStore.getSetting<GrayModel>("GrayModelSetting"), (newValue) =
   } else {
     themeStore.enableGrayModel(newValue?.enable)
   }
+})
+
+// 监听token.value.colorPrimary修改html-root中主题颜色
+watch(() => token.value.colorPrimary, (newValue) => {
+  themeStore.changeDocumentElement(newValue)
 })
 
 </script>

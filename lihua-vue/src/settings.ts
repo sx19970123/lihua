@@ -40,11 +40,6 @@ export default {
     siderGroup: false,
 
     /**
-     * 主要颜色
-     */
-    colorPrimary: 'rgb(22, 119, 255)',
-
-    /**
      * 主题颜色可选项
      */
     colorOptions: [
@@ -132,7 +127,7 @@ export default {
      */
     themeConfig: {
         token: {
-            colorPrimary: '#2196F3'
+            colorPrimary: 'rgb(22, 119, 255)'
         },
         algorithm: theme.defaultAlgorithm
     }

@@ -3,6 +3,7 @@ import token from "@/utils/Token.ts"
 import type {ResponseType} from "@/api/global/Type.ts"
 import { useUserStore } from "@/stores/modules/user";
 import {message} from "ant-design-vue";
+import router from "@/router";
 
 const { getToken } = token
 
@@ -31,6 +32,11 @@ service.interceptors.response.use((resp) => {
     if (data.code === 401) {
         const userStore= useUserStore()
         userStore.clearUserInfo(data.msg)
+        throw data.msg
+    }
+    // 配置的非法ip访问
+    if (data.code === 407) {
+        router.push("/407")
         throw data.msg
     }
     // 服务器处理文件异常，提示异常信息

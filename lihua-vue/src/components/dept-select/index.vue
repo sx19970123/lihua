@@ -20,14 +20,14 @@
                 <a-flex :gap="8">
                   <div v-if="name.indexOf(deptKeyword) > -1">
                     <span>{{ name.substring(0, name.indexOf(deptKeyword)) }}</span>
-                    <span :style="{'color':  themeStore.colorPrimary}">{{ deptKeyword }}</span>
+                    <span :style="{'color':  themeStore.getColorPrimary()}">{{ deptKeyword }}</span>
                     <span>{{ name.substring(name.indexOf(deptKeyword) + deptKeyword.length) }}</span>
                   </div>
                   <span v-else>{{ name }}</span>
                   <a-typography-text type="secondary">{{ code }}</a-typography-text>
                 </a-flex>
                 <span v-if="defaultDeptId === id">
-                 <a-tag :color="themeStore.colorPrimary" style="font-size: 10px;" :bordered="false">默认</a-tag>
+                 <a-tag :color="themeStore.getColorPrimary()" style="font-size: 10px;" :bordered="false">默认</a-tag>
                 </span>
                 <span v-show="hoverId === id && defaultDeptId !== id">
                   <a-button type="link" size="small" @click="handleSetDefaultDept(id)">设为默认</a-button>

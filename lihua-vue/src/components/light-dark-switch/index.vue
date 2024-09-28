@@ -1,28 +1,28 @@
 <template>
   <div style="padding-right: 16px;">
-    <a-switch v-model:checked="themeStore.isDarkTheme"
-              @change="handleSwitch"
-              :style="{'background': themeStore.isDarkTheme ? '#00008B' : '#2196F3'}">
-      <template #checkedChildren>
-        <Moon style="font-size: 14px"/>
-      </template>
-      <template #unCheckedChildren>
-        <Sun style="font-size: 14px"/>
-      </template>
-    </a-switch>
+    <a-config-provider :wave="{ disabled: true }">
+      <a-switch v-model:checked="themeStore.isDarkTheme"
+                @change="handleSwitch"
+                :style="{'background': themeStore.isDarkTheme ? '#00008B' : '#2196F3'}">
+        <template #checkedChildren>
+          <XiaoHeiMoon style="font-size: 15px; margin-top: 4px"/>
+        </template>
+        <template #unCheckedChildren>
+          <XiaoMiaoSun style="font-size: 15px; margin-top: 2px"/>
+        </template>
+      </a-switch>
+    </a-config-provider>
   </div>
 </template>
 <script setup lang="ts">
 import { useThemeStore } from "@/stores/modules/theme";
-import Sun from "@/components/icon/sun/Sun.vue";
-import Moon from "@/components/icon/moon/Moon.vue";
+import XiaoHeiMoon from "@/components/icon/xiaoheizi/XiaoHeiMoon.vue";
+import XiaoMiaoSun from "@/components/icon/xiaomiaozi/XiaoMiaoSun.vue";
 const themeStore = useThemeStore()
-
 // 定义 startViewTransition 函数返回对象 ready 为 Promise
 type TransitionFunction = {
   ready: Promise<any>
 }
-
 
 // 由于 startViewTransition 较新，Document下无法识别到 startViewTransition，所以进行自定义 interface
 interface ViewTransitionDocument extends Document {
@@ -33,7 +33,7 @@ interface ViewTransitionDocument extends Document {
 const handleSwitch = (checked: boolean, event: PointerEvent) => {
   setTimeout(() => {
     handleChangeTheme(checked, event)
-  }, 180)
+  }, 190)
 }
 
 // 切换主题

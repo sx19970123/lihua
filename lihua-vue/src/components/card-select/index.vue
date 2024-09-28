@@ -17,7 +17,7 @@
               :item="item"
               :index="index"
               :isSelected="activeCardValueList.includes(item[props.itemKey])"
-              :color="themeStore.colorPrimary"/>
+              :color="token.colorPrimary"/>
       </div>
       <!--    空状态-->
       <div class="select-card" v-else>
@@ -33,6 +33,8 @@
 import {reactive, ref, watch, defineProps} from "vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import { cloneDeep } from 'lodash-es'
+import {theme} from "ant-design-vue";
+const {token} = theme.useToken()
 const themeStore = useThemeStore()
 
 // 定义父级传入的配置项
@@ -162,14 +164,14 @@ const bodyStyle = ref<{
   'border': string,
   'box-shadow': string
 }>({
-  'border': '1px solid ' + themeStore.colorPrimary,
-  'box-shadow': 'inset 0 0 0 1px ' + themeStore.colorPrimary,
+  'border': '1px solid ' + token.value.colorPrimary,
+  'box-shadow': 'inset 0 0 0 1px ' + token.value.colorPrimary,
 })
 // 监听主题变化同步卡片样式
-watch(() => themeStore.colorPrimary, () => {
+watch(() => token.value.colorPrimary, () => {
   bodyStyle.value = {
-    'border': '1px solid ' + themeStore.colorPrimary,
-    'box-shadow': 'inset 0 0 0 1px ' + themeStore.colorPrimary,
+    'border': '1px solid ' + token.value.colorPrimary,
+    'box-shadow': 'inset 0 0 0 1px ' + token.value.colorPrimary,
   }
 })
 

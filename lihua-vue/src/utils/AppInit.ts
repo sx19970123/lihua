@@ -19,7 +19,6 @@ export const init = () => {
       try {
         const metaRouterList = resp.data?.routers || []
         const staticRoutes = router.options.routes
-
         // 初始化系统主题（首先初始化主题，因为后续的初始化需要用到主题数据）
         themeStore.init(userStore.$state.userInfo.theme)
 

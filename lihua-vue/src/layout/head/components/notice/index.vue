@@ -61,7 +61,7 @@
                   <!--                      头像-->
                   <template #avatar>
                     <a-badge :dot="item.readFlag === '0'">
-                      <a-avatar :style="{'background-color': themeStore.colorPrimary}">
+                      <a-avatar :style="{'background-color': themeStore.getColorPrimary()}">
                         <MessageOutlined v-if="item.type === '0'"/>
                         <NotificationOutlined v-else/>
                       </a-avatar>
@@ -168,7 +168,7 @@ handleSseMessage((response: SSEResponseType<SysNotice>) => {
     }, {
       default: () => '查看详情'
     }),
-    icon: () => h("0" === type ? MessageOutlined : NotificationOutlined, { style: 'color: ' + themeStore.colorPrimary}),
+    icon: () => h("0" === type ? MessageOutlined : NotificationOutlined, { style: 'color: ' + themeStore.getColorPrimary()}),
     key: id
   })
 })

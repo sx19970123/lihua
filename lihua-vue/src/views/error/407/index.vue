@@ -1,9 +1,9 @@
 <template>
   <a-card>
     <div class="error-container">
-      <component is="XiaoMiaoCool" style="font-size: 96px"/>
-      <a-typography-title>404 Not Found</a-typography-title>
-      <a-typography-text type="secondary">页面不见了</a-typography-text>
+      <component is="XiaoHeiFierce" style="font-size: 96px"/>
+      <a-typography-title>Service to the area is temporarily unavailable</a-typography-title>
+      <a-typography-text type="secondary">暂时无法为该地区提供服务</a-typography-text>
     </div>
   </a-card>
 </template>
@@ -18,5 +18,3 @@
   text-align: center;
 }
 </style>
-<script setup lang="ts">
-</script>

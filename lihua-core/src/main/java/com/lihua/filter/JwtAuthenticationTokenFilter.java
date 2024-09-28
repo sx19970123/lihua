@@ -16,7 +16,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-
+/**
+ * 请求 token 过滤器
+ */
 @Component
 @Slf4j
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
