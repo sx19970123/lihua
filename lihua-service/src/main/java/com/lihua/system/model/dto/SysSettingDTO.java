@@ -29,6 +29,15 @@ public class SysSettingDTO implements Serializable {
     }
 
     /**
+     * 限制访问ip
+     */
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    public static class RestrictAccessIpSetting extends SysSettingDTO {
+        List<String> ipList;
+    }
+
+    /**
      * 定期修改密码
      */
     @EqualsAndHashCode(callSuper = true)

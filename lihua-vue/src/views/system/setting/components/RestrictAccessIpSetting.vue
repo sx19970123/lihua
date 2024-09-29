@@ -1,0 +1,150 @@
+<template>
+  <div style="margin: 8px">
+    <a-form
+        layout="vertical"
+        @finish="handleFinish"
+        :model="settingForm"
+    >
+      <a-form-item label="限制访问IP">
+        <template #tooltip>
+          <a-tooltip>
+            <template #title>
+              配置禁止访问ip地址，支持 ? * 通配符
+            </template>
+            <QuestionCircleOutlined style="margin-left: 4px"/>
+          </a-tooltip>
+        </template>
+        <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
+      </a-form-item>
+      <div class="scrollbar" style="max-height: 400px; display: inline-block" v-if="settingForm.enable">
+        <a-form-item
+            :label="index === 0 ? 'ip地址' : ''"
+            :key="index"
+            v-for="(ipItem, index) in settingForm.ipList"
+            :name="['ipList', index]"
+            :rules="[{
+                required: true,
+                message: '请输入ip地址',
+                trigger: ['change', 'blur'],
+            },{
+              pattern:  /^[0-9.?*]+$/,
+              message: '请输入正确的ip地址',
+              trigger: ['change', 'blur'],
+            }]"
+        >
+          <a-input class="form-item-width" placeholder="请输入ip地址" v-model:value="settingForm.ipList[index]" allow-clear/>
+          <a-button style="margin-left: 8px; margin-right: 8px"
+                    danger
+                    v-if="settingForm?.ipList.length > 1"
+                    @click="handleRemoveIpItem(index)"
+          >
+            <template #icon>
+              <DeleteOutlined />
+            </template>
+          </a-button>
+        </a-form-item>
+        <a-form-item>
+          <a-button type="dashed" class="form-item-width" @click="handleAddIpItem">
+            <template #icon>
+              <PlusOutlined />
+            </template>
+            添加IP地址
+          </a-button>
+        </a-form-item>
+      </div>
+      <a-form-item v-if="settingForm.enable">
+        <a-button type="primary" html-type="submit">提 交</a-button>
+      </a-form-item>
+    </a-form>
+  </div>
+</template>
+
+<script setup lang="ts">
+import {useSettingStore} from "@/stores/modules/setting.ts";
+import {getCurrentInstance, onMounted, ref} from "vue";
+import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
+import type {RestrictAccessIp} from "@/api/system/setting/type/RestrictAccessIp.ts";
+import {message} from "ant-design-vue";
+const settingStore = useSettingStore();
+const componentName = getCurrentInstance()?.type.__name
+
+// 加载配置，已保存的系统配置中没有当前配置的话会进行创建
+const init = () => {
+  const settings = settingStore.settings
+  const targetSetting = settings.filter(item => item.settingComponentName === componentName) as SystemSetting[]
+  if (componentName && targetSetting.length === 0) {
+    settingStore.save(setting.value)
+  } else {
+    settingForm.value = JSON.parse(targetSetting[0].settingJson)
+  }
+}
+
+// 默认密码配置表单对象
+const settingForm = ref<RestrictAccessIp>({
+  enable: false,
+  ipList: ['']
+})
+
+// 保存到数据库中的对象
+const setting = ref<SystemSetting>({
+  settingName: '限制访问IP',
+  settingComponentName: componentName,
+  settingJson: JSON.stringify(settingForm.value)
+})
+
+// 添加ip
+const handleAddIpItem = () => [
+  settingForm.value.ipList.push('')
+]
+
+// 删除ip
+const handleRemoveIpItem = (index: number) => {
+  settingForm.value.ipList.splice(index, 1)
+}
+
+// 提交配置信息
+const handleFinish = async () => {
+  const ipList = settingForm.value.ipList
+  const ipSet = new Set(ipList)
+  let flag = false
+  if (ipSet.size !== ipList.length) {
+    flag = true
+  }
+
+  settingForm.value.ipList = [... ipSet]
+  setting.value.settingJson = JSON.stringify(settingForm.value)
+  const resp = await settingStore.save(setting.value)
+  if (resp.code === 200) {
+    if (flag){
+      message.warn("已合并重复ip")
+    }
+    message.success(resp.msg)
+    init()
+  } else {
+    message.error(resp.msg)
+  }
+}
+
+// 关闭ip限制保存配置
+const handleChangeSwitch = () => {
+  if (settingForm.value.enable) {
+    return;
+  }
+
+  settingForm.value = {
+    enable: false,
+    ipList: ['']
+  }
+
+  handleFinish()
+}
+
+// 页面加载完成后调用
+onMounted(() => init())
+</script>
+
+<style scoped>
+.form-item-width {
+  width: 270px;
+}
+</style>

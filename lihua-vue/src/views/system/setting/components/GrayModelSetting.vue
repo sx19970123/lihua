@@ -5,7 +5,7 @@
         <template #tooltip>
           <a-tooltip>
             <template #title>
-              特殊时候所有用户变为灰色调
+              所有用户页面设置为灰白配色
             </template>
             <QuestionCircleOutlined style="margin-left: 4px"/>
           </a-tooltip>
@@ -85,9 +85,13 @@ const setting = ref<SystemSetting>({
 
 // 处理开关switch
 const handleChangeSwitch = async () => {
+  if (!settingForm.value.enable) {
+    settingForm.value.closeTime = undefined
+  }
   setting.value.settingJson = JSON.stringify(settingForm.value)
   const resp = await settingStore.save(setting.value)
   if (resp.code === 200) {
+    console.log(settingForm.value.enable)
     themeStore.enableGrayModel(settingForm.value.enable)
     message.success(resp.msg)
   } else {
@@ -96,8 +100,8 @@ const handleChangeSwitch = async () => {
 }
 
 // 处理选择日期时间
-const handleChangeDate = async (data: Dayjs) => {
-  settingForm.value.closeTime = data.toDate()
+const handleChangeDate = async (data?: Dayjs) => {
+  settingForm.value.closeTime = data?.toDate()
   setting.value.settingJson = JSON.stringify(settingForm.value)
   const resp = await settingStore.save(setting.value)
 
