@@ -174,9 +174,12 @@ export const useUserStore = defineStore('user', {
         },
         // 更新默认部门
         updateDefaultDept(defaultDept: SysDept) {
-            this.$state.defaultDept = defaultDept
-            this.$state.defaultDeptName = defaultDept.name ? defaultDept.name : ''
-            this.$state.defaultDeptCode = defaultDept.code ? defaultDept.code : ''
+            const state = this.$state
+            state.defaultDept = defaultDept
+            state.defaultDeptName = defaultDept.name ? defaultDept.name : ''
+            state.defaultDeptCode = defaultDept.code ? defaultDept.code : ''
+            // 更新默认部门后更新部门下岗位
+            state.defaultDeptPosts = state.posts.filter(post => post.deptCode === state.defaultDeptCode)
         },
         // 保存主题修改
         saveTheme(themeJson: string) {

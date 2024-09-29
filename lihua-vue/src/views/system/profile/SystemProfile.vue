@@ -25,7 +25,10 @@ import Individuation from './components/ProfileIndividuation.vue'
 import Security from './components/ProfileSecurity.vue'
 import {ref,markRaw} from "vue";
 import { useThemeStore } from "@/stores/modules/theme";
+import {useUserStore} from "@/stores/modules/user.ts";
+import UserAvatar from "@/components/user-avatar/index.vue";
 const themeStore = useThemeStore()
+const userStore = useUserStore()
 // 注册子组件
 const allComponents = ref([
   {

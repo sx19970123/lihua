@@ -24,6 +24,13 @@
             </a-flex>
           </a-flex>
         </a-menu-item>
+        <a-menu-item disabled style="cursor: default" v-if="userStore.$state.defaultDeptPosts.length > 0">
+          <a-flex wrap="wrap" gap="small">
+            <a-tooltip placement="bottom" :title="post.code" v-for="post in userStore.$state.defaultDeptPosts" >
+              <a-tag :color="themeStore.getColorPrimary()" style="margin: 0" :bordered="false">{{post.name}}</a-tag>
+            </a-tooltip>
+          </a-flex>
+        </a-menu-item>
         <a-menu-divider/>
         <a-menu-item key="user-center">
           <a-flex :gap="8">
@@ -64,9 +71,10 @@ import {message} from "ant-design-vue";
 import {reloadData} from "@/api/system/auth/Auth.ts";
 import { init } from "@/utils/AppInit.ts";
 import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
+import {useThemeStore} from "@/stores/modules/theme.ts";
 import {ref} from "vue";
 const viewTabsStore = useViewTabsStore()
-
+const themeStore = useThemeStore()
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
@@ -125,7 +133,7 @@ const logout = () => {
 
 <style scoped>
 .user-card {
-  min-width: 220px;
+  width: 220px;
   box-shadow: var(--lihua-light-box-shadow);
 }
 </style>

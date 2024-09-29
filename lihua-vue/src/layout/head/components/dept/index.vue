@@ -28,7 +28,7 @@ const open = ref<boolean>(false)
 .default-dept-card {
   max-height: 500px;
   box-shadow: var(--lihua-light-box-shadow);
-  padding: 8px;
+  padding: 16px 16px 0 16px;
   background-color: #ffffff;
   border-radius: 8px;
 }
