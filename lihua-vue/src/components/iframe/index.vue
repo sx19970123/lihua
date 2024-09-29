@@ -1,9 +1,11 @@
 <template>
-  <iframe  class="lihua-iframe" v-if="isInner" :src="src"/>
-  <div v-else>
-    <div class="new-page-container">
-      <p class="new-page-icon"><component style="font-size: 40px" is="PixelCat"/></p>
-      <h1 class="new-page-title">页面已加载至浏览器新标签页</h1>
+  <div>
+    <iframe class="lihua-iframe" v-if="isInner" :src="src"/>
+    <div v-else>
+      <div class="new-page-container">
+        <p class="new-page-icon"><component style="font-size: 96px" is="XiaoMiaoHappy"/></p>
+        <h1 class="new-page-title">页面已加载至浏览器新标签页</h1>
+      </div>
     </div>
   </div>
 </template>
@@ -11,7 +13,6 @@
 import {useRoute} from "vue-router";
 import {ref} from "vue";
 const route = useRoute()
-
 const props = defineProps<{
   src?: string,
   isInner?: boolean

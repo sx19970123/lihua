@@ -33,13 +33,14 @@ export const usePermissionStore = defineStore('permission',{
                 const isRoot= route.children === null || route.children.length === 0
                 const isPageType = route.type === 'page';
                 const isMenuType = route.type === 'directory';
-                const isLinkType = route.type === 'link' && route.meta.linkOpenType === 'inner';
+                const isLinkType = route.type === 'link' // && route.meta.linkOpenType === 'inner';
                 if ((isPageType || isLinkType || isMenuType) && isRoot) {
+                    console.log(route)
                     const parentRoute: RouteRecordRaw  = {
                         children: [route as any],
                         path: "",
                         component: Layout,
-                        name: route.name + "Parent"
+                        name: route.name? route.name: 'Parent' + route.id
                     };
                     router.addRoute(parentRoute);
                 } else {

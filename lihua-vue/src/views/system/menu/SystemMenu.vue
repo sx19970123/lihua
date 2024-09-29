@@ -301,7 +301,7 @@
             <a-textarea placeholder="访问路由的默认参数，格式为json字符串" v-model:value="sysMenu.query" :rows="1" :maxlength="100" allowClear show-count/>
           </a-form-item>
           <a-form-item label="备注" name="remark" :wrapper-col="{span: 17}">
-            <a-textarea :maxlength="500" :rows="2" v-model="sysMenu.remark" allowClear placeholder="请输入备注信息" show-count/>
+            <a-textarea :maxlength="500" :rows="2" v-model:value="sysMenu.remark" allowClear placeholder="请输入备注信息" show-count/>
           </a-form-item>
         </div>
       </a-form>
@@ -390,6 +390,12 @@ const initSearch = () => {
       title: '路由地址',
       key: 'routerPath',
       dataIndex: 'routerPath',
+      ellipsis: true
+    },
+    {
+      title: '备注',
+      key: 'remark',
+      dataIndex: 'remark',
       ellipsis: true
     },
     {

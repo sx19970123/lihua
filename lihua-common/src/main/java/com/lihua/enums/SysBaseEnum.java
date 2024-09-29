@@ -20,6 +20,11 @@ public enum SysBaseEnum {
      * 系统设置redis前缀
      */
     SYSTEM_SETTING_REDIS_PREFIX("REDIS_CACHE_SYSTEM_SETTING:"),
+
+    /**
+     * 系统ip黑名单redis前缀
+     */
+    SYSTEM_IP_BLACKLIST_REDIS_PREFIX("IP_BLACKLIST:"),
     /**
      * redis 分布式锁 key
      */

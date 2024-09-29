@@ -12,8 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.lihua.enums.SysBaseEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
 import static com.lihua.enums.SysBaseEnum.SYSTEM_SETTING_REDIS_PREFIX;
 
 @Service
@@ -26,7 +28,12 @@ public class SysSettingServiceImpl implements SysSettingService {
     @Resource
     private RedisCache<List<SysSetting>> redisCache;
 
+    @Resource
+    private RedisCache<List<String>> stringRedisCache;
+
     private final String REDIS_SETTING_KEY = SYSTEM_SETTING_REDIS_PREFIX.getValue();
+
+    private final String IP_BLACKLIST_KEY = SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue();
 
     @Override
     @Transactional
@@ -97,15 +104,39 @@ public class SysSettingServiceImpl implements SysSettingService {
         return true;
     }
 
+    @Override
+    public List<String> getIpBlackList() {
+        List<String> ipBlackList = stringRedisCache.getCacheObject(IP_BLACKLIST_KEY);
+        return ipBlackList == null ? new ArrayList<>(): ipBlackList;
+    }
+
     private List<SysSetting> getSettingList() {
         List<SysSetting> sysSettings = sysSettingMapper.selectList(new QueryWrapper<>());
         reCacheSetting(sysSettings);
         return sysSettings;
     }
 
+    // 缓存ip黑名单
+    private void cacheIpBlackList() {
+        stringRedisCache.delete(IP_BLACKLIST_KEY);
+        // 系统中配置的禁止访问ip
+        SysSetting restrictAccessIpSetting = getSysSettingByComponentName("RestrictAccessIpSetting");
+        // 没有此配置项直接返回
+        if (restrictAccessIpSetting == null) {
+            return;
+        }
+        SysSettingDTO.RestrictAccessIpSetting ipSetting = JsonUtils.toObject(restrictAccessIpSetting.getSettingJson(), SysSettingDTO.RestrictAccessIpSetting.class);
+        // 未开启配置直接返回
+        if (!ipSetting.isEnable()) {
+            return;
+        }
+        stringRedisCache.setCacheObject(IP_BLACKLIST_KEY, ipSetting.getIpList());
+    }
+
     // 重新缓存系统设置
     private void reCacheSetting(List<SysSetting> sysSettings) {
         redisCache.delete(REDIS_SETTING_KEY);
         redisCache.setCacheObject(REDIS_SETTING_KEY, sysSettings);
+        cacheIpBlackList();
     }
 }

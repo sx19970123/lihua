@@ -47,11 +47,14 @@
     >
       <template #title>
         <a-popconfirm title="是否强退选中用户？"
+                      :open="openLogoutPopconfirm"
                       ok-text="确 定"
                       cancel-text="取 消"
+                      @cancel="openLogoutPopconfirm = false"
                       @confirm="handleConfirm(undefined)"
+                      @open-change="(open: boolean) => !open ? openLogoutPopconfirm = false: ''"
         >
-          <a-button danger>
+          <a-button danger @click="handleOpenPopconfirm">
             <template #icon>
               <DeleteOutlined />
             </template>
@@ -281,6 +284,17 @@ const initSearch = () => {
 
 const {queryParam, currentPage, userColumn, pagination, queryLoading, userRowSelectionType, logoutCacheKeys, handleRowClick, initList, queryList, changePage, resetList} = initSearch()
 
+
+const openLogoutPopconfirm = ref<boolean>(false)
+
+const handleOpenPopconfirm = () => {
+  if (logoutCacheKeys.value && logoutCacheKeys.value.length > 0) {
+    openLogoutPopconfirm.value = true
+  } else {
+    message.warning("请勾选数据")
+  }
+}
+
 // 用户强制退出
 const handleConfirm = async (cacheKey?: string) => {
   const targetLogoutCacheKeys = []
@@ -302,6 +316,8 @@ const handleConfirm = async (cacheKey?: string) => {
   } else {
     message.error(resp.msg)
   }
+
+  openLogoutPopconfirm.value = false
 }
 
 

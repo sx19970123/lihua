@@ -121,6 +121,9 @@
          </a-flex>
        </template>
        <template #bodyCell="{column,record,text}">
+         <template v-if="column.key === 'code'">
+           <a-typography-paragraph copyable>{{text}}</a-typography-paragraph>
+         </template>
          <template v-if="column.key === 'status'">
            <a-switch v-model:checked="record.statusIsNormal"
                      @change="(checked: boolean | string | number, event: MouseEvent) => handleUpdateStatus(event,record.id, text)"

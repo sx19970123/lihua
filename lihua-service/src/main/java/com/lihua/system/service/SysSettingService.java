@@ -31,4 +31,10 @@ public interface SysSettingService {
      * @return
      */
     boolean enableCaptcha();
+
+    /**
+     * 获取ip黑名单
+     * @return
+     */
+    List<String> getIpBlackList();
 }

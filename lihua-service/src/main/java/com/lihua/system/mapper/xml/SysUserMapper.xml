@@ -79,7 +79,8 @@
             sys_user.create_time,
             sys_user.email,
             sys_user.phone_number,
-            sys_user.remark
+            sys_user.remark,
+            sys_user.register_type
         FROM
             sys_user
         LEFT JOIN sys_user_dept ON sys_user_dept.user_id = sys_user.id

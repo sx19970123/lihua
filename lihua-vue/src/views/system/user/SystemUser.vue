@@ -147,6 +147,9 @@
           <template v-if="column.key === 'createTime'">
             {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
           </template>
+          <template v-if="column.key === 'registerType'">
+            <dict-tag :dict-data-option="sys_user_register_type" :dict-data-value="text"></dict-tag>
+          </template>
           <template v-if="column.key === 'status'">
             <a-switch v-model:checked="record.statusIsNormal"
                       :disabled="record.username === 'admin'"
@@ -382,12 +385,14 @@ import {
   deleteByIds,
   updateStatus,
   exportExcel,
-  importExcel, resetPassword
+  importExcel,
+  resetPassword
 } from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/Dict.ts"
 import {createVNode, onMounted, reactive, ref, useTemplateRef, watch} from "vue";
 import CardSelect from "@/components/card-select/index.vue"
 import PasswordInput from "@/components/password-input/index.vue"
+import DictTag from "@/components/dict-tag/index.vue"
 import dayjs from "dayjs";
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
@@ -409,7 +414,7 @@ import {useSettingStore} from "@/stores/modules/setting.ts";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
 const settingStore = useSettingStore()
 const themeStore = useThemeStore();
-const {sys_status,user_gender} = initDict("sys_status", "user_gender")
+const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
 const SHOW_ALL = TreeSelect.SHOW_ALL;
 // 没有进行双向绑定的单位树
 let originDeptTree: Array<SysDept> = ([])
@@ -417,7 +422,6 @@ let originDeptTree: Array<SysDept> = ([])
 const showMore = ref<boolean>(false)
 // 列表查询
 const initSearch = () => {
-
   // 选中的数据id集合
   const selectedIds = ref<Array<string>>([])
   // 列表勾选对象
@@ -482,6 +486,12 @@ const initSearch = () => {
       title: '状态',
       key: 'status',
       dataIndex: 'status',
+      align: 'center'
+    },
+    {
+      title: '注册类型',
+      key: 'registerType',
+      dataIndex: 'registerType',
       align: 'center'
     },
     {

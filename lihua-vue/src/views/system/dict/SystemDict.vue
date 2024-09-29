@@ -91,6 +91,9 @@
           </a-flex>
         </template>
         <template #bodyCell="{column,record,text}">
+          <template v-if="column.key === 'code'">
+            <a-typography-paragraph copyable>{{text}}</a-typography-paragraph>
+          </template>
           <template v-if="column.key === 'type'">
             <dict-tag :dict-data-option="sys_dict_type" :dict-data-value="record[column.key]"/>
           </template>

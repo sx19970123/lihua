@@ -35,30 +35,21 @@ spring:
 
   # 数据源配置
   datasource:
-    #使用druid数据源
-    type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/lihua
     username: root
     password: 123456
-    druid:
-      stat-view-servlet:
-        enabled: true
-        reset-enable: false
-        url-pattern: "/druid/*"
-        login-username: admin
-        login-password: 123456
-        allow:
-      filter:
-        stat:
-          enabled: true
-          # 慢SQL记录
-          log-slow-sql: true
-          slow-sql-millis: 1000
-          merge-sql: true
-        wall:
-          config:
-            multi-statement-allow: true
+    hikari:
+      # 最大连接数默认 10
+      maximum-pool-size: 30
+      # 最小空闲连接 默认10
+      minimum-idle: 30
+      # 等待连接池连接最大时长（毫秒）
+      connection-timeout: 5000
+      # 空闲连接最大时长（毫秒）
+      idle-timeout: 0
+      # 连接生命时长（毫秒）
+      max-lifetime: 25800
 
   # redis配置
   data:

@@ -15,10 +15,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <mysql.version>8.2.0</mysql.version>
-        <druid.version>1.2.23</druid.version>
         <mybatis-plus.version>3.5.7</mybatis-plus.version>
         <jwt.version>3.10.3</jwt.version>
-        <hutool.version>5.8.25</hutool.version>
         <myexcel.version>4.5.0</myexcel.version>
         <oshi.version>6.6.4</oshi.version>
     </properties>
@@ -51,12 +49,6 @@
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>${mysql.version}</version>
-        </dependency>
-        <!--        datasource-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-3-starter</artifactId>
-            <version>${druid.version}</version>
         </dependency>
         <!--        mybatis-plus-->
         <dependency>

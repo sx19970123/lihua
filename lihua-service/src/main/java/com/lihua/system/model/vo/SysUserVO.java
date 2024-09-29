@@ -148,4 +148,9 @@ public class SysUserVO extends BaseEntity {
      */
     @ExcelColumn(order = 11, title = "系统提示", style = {"cell->color:red"})
     private String importErrorMsg;
+
+    /**
+     * 用户注册类型
+     */
+    private String registerType;
 }

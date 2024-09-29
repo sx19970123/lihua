@@ -96,6 +96,9 @@
                 </template>
               </a-switch>
             </template>
+            <template v-if="column.key === 'code'">
+              <a-typography-paragraph copyable>{{text}}</a-typography-paragraph>
+            </template>
             <template v-if="column.key === 'createTime'">
               {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
             </template>
