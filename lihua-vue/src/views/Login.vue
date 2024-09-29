@@ -21,7 +21,7 @@
                   <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
                   <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
 <!--                    根据配置显示注册-->
-                  <div v-if="settingStore.getSetting<SignIn>('SignInSetting')?.enable">
+                  <div v-if="enableRegister">
                     <a-typography-text>没有账户？</a-typography-text>
                     <a-typography-link @click="showLogin = false">快速注册
                       <RightOutlined/>
@@ -181,6 +181,7 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
           message.success("登录成功")
           await router.push("/index");
         } else {
+          hideVerify()
           await init()
           // 加载登录配置
           showSetting.value = true
@@ -228,6 +229,10 @@ const loadVerify = () => {
 // 显示验证码
 const showVerify = () => {
   verifyRef.value.show()
+}
+// 关闭验证码
+const hideVerify = () => {
+  verifyRef.value.closeBox()
 }
 // 是否启用验证码
 const captcha = async () => {
@@ -305,8 +310,16 @@ const handleGoLogin = async () => {
     showContent.value = true
     // 登录卡片弹出动画
     handleShowLogin(false)
-  }, 760)
+  }, 620)
 
+}
+
+const enableRegister = ref<boolean>(false)
+const initRegisterSetting = async () => {
+  const resp = await settingStore.getSetting<SignIn>('SignInSetting')
+  if (resp) {
+    enableRegister.value = resp.enable || false
+  }
 }
 
 onMounted(() => {
@@ -315,6 +328,7 @@ onMounted(() => {
   initLogin()
   handleRedirect()
   captcha()
+  initRegisterSetting()
 })
 
 </script>
@@ -442,7 +456,7 @@ onMounted(() => {
 }
 
 .setting-leave-active {
-  transition: all 0.75s ease-out;
+  transition: all 0.6s ease-out;
 }
 .setting-leave-from {
   transform: translateY(0); /* 从原始位置开始 */

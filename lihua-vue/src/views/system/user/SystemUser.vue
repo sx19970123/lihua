@@ -420,6 +420,8 @@ const SHOW_ALL = TreeSelect.SHOW_ALL;
 let originDeptTree: Array<SysDept> = ([])
 // 显示更多按钮
 const showMore = ref<boolean>(false)
+// 默认密码
+const defaultPassword = ref<string>('')
 // 列表查询
 const initSearch = () => {
   // 选中的数据id集合
@@ -680,7 +682,7 @@ const initSave = () => {
       gender: '1',
       status: '0',
       deptIdList: [],
-      password: settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")?.defaultPassword
+      password: defaultPassword.value
     }
     // 分段器设置为默认
     segmented.value = 'basic'
@@ -1174,7 +1176,7 @@ const initResetPassword = () => {
       resetPasswordForm.value.password = ''
       resetPasswordRef.value?.validate()
     } else {
-      resetPasswordForm.value.password = settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")?.defaultPassword
+      resetPasswordForm.value.password = defaultPassword.value
       resetPasswordRef.value?.clearValidate()
     }
   }
@@ -1189,11 +1191,12 @@ const initResetPassword = () => {
   const resetPasswordForm = ref<{
     password?: string
   }>({
-    password: settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")?.defaultPassword
+    password: ''
   })
   // 触发打开模态框
   const handleOpenResetPasswordModel = (event: MouseEvent, targetUser: SysUserVO) => {
     event.stopPropagation()
+    resetPasswordForm.value.password = defaultPassword.value
     targetUserInfo.value = targetUser
     showResetPassword.value = true
   }
@@ -1226,8 +1229,17 @@ const initResetPassword = () => {
 }
 const {showResetPassword, targetUserInfo, resetPasswordForm, useDefaultPassword, defaultPasswordRules, resetPasswordLoading, handleChangeUseDefaultPassword, handleOpenResetPasswordModel, handleResetPassword} = initResetPassword()
 
+// 加载默认密码
+const initDefaultPassword = async () => {
+  const resp = await settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")
+  if (resp) {
+    defaultPassword.value = resp.defaultPassword
+  }
+}
+
 onMounted(() => {
   initPage()
+  initDefaultPassword()
 })
 
 // 监听关键词筛选

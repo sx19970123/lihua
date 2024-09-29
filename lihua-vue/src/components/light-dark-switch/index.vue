@@ -5,10 +5,10 @@
                 @change="handleSwitch"
                 :style="{'background': themeStore.isDarkTheme ? '#00008B' : '#2196F3'}">
         <template #checkedChildren>
-          <XiaoHeiMoon style="font-size: 15px; margin-top: 4px"/>
+          <XiaoHeiMoon/>
         </template>
         <template #unCheckedChildren>
-          <XiaoMiaoSun style="font-size: 15px; margin-top: 2px"/>
+          <XiaoMiaoSun/>
         </template>
       </a-switch>
     </a-config-provider>
@@ -33,7 +33,7 @@ interface ViewTransitionDocument extends Document {
 const handleSwitch = (checked: boolean, event: PointerEvent) => {
   setTimeout(() => {
     handleChangeTheme(checked, event)
-  }, 190)
+  }, 200)
 }
 
 // 切换主题

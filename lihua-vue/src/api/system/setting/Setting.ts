@@ -22,3 +22,13 @@ export const findList = () => {
         method: "GET",
     })
 }
+
+/**
+ * 根据组件名称获取配置
+ */
+export const findSysSettingByComponentName = (componentName: string) => {
+    return request<SystemSetting>({
+        url: "system/setting/" + componentName,
+        method: "GET",
+    })
+}

@@ -21,9 +21,13 @@ public class SysSettingController extends BaseController {
         return success(sysSettingService.insert(sysSetting));
     }
 
-    @GetMapping
+    // @GetMapping
     public String findList() {
         return success(sysSettingService.findList());
     }
 
+    @GetMapping("{componentName}")
+    public String findSysSettingByComponentName(@PathVariable("componentName") String componentName) {
+        return success(sysSettingService.getSysSettingByComponentName(componentName));
+    }
 }

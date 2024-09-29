@@ -46,13 +46,12 @@ import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
-const init = () => {
-  const settings = settingStore.settings
-  const targetSetting = settings.filter(item => item.settingComponentName === componentName) as SystemSetting[]
-  if (componentName && targetSetting.length === 0) {
-    settingStore.save(setting.value)
+const init = async () => {
+  const resp = await settingStore.getSetting<IntervalUpdatePassword>(componentName);
+  if (!resp) {
+    await settingStore.save(setting.value)
   } else {
-    settingForm.value = JSON.parse(targetSetting[0].settingJson)
+    settingForm.value = resp
   }
 }
 

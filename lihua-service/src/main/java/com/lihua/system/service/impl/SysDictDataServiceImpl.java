@@ -18,7 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class SysDictDataServiceImpl implements SysDictDataService {
 
@@ -66,6 +69,17 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     public List<SysDictDataVO> findDictOptionList(String dictTypeCode) {
         List<SysDictDataVO> dictData = DictUtils.getDictData(dictTypeCode);
         return TreeUtils.buildTree(dictData);
+    }
+
+    @Override
+    public Map<String, List<SysDictDataVO>> findDictOptionList(List<String> dictTypeCodeList) {
+        Map<String, List<SysDictDataVO>> map = new HashMap<>();
+        dictTypeCodeList.forEach(dictTypeCode -> {
+            List<SysDictDataVO> dictOptionList = findDictOptionList(dictTypeCode);
+            map.put(dictTypeCode, dictOptionList);
+        });
+
+        return map;
     }
 
     @Override

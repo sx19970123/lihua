@@ -125,13 +125,12 @@ const themeStore = useThemeStore();
 let originDeptTree: Array<SysDept> = ([])
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {
-  const settings = settingStore.settings
-  const targetSetting = settings.filter(item => item.settingComponentName === componentName) as SystemSetting[]
-  if (componentName && targetSetting.length === 0) {
+  const resp = await settingStore.getSetting<SignIn>(componentName);
+  if (!resp) {
     await settingStore.save(setting.value)
   } else {
     await initDept()
-    settingForm.value = JSON.parse(targetSetting[0].settingJson)
+    settingForm.value = resp
   }
 }
 

@@ -1,5 +1,6 @@
 import request from "@/utils/Request.ts";
 import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType.ts";
+import type {MapResponseType} from "@/api/global/Type.ts";
 /**
  * 列表查询
  */
@@ -42,5 +43,14 @@ export const getDictDataOption = (dictTypeCode: string) => {
   return request<Array<SysDictDataType>>({
     url: 'system/dictData/option/' + dictTypeCode,
     method: 'get'
+  })
+}
+
+
+export const getDictDataOptionByCodeList = (dictTypeCodeList: string[]) => {
+  return request<MapResponseType<string, SysDictDataType>>({
+    url: 'system/dictData/option',
+    method: 'post',
+    data: dictTypeCodeList
   })
 }

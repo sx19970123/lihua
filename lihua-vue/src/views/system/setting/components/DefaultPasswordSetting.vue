@@ -31,13 +31,12 @@ const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
 
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
-const init = () => {
-  const settings = settingStore.settings
-  const targetSetting = settings.filter(item => item.settingComponentName === componentName) as SystemSetting[]
-  if (componentName && targetSetting.length === 0) {
-    settingStore.save(setting.value)
+const init = async () => {
+  const resp = await settingStore.getSetting<DefaultPassword>(componentName);
+  if (!resp) {
+    await settingStore.save(setting.value)
   } else {
-    settingForm.value = JSON.parse(targetSetting[0].settingJson)
+    settingForm.value = resp
   }
 }
 

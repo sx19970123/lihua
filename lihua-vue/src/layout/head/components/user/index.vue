@@ -26,7 +26,7 @@
         </a-menu-item>
         <a-menu-item disabled style="cursor: default" v-if="userStore.$state.defaultDeptPosts.length > 0">
           <a-flex wrap="wrap" gap="small">
-            <a-tooltip placement="bottom" :title="post.code" v-for="post in userStore.$state.defaultDeptPosts" >
+            <a-tooltip placement="bottom" :title="'岗位编码：' + post.code" v-for="post in userStore.$state.defaultDeptPosts" >
               <a-tag :color="themeStore.getColorPrimary()" style="margin: 0" :bordered="false">{{post.name}}</a-tag>
             </a-tooltip>
           </a-flex>

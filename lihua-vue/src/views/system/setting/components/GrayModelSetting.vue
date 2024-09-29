@@ -39,13 +39,11 @@ const themeStore = useThemeStore();
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
 
-const init = () => {
-  const settings = settingStore.settings
-  const targetSetting = settings.filter(item => item.settingComponentName === componentName) as SystemSetting[]
-  if (componentName && targetSetting.length === 0) {
-    settingStore.save(setting.value)
+const init = async () => {
+  const grayModel = await settingStore.getSetting<GrayModel>(componentName);
+  if (!grayModel) {
+    await settingStore.save(setting.value)
   } else {
-    const grayModel = JSON.parse(targetSetting[0].settingJson) as GrayModel
     if (grayModel.closeTime) {
       // 当前时间小于指定关闭时间进行回显
       if (dayjs() < dayjs(grayModel.closeTime)) {

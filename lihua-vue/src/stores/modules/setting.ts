@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
-import {findList, insert} from "@/api/system/setting/Setting.ts";
+import {findList, findSysSettingByComponentName, insert} from "@/api/system/setting/Setting.ts";
+import {message} from "ant-design-vue";
 
 export const useSettingStore = defineStore('setting', {
     state:() =>{
@@ -26,12 +27,17 @@ export const useSettingStore = defineStore('setting', {
             return resp
         },
         // 根据组件名称获取配置信息
-        getSetting<T>(componentName: string) {
-            const targetSetting = this.settings.filter(item => item.settingComponentName === componentName)
-            if (targetSetting.length === 0) {
-                return undefined
+        async getSetting<T>(componentName?: string) {
+            if (!componentName) {
+                return undefined;
             }
-            return JSON.parse(targetSetting[0].settingJson) as T
+            const resp = await findSysSettingByComponentName(componentName)
+            if (resp.code === 200) {
+                return JSON.parse(resp.data.settingJson) as T
+            } else {
+                message.error(resp.msg)
+            }
+            return undefined
         }
     }
 })

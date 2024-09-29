@@ -31,7 +31,6 @@ const themeStore = useThemeStore()
 themeStore.changeDocumentElement(token.value.colorPrimary)
 // 初始化系统配置
 const settingStore = useSettingStore()
-settingStore.init()
 
 // 配置中文
 const local = ref(zhCN)
@@ -63,14 +62,16 @@ const showOldBrowserAlert = () => {
 
 const isOldBrowser = showOldBrowserAlert()
 
-// 监听 settingStore 中的 GrayModelSetting，进入系统进行灰色模式的切换
-watch(() => settingStore.getSetting<GrayModel>("GrayModelSetting"), (newValue) => {
-  if (newValue?.closeTime && dayjs() > dayjs(newValue.closeTime)) {
+// 加载灰色模式
+const initGrayModel = async () => {
+  const grayModel = await settingStore.getSetting<GrayModel>('GrayModelSetting');
+  if (grayModel?.closeTime && dayjs() > dayjs(grayModel.closeTime)) {
     themeStore.enableGrayModel(false)
   } else {
-    themeStore.enableGrayModel(newValue?.enable)
+    themeStore.enableGrayModel(grayModel?.enable)
   }
-})
+}
+initGrayModel()
 
 // 监听token.value.colorPrimary修改html-root中主题颜色
 watch(() => token.value.colorPrimary, (newValue) => {

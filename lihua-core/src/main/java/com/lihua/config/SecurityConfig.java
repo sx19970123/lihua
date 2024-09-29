@@ -57,10 +57,11 @@ public class SecurityConfig {
                             "/captcha/**", // 验证码
                             "/system/sse/connect/**", // 连接sse
                             "/system/file/download/**", // 文件下载
-                            "/system/setting", // 系统设置
+                            "system/setting/GrayModelSetting", // 灰色模式设置
+                            "system/setting/SignInSetting", // 是否开启用户注册
                             "/system/checkUserName/**", // 检查用户名
                             "/system/register/**", // 注册
-                            "/druid/**"
+                            "/druid/**" // druid数据库监控
                     ).permitAll()
                     .anyRequest().authenticated();
         });

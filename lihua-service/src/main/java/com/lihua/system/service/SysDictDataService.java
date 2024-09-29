@@ -5,6 +5,7 @@ import com.lihua.system.entity.SysDictData;
 import com.lihua.system.model.dto.SysDictDataDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SysDictDataService {
     /**
@@ -20,6 +21,13 @@ public interface SysDictDataService {
      * @return
      */
     List<SysDictDataVO> findDictOptionList(String dictTypeCode);
+
+    /**
+     * 获取字典数据option
+     * @param dictTypeCodeList
+     * @return
+     */
+    Map<String, List<SysDictDataVO>> findDictOptionList(List<String> dictTypeCodeList);
 
     /**
      * 保存方法
