@@ -14,7 +14,9 @@
     <a-modal v-model:open="open" title="头像编辑" width="1000px" @cancel="close">
       <a-flex vertical align="center" :gap="24">
         <!--        avatarType 不是 image 时使用avatar预览-->
-        <a-avatar :size="150" :style="{background: avatarColor}" v-if="avatarType !== 'image'">
+        <a-avatar :size="150"
+                  :style="{background: avatarColor === avatarBackgroundColor[0].color ? themeStore.getColorPrimary(): avatarColor}"
+                  v-if="avatarType !== 'image'">
           <template v-if="avatarType === 'icon'" #icon>
             <component v-if="avatarIcon" :is="avatarIcon"/>
           </template>
@@ -32,7 +34,10 @@
           <a-radio value="text">文本</a-radio>
         </a-radio-group>
         <!--        颜色选取-->
-        <color-select v-model:color="avatarColor" v-if="avatarType !== 'image'" :dataSource="avatarBackgroundColor"/>
+        <color-select v-model:color="avatarColor"
+                      v-if="avatarType !== 'image'"
+                      :dataSource="avatarBackgroundColor"
+        />
         <!--        图标选取-->
         <icon-select v-if="avatarType === 'icon'" v-model="avatarIcon" size="large"/>
         <!--        文本编辑-->
@@ -66,7 +71,9 @@ import {useUserStore} from "@/stores/modules/user";
 import {message, Modal} from 'ant-design-vue';
 import settings from "@/settings";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
-
+import { cloneDeep } from 'lodash-es'
+import {useThemeStore} from "@/stores/modules/theme.ts";
+const themeStore = useThemeStore()
 const userStore = useUserStore()
 // 双向绑定值
 const props = defineProps(['modelValue'])
@@ -99,8 +106,13 @@ const init = () => {
   })
 
   // 头像背景颜色定义
-  const avatarBackgroundColor = ref<Array<{name: string,color: string}>>(settings.colorOptions)
+  const avatarBackgroundColor = ref<Array<{name: string,color: string}>>(cloneDeep(settings.colorOptions))
 
+  // 颜色集合第一个添加为跟随系统颜色
+  avatarBackgroundColor.value.unshift({
+    name: '跟随系统',
+    color: 'conic-gradient(from 45deg, ' + settings.colorOptions.map(item => item.color).join(",") + ')'
+  })
   return {
     open,
     avatarType,

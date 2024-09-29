@@ -36,8 +36,15 @@ export const useThemeStore = defineStore('theme',{
 
         /**
          * 主要颜色
+         * 组件中使用系统颜色不可直接取用该字段
+         * 使用下面提供的getColorPrimary()方法进行获取
          */
         const colorPrimary: string = settings.themeConfig.token.colorPrimary
+
+        /**
+         * 通过ant提供的theme的主要颜色，针对暗色模式进行了颜色调整
+         */
+        const antColorPrimary: string = settings.themeConfig.token.colorPrimary
 
         /**
          * 侧边栏背景颜色
@@ -95,6 +102,7 @@ export const useThemeStore = defineStore('theme',{
             showViewTabs,
             isDarkTheme,
             colorPrimary,
+            antColorPrimary,
             siderTheme,
             groundGlass,
             affixHead,
@@ -253,7 +261,9 @@ export const useThemeStore = defineStore('theme',{
         },
         // 获取当前主要颜色
         getColorPrimary() {
-          return document.documentElement.style.getPropertyValue("--colorPrimary")
+            const color = document.documentElement.style.getPropertyValue("--colorPrimary")
+            this.$state.antColorPrimary = color
+            return color
         },
         // 主题复原
         resetState() {
