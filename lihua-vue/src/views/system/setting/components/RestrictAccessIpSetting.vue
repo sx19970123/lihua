@@ -16,13 +16,15 @@
         </template>
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
       </a-form-item>
-      <div class="scrollbar" style="max-height: 400px; display: inline-block" v-if="settingForm.enable">
-        <a-form-item
-            :label="index === 0 ? 'ip地址' : ''"
-            :key="index"
-            v-for="(ipItem, index) in settingForm.ipList"
-            :name="['ipList', index]"
-            :rules="[{
+      <transition :name="themeStore.routeTransition" mode="out-in">
+        <div  v-if="settingForm.enable">
+          <div class="scrollbar" style="max-height: 400px; display: inline-block">
+            <a-form-item
+                :label="index === 0 ? 'ip地址' : ''"
+                :key="index"
+                v-for="(ipItem, index) in settingForm.ipList"
+                :name="['ipList', index]"
+                :rules="[{
                 required: true,
                 message: '请输入ip地址',
                 trigger: ['change', 'blur'],
@@ -31,30 +33,32 @@
               message: '请输入正确的ip地址',
               trigger: ['change', 'blur'],
             }]"
-        >
-          <a-input class="form-item-width" placeholder="请输入ip地址" v-model:value="settingForm.ipList[index]" allow-clear/>
-          <a-button style="margin-left: 8px; margin-right: 8px"
-                    danger
-                    v-if="settingForm?.ipList.length > 1"
-                    @click="handleRemoveIpItem(index)"
-          >
-            <template #icon>
-              <DeleteOutlined />
-            </template>
-          </a-button>
-        </a-form-item>
-        <a-form-item>
-          <a-button type="dashed" class="form-item-width" @click="handleAddIpItem">
-            <template #icon>
-              <PlusOutlined />
-            </template>
-            添加IP地址
-          </a-button>
-        </a-form-item>
-      </div>
-      <a-form-item v-if="settingForm.enable">
-        <a-button type="primary" html-type="submit">提 交</a-button>
-      </a-form-item>
+            >
+              <a-input class="form-item-width" placeholder="请输入ip地址" v-model:value="settingForm.ipList[index]" allow-clear/>
+              <a-button style="margin-left: 8px; margin-right: 8px"
+                        danger
+                        v-if="settingForm?.ipList.length > 1"
+                        @click="handleRemoveIpItem(index)"
+              >
+                <template #icon>
+                  <DeleteOutlined />
+                </template>
+              </a-button>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="dashed" class="form-item-width" @click="handleAddIpItem">
+                <template #icon>
+                  <PlusOutlined />
+                </template>
+                添加IP地址
+              </a-button>
+            </a-form-item>
+          </div>
+          <a-form-item>
+            <a-button type="primary" html-type="submit">提 交</a-button>
+          </a-form-item>
+        </div>
+      </transition>
     </a-form>
   </div>
 </template>
@@ -65,6 +69,8 @@ import {getCurrentInstance, onMounted, ref} from "vue";
 import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
 import type {RestrictAccessIp} from "@/api/system/setting/type/RestrictAccessIp.ts";
 import {message} from "ant-design-vue";
+import {useThemeStore} from "@/stores/modules/theme.ts";
+const themeStore = useThemeStore()
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
 

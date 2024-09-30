@@ -12,17 +12,19 @@
         </template>
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
       </a-form-item>
-      <a-form-item label="定时关闭" v-if="settingForm.enable">
-        <a-date-picker
-          :disabledDate="(current: Dayjs) => current && current < dayjs().add(-1, 'day').endOf('day')"
-          show-time
-          :presets="presets"
-          placeholder="请选择关闭时间"
-          format="YYYY-MM-DD HH:mm"
-          @change="handleChangeDate"
-          v-model:value="closeTime"
-       ></a-date-picker>
-      </a-form-item>
+      <transition :name="themeStore.routeTransition" mode="out-in">
+        <a-form-item label="定时关闭" v-if="settingForm.enable">
+          <a-date-picker
+            :disabledDate="(current: Dayjs) => current && current < dayjs().add(-1, 'day').endOf('day')"
+            show-time
+            :presets="presets"
+            placeholder="请选择关闭时间"
+            format="YYYY-MM-DD HH:mm"
+            @change="handleChangeDate"
+            v-model:value="closeTime"
+         ></a-date-picker>
+        </a-form-item>
+      </transition>
     </a-form>
   </div>
 </template>

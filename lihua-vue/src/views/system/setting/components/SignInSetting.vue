@@ -12,92 +12,94 @@
         </template>
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
       </a-form-item>
-      <div v-if="settingForm.enable">
-        <a-flex :gap="16">
-          <a-card>
-            <a-typography-title :level="5">角色</a-typography-title>
-            <a-form-item class="form-item-width" name="roleIds">
-              <a-select
-                  v-model:value="settingForm.roleIds"
-                  placeholder="请选择用户角色"
-                  :options="sysRoleList"
-                  mode="multiple"
-                  optionFilterProp="name"
-                  :fieldNames="{label: 'name', value: 'id'}"/>
-            </a-form-item>
-          </a-card>
-          <a-card>
-            <a-typography-title :level="5">部门</a-typography-title>
-            <a-form-item class="form-item-width">
-              <div style="margin-top: 0px">
-                <a-checkable-tag v-model:checked="deptTreeSetting.checked" @click="handleCheckedAllKeys">全选/全不选</a-checkable-tag>
-                <a-checkable-tag v-model:checked="deptTreeSetting.expand" @click="handleExpanded">展开/折叠</a-checkable-tag>
-                <a-checkable-tag v-model:checked="deptTreeSetting.checkStrictly" @click=" deptTreeSetting.checkStrictly ? settingForm.deptIds = [] : ''">父子关联</a-checkable-tag>
-              </div>
-              <!--              部门树-->
-              <div class="dept-card">
-                <a-input placeholder="检索部门树" v-model:value="deptKeyword" allowClear style="margin-bottom: 8px; height: 28px"/>
-                <a-tree
-                    :tree-data="sysDeptList"
-                    :field-names="{children:'children', title:'name', key: 'id' }"
-                    :check-strictly="!deptTreeSetting.checkStrictly"
-                    v-model:checked-keys="settingForm.deptIds"
-                    v-model:expanded-keys="deptTreeSetting.expandKeys"
-                    :selectable="false"
-                    checkable
+      <transition :name="themeStore.routeTransition" mode="out-in">
+        <div v-if="settingForm.enable">
+          <a-flex :gap="16">
+            <a-card>
+              <a-typography-title :level="5">角色</a-typography-title>
+              <a-form-item class="form-item-width" name="roleIds">
+                <a-select
+                    v-model:value="settingForm.roleIds"
+                    placeholder="请选择用户角色"
+                    :options="sysRoleList"
+                    mode="multiple"
+                    optionFilterProp="name"
+                    :fieldNames="{label: 'name', value: 'id'}"/>
+              </a-form-item>
+            </a-card>
+            <a-card>
+              <a-typography-title :level="5">部门</a-typography-title>
+              <a-form-item class="form-item-width">
+                <div style="margin-top: 0px">
+                  <a-checkable-tag v-model:checked="deptTreeSetting.checked" @click="handleCheckedAllKeys">全选/全不选</a-checkable-tag>
+                  <a-checkable-tag v-model:checked="deptTreeSetting.expand" @click="handleExpanded">展开/折叠</a-checkable-tag>
+                  <a-checkable-tag v-model:checked="deptTreeSetting.checkStrictly" @click=" deptTreeSetting.checkStrictly ? settingForm.deptIds = [] : ''">父子关联</a-checkable-tag>
+                </div>
+                <!--              部门树-->
+                <div class="dept-card">
+                  <a-input placeholder="检索部门树" v-model:value="deptKeyword" allowClear style="margin-bottom: 8px; height: 28px"/>
+                  <a-tree
+                      :tree-data="sysDeptList"
+                      :field-names="{children:'children', title:'name', key: 'id' }"
+                      :check-strictly="!deptTreeSetting.checkStrictly"
+                      v-model:checked-keys="settingForm.deptIds"
+                      v-model:expanded-keys="deptTreeSetting.expandKeys"
+                      :selectable="false"
+                      checkable
+                  >
+                    <template  #title="{ name }">
+                      <div v-if="name.indexOf(deptKeyword) > -1">
+                        <span>{{name.substring(0,name.indexOf(deptKeyword))}}</span>
+                        <span :style="{'color':  themeStore.getColorPrimary()}">{{deptKeyword}}</span>
+                        <span>{{name.substring(name.indexOf(deptKeyword) + deptKeyword.length)}}</span>
+                      </div>
+                      <span v-else>{{ name }}</span>
+                    </template>
+                  </a-tree>
+                </div>
+              </a-form-item>
+            </a-card>
+            <a-card v-if="settingForm.deptIds && settingForm.deptIds.length > 0">
+              <a-typography-title :level="5">岗位</a-typography-title>
+              <a-form-item class="form-item-width" >
+                <card-select
+                    :data-source="sysPostList"
+                    empty-description="请选择部门"
+                    item-key="deptId"
+                    v-model="settingForm.defaultDeptId"
+                    :max-height="600"
+                    :loading="postLoading"
+                    vertical
                 >
-                  <template  #title="{ name }">
-                    <div v-if="name.indexOf(deptKeyword) > -1">
-                      <span>{{name.substring(0,name.indexOf(deptKeyword))}}</span>
-                      <span :style="{'color':  themeStore.getColorPrimary()}">{{deptKeyword}}</span>
-                      <span>{{name.substring(name.indexOf(deptKeyword) + deptKeyword.length)}}</span>
+                  <template #content="{item, isSelected, color}">
+                    <a-flex align="center" justify="space-between">
+                      <a-typography-title :level="5" style="margin: 0">{{item?.deptName}}</a-typography-title>
+                      <a-tag v-if="isSelected" :color="color">默认</a-tag>
+                    </a-flex>
+                    <div style="margin-top: 16px;">
+                      <div v-if="item?.postList && item?.postList.length > 0">
+                        <a-checkable-tag v-for="post in item?.postList"
+                                         @change="(checked: boolean) => handleSelectPostId(post.id, checked)"
+                                         @click.stop="() => {}"
+                                         :key="post.id"
+                                         v-model:checked="post.checked">
+                          {{post.name}}
+                        </a-checkable-tag>
+                      </div>
+                      <div v-else>
+                        <a-typography-text type="secondary">当前部门下暂无岗位数据</a-typography-text>
+                      </div>
                     </div>
-                    <span v-else>{{ name }}</span>
                   </template>
-                </a-tree>
-              </div>
-            </a-form-item>
-          </a-card>
-          <a-card v-if="settingForm.deptIds && settingForm.deptIds.length > 0">
-            <a-typography-title :level="5">岗位</a-typography-title>
-            <a-form-item class="form-item-width" >
-              <card-select
-                  :data-source="sysPostList"
-                  empty-description="请选择部门"
-                  item-key="deptId"
-                  v-model="settingForm.defaultDeptId"
-                  :max-height="600"
-                  :loading="postLoading"
-                  vertical
-              >
-                <template #content="{item, isSelected, color}">
-                  <a-flex align="center" justify="space-between">
-                    <a-typography-title :level="5" style="margin: 0">{{item?.deptName}}</a-typography-title>
-                    <a-tag v-if="isSelected" :color="color">默认</a-tag>
-                  </a-flex>
-                  <div style="margin-top: 16px;">
-                    <div v-if="item?.postList && item?.postList.length > 0">
-                      <a-checkable-tag v-for="post in item?.postList"
-                                       @change="(checked: boolean) => handleSelectPostId(post.id, checked)"
-                                       @click.stop="() => {}"
-                                       :key="post.id"
-                                       v-model:checked="post.checked">
-                        {{post.name}}
-                      </a-checkable-tag>
-                    </div>
-                    <div v-else>
-                      <a-typography-text type="secondary">当前部门下暂无岗位数据</a-typography-text>
-                    </div>
-                  </div>
-                </template>
-              </card-select>
-            </a-form-item>
-          </a-card>
-        </a-flex>
-        <a-form-item style="margin-top: 24px">
-          <a-button type="primary" html-type="submit" @click="handleSubmit">提 交</a-button>
-        </a-form-item>
-      </div>
+                </card-select>
+              </a-form-item>
+            </a-card>
+          </a-flex>
+          <a-form-item style="margin-top: 24px">
+            <a-button type="primary" html-type="submit" @click="handleSubmit">提 交</a-button>
+          </a-form-item>
+        </div>
+      </transition>
     </a-form>
   </div>
 </template>

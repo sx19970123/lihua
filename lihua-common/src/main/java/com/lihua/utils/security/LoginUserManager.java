@@ -131,11 +131,11 @@ public class LoginUserManager {
     }
 
     /**
-     * 通过缓存key获取用户登录时间
+     * 通过缓存key获取用户登录时间戳
      * @param cacheKey
      * @return
      */
-    public static LocalDateTime getLoginTimeByCacheKey(String cacheKey) {
+    public static long getLoginTimestampByCacheKey(String cacheKey) {
         if (!StringUtils.hasText(cacheKey)) {
             throw new ServiceException("空的 cacheKey");
         }
@@ -145,7 +145,16 @@ public class LoginUserManager {
             throw new ServiceException("无效的 cacheKey");
         }
 
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(keySplit[2])), ZoneId.systemDefault());
+        return Long.parseLong(keySplit[2]);
+    }
+
+    /**
+     * 通过缓存key获取用户登录时间
+     * @param cacheKey
+     * @return
+     */
+    public static LocalDateTime getLoginTimeByCacheKey(String cacheKey) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(getLoginTimestampByCacheKey(cacheKey)), ZoneId.systemDefault());
     }
 
 }

@@ -38,6 +38,15 @@ public class SysSettingDTO implements Serializable {
     }
 
     /**
+     * 同账号登录数量
+     */
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    public static class SameAccountLoginSetting extends SysSettingDTO {
+        int maximum;
+    }
+
+    /**
      * 定期修改密码
      */
     @EqualsAndHashCode(callSuper = true)

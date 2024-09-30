@@ -61,6 +61,9 @@ public class SysAuthenticationController extends BaseController {
         LoginUser loginUser = sysAuthenticationService.login(currentUser);
         // 2.生成token
         String token = sysAuthenticationService.cacheAndCreateToken(loginUser);
+        // 3.检查是否配置了同账号最大同时登录数，超出数量后首先登录的用户会被踢下线
+        sysAuthenticationService.checkSameAccount(token);
+
         return success(ResultCodeEnum.SUCCESS, token);
     }
 

@@ -110,8 +110,8 @@ aj:
     type: default
     # 水印
     water-mark: 狸花猫
-    # 误差值 10 像素
-    slip-offset: 10
+    # 误差值 5 像素
+    slip-offset: 5
     # 坐标加密
     aes-status: true
     # 点选字体大小

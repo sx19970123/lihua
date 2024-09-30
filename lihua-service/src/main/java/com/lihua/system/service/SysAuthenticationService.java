@@ -2,11 +2,6 @@ package com.lihua.system.service;
 
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.security.CurrentUser;
-import jakarta.validation.constraints.NotNull;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
 
 public interface SysAuthenticationService {
 
@@ -53,4 +48,10 @@ public interface SysAuthenticationService {
      * @return
      */
     String register(String username, String password);
+
+    /**
+     * 检查是否配置了同账号最大同时登录数，超出数量后首先登录的用户会被踢下线
+     * @param token
+     */
+    void checkSameAccount(String token);
 }

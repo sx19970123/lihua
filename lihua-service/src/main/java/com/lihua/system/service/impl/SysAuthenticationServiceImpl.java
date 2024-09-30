@@ -1,5 +1,7 @@
 package com.lihua.system.service.impl;
 
+import com.lihua.cache.RedisCache;
+import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.security.*;
 import com.lihua.system.entity.*;
@@ -67,6 +69,9 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Resource
     private HttpServletRequest httpServletRequest;
+
+    @Resource
+    private RedisCache<String> redisCache;
 
     private final String patternComponentName =  "([^/]+)\\.vue$";
 
@@ -298,6 +303,43 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         }
 
         return sysUser.getId();
+    }
+
+    @Override
+    public void checkSameAccount(String token) {
+        // 获取最大登录用户配置信息
+        SysSetting sameAccountLoginSetting = sysSettingService.getSysSettingByComponentName("SameAccountLoginSetting");
+
+        if (sameAccountLoginSetting == null) {
+            return;
+        }
+        SysSettingDTO.SameAccountLoginSetting setting = JsonUtils.toObject(sameAccountLoginSetting.getSettingJson(), SysSettingDTO.SameAccountLoginSetting.class);
+        // 是否启用
+        if (!setting.isEnable()) {
+            return;
+        }
+        // 获取设定最大登录用户数
+        int limitSize = setting.getMaximum() > 0 ? setting.getMaximum() : 1;
+        // 获取用户id
+        String userId = LoginUserManager.getUserIdByCacheKey(JwtUtils.decode(token));
+
+        if (!StringUtils.hasText(userId)) {
+            throw new ServiceException("用户id不存在");
+        }
+
+        // 获取所有用户登录 key
+        Set<String> keys = redisCache.keys(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId);
+
+        int count = keys.size() - limitSize;
+        if (count < 0) {
+            return;
+        }
+
+        // 根据用户登录时间，先登录的被踢下线
+        keys.stream()
+            .sorted(Comparator.comparingLong(LoginUserManager::getLoginTimestampByCacheKey))
+            .limit(count)
+            .forEach(key -> redisCache.delete(key));
     }
 
     private void handleSetViewTabKey(List<CurrentViewTab> currentViewTabList,List<CurrentRouter> routerList) {

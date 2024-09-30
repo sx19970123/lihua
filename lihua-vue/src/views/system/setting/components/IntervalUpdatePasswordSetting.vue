@@ -13,25 +13,29 @@
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
       </a-form-item>
       <div v-if="settingForm.enable">
-        <a-form-item label="周期" name="interval">
-          <a-input-number style="width: 150px"
-                          :precision="0"
-                          :min="1"
-                          placeholder="请输入"
-                          v-model:value="settingForm.interval">
-            <template #addonAfter>
-              <a-select style="width: 60px" v-model:value="settingForm.unit">
-                <a-select-option value="day">天</a-select-option>
-                <a-select-option value="week">周</a-select-option>
-                <a-select-option value="month">月</a-select-option>
-                <a-select-option value="year">年</a-select-option>
-              </a-select>
-            </template>
-          </a-input-number>
-        </a-form-item>
-        <a-form-item>
-          <a-button type="primary" html-type="submit">提 交</a-button>
-        </a-form-item>
+        <transition :name="themeStore.routeTransition" mode="out-in">
+          <div>
+            <a-form-item label="周期" name="interval">
+              <a-input-number style="width: 150px"
+                              :precision="0"
+                              :min="1"
+                              placeholder="请输入"
+                              v-model:value="settingForm.interval">
+                <template #addonAfter>
+                  <a-select style="width: 60px" v-model:value="settingForm.unit">
+                    <a-select-option value="day">天</a-select-option>
+                    <a-select-option value="week">周</a-select-option>
+                    <a-select-option value="month">月</a-select-option>
+                    <a-select-option value="year">年</a-select-option>
+                  </a-select>
+                </template>
+              </a-input-number>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary" html-type="submit">提 交</a-button>
+            </a-form-item>
+          </div>
+        </transition>
       </div>
     </a-form>
   </div>
@@ -44,6 +48,8 @@ import {getCurrentInstance, onMounted, ref} from "vue";
 import type {IntervalUpdatePassword} from "@/api/system/setting/type/IntervalUpdatePassword.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
+import {useThemeStore} from "@/stores/modules/theme.ts";
+const themeStore = useThemeStore()
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
 const init = async () => {

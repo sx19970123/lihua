@@ -10,7 +10,7 @@
             <a-menu-item-group title="账号安全设置">
               <a-menu-item key="DefaultPasswordSetting"> 系统默认密码</a-menu-item>
               <a-menu-item key="IntervalUpdatePassword"> 定期修改密码</a-menu-item>
-              <a-menu-item key="SameAccountLoginSetting"> 同账号登录数</a-menu-item>
+              <a-menu-item key="SameAccountLoginSetting"> 同账号登录限制</a-menu-item>
             </a-menu-item-group>
 
             <a-menu-item-group title="登录设置">

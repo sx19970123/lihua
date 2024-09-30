@@ -42,9 +42,9 @@ const selectedColor = ({color, key}: ColorSelectItem) => {
 }
 
 .color-block {
-  display: flex; /* 使用 Flexbox 布局 */
-  align-items: center; /* 垂直居中 */
-  justify-content: center; /* 水平居中 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 20px;
   width: 20px;
   border-radius: 8px;
