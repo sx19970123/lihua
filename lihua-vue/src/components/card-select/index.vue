@@ -1,26 +1,26 @@
 <template>
   <a-spin :spinning="loading">
     <a-flex :gap="props.gap" :wrap="props.vertical ? '' : 'wrap'" :vertical="props.vertical" class="scrollbar" :style="{'max-height': props.vertical ? props.maxHeight + 'px' : 'none'}">
-      <div class="select-card"
-           v-if="props.dataSource && props.dataSource.length > 0"
-           v-for="(item,index) in props.dataSource"
-           @click.stop="handleClickCard(item)"
-           :style="item[props.itemKey] && activeCardValueList.includes(item[props.itemKey]) ? bodyStyle : ''">
-        <!--      具名插槽 content-->
-        <!--      返回参数 dataSource：传入的option-->
-        <!--      返回参数 item：option遍历出的元素-->
-        <!--      返回参数 index：option遍历索引-->
-        <!--      返回参数 isSelected：是否为当前选中元素-->
-        <!--      返回参数 color：当前主题颜色-->
-        <slot name="content"
-              :dataSource="props.dataSource"
-              :item="item"
-              :index="index"
-              :isSelected="activeCardValueList.includes(item[props.itemKey])"
-              :color="token.colorPrimary"/>
+      <div :style="props.itemStyle" v-if="props.dataSource && props.dataSource.length > 0" v-for="(item,index) in props.dataSource">
+        <div class="select-card"
+             @click.stop="handleClickCard(item)"
+             :style="item[props.itemKey] && activeCardValueList.includes(item[props.itemKey]) ? bodyStyle : ''">
+          <!--      具名插槽 content-->
+          <!--      返回参数 dataSource：传入的option-->
+          <!--      返回参数 item：option遍历出的元素-->
+          <!--      返回参数 index：option遍历索引-->
+          <!--      返回参数 isSelected：是否为当前选中元素-->
+          <!--      返回参数 color：当前主题颜色-->
+          <slot name="content"
+                :dataSource="props.dataSource"
+                :item="item"
+                :index="index"
+                :isSelected="activeCardValueList.includes(item[props.itemKey])"
+                :color="token.colorPrimary"/>
+        </div>
       </div>
       <!--    空状态-->
-      <div class="select-card" v-else>
+      <div class="select-card" v-else :style="props.itemStyle">
         <a-empty :description="props.emptyDescription" />
       </div>
     </a-flex>
@@ -31,11 +31,9 @@
 <script setup lang="ts">
 // 接受父组件传递参数
 import {reactive, ref, watch, defineProps} from "vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
 import { cloneDeep } from 'lodash-es'
 import {theme} from "ant-design-vue";
 const {token} = theme.useToken()
-const themeStore = useThemeStore()
 
 // 定义父级传入的配置项
 const props = defineProps({
@@ -43,6 +41,10 @@ const props = defineProps({
   gap: {
     type: Number,
     default: 16,
+  },
+  itemStyle: {
+    type: Object,
+    default: {}
   },
   // 是否垂直排列
   vertical: {

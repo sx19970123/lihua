@@ -15,7 +15,7 @@
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
     "@fingerprintjs/fingerprintjs": "^4.4.3",
-    "ant-design-vue": "^4.2.3",
+    "ant-design-vue": "^4.2.5",
     "axios": "^1.6.7",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",

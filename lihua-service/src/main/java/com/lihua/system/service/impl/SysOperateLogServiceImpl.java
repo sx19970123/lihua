@@ -3,7 +3,6 @@ package com.lihua.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lihua.system.entity.SysLoginLog;
 import com.lihua.system.entity.SysOperateLog;
 import com.lihua.system.mapper.SysOperateLogMapper;
 import com.lihua.system.model.dto.SysLogDTO;
@@ -12,7 +11,6 @@ import com.lihua.system.service.SysLogService;
 import com.lihua.utils.excel.ExcelUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

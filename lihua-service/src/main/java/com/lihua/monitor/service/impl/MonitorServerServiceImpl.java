@@ -1,5 +1,5 @@
 package com.lihua.monitor.service.impl;
-import com.lihua.monitor.service.model.*;
+import com.lihua.monitor.model.*;
 import lombok.SneakyThrows;
 import oshi.SystemInfo;
 import com.lihua.monitor.service.MonitorServerService;

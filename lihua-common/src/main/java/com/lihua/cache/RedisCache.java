@@ -1,11 +1,15 @@
 package com.lihua.cache;
 
 import jakarta.annotation.Resource;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -61,8 +65,15 @@ public class RedisCache<T> {
      * @return
      */
     public Set<String> keys(String prefix) {
-        Set<String> keys = redisTemplate.keys(prefix + "*");
-        return keys;
+        return redisTemplate.keys(prefix + "*");
+    }
+
+    /**
+     * 获取redis中所有key
+     * @return
+     */
+    public Set<String> keys() {
+       return redisTemplate.keys("*");
     }
 
     /**
@@ -168,5 +179,18 @@ public class RedisCache<T> {
      */
     public Long increment(String key, long val) {
         return redisTemplate.opsForValue().increment(key,val);
+    }
+
+    /**
+     * 获取内存占用情况
+     * @return
+     */
+    public String memoryInfo() {
+        RedisConnection connection = redisTemplate.getRequiredConnectionFactory().getConnection();
+        Properties memory = connection.commands().info("memory");
+        if (memory != null) {
+            return new DecimalFormat("#.##").format(Double.parseDouble(String.valueOf(memory.get("used_memory")))/1024/1024);
+        }
+        return "-";
     }
 }
