@@ -86,7 +86,7 @@ const props = defineProps({
 
 
 // 定义 v-model 双向绑定和抛出的函数
-const emit = defineEmits(['update:modelValue','click'])
+const emit = defineEmits(['update:modelValue','click','change'])
 
 // 选中的元素集合
 const activeCardValueList = reactive<Array<any>>([])
@@ -102,6 +102,7 @@ const handleClickCard = (item: any): void => {
   if (activeCardValueList.includes(keyItem)) {
     activeCardValueList.splice(activeCardValueList.indexOf(keyItem),1)
     props.multiple ? emit('update:modelValue', cloneDeep(activeCardValueList)) : emit('update:modelValue', null)
+    props.multiple ? emit('change', cloneDeep(activeCardValueList)) : emit('change',{})
     return;
   }
 
@@ -119,6 +120,7 @@ const handleClickCard = (item: any): void => {
 
   // 向父级抛出点击事件
   emit('click',{activeValueList: cloneDeep(activeCardValueList) ,item: cloneDeep(item), props: cloneDeep(props)})
+  emit('change',{item: cloneDeep(item)})
 }
 
 // 清空选中集合

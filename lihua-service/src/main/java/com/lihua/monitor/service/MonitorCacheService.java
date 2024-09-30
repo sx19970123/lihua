@@ -34,13 +34,9 @@ public interface MonitorCacheService {
      */
     CacheMonitor cacheInfo(String key);
 
-    /**
-     * 删除缓存
-     */
-    void remove(String key);
 
     /**
      * 根据前缀删除缓存
      */
-    void removeByKeyPrefix(String keyPrefix);
+    void remove(String keyPrefix);
 }

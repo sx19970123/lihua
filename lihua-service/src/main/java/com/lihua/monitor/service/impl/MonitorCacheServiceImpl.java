@@ -3,6 +3,7 @@ package com.lihua.monitor.service.impl;
 import com.lihua.cache.RedisCache;
 import com.lihua.monitor.model.CacheMonitor;
 import com.lihua.monitor.service.MonitorCacheService;
+import com.lihua.system.service.SysSettingService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,10 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
     @Resource
     private RedisCache<Object> redisCache;
 
+    @Resource
+    private SysSettingService sysSettingService;
+
+
     @Override
     public String memoryInfo() {
         return redisCache.memoryInfo();
@@ -31,6 +36,7 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
             new CacheMonitor(SYSTEM_SETTING_REDIS_PREFIX.getValue(), "系统设置"),
             new CacheMonitor(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue(), "IP黑名单"),
             new CacheMonitor(TEMPORARY_TOKEN_REDIS_PREFIX.getValue(), "临时可访问文件"),
+            new CacheMonitor("RUNNING:CAPTCHA:", "验证码"),
             new CacheMonitor("OTHER", "其他")
         );
     }
@@ -42,11 +48,12 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
         }
         Set<String> keys = redisCache.keys();
         return keys.stream()
-                .filter(key -> !LOGIN_USER_REDIS_PREFIX.getValue().equals(key))
-                .filter(key -> !DICT_DATA_REDIS_PREFIX.getValue().equals(key))
-                .filter(key -> !SYSTEM_SETTING_REDIS_PREFIX.getValue().equals(key))
-                .filter(key -> !SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue().equals(key))
-                .filter(key -> !TEMPORARY_TOKEN_REDIS_PREFIX.getValue().equals(key))
+                .filter(key -> !key.startsWith(LOGIN_USER_REDIS_PREFIX.getValue()))
+                .filter(key -> !key.startsWith(DICT_DATA_REDIS_PREFIX.getValue()))
+                .filter(key -> !key.startsWith(SYSTEM_SETTING_REDIS_PREFIX.getValue()))
+                .filter(key -> !key.startsWith(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue()))
+                .filter(key -> !key.startsWith(TEMPORARY_TOKEN_REDIS_PREFIX.getValue()))
+                .filter(key -> !key.startsWith("RUNNING:CAPTCHA:"))
                 .collect(Collectors.toSet());
     }
 
@@ -59,13 +66,19 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
     }
 
     @Override
-    public void remove(String key) {
-        redisCache.delete(key);
-    }
-
-    @Override
-    public void removeByKeyPrefix(String keyPrefix) {
+    public void remove(String keyPrefix) {
         Set<String> keys = cacheKeys(keyPrefix);
-        keys.forEach(this::remove);
+        for (String key : keys) {
+            redisCache.delete(key);
+        }
+
+        // 系统配置和 ip 黑名单删除后立即刷新
+        if (keyPrefix.startsWith(SYSTEM_SETTING_REDIS_PREFIX.getValue())) {
+            sysSettingService.initSetting();
+        }
+
+        if ( keyPrefix.startsWith(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue())) {
+            sysSettingService.cacheIpBlackList();
+        }
     }
 }

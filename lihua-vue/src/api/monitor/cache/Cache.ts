@@ -22,20 +22,21 @@ export const cacheKeys = (keyPrefix: string) => {
 // 根据key获取缓存信息
 export const cacheInfo = (key: string) => {
     return request<CacheMonitor>({
-        url: 'monitor/cache/info/' + key
+        url: 'monitor/cache/info',
+        method: 'post',
+        data: {
+            key: key
+        }
     })
 }
-// 根据前缀删除缓存
-export const removeByKeyPrefix = (keyPrefix: string) => {
-    return request<CacheMonitor>({
-        url: 'monitor/cache/prefix/' + keyPrefix,
-        method: 'delete'
-    })
-}
+
 // 删除缓存
 export const remove = (key: string) => {
     return request<CacheMonitor>({
-        url: 'monitor/cache/key/' + key,
-        method: 'delete'
+        url: 'monitor/cache/key',
+        method: 'delete',
+        data: {
+            key: key
+        }
     })
 }

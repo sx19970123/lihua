@@ -14,10 +14,10 @@ public interface SysSettingService {
     String insert(SysSetting sysSetting);
 
     /**
-     * 获取系统设置
+     * 初始化配置
      * @return
      */
-    List<SysSetting> findList();
+    List<SysSetting> initSetting();
 
     /**
      * 根据组件名称获取配置
@@ -37,4 +37,9 @@ public interface SysSettingService {
      * @return
      */
     List<String> getIpBlackList();
+
+    /**
+     * 缓存ip黑名单
+     */
+    void cacheIpBlackList();
 }

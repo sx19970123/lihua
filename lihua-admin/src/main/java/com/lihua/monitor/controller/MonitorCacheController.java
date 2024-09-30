@@ -1,8 +1,12 @@
 package com.lihua.monitor.controller;
 
+import com.lihua.annotation.Log;
+import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.web.BaseController;
+import com.lihua.monitor.model.CacheMonitor;
 import com.lihua.monitor.service.MonitorCacheService;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,20 +31,15 @@ public class MonitorCacheController extends BaseController {
         return success(monitorCacheService.cacheKeys(keyPrefix));
     }
 
-    @GetMapping("info/{key}")
-    public String cacheInfo(@PathVariable("key") String key) {
-        return success(monitorCacheService.cacheInfo(key));
+    @PostMapping("info")
+    public String cacheInfo(@RequestBody @Valid CacheMonitor cacheMonitor) {
+        return success(monitorCacheService.cacheInfo(cacheMonitor.getKey()));
     }
 
-    @DeleteMapping("prefix/{keyPrefix}")
-    public String removeByKeyPrefix(@PathVariable("keyPrefix") String keyPrefix) {
-        monitorCacheService.removeByKeyPrefix(keyPrefix);
-        return success();
-    }
-
-    @DeleteMapping("key/{key}")
-    public String remove(@PathVariable("key") String key) {
-        monitorCacheService.remove(key);
+    @DeleteMapping("key")
+    @Log(description = "删除缓存", type = LogTypeEnum.DELETE)
+    public String remove(@RequestBody @Valid CacheMonitor cacheMonitor) {
+        monitorCacheService.remove(cacheMonitor.getKey());
         return success();
     }
 }

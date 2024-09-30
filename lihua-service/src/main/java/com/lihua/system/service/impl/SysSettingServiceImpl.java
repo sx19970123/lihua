@@ -46,7 +46,7 @@ public class SysSettingServiceImpl implements SysSettingService {
     }
 
     @Override
-    public List<SysSetting> findList() {
+    public List<SysSetting> initSetting() {
         List<SysSetting> sysSettingList = redisCache.getCacheObject(REDIS_SETTING_KEY);
 
         if (sysSettingList == null) {
@@ -63,7 +63,7 @@ public class SysSettingServiceImpl implements SysSettingService {
 
     @Override
     public SysSetting getSysSettingByComponentName(String componentName) {
-        List<SysSetting> settings = findList()
+        List<SysSetting> settings = initSetting()
                 .stream()
                 .filter(item -> componentName.equals(item.getSettingComponentName()))
                 .toList();
@@ -110,6 +110,7 @@ public class SysSettingServiceImpl implements SysSettingService {
         return ipBlackList == null ? new ArrayList<>(): ipBlackList;
     }
 
+    // 查询配置数据后进行缓存
     private List<SysSetting> getSettingList() {
         List<SysSetting> sysSettings = sysSettingMapper.selectList(new QueryWrapper<>());
         reCacheSetting(sysSettings);
@@ -117,7 +118,8 @@ public class SysSettingServiceImpl implements SysSettingService {
     }
 
     // 缓存ip黑名单
-    private void cacheIpBlackList() {
+    @Override
+    public void cacheIpBlackList() {
         stringRedisCache.delete(IP_BLACKLIST_KEY);
         // 系统中配置的禁止访问ip
         SysSetting restrictAccessIpSetting = getSysSettingByComponentName("RestrictAccessIpSetting");
