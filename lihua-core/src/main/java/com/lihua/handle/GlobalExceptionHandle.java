@@ -1,10 +1,7 @@
 package com.lihua.handle;
 
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.exception.FileException;
-import com.lihua.exception.IpIllegalException;
-import com.lihua.exception.RateLimiterException;
-import com.lihua.exception.ServiceException;
+import com.lihua.exception.*;
 import com.lihua.model.web.BaseController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -80,6 +77,16 @@ public class GlobalExceptionHandle extends BaseController {
         return error(ResultCodeEnum.RATE_LIMITER_ERROR);
     }
 
+    /**
+     * 捕获全局 RateLimiterException 异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(DuplicateSubmitException.class)
+    public String handleDuplicateSubmitException(Exception e) {
+        log.error(e.getMessage(), e);
+        return error(ResultCodeEnum.DUPLICATE_SUBMIT_ERROR);
+    }
 
     /**
      * 捕获全局spring validation 异常信息

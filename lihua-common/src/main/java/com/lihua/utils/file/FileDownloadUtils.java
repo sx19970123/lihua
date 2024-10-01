@@ -5,6 +5,7 @@ import com.lihua.config.LihuaConfig;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.FileException;
+import com.lihua.utils.hash.HashUtil;
 import com.lihua.utils.spring.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -81,7 +82,7 @@ public class FileDownloadUtils {
         // 根据配置设置 redis 缓存
         long expireTime = lihuaConfig.getFileDownloadExpireTime();
         for (String path : pathArray) {
-            String key = SysBaseEnum.TEMPORARY_TOKEN_REDIS_PREFIX.getValue() + path;
+            String key = SysBaseEnum.TEMPORARY_FILE_REDIS_PREFIX.getValue() + HashUtil.generateSHA256(path);
             if (expireTime == 0) {
                 redisCache.setCacheObject(key, "");
             } else if (expireTime > 0) {
@@ -124,7 +125,7 @@ public class FileDownloadUtils {
 
         for (String path : pathArray) {
             // 获取 redis 中的路径
-            Object cacheObject = redisCache.getCacheObject(SysBaseEnum.TEMPORARY_TOKEN_REDIS_PREFIX.getValue() + path);
+            Object cacheObject = redisCache.getCacheObject(SysBaseEnum.TEMPORARY_FILE_REDIS_PREFIX.getValue() + HashUtil.generateSHA256(path));
             // 缓存取出的内容为空时，抛出 token 失效异常
             if (cacheObject == null) {
                 throw new FileException(ResultCodeEnum.ACCESS_EXPIRED_ERROR);

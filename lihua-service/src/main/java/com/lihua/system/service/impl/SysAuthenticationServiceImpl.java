@@ -13,6 +13,7 @@ import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.security.SecurityUtils;
 import com.lihua.utils.tree.TreeUtils;
+import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -66,9 +67,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Resource
     private SysUserDeptService sysUserDeptService;
-
-    @Resource
-    private HttpServletRequest httpServletRequest;
 
     @Resource
     private RedisCache<String> redisCache;
@@ -221,7 +219,8 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         handleSetViewTabKey(viewTabList,routerList);
         // 处理角色权限信息
         List<String> authorities = handleAuthorities(roleList,menuList);
-
+        // 当前请求 httpServletRequest
+        HttpServletRequest httpServletRequest = WebUtils.getCurrentRequest();
         loginUser
             .setRouterList(routerList)
             .setRoleList(roleList)

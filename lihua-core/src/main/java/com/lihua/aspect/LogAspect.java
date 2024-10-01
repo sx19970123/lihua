@@ -3,6 +3,7 @@ package com.lihua.aspect;
 import com.lihua.annotation.Log;
 import com.lihua.handle.HandleRecodeLog;
 
+import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
@@ -24,13 +25,8 @@ import java.time.LocalDateTime;
 @Slf4j
 public class LogAspect {
 
-    // 获取http请求
-    @Resource
-    private HttpServletRequest httpServletRequest;
-
     @Resource
     private HandleRecodeLog handleRecodeLog;
-
 
     /**
      * 环绕通知，方法执行完成后记录日志
@@ -38,6 +34,8 @@ public class LogAspect {
     @SneakyThrows
     @Around("@annotation(log)")
     public Object around(ProceedingJoinPoint proceedingJoinPoint, Log log) {
+        // 当前请求 httpServletRequest
+        HttpServletRequest httpServletRequest = WebUtils.getCurrentRequest();
         // 记录开始时间
         LocalDateTime startTime = LocalDateTime.now();
         // 执行方法
@@ -62,6 +60,8 @@ public class LogAspect {
      */
     @AfterThrowing(pointcut = "@annotation(log)", throwing = "exception")
     public void afterThrowing(JoinPoint joinPoint, Log log, Throwable exception) {
+        // 当前请求 httpServletRequest
+        HttpServletRequest httpServletRequest = WebUtils.getCurrentRequest();
         handleRecodeLog.handleRecordLog(joinPoint,
                 log,
                 null,

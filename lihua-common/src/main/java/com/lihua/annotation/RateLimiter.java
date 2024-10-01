@@ -16,5 +16,5 @@ public @interface RateLimiter {
      * 默认每秒放入桶中的令牌数
      * 同一请求每秒超过 limitNumber 次之后的请求全部拒绝
      */
-    double limitNumber() default 5;
+    double value() default 5;
 }

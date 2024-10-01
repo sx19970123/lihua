@@ -41,6 +41,6 @@ public class RedisConfig {
     public RedisLockRegistry redisLockRegistry(RedisConnectionFactory factory){
         // 1、锁的密钥前缀：REDIS-LOCK
         // 2、锁的过期时间：20秒
-        return new RedisLockRegistry(factory, SysBaseEnum.REDIS_LOCK.getValue(),20000L);
+        return new RedisLockRegistry(factory, SysBaseEnum.REDIS_LOCK_REDIS_PREFIX.getValue(),20000L);
     }
 }

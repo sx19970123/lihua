@@ -1,10 +1,12 @@
 package com.lihua.exception;
 
+import com.lihua.enums.ResultCodeEnum;
+
 /**
  * ip 非法异常
  */
 public class IpIllegalException extends RuntimeException {
     public IpIllegalException() {
-        super("异常ip请求已拒绝");
+        super(ResultCodeEnum.IP_ILLEGAL_ERROR.getDefaultMsg());
     }
 }

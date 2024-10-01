@@ -6,6 +6,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Objects;
 
 /**
  * 通过 HttpServletResponse 返回响应工具类
@@ -23,6 +27,14 @@ public class WebUtils {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(json);
+    }
+
+    /**
+     * 获取当前请求的HttpServletRequest
+     * @return
+     */
+    public static HttpServletRequest getCurrentRequest() {
+        return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
     }
 
     /**

@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.RateLimiter;
 import com.lihua.exception.RateLimiterException;
+import com.lihua.utils.hash.HashUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -38,9 +39,12 @@ public class RateLimitAspect {
                 methodSignature.getDeclaringTypeName() + "." + methodSignature.getName() +
                 "(" + Arrays.stream(methodSignature.getParameterTypes()).map(Class::getTypeName).collect(Collectors.joining(", ")) + ")";
 
+        // 使用SHA256 将key压缩
+        rateLimiterName = HashUtil.generateSHA256(rateLimiterName);
+
         // 获取限流器，不存在则进行创建
         RateLimiter rateLimiter = RATE_LIMITER_CACHE.get(rateLimiterName,
-                () -> RateLimiter.create(rateLimiterAnnotation.limitNumber()));
+                () -> RateLimiter.create(rateLimiterAnnotation.value()));
 
         // 尝试获取令牌，获取失败即被限流
         if (!rateLimiter.tryAcquire()){

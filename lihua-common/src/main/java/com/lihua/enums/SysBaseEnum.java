@@ -7,12 +7,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SysBaseEnum {
     /**
-     * 用户登录成功redis缓存前缀
+     * 用户登录成功redis前缀
      */
     LOGIN_USER_REDIS_PREFIX("REDIS_CACHE_LOGIN_USER:"),
 
     /**
-     * redis缓存字典数据前缀
+     * 字典数据redis前缀
      */
     DICT_DATA_REDIS_PREFIX("REDIS_CACHE_DICT_DATA:"),
 
@@ -24,15 +24,27 @@ public enum SysBaseEnum {
     /**
      * 系统ip黑名单redis前缀
      */
-    SYSTEM_IP_BLACKLIST_REDIS_PREFIX("IP_BLACKLIST:"),
+    SYSTEM_IP_BLACKLIST_REDIS_PREFIX("REDIS_CACHE_IP_BLACKLIST:"),
+
+    /**
+     * 防重复提交redis前缀
+     */
+    PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX("REDIS_CACHE_REQUEST_SUBMIT:"),
+
+    /**
+     * 验证码redis前缀
+     */
+    CAPTCHA_REDIS_PREFIX("RUNNING:CAPTCHA:"),
+
     /**
      * redis 分布式锁 key
      */
-    REDIS_LOCK("REDIS_LOCK"),
+    REDIS_LOCK_REDIS_PREFIX("REDIS_LOCK:"),
+
     /**
-     * redis缓存临时token前缀
+     * redis缓存临时可访问文件前缀
      */
-    TEMPORARY_TOKEN_REDIS_PREFIX("REDIS_CACHE_TEMPORARY_TOKEN:"),
+    TEMPORARY_FILE_REDIS_PREFIX("REDIS_CACHE_TEMPORARY_FILE:"),
 
     /**
      * JWT 密钥

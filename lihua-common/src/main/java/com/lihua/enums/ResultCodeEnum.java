@@ -22,7 +22,8 @@ public enum ResultCodeEnum {
     ERROR (500,"业务异常"),
     FILE_ERROR (501,"文件处理异常"),
     RATE_LIMITER_ERROR (502,"系统繁忙，请稍后再试"),
-    SERVER_UNAVAILABLE (503,"服务器维护中");
+    DUPLICATE_SUBMIT_ERROR (503,"请勿重复提交"),
+    SERVER_UNAVAILABLE (504,"服务器维护中");
 
     /**
      * 状态码
