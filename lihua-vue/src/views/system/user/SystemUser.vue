@@ -545,6 +545,8 @@ const initSearch = () => {
         user.statusIsNormal = user.status === '0'
         user.updateStatusLoading = false
       })
+    } else {
+      message.error(resp.msg)
     }
     queryLoading.value = false
   }
@@ -867,6 +869,8 @@ const initDeptData = () => {
       // 获取全部部门id
       const mapIds = flattenDeptList.filter(item => item.id).map(item => item.id)
       deptIds.push(... (mapIds as string[]))
+    } else {
+      message.error(resp.msg)
     }
   }
   initDept()

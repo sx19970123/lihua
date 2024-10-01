@@ -4,6 +4,7 @@ import com.anji.captcha.model.common.ResponseModel;
 import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
 import com.lihua.annotation.Log;
+import com.lihua.annotation.RateLimiter;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.security.AuthInfo;
@@ -45,6 +46,7 @@ public class SysAuthenticationController extends BaseController {
      * @return
      */
     @PostMapping("login")
+    @RateLimiter
     @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password"}, recordResult = false)
     public String login(@RequestBody @Valid CurrentUser currentUser, String captchaVerification) {
         // 开启验证码情况下进行验证
@@ -104,6 +106,7 @@ public class SysAuthenticationController extends BaseController {
      * @return
      */
     @PostMapping("reloadData")
+    @RateLimiter
     public String reloadData() {
         sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser());
         return success();
@@ -120,6 +123,7 @@ public class SysAuthenticationController extends BaseController {
     }
 
     @PostMapping("register")
+    @RateLimiter
     @Log(description = "用户注册", type = LogTypeEnum.REGISTER, excludeParams = {"password", "confirmPassword"}, recordResult = false)
     public String register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO, String captchaVerification) {
         // 校验两次密码输入是否相同

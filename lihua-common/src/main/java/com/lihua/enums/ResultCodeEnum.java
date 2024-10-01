@@ -21,6 +21,7 @@ public enum ResultCodeEnum {
     IP_ILLEGAL_ERROR(407, "暂时无法为该地区提供服务"),
     ERROR (500,"业务异常"),
     FILE_ERROR (501,"文件处理异常"),
+    RATE_LIMITER_ERROR (502,"系统繁忙，请稍后再试"),
     SERVER_UNAVAILABLE (503,"服务器维护中");
 
     /**
