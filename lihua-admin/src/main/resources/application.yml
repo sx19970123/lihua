@@ -109,7 +109,7 @@ aj:
     # 实例化验证码类型
     type: default
     # 水印
-    water-mark: 狸花猫
+    water-mark: '@lihua'
     # 误差值 5 像素
     slip-offset: 5
     # 坐标加密

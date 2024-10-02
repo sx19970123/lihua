@@ -10,7 +10,8 @@
 }
 /* content 外边框上左右各为16像素*/
 .layout-content {
-    margin: 16px 16px 0 16px;
+    padding: 16px 16px 0 16px;
+    overflow-x: hidden;
 }
 
 /*顶栏右侧元素样式*/

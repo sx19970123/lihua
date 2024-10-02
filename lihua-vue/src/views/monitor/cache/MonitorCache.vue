@@ -102,7 +102,7 @@
               {{infoKey}}
             </a-descriptions-item>
             <a-descriptions-item label="剩余有效时间">
-              {{info?.expireMinutes < 0 ? info?.expireMinutes : + info?.expireMinutes +' 分钟'}}
+              {{info?.expireMinutes ? info?.expireMinutes < 0 ? info?.expireMinutes : + info?.expireMinutes +' 分钟' : ''}}
             </a-descriptions-item>
             <a-descriptions-item label="缓存内容">
               {{info?.value}}
@@ -210,7 +210,9 @@ const handleClickKey = async ({item}:{item: {key: string | undefined}}) => {
   }
   infoKey.value = item.key
   // 加载缓存内容
-  await loadCacheInfo(item.key)
+  if (item.key) {
+    await loadCacheInfo(item.key)
+  }
 }
 
 // 加载缓存内容
@@ -230,7 +232,9 @@ const removeCacheInfo = async (key: string) => {
   const resp = await remove(key);
   if (resp.code === 200) {
     message.success(resp.msg)
-    await loadKeyList(targetKeyType.value)
+    if (targetKeyType.value) {
+      await loadKeyList(targetKeyType.value)
+    }
   } else {
     message.error(resp.msg)
   }

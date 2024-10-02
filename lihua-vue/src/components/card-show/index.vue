@@ -15,7 +15,7 @@
         <slot name="overview"></slot>
       </div>
       <!-- 过渡时展示自定义封面 -->
-      <div v-if="showStatus === 'activity'" class="card-show-middle">
+      <div v-if="showStatus === 'activity' || showStatus === 'kill'" class="card-show-middle">
         <div style="display: flex; height: 100%; width: 100%" :style="props.middleStyle">
           <div style="margin: auto">
             <!-- 居中显示的元素 -->
@@ -45,8 +45,6 @@
 import { gsap } from 'gsap';
 import {onMounted, onUnmounted, ref, useTemplateRef, watch} from "vue";
 import type { CSSProperties } from 'vue';
-import {cloneDeep} from 'lodash-es'
-
 // 接受父组件参数
 const props = defineProps({
   // 组建key，用于标记组件唯一
@@ -73,6 +71,8 @@ const props = defineProps({
     default: 1.05
   },
   // 自动完成，是否通过外部控制组件middle状态
+  // 设置为 false 时，可通过外部参数控制 isComplete 进行内容显示
+  // 比如异步调用时，在响应返回之前，可通过参数 将 isComplete 设置为false，这时当动画播放完成也不会显示展开后的内容
   autoComplete: {
     type: Boolean,
     default: true
@@ -88,7 +88,7 @@ const props = defineProps({
   }
 })
 // 动画状态类型
-type StatusType = 'ready' | 'activity' | 'complete'
+type StatusType = 'ready' | 'activity' | 'complete' | 'kill'
 
 // 定义向外抛出的函数
 /**
@@ -112,17 +112,15 @@ const initClick = () => {
   const showStatus = ref<StatusType>('ready')
   // 展开后改变css定位布局
   const style = ref<CSSProperties>({position: 'static'})
-  // 详情可见
-  const detailVisible = showStatus.value === 'ready' && props.isDetailVisible
+
   // 显示遮罩
   const showMask = ref<boolean>(false)
 
   // 点击卡片
   const handleClickCard = () => {
-    if (showStatus.value === 'complete') {
-      return;
-    }
-    // todo 抛出函数
+    // 详情可见
+    const detailVisible = showStatus.value === 'ready' && props.isDetailVisible
+    // 卡片点击事件抛出
     emits('cardClick', { key: props.cardKey, detailVisible: detailVisible})
 
     // 只有就绪状态才可点击
@@ -134,7 +132,7 @@ const initClick = () => {
     // 执行动画，先将缩放还原
     gsap.to('.' + props.cardKey, {
       scale: 1,
-      duration: 0.13,
+      duration: 0.1,
       // 缩放还原后再进行主要动画
       onComplete: () => {
         // 打开遮罩
@@ -158,8 +156,8 @@ const initClick = () => {
           duration: 0.40,
           ease: 'power2.out',
           onComplete: () => {
-            // todo 抛出函数
-            if (props.autoComplete || props.isComplete) {
+            // 动画播完 或 外部控制为已完成 并且 动画状态不为kill时，展示卡片内容
+            if ((props.autoComplete || props.isComplete) && showStatus.value !== 'kill') {
               showStatus.value = 'complete'
               emits('cardComplete', props.cardKey)
             }
@@ -171,19 +169,31 @@ const initClick = () => {
 
   // 关闭详情卡片
   const handleClose = (event: KeyboardEvent | MouseEvent, type: string) => {
+
+    // 关闭状态的卡片无法被触发
+    if (showStatus.value === 'ready') {
+      return;
+    }
+
     // 键盘触发后判断是不是 esc 键
     if (type === 'keydown' && event instanceof KeyboardEvent && event.key !== 'Escape') {
       return;
     }
+
     // 动画播放完才可关闭
     if (showStatus.value !== 'complete') {
-      return;
+      showStatus.value = 'kill'
+      // return;
     }
-    // todo 点击遮罩函数
+
+    // 点击遮罩后抛出
     emits('maskClick', props.cardKey)
     const bounding = placeholderRef.value?.getBoundingClientRect()
     // 状态修改为进行时
-    showStatus.value = 'activity'
+    if (showStatus.value !== 'kill') {
+      showStatus.value = 'activity'
+    }
+
     // 关闭遮罩
     showMask.value = false
     // 打开y轴滚动条
@@ -201,7 +211,7 @@ const initClick = () => {
         style.value = {position: 'static', width: '', height: '', top: '', left: ''}
         // 动画执行完成后，状态修改为就绪
         showStatus.value = 'ready'
-        // todo 抛出函数
+        // 卡片关闭动画完成后抛出
         emits('cardReady', props.cardKey)
       }
     })
@@ -266,10 +276,14 @@ const initHover = () => {
   const hoverStatus = ref<StatusType>('ready')
   // 鼠标悬浮于卡片
   const handleMouseOverCard = () => {
-    if (hoverStatus.value === 'ready' || showStatus.value === 'ready') {
-      // todo 抛出函数
-      emits('cardReadyOver', props.cardKey)
+    // 动画在下面三种状态时，不会触发卡片悬浮
+    if (showStatus.value === 'activity' || showStatus.value === 'kill' || showStatus.value === 'complete') {
+      return
+    }
 
+    if (hoverStatus.value === 'ready' || hoverStatus.value === 'complete' ) {
+      // 鼠标悬浮时抛出
+      emits('cardReadyOver', props.cardKey)
       hoverStatus.value = 'activity'
       handleAddHoverStyle()
       gsap.to('.' + props.cardKey, {
@@ -290,7 +304,7 @@ const initHover = () => {
         onComplete: () => {
           hoverStatus.value = 'ready'
           handleRemoveHoverStyle()
-          // todo 抛出函数
+          // 鼠标悬浮结束后抛出
           emits('cardReadyLeave', props.cardKey)
         }
       })

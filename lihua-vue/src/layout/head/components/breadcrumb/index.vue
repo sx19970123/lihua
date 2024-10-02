@@ -1,29 +1,27 @@
 <template>
-    <a-breadcrumb :routes="pageRoute" v-if="pageRoute.length > 1">
+    <a-breadcrumb :routes="pageRoute" v-if="pageRoute && pageRoute.length > 1 && pageRoute[0].path !== ''">
         <template #itemRender="{route}">
-           <span v-if="pageRoute.indexOf(route) === pageRoute.length - 1">
-            {{ route.meta.label }}
-            </span>
-            <router-link v-else :to="route">
-              {{ route.meta.label }}
-            </router-link>
+          {{ route.meta.label }}
         </template>
     </a-breadcrumb>
 </template>
 <script lang="ts" setup>
-import {useRoute} from "vue-router";
-import Layout from "@/layout/index.vue"
-import MiddleView from "@/components/middle-view/index.vue"
+import {type RouteRecordRaw, useRoute} from "vue-router";
 import {ref, watch} from "vue";
 const route = useRoute()
-
-// 初始化
-const pageRoute = ref(route.matched.filter(match => match.components?.default !== Layout && match.components?.default !== MiddleView));
-pageRoute.value.forEach(r => r.children = [])
+const pageRoute = ref<RouteRecordRaw[]>();
+if (route.fullPath !== '/index') {
+  pageRoute.value = route.matched
+  pageRoute.value.forEach((route) => route.children = [])
+}
 
 // 监听路由变化
-watch(() => route.matched,(value) => {
-  pageRoute.value = value.filter(match => match.components?.default !== Layout && match.components?.default !== MiddleView)
-  pageRoute.value.forEach(r => r.children = [])
-})
+watch(() => route,(value) => {
+  if (value.fullPath !== '/index') {
+    pageRoute.value = value.matched
+    pageRoute.value.forEach((route) => route.children = [])
+  } else {
+    pageRoute.value = []
+  }
+}, {deep: true})
 </script>
