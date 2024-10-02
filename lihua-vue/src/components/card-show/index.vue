@@ -45,6 +45,7 @@
 import { gsap } from 'gsap';
 import {onMounted, onUnmounted, ref, useTemplateRef, watch} from "vue";
 import type { CSSProperties } from 'vue';
+import {cloneDeep} from 'lodash-es'
 
 // 接受父组件参数
 const props = defineProps({
@@ -86,7 +87,6 @@ const props = defineProps({
     default: true
   }
 })
-
 // 动画状态类型
 type StatusType = 'ready' | 'activity' | 'complete'
 
@@ -129,15 +129,16 @@ const initClick = () => {
     if (!detailVisible) {
       return
     }
-    // 打开遮罩
-    showMask.value = true
+
     const bounding = containerRef.value?.getBoundingClientRect()
     // 执行动画，先将缩放还原
     gsap.to('.' + props.cardKey, {
       scale: 1,
-      duration: 0,
+      duration: 0.13,
       // 缩放还原后再进行主要动画
       onComplete: () => {
+        // 打开遮罩
+        showMask.value = true
         // 关闭Y轴滚动条
         hiddenOverflowY()
         // 状态修改为进行时
@@ -154,8 +155,8 @@ const initClick = () => {
           top: props.expandedTop,
           width: getDetailWidth(),
           height: getDetailHeight(),
-          duration: 0.3,
-          ease: 'power1.out',
+          duration: 0.40,
+          ease: 'power2.out',
           onComplete: () => {
             // todo 抛出函数
             if (props.autoComplete || props.isComplete) {
@@ -193,8 +194,8 @@ const initClick = () => {
       height: bounding?.height,
       top: bounding?.top,
       left: bounding?.left,
-      duration: 0.3,
-      ease: 'power1.out',
+      duration: 0.4,
+      ease: 'power2.out',
       onComplete: () => {
         // 恢复 container 默认的静态布局
         style.value = {position: 'static', width: '', height: '', top: '', left: ''}
@@ -365,7 +366,7 @@ watch(() => props.isComplete, (value) => {
 .card-show-mask {
   position: fixed;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.45);
   top: 0;
   left: 0;
   width: 100vw;
