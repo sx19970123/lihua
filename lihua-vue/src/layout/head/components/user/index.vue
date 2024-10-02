@@ -133,7 +133,8 @@ const logout = () => {
 
 <style scoped>
 .user-card {
-  width: 220px;
+  min-width: 220px;
+  max-width: 260px;
   box-shadow: var(--lihua-light-box-shadow);
 }
 </style>

@@ -1,17 +1,35 @@
 <template>
-  <card-show cardKey="componentName2"
+  <card-show :cardKey="componentName as string"
              style="width: 100%"
-             @card-click="handleClick"
-             :hover-scale="1.03"
+             :hover-scale="1"
              :expanded-width="600"
              :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
+             :is-detail-visible="false"
   >
     <template #overview>
-      <a-card style="border: none;" :body-style="{height: '200px'}">
-        <a-typography-title :level="4">index_1</a-typography-title>
-        <a-typography-title>
-          1.0
-        </a-typography-title>
+      <a-card style="border: none;" >
+        <a-flex justify="space-between">
+          <a-flex :gap="16">
+            <user-avatar
+                :value="userStore.avatar.value"
+                :type="userStore.avatar.type"
+                :url="userStore.avatar.url"
+                :background-color="userStore.avatar.backgroundColor"
+                :size="70"
+            />
+            <a-flex align="flex-start" vertical>
+              <a-row>
+                <a-typography-title :level="3" style="margin: 4px 0 0;">欢迎回来</a-typography-title>
+                <a-typography-title :level="3" style="margin: 4px 0 0;" :style="{color: themeStore.getColorPrimary()}">&nbsp;{{userStore.$state.nickname}}</a-typography-title>
+              </a-row>
+              <a-typography-text style="margin-top: 4px" type="secondary">{{userStore.defaultDeptPosts.map(item => item.name).join(" ")}}</a-typography-text>
+            </a-flex>
+          </a-flex>
+          <a-flex vertical>
+            <a-typography-title :level="4" style="margin: 4px 0 0;">{{dayjs(new Date()).format('YYYY-MM-DD HH:mm')}}</a-typography-title>
+            <a-typography-text :level="4" style="margin-top: 4px;" type="secondary">{{daysOfWeek[new Date().getDay()]}}</a-typography-text>
+          </a-flex>
+        </a-flex>
       </a-card>
     </template>
     <template #detail>
@@ -23,12 +41,17 @@
 </template>
 <script setup lang="ts">
 import CardShow from "@/components/card-show/index.vue";
-import {getCurrentInstance, ref} from "vue";
+import UserAvatar from "@/components/user-avatar/index.vue"
+import {getCurrentInstance} from "vue";
+import {useUserStore} from "@/stores/modules/user.ts";
+import {useThemeStore} from "@/stores/modules/theme.ts";
+import dayjs from "dayjs";
+const userStore = useUserStore();
+const themeStore = useThemeStore();
 const componentName = getCurrentInstance()?.type.__name
-const middleComplete = ref<boolean>(false)
-const handleClick = (key:string,show:boolean) => {
-  middleComplete.value = true
-}
+const daysOfWeek = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
+
 </script>
 <style scoped>
 

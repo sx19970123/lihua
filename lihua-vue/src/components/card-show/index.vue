@@ -282,10 +282,10 @@ const initHover = () => {
     }
 
     if (hoverStatus.value === 'ready' || hoverStatus.value === 'complete' ) {
-      // 鼠标悬浮时抛出
+      // 鼠标悬浮时抛出方法
       emits('cardReadyOver', props.cardKey)
-      hoverStatus.value = 'activity'
       handleAddHoverStyle()
+      hoverStatus.value = 'activity'
       gsap.to('.' + props.cardKey, {
         scale: props.hoverScale,
         duration: 0.1,

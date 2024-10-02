@@ -1,9 +1,13 @@
 <template>
   <a-flex :gap="16" vertical>
-    <a-row :gutter="16">
-      <a-col :span="6">
-        <index_1></index_1>
+    <a-row>
+      <a-col :span="24">
+        <a-badge-ribbon text="Time">
+          <index_1></index_1>
+        </a-badge-ribbon>
       </a-col>
+    </a-row>
+    <a-row :gutter="16">
       <a-col :span="6">
         <index_2></index_2>
       </a-col>
@@ -13,21 +17,15 @@
       <a-col :span="6">
         <index_4></index_4>
       </a-col>
+      <a-col :span="6">
+        <index_5></index_5>
+      </a-col>
     </a-row>
-
-    <a-flex :gap="16">
-      <index_5></index_5>
-      <index_6></index_6>
-      <index_7></index_7>
-      <index_8></index_8>
-    </a-flex>
-
-    <a-flex :gap="16">
-      <index_9></index_9>
-      <index_10></index_10>
-      <index_11></index_11>
-      <index_12></index_12>
-    </a-flex>
+    <a-row :gutter="16">
+      <a-col :span="12">
+        <index_6></index_6>
+      </a-col>
+    </a-row>
   </a-flex>
 
 </template>

@@ -9,8 +9,13 @@
              :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
   >
     <template #overview>
-      <a-card style="border: none;" :body-style="{height: '200px'}">
-        <a-typography-title :level="4">基于 SpringBoot 3</a-typography-title>
+      <a-card style="border: none;" :body-style="{height: '100px'}" class="card-background">
+        <a-typography-title :level="4">前端框架</a-typography-title>
+        <a-typography-text ellipsis type="secondary">
+          <a-typography-text type="secondary">当前Vue版本为 </a-typography-text>
+          <a-typography-text :style="{color:themeStore.getColorPrimary()}">3.5.7</a-typography-text>
+        </a-typography-text>
+
       </a-card>
     </template>
     <template #detail>
@@ -23,6 +28,8 @@
 <script setup lang="ts">
 import CardShow from "@/components/card-show/index.vue";
 import {getCurrentInstance, ref} from "vue";
+import {useThemeStore} from "@/stores/modules/theme.ts";
+const themeStore = useThemeStore();
 const componentName = getCurrentInstance()?.type.__name
 const middleComplete = ref<boolean>(false)
 const handleClick = (key:string,show:boolean) => {
@@ -30,5 +37,11 @@ const handleClick = (key:string,show:boolean) => {
 }
 </script>
 <style scoped>
-
+.card-background {
+  background-image: url("../static/vue.png");
+  background-position-y: 10px; /* 增加10像素间距 */
+  background-position-x: calc(100% - 10px); /* 保持右对齐 */
+  background-repeat: no-repeat;
+  background-size: 36px 36px;
+}
 </style>

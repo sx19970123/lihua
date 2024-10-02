@@ -10,13 +10,22 @@
     <template #content>
       <a-form ref="userBasicRef" :model="profileInfo" :rules="userRoles">
         <a-form-item name="nickname">
-          <a-input class="form-item-width" placeholder="请输入用户昵称" v-model:value="profileInfo.nickname"></a-input>
+          <a-input class="form-item-width" placeholder="请输入用户昵称" v-model:value="profileInfo.nickname" allow-clear></a-input>
         </a-form-item>
         <a-form-item name="phoneNumber">
-          <a-input class="form-item-width" placeholder="请输入手机号码（非必填）" v-model:value="profileInfo.phoneNumber"></a-input>
+          <a-input class="form-item-width" placeholder="请输入手机号码（非必填）" v-model:value="profileInfo.phoneNumber" allow-clear></a-input>
         </a-form-item>
         <a-form-item name="email">
-          <a-input class="form-item-width" placeholder="请输入电子邮箱（非必填）" v-model:value="profileInfo.email"></a-input>
+          <a-auto-complete class="form-item-width" placeholder="请输入电子邮箱（非必填）"
+                           v-model:value="profileInfo.email"
+                           @search="emailHandleSearch"
+                           :options="emailOptions"
+                           allow-clear>
+            <template #option="{ value: val }">
+              {{ val.split('@')[0] }} @
+              <span style="font-weight: bold">{{ val.split('@')[1] }}</span>
+            </template>
+          </a-auto-complete>
         </a-form-item>
         <a-form-item name="gender">
           <a-radio-group class="form-item-width" v-model:value="profileInfo.gender">
@@ -32,7 +41,7 @@
 import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
 import {type FormInstance, message} from 'ant-design-vue';
 import {initDict} from "@/utils/Dict.ts";
-import {reactive, useTemplateRef, type Ref} from "vue";
+import {reactive, useTemplateRef, type Ref, ref} from "vue";
 import type {ProfileInfo} from "@/api/system/profile/type/SysProfile.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {saveBasics} from "@/api/system/profile/Profile.ts";
@@ -86,8 +95,8 @@ const handleNext = async (loading:Ref<boolean>) => {
   const resp = await saveBasics({
     nickname: profileInfo.nickname,
     gender: profileInfo.gender,
-    phoneNumber: profileInfo.phoneNumber,
-    email: profileInfo.email,
+    phoneNumber: profileInfo.phoneNumber === ''? undefined: profileInfo.phoneNumber,
+    email: profileInfo.email === ''? undefined: profileInfo.email,
   })
 
   if (resp.code === 200) {
@@ -100,6 +109,17 @@ const handleNext = async (loading:Ref<boolean>) => {
     loading.value = false
   }
 }
+
+const emailOptions = ref<{ value: string }[]>([]);
+const emailHandleSearch = (val: string) => {
+  let res: { value: string }[];
+  if (!val || val.indexOf('@') >= 0) {
+    res = [];
+  } else {
+    res = ['qq.com','126.com', '163.com','aliyun.com','sina.com','sohu.com','gmail.com','outlook.com','hotmail.com'].map(domain => ({ value: `${val}@${domain}` }));
+  }
+  emailOptions.value = res;
+};
 </script>
 
 <style scoped>
