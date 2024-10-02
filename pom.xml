@@ -20,6 +20,7 @@
         <myexcel.version>4.5.0</myexcel.version>
         <oshi.version>6.6.4</oshi.version>
         <guava.version>33.3.1-jre</guava.version>
+        <xxl-job.version>2.4.1</xxl-job.version>
     </properties>
 
     <parent>
@@ -107,11 +108,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
-        <!--        服务器信息监控 -->
+        <!--        oshi服务器信息监控 -->
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
             <version>${oshi.version}</version>
+        </dependency>
+
+        <!-- xxl-job 定时任务 -->
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+            <version>${xxl-job.version}</version>
         </dependency>
 
     </dependencies>

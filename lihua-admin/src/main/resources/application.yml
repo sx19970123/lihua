@@ -128,3 +128,23 @@ aj:
     #req-check-minute-limit: 60
     # verify接口一分钟内次数限制
     #req-verify-minute-limit: 60
+
+xxl-job:
+  admin:
+    # 调度中心部署地址
+    address: http://127.0.0.1:8081/xxl-job-admin
+    # 执行器通讯token
+  accessToken: default_token
+  executor:
+    # 执行器应用名称
+    appName: lihua
+    # 执行器注册地址
+    address:
+    # 执行器ip
+    ip:
+    # 执行器端口号
+    port: 0
+    # 执行器日志保存目录
+    logPath: D:/home/lihua/job-logs
+    # 执行器日志保存天数
+    logRetentionDays: 30
