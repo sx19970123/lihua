@@ -9,13 +9,13 @@
         <MoreOutlined />
       </button>
       <template #overlay>
-        <a-menu @click="handleClickMenuTab" v-rollDisable>
+        <a-menu @click="handleClickMenuTab">
           <a-sub-menu class="menu-item-min-width" key="recent">
             <template #title>
               <FieldTimeOutlined />
               最近使用
             </template>
-            <div class="scrollbar" v-if="recentData.length > 0" style="max-height: 400px" v-rollDisable>
+            <div class="scrollbar" v-if="recentData.length > 0" style="max-height: 400px">
               <a-menu-item v-for="item in recentData" :key="item.path">
                 <template #icon>
                   <component :is="item.icon"/>
@@ -36,13 +36,13 @@
                 <ClearOutlined /> 清空最近使用
               </div>
             </a-menu-item>
-            <a-empty v-else v-rollDisable>
+            <a-empty v-else>
               <template #description>
                 <a-typography-text>暂无数据</a-typography-text>
               </template>
             </a-empty>
           </a-sub-menu>
-          <a-sub-menu class="menu-item-min-width" key="star" v-rollDisable>
+          <a-sub-menu class="menu-item-min-width" key="star">
             <template #title>
               <StarOutlined />
               收藏夹栏
@@ -55,7 +55,7 @@
                 {{item.label}}
               </a-menu-item>
             </div>
-            <a-empty v-else v-rollDisable>
+            <a-empty v-else>
               <template #description>
                 <a-typography-text>暂无数据</a-typography-text>
               </template>

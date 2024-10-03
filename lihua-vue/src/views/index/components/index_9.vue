@@ -9,8 +9,8 @@
              :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
   >
     <template #overview>
-      <a-card style="border: none;" :body-style="{height: '200px'}">
-        <a-typography-title :level="4">基于 SpringBoot 3</a-typography-title>
+      <a-card style="border: none;" :body-style="{height: '124px'}">
+        <a-typography-title :level="4">Gitee</a-typography-title>
       </a-card>
     </template>
     <template #detail>
