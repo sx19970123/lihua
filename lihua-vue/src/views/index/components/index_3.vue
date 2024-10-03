@@ -18,26 +18,25 @@
       </a-card>
     </template>
     <template #detail>
-      <a-card class="scrollbar" id="test" style="border: none;height: 600px">
+      <a-card class="scrollbar" id="test" style="border: none;height: 610px">
         <a-typography-title :level="5">
-          后端技术
+          后端框架
+        </a-typography-title>
+        <a-typography-title :level="5">
+          技术概览
         </a-typography-title>
         <a-typography-text>
           <p style="text-indent: 2em">
             后端采用了 Spring Boot 3.x 框架进行开发，Java 版本为 21，
             使用 Spring Security 进行权限管理。
             持久层框架采用 MyBatis-Plus，理论上支持 MP 所支持的所有数据库类型，当前使用的是 MySQL 数据库。
-            更多依赖信息请查看首页-后端框架。
-            <br/>
             <span >
               <p style="text-indent: 2em">
-                              下面是系统基础目录结构
+                  下面是系统基础目录结构
               </p>
             </span>
           </p>
         </a-typography-text>
-
-
         <a-typography-text>
 
           <pre>
@@ -48,6 +47,26 @@ lihua
 ├── lihua-core     // 系统核心模块，包含各种配置及过滤器、拦截器、AOP
 ├── lihua-service  // 系统服务模块，系统功能业务实现</pre>
         </a-typography-text>
+
+        <a-typography-title :level="5">
+          项目依赖
+        </a-typography-title>
+        <a-descriptions bordered :column="1">
+          <a-descriptions-item label="系统框架">SpringBoot</a-descriptions-item>
+          <a-descriptions-item label="安全框架">SpringSecurity</a-descriptions-item>
+          <a-descriptions-item label="aop">aop</a-descriptions-item>
+          <a-descriptions-item label="lombok">lombok</a-descriptions-item>
+          <a-descriptions-item label="系统缓存">Redis</a-descriptions-item>
+          <a-descriptions-item label="表单验证">validation</a-descriptions-item>
+          <a-descriptions-item label="数据库">mysql</a-descriptions-item>
+          <a-descriptions-item label="持久层框架">Mybatis-Plus</a-descriptions-item>
+          <a-descriptions-item label="Token生成">jwt</a-descriptions-item>
+          <a-descriptions-item label="Excel导入导出">myexcel</a-descriptions-item>
+          <a-descriptions-item label="服务器数据获取">oshi</a-descriptions-item>
+          <a-descriptions-item label="接口限流">guava</a-descriptions-item>
+          <a-descriptions-item label="定时任务">xxl-job</a-descriptions-item>
+          <a-descriptions-item label="验证码">anji-plus</a-descriptions-item>
+        </a-descriptions>
       </a-card>
     </template>
   </card-show>

@@ -23,13 +23,6 @@
     <template #detail>
       <a-card class="scrollbar" id="test" style="border: none;height: 610px">
         <a-typography-title :level="4">关于狸花猫</a-typography-title>
-        <a-typography-text type="secondary">狸花猫是一款基于</a-typography-text>
-        <a-typography-text :style="{color:themeStore.getColorPrimary()}"> SpringBoot </a-typography-text>
-        <a-typography-text type="secondary">和</a-typography-text>
-        <a-typography-text :style="{color:themeStore.getColorPrimary()}"> Vue </a-typography-text>
-        <a-typography-text type="secondary">
-          的权限管理系统。
-        </a-typography-text>
         <a-typography-title :level="5">
           为什么开发这个系统
         </a-typography-title>

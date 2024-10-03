@@ -19,8 +19,10 @@
       </a-card>
     </template>
     <template #detail>
-      <a-card class="scrollbar" id="test" style="border: none;height: 600px">
-        <a-typography-title :level="4">基于 SpringBoot 3</a-typography-title>
+      <a-card class="scrollbar" id="test" style="border: none;height: 610px">
+        <a-typography-title :level="5">免费开源</a-typography-title>
+        <a-typography-text>基于MIT开源协议，免费全开源且可商用，无版权问题</a-typography-text>
+        <img src="../static/bq.png" style="width: 100%;border-radius: 8px;margin-top: 8px" alt=""/>
       </a-card>
     </template>
   </card-show>
