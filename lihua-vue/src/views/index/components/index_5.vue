@@ -6,7 +6,7 @@
              @card-click="handleClick"
              :hover-scale="1.03"
              :expanded-width="600"
-             :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
+             :middle-style="{'background':themeStore.$state.isDarkTheme ? '#141414': '#fff','border-radius':' 8px'}"
   >
     <template #overview>
       <a-card class="card-background" style="border: none;" :body-style="{height: '100px'}">
@@ -38,10 +38,10 @@ const handleClick = (key:string,show:boolean) => {
 </script>
 <style scoped>
 .card-background {
-  background-image: url("../static/mit.png");
-  background-position-y: 2px; /* 增加10像素间距 */
-  background-position-x: calc(100% - 6px); /* 保持右对齐 */
+  background-image: url("../static/狸花猫-小黑子-期待.svg");
+  background-position-y: 10px; /* 增加10像素间距 */
+  background-position-x: calc(100% - 10px); /* 保持右对齐 */
   background-repeat: no-repeat;
-  background-size: 42px 42px;
+  background-size: 36px 36px;
 }
 </style>

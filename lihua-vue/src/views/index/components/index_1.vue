@@ -25,7 +25,7 @@
               <a-typography-text style="margin-top: 4px" type="secondary">{{userStore.defaultDeptPosts.map(item => item.name).join(" ")}}</a-typography-text>
             </a-flex>
           </a-flex>
-          <a-flex vertical>
+          <a-flex vertical style="margin-top: 10px">
             <a-typography-title :level="4" style="margin: 4px 0 0;">{{dayjs(new Date()).format('YYYY-MM-DD HH:mm')}}</a-typography-title>
             <a-typography-text :level="4" style="margin-top: 4px;" type="secondary">{{daysOfWeek[new Date().getDay()]}}</a-typography-text>
           </a-flex>

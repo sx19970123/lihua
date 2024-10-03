@@ -6,7 +6,7 @@
              @card-click="handleClick"
              :hover-scale="1.03"
              :expanded-width="600"
-             :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
+             :middle-style="{'background':themeStore.$state.isDarkTheme ? '#141414': '#fff','background-size': 'contain','border-radius':' 8px'}"
   >
     <template #overview>
       <a-card style="border: none;" :body-style="{height: '100px'}" class="card-background">

@@ -6,7 +6,7 @@
              @card-click="handleClick"
              :hover-scale="1.03"
              :expanded-width="600"
-             :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
+             :middle-style="{'background':themeStore.$state.isDarkTheme ? '#141414': '#fff','background-size': 'contain','border-radius':' 8px'}"
   >
     <template #overview>
       <a-card style="border: none;" :body-style="{height: '100px'}" class="card-background">
@@ -19,7 +19,35 @@
     </template>
     <template #detail>
       <a-card class="scrollbar" id="test" style="border: none;height: 600px">
-        <a-typography-title :level="4">基于 SpringBoot</a-typography-title>
+        <a-typography-title :level="5">
+          后端技术
+        </a-typography-title>
+        <a-typography-text>
+          <p style="text-indent: 2em">
+            后端采用了 Spring Boot 3.x 框架进行开发，Java 版本为 21，
+            使用 Spring Security 进行权限管理。
+            持久层框架采用 MyBatis-Plus，理论上支持 MP 所支持的所有数据库类型，当前使用的是 MySQL 数据库。
+            更多依赖信息请查看首页-后端框架。
+            <br/>
+            <span >
+              <p style="text-indent: 2em">
+                              下面是系统基础目录结构
+              </p>
+            </span>
+          </p>
+        </a-typography-text>
+
+
+        <a-typography-text>
+
+          <pre>
+lihua
+├── lihua-admin    // 后台服务启动类&系统模块controller层
+├── lihua-captcha  // 验证码
+├── lihua-common   // 系统通用模块，包括自定义注解和工具类等
+├── lihua-core     // 系统核心模块，包含各种配置及过滤器、拦截器、AOP
+├── lihua-service  // 系统服务模块，系统功能业务实现</pre>
+        </a-typography-text>
       </a-card>
     </template>
   </card-show>

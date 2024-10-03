@@ -4,13 +4,13 @@
              :auto-complete="false"
              :is-complete="middleComplete"
              @card-click="handleClick"
-             :hover-scale="1.03"
+             :hover-scale="1.01"
              :expanded-width="600"
              :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
   >
     <template #overview>
-      <a-card style="border: none;" :body-style="{height: '200px'}">
-        <a-typography-title :level="4">基于 SpringBoot 3</a-typography-title>
+      <a-card style="border: none;" :body-style="{height: '100px'}">
+        <a-typography-title :level="4">版本信息</a-typography-title>
       </a-card>
     </template>
     <template #detail>

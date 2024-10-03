@@ -2,7 +2,7 @@
   <a-flex :gap="16" vertical>
     <a-row>
       <a-col :span="24">
-        <a-badge-ribbon text="Time">
+        <a-badge-ribbon text="now time">
           <index_1></index_1>
         </a-badge-ribbon>
       </a-col>
@@ -24,6 +24,20 @@
     <a-row :gutter="16">
       <a-col :span="12">
         <index_6></index_6>
+      </a-col>
+      <a-col :span="12">
+        <a-flex :gap="16" vertical>
+          <a-row :gutter="16">
+            <a-col :span="24">
+              <index_7></index_7>
+            </a-col>
+          </a-row>
+          <a-row :gutter="16">
+            <a-col :span="24">
+              <index_7></index_7>
+            </a-col>
+          </a-row>
+        </a-flex>
       </a-col>
     </a-row>
   </a-flex>
