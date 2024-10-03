@@ -132,7 +132,7 @@ aj:
 xxl-job:
   admin:
     # 调度中心部署地址
-    address: http://127.0.0.1:8081/xxl-job-admin
+    address: #http://127.0.0.1:8081/xxl-job-admin
     # 执行器通讯token
   accessToken: default_token
   executor:

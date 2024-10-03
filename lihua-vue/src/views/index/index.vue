@@ -26,20 +26,28 @@
         <index_6></index_6>
       </a-col>
       <a-col :span="12">
-        <a-flex :gap="16" vertical>
-          <a-row :gutter="16">
-            <a-col :span="24">
-              <index_7></index_7>
-            </a-col>
-          </a-row>
-          <a-row :gutter="16">
-            <a-col :span="24">
-              <index_7></index_7>
-            </a-col>
-          </a-row>
-        </a-flex>
+        <index_7></index_7>
+      </a-col>
+      <a-col :span="12">
+<!--        <a-flex :gap="16" vertical>-->
+<!--          <a-row :gutter="16">-->
+<!--            <a-col :span="24">-->
+<!--              <index_7></index_7>-->
+<!--            </a-col>-->
+<!--          </a-row>-->
+<!--          <a-row :gutter="16">-->
+<!--            <a-col :span="24">-->
+<!--              <index_7></index_7>-->
+<!--            </a-col>-->
+<!--          </a-row>-->
+<!--        </a-flex>-->
       </a-col>
     </a-row>
+<!--    <a-row :gutter="16">-->
+<!--      <a-col :span="12">-->
+<!--        <index_7></index_7>-->
+<!--      </a-col>-->
+<!--    </a-row>-->
   </a-flex>
 
 </template>

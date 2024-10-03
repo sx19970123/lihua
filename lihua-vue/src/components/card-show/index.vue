@@ -196,8 +196,6 @@ const initClick = () => {
 
     // 关闭遮罩
     showMask.value = false
-    // 打开y轴滚动条
-    showOverflowY()
     // 执行主要动画
     gsap.to('.' + props.cardKey, {
       width: bounding?.width,
@@ -211,6 +209,8 @@ const initClick = () => {
         style.value = {position: 'static', width: '', height: '', top: '', left: ''}
         // 动画执行完成后，状态修改为就绪
         showStatus.value = 'ready'
+        // 打开y轴滚动条
+        showOverflowY()
         // 卡片关闭动画完成后抛出
         emits('cardReady', props.cardKey)
       }
@@ -247,12 +247,35 @@ const initClick = () => {
     return 0;
   }
 
+  // 隐藏滚动条
   const hiddenOverflowY = () => {
-    document.body.style.overflowY = 'hidden'
+    if (hasScrollbar()) {
+      document.body.style.overflowY = 'hidden'
+      document.body.style.width = 'calc(100% - 15px)'
+
+    }
   }
 
+  // 显示滚动条
   const showOverflowY = () => {
-    document.body.style.overflowY = 'auto'
+    if (hasScrollbar()) {
+      document.body.style.overflowY = 'auto'
+      document.body.style.width = '100%'
+    }
+  }
+
+  // 判断是否出现了滚动条
+  const hasScrollbar = (): boolean => {
+    // 获取页面的总高度和视口的高度
+    const body = document.body;
+    const html = document.documentElement;
+
+    const scrollHeight = Math.max(body.scrollHeight, body.offsetHeight,
+        html.clientHeight, html.scrollHeight, html.offsetHeight);
+    const clientHeight = window.innerHeight;
+
+    // 判断是否出现滚动条
+    return scrollHeight > clientHeight;
   }
 
   return {

@@ -7,7 +7,7 @@
              :is-detail-visible="false"
   >
     <template #overview>
-      <a-card style="border: none;" >
+      <a-card>
         <a-flex justify="space-between">
           <a-flex :gap="16">
             <user-avatar

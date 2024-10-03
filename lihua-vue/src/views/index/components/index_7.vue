@@ -1,33 +1,59 @@
 <template>
-  <card-show :cardKey="componentName as string"
-             style="width: 100%"
-             :auto-complete="false"
-             :is-complete="middleComplete"
-             @card-click="handleClick"
-             :hover-scale="1.01"
-             :expanded-width="600"
-             :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
-  >
-    <template #overview>
-      <a-card style="border: none;" :body-style="{height: '100px'}">
-        <a-typography-title :level="4">版本信息</a-typography-title>
-      </a-card>
-    </template>
-    <template #detail>
-      <a-card class="scrollbar" id="test" style="border: none;height: 600px">
-        <a-typography-title :level="4">基于 SpringBoot 3</a-typography-title>
-      </a-card>
-    </template>
-  </card-show>
+  <div>
+    <a-card title="前端相关依赖文档">
+      <a-card-grid >
+        <a-typography-link href="https://cn.vuejs.org/guide/introduction.html" target="_blank">
+          <img src="../static/vue.png" style="width: 15px;height: 15px">
+          Vue
+        </a-typography-link>
+      </a-card-grid>
+      <a-card-grid >
+        <a-typography-link href="https://router.vuejs.org/zh/guide/" target="_blank">
+          <img src="../static/vue.png" style="width: 15px;height: 15px">
+          Vue Router
+        </a-typography-link>
+      </a-card-grid>
+      <a-card-grid >
+        <a-typography-link href="https://pinia.vuejs.org/zh/introduction.html" target="_blank">
+          <img src="https://pinia.vuejs.org/logo.svg" style="width: 15px;height: 15px">
+          Pinia
+        </a-typography-link>
+      </a-card-grid>
+      <a-card-grid >
+        <a-typography-link href="https://antdv.com/components/overview-cn" target="_blank">
+          <img src="https://next.antdv.com/assets/logo.1ef800a8.svg" style="width: 15px;height: 15px">
+          Ant Design Vue
+        </a-typography-link>
+      </a-card-grid>
+      <a-card-grid>
+        <a-typography-link href="https://gsap.com/docs/v3/" target="_blank">
+          <img src="https://th.bing.com/th?id=ODLS.0adef11b-095c-4c5f-a47a-5815c6307ae1&w=32&h=32&qlt=90&pcl=fffffa&o=6&cb=13&pid=1.2" style="width: 15px;height: 15px">
+          GSAP
+        </a-typography-link>
+      </a-card-grid>
+      <a-card-grid >
+        <a-typography-link href="https://www.lodashjs.com/#:~:text=Lodash%20%E6%98%AF%E4%B8%80%E4%B8%AA" target="_blank">
+          <img src="https://th.bing.com/th?id=ODLS.2871bf84-a83f-47b6-9643-23bb1422c135&w=32&h=32&qlt=90&pcl=fffffa&o=6&cb=13&pid=1.2" style="width: 15px;height: 15px">
+          lodash
+        </a-typography-link>
+      </a-card-grid>
+      <a-card-grid >
+        <a-typography-link href="https://ld246.com/article/1549638745630" target="_blank">
+          <img src="https://b3log.org/images/brand/vditor-128.png" style="width: 15px;height: 15px">
+          Vditor
+        </a-typography-link>
+      </a-card-grid>
+      <a-card-grid >
+        <a-typography-link href="https://dayjs.fenxianglu.cn/category/" target="_blank">
+          <img src="https://day.js.org/img/logo.png" style="width: 15px;height: 15px">
+          Day.js
+        </a-typography-link>
+      </a-card-grid>
+    </a-card>
+  </div>
 </template>
 <script setup lang="ts">
-import CardShow from "@/components/card-show/index.vue";
-import {getCurrentInstance, ref} from "vue";
-const componentName = getCurrentInstance()?.type.__name
-const middleComplete = ref<boolean>(false)
-const handleClick = (key:string,show:boolean) => {
-  middleComplete.value = true
-}
+
 </script>
 <style scoped>
 
