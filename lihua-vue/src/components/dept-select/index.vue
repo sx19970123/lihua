@@ -18,18 +18,21 @@
             <div @mouseover="handleMouseOver(id)" @mouseleave="handleMouseLeave" @dblclick="handleSetDefaultDept(id)">
               <a-flex :gap="16" align="center">
                 <a-flex :gap="8">
-                  <div v-if="name.indexOf(deptKeyword) > -1">
-                    <span>{{ name.substring(0, name.indexOf(deptKeyword)) }}</span>
-                    <span :style="{'color':  themeStore.getColorPrimary()}">{{ deptKeyword }}</span>
-                    <span>{{ name.substring(name.indexOf(deptKeyword) + deptKeyword.length) }}</span>
-                  </div>
-                  <span v-else>{{ name }}</span>
+                  <a-tooltip :title="defaultDeptId !== id ? '双击设为默认部门' : ''" placement="right">
+                    <div v-if="name.indexOf(deptKeyword) > -1">
+                      <span>{{ name.substring(0, name.indexOf(deptKeyword)) }}</span>
+                      <span :style="{'color':  themeStore.getColorPrimary()}">{{ deptKeyword }}</span>
+                      <span>{{ name.substring(name.indexOf(deptKeyword) + deptKeyword.length) }}</span>
+                    </div>
+                    <span v-else>{{ name }}</span>
+                  </a-tooltip>
                   <a-typography-text type="secondary">{{ code }}</a-typography-text>
                 </a-flex>
                 <span v-if="defaultDeptId === id">
                  <a-tag :color="themeStore.getColorPrimary()" style="font-size: 10px;" :bordered="false">默认</a-tag>
                 </span>
-                <span v-show="hoverId === id && defaultDeptId !== id">
+<!--                会造成卡片长度抖动-->
+                <span v-show="hoverId === id && defaultDeptId !== id" v-if="false">
                   <a-button type="link" size="small" @click="handleSetDefaultDept(id)">设为默认</a-button>
                 </span>
               </a-flex>
