@@ -65,6 +65,8 @@ const handleFinish = async () => {
 
   if (resp.code === 200) {
       message.success(resp.msg)
+  } else {
+    message.error(resp.msg)
   }
 }
 

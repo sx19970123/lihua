@@ -5,6 +5,7 @@ import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.monitor.service.MonitorLoggedUserService;
 import jakarta.annotation.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class MonitorLoggedUserController extends BaseController {
         return success(monitorLoggedUserService.findList(username, nickname));
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "强退用户", type = LogTypeEnum.OTHER)
     public String forceLogout(@RequestBody List<String> cacheKeys) {

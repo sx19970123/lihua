@@ -64,7 +64,6 @@ public class SysPostController extends BaseController {
         return success(sysPostService.getPostOptionByDeptId(deptIds));
     }
 
-    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("export")
     @Log(description = "导出岗位数据", type = LogTypeEnum.EXPORT)
     public String exportExcel(SysPostDTO dto) {

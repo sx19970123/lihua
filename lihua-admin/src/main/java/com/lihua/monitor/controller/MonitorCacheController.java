@@ -7,6 +7,7 @@ import com.lihua.monitor.model.CacheMonitor;
 import com.lihua.monitor.service.MonitorCacheService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,6 +37,7 @@ public class MonitorCacheController extends BaseController {
         return success(monitorCacheService.cacheInfo(cacheMonitor.getKey()));
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping("key")
     @Log(description = "删除缓存", type = LogTypeEnum.DELETE)
     public String remove(@RequestBody @Valid CacheMonitor cacheMonitor) {

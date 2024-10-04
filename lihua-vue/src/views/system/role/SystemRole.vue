@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-flex vertical :gap="16" v-hasRole="['ROLE_admin']">
+    <a-flex vertical :gap="16">
 <!--      查询条件-->
       <a-card :style="{border: 'none'}" :body-style="{'padding-bottom': '0'}">
         <a-form :colon="false">
@@ -85,6 +85,7 @@
             <!-- 角色状态-->
             <template v-if="column.key === 'status'">
               <a-switch v-model:checked="record.statusIsNormal"
+                        :disabled="record.code === 'ROLE_admin'"
                         @change="(checked: boolean | string | number, event: MouseEvent) => handleUpdateStatus(event,record.id, text)"
                         @click="(checked: boolean | string | number, event: MouseEvent) => { event.stopPropagation(); record.updateStatusLoading = true }"
                         :loading="record.updateStatusLoading">

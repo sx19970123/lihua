@@ -45,7 +45,7 @@
           </a-typography-title>
           <a-typography-text>
             <p style="text-indent: 2em">
-              家里养了两只狸花猫，想用它们作为系统的主题。用它们任何一只的名字命名都不太合适，干脆就按它们的品种来命名了。
+              家里养了两只狸花猫，想以他们作为系统的主题。用任何一只的名字命名都不太好，干脆就按品种来命名了。
               <a-typography-link @click="showLihua = !showLihua">{{!showLihua ? '看看猫猫' : '不看了'}}</a-typography-link>
             </p>
           </a-typography-text>

@@ -1,6 +1,6 @@
 <template>
  <div>
-   <a-flex :gap="16" vertical v-hasRole="['ROLE_admin']">
+   <a-flex :gap="16" vertical>
      <!--检索条件-->
      <a-card :style="{border: 'none'}" :body-style="{'padding-bottom': '0'}">
        <a-form :colon="false" :model="deptQuery">

@@ -31,7 +31,6 @@ public class SysDictDataController extends BaseController {
      * @param dictDataDTO
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("list")
     public String findListByTypeCode(@RequestBody SysDictDataDTO dictDataDTO) {
         if (!StringUtils.hasText(dictDataDTO.getDictTypeCode())) {

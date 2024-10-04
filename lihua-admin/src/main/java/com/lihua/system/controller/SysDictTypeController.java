@@ -26,7 +26,6 @@ public class SysDictTypeController extends BaseController {
      * @param dictTypeDTO
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("page")
     public String findPage(@RequestBody SysDictTypeDTO dictTypeDTO) {
         return success(sysDictTypeService.findPage(dictTypeDTO));
@@ -37,7 +36,6 @@ public class SysDictTypeController extends BaseController {
      * @param id
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_admin')")
     @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
         return success(sysDictTypeService.findById(id));

@@ -44,8 +44,8 @@
             <span>数据更新</span>
           </a-flex>
         </a-menu-item>
-        <a-menu-divider v-if="isAdmin"/>
-        <a-menu-item key="admin-setting" v-if="isAdmin">
+        <a-menu-divider v-if="isAdmin || isVisitor"/>
+        <a-menu-item key="admin-setting" v-if="isAdmin || isVisitor">
           <a-flex :gap="8">
             <SettingOutlined />
             <span>系统设置</span>
@@ -80,6 +80,7 @@ const router = useRouter()
 const route = useRoute()
 
 const isAdmin = ref<boolean>(userStore.$state.roleCodes.filter(item => item === 'ROLE_admin').length > 0)
+const isVisitor = ref<boolean>(userStore.$state.roleCodes.filter(item => item === 'ROLE_visitor').length > 0)
 // 处理点击个人中心按钮
 const handleClickMenu = async ({key}: {key: string}) => {
   switch (key) {

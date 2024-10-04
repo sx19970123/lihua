@@ -85,7 +85,7 @@ const routers = [
           affix: false,
           viewTab: true,
           visible: false,
-          role: ["ROLE_admin"]
+          role: ["ROLE_admin", "ROLE_visitor"]
         }
       }
     ],
