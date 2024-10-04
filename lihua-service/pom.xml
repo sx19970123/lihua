@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.lihua</groupId>
         <artifactId>lihua</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>lihua-service</artifactId>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

@@ -81,7 +81,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.35); /* 黑色半透明蒙版，透明度50% */
+        background-color: rgba(0, 0, 0, 0.2); /* 黑色半透明蒙版，透明度50% */
         z-index: 1; /* 保证蒙版在内容之上 */
         pointer-events: none; /* 允许点击穿透蒙版 */
     }

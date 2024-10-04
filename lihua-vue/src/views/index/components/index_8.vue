@@ -51,7 +51,7 @@
             <a-timeline-item v-for="item in versionInfo.lihuaUpdateLog">
               <a-typography-title :level="5">
                 {{item.version}}
-                {{item.updateDate}}
+                <a-typography-text type="secondary">{{item.updateDate}}</a-typography-text>
               </a-typography-title>
               <a-flex v-for="content in item.updateContent" vertical>
                 <a-typography-text >{{content}}</a-typography-text>

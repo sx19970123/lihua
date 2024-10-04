@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.lihua</groupId>
         <artifactId>lihua</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>lihua-admin</artifactId>
@@ -22,25 +22,25 @@
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <!--        公共模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <!--        系统内置功能服务层-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-service</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <!--        系统验证码模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-captcha</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

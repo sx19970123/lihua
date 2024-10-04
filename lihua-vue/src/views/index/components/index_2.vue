@@ -1,9 +1,6 @@
 <template>
   <card-show :cardKey="componentName as string"
              style="width: 100%"
-             :auto-complete="false"
-             :is-complete="middleComplete"
-             @card-click="handleClick"
              :hover-scale="1.03"
              :expanded-width="600"
              :middle-style="{'background':themeStore.$state.isDarkTheme ? '#141414': '#fff','background-size': 'contain','border-radius':' 8px'}"
@@ -42,15 +39,24 @@
           <a-typography-text :style="{color:themeStore.getColorPrimary()}"> Vue </a-typography-text>
           <a-typography-text type="secondary">的权限管理系统</a-typography-text>
         </a-typography-text>
-        <div class="scrollbar" style="height: 484px;margin-top: 16px">
+        <div class="scrollbar" style="height: 484px;margin-top: 16px;overflow-x: hidden">
           <a-typography-title :level="5">
             为什么叫狸花猫
           </a-typography-title>
           <a-typography-text>
             <p style="text-indent: 2em">
               家里养了两只狸花猫，想用它们作为系统的主题。用它们任何一只的名字命名都不太合适，干脆就按它们的品种来命名了。
+              <a-typography-link @click="showLihua = !showLihua">{{!showLihua ? '看看猫猫' : '不看了'}}</a-typography-link>
             </p>
           </a-typography-text>
+          <a-carousel arrows style="margin: 24px" autoplay v-show="showLihua">
+            <div class="dark-overlay">
+              <img src="../static/miaomiao.jpg" style="width: 100%;border-radius: 8px">
+            </div>
+            <div class="dark-overlay">
+              <img src="../static/heihei.jpg" style="width: 100%;border-radius: 8px">
+            </div>
+          </a-carousel>
           <a-typography-title :level="5">
             系统功能
           </a-typography-title>
@@ -109,11 +115,8 @@ import CardShow from "@/components/card-show/index.vue";
 import {getCurrentInstance, ref} from "vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 const componentName = getCurrentInstance()?.type.__name
-const middleComplete = ref<boolean>(false)
+const showLihua = ref<boolean>(false)
 const themeStore = useThemeStore();
-const handleClick = (key:string,show:boolean) => {
-  middleComplete.value = true
-}
 </script>
 <style scoped>
 .card-background {

@@ -9,7 +9,7 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
-            version: 'V1.0',
+            version: '1.0.0',
             updateDate: '2024-10-05',
             updateContent: [
                 '狸花猫后台管理系统正式上线🎉🎉🎉',
