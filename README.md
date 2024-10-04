@@ -1,6 +1,6 @@
 #### 关于狸花猫
 
-狸花猫是一款基于 **SpringBoot** **和** **Vue** **的权限管理系统**
+狸花猫是一款基于 **SpringBoot** **和** **Vue** 的权限管理系统
 
 ##### 为什么叫狸花猫
 
@@ -29,3 +29,51 @@
 ##### 其他功能
 
 系统还提供了日志服务、在线用户监控、缓存监控、服务监控以及定时任务等功能。
+
+##### 系统截图
+
+![首页.jpg](static-image%2F%E9%A6%96%E9%A1%B5.jpg)
+
+![首页-暗色.jpg](static-image%2F%E9%A6%96%E9%A1%B5-%E6%9A%97%E8%89%B2.jpg)
+
+![登录页.jpg](static-image%2F%E7%99%BB%E5%BD%95%E9%A1%B5.jpg)
+
+![注册页.jpg](static-image%2F%E6%B3%A8%E5%86%8C%E9%A1%B5.jpg)
+
+![登录信息设置页.jpg](static-image%2F%E7%99%BB%E5%BD%95%E4%BF%A1%E6%81%AF%E8%AE%BE%E7%BD%AE%E9%A1%B5.jpg)
+
+![个人中心.jpg](static-image%2F%E4%B8%AA%E4%BA%BA%E4%B8%AD%E5%BF%83.jpg)
+
+![修改头像.jpg](static-image%2F%E4%BF%AE%E6%94%B9%E5%A4%B4%E5%83%8F.jpg)
+
+![用户管理.jpg](static-image%2F%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86.jpg)
+
+![菜单管理.jpg](static-image%2F%E8%8F%9C%E5%8D%95%E7%AE%A1%E7%90%86.jpg)
+
+![角色管理.jpg](static-image%2F%E8%A7%92%E8%89%B2%E7%AE%A1%E7%90%86.jpg)
+
+![字典管理·.jpg](static-image%2F%E5%AD%97%E5%85%B8%E7%AE%A1%E7%90%86%C2%B7.jpg)
+
+![字典类型管理.jpg](static-image%2F%E5%AD%97%E5%85%B8%E7%B1%BB%E5%9E%8B%E7%AE%A1%E7%90%86.jpg)
+
+![部门管理.jpg](static-image%2F%E9%83%A8%E9%97%A8%E7%AE%A1%E7%90%86.jpg)
+
+![岗位管理.jpg](static-image%2F%E5%B2%97%E4%BD%8D%E7%AE%A1%E7%90%86.jpg)
+
+![通知公告.jpg](static-image%2F%E9%80%9A%E7%9F%A5%E5%85%AC%E5%91%8A.jpg)
+
+![登录日志.jpg](static-image%2F%E7%99%BB%E5%BD%95%E6%97%A5%E5%BF%97.jpg)
+
+![操作日志.jpg](static-image%2F%E6%93%8D%E4%BD%9C%E6%97%A5%E5%BF%97.jpg)
+
+![在线用户.jpg](static-image%2F%E5%9C%A8%E7%BA%BF%E7%94%A8%E6%88%B7.jpg)
+
+![服务监控.jpg](static-image%2F%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A7.jpg)
+
+![缓存监控.jpg](static-image%2F%E7%BC%93%E5%AD%98%E7%9B%91%E6%8E%A7.jpg)
+
+![设置页.jpg](static-image%2F%E8%AE%BE%E7%BD%AE%E9%A1%B5.jpg)
+
+
+
+
