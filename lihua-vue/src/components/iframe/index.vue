@@ -2,16 +2,19 @@
   <div>
     <iframe class="lihua-iframe" v-if="isInner" :src="src"/>
     <div v-else>
-      <div class="new-page-container">
-        <p class="new-page-icon"><component style="font-size: 96px" is="XiaoMiaoHappy"/></p>
-        <h1 class="new-page-title">页面已加载至浏览器新标签页</h1>
-      </div>
+      <a-card class="lihua-iframe">
+        <a-flex :gap="16" justify="center" vertical align="center" style="margin-top: 48px">
+          <component is="XiaoMiaoHappy" style="font-size: 96px"/>
+          <a-typography-title style="margin: 0">页面已加载至浏览器新标签页</a-typography-title>
+          <a-typography-link @click="open">再次打开</a-typography-link>
+        </a-flex>
+      </a-card>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import {useRoute} from "vue-router";
-import {ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 const route = useRoute()
 const props = defineProps<{
   src?: string,
@@ -33,10 +36,27 @@ if (props.isInner) {
   isInner.value = route.meta.linkOpenType === 'inner'
 }
 
-// 不为内部链接时打开新标签页
-if (!isInner.value && src.value) {
+const handleOpen = () => {
+  // 只有第一次进入页面时会打开连接
+  if (!sessionStorage.getItem('isRefreshed' + src.value)) {
+    // 不为内部链接时打开新标签页
+    if (!isInner.value && src.value) {
+      open()
+    }
+    sessionStorage.setItem('isRefreshed' + src.value, 'true');
+  }
+}
+
+// 打开页面
+const open = () => {
   window.open(src.value)
 }
+
+// 组件加载完成
+onMounted(() => handleOpen())
+
+// 组件销毁
+onUnmounted(() =>  sessionStorage.removeItem('isRefreshed' + src.value))
 </script>
 <style>
 .lihua-iframe {
@@ -52,28 +72,5 @@ if (!isInner.value && src.value) {
 }
 [view-tabs=show][show-hide-layout=hide] .lihua-iframe {
   min-height: calc(100vh - (56px + 16px + 2px));
-}
-</style>
-<style scoped>
-.new-page-container {
-  display: flex;
-  height: 400px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.new-page-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #333;
-}
-
-.new-page-icon {
-  margin-top: 1rem;
-  font-size: 1.2rem;
-  line-height: 1.5;
-  color: #666;
 }
 </style>

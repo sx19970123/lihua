@@ -193,7 +193,8 @@ const initClick = () => {
     if (showStatus.value !== 'kill') {
       showStatus.value = 'activity'
     }
-
+    // 打开y轴滚动条
+    showOverflowY()
     // 关闭遮罩
     showMask.value = false
     // 执行主要动画
@@ -209,8 +210,6 @@ const initClick = () => {
         style.value = {position: 'static', width: '', height: '', top: '', left: ''}
         // 动画执行完成后，状态修改为就绪
         showStatus.value = 'ready'
-        // 打开y轴滚动条
-        showOverflowY()
         // 卡片关闭动画完成后抛出
         emits('cardReady', props.cardKey)
       }

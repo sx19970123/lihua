@@ -10,28 +10,28 @@
   >
     <template #overview>
       <a-card :body-style="{height: '100px'}" class="card-background">
-        <a-typography-title :level="4">后端框架</a-typography-title>
+        <a-typography-title :level="4" ellipsis>后端框架</a-typography-title>
         <a-typography-text ellipsis type="secondary">
           <a-typography-text type="secondary">当前SpringBoot版本为</a-typography-text>
-          <a-typography-text :style="{color:themeStore.getColorPrimary()}"> 3.3.2</a-typography-text>
+          <a-typography-text :style="{color:themeStore.getColorPrimary()}">{{versionInfo.springBootVersion}}</a-typography-text>
         </a-typography-text>
       </a-card>
     </template>
     <template #middle>
       <a-card :body-style="{height: '100px'}" class="card-background child">
-        <a-typography-title :level="4">后端框架</a-typography-title>
+        <a-typography-title :level="4" ellipsis>后端框架</a-typography-title>
         <a-typography-text ellipsis type="secondary">
           <a-typography-text type="secondary">当前SpringBoot版本为</a-typography-text>
-          <a-typography-text :style="{color:themeStore.getColorPrimary()}"> 3.3.2</a-typography-text>
+          <a-typography-text :style="{color:themeStore.getColorPrimary()}">{{versionInfo.springBootVersion}}</a-typography-text>
         </a-typography-text>
       </a-card>
     </template>
     <template #detail>
       <a-card class="scrollbar card-background" id="test" style="height: 610px">
-        <a-typography-title :level="4">后端框架</a-typography-title>
+        <a-typography-title :level="4" ellipsis>后端框架</a-typography-title>
         <a-typography-text ellipsis type="secondary">
           <a-typography-text type="secondary">当前SpringBoot版本为</a-typography-text>
-          <a-typography-text :style="{color:themeStore.getColorPrimary()}"> 3.3.2</a-typography-text>
+          <a-typography-text :style="{color:themeStore.getColorPrimary()}">{{versionInfo.springBootVersion}}</a-typography-text>
         </a-typography-text>
         <div class="scrollbar" style="height: 484px;margin-top: 16px">
           <a-typography-title :level="5">
@@ -64,20 +64,22 @@ lihua
             项目依赖
           </a-typography-title>
           <a-descriptions bordered :column="1">
-            <a-descriptions-item label="系统框架">SpringBoot</a-descriptions-item>
-            <a-descriptions-item label="安全框架">SpringSecurity</a-descriptions-item>
-            <a-descriptions-item label="aop">aop</a-descriptions-item>
+            <a-descriptions-item label="系统框架">spring-boot-starter-parent</a-descriptions-item>
+            <a-descriptions-item label="Web">spring-boot-starter-web</a-descriptions-item>
+            <a-descriptions-item label="安全框架">spring-boot-starter-security</a-descriptions-item>
+            <a-descriptions-item label="切面编程">spring-boot-starter-aop</a-descriptions-item>
+            <a-descriptions-item label="数据库">mysql-connector-j</a-descriptions-item>
+            <a-descriptions-item label="持久层框架">mybatis-plus-spring-boot3-starter</a-descriptions-item>
             <a-descriptions-item label="lombok">lombok</a-descriptions-item>
-            <a-descriptions-item label="系统缓存">Redis</a-descriptions-item>
-            <a-descriptions-item label="表单验证">validation</a-descriptions-item>
-            <a-descriptions-item label="数据库">mysql</a-descriptions-item>
-            <a-descriptions-item label="持久层框架">Mybatis-Plus</a-descriptions-item>
-            <a-descriptions-item label="Token生成">jwt</a-descriptions-item>
-            <a-descriptions-item label="Excel导入导出">myexcel</a-descriptions-item>
-            <a-descriptions-item label="服务器数据获取">oshi</a-descriptions-item>
+            <a-descriptions-item label="系统缓存">spring-boot-starter-data-redis</a-descriptions-item>
+            <a-descriptions-item label="系统缓存">spring-integration-redis</a-descriptions-item>
+            <a-descriptions-item label="令牌工具">java-jwt</a-descriptions-item>
             <a-descriptions-item label="接口限流">guava</a-descriptions-item>
-            <a-descriptions-item label="定时任务">xxl-job</a-descriptions-item>
-            <a-descriptions-item label="验证码">anji-plus</a-descriptions-item>
+            <a-descriptions-item label="excel导入导出">myexcel</a-descriptions-item>
+            <a-descriptions-item label="表单验证">spring-boot-starter-validation</a-descriptions-item>
+            <a-descriptions-item label="服务器信息">oshi-core</a-descriptions-item>
+            <a-descriptions-item label="定时任务">xxl-job-core</a-descriptions-item>
+            <a-descriptions-item label="验证码">spring-boot-starter-captcha</a-descriptions-item>
           </a-descriptions>
         </div>
       </a-card>
@@ -88,6 +90,7 @@ lihua
 import CardShow from "@/components/card-show/index.vue";
 import {getCurrentInstance, ref} from "vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
+import {versionInfo} from "@/views/index/setting.ts";
 const themeStore = useThemeStore();
 const componentName = getCurrentInstance()?.type.__name
 const middleComplete = ref<boolean>(false)
