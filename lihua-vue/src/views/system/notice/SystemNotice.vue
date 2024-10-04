@@ -452,7 +452,7 @@ const initSave = () => {
 
   // 保存消息通知
   const saveNotice = async () => {
-    await formRef.value.validate()
+    await formRef.value?.validate()
 
     const resp = await save(sysNoticeVO.value);
     if (resp.code === 200) {

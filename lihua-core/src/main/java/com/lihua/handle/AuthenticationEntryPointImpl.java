@@ -41,7 +41,7 @@ public class AuthenticationEntryPointImpl extends BaseController implements Auth
             log.error(e.getMessage(),e);
             return;
         }
-
+        log.error(authException.getMessage(), authException);
         WebUtils.renderJson(response, error(ResultCodeEnum.AUTHENTICATION_EXPIRED));
     }
 }

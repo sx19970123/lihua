@@ -704,7 +704,7 @@ const initSave = () => {
   }
   // 保存菜单
   const saveMenu = async () => {
-    await formRef.value.validate()
+    await formRef.value?.validate()
     modalActive.saveLoading = true
     const resp = await save(sysMenu.value)
     if (resp.code === 200) {
