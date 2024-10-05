@@ -2,6 +2,8 @@
 
 http://120.26.52.238/
 
+#### 功能介绍
+<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=113255200657233&bvid=BV14Z1oY8EKh&cid=26156534974&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
 #### 本地开发环境
 Java 21
 
