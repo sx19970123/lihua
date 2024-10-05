@@ -17,7 +17,7 @@ public enum ServerSentEventsEnum implements Serializable {
      */
     SSE_NOTICE,
     /**
-     * 大屏
+     * 保持心跳
      */
-    SSE_DASHBOARD
+    SSE_HEART_BEAT
 }
