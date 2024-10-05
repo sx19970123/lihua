@@ -3,7 +3,8 @@
 http://120.26.52.238/
 
 #### 功能介绍
-<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=113255200657233&bvid=BV14Z1oY8EKh&cid=26156534974&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+[介绍视频](https://www.bilibili.com/video/BV14Z1oY8EKh/?spm_id_from=333.1007.0.0&vd_source=3635d5214bc4b48c5071c18a6643fec8)
+
 #### 本地开发环境
 Java 21
 
