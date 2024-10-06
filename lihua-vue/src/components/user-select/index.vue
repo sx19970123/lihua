@@ -319,7 +319,10 @@ const initModelUserId = async () => {
 watch(() => selectedIds.value, (value, oldValue) => {
   // 新增
   if (value.length > oldValue.length) {
-    selectUsers.value = userList.value.filter(user => value.includes(user.id ? user.id : ''))
+    const addUser = userList.value.filter(user => value.includes(user.id ? user.id : ''))
+    if (addUser) {
+      selectUsers.value.push(...addUser)
+    }
   } else {
     // 减少，获取到减少的id，从 selectUsers中删除对应数据
     const decreaseIds = oldValue.filter(old => !value.includes(old))
