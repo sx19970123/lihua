@@ -201,6 +201,7 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
       loginLoading.value = false
     }
   } catch (error) {
+    message.error(error as string);
     console.error("登录失败:", error);
     // 处理登录失败的逻辑，例如显示错误提示
     loginLoading.value = false

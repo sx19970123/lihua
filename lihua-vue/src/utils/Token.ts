@@ -44,7 +44,6 @@ const getPassword = (): string => {
 }
 
 const setPassword = (password:string): void => {
-
     Cookies.set(PASSWORD_KEY,encrypt(password))
 }
 

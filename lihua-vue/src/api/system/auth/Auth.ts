@@ -15,3 +15,10 @@ export const reloadData = () => {
         method: 'post'
     })
 }
+// 获取公钥
+export const getPublicKey = (requestKey: string) => {
+    return request<string>({
+        url: '/system/publicKey/' + requestKey,
+        method: 'get'
+    })
+}

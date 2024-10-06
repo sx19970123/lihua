@@ -4,7 +4,7 @@ import com.lihua.annotation.PreventDuplicateSubmit;
 import com.lihua.cache.RedisCache;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.DuplicateSubmitException;
-import com.lihua.utils.hash.HashUtil;
+import com.lihua.utils.crypt.HashUtils;
 import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class PreventDuplicateSubmitAspect {
         // 获取请求 token
         String token = WebUtils.getToken(WebUtils.getCurrentRequest());
         // 使用SHA256 将key压缩
-        rateLimiterName = HashUtil.generateSHA256(rateLimiterName + token);
+        rateLimiterName = HashUtils.generateSHA256(rateLimiterName + token);
 
         // key 拼接前缀
         String key = SysBaseEnum.PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX.getValue() + rateLimiterName;

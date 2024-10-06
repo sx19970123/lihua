@@ -53,7 +53,8 @@ public class SecurityConfig {
                     // 对于异步分发权限放开（涉及文件下载返回 ResponseEntity<StreamingResponseBody> 的情况）
                     .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
                     .requestMatchers(
-                            "/system/login/**", // 登录
+                            "/system/login", // 登录
+                            "/system/publicKey/**", // 获取公钥
                             "/captcha/**", // 验证码
                             "/system/sse/connect/**", // 连接sse
                             "/system/file/download/**", // 文件下载

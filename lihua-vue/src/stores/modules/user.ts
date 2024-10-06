@@ -4,7 +4,7 @@ import {getAvatar, saveTheme} from "@/api/system/profile/Profile.ts";
 import token from "@/utils/Token.ts";
 import { message } from "ant-design-vue";
 import router from "@/router";
-import {getAuthInfo} from "@/api/system/auth/Auth.ts";
+import {getAuthInfo, getPublicKey} from "@/api/system/auth/Auth.ts";
 import type { ResponseType } from "@/api/global/Type.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import type { AuthInfoType, UserInfoType} from "@/api/system/auth/type/AuthInfoType.ts";
@@ -13,8 +13,9 @@ import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {close} from "@/utils/ServerSentEvents.ts";
-
-
+import {uuid} from "@/utils/IdHelper.ts"
+import {createBrowserId} from "@/utils/BrowserId.ts"
+import {rsaEncrypt} from "@/utils/Crypto.ts";
 const { setToken,removeToken } = token
 
 export const useUserStore = defineStore('user', {
@@ -62,17 +63,37 @@ export const useUserStore = defineStore('user', {
     },
     actions: {
         // 用户登录
-        login(username: string, password: string, captchaVerification: string)  {
-            return new Promise((resolve, reject) => {
-                login(username,password,captchaVerification).then((resp:ResponseType<string>) => {
-                    if (resp.code === 200) {
-                        setToken(resp.data)
-                    }
-                    resolve(resp)
-                }).catch(error => {
-                    reject(error)
-                })
-            })
+        async login(username: string, password: string, captchaVerification: string): Promise<ResponseType<string>> {
+            try {
+                // 生成 requestKey
+                const browserId = await createBrowserId();
+                const requestKey = browserId + uuid();
+
+                // 获取公钥
+                const publicKeyResp = await getPublicKey(requestKey);
+                if (publicKeyResp.code !== 200) {
+                    throw "登录失败";
+                }
+
+                // 进行密码加密
+                const ciphertext = rsaEncrypt(password, publicKeyResp.data);
+                if (!ciphertext) {
+                    throw "登录失败";
+                }
+
+                // 执行登录
+                const resp = await login(username, ciphertext, captchaVerification, requestKey);
+                if (resp.code === 200) {
+                    // 登录成功后保存 token
+                    setToken(resp.data);
+                    return resp;
+                } else {
+                    // 登录失败，则抛出异常并处理
+                    throw resp.msg;
+                }
+            } catch (error) {
+                throw error;
+            }
         },
         // 检查用户登录设置
         checkLoginSetting(): Promise<ResponseType<string | null>> {

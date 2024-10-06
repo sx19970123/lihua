@@ -1,11 +1,14 @@
-package com.lihua.utils.hash;
+package com.lihua.utils.crypt;
 
 import com.lihua.exception.ServiceException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class HashUtil {
+/**
+ * 使用hash加密数据
+ */
+public class HashUtils {
 
     // 生成 SHA-256 哈希值
     public static String generateSHA256(String input) {

@@ -2,22 +2,24 @@ import request from "@/utils/Request.ts";
 interface LoginType {
     username: string,
     password: string,
+    captchaVerification: string,
+    requestKey: string
 }
 // 用户登录
-export const login =  ( username: string,
+export const login = (  username: string,
                         password: string,
-                        captchaVerification: string) => {
+                        captchaVerification: string,
+                        requestKey: string) => {
     const data: LoginType = {
         username,
-        password
+        password,
+        captchaVerification,
+        requestKey
     }
     return request<string>({
         url: '/system/login',
         method: 'post',
-        data: data,
-        params: {
-            captchaVerification: captchaVerification
-        }
+        data: data
     })
 }
 

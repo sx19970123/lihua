@@ -17,6 +17,7 @@ import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.system.service.SysSettingService;
 import com.lihua.utils.security.LoginUserContext;
+import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,21 +43,26 @@ public class SysAuthenticationController extends BaseController {
     /**
      * 用户登录
      * @param currentUser
-     * @param captchaVerification
-     * @return
      */
     @PostMapping("login")
     @RateLimiter
     @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password"}, recordResult = false)
-    public String login(@RequestBody @Valid CurrentUser currentUser, String captchaVerification) {
+    public String login(@RequestBody @Valid CurrentUser currentUser) {
         // 开启验证码情况下进行验证
         if (sysSettingService.enableCaptcha()) {
             CaptchaVO captchaVO = new CaptchaVO();
-            captchaVO.setCaptchaVerification(captchaVerification);
+            captchaVO.setCaptchaVerification(currentUser.getCaptchaVerification());
             ResponseModel verificationModel = captchaService.verification(captchaVO);
             if (!verificationModel.isSuccess()) {
                 return error(ResultCodeEnum.ERROR, verificationModel.getRepMsg());
             }
+        }
+
+        // 对密码进行AES解密
+        try {
+            currentUser.setPassword(SecurityUtils.decryptGetPassword(currentUser.getPassword(), currentUser.getRequestKey()));
+        } catch (Exception e) {
+            return error(ResultCodeEnum.ERROR, "登录失败");
         }
 
         // 1.用户登录
@@ -69,6 +75,15 @@ public class SysAuthenticationController extends BaseController {
         return success(ResultCodeEnum.SUCCESS, token);
     }
 
+    /**
+     * 获取登录公钥
+     * @param requestKey
+     * @return
+     */
+    @GetMapping("publicKey/{requestKey}")
+    public String getPublicKey(@PathVariable("requestKey") String requestKey) {
+        return success(SecurityUtils.getPasswordPublicKey(requestKey));
+    }
 
     /**
      * 检擦登录配置

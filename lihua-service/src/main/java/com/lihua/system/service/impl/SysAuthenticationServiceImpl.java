@@ -1,13 +1,17 @@
 package com.lihua.system.service.impl;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.lihua.cache.RedisCache;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.ServiceException;
+import com.lihua.model.cryption.RasModel;
 import com.lihua.model.security.*;
 import com.lihua.system.entity.*;
 import com.lihua.system.mapper.*;
 import com.lihua.system.model.dto.SysSettingDTO;
 import com.lihua.system.service.*;
+import com.lihua.utils.crypt.RasUtils;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.LoginUserManager;
@@ -16,6 +20,7 @@ import com.lihua.utils.tree.TreeUtils;
 import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,10 +30,12 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
@@ -342,6 +349,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             .limit(count)
             .forEach(key -> redisCache.delete(key));
     }
+
 
     private void handleSetViewTabKey(List<CurrentViewTab> currentViewTabList,List<CurrentRouter> routerList) {
         currentViewTabList.forEach(tab -> {
