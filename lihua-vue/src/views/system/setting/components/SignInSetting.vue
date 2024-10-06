@@ -197,7 +197,7 @@ const initDeptData = () => {
   const deptTreeSetting = ref<DeptTreeSettingType>({
     expandKeys: [],
     expand: false,
-    checkStrictly: true,
+    checkStrictly: false,
     checked: false
   })
 

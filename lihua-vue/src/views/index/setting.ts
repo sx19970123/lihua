@@ -26,3 +26,17 @@ export const versionInfo = {
         }
     ]
 }
+
+// 更新记录
+const updateRecords = [
+    {
+        version: '1.0.0 beat3',
+        record: [
+            '1. 修复登录操作日志生产环境获取ip地址始终为127.0.0.1的bug',
+            '2. 修复用户选择组件切换不同部门时，用户丢失的bug',
+            '3. 新增sse 心跳机制，防止nginx作用下SSE断连',
+            '4. 树形选择父子关联默认设置为false',
+            '5. 定时任务yml配置优化',
+        ]
+    }
+]

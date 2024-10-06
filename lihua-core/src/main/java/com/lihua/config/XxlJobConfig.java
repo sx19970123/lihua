@@ -1,41 +1,45 @@
 package com.lihua.config;
 
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
-import org.springframework.beans.factory.annotation.Value;
+import groovy.util.logging.Slf4j;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@lombok.extern.slf4j.Slf4j
 @Configuration
+@Data
+@Slf4j
+@ConfigurationProperties(prefix = "xxl-job")
 public class XxlJobConfig {
 
-    @Value("${xxl-job.admin.address}")
-    private String adminAddresses;
-    
-    @Value("${xxl-job.accessToken}")
+    private boolean enable;
+
+    private String adminAddress;
+
     private String accessToken;
     
-    @Value("${xxl-job.executor.appName}")
     private String appName;
     
-    @Value("${xxl-job.executor.address}")
     private String address;
     
-    @Value("${xxl-job.executor.ip}")
     private String ip;
     
-    @Value("${xxl-job.executor.port}")
     private int port;
     
-    @Value("${xxl-job.executor.logPath}")
     private String logPath;
     
-    @Value("${xxl-job.executor.logRetentionDays}")
     private int logRetentionDays;
     
     @Bean
     public XxlJobSpringExecutor xxlJobSpringExecutor() {
+        if (!enable) {
+            log.info("xxl-job 定时任务未开启");
+            return null;
+        }
         XxlJobSpringExecutor xxlJobSpringExecutor = new XxlJobSpringExecutor();
-        xxlJobSpringExecutor.setAdminAddresses(adminAddresses);
+        xxlJobSpringExecutor.setAdminAddresses(adminAddress);
         xxlJobSpringExecutor.setAccessToken(accessToken);
         xxlJobSpringExecutor.setAppname(appName);
         xxlJobSpringExecutor.setAddress(address);

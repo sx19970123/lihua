@@ -493,7 +493,7 @@ const useMenuTree = () => {
     flattenTree: [],
     expandKeys: [],
     expand: false,
-    checkStrictly: true,
+    checkStrictly: false,
     checked: false,
   })
   // 加载菜单树
