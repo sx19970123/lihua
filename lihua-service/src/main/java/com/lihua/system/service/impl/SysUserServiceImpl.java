@@ -13,6 +13,7 @@ import com.lihua.system.entity.*;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.mapper.SysUserMapper;
+import com.lihua.system.model.dto.ResetPasswordDTO;
 import com.lihua.system.model.dto.SysUserDTO;
 import com.lihua.system.model.dto.SysUserDeptDTO;
 import com.lihua.system.model.vo.SysDeptVO;
@@ -22,7 +23,6 @@ import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
@@ -35,8 +35,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static com.lihua.enums.ResultCodeEnum.ACCESS_ERROR;
 
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  implements SysUserService {
@@ -135,6 +133,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
         // 插入/更新
         if (!StringUtils.hasText(sysUserDTO.getId())) {
+            // 对密码进行解密处理
+            sysUser.setPassword(SecurityUtils.decryptGetPassword(sysUserDTO.getPassword(), sysUserDTO.getPasswordRequestKey()));
             id = insert(sysUser);
         } else {
             id = update(sysUser);
@@ -159,7 +159,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         sysUserPostService.deleteByUserIds(ids);
         sysUserRoleService.deleteByUserIds(ids);
         // 删除用户信息
-        sysUserMapper.deleteBatchIds(ids);
+        sysUserMapper.deleteByIds(ids);
     }
 
     @Override
@@ -384,18 +384,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     }
 
     @Override
-    public String resetPassword(SysUser sysUser) {
+    public String resetPassword(ResetPasswordDTO resetPasswordDTO) {
+        // 解密获取密码明文
+        String password = SecurityUtils.decryptGetPassword(resetPasswordDTO.getPassword(), resetPasswordDTO.getPasswordRequestKey());
+
         LocalDateTime now = LocalDateTime.now();
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda()
-                        .eq(SysUser::getId, sysUser.getId())
-                        .eq(SysUser::getUsername,sysUser.getUsername())
-                        .set(SysUser::getPassword, SecurityUtils.encryptPassword(sysUser.getPassword()))
+                        .eq(SysUser::getId, resetPasswordDTO.getUserId())
+                        .set(SysUser::getPassword, SecurityUtils.encryptPassword(password))
                         .set(SysUser::getPasswordUpdateTime, now)
                         .set(SysUser::getUpdateId, LoginUserContext.getUserId())
                         .set(SysUser::getUpdateTime, now);
         sysUserMapper.update(updateWrapper);
-        return sysUser.getId();
+        return resetPasswordDTO.getUserId();
     }
 
     /**
@@ -808,6 +810,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     // 新增用户
     private String insert(SysUser sysUser) {
+
         LocalDateTime now = LocalDateTime.now();
         // 密码加密
         sysUser.setPassword(SecurityUtils.encryptPassword(sysUser.getPassword()));

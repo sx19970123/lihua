@@ -62,7 +62,7 @@ public class SecurityUtils {
 
         // rasModel为空表示缓存的加密信息已过期
         if (rasModel == null) {
-            throw new ServiceException("密码获取异常");
+            throw new ServiceException();
         }
 
         // 获取 RasModel 立即清除释放内存
@@ -73,7 +73,7 @@ public class SecurityUtils {
             return RasUtils.decrypt(ciphertext, rasModel);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new ServiceException("密码获取异常");
+            throw new ServiceException();
         }
     }
 }

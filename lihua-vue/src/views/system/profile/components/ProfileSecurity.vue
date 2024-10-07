@@ -30,10 +30,10 @@
 
 import {reactive} from "vue";
 import type {Rule} from "ant-design-vue/es/form";
-import {updatePassword} from "@/api/system/profile/Profile.ts";
+import {useUserStore} from "@/stores/modules/user.ts";
 import {message} from "ant-design-vue";
 import PasswordInput from "@/components/password-input/index.vue";
-
+const userStore = useUserStore()
 type passwordType = {
   oldPassword: string,
   newPassword: string,
@@ -49,15 +49,16 @@ const password = reactive<passwordType>({
  * 判断第二次密码输入是否正确
  * @param rule
  * @param value
- * @param callback
  */
-const equalToPassword = (rule: any, value: string, callback:Function) => {
+const equalToPassword = async (rule: any, value: string) => {
   if (password.newPassword !== value) {
-    callback(new Error("两次输入的密码不一致"));
+    return Promise.reject('两次输入的密码不一致')
   } else {
-    callback();
+    return Promise.resolve();
   }
 }
+
+
 
 /**
  * 密码校验
@@ -77,12 +78,17 @@ const rules: Record<string, Rule[]> = {
 }
 
 const handleFinish = async (data: passwordType) => {
-  const resp = await updatePassword(data.oldPassword,data.newPassword)
-  if (resp.code === 200) {
-    message.success("修改成功")
-  } else {
-    message.warn(resp.msg)
+  try {
+    const resp = await userStore.updatePassword(data.oldPassword, data.newPassword, data.confirmPassword)
+    if (resp.code === 200) {
+      message.success("修改成功")
+    } else {
+      message.error(resp.msg)
+    }
+  } catch (error) {
+    message.error(error as string)
   }
+
 }
 
 </script>

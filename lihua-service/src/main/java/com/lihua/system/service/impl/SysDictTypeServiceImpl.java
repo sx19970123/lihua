@@ -117,7 +117,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
                         .select(SysDictType::getCode);
         List<SysDictType> sysDictTypes = sysDictTypeMapper.selectList(queryWrapper);
         // 删除数据库数据
-        sysDictTypeMapper.deleteBatchIds(ids);
+        sysDictTypeMapper.deleteByIds(ids);
         // 删除redis数据
         sysDictTypes.forEach(dictType -> DictUtils.removeDictCache(dictType.getCode()));
     }

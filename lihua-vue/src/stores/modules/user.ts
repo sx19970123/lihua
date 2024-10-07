@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { getLoginSetting, login, logout} from "@/api/system/login/Login.ts";
-import {getAvatar, saveTheme} from "@/api/system/profile/Profile.ts";
+import {getAvatar, saveTheme, updatePassword} from "@/api/system/profile/Profile.ts";
 import token from "@/utils/Token.ts";
 import { message } from "ant-design-vue";
 import router from "@/router";
-import {getAuthInfo, getPublicKey} from "@/api/system/auth/Auth.ts";
+import {getAuthInfo} from "@/api/system/auth/Auth.ts";
 import type { ResponseType } from "@/api/global/Type.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import type { AuthInfoType, UserInfoType} from "@/api/system/auth/type/AuthInfoType.ts";
@@ -13,9 +13,7 @@ import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {close} from "@/utils/ServerSentEvents.ts";
-import {uuid} from "@/utils/IdHelper.ts"
-import {createBrowserId} from "@/utils/BrowserId.ts"
-import {rsaEncrypt} from "@/utils/Crypto.ts";
+import {rasEncryptPassword} from "@/utils/Crypto.ts";
 const { setToken,removeToken } = token
 
 export const useUserStore = defineStore('user', {
@@ -65,22 +63,8 @@ export const useUserStore = defineStore('user', {
         // 用户登录
         async login(username: string, password: string, captchaVerification: string): Promise<ResponseType<string>> {
             try {
-                // 生成 requestKey
-                const browserId = await createBrowserId();
-                const requestKey = browserId + uuid();
-
-                // 获取公钥
-                const publicKeyResp = await getPublicKey(requestKey);
-                if (publicKeyResp.code !== 200) {
-                    throw "登录失败";
-                }
-
-                // 进行密码加密
-                const ciphertext = rsaEncrypt(password, publicKeyResp.data);
-                if (!ciphertext) {
-                    throw "登录失败";
-                }
-
+                // 对密码进行加密处理，获取密文和requestKey
+                const {ciphertext, requestKey} = await rasEncryptPassword(password)
                 // 执行登录
                 const resp = await login(username, ciphertext, captchaVerification, requestKey);
                 if (resp.code === 200) {
@@ -94,6 +78,35 @@ export const useUserStore = defineStore('user', {
             } catch (error) {
                 throw error;
             }
+        },
+        // 修改密码
+        async updatePassword(oldPassword: string, newPassword: string, confirmPassword: string): Promise<ResponseType<string>> {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    // 对旧密码进行加密处理
+                    const oldPasswordEncrypt = await rasEncryptPassword(oldPassword)
+                    // 对新密码进行加密处理
+                    const newPasswordEncrypt = await rasEncryptPassword(newPassword)
+                    // 对确认密码进行加密处理
+                    const confirmPasswordEncrypt = await rasEncryptPassword(confirmPassword)
+
+                    // 更新密码
+                    const resp = await updatePassword(
+                        oldPasswordEncrypt.ciphertext,
+                        oldPasswordEncrypt.requestKey,
+                        newPasswordEncrypt.ciphertext,
+                        newPasswordEncrypt.requestKey,
+                        confirmPasswordEncrypt.ciphertext,
+                        confirmPasswordEncrypt.requestKey)
+                    if (resp.code === 200) {
+                        resolve(resp)
+                    } else {
+                        reject(resp.msg)
+                    }
+                } catch (error) {
+                    reject(error)
+                }
+            })
         },
         // 检查用户登录设置
         checkLoginSetting(): Promise<ResponseType<string | null>> {

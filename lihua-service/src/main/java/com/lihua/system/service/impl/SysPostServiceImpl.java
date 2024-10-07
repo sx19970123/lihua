@@ -90,7 +90,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         checkStatus(ids);
         // 数据下没有分配用户
         checkUser(ids);
-        sysPostMapper.deleteBatchIds(ids);
+        sysPostMapper.deleteByIds(ids);
     }
 
     private void checkStatus(List<String> ids) {

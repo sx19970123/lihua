@@ -42,10 +42,11 @@ import {type Ref, useTemplateRef} from "vue";
 
 import {reactive} from "vue";
 import type {Rule} from "ant-design-vue/es/form";
-import {updatePassword} from "@/api/system/profile/Profile.ts";
+import {useUserStore} from "@/stores/modules/user.ts";
 import {type FormInstance, message} from "ant-design-vue";
 import PasswordInput from "@/components/password-input/index.vue";
 const resetPasswordRef = useTemplateRef<FormInstance>("resetPasswordRef")
+const userStore = useUserStore()
 // 向外抛出函数
 const emits = defineEmits(['back', 'skip', 'next'])
 
@@ -64,13 +65,12 @@ const password = reactive<passwordType>({
  * 判断第二次密码输入是否正确
  * @param rule
  * @param value
- * @param callback
  */
-const equalToPassword = (rule: any, value: string, callback:Function) => {
+const equalToPassword = async (rule: any, value: string) => {
   if (password.newPassword !== value) {
-    callback(new Error("两次输入的密码不一致"));
+    return Promise.reject('两次输入的密码不一致')
   } else {
-    callback();
+    return Promise.resolve();
   }
 }
 
@@ -83,7 +83,7 @@ const rules: Record<string, Rule[]> = {
   ],
   newPassword: [
     { required: true,message: "请输入新密码",trigger: 'change'},
-    { min: 6, max: 30, message: '密码长度6-30位', trigger: 'change' }
+    { min: 6, max: 30, message: '密码长度6-30位', trigger: 'change' },
   ],
   confirmPassword: [
     { required: true,message: "请再次输入密码",trigger: 'change'},
@@ -96,14 +96,18 @@ const rules: Record<string, Rule[]> = {
 const handleNext = async (loading:Ref<boolean>) => {
   await resetPasswordRef.value?.validate()
   loading.value = true
-  const resp = await updatePassword(password.oldPassword,password.newPassword)
-  if (resp.code === 200) {
+  try {
+    const resp = await userStore.updatePassword(password.oldPassword,password.newPassword,password.confirmPassword)
     loading.value = false
-    emits('next', loading.value)
-  } else {
-    message.warn(resp.msg)
-    loading.value = false
+    if (resp.code === 200) {
+      emits('next', loading.value)
+    } else {
+      message.error(resp.msg)
+    }
+  } catch (error) {
+    message.error(error as string)
   }
+
 }
 // 跳过
 const handleSkip = (loading:Ref<boolean>) => {

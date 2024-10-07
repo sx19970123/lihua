@@ -3,6 +3,7 @@ package com.lihua.system.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.system.entity.SysUser;
+import com.lihua.system.model.dto.ResetPasswordDTO;
 import com.lihua.system.model.dto.SysUserDTO;
 import com.lihua.system.model.vo.SysUserVO;
 
@@ -79,8 +80,8 @@ public interface SysUserService {
 
     /**
      * 重置密码
-     * @param sysUser
+     * @param resetPasswordDTO
      * @return
      */
-    String resetPassword(SysUser sysUser);
+    String resetPassword(ResetPasswordDTO resetPasswordDTO);
 }

@@ -3,6 +3,7 @@ package com.lihua.system.controller;
 import com.anji.captcha.model.common.ResponseModel;
 import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
+import com.anji.captcha.util.AESUtil;
 import com.lihua.annotation.Log;
 import com.lihua.annotation.RateLimiter;
 import com.lihua.enums.LogTypeEnum;
@@ -16,6 +17,7 @@ import com.lihua.system.model.dto.SysRegisterDTO;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.system.service.SysSettingService;
+import com.lihua.utils.crypt.RasUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
@@ -46,7 +48,7 @@ public class SysAuthenticationController extends BaseController {
      */
     @PostMapping("login")
     @RateLimiter
-    @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password"}, recordResult = false)
+    @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password", "requestKey"}, recordResult = false)
     public String login(@RequestBody @Valid CurrentUser currentUser) {
         // 开启验证码情况下进行验证
         if (sysSettingService.enableCaptcha()) {
@@ -58,13 +60,8 @@ public class SysAuthenticationController extends BaseController {
             }
         }
 
-        // 对密码进行AES解密
-        try {
-            currentUser.setPassword(SecurityUtils.decryptGetPassword(currentUser.getPassword(), currentUser.getRequestKey()));
-        } catch (Exception e) {
-            return error(ResultCodeEnum.ERROR, "登录失败");
-        }
-
+        // 0.对密码进行AES解密
+        currentUser.setPassword(SecurityUtils.decryptGetPassword(currentUser.getPassword(), currentUser.getRequestKey()));
         // 1.用户登录
         LoginUser loginUser = sysAuthenticationService.login(currentUser);
         // 2.生成token
@@ -109,7 +106,7 @@ public class SysAuthenticationController extends BaseController {
         authInfo.setDepts(loginUser.getDeptTree());
         authInfo.setPosts(loginUser.getPostList());
         authInfo.setRoles(loginUser.getRoleList());
-        authInfo.setPermissions(loginUser.getPermissionList().stream().map(GrantedAuthority::getAuthority).filter(item -> !item.startsWith("ROLE_")).toList());
+        authInfo.setPermissions(loginUser.getPermissionList().stream().filter(item -> !item.startsWith("ROLE_")).toList());
         authInfo.setRouters(loginUser.getRouterList());
         authInfo.setViewTabs(loginUser.getViewTabList());
         authInfo.setDefaultDept(LoginUserContext.getDefaultDept() != null ? LoginUserContext.getDefaultDept() : new CurrentDept());
@@ -140,20 +137,27 @@ public class SysAuthenticationController extends BaseController {
     @PostMapping("register")
     @RateLimiter
     @Log(description = "用户注册", type = LogTypeEnum.REGISTER, excludeParams = {"password", "confirmPassword"}, recordResult = false)
-    public String register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO, String captchaVerification) {
-        // 校验两次密码输入是否相同
-        if (!sysRegisterDTO.getPassword().equals(sysRegisterDTO.getConfirmPassword())) {
-            return error(ResultCodeEnum.ERROR, "两次输入的密码不一致");
-        }
+    public String register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO) {
         // 校验验证码
         CaptchaVO captchaVO = new CaptchaVO();
-        captchaVO.setCaptchaVerification(captchaVerification);
+        captchaVO.setCaptchaVerification(sysRegisterDTO.getCaptchaVerification());
         ResponseModel verificationModel = captchaService.verification(captchaVO);
         if (!verificationModel.isSuccess()) {
             return error(ResultCodeEnum.ERROR, verificationModel.getRepMsg());
         }
 
+        // 获取解密后的密码
+        String password = SecurityUtils.decryptGetPassword(sysRegisterDTO.getPassword(), sysRegisterDTO.getPasswordRequestKey());
+
+        // 获取解密后的确认密码
+        String confirmPassword = SecurityUtils.decryptGetPassword(sysRegisterDTO.getConfirmPassword(), sysRegisterDTO.getConfirmPasswordRequestKey());
+
+        // 校验两次密码输入是否相同
+        if (!password.equals(confirmPassword)) {
+            return error(ResultCodeEnum.ERROR, "两次输入的密码不一致");
+        }
+
         // 注册
-        return success(sysAuthenticationService.register(sysRegisterDTO.getUsername(), sysRegisterDTO.getPassword()));
+        return success(sysAuthenticationService.register(sysRegisterDTO.getUsername(), password));
     }
 }

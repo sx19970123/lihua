@@ -95,7 +95,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         checkChildren(ids);
 //        checkRole(ids);
         deleteRoleMenu(ids);
-        sysMenuMapper.deleteBatchIds(ids);
+        sysMenuMapper.deleteByIds(ids);
     }
 
     @Override

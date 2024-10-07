@@ -20,7 +20,7 @@ import java.util.Set;
 @Slf4j
 public class LoginUserContext implements Serializable {
 
-    private static RedisCache<String> redisCache;
+    private static final RedisCache redisCache;
 
     static {
         redisCache = SpringUtils.getBean(RedisCache.class);

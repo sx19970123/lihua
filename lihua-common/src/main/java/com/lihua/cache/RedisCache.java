@@ -1,30 +1,33 @@
 package com.lihua.cache;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
-
 import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
-public class RedisCache<T> {
+public class RedisCache {
 
     @Resource
-    private RedisTemplate<String, T> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Resource
+    private ObjectMapper objectMapper;
 
     /**
      * 缓存数据
      * @param key 缓存key
      * @param value 缓存值
      */
-    public void setCacheObject(String key,T value) {
+    public <T> void setCacheObject(String key,T value) {
         redisTemplate.opsForValue().set(key, value);
     }
 
@@ -35,25 +38,69 @@ public class RedisCache<T> {
      * @param timeout 过期时间
      * @param timeUnit 时间单位
      */
-    public void setCacheObject(String key,T value,Long timeout,TimeUnit timeUnit) {
+    public <T> void setCacheObject(String key,T value,Long timeout,TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key,value,timeout,timeUnit);
     }
 
     /**
-     * 根据key 获取基本对象
-     * @param key
-     * @return
+     * 缓存集合
+     * @param key 缓存key
+     * @param valueList 集合数据
+     * @param <T> 集合类型
      */
-    public T getCacheObject(String key) {
-        ValueOperations<String, T> operations = redisTemplate.opsForValue();
-        return operations.get(key);
+    public <T> void setCacheList(String key, List<T> valueList) {
+        redisTemplate.opsForList().rightPushAll(key, valueList.toArray());
+    }
+
+    /**
+     * 根据 key 获取基本对象
+     * @param key redisKey
+     * @param clazz 对象类型
+     * @return 目标对象
+     */
+    public <T> T getCacheObject(String key, Class<T> clazz) {
+        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
+        Object value = operations.get(key);
+
+        // 检查获取的值是否为 null
+        if (value == null) {
+            return null;
+        }
+
+        // 使用 ObjectMapper 转换为目标类型
+        return objectMapper.convertValue(value, clazz);
     }
 
 
     /**
+     * 根据 key 获取集合对象
+     * @param key redisKey
+     * @param clazz 对象类型
+     * @return 返回的集合值
+     */
+    @SneakyThrows
+    public <T> List<T> getCacheList(String key, Class<T> clazz) {
+        ListOperations<String, Object> listOperations = redisTemplate.opsForList();
+        Long size = listOperations.size(key);
+
+        if (size == null || size == 0) {
+            return null; // 或者抛出自定义异常
+        }
+
+        List<Object> range = listOperations.range(key, 0,  - 1);
+
+        if (range == null) {
+            return new ArrayList<>();
+        }
+
+        return range.stream()
+                .map(value -> objectMapper.convertValue(value, clazz))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * 判断key是否存在
-     * @param key
-     * @return
+     * @param key redisKey
      */
     public Boolean hasKey(String key) {
         return redisTemplate.hasKey(key);
@@ -61,8 +108,7 @@ public class RedisCache<T> {
 
     /**
      * 根据前缀获取存在的keys
-     * @param prefix
-     * @return
+     * @param prefix redisKey前缀
      */
     public Set<String> keys(String prefix) {
         return redisTemplate.keys(prefix + "*");
@@ -70,7 +116,6 @@ public class RedisCache<T> {
 
     /**
      * 获取redis中所有key
-     * @return
      */
     public Set<String> keys() {
        return redisTemplate.keys("*");
@@ -78,85 +123,25 @@ public class RedisCache<T> {
 
     /**
      * 根据 key 获取过期期间（分钟）
-     * @param key
-     * @return
+     * @param key redisKey
      */
     public Long getExpireMinutes(String key) {
         return redisTemplate.getExpire(key,TimeUnit.MINUTES);
     }
 
     /**
-     * 根据 key 获取过期期间（小时）
-     * @param key
-     * @return
-     */
-    public Long getExpireHours(String key) {
-        return redisTemplate.getExpire(key,TimeUnit.HOURS);
-    }
-
-    /**
-     * 根据 key 获取过期期间（天）
-     * @param key
-     * @return
-     */
-    public Long getExpireDays(String key) {
-        return redisTemplate.getExpire(key,TimeUnit.DAYS);
-    }
-
-    /**
-     * 根据 key 获取过期期间
-     * @param key
-     * @return
-     */
-    public Long getExpire(String key) {
-        return redisTemplate.getExpire(key);
-    }
-
-    /**
-     * 指定key的过期时间（分钟）
-     * @param key
-     * @param time
-     * @return
-     */
-    public Boolean setExpireMinutes(String key, Long time) {
-        return setExpire(key, time, TimeUnit.MINUTES);
-    }
-
-    /**
-     * 指定key的过期时间（小时）
-     * @param key
-     * @param time
-     * @return
-     */
-    public Boolean setExpireHours(String key, Long time) {
-        return setExpire(key, time, TimeUnit.HOURS);
-    }
-
-    /**
-     * 指定key的过期时间（天）
-     * @param key
-     * @param time
-     * @return
-     */
-    public Boolean setExpireDays(String key, Long time) {
-        return setExpire(key, time, TimeUnit.DAYS);
-    }
-
-    /**
      * 指定key的过期时间
-     * @param key
-     * @param time
-     * @param unit
-     * @return
+     * @param key redisKey
+     * @param time 时间
+     * @param unit 单位
      */
-    public Boolean setExpire(String key,Long time,TimeUnit unit) {
-        return redisTemplate.expire(key, time, unit);
+    public void setExpire(String key,Long time,TimeUnit unit) {
+        redisTemplate.expire(key, time, unit);
     }
 
     /**
      * 根据key删除缓存数据
-     * @param key
-     * @return
+     * @param key redisKey
      */
     public Boolean delete(String key) {
         return redisTemplate.delete(key);
@@ -164,8 +149,7 @@ public class RedisCache<T> {
 
     /**
      * 根据多个key批量删除缓存数据
-     * @param keys
-     * @return
+     * @param keys redisKey
      */
     public Long delete(String... keys) {
         return redisTemplate.delete(List.of(keys));
@@ -173,9 +157,8 @@ public class RedisCache<T> {
 
     /**
      * 指定 key 递增 val
-     * @param key
-     * @param val
-     * @return
+     * @param key redisKey
+     * @param val 递增数值
      */
     public Long increment(String key, long val) {
         return redisTemplate.opsForValue().increment(key,val);
@@ -183,7 +166,6 @@ public class RedisCache<T> {
 
     /**
      * 获取内存占用情况
-     * @return
      */
     public String memoryInfo() {
         RedisConnection connection = redisTemplate.getRequiredConnectionFactory().getConnection();
@@ -192,5 +174,13 @@ public class RedisCache<T> {
             return new DecimalFormat("#.##").format(Double.parseDouble(String.valueOf(memory.get("used_memory")))/1024/1024);
         }
         return "-";
+    }
+
+    /**
+     * 获取 key 对应的value在redis中对应的数据类型
+     * @return 返回值包括：string、list、set、hash、zset等
+     */
+    public String getRedisType(String key) {
+        return Objects.requireNonNull(redisTemplate.type(key)).code();
     }
 }

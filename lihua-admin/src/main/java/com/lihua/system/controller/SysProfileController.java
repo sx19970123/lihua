@@ -3,26 +3,28 @@ package com.lihua.system.controller;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.enums.SysBaseEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysSetting;
 import com.lihua.system.entity.SysUser;
 import com.lihua.system.model.dto.SysSettingDTO;
+import com.lihua.system.model.dto.SysUpdatePasswordDTO;
 import com.lihua.system.model.validation.ProfileValidation;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.system.service.SysSettingService;
 import com.lihua.system.service.SysUserDeptService;
+import com.lihua.utils.crypt.AesUtils;
 import com.lihua.utils.json.JsonUtils;
-import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping("system/profile")
@@ -70,14 +72,16 @@ public class SysProfileController extends BaseController {
 
     /**
      * 修改密码
-     * @param oldPassword
-     * @param newPassword
      * @return
      */
     @PostMapping("password")
-    @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword"})
-    public String updatePassword(@NotNull(message = "旧密码不能为空") String oldPassword,
-                                 @NotNull(message = "新密码不能为空") @Size(min = 6, max = 22, message = "密码长度为6-22字符") String newPassword) {
+    @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword", "confirmPassword" ,"oldPasswordRequestKey", "newPasswordRequestKey", "confirmPasswordRequestKey"})
+    public String updatePassword(@RequestBody @Validated SysUpdatePasswordDTO sysUpdatePasswordDTO) {
+        // 解密旧密码、新密码、确认密码
+        String oldPassword = SecurityUtils.decryptGetPassword(sysUpdatePasswordDTO.getOldPassword(), sysUpdatePasswordDTO.getOldPasswordRequestKey());
+        String newPassword = SecurityUtils.decryptGetPassword(sysUpdatePasswordDTO.getNewPassword(), sysUpdatePasswordDTO.getNewPasswordRequestKey());
+        String confirmPassword = SecurityUtils.decryptGetPassword(sysUpdatePasswordDTO.getConfirmPassword(), sysUpdatePasswordDTO.getConfirmPasswordRequestKey());
+
         // 获取旧密码
         String currentPassword = sysProfileService.getPassword();
 
@@ -87,6 +91,14 @@ public class SysProfileController extends BaseController {
 
         if (SecurityUtils.matchesPassword(newPassword, currentPassword)) {
             return error(ResultCodeEnum.ERROR,"新密码不能与旧密码相同");
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            return error(ResultCodeEnum.ERROR, "两次输入的密码不一致");
+        }
+
+        if (newPassword.length() < 6 || newPassword.length() > 22) {
+            return error(ResultCodeEnum.ERROR, "密码长度为6-22字符");
         }
 
         if (isDefaultPassword(newPassword)) {
@@ -121,6 +133,6 @@ public class SysProfileController extends BaseController {
         String settingJson = setting.getSettingJson();
         SysSettingDTO.DefaultPasswordSetting defaultPasswordSetting = JsonUtils.toObject(settingJson, SysSettingDTO.DefaultPasswordSetting.class);
         String defaultPassword = defaultPasswordSetting.getDefaultPassword();
-        return defaultPassword != null && defaultPassword.equals(newPassword);
+        return defaultPassword.equals(newPassword);
     }
 }

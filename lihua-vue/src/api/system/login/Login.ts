@@ -42,17 +42,20 @@ export const checkUserName = (username: string) => {
 // 用户注册
 export const register = (username: string,
                          password: string,
+                         passwordRequestKey: string,
                          confirmPassword: string,
-                         captchaVerification: string) => {
+                         confirmPasswordRequestKey: string,
+                         captchaVerification: string
+                         ) => {
     return request<string>({
         url: '/system/register',
         method: 'post',
         data: {
             username: username,
             password: password,
-            confirmPassword: confirmPassword
-        },
-        params: {
+            passwordRequestKey: passwordRequestKey,
+            confirmPassword: confirmPassword,
+            confirmPasswordRequestKey: confirmPasswordRequestKey,
             captchaVerification: captchaVerification
         }
     })

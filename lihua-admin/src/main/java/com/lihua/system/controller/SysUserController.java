@@ -5,6 +5,7 @@ import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysUser;
+import com.lihua.system.model.dto.ResetPasswordDTO;
 import com.lihua.system.model.dto.SysUserDTO;
 import com.lihua.system.model.validation.ProfileValidation;
 import com.lihua.system.model.vo.SysUserVO;
@@ -41,7 +42,7 @@ public class SysUserController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
-    @Log(description = "保存用户数据", type = LogTypeEnum.SAVE)
+    @Log(description = "保存用户数据", type = LogTypeEnum.SAVE, excludeParams = {"password","passwordRequestKey"})
     public String save(@RequestBody @Validated SysUserDTO sysUserDTO) {
         if (!StringUtils.hasText(sysUserDTO.getId()) && !StringUtils.hasText(sysUserDTO.getPassword())) {
             return error(ResultCodeEnum.PARAMS_MISSING, "请输入密码");
@@ -66,9 +67,9 @@ public class SysUserController extends BaseController {
 
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("resetPassword")
-    @Log(description = "重置密码", type = LogTypeEnum.SAVE, excludeParams = {"password"})
-    public String resetPassword(@RequestBody @Validated(ProfileValidation.ResetPassword.class) SysUser sysUser) {
-        return success(sysUserService.resetPassword(sysUser));
+    @Log(description = "重置密码", type = LogTypeEnum.SAVE, excludeParams = {"password", "passwordRequestKey"})
+    public String resetPassword(@RequestBody @Validated ResetPasswordDTO resetPasswordDTO) {
+        return success(sysUserService.resetPassword(resetPasswordDTO));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")

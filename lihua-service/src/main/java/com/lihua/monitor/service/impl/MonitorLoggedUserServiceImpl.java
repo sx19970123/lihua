@@ -19,7 +19,7 @@ import java.util.Set;
 public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
 
     @Resource
-    private RedisCache<LoginUser> redisCache;
+    private RedisCache redisCache;
 
     @Override
     public List<LoggedUser> findList(String username, String nickName) {
@@ -30,7 +30,7 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
         // 取出所有登录用户信息
         List<LoginUser> loginUsers = new ArrayList<>();
         for (String key : keys) {
-            loginUsers.add(redisCache.getCacheObject(key));
+            loginUsers.add(redisCache.getCacheObject(key, LoginUser.class));
         }
 
         // 根据用户名过滤

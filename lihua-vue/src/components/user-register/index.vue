@@ -78,6 +78,7 @@ import type {Rule} from "ant-design-vue/es/form";
 import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
+import {rasEncryptPassword} from "@/utils/Crypto.ts";
 const show = ref<boolean>(false)
 // 向父组件抛出切登录方法
 const emits = defineEmits(['goLogin'])
@@ -102,30 +103,27 @@ const userRegister = ref<{
 })
 
 // 对比两次密码输入是否相同
-const equalToPassword = (rule: any, value: string, callback:Function) => {
+const equalToPassword = async (rule: any, value: string) => {
   if (userRegister.value.password !== value) {
-    callback(new Error("两次输入的密码不一致"));
+    return Promise.reject('两次输入的密码不一致')
   } else {
-    callback();
+    return Promise.resolve();
   }
 }
 
 // 失焦时触发检查用户名是否可用
-const handleCheckUsername = (rule: any, value: string, callback:Function) => {
+const handleCheckUsername = async (_rule: Rule, value: string) => {
   if (value) {
-    checkUserName(value).then(resp => {
-      if (resp.code === 200) {
-        if (!resp.data) {
-          callback(new Error("该用户名已存在"))
-        } {
-          callback();
-        }
+    const resp = await checkUserName(value)
+    if (resp.code === 200) {
+      if (!resp.data) {
+        return Promise.reject('该用户名已存在')
       } else {
-        message.error(resp.msg)
+        return Promise.resolve();
       }
-    })
-  } else {
-    callback()
+    } else {
+      return Promise.reject(resp.msg)
+    }
   }
 }
 
@@ -162,16 +160,33 @@ const loadVerify = () => {
 
 // 用户注册
 const handleRegister = async ({captchaVerification}: { captchaVerification: string }) => {
-  const resp = await register(userRegister.value.username,userRegister.value.password,userRegister.value.confirmPassword, captchaVerification)
+  const {username, password, confirmPassword} = userRegister.value
+  try {
+    // 对密码加密处理
+    const passwordEncrypt = await rasEncryptPassword(password)
+    // 对确认密码加密处理
+    const confirmPasswordEncrypt = await rasEncryptPassword(confirmPassword)
+    // 用户注册
+    const resp = await register(
+        username,
+        passwordEncrypt.ciphertext,
+        passwordEncrypt.requestKey,
+        confirmPasswordEncrypt.ciphertext,
+        confirmPasswordEncrypt.requestKey,
+        captchaVerification)
 
-  if (resp.code === 200) {
-    message.success("注册成功，即将前往登录")
-    setTimeout(() => {
-      goLogin(true)
-    },1000)
-  } else {
-    message.error(resp.msg)
+    if (resp.code === 200) {
+      message.success("注册成功，即将前往登录")
+      setTimeout(() => {
+        goLogin(true)
+      },1000)
+    } else {
+      message.error(resp.msg)
+    }
+  } catch (error) {
+    message.error(error as string)
   }
+
 }
 </script>
 

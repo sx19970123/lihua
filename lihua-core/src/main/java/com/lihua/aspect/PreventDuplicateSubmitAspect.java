@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class PreventDuplicateSubmitAspect {
 
     @Resource
-    private RedisCache<String> redisCache;
+    private RedisCache redisCache;
 
     @Before("@annotation(preventDuplicateSubmit)")
     public void before(JoinPoint joinPoint, PreventDuplicateSubmit preventDuplicateSubmit) throws ExecutionException {

@@ -110,4 +110,9 @@ export interface SysUserDTO extends SysUser {
      * 创建时间集合
      */
     createTimeList?: Date[]
+
+    /**
+     * 密码加密请求key
+     */
+    passwordRequestKey?: string
 }

@@ -119,7 +119,7 @@ public class SysLoginLogServiceImpl implements SysLogService {
 
     @Override
     public void deleteByIds(List<String> ids) {
-        sysLoginLogMapper.deleteBatchIds(ids);
+        sysLoginLogMapper.deleteByIds(ids);
     }
 
     @Override

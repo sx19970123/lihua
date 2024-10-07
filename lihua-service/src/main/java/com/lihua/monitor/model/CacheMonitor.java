@@ -2,21 +2,19 @@ package com.lihua.monitor.model;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
 public class CacheMonitor {
 
     /**
      * 缓存key前缀
      */
-    private final String keyPrefix;
+    private String keyPrefix;
 
     /**
      * 缓存key 标签
      */
-    private final String label;
+    private String label;
 
     /**
      * 缓存 Key
@@ -33,4 +31,12 @@ public class CacheMonitor {
      * 缓存过期时间（分钟）
      */
     private Long expireMinutes;
+
+    public CacheMonitor(String keyPrefix, String label) {
+        this.keyPrefix = keyPrefix;
+        this.label = label;
+    }
+
+    public CacheMonitor() {
+    }
 }

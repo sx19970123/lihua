@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class CaptchaCacheServiceRedisImpl implements CaptchaCacheService {
 
     @Resource
-    private RedisCache<String> redisCache;
+    private RedisCache redisCache;
 
     @Override
     public void set(String s, String s1, long l) {
@@ -29,7 +29,7 @@ public class CaptchaCacheServiceRedisImpl implements CaptchaCacheService {
 
     @Override
     public String get(String s) {
-        return redisCache.getCacheObject(s);
+        return redisCache.getCacheObject(s, String.class);
     }
 
     @Override

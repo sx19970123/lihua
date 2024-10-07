@@ -412,6 +412,7 @@ import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useSettingStore} from "@/stores/modules/setting.ts";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
+import {decrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
 const settingStore = useSettingStore()
 const themeStore = useThemeStore();
 const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
@@ -698,10 +699,28 @@ const initSave = () => {
     try {
       await formRef.value?.validate()
       modalActive.saveLoading = true
-      sysUserDTO.value.deptIdList = handleDeptIdList()
-      sysUserDTO.value.phoneNumber === "" ? sysUserDTO.value.phoneNumber = undefined : sysUserDTO.value.phoneNumber
-      sysUserDTO.value.email === "" ? sysUserDTO.value.email = undefined : sysUserDTO.value.email
-      const resp = await save(sysUserDTO.value)
+      const userDTO = cloneDeep(sysUserDTO.value)
+      // 处理用户部门、手机号、邮箱
+      userDTO.deptIdList = handleDeptIdList()
+      userDTO.phoneNumber === "" ? sysUserDTO.value.phoneNumber = undefined : sysUserDTO.value.phoneNumber
+      userDTO.email === "" ? sysUserDTO.value.email = undefined : sysUserDTO.value.email
+
+      const userId = sysUserDTO.value.id
+      const password = sysUserDTO.value.password
+
+      // 操作为新增用户时，进行密码加密
+      if (!userId && password) {
+        try {
+          const passwordEncrypt = await rasEncryptPassword(password)
+          userDTO.password = passwordEncrypt.ciphertext
+          userDTO.passwordRequestKey = passwordEncrypt.requestKey
+        } catch (error) {
+          message.success(error as string)
+        }
+      }
+
+      // 调用保存接口
+      const resp = await save(userDTO)
       if (resp.code === 200) {
         message.success(resp.msg)
         modalActive.open = false
@@ -1188,7 +1207,7 @@ const initResetPassword = () => {
   const defaultPasswordRules: Record<string, Rule[]> = {
     password: [
       {required: true, message: "请填写密码", trigger: ['blur', 'change']},
-      { min: 6, max: 30, message: '密码长度6-30位', trigger: ['blur', 'change']}
+      { min: 6, max: 22, message: '密码长度6-22位', trigger: ['blur', 'change']}
     ]
   }
   // 重置密码表单
@@ -1208,14 +1227,24 @@ const initResetPassword = () => {
   const handleResetPassword = async () => {
     await resetPasswordRef.value?.validate()
     resetPasswordLoading.value = true
-    const resp = await resetPassword(targetUserInfo.value.id, targetUserInfo.value.username, resetPasswordForm.value.password)
-    if (resp.code === 200) {
-      showResetPassword.value = false
-      message.success(resp.msg)
-    } else {
-      message.error(resp.msg)
+    const password = resetPasswordForm.value.password
+    const id = targetUserInfo.value.id
+    if (password && id) {
+      try {
+        // 密码加密处理
+        const passwordEncrypt = await rasEncryptPassword(password)
+        // 修改密码
+        const resp = await resetPassword(id, passwordEncrypt.ciphertext, passwordEncrypt.requestKey)
+        if (resp.code === 200) {
+          showResetPassword.value = false
+          message.success(resp.msg)
+        } else {
+          message.error(resp.msg)
+        }
+      } catch (error) {
+        message.error(error as string)
+      }
     }
-
     resetPasswordLoading.value = false
   }
 
@@ -1237,7 +1266,7 @@ const {showResetPassword, targetUserInfo, resetPasswordForm, useDefaultPassword,
 const initDefaultPassword = async () => {
   const resp = await settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")
   if (resp) {
-    defaultPassword.value = resp.defaultPassword
+    defaultPassword.value = decrypt(resp.defaultPassword)
   }
 }
 

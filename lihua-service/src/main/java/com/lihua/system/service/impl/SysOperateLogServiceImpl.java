@@ -124,7 +124,7 @@ public class SysOperateLogServiceImpl implements SysLogService {
 
     @Override
     public void deleteByIds(List<String> ids) {
-        sysOperateLogMapper.deleteBatchIds(ids);
+        sysOperateLogMapper.deleteByIds(ids);
     }
 
     @Override

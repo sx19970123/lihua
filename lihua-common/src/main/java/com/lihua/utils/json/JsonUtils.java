@@ -1,5 +1,6 @@
 package com.lihua.utils.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,12 +40,13 @@ public class JsonUtils {
 
     /**
      * 对象转为json，无法转换的对象将返回全限定类名
+     * 对象中的null值忽略
      * @param data 待转为 json 的对象
      * @return json字符串或全限定类名
      */
     public static <T> String toJsonOrCanonicalName(T data) {
         try {
-            return toJson(data);
+            return toJsonIgnoreNulls(data);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return data.getClass().getCanonicalName();
@@ -52,10 +54,19 @@ public class JsonUtils {
     }
 
     /**
+     * 对象转为json并忽略null值
+     */
+    public static <T>  String toJsonIgnoreNulls(T data) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        // 配置忽略 null 值
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return mapper.writeValueAsString(data);
+    }
+
+    /**
      * 排除 json 字符串中指定的 key
      * @param json json字符串
      * @param excludeKeys 要排除的 key 集合
-     * @return
      */
     public static String excludeJsonKey(String json, List<String> excludeKeys) {
         if (excludeKeys == null || excludeKeys.isEmpty()) {
@@ -85,7 +96,6 @@ public class JsonUtils {
 
     /**
      * 判断字符串是否为json
-     * @param json
      */
     public static void isJson(String json) throws JsonProcessingException {
         objectMapper.readTree(json);

@@ -74,7 +74,7 @@ public class FileDownloadUtils {
      * @return 原路径
      */
     public static String addToDownloadableList(String fileFullPath, String split) {
-        RedisCache<String> redisCache = SpringUtils.getBean(RedisCache.class);
+        RedisCache redisCache = SpringUtils.getBean(RedisCache.class);
         LihuaConfig lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
 
         String[] pathArray = fileFullPath.split(split);
@@ -125,7 +125,7 @@ public class FileDownloadUtils {
 
         for (String path : pathArray) {
             // 获取 redis 中的路径
-            Object cacheObject = redisCache.getCacheObject(SysBaseEnum.TEMPORARY_FILE_REDIS_PREFIX.getValue() + HashUtils.generateSHA256(path));
+            Object cacheObject = redisCache.getCacheObject(SysBaseEnum.TEMPORARY_FILE_REDIS_PREFIX.getValue() + HashUtils.generateSHA256(path), Object.class);
             // 缓存取出的内容为空时，抛出 token 失效异常
             if (cacheObject == null) {
                 throw new FileException(ResultCodeEnum.ACCESS_EXPIRED_ERROR);

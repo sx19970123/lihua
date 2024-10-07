@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class LoginUserManager {
 
-    private static final RedisCache<LoginUser> redisCache;
+    private static final RedisCache redisCache;
 
     static {
         redisCache = SpringUtils.getBean(RedisCache.class);
@@ -45,7 +45,7 @@ public class LoginUserManager {
         log.debug("\ntoken：【{}】\ndecode：【{}】", token, decode);
 
         try {
-            LoginUser loginUser = redisCache.getCacheObject(decode);
+            LoginUser loginUser = redisCache.getCacheObject(decode, LoginUser.class);
             loginUser.setCacheKey(decode);
             return loginUser;
         } catch (Exception e) {

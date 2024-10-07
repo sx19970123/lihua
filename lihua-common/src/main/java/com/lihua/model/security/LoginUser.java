@@ -1,9 +1,11 @@
 package com.lihua.model.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -15,10 +17,11 @@ import java.util.Collection;
  * 用于 springsecurity内部认证处理
  */
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Accessors(chain = true)
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LoginUser implements UserDetails {
 
     /**
@@ -27,15 +30,14 @@ public class LoginUser implements UserDetails {
     private CurrentUser user;
 
     /**
-     * 权限集合
+     * 因 authorities 无法在 jackson 下序列化，所有权限字符存入 permissionList 中
      */
-    private List<String> authorities = new ArrayList<>();
+    private List<? extends GrantedAuthority> authorities = new ArrayList<>();
 
     /**
-     *  登录时将 authorities 转换为 SimpleGrantedAuthority 类型集合，
-     *  请求接口获取权限信息时直接将属性返回即可
+     * 权限集合，ROLE_开头为拥有的角色编码，其余为页面权限
      */
-    private List<? extends GrantedAuthority> permissionList;
+    private List<String> permissionList;
 
     /**
      * 用户菜单信息
@@ -84,9 +86,9 @@ public class LoginUser implements UserDetails {
     private String ipAddress;
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        permissionList = authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        return permissionList;
+        return authorities;
     }
 
     @Override

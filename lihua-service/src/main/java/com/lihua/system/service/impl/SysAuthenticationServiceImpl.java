@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -76,7 +77,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     private SysUserDeptService sysUserDeptService;
 
     @Resource
-    private RedisCache<String> redisCache;
+    private RedisCache redisCache;
 
     private final String patternComponentName =  "([^/]+)\\.vue$";
 
@@ -236,7 +237,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             .setDeptTree(TreeUtils.buildTree(new ArrayList<>(deptList)))
             .setPostList(postList)
             .setIpAddress(httpServletRequest.getRemoteAddr())
-            .setAuthorities(authorities);
+            .setPermissionList(authorities);
 
         // 设置redis缓存
         return LoginUserManager.setLoginUserCache(loginUser);

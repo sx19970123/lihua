@@ -140,7 +140,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         // 数据下没有分配用户
         checkUser(ids);
 
-        sysDeptMapper.deleteBatchIds(ids);
+        sysDeptMapper.deleteByIds(ids);
     }
 
     @Override

@@ -30,8 +30,8 @@ const getUsername = ():string => {
     return Cookies.get(USERNAME_KEY)
 }
 
-const setUsername = (username:string):void => {
-    Cookies.set(USERNAME_KEY,username)
+const setUsername = (username:string, expires: number):void => {
+    Cookies.set(USERNAME_KEY,username, { expires: expires })
 }
 
 const removeUsername = () => {
@@ -43,8 +43,8 @@ const getPassword = (): string => {
     return decrypt(Cookies.get(PASSWORD_KEY))
 }
 
-const setPassword = (password:string): void => {
-    Cookies.set(PASSWORD_KEY,encrypt(password))
+const setPassword = (password:string, expires: number): void => {
+    Cookies.set(PASSWORD_KEY,encrypt(password), { expires: expires })
 }
 
 const removePassword = () => {
@@ -57,9 +57,11 @@ const enableRememberMe = ():boolean => {
 
 // 记住我
 const rememberMe = (username:string, password:string) => {
-    Cookies.set(REMEMBER_ME_KEY,true)
-    setUsername(username)
-    setPassword(password)
+    // 记住我过期时间设置为30天
+    const expires = 30
+    Cookies.set(REMEMBER_ME_KEY,true, { expires: expires })
+    setUsername(username, expires)
+    setPassword(password, expires)
 }
 
 // 忘记我

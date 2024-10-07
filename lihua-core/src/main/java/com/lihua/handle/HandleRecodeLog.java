@@ -15,6 +15,7 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -122,10 +123,13 @@ public class HandleRecodeLog {
 
             sysLoginLogService.insert(sysLogVO);
         } else {
-            sysLogVO.setCreateId(LoginUserContext.getUserId());
-            sysLogVO.setCreateName(LoginUserContext.getUser().getNickname());
-            sysLogVO.setUsername(LoginUserContext.getUser().getUsername());
-            sysLogVO.setCacheKey(LoginUserContext.getLoginUser().getCacheKey());
+            CurrentUser user = LoginUserContext.getUser();
+            if (StringUtils.hasText(user.getId())) {
+                sysLogVO.setCreateId(user.getId());
+                sysLogVO.setCreateName(user.getNickname());
+                sysLogVO.setUsername(user.getUsername());
+                sysLogVO.setCacheKey(LoginUserContext.getLoginUser().getCacheKey());
+            }
             sysOperateLogService.insert(sysLogVO);
         }
     }
@@ -146,17 +150,21 @@ public class HandleRecodeLog {
         Method method = methodSignature.getMethod();
         Parameter[] parameters = method.getParameters();
 
-
         // 返回的map
         Map<String, String> resultParamMap = new HashMap<>();
 
         // 转为json
         for (int i = 0; i < parameters.length; i++) {
+            String name = parameters[i].getName();
+            // 当排除字段中包当前字段，则跳过循环
+            if (Arrays.asList(excludeParams).contains(name)) {
+                continue;
+            }
             // 将参数转为json，无法转换的转为CanonicalName
             String jsonOrCanonicalName = JsonUtils.toJsonOrCanonicalName(args[i]);
             // 排除特定字段后的json字符串
             String excludeJson = JsonUtils.excludeJsonKey(jsonOrCanonicalName, Arrays.asList(excludeParams));
-            resultParamMap.put(parameters[i].getName(), excludeJson);
+            resultParamMap.put(name, excludeJson);
         }
 
         return JsonUtils.toJsonOrCanonicalName(resultParamMap);

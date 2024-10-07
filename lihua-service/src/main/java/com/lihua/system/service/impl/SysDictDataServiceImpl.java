@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,7 +126,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         checkStatus(ids);
 
         // 删除数据
-        sysDictDataMapper.deleteBatchIds(ids);
+        sysDictDataMapper.deleteByIds(ids);
 
         // 查询删除数据对应的type code
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();

@@ -26,10 +26,7 @@ public class SysSettingServiceImpl implements SysSettingService {
     private SysSettingMapper sysSettingMapper;
 
     @Resource
-    private RedisCache<List<SysSetting>> redisCache;
-
-    @Resource
-    private RedisCache<List<String>> stringRedisCache;
+    private RedisCache redisCache;
 
     private final String REDIS_SETTING_KEY = SYSTEM_SETTING_REDIS_PREFIX.getValue();
 
@@ -47,7 +44,7 @@ public class SysSettingServiceImpl implements SysSettingService {
 
     @Override
     public List<SysSetting> initSetting() {
-        List<SysSetting> sysSettingList = redisCache.getCacheObject(REDIS_SETTING_KEY);
+        List<SysSetting> sysSettingList = redisCache.getCacheList(REDIS_SETTING_KEY, SysSetting.class);
 
         if (sysSettingList == null) {
             return getSettingList();
@@ -106,7 +103,7 @@ public class SysSettingServiceImpl implements SysSettingService {
 
     @Override
     public List<String> getIpBlackList() {
-        List<String> ipBlackList = stringRedisCache.getCacheObject(IP_BLACKLIST_KEY);
+        List<String> ipBlackList = redisCache.getCacheList(IP_BLACKLIST_KEY, String.class);
         return ipBlackList == null ? new ArrayList<>(): ipBlackList;
     }
 
@@ -120,7 +117,7 @@ public class SysSettingServiceImpl implements SysSettingService {
     // 缓存ip黑名单
     @Override
     public void cacheIpBlackList() {
-        stringRedisCache.delete(IP_BLACKLIST_KEY);
+        redisCache.delete(IP_BLACKLIST_KEY);
         // 系统中配置的禁止访问ip
         SysSetting restrictAccessIpSetting = getSysSettingByComponentName("RestrictAccessIpSetting");
         // 没有此配置项直接返回
@@ -132,13 +129,13 @@ public class SysSettingServiceImpl implements SysSettingService {
         if (!ipSetting.isEnable()) {
             return;
         }
-        stringRedisCache.setCacheObject(IP_BLACKLIST_KEY, ipSetting.getIpList());
+        redisCache.setCacheList(IP_BLACKLIST_KEY, ipSetting.getIpList());
     }
 
     // 重新缓存系统设置
     private void reCacheSetting(List<SysSetting> sysSettings) {
         redisCache.delete(REDIS_SETTING_KEY);
-        redisCache.setCacheObject(REDIS_SETTING_KEY, sysSettings);
+        redisCache.setCacheList(REDIS_SETTING_KEY, sysSettings);
         cacheIpBlackList();
     }
 }

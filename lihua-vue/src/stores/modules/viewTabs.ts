@@ -5,7 +5,6 @@ import Iframe from "@/components/iframe/index.vue";
 import type { StarViewType,RecentType } from "@/api/system/view-tab/type/SysViewTab.ts"
 import dayjs from "dayjs";
 import type {RouteLocationNormalizedLoaded} from "vue-router";
-import { uuid } from "@/utils/IdHelper.ts";
 import {hasRouteRole} from "@/utils/Auth.ts"
 import {isEqual} from "lodash-es"
 export const useViewTabsStore = defineStore('viewTabs',{
@@ -212,7 +211,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
         // 重新生成 contentComponentKey
         regenerateComponentKey() {
             // 生成一个随机的 UUID
-            this.$state.contentComponentKey = uuid()
+            this.$state.contentComponentKey = crypto.randomUUID()
         },
         // 修改显示layout后更新html节点show-hide-layout
         setShowLayoutAttribute () {

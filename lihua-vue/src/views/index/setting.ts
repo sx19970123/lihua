@@ -41,6 +41,23 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0 beat4',
+        record: [
+            '1. 用户登录注册使用RAS非对称加密',
+            '2. 修改密码使用RAS非对称加密',
+            '3. 重置用户密码使用RAS非对称加密',
+            '4. 管理员新增用户密码使用RAS非对称加密',
+            '5. 更新redisTemplate序列化器，使用Jackson2JsonRedisSerializer进行序列化',
+            '6. 缓存存入redis中忽略null值',
+            '7. 修复表单自定义校验控制台报异常的问题',
+            '8. 修复注册日志系统日志不记录的bug',
+            '9. 修复操作日志排除参数失效的bug',
+            '10. 优化操作日志参数记录，对象中null值不进行记录',
+            '11. 记住账号修改默认保存30天',
+            '12. 默认密码加密存储',
+        ]
+    },
+    {
         version: '1.0.0 beat3',
         record: [
             '1. 修复登录操作日志生产环境获取ip地址始终为127.0.0.1的bug',

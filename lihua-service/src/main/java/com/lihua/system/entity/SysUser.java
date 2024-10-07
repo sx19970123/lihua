@@ -20,23 +20,16 @@ public class SysUser extends BaseEntity {
      * 用户id
      */
     @TableId(type = IdType.ASSIGN_ID)
-    @NotNull(message = "用户id不存在", groups = ProfileValidation.ResetPassword.class)
     private String id;
 
     /**
      * 用户名
      */
-    @NotNull(message = "用户名不存在", groups = ProfileValidation.ResetPassword.class)
     private String username;
 
     /**
      * 密码
      */
-    @NotNull(message = "用户密码不存在", groups = ProfileValidation.ResetPassword.class)
-    @Size(max = 30,
-        message = "密码不能超过三个字符",
-        groups = ProfileValidation.ResetPassword.class
-    )
     private String password;
 
     /**

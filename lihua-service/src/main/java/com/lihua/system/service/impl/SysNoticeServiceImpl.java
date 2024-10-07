@@ -194,7 +194,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             throw new ServiceException("已发布消息通知无法删除");
         }
 
-        sysNoticeMapper.deleteBatchIds(ids);
+        sysNoticeMapper.deleteByIds(ids);
         // 删除用户关联表数据
         sysUserNoticeService.deleteByNoticeIds(ids);
     }

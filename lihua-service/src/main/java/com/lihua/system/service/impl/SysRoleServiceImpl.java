@@ -141,7 +141,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         Long menuCount = sysRoleMapper.selectRoleMenuCount("role_id",ids);
         Long userCount = sysRoleMapper.selectUserRoleCount("role_id",ids);
         if (menuCount == 0 && userCount == 0) {
-            sysRoleMapper.deleteBatchIds(ids);
+            sysRoleMapper.deleteByIds(ids);
         } else {
             throw new ServiceException("角色已绑定菜单/用户，不允许删除");
         }
