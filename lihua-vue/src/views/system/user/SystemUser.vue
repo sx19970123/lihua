@@ -412,7 +412,7 @@ import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useSettingStore} from "@/stores/modules/setting.ts";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
-import {decrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
+import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
 const settingStore = useSettingStore()
 const themeStore = useThemeStore();
 const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
@@ -1266,7 +1266,7 @@ const {showResetPassword, targetUserInfo, resetPasswordForm, useDefaultPassword,
 const initDefaultPassword = async () => {
   const resp = await settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")
   if (resp) {
-    defaultPassword.value = decrypt(resp.defaultPassword)
+    defaultPassword.value = defaultPasswordDecrypt(resp.defaultPassword)
   }
 }
 

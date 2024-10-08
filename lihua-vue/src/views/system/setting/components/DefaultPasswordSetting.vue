@@ -30,14 +30,14 @@ import PasswordInput from "@/components/password-input/index.vue";
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
 import {cloneDeep} from 'lodash-es'
-import {decrypt, encrypt} from "@/utils/Crypto.ts";
+import {defaultPasswordDecrypt, defaultPasswordEncrypt} from "@/utils/Crypto.ts";
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {
   const resp = await settingStore.getSetting<DefaultPassword>(componentName);
   if (!resp) {
     await settingStore.save(setting.value)
   } else {
-    resp.defaultPassword = decrypt(resp.defaultPassword)
+    resp.defaultPassword = defaultPasswordDecrypt(resp.defaultPassword)
     settingForm.value = resp
   }
 }
@@ -64,7 +64,7 @@ const rules: Record<string, Rule[]> = {
 const handleFinish = async () => {
   // 对默认密码进行加密处理
   const defaultPasswordForm: DefaultPassword = cloneDeep(settingForm.value)
-  defaultPasswordForm.defaultPassword = encrypt(defaultPasswordForm.defaultPassword)
+  defaultPasswordForm.defaultPassword = defaultPasswordEncrypt(defaultPasswordForm.defaultPassword)
   setting.value.settingJson = JSON.stringify(defaultPasswordForm)
   const resp = await settingStore.save(setting.value)
 

@@ -21,19 +21,20 @@
                           v-model:value="password.confirmPassword"/>
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" html-type="submit">提 交</a-button>
+        <a-button type="primary" html-type="submit" :loading="submitLoading">提 交</a-button>
       </a-form-item>
     </a-form>
   </div>
 </template>
 <script setup lang="ts">
 
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {useUserStore} from "@/stores/modules/user.ts";
 import {message} from "ant-design-vue";
 import PasswordInput from "@/components/password-input/index.vue";
 const userStore = useUserStore()
+const submitLoading = ref<boolean>(false)
 type passwordType = {
   oldPassword: string,
   newPassword: string,
@@ -58,8 +59,6 @@ const equalToPassword = async (rule: any, value: string) => {
   }
 }
 
-
-
 /**
  * 密码校验
  */
@@ -78,6 +77,7 @@ const rules: Record<string, Rule[]> = {
 }
 
 const handleFinish = async (data: passwordType) => {
+  submitLoading.value = true
   try {
     const resp = await userStore.updatePassword(data.oldPassword, data.newPassword, data.confirmPassword)
     if (resp.code === 200) {
@@ -88,6 +88,7 @@ const handleFinish = async (data: passwordType) => {
   } catch (error) {
     message.error(error as string)
   }
+  submitLoading.value = false
 
 }
 

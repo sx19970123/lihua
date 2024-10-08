@@ -3,16 +3,44 @@ import {JSEncrypt} from "jsencrypt";
 import {createBrowserId} from "@/utils/BrowserId.ts";
 import {getPublicKey} from "@/api/system/auth/Auth.ts";
 // token 和 默认密码加密的密钥。后端需保持一致
-const KEY:string = "LIHUA-AES-KEY"
-
-// 数据加密
+const TOKEN_KEY:string = await createBrowserId()
+const DEFAULT_PASSWORD_KEY = '1234567890123456';
+const DEFAULT_PASSWORD_IV = '1234567890123456';
+// token数据加密
 export const encrypt = (data: string):string => {
-  return CryptoJS.AES.encrypt(data, KEY,{mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7}).toString()
+  return CryptoJS.AES.encrypt(data, TOKEN_KEY,{mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7}).toString()
 }
 
-// 数据解密
+// token数据解密
 export const decrypt = (data: string):string => {
-  return CryptoJS.AES.decrypt(data,KEY,{mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7}).toString(CryptoJS.enc.Utf8)
+  return CryptoJS.AES.decrypt(data,TOKEN_KEY,{mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7}).toString(CryptoJS.enc.Utf8)
+}
+
+// 默认密码数据加密
+export const defaultPasswordEncrypt = (defaultPassword: string) => {
+  const key = CryptoJS.enc.Utf8.parse(DEFAULT_PASSWORD_KEY);
+  const iv = CryptoJS.enc.Utf8.parse(DEFAULT_PASSWORD_IV);
+  const encrypted = CryptoJS.AES.encrypt(defaultPassword, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7
+  });
+  return encrypted.toString();
+}
+// 默认密码解密
+export const defaultPasswordDecrypt = (encryptedPassword: string) => {
+  const key = CryptoJS.enc.Utf8.parse(DEFAULT_PASSWORD_KEY);
+  const iv = CryptoJS.enc.Utf8.parse(DEFAULT_PASSWORD_IV);
+
+  // 解密
+  const decrypted = CryptoJS.AES.decrypt(encryptedPassword, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7
+  });
+
+  // 返回解密后的明文字符串
+  return decrypted.toString(CryptoJS.enc.Utf8);
 }
 
 // 使用rsa公钥进行数据加密

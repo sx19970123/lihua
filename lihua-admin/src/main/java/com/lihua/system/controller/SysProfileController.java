@@ -133,6 +133,7 @@ public class SysProfileController extends BaseController {
         String settingJson = setting.getSettingJson();
         SysSettingDTO.DefaultPasswordSetting defaultPasswordSetting = JsonUtils.toObject(settingJson, SysSettingDTO.DefaultPasswordSetting.class);
         String defaultPassword = defaultPasswordSetting.getDefaultPassword();
-        return defaultPassword.equals(newPassword);
+        // 对比解密后的默认密码
+        return AesUtils.defaultPasswordDecrypt(defaultPassword).equals(newPassword);
     }
 }

@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -45,7 +46,6 @@ public class AesUtils {
         return Base64.getEncoder().encodeToString(cipher.doFinal(input));
     }
 
-
     /**
      * AES 解密为字符串
      * @param ciphertext 密文
@@ -55,7 +55,6 @@ public class AesUtils {
     public static String decryptToString(String ciphertext, SecretKey secretKey) {
         return new String(Base64.getDecoder().decode(decrypt(ciphertext, secretKey)), StandardCharsets.UTF_8);
     }
-
 
     /**
      * AES 解密为字节数组
@@ -70,4 +69,22 @@ public class AesUtils {
         return cipher.doFinal(Base64.getDecoder().decode(ciphertext));
     }
 
+    private static final String AES_KEY = "1234567890123456";  // 16 字节的密钥
+    private static final String IV = "1234567890123456";  // 16 字节的 IV
+
+    @SneakyThrows
+    public static String defaultPasswordDecrypt(String encryptedPassword) {
+        // 先 Base64 解码
+        byte[] decodedPassword = Base64.getDecoder().decode(encryptedPassword);
+
+        // 初始化 AES 解密
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(AES_KEY.getBytes(), "AES");
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
+        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+
+        // 解密数据
+        byte[] original = cipher.doFinal(decodedPassword);
+        return new String(original);
+    }
 }

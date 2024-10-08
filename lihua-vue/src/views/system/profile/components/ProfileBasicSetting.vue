@@ -32,7 +32,7 @@
       </a-form-item>
       <a-form-item>
         <a-flex :gap="16">
-          <a-button type="primary" html-type="submit">提 交</a-button>
+          <a-button type="primary" html-type="submit" :loading="submitLoading">提 交</a-button>
         </a-flex>
       </a-form-item>
     </a-form>
@@ -51,6 +51,7 @@ import {initDict} from "@/utils/Dict.ts"
 import {cloneDeep} from "lodash-es";
 const userStore = useUserStore()
 const {user_gender} = initDict('user_gender')
+const submitLoading = ref<boolean>(false)
 
 
 // 初始化数据
@@ -92,6 +93,7 @@ const init = () => {
  * @param values
  */
 const handleFinish = (values: {nickname: string,gender:string,email:string,phoneNumber:string}) => {
+  submitLoading.value = true
   // 保存到数据库删除url属性
   const avatar = cloneDeep(profileInfo.avatar)
   delete avatar.url
@@ -104,9 +106,15 @@ const handleFinish = (values: {nickname: string,gender:string,email:string,phone
     phoneNumber: values.phoneNumber
   }).then(resp => {
     if (resp.code === 200){
-      message.success("保存成功")
+      message.success(resp.msg)
       userStore.getUserInfo()
+    } else {
+      message.error(resp.msg)
     }
+  }).catch((error) => {
+    message.error(error as string)
+  }).finally(() => {
+    submitLoading.value = false
   })
 }
 

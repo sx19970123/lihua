@@ -222,7 +222,11 @@ export const useUserStore = defineStore('user', {
                     if (resp.code === 200) {
                         this.userInfo.theme = themeJson
                          message.success("主题已保存")
+                    } else {
+                        message.error(resp.data)
                     }
+                }).catch((error) => {
+                    message.error(error as string)
                 })
             } else {
                 message.success("主题已保存")

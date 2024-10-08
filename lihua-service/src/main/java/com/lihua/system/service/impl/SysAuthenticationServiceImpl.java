@@ -11,6 +11,7 @@ import com.lihua.system.entity.*;
 import com.lihua.system.mapper.*;
 import com.lihua.system.model.dto.SysSettingDTO;
 import com.lihua.system.service.*;
+import com.lihua.utils.crypt.AesUtils;
 import com.lihua.utils.crypt.RasUtils;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.JwtUtils;
@@ -128,7 +129,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         // 获取默认密码
         SysSetting defaultPasswordSetting = sysSettingService.getSysSettingByComponentName("DefaultPasswordSetting");
         SysSettingDTO.DefaultPasswordSetting passwordSetting = JsonUtils.toObject(defaultPasswordSetting.getSettingJson(), SysSettingDTO.DefaultPasswordSetting.class);
-        if (SecurityUtils.matchesPassword(passwordSetting.getDefaultPassword(), password)) {
+        if (SecurityUtils.matchesPassword(AesUtils.defaultPasswordDecrypt(passwordSetting.getDefaultPassword()), password)) {
             loginSettingComponentNameList.add("LoginSettingResetPassword");
             return;
         }
