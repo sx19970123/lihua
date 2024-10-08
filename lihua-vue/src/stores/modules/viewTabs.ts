@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import type {RouteLocationNormalizedLoaded} from "vue-router";
 import {hasRouteRole} from "@/utils/Auth.ts"
 import {isEqual} from "lodash-es"
+import {v4 as uuidv4} from "uuid";
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         // viewTab 标签页数组
@@ -211,7 +212,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
         // 重新生成 contentComponentKey
         regenerateComponentKey() {
             // 生成一个随机的 UUID
-            this.$state.contentComponentKey = crypto.randomUUID()
+            this.$state.contentComponentKey = uuidv4();
         },
         // 修改显示layout后更新html节点show-hide-layout
         setShowLayoutAttribute () {

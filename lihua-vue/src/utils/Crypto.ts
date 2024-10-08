@@ -2,6 +2,7 @@ import CryptoJS from 'crypto-js';
 import {JSEncrypt} from "jsencrypt";
 import {createBrowserId} from "@/utils/BrowserId.ts";
 import {getPublicKey} from "@/api/system/auth/Auth.ts";
+import { v4 as uuidv4 } from 'uuid';
 // token 和 默认密码加密的密钥。后端需保持一致
 const TOKEN_KEY:string = await createBrowserId()
 const DEFAULT_PASSWORD_KEY = 'lihuaLIHUALIhuam';
@@ -55,7 +56,7 @@ export const rasEncryptPassword = (password: string): Promise<{ciphertext:string
   return new Promise(async (resolve, reject) => {
     // 生成 requestKey
     const browserId = await createBrowserId();
-    const requestKey = browserId + ':' +crypto.randomUUID();
+    const requestKey = browserId + ':' + uuidv4();
 
     // 获取公钥
     const publicKeyResp = await getPublicKey(requestKey);

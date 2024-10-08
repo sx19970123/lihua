@@ -31,3 +31,5 @@ declare module 'sortablejs'
 declare module 'lodash-es'
 
 declare module 'gsap'
+
+declare module 'uuid'
