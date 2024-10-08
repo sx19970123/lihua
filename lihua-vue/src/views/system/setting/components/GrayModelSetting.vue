@@ -13,17 +13,22 @@
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
       </a-form-item>
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-form-item label="定时关闭" v-if="settingForm.enable">
-          <a-date-picker
-            :disabledDate="(current: Dayjs) => current && current < dayjs().add(-1, 'day').endOf('day')"
-            show-time
-            :presets="presets"
-            placeholder="请选择关闭时间"
-            format="YYYY-MM-DD HH:mm"
-            @change="handleChangeDate"
-            v-model:value="closeTime"
-         ></a-date-picker>
-        </a-form-item>
+        <div v-if="settingForm.enable">
+          <a-form-item label="定时关闭">
+            <a-date-picker
+                :disabledDate="(current: Dayjs) => current && current < dayjs().add(-1, 'day').endOf('day')"
+                show-time
+                :presets="presets"
+                placeholder="请选择关闭时间"
+                format="YYYY-MM-DD HH:mm"
+                @change="handleChangeDate"
+                v-model:value="closeTime"
+            ></a-date-picker>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" @click="handleSubmit" :loading="submitLoading">提 交</a-button>
+          </a-form-item>
+        </div>
       </transition>
     </a-form>
   </div>
@@ -40,7 +45,7 @@ import dayjs, {type Dayjs} from "dayjs";
 const themeStore = useThemeStore();
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
-
+const submitLoading = ref<boolean>(false)
 const init = async () => {
   const grayModel = await settingStore.getSetting<GrayModel>(componentName);
   if (!grayModel) {
@@ -87,11 +92,11 @@ const setting = ref<SystemSetting>({
 const handleChangeSwitch = async () => {
   if (!settingForm.value.enable) {
     settingForm.value.closeTime = undefined
+    closeTime.value = undefined
   }
   setting.value.settingJson = JSON.stringify(settingForm.value)
   const resp = await settingStore.save(setting.value)
   if (resp.code === 200) {
-    console.log(settingForm.value.enable)
     themeStore.enableGrayModel(settingForm.value.enable)
     message.success(resp.msg)
   } else {
@@ -99,9 +104,14 @@ const handleChangeSwitch = async () => {
   }
 }
 
-// 处理选择日期时间
-const handleChangeDate = async (data?: Dayjs) => {
+// 为日期赋值
+const handleChangeDate = (data?: Dayjs) => {
   settingForm.value.closeTime = data?.toDate()
+}
+
+// 处理选择日期时间
+const handleSubmit = async () => {
+  submitLoading.value = true
   setting.value.settingJson = JSON.stringify(settingForm.value)
   const resp = await settingStore.save(setting.value)
 
@@ -110,6 +120,7 @@ const handleChangeDate = async (data?: Dayjs) => {
   } else {
     message.error(resp.msg)
   }
+  submitLoading.value = false
 }
 
 onMounted(() => init())

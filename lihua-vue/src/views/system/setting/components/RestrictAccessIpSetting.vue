@@ -55,7 +55,7 @@
             </a-form-item>
           </div>
           <a-form-item>
-            <a-button type="primary" html-type="submit">提 交</a-button>
+            <a-button type="primary" html-type="submit" :loading="submitLoading">提 交</a-button>
           </a-form-item>
         </div>
       </transition>
@@ -73,6 +73,7 @@ import {useThemeStore} from "@/stores/modules/theme.ts";
 const themeStore = useThemeStore()
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
+const submitLoading = ref<boolean>(false);
 
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {
@@ -109,13 +110,14 @@ const handleRemoveIpItem = (index: number) => {
 
 // 提交配置信息
 const handleFinish = async () => {
+  submitLoading.value = true
+  // ip 去重
   const ipList = settingForm.value.ipList
   const ipSet = new Set(ipList)
   let flag = false
   if (ipSet.size !== ipList.length) {
     flag = true
   }
-
   settingForm.value.ipList = [... ipSet]
   setting.value.settingJson = JSON.stringify(settingForm.value)
   const resp = await settingStore.save(setting.value)
@@ -128,6 +130,7 @@ const handleFinish = async () => {
   } else {
     message.error(resp.msg)
   }
+  submitLoading.value = false
 }
 
 // 关闭ip限制保存配置

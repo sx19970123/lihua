@@ -48,7 +48,7 @@ public class LogAspect {
                 proceed,
                 httpServletRequest.getRequestURI(),
                 httpServletRequest.getHeader("User-Agent"),
-                getClientIp(),
+                WebUtils.getIpAddress(),
                 null);
 
         return proceed;
@@ -69,22 +69,7 @@ public class LogAspect {
                 null,
                 httpServletRequest.getRequestURI(),
                 httpServletRequest.getHeader("User-Agent"),
-                getClientIp(),
+                WebUtils.getIpAddress(),
                 exception);
     }
-
-
-    // 获取客户端ip
-    private String getClientIp() {
-        HttpServletRequest request = WebUtils.getCurrentRequest();
-        String ip = request.getHeader("X-Forwarded-For");
-        if (!StringUtils.hasText(ip) || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("X-Real-IP");
-        }
-        if (!StringUtils.hasText(ip) || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return ip;
-    }
-
 }

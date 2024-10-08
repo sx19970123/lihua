@@ -217,20 +217,26 @@ export const useUserStore = defineStore('user', {
         },
         // 保存主题修改
         saveTheme(themeJson: string) {
-            if (themeJson !== this.userInfo.theme) {
-                saveTheme(themeJson).then(resp => {
-                    if (resp.code === 200) {
-                        this.userInfo.theme = themeJson
-                         message.success("主题已保存")
-                    } else {
-                        message.error(resp.data)
-                    }
-                }).catch((error) => {
-                    message.error(error as string)
-                })
-            } else {
-                message.success("主题已保存")
-            }
+            return new Promise((resolve, reject) => {
+                if (themeJson !== this.userInfo.theme) {
+                    saveTheme(themeJson).then(resp => {
+                        if (resp.code === 200) {
+                            this.userInfo.theme = themeJson
+                            message.success("主题已保存")
+                            resolve(resp)
+                        } else {
+                            message.error(resp.msg)
+                            reject(resp.msg)
+                        }
+                    }).catch((error) => {
+                        message.error(error as string)
+                        reject(error.msg)
+                    })
+                } else {
+                    message.success("主题已保存")
+                    resolve("主题已保存")
+                }
+            })
         },
         // 处理头像
         handleAvatar() {

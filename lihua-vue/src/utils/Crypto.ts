@@ -4,8 +4,8 @@ import {createBrowserId} from "@/utils/BrowserId.ts";
 import {getPublicKey} from "@/api/system/auth/Auth.ts";
 // token 和 默认密码加密的密钥。后端需保持一致
 const TOKEN_KEY:string = await createBrowserId()
-const DEFAULT_PASSWORD_KEY = '1234567890123456';
-const DEFAULT_PASSWORD_IV = '1234567890123456';
+const DEFAULT_PASSWORD_KEY = 'lihuaLIHUALIhuam';
+const DEFAULT_PASSWORD_IV = 'mauhILAUHILauhil';
 // token数据加密
 export const encrypt = (data: string):string => {
   return CryptoJS.AES.encrypt(data, TOKEN_KEY,{mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7}).toString()

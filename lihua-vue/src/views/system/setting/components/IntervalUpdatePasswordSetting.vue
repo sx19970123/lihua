@@ -32,7 +32,7 @@
               </a-input-number>
             </a-form-item>
             <a-form-item>
-              <a-button type="primary" html-type="submit">提 交</a-button>
+              <a-button type="primary" html-type="submit" :loading="submitLoading">提 交</a-button>
             </a-form-item>
           </div>
         </transition>
@@ -52,6 +52,7 @@ import {useThemeStore} from "@/stores/modules/theme.ts";
 const themeStore = useThemeStore()
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
+const submitLoading = ref<boolean>(false);
 const init = async () => {
   const resp = await settingStore.getSetting<IntervalUpdatePassword>(componentName);
   if (!resp) {
@@ -97,6 +98,7 @@ const handleChangeSwitch = () => {
 
 // 处理保存设置
 const handleFinish = async () => {
+  submitLoading.value = true
   setting.value.settingJson = JSON.stringify(settingForm.value)
   const resp = await settingStore.save(setting.value)
 
@@ -105,6 +107,7 @@ const handleFinish = async () => {
   } else {
     message.error(resp.msg)
   }
+  submitLoading.value = false
 }
 
 onMounted(() => init())

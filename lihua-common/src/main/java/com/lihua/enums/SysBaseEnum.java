@@ -47,9 +47,11 @@ public enum SysBaseEnum {
     JWT_TOKEN_SECRET("c8f2f1fa89b78f4862d6e2a6a8b5b4a5c8e8b7a3a1c0e8b9f1a7e8a6f0b9c8a7c8e7a9b7a5c8f7e4a8b6f9e2b3c7d9f8e6b5a3f2a9d8c7b9a4e8c7d8b9f4e7a9d3b9f6"),
 
     /**
-     * 浏览器记住账号/系统设置默认密码加密KEY，需与前端 src/utils/Crypto.ts 中定义的 const KEY:string = "LIHUA-AES-KEY" 一致
+     * 系统默认密码的加密key和iv 需与前端 src/utils/Crypto.ts 中定义的 DEFAULT_PASSWORD_KEY、DEFAULT_PASSWORD_IV 一致
      */
-    TOKEN_DEFAULT_PASSWORD_KEY("-LI-HUA-AES-KEY-");
+    DEFAULT_PASSWORD_KEY("lihuaLIHUALIhuam"),
+
+    DEFAULT_PASSWORD_IV("mauhILAUHILauhil");
 
 
     private final String value;

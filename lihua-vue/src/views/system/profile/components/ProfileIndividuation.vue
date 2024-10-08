@@ -57,7 +57,7 @@
         </a-select>
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" @click="userStore.saveTheme(JSON.stringify(themeStore.$state))">提 交</a-button>
+        <a-button type="primary" @click="handleSubmitTheme" :loading="submitLoading">提 交</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -78,11 +78,18 @@ const userStore = useUserStore()
 const permissionStore = usePermissionStore()
 // 主题颜色
 const colorList = ref<Array<{name: string,color: string}>>(settings.colorOptions)
-
+const submitLoading = ref<boolean>(false)
 // 卸载组件时触发，保存用户修改的内容
 onUnmounted(()=> {
   userStore.saveTheme(JSON.stringify(themeStore.$state));
 })
+
+// 处理保存主题
+const handleSubmitTheme = async () => {
+  submitLoading.value = true
+  await userStore.saveTheme(JSON.stringify(themeStore.$state))
+  submitLoading.value = false
+}
 
 // 处理修改菜单分组模式
 const handleChangeSiderGroup = () => {

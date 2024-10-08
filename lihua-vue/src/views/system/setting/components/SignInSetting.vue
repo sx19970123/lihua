@@ -96,7 +96,7 @@
             </a-card>
           </a-flex>
           <a-form-item style="margin-top: 24px">
-            <a-button type="primary" html-type="submit" @click="handleSubmit">提 交</a-button>
+            <a-button type="primary" html-type="submit" @click="handleSubmit" :loading="submitLoading">提 交</a-button>
           </a-form-item>
         </div>
       </transition>
@@ -123,6 +123,8 @@ import {message} from "ant-design-vue";
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
 const themeStore = useThemeStore();
+const submitLoading = ref<boolean>(false);
+
 // 没有进行双向绑定的单位树
 let originDeptTree: Array<SysDept> = ([])
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
@@ -462,7 +464,7 @@ const handleSubmit = async () => {
       return
     }
   }
-
+  submitLoading.value = true
   setting.value.settingJson = JSON.stringify(settingForm.value)
   const resp = await settingStore.save(setting.value)
 
@@ -471,6 +473,7 @@ const handleSubmit = async () => {
   } else {
     message.error(resp.msg)
   }
+  submitLoading.value = false
 }
 
 // 监听部门关键字变化

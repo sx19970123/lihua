@@ -2,13 +2,17 @@ package com.lihua.utils.security;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.cryption.RasModel;
+import com.lihua.utils.crypt.AesUtils;
 import com.lihua.utils.crypt.RasUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -75,5 +79,16 @@ public class SecurityUtils {
             log.error(e.getMessage(), e);
             throw new ServiceException();
         }
+    }
+
+    /**
+     * 对默认密码进行解密
+     * @param encryptedPassword 加密后的默认密码
+     * @return 原密码
+     */
+    public static String defaultPasswordDecrypt(String encryptedPassword) {
+        return AesUtils.decrypt(encryptedPassword,
+                new SecretKeySpec(SysBaseEnum.DEFAULT_PASSWORD_KEY.getValue().getBytes(), "AES"),
+                new IvParameterSpec(SysBaseEnum.DEFAULT_PASSWORD_IV.getValue().getBytes()));
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.util.Objects;
 
 /**
- * 通过 HttpServletResponse 返回响应工具类
+ * web相关工具类
  */
 public class WebUtils {
 
@@ -51,4 +51,21 @@ public class WebUtils {
 
         return null;
     }
+
+    /**
+     * 获取当前请求的 ip地址
+     * @return ip地址
+     */
+    public static String getIpAddress() {
+        HttpServletRequest request = getCurrentRequest();
+        String ip = request.getHeader("X-Forwarded-For");
+        if (!StringUtils.hasText(ip) || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("X-Real-IP");
+        }
+        if (!StringUtils.hasText(ip) || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
+    }
+
 }

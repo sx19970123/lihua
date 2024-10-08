@@ -13,7 +13,7 @@
         <password-input class="form-item-width" v-model:value="settingForm.defaultPassword" placeholder="请输入默认密码" :size="90"/>
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" html-type="submit">提 交</a-button>
+        <a-button type="primary" html-type="submit" :loading="submitLoading">提 交</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -31,6 +31,7 @@ const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
 import {cloneDeep} from 'lodash-es'
 import {defaultPasswordDecrypt, defaultPasswordEncrypt} from "@/utils/Crypto.ts";
+const submitLoading = ref<boolean>(false);
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {
   const resp = await settingStore.getSetting<DefaultPassword>(componentName);
@@ -62,6 +63,7 @@ const rules: Record<string, Rule[]> = {
 }
 
 const handleFinish = async () => {
+  submitLoading.value = true
   // 对默认密码进行加密处理
   const defaultPasswordForm: DefaultPassword = cloneDeep(settingForm.value)
   defaultPasswordForm.defaultPassword = defaultPasswordEncrypt(defaultPasswordForm.defaultPassword)
@@ -73,6 +75,7 @@ const handleFinish = async () => {
   } else {
     message.error(resp.msg)
   }
+  submitLoading.value = false
 }
 
 // 页面加载完成后调用

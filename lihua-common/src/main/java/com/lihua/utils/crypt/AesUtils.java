@@ -69,22 +69,13 @@ public class AesUtils {
         return cipher.doFinal(Base64.getDecoder().decode(ciphertext));
     }
 
-    private static final String AES_KEY = "1234567890123456";  // 16 字节的密钥
-    private static final String IV = "1234567890123456";  // 16 字节的 IV
-
     @SneakyThrows
-    public static String defaultPasswordDecrypt(String encryptedPassword) {
-        // 先 Base64 解码
-        byte[] decodedPassword = Base64.getDecoder().decode(encryptedPassword);
-
+    public static String decrypt(String ciphertext, SecretKey secretKey, IvParameterSpec iv) {
         // 初始化 AES 解密
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        SecretKeySpec secretKeySpec = new SecretKeySpec(AES_KEY.getBytes(), "AES");
-        IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
-        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
         // 解密数据
-        byte[] original = cipher.doFinal(decodedPassword);
+        byte[] original = cipher.doFinal(Base64.getDecoder().decode(ciphertext));
         return new String(original);
     }
 }
