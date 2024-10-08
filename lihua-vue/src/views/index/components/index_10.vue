@@ -18,16 +18,17 @@
       </a-card>
     </template>
     <template #middle>
-      <a-card class="child">
-        <a-flex :gap="16" align="center" style="margin-bottom: 10px">
+      <a-card class="child" :body-style="{height: '124px'}">
+        <a-flex :gap="16"  align="center" style="margin-bottom: 10px">
           <img src="../static/icons8-java-logo-48.png">
           <a-typography-title :level="4" style="margin: 0" ellipsis>请作者喝一杯咖啡</a-typography-title>
         </a-flex>
+        <a-typography-text type="secondary" ellipsis>如果这个项目对你有帮助，不妨支持一下作者吧~</a-typography-text>
       </a-card>
     </template>
     <template #detail>
       <a-card class="scrollbar" id="test" style="height: 600px">
-        <a-flex :gap="16" align="center">
+        <a-flex :gap="16"  align="center" style="margin-bottom: 10px">
           <img src="../static/icons8-java-logo-48.png">
           <a-typography-title :level="4" style="margin: 0" ellipsis>请作者喝一杯咖啡</a-typography-title>
         </a-flex>
