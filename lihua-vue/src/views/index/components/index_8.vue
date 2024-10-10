@@ -24,7 +24,7 @@
               {{item}}
             </a-typography-text>
           </div>
-          <a-typography-text ellipsis>
+          <a-typography-text ellipsis v-if="latestVersion.updateContent.length > 5">
             ...
           </a-typography-text>
         </a-flex>

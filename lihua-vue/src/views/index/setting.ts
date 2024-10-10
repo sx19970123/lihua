@@ -9,6 +9,13 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.5',
+            updateDate: '2024-10-10',
+            updateContent: [
+                '更新SQL脚本文件，数据库中默认密码兼容数据加密'
+            ]
+        },
+        {
             version: '1.0.0-beta.4',
             updateDate: '2024-10-08',
             updateContent: [
