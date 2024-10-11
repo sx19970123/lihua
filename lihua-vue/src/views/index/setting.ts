@@ -9,6 +9,15 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.6',
+            updateDate: '2024-10-11',
+            record: [
+                '1. 优化全局滚动条，跟随暗色模式改变颜色',
+                '2. 修复登陆后配置信息发生异常时，可直接进入主页面的bug',
+                '3. 整理了前端开发文档大致目录',
+            ]
+        },
+        {
             version: '1.0.0-beta.5',
             updateDate: '2024-10-10',
             updateContent: [
