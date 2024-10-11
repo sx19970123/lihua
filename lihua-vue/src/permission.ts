@@ -39,6 +39,7 @@ router.beforeEach(async (to, from, next) => {
                         }
                     } else {
                         message.error(loginSettingResp.msg)
+                        next("/login");
                     }
                 }
                 // 判断用户是否拥有静态路由中指定的角色
