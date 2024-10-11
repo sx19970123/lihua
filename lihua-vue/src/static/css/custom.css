@@ -38,14 +38,12 @@
 /**
     根据主题颜色改变图标颜色
  */
-[data-theme = 'light']{
-    .icon-default-color {
-        color: rgba(0, 0, 0, 0.88);
-    }
+.icon-default-color {
+    color: rgba(0, 0, 0, 0.88);
+}
 
-    .input-prefix-icon-color {
-        color: rgba(0,0,0,0.25);
-    }
+.input-prefix-icon-color {
+    color: rgba(0,0,0,0.25);
 }
 
 [data-theme = 'dark'] {

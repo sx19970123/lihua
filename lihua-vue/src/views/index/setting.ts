@@ -65,6 +65,18 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0-beta.6',
+        record: [
+            '1. 优化全局滚动条，跟随暗色模式改变颜色'
+        ]
+    },
+    {
+        version: '1.0.0-beta.5',
+        record: [
+            '更新SQL脚本文件，数据库中默认密码兼容数据加密'
+        ]
+    },
+    {
         version: '1.0.0 beat4',
         record: [
             '1. 用户登录、注册、修改密码、重置密码、管理员新增用户需要处理密码的场景对密码新增使用RAS非对称加密',
