@@ -2,7 +2,13 @@
 .scrollbar {
     overflow: auto;
     scrollbar-width: thin !important;
-    scrollbar-color: #888 transparent; /* 滑块颜色和轨道颜色 */
+    scrollbar-color: rgb(227,227,227) transparent; /* 滑块颜色和轨道颜色 */
+}
+
+[data-theme = 'dark'] {
+    .scrollbar {
+        scrollbar-color: rgb(66,66,66) transparent;
+    }
 }
 
 /**

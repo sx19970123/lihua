@@ -251,15 +251,14 @@ const initClick = () => {
     if (hasScrollbar()) {
       document.body.style.overflowY = 'hidden'
       document.body.style.width = 'calc(100% - 15px)'
-
     }
   }
 
   // 显示滚动条
   const showOverflowY = () => {
     if (hasScrollbar()) {
-      document.body.style.overflowY = 'auto'
-      document.body.style.width = '100%'
+      document.body.style.overflowY = ''
+      document.body.style.removeProperty('width')
     }
   }
 
