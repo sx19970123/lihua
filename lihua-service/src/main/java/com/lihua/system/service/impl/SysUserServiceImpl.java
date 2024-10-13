@@ -1,5 +1,6 @@
 package com.lihua.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -852,45 +853,37 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         String username = sysUserDTO.getUsername();
         String phoneNumber = sysUserDTO.getPhoneNumber();
         String email = sysUserDTO.getEmail();
+        String userId = sysUserDTO.getId();
+        // 查询出与修改后信息冲突的用户
+        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.ne(SysUser::getId, userId)
+                .and(wrapper -> {
+                    if (StringUtils.hasText(username)) {
+                        wrapper.eq(SysUser::getUsername, username);
+                    }
+                    if (StringUtils.hasText(email)) {
+                        wrapper.or().eq(SysUser::getEmail, email);
+                    }
+                    if (StringUtils.hasText(phoneNumber)) {
+                        wrapper.or().eq(SysUser::getPhoneNumber, phoneNumber);
+                    }
+                });
 
-        List<SysUser> sysUsers = sysUserMapper.checkUserData(username, phoneNumber, email);
-
-        // 新增或修改时username, phoneNumber, email 均唯一 校验通过
-        if (sysUsers.isEmpty() || (sysUsers.size() == 1 && sysUsers.get(0).getId().equals(sysUserDTO.getId()))) {
-            return;
-        }
-
-        List<String> errMessage = new ArrayList<>();
-        // 用户名
-        if (StringUtils.hasText(sysUserDTO.getUsername())) {
-            Map<String, List<SysUser>> groupByUsername = sysUsers.stream().filter(user -> StringUtils.hasText(user.getUsername())).collect(Collectors.groupingBy(SysUser::getUsername));
-            List<SysUser> byUsername = groupByUsername.getOrDefault(sysUserDTO.getUsername(),new ArrayList<>());
-            if (!byUsername.isEmpty() && !byUsername.get(0).getId().equals(sysUserDTO.getId())) {
-                errMessage.add("用户名");
+        // 执行查询
+        List<SysUser> conflictingUsers = sysUserMapper.selectList(queryWrapper);
+        // 遍历冲突用户，确定具体冲突的字段
+        for (SysUser user : conflictingUsers) {
+            if (StringUtils.hasText(username) && username.equals(user.getUsername())) {
+                throw new ServiceException("用户名已存在");
             }
-        }
-        // 手机号码
-        if (StringUtils.hasText(sysUserDTO.getPhoneNumber())) {
-            Map<String, List<SysUser>> groupByPhoneNumber = sysUsers.stream().filter(user -> StringUtils.hasText(user.getPhoneNumber())).collect(Collectors.groupingBy(SysUser::getPhoneNumber));
-            List<SysUser> byPhoneNumber = groupByPhoneNumber.getOrDefault(sysUserDTO.getPhoneNumber(),new ArrayList<>());
-            if (!byPhoneNumber.isEmpty() && !byPhoneNumber.get(0).getId().equals(sysUserDTO.getId())) {
-                errMessage.add("手机号码");
+            if (StringUtils.hasText(phoneNumber) && phoneNumber.equals(user.getPhoneNumber())) {
+                throw new ServiceException("手机号码已存在");
             }
-        }
-        // 邮箱
-        if (StringUtils.hasText(sysUserDTO.getEmail())) {
-            Map<String, List<SysUser>> groupByEmail = sysUsers.stream().filter(user -> StringUtils.hasText(user.getEmail())).collect(Collectors.groupingBy(SysUser::getEmail));
-            List<SysUser> byEmail = groupByEmail.getOrDefault(sysUserDTO.getEmail(),new ArrayList<>());
-            if (!byEmail.isEmpty() && !byEmail.get(0).getId().equals(sysUserDTO.getId())) {
-                errMessage.add("邮箱");
+            if (StringUtils.hasText(email) && email.equals(user.getEmail())) {
+                throw new ServiceException("邮箱已存在");
             }
-        }
-        // 抛出异常
-        if (!errMessage.isEmpty()) {
-            throw new ServiceException(String.join("、", errMessage) + "已存在");
         }
     }
-
     // 保存用户角色关联表
     private void saveUserRole(String userId, List<String> roleIdList) {
         // 删除所有角色
