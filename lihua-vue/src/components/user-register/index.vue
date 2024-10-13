@@ -32,7 +32,7 @@
                               placeholder="密码"
                               height="48px"
                               prefixIcon
-                              :showProgress="!!userRegister.password"
+                              :showProgress="!!userRegister.password && userRegister.password.length >= 6"
               />
             </a-form-item>
 
@@ -135,6 +135,7 @@ const rules: Record<string, Rule[]> = {
   ],
   password: [
     { required: true,message: "请输入密码",trigger: ['change','blur']},
+    { min: 6, max: 30, message: '密码长度6-30位', trigger: ['change','blur']}
   ],
   confirmPassword: [
     { required: true,message: "请再次输入密码",trigger: ['change','blur']},
@@ -214,5 +215,4 @@ const handleRegister = async ({captchaVerification}: { captchaVerification: stri
   transform: translateY(24px);
   opacity: 0;
 }
-
 </style>

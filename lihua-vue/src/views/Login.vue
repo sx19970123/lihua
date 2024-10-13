@@ -427,22 +427,6 @@ onMounted(() => {
   opacity: 0;
 }
 
-.verify-enter-active {
-  transition: all 0.3s ease-in-out;
-}
-
-.verify-enter-from {
-  transform: translateY(10px);
-  opacity: 0;
-}
-
-.verify-leave-active {
-  transition: all 0.25s ease-out;
-}
-
-.verify-leave-to {
-  opacity: 0;
-}
 
 .setting-enter-active {
   transition: all 0.75s ease-in-out;
