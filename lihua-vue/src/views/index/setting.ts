@@ -9,6 +9,20 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.7',
+            updateDate: '2024-10-13',
+            updateContent: [
+                '1. 修复分页查询不传入分页参数空指针的bug（修改用户@burningimlam）',
+                '2. 新增对分页参数大小的限制（修改用户@burningimlam）',
+                '3. 新增在个人中心-样式布局下，开启隐藏Layout时，多任务栏开关隐藏',
+                '4. 优化侧边导航栏修改暗色/浅色模式滚动条样式变化',
+                '5. 顶部导航模式宽度增加到64px，同时页面宽度不足时出现滚动条',
+                '6. 系统设置中权限不足时重置switch',
+                '7. 添加注册时的验证码出现消失动画',
+                '8. 用户注册密码限制长度6-30',
+            ]
+        },
+        {
             version: '1.0.0-beta.6',
             updateDate: '2024-10-11',
             updateContent: [
