@@ -1,7 +1,7 @@
 <template>
   <a-layout style="min-height: 100vh">
     <transition :name="themeStore.routeTransition" mode="out-in">
-      <a-layout-sider class="sh-sider scrollbar"
+      <a-layout-sider class="sh-sider sider-scrollbar"
                       v-show="props.showLayout"
                       :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                       :theme="themeStore.siderTheme"

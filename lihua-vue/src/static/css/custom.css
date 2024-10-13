@@ -1,12 +1,18 @@
 /* 滚动条 */
-.scrollbar {
+.scrollbar, .sider-scrollbar {
     overflow: auto;
     scrollbar-width: thin !important;
     scrollbar-color: rgb(227,227,227) transparent; /* 滑块颜色和轨道颜色 */
 }
 
 [data-theme = 'dark'] {
-    .scrollbar {
+    .scrollbar, .sider-scrollbar {
+        scrollbar-color: rgb(66,66,66) transparent;
+    }
+}
+
+[sider-dark = 'dark'] {
+    .sider-scrollbar {
         scrollbar-color: rgb(66,66,66) transparent;
     }
 }
@@ -55,12 +61,19 @@
     }
 }
 
-[header-content-dark = 'dark'] {
+[sider-dark = 'dark'][layout-type = 'header-content'] {
     .icon-default-color {
-        color: #f3f3f3;
+        color: rgba(255, 255, 255, 0.65);
     }
     .text-default-color {
-        color: #f3f3f3;
+        color: rgba(255, 255, 255, 0.65);
+    }
+
+    .icon-default-color:hover {
+        color: rgba(255, 255, 255, 1);
+    }
+    .text-default-color:hover {
+        color: rgba(255, 255, 255, 1);
     }
 }
 /**

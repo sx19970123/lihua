@@ -1,16 +1,20 @@
-/* 根据是否开启多任务栏，设定不同的content高度 */
-[view-tabs=show][show-hide-layout=show] .layout-content {
-    min-height: calc(100vh - (48px + 54px + 16px));
+/** 开启view-tabs / 显示show-layout / 导航类型为顶部导航 */
+[view-tabs=show][show-hide-layout=show][layout-type='header-content'] .layout-content {
+    min-height: calc(100vh - (64px + 52px));
 }
-[view-tabs=hide][show-hide-layout=show] .layout-content {
-    min-height: calc(100vh - (48px + 16px));
+
+/** 隐藏view-tabs / 显示show-layout / 导航类型为顶部导航 */
+[view-tabs=hide][show-hide-layout=show][layout-type='header-content'] .layout-content {
+    min-height: calc(100vh - 64px);
 }
+
 [view-tabs=show][show-hide-layout=hide] .layout-content {
-    min-height: calc(100vh - (54px + 16px));
+    min-height: calc(100vh - (54px));
 }
-/* content 外边框上左右各为16像素*/
+
+/* content 留出上左右 16像素空隙，下方14像素空袭，兼容iframe全屏不出现滚动条*/
 .layout-content {
-    padding: 16px 16px 0 16px;
+    padding: 16px 16px 14px 16px;
     overflow-x: hidden;
 }
 
@@ -32,13 +36,6 @@
 [data-theme = 'dark'] {
     .header-right:hover {
         background: rgba(255, 255, 255, 0.12);
-    }
-}
-
-/** 暗色风格顶部导航custom="dark"  */
-[header-content-dark = 'dark'] {
-    .header-right:hover {
-        background: #1a2c3d;
     }
 }
 

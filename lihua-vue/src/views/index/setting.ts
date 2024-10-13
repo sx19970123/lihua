@@ -77,7 +77,8 @@ const updateRecords = [
         version: '1.0.0-beta.7',
         record: [
             '1. 修复分页查询不传入分页参数空指针的bug（修改用户@burningimlam）',
-            '2. 新增对分页参数大小的限制（修改用户@burningimlam）'
+            '2. 新增对分页参数大小的限制（修改用户@burningimlam）',
+            '3. 优化侧边导航栏修改暗色/浅色模式滚动条样式变化'
         ]
     },
     {

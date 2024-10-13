@@ -2,9 +2,9 @@
   <a-layout>
     <div class="hc-header">
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="hc-layout-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' ?
-        { background: themeStore.layoutBackgroundColor } : ''">
-          <a-flex align="center" justify="space-between" style="margin-right: 32px">
+        <a-layout-header class="hc-layout-header sider-scrollbar" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' ?
+        { background: themeStore.layoutBackgroundColor } : ''" style="overflow-y: hidden">
+          <a-flex align="center" justify="space-between" style="margin-right: 32px; margin-left: 32px">
             <!--logo-->
             <Logo class="logo"/>
             <!--导航-->
@@ -33,8 +33,6 @@ import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/modules/theme";
 const themeStore = useThemeStore()
 const props = defineProps<{  showLayout: boolean }>()
-
-
 </script>
 
 <style scoped>
@@ -44,13 +42,12 @@ const props = defineProps<{  showLayout: boolean }>()
 }
 .hc-layout-header {
   padding: 0;
-  height: 48px;
-  line-height: 48px;
+  height: 64px;
+  line-height: 64px;
   box-shadow: var(--lihua-layout-light-box-shadow);
 }
 .logo {
-  padding: 0 16px 0 16px;
-  margin-left: 16px;
+  padding: 0 8px 0 8px;
 }
 .sider {
   width: 100%;

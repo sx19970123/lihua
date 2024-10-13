@@ -10,16 +10,14 @@ import {close, connect} from "@/utils/ServerSentEvents.ts";
 import {message} from "ant-design-vue";
 import Token from "@/utils/Token.ts";
 const { getToken } = token
-NProgress.configure({
-    showSpinner: true
-})
 
 // 路由前置守卫
 router.beforeEach(async (to, from, next) => {
     const userStore = useUserStore();
     const themeStore = useThemeStore();
-    NProgress.start();
 
+    NProgress.configure({showSpinner: themeStore.layoutType !== 'header-content'})
+    NProgress.start();
     const hasToken = getToken();
 
     if (hasToken) {

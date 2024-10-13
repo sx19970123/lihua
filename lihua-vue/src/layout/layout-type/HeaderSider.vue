@@ -22,7 +22,7 @@
                         breakpoint="lg"
         >
           <!-- 侧边栏-->
-          <Side class="sider-content scrollbar"/>
+          <Side class="sider-content sider-scrollbar"/>
         </a-layout-sider>
       </transition>
       <!--    菜单开合开关-->
@@ -72,8 +72,8 @@ const props = defineProps<{  showLayout: boolean }>()
   margin-right: 32px;
 }
 .logo {
-  padding: 0 16px 0 16px;
-  margin-left: 16px;
+  padding: 0 8px 0 8px;
+  margin-left: 32px;
 }
 .view-tabs {
   backdrop-filter: saturate(180%) blur(20px);
