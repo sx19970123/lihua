@@ -8,7 +8,7 @@
                          v-show="props.showLayout"
                          :style="themeStore.siderTheme === 'light' ?
         { background: themeStore.layoutBackgroundColor } : ''" style="overflow-y: hidden;">
-          <a-flex align="center" justify="space-between" style="margin-right: 32px; margin-left: 32px">
+          <a-flex align="center" justify="space-between" :style="showScrollbar ? 'margin-right: 8px; margin-left: 8px' :'margin-right: 32px; margin-left: 32px'">
             <!--logo-->
             <Logo class="logo"/>
             <!--导航-->
@@ -72,7 +72,7 @@ onUnmounted(() => {
 .hc-layout-header-scrollbar {
   padding: 0;
   height: 64px;
-  line-height: 48px;
+  line-height: 54px;
   box-shadow: var(--lihua-layout-light-box-shadow);
 }
 .logo {
@@ -80,7 +80,7 @@ onUnmounted(() => {
 }
 .sider {
   width: 100%;
-  padding: 0 64px 0 64px;
+  margin: 0 32px 0 32px;
 }
 </style>
 
