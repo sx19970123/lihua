@@ -13,4 +13,10 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
     // 查询所有菜单信息（admin）
     List<CurrentRouter> selectAllPerms();
+
+    // 根据parentId将 >= 当前sort的数据sort + 1
+    long peerMenuSortAddOne(String parentId, int sort);
+
+    // 根据parentId将 符合条件的sort - 1
+    long peerMenuSortSubtractOne(String parentId, Integer lastSort, List<Integer> missingSortList);
 }
