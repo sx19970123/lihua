@@ -1,5 +1,6 @@
 package com.lihua.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.exception.ServiceException;
@@ -74,6 +75,24 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     private String insert(SysMenu sysMenu) {
+        if(sysMenu.getParentId()!=null){
+            LambdaQueryWrapper<SysMenu> queryWrapper = new LambdaQueryWrapper();
+            queryWrapper= queryWrapper.eq(SysMenu::getParentId,sysMenu.getParentId())
+                    .orderBy(true,true,SysMenu::getSort);
+            List<SysMenu> childMenus=sysMenuMapper.selectList(queryWrapper);
+            int k=1;
+            for (SysMenu childMenu : childMenus) {
+                if(childMenu.getSort().equals(sysMenu.getSort())){
+                    k++;
+                    childMenu.setSort(k);
+                    sysMenuMapper.updateById(childMenu);
+                }
+                k++;
+            }
+            if(k<=sysMenu.getSort()){
+                sysMenu.setSort(k);
+            }
+        }
         sysMenu.setCreateId(LoginUserContext.getUserId());
         sysMenu.setCreateTime(LocalDateTime.now());
         sysMenu.setDelFlag("0");
@@ -95,7 +114,27 @@ public class SysMenuServiceImpl implements SysMenuService {
         checkChildren(ids);
 //        checkRole(ids);
         deleteRoleMenu(ids);
+        for (String id : ids) {
+            adjustOrder(id);
+        }
         sysMenuMapper.deleteByIds(ids);
+    }
+    private void adjustOrder(String id){
+        SysMenu sysMenu = sysMenuMapper.selectById(id);
+        if(sysMenu.getParentId()!=null){
+            LambdaQueryWrapper<SysMenu> queryWrapper = new LambdaQueryWrapper();
+            queryWrapper= queryWrapper.eq(SysMenu::getParentId,sysMenu.getParentId())
+                    .orderBy(true,true,SysMenu::getSort);
+            List<SysMenu> childMenus=sysMenuMapper.selectList(queryWrapper);
+            int k=1;
+            for (SysMenu childMenu : childMenus) {
+                if(childMenu.getSort()>sysMenu.getSort()){
+                    childMenu.setSort(--k);
+                    sysMenuMapper.updateById(childMenu);
+                }
+                k++;
+            }
+        }
     }
 
     @Override
