@@ -3,7 +3,6 @@ package com.lihua.system.controller;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.enums.SysBaseEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysSetting;
 import com.lihua.system.entity.SysUser;
@@ -13,7 +12,6 @@ import com.lihua.system.model.validation.ProfileValidation;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.system.service.SysSettingService;
 import com.lihua.system.service.SysUserDeptService;
-import com.lihua.utils.crypt.AesUtils;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
@@ -22,9 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping("system/profile")

@@ -3,7 +3,6 @@ package com.lihua.system.controller;
 import com.anji.captcha.model.common.ResponseModel;
 import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
-import com.anji.captcha.util.AESUtil;
 import com.lihua.annotation.Log;
 import com.lihua.annotation.RateLimiter;
 import com.lihua.enums.LogTypeEnum;
@@ -17,12 +16,10 @@ import com.lihua.system.model.dto.SysRegisterDTO;
 import com.lihua.system.service.SysAuthenticationService;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.system.service.SysSettingService;
-import com.lihua.utils.crypt.RasUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 

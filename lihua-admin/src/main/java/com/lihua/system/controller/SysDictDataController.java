@@ -3,7 +3,6 @@ package com.lihua.system.controller;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysDictData;
 import com.lihua.system.model.dto.SysDictDataDTO;
@@ -15,9 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("system/dictData")

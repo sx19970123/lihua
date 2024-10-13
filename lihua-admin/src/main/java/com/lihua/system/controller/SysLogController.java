@@ -2,6 +2,7 @@ package com.lihua.system.controller;
 
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
+import com.lihua.model.validation.MaxPageSizeLimit;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.dto.SysLogDTO;
 import com.lihua.system.service.SysLogService;
@@ -9,6 +10,7 @@ import com.lihua.utils.file.FileDownloadUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -39,7 +41,7 @@ public class SysLogController extends BaseController {
 
     // 操作日志------------------------------------------------------------
     @PostMapping("operate/page")
-    public String findOperatePage(@RequestBody SysLogDTO sysLogDTO) {
+    public String findOperatePage(@RequestBody @Validated(MaxPageSizeLimit.class) SysLogDTO sysLogDTO) {
         return success(sysOperateLogService.findPage(sysLogDTO));
     }
 
@@ -75,7 +77,7 @@ public class SysLogController extends BaseController {
     // 登录日志------------------------------------------------------------
 
     @PostMapping("login/page")
-    public String findLoginPage(@RequestBody SysLogDTO sysLogDTO) {
+    public String findLoginPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysLogDTO sysLogDTO) {
         return success(sysLoginLogService.findPage(sysLogDTO));
     }
 

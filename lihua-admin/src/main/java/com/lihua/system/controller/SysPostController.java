@@ -2,6 +2,7 @@ package com.lihua.system.controller;
 
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
+import com.lihua.model.validation.MaxPageSizeLimit;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysPost;
 import com.lihua.system.model.dto.SysPostDTO;
@@ -28,7 +29,7 @@ public class SysPostController extends BaseController {
 
 
     @PostMapping("page")
-    public String findPage(@RequestBody SysPostDTO dto) {
+    public String findPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysPostDTO dto) {
         return success(sysPostService.findPage(dto));
     }
 

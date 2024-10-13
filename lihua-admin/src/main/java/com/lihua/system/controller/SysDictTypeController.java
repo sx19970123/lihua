@@ -2,6 +2,7 @@ package com.lihua.system.controller;
 
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
+import com.lihua.model.validation.MaxPageSizeLimit;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysDictType;
 import com.lihua.system.model.dto.SysDictTypeDTO;
@@ -27,7 +28,7 @@ public class SysDictTypeController extends BaseController {
      * @return
      */
     @PostMapping("page")
-    public String findPage(@RequestBody SysDictTypeDTO dictTypeDTO) {
+    public String findPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysDictTypeDTO dictTypeDTO) {
         return success(sysDictTypeService.findPage(dictTypeDTO));
     }
 

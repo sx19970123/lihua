@@ -74,6 +74,13 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0-beta.7',
+        record: [
+            '1. 修复分页查询不传入分页参数空指针的bug（修改用户@burningimlam）',
+            '2. 新增对分页参数大小的限制（修改用户@burningimlam）'
+        ]
+    },
+    {
         version: '1.0.0-beta.6',
         record: [
             '1. 优化全局滚动条，跟随暗色模式改变颜色',

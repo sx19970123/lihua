@@ -3,11 +3,10 @@ package com.lihua.system.controller;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.model.validation.MaxPageSizeLimit;
 import com.lihua.model.web.BaseController;
-import com.lihua.system.entity.SysUser;
 import com.lihua.system.model.dto.ResetPasswordDTO;
 import com.lihua.system.model.dto.SysUserDTO;
-import com.lihua.system.model.validation.ProfileValidation;
 import com.lihua.system.model.vo.SysUserVO;
 import com.lihua.system.service.SysUserService;
 import com.lihua.utils.excel.ExcelUtils;
@@ -31,7 +30,7 @@ public class SysUserController extends BaseController {
     private SysUserService sysUserService;
 
     @PostMapping("page")
-    public String findPage(@RequestBody SysUserDTO sysUserDTO) {
+    public String findPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysUserDTO sysUserDTO) {
         return success(sysUserService.findPage(sysUserDTO));
     }
 

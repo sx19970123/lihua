@@ -2,6 +2,7 @@ package com.lihua.system.controller;
 
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
+import com.lihua.model.validation.MaxPageSizeLimit;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysRole;
 import com.lihua.system.model.dto.SysRoleDTO;
@@ -31,7 +32,7 @@ public class SysRoleController extends BaseController {
      * @return
      */
     @PostMapping("page")
-    public String findPage(@RequestBody SysRoleDTO sysRoleDTO) {
+    public String findPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysRoleDTO sysRoleDTO) {
         return success(sysRoleService.findPage(sysRoleDTO));
     }
 

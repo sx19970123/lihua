@@ -1,5 +1,6 @@
 package com.lihua.model;
 
+import com.lihua.model.validation.MaxPageSizeLimit;
 import jakarta.validation.constraints.Max;
 import java.io.Serial;
 import java.io.Serializable;
@@ -31,13 +32,13 @@ public class BaseDTO implements Serializable {
     /**
      * 当前页码
      */
-    @Max(value = MAX_PAGE_NUM, message = "当前分页参数超出限制")
+    @Max(value = MAX_PAGE_NUM, message = "当前分页参数超出限制", groups = {MaxPageSizeLimit.class})
     protected Integer pageNum;
 
     /**
      * 当前分页大小
      */
-    @Max(value = MAX_PAGE_SIZE, message = "当前分页参数超出限制")
+    @Max(value = MAX_PAGE_SIZE, message = "当前分页参数超出限制", groups = {MaxPageSizeLimit.class})
     protected Integer pageSize;
 
     //在构造方法中设置默认值
