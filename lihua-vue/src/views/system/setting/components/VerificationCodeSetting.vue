@@ -22,6 +22,7 @@ import {getCurrentInstance, onMounted, ref} from "vue";
 import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
 import type {VerificationCode} from "@/api/system/setting/type/VerificationCode.ts";
 import {message} from "ant-design-vue";
+import {isAdmin} from "@/utils/Auth.ts";
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
@@ -49,6 +50,12 @@ const setting = ref<SystemSetting>({
 
 // 处理保存设置
 const handleChangeSwitch = async () => {
+  if (!isAdmin()) {
+    await init()
+    message.error("用户权限不足")
+    return
+  }
+
   setting.value.settingJson = JSON.stringify(settingForm.value)
   const resp = await settingStore.save(setting.value)
   if (resp.code === 200) {

@@ -42,6 +42,7 @@ import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
 import type {GrayModel} from "@/api/system/setting/type/GrayModel.ts";
 import {message} from "ant-design-vue";
 import dayjs, {type Dayjs} from "dayjs";
+import {isAdmin} from "@/utils/Auth.ts";
 const themeStore = useThemeStore();
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
@@ -90,6 +91,11 @@ const setting = ref<SystemSetting>({
 
 // 处理开关switch
 const handleChangeSwitch = async () => {
+  if (!isAdmin()) {
+    await init()
+    message.error("用户权限不足")
+    return
+  }
   if (!settingForm.value.enable) {
     settingForm.value.closeTime = undefined
     closeTime.value = undefined

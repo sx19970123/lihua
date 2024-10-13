@@ -17,7 +17,7 @@
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
       </a-form-item>
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <div  v-if="settingForm.enable">
+        <div v-if="settingForm.enable">
           <div class="scrollbar" style="max-height: 400px; display: inline-block">
             <a-form-item
                 :label="index === 0 ? 'ip地址' : ''"
@@ -70,6 +70,7 @@ import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
 import type {RestrictAccessIp} from "@/api/system/setting/type/RestrictAccessIp.ts";
 import {message} from "ant-design-vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
+import {isAdmin} from "@/utils/Auth.ts";
 const themeStore = useThemeStore()
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
@@ -134,7 +135,13 @@ const handleFinish = async () => {
 }
 
 // 关闭ip限制保存配置
-const handleChangeSwitch = () => {
+const handleChangeSwitch = async () => {
+  if (!isAdmin()) {
+    await init()
+    message.error("用户权限不足")
+    return
+  }
+
   if (settingForm.value.enable) {
     return;
   }
@@ -144,7 +151,7 @@ const handleChangeSwitch = () => {
     ipList: ['']
   }
 
-  handleFinish()
+  await handleFinish()
 }
 
 // 页面加载完成后调用

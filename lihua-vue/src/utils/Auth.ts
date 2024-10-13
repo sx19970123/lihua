@@ -27,6 +27,14 @@ export const hasRouteRole = (routeRoleList?: string[]): boolean => {
 };
 
 /**
+ * 返回当前用户是否为 admin
+ */
+export const isAdmin = () => {
+    return hasRouteRole(["ROLE_admin"]);
+}
+
+
+/**
  * 导航菜单是否为分组模式
  */
 export const isSiderGroup = (): 'group' | undefined => {

@@ -120,6 +120,7 @@ import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import CardSelect from "@/components/card-select/index.vue";
 import {message} from "ant-design-vue";
+import {isAdmin} from "@/utils/Auth.ts";
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
 const themeStore = useThemeStore();
@@ -436,9 +437,15 @@ const initPostData = () => {
 const {sysPostList, postLoading, loadPost ,handleSelectPostId,} = initPostData()
 
 // 处理开关switch
-const handleChangeSwitch = () => {
+const handleChangeSwitch = async () => {
+  if (!isAdmin()) {
+    await init()
+    message.error("用户权限不足")
+    return
+  }
+
   if (!settingForm.value.enable) {
-    handleSubmit()
+    await handleSubmit()
   }
 }
 
