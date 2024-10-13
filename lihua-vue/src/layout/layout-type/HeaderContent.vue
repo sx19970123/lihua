@@ -2,8 +2,12 @@
   <a-layout>
     <div class="hc-header">
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="hc-layout-header sider-scrollbar" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' ?
-        { background: themeStore.layoutBackgroundColor } : ''" style="overflow-y: hidden">
+        <a-layout-header class="sider-scrollbar"
+                         :class="showScrollbar ? 'hc-layout-header-scrollbar' : 'hc-layout-header'"
+                         id="hcHeaderContent"
+                         v-show="props.showLayout"
+                         :style="themeStore.siderTheme === 'light' ?
+        { background: themeStore.layoutBackgroundColor } : ''" style="overflow-y: hidden;">
           <a-flex align="center" justify="space-between" style="margin-right: 32px; margin-left: 32px">
             <!--logo-->
             <Logo class="logo"/>
@@ -31,8 +35,26 @@ import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/modules/theme";
+import {onMounted, onUnmounted, ref} from "vue";
 const themeStore = useThemeStore()
 const props = defineProps<{  showLayout: boolean }>()
+// 是否出现横向滚动条
+const showScrollbar = ref<boolean>(false)
+let element = document.getElementById("hcHeaderContent");
+// 窗口尺寸变化时返回是否显示滚动条
+const handleResize = () => {
+  showScrollbar.value = !!(element && element.scrollWidth > element.clientWidth);
+}
+// dom渲染完毕后添加窗口监听
+onMounted(() => {
+  element = document.getElementById("hcHeaderContent")
+  window.addEventListener("resize", handleResize)
+});
+
+// 组件销毁后删除监听
+onUnmounted(() => {
+  window.removeEventListener("resize", handleResize);
+});
 </script>
 
 <style scoped>
@@ -44,6 +66,13 @@ const props = defineProps<{  showLayout: boolean }>()
   padding: 0;
   height: 64px;
   line-height: 64px;
+  box-shadow: var(--lihua-layout-light-box-shadow);
+}
+
+.hc-layout-header-scrollbar {
+  padding: 0;
+  height: 64px;
+  line-height: 48px;
   box-shadow: var(--lihua-layout-light-box-shadow);
 }
 .logo {
@@ -65,6 +94,9 @@ const props = defineProps<{  showLayout: boolean }>()
 }
 [data-theme = dark] {
   .hc-layout-header {
+    box-shadow: var(--lihua-layout-dark-box-shadow);
+  }
+  .hc-layout-header-scrollbar {
     box-shadow: var(--lihua-layout-dark-box-shadow);
   }
 }

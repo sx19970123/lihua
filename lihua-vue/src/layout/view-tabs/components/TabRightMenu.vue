@@ -78,6 +78,8 @@ import { useViewTabsStore } from "@/stores/modules/viewTabs";
 import {ref, watch} from "vue";
 import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {handleTime} from "@/utils/HandleDate.ts";
+import {useThemeStore} from "@/stores/modules/theme.ts";
+const themeStore = useThemeStore()
 const viewTabsStore = useViewTabsStore()
 const emits = defineEmits(['routeSkip','cancelKeepAlive'])
 /**

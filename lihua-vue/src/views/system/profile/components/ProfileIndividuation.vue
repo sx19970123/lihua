@@ -35,7 +35,7 @@
       <a-form-item label="固定头部">
         <a-switch v-model:checked="themeStore.affixHead" @change="themeStore.changeAffixHead"></a-switch>
       </a-form-item>
-      <a-form-item label="多任务栏">
+      <a-form-item label="多任务栏" v-if="viewTabsStore.$state.showLayout">
         <a-switch v-model:checked="themeStore.showViewTabs" @change="themeStore.changeShowViewTabs"/>
       </a-form-item>
       <a-divider/>
@@ -72,10 +72,12 @@ import settings from "@/settings";
 import { useUserStore } from "@/stores/modules/user";
 import { useThemeStore } from "@/stores/modules/theme";
 import { usePermissionStore } from "@/stores/modules/permission.ts";
+import { useViewTabsStore } from "@/stores/modules/viewTabs.ts";
 import {onUnmounted, ref} from "vue";
 const themeStore = useThemeStore()
 const userStore = useUserStore()
 const permissionStore = usePermissionStore()
+const viewTabsStore = useViewTabsStore()
 // 主题颜色
 const colorList = ref<Array<{name: string,color: string}>>(settings.colorOptions)
 const submitLoading = ref<boolean>(false)
