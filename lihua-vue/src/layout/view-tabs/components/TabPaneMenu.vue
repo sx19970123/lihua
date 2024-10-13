@@ -5,7 +5,7 @@
       {{ tabPane.tab.label }}
     </span>
     <template #overlay>
-      <a-menu @click="handleClickMenuTab" v-rollDisable>
+      <a-menu @click="handleClickMenuTab" v-rollDisable="true">
 <!--        <a-menu-item key="reload" :disabled="tabPane.tab.routerPathKey !== viewTabsStore.$state.activeKey">-->
 <!--          <RedoOutlined />-->
 <!--          刷新页面-->

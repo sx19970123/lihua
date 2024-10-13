@@ -18,7 +18,7 @@ export default function setupHasRoleDirective(app: App<Element>): void {
           }
         }
       } else {
-        console.error('v-hasRole 指令: 请提供一个字符串数组，例如 v-hasRole="[\'xxx\']"')
+        console.error('v-hasRole 指令: 请提供一个字符串数组，例 v-hasRole="[\'xxx\']"')
       }
     },
   })
