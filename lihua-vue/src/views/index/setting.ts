@@ -9,6 +9,18 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.8',
+            updateDate: '2024-10-14',
+            updateContent: [
+                '1. 优化新增用户用户名/手机号码/邮箱判重逻辑（修改用户@Yang）',
+                '2. 优化页面表格，页面宽度缩小后显示滚动条',
+                '3. 多任务栏右键新增刷新页面',
+                '4. 多任务栏右键新增新页打开',
+                '5. 限制组件缓存最大5个',
+                '6. axios更新到1.7.4',
+            ]
+        },
+        {
             version: '1.0.0-beta.7',
             updateDate: '2024-10-13',
             updateContent: [
