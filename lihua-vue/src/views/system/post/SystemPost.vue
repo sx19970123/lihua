@@ -63,6 +63,7 @@
                :row-selection="postRowSelectionType"
                row-class-name="hover-cursor-pointer"
                :custom-row="handleRowClick"
+               :scroll="{x: 1200}"
                row-key="id"
       >
         <template #title>

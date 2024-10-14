@@ -53,6 +53,7 @@
                :custom-row="handleRowClick"
                :pagination="false"
                row-key="id"
+               :scroll="{x: 1500}"
       >
         <template #title>
           <a-flex :gap="8">

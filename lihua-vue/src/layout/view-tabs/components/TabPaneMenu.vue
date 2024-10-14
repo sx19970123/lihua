@@ -6,11 +6,15 @@
     </span>
     <template #overlay>
       <a-menu @click="handleClickMenuTab" v-rollDisable="true">
-<!--        <a-menu-item key="reload" :disabled="tabPane.tab.routerPathKey !== viewTabsStore.$state.activeKey">-->
-<!--          <RedoOutlined />-->
-<!--          刷新页面-->
-<!--        </a-menu-item>-->
-        <a-menu-divider  v-if="false"/>
+        <a-menu-item key="reload" v-if="tabPane.tab.routerPathKey === viewTabsStore.$state.activeKey">
+          <RedoOutlined />
+          刷新页面
+        </a-menu-item>
+        <a-menu-item key="newPage">
+          <ImportOutlined style="transform: rotate(180deg)"/>
+          新页打开
+        </a-menu-item>
+        <a-menu-divider/>
         <a-menu-item key="close-left" :disabled="tabPane.index === 0">
           <VerticalRightOutlined />
           关闭左侧
@@ -54,7 +58,6 @@ import { StarFilled , StarOutlined ,LockOutlined , UnlockOutlined} from '@ant-de
 import { h } from "vue";
 import type { ResponseType } from "@/api/global/Type.ts";
 import type { StarViewType } from "@/api/system/view-tab/type/SysViewTab.ts";
-
 const viewTabsStore = useViewTabsStore()
 const tabPane = defineProps(['tab','index'])
 const emit = defineEmits(['routeSkip','cancelKeepAlive'])
@@ -66,9 +69,12 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
   switch (key) {
     case "reload": {
       if (route.name) {
-        // todo 不好使，后续优化
-        router.replace({name: route.name, params: route.params, query: route.query})
+        viewTabsStore.regenerateComponentKey()
       }
+      break
+    }
+    case "newPage": {
+       window.open(router.resolve(tab.routerPathKey).href)
       break
     }
     case "close-left": {

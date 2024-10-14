@@ -58,6 +58,7 @@
           row-class-name="hover-cursor-pointer"
           :custom-row="handleRowClick"
           row-key="id"
+          :scroll="{x: 1500}"
       >
         <template #title>
           <a-flex :gap="8">

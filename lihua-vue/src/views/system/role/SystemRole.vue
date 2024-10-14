@@ -52,6 +52,7 @@
             :row-selection="roleRowSelectionType"
             row-class-name="hover-cursor-pointer"
             :custom-row="handleRowClick"
+            :scroll="{x: 1000}"
             row-key="id"
         >
           <template #title>

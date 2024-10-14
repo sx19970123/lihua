@@ -44,6 +44,7 @@
               :row-selection="deptRowSelectionType"
               row-class-name="hover-cursor-pointer"
               :custom-row="handleRowClick"
+              :scroll="{x: 1500}"
      >
        <template #title>
          <a-flex :gap="8">

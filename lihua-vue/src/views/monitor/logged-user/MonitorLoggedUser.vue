@@ -44,6 +44,7 @@
       :columns="userColumn"
       :pagination="false"
       :loading="queryLoading"
+      :scroll="{x: 1500}"
     >
       <template #title>
         <a-popconfirm title="是否强退选中用户？"
@@ -175,7 +176,8 @@ const initSearch = () => {
     {
       title: '缓存键值',
       key: 'cacheKey',
-      dataIndex: 'cacheKey'
+      dataIndex: 'cacheKey',
+      width: 570
     },
     {
       title: '用户名',

@@ -57,6 +57,7 @@
                row-class-name="hover-cursor-pointer"
                :custom-row="handleRowClick"
                row-key="id"
+               :scroll="{x: 1500}"
       >
         <template #title>
           <a-flex :gap="8">
@@ -198,7 +199,7 @@
     </a-modal>
     <!--    字典配置抽屉-->
     <a-drawer v-model:open="drawerAction.openDrawer"
-              :width="1120"
+              :width="1100"
               :destroyOnClose="true"
               :title="drawerAction.title"
               :body-style="{'padding-top': '0'}">
