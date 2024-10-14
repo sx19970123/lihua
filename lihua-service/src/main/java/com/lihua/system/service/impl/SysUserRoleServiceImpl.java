@@ -5,16 +5,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.system.entity.SysUserRole;
 import com.lihua.system.mapper.SysUserRoleMapper;
 import com.lihua.system.service.SysUserRoleService;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUserRole> implements SysUserRoleService {
 
     @Override
     public void save(List<SysUserRole> sysUserRoleList) {
-        saveBatch(sysUserRoleList);
+        SysUserRoleServiceImpl sysUserRoleService = (SysUserRoleServiceImpl) AopContext.currentProxy();
+        sysUserRoleService.saveBatch(sysUserRoleList);
     }
 
     @Override

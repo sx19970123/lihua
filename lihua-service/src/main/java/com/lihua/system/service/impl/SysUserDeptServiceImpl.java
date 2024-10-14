@@ -14,12 +14,12 @@ import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUserDept> implements SysUserDeptService {
@@ -32,7 +32,8 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
 
     @Override
     public void save(List<SysUserDept> sysUserDeptList) {
-        saveBatch(sysUserDeptList);
+        SysUserDeptServiceImpl sysUserDeptService = (SysUserDeptServiceImpl) AopContext.currentProxy();
+        sysUserDeptService.saveBatch(sysUserDeptList);
     }
 
 

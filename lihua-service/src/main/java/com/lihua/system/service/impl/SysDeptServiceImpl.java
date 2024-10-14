@@ -20,15 +20,22 @@ import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
@@ -325,7 +332,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         });
 
         // 批量插入
-        saveBatch(sysDeptList);
+        SysDeptServiceImpl sysDeptService = (SysDeptServiceImpl) AopContext.currentProxy();
+        sysDeptService.saveBatch(sysDeptList);
     }
 
     // 分配上级部门id

@@ -14,7 +14,6 @@ import com.lihua.system.entity.SysPost;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.mapper.SysPostMapper;
 import com.lihua.system.model.dto.SysPostDTO;
-import com.lihua.system.model.vo.SysDeptVO;
 import com.lihua.system.model.vo.SysPostVO;
 import com.lihua.system.service.SysPostService;
 import com.lihua.utils.dict.DictUtils;
@@ -22,15 +21,21 @@ import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> implements SysPostService {
@@ -266,7 +271,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         });
 
         // 批量插入
-        saveBatch(sysPostList);
+        SysPostServiceImpl sysPostService = (SysPostServiceImpl) AopContext.currentProxy();
+        sysPostService.saveBatch(sysPostList);
     }
 
     // 过滤邮箱

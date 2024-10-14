@@ -9,7 +9,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.excel.ExcelImportResult;
-import com.lihua.system.entity.*;
+import com.lihua.system.entity.SysDept;
+import com.lihua.system.entity.SysPost;
+import com.lihua.system.entity.SysRole;
+import com.lihua.system.entity.SysUser;
+import com.lihua.system.entity.SysUserDept;
+import com.lihua.system.entity.SysUserPost;
+import com.lihua.system.entity.SysUserRole;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.mapper.SysUserMapper;
@@ -18,23 +24,35 @@ import com.lihua.system.model.dto.SysUserDTO;
 import com.lihua.system.model.dto.SysUserDeptDTO;
 import com.lihua.system.model.vo.SysDeptVO;
 import com.lihua.system.model.vo.SysUserVO;
-import com.lihua.system.service.*;
+import com.lihua.system.service.SysPostService;
+import com.lihua.system.service.SysUserDeptService;
+import com.lihua.system.service.SysUserPostService;
+import com.lihua.system.service.SysUserRoleService;
+import com.lihua.system.service.SysUserService;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  implements SysUserService {
@@ -783,7 +801,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         });
 
         // 保存用户数据
-        saveBatch(sysUserList);
+        SysUserServiceImpl sysUserService = (SysUserServiceImpl) AopContext.currentProxy();
+        sysUserService.saveBatch(sysUserList);
         // 保存用户角色数据
         sysUserRoleService.save(sysUserRoleList);
         // 保存用户部门数据
