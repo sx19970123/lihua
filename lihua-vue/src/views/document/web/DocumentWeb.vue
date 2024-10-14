@@ -2,8 +2,8 @@
   <a-card>
     <a-row>
       <a-col :span="4">
-        <a-menu mode="inline">
-          <a-menu-item> 入门</a-menu-item>
+        <a-menu mode="inline" @click="handleChangeMenu" v-model:selectedKeys="selectedKeys">
+          <a-menu-item key="Introduction"> 入门</a-menu-item>
           <a-sub-menu title="内置组件 components">
             <a-menu-item-group title="展示组件">
               <a-menu-item> 卡片展示 card-show</a-menu-item>
@@ -44,10 +44,30 @@
           </a-sub-menu>
         </a-menu>
       </a-col>
+      <a-col :span="20">
+        <component :is="activeComponent"></component>
+      </a-col>
     </a-row>
   </a-card>
 </template>
 <script setup lang="ts">
+import Introduction from "@/views/document/web/components/Introduction.vue";
+import {markRaw, ref} from "vue";
+
+const allComponents = ref([
+  {
+    name: "Introduction",
+    com: markRaw(Introduction)
+  }
+])
+
+const activeComponent = ref(markRaw(Introduction))
+// 设置回显
+const selectedKeys = ref(['Introduction'])
+const handleChangeMenu = ({key}: {key: string}) => {
+  const target = allComponents.value.filter(item => item.name === key)[0]
+  activeComponent.value = target.com
+}
 </script>
 
 <style scoped>

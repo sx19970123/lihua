@@ -9,6 +9,12 @@
       "attributes": [
         {
           "name": "v-hasRole"
+        },
+        {
+          "name": "v-hasPermission"
+        },
+        {
+          "name": "v-rollDisable"
         }
       ]
     }

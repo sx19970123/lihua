@@ -16,7 +16,7 @@
     "@ant-design/icons-vue": "^7.0.1",
     "@fingerprintjs/fingerprintjs": "^4.4.3",
     "ant-design-vue": "^4.2.5",
-    "axios": "^1.6.7",
+    "axios": "1.7.4",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
     "gsap": "^3.12.5",
