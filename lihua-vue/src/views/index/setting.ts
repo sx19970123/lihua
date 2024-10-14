@@ -88,6 +88,12 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0-beta.8',
+        record: [
+            '1. 优化新增用户用户名/手机号码/邮箱判重逻辑（修改用户@Yang）',
+        ]
+    },
+    {
         version: '1.0.0-beta.7',
         record: [
             '1. 修复分页查询不传入分页参数空指针的bug（修改用户@burningimlam）',

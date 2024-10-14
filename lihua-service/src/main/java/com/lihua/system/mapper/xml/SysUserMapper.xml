@@ -126,15 +126,6 @@
             sys_user.id = #{id}
     </select>
 
-    <select id="checkUserData" resultType="com.lihua.system.entity.SysUser">
-        SELECT id, username, email, phone_number
-        FROM sys_user
-        WHERE del_flag = '0' AND
-        (EXISTS (SELECT 1 FROM sys_user WHERE username = #{username} AND del_flag = '0')
-        OR EXISTS (SELECT 1 FROM sys_user WHERE email = #{email} AND del_flag = '0')
-        OR EXISTS (SELECT 1 FROM sys_user WHERE phone_number = #{phoneNumber} AND del_flag = '0'))
-    </select>
-
     <select id="findExportData" resultMap="findExportDataMap">
         SELECT
             sys_user.username,

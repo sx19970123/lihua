@@ -25,9 +25,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     // 根据id查询用户全部信息
     SysUserVO findById(@Param("id") String id);
 
-    // 根据username、phoneNumber、email 查询符合条件的用户
-    List<SysUser> checkUserData(@Param("username") String username,@Param("phoneNumber") String phoneNumber,@Param("email") String email);
-
     // 查询导出用户列表
     List<SysUserVO> findExportData(@Param(Constants.WRAPPER) QueryWrapper<SysUser> queryWrapper);
 

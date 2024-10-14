@@ -856,32 +856,42 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         String userId = sysUserDTO.getId();
         // 查询出与修改后信息冲突的用户
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.ne(SysUser::getId, userId)
-                .and(wrapper -> {
-                    if (StringUtils.hasText(username)) {
-                        wrapper.eq(SysUser::getUsername, username);
-                    }
-                    if (StringUtils.hasText(email)) {
-                        wrapper.or().eq(SysUser::getEmail, email);
-                    }
-                    if (StringUtils.hasText(phoneNumber)) {
-                        wrapper.or().eq(SysUser::getPhoneNumber, phoneNumber);
-                    }
-                });
+        if (StringUtils.hasText(userId)) {
+            queryWrapper.ne(SysUser::getId, userId);
+        }
+        queryWrapper
+            .and(wrapper -> {
+                wrapper.eq(SysUser::getUsername, username);
+                if (StringUtils.hasText(email)) {
+                    wrapper.or().eq(SysUser::getEmail, email);
+                }
+                if (StringUtils.hasText(phoneNumber)) {
+                    wrapper.or().eq(SysUser::getPhoneNumber, phoneNumber);
+                }
+            })
+            .eq(SysUser::getDelFlag, "0");
+
+        // 用于保存冲突字段的集合
+        Set<String> conflictingMsgSet = new LinkedHashSet<>();
 
         // 执行查询
         List<SysUser> conflictingUsers = sysUserMapper.selectList(queryWrapper);
         // 遍历冲突用户，确定具体冲突的字段
         for (SysUser user : conflictingUsers) {
             if (StringUtils.hasText(username) && username.equals(user.getUsername())) {
-                throw new ServiceException("用户名已存在");
+                conflictingMsgSet.add("用户名");
             }
             if (StringUtils.hasText(phoneNumber) && phoneNumber.equals(user.getPhoneNumber())) {
-                throw new ServiceException("手机号码已存在");
+                conflictingMsgSet.add("手机号码");
             }
             if (StringUtils.hasText(email) && email.equals(user.getEmail())) {
-                throw new ServiceException("邮箱已存在");
+                conflictingMsgSet.add("邮箱");
             }
+        }
+
+        // 可能存在多项冲突，一次性全部返回
+        if (!conflictingMsgSet.isEmpty()) {
+            throw new ServiceException(String.join("、", conflictingMsgSet) + "已存在");
         }
     }
     // 保存用户角色关联表
