@@ -11,7 +11,6 @@ import com.lihua.system.service.SysUserService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,8 +30,7 @@ public class SysUserNoticeServiceImpl extends ServiceImpl<SysUserNoticeMapper, S
 
     @Override
     public void save(List<SysUserNotice> sysUserNotices) {
-        SysUserNoticeServiceImpl noticeService = (SysUserNoticeServiceImpl) AopContext.currentProxy();
-        noticeService.saveBatch(sysUserNotices);
+        saveBatch(sysUserNotices);
     }
 
     @Override
