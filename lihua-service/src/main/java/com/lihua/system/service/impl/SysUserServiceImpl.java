@@ -26,6 +26,7 @@ import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -743,7 +744,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         });
 
         // 保存用户数据
-        saveBatch(sysUserList);
+        SysUserServiceImpl sysUserService = (SysUserServiceImpl) AopContext.currentProxy();
+        sysUserService.saveBatch(sysUserList);
         // 保存用户角色数据
         sysUserRoleService.save(sysUserRoleList);
         // 保存用户部门数据

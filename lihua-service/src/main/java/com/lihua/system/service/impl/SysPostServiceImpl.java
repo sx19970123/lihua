@@ -21,6 +21,7 @@ import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -213,8 +214,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
             }
 
             // 过滤邮箱（格式）
-            boolean filterEmail = filterEmail(sysPostVO, errorPostVos);
-            return filterEmail;
+            return filterEmail(sysPostVO, errorPostVos);
         }).toList();
 
         // 处理完毕后获得两批数据：通过校验可导入 / 数据存在异常需用户重新处理
@@ -261,7 +261,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         });
 
         // 批量插入
-        saveBatch(sysPostList);
+        SysPostServiceImpl sysPostService = (SysPostServiceImpl) AopContext.currentProxy();
+        sysPostService.saveBatch(sysPostList);
     }
 
     // 过滤邮箱

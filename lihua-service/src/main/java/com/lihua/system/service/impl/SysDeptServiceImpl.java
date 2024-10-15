@@ -20,6 +20,7 @@ import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -320,7 +321,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         });
 
         // 批量插入
-        saveBatch(sysDeptList);
+        SysDeptServiceImpl sysDeptService = (SysDeptServiceImpl) AopContext.currentProxy();
+        sysDeptService.saveBatch(sysDeptList);
     }
 
     // 分配上级部门id
