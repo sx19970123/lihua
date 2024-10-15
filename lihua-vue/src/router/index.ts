@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Layout from '@/layout/index.vue'
-import MiddleView from '@/components/middle-view/index.vue'
-import Iframe from '@/components/iframe/index.vue'
 
 /**
  * 说明：静态路由基于vue router，在项目中进行了逻辑定制

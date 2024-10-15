@@ -266,7 +266,7 @@
                 :fieldNames="{label: 'name', value: 'id'}"/>
           </a-form-item>
           <a-form-item label="部门" class="form-item-single-line">
-            <div style="margin-top: 0px">
+            <div style="margin-top: 0">
               <a-checkable-tag v-model:checked="deptTreeSetting.checked" @click="handleCheckedAllKeys">全选/全不选</a-checkable-tag>
               <a-checkable-tag v-model:checked="deptTreeSetting.expand" @click="handleExpanded">展开/折叠</a-checkable-tag>
               <a-checkable-tag v-model:checked="deptTreeSetting.checkStrictly" @click=" deptTreeSetting.checkStrictly ? sysUserDTO.deptIdList = [] : ''">父子关联</a-checkable-tag>

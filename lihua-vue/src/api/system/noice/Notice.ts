@@ -109,7 +109,6 @@ export const star = (noticeId: string, star: string) => {
 /**
  * 消息通知设置已读
  * @param noticeId
- * @param star
  */
 export const read = (noticeId: string) => {
     return request({

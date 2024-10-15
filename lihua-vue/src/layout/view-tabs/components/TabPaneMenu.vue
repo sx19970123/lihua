@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import { useViewTabsStore } from "@/stores/modules/viewTabs";
-import {useRoute, useRouter} from "vue-router";
+import { useRouter} from "vue-router";
 import { viewTab } from "@/api/system/view-tab/ViewTab.ts";
 import { message } from "ant-design-vue";
 import { StarFilled , StarOutlined ,LockOutlined , UnlockOutlined} from '@ant-design/icons-vue';
@@ -61,16 +61,13 @@ import type { StarViewType } from "@/api/system/view-tab/type/SysViewTab.ts";
 const viewTabsStore = useViewTabsStore()
 const tabPane = defineProps(['tab','index'])
 const emit = defineEmits(['routeSkip','cancelKeepAlive'])
-const route = useRoute()
 const router = useRouter()
 
 const handleClickMenuTab = ({ key }:{ key :string }) => {
   const tab = tabPane.tab
   switch (key) {
     case "reload": {
-      if (route.name) {
-        viewTabsStore.regenerateComponentKey()
-      }
+      viewTabsStore.regenerateComponentKey()
       break
     }
     case "newPage": {

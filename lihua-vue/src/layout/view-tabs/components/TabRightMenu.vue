@@ -61,7 +61,7 @@
               </template>
             </a-empty>
           </a-sub-menu>
-          <a-divider style="margin: 0px"/>
+          <a-divider style="margin: 0"/>
           <a-menu-item class="menu-item-min-width" key="close-all" danger>
             <CloseOutlined />
             关闭全部

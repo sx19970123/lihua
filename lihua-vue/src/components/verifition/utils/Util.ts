@@ -1,8 +1,8 @@
 export function resetSize(vm: any) {
-    var img_width, img_height, bar_width, bar_height;	//图片的宽度、高度，移动条的宽度、高度
+    let img_width, img_height, bar_width, bar_height;	//图片的宽度、高度，移动条的宽度、高度
 
-    var parentWidth = vm.$el.parentNode.offsetWidth || document.documentElement.offsetWidth
-    var parentHeight = vm.$el.parentNode.offsetHeight || document.documentElement.offsetHeight
+    const parentWidth = vm.$el.parentNode.offsetWidth || document.documentElement.offsetWidth;
+    const parentHeight = vm.$el.parentNode.offsetHeight || document.documentElement.offsetHeight;
     if (vm.imgSize.width.indexOf('%') != -1) {
         img_width = parseInt(vm.imgSize.width) / 100 * parentWidth + 'px'
     } else {

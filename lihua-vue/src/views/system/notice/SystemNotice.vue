@@ -239,6 +239,8 @@ import NoticePreview from "@/components/notice-preview/index.vue"
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {getUserOptionByUserIds} from "@/api/system/user/User.ts";
+import PublishAir from "@/components/icon/publish-air/PublishAir.vue";
+import Cancel from "@/components/icon/cancel/Cancel.vue";
 const {sys_notice_type, sys_notice_status, 	sys_notice_user_scope, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_status", "sys_notice_user_scope", "sys_notice_priority")
 // 查询列表
 const initSearch = () => {

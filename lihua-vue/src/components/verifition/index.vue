@@ -33,7 +33,7 @@
  * */
 import VerifySlide from './Verify/VerifySlide.vue'
 import VerifyPoints from './Verify/VerifyPoints.vue'
-import {computed, ref, watch, toRefs, watchEffect, useTemplateRef} from 'vue';
+import {computed, ref, toRefs, watchEffect, useTemplateRef} from 'vue';
 
 export default {
   name: 'Vue2Verify',
@@ -190,8 +190,8 @@ export default {
 
   .verify-tips {
     position: absolute;
-    left: 0px;
-    bottom: 0px;
+    left: 0;
+    bottom: 0;
     width: 100%;
     height: 30px;
     line-height: 30px;
@@ -270,13 +270,13 @@ export default {
     background: #333;
     text-align: center;
     box-sizing: content-box;
-    border: 0px solid #666;
+    border: 0 solid #666;
     border-radius: 8px;
   }
 
   .verify-bar-area .verify-move-block {
     position: absolute;
-    top: 0px;
+    top: 0;
     left: 0;
     background: #202020;
     cursor: pointer;
@@ -298,7 +298,7 @@ export default {
     cursor: pointer;
     box-sizing: content-box;
     margin: 1px;
-    border: 0px solid rgba(0, 0, 0, 0);
+    border: 0 solid rgba(0, 0, 0, 0);
   }
 
   .verify-img-panel {
@@ -453,8 +453,8 @@ export default {
 
 .verify-tips {
   position: absolute;
-  left: 0px;
-  bottom: 0px;
+  left: 0;
+  bottom: 0;
   width: 100%;
   height: 30px;
   line-height: 30px;
@@ -538,13 +538,13 @@ export default {
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
-  border: 0px solid #ddd;
+  border: 0 solid #ddd;
   -webkit-border-radius: 8px;
 }
 
 .verify-bar-area .verify-move-block {
   position: absolute;
-  top: 0px;
+  top: 0;
   left: 0;
   background: #fff;
   cursor: pointer;
@@ -570,7 +570,7 @@ export default {
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   margin: 1px;
-  border: 0px solid rgba(0, 0, 0, 0);
+  border: 0 solid rgba(0, 0, 0, 0);
 }
 
 .verify-img-panel {

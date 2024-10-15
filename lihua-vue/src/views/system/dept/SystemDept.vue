@@ -270,6 +270,8 @@ import {downloadByPath, handleFunDownload} from "@/utils/FileDownload.ts";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
+import PickUp from "@/components/icon/pick-up/PickUp.vue";
+import Unfold from "@/components/icon/unfold/Unfold.vue";
 const {sys_status} = initDict("sys_status")
 const router = useRouter()
 // 显示更多按钮

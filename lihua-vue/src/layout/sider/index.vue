@@ -17,7 +17,7 @@ import {usePermissionStore} from "@/stores/modules/permission";
 import {useThemeStore} from "@/stores/modules/theme";
 import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
 import {useRoute,useRouter} from "vue-router";
-import {computed, onMounted, reactive, watch} from "vue";
+import {computed, reactive, watch} from "vue";
 const themeStore = useThemeStore()
 const route = useRoute()
 const router = useRouter()

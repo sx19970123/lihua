@@ -48,7 +48,7 @@
 import {aesEncrypt} from "../utils/Ase.ts"
 import {resetSize} from '../utils/Util.ts'
 import {reqGet, reqCheck} from "../api/index.ts"
-import {computed, onMounted, reactive, ref, watch, nextTick, toRefs, watchEffect, getCurrentInstance} from 'vue';
+import {computed, onMounted, reactive, ref, watch, nextTick, toRefs, getCurrentInstance} from 'vue';
 //  "captchaType":"blockPuzzle",
 export default {
   name: 'VerifySlide',
@@ -224,8 +224,8 @@ export default {
         } else {           //兼容移动端
           var x = e.touches[0].pageX;
         }
-        var bar_area_left = barArea.value.getBoundingClientRect().left;
-        var move_block_left = x - bar_area_left //小方块相对于父元素的left值
+        const bar_area_left = barArea.value.getBoundingClientRect().left;
+        let move_block_left = x - bar_area_left; //小方块相对于父元素的left值
         if (move_block_left >= barArea.value.offsetWidth - parseInt(parseInt(blockSize.value.width) / 2) - 2) {
           move_block_left = barArea.value.offsetWidth - parseInt(parseInt(blockSize.value.width) / 2) - 2;
         }
@@ -246,7 +246,7 @@ export default {
       endMovetime.value = +new Date();
       //判断是否重合
       if (status.value && isEnd.value == false) {
-        var moveLeftDistance = parseInt((moveBlockLeft.value || '').replace('px', ''));
+        let moveLeftDistance = parseInt((moveBlockLeft.value || '').replace('px', ''));
         moveLeftDistance = moveLeftDistance * 310 / parseInt(setSize.imgWidth)
         let data = {
           captchaType: captchaType.value,
@@ -272,10 +272,10 @@ export default {
             }
             passFlag.value = true
             tipWords.value = `${((endMovetime.value - startMoveTime.value) / 1000).toFixed(2)}s验证成功`
-            var captchaVerification = secretKey.value ? aesEncrypt(backToken.value + '---' + JSON.stringify({
+            const captchaVerification = secretKey.value ? aesEncrypt(backToken.value + '---' + JSON.stringify({
               x: moveLeftDistance,
               y: 5.0
-            }), secretKey.value) : backToken.value + '---' + JSON.stringify({x: moveLeftDistance, y: 5.0})
+            }), secretKey.value) : backToken.value + '---' + JSON.stringify({x: moveLeftDistance, y: 5.0});
             setTimeout(() => {
               tipWords.value = ""
               proxy.$parent.closeBox();

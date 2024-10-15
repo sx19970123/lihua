@@ -48,18 +48,15 @@
  * VerifyPoints
  * @description 点选
  * */
-import {resetSize, _code_chars, _code_color1, _code_color2} from '../utils/Util.ts'
+import {resetSize} from '../utils/Util.ts'
 import {aesEncrypt} from "../utils/Ase.ts"
 import {reqGet, reqCheck} from "../api/index.ts"
 import {
-  computed,
   onMounted,
   reactive,
   ref,
-  watch,
   nextTick,
   toRefs,
-  watchEffect,
   getCurrentInstance,
   useTemplateRef
 } from 'vue';
@@ -159,7 +156,7 @@ export default {
         setTimeout(() => {
           // var flag = this.comparePos(this.fontPos, this.checkPosArr);
           //发送后端请求
-          var captchaVerification = secretKey.value ? aesEncrypt(backToken.value + '---' + JSON.stringify(checkPosArr), secretKey.value) : backToken.value + '---' + JSON.stringify(checkPosArr)
+          const captchaVerification = secretKey.value ? aesEncrypt(backToken.value + '---' + JSON.stringify(checkPosArr), secretKey.value) : backToken.value + '---' + JSON.stringify(checkPosArr);
           let data = {
             captchaType: captchaType.value,
             "pointJson": secretKey.value ? aesEncrypt(JSON.stringify(checkPosArr), secretKey.value) : JSON.stringify(checkPosArr),
@@ -196,8 +193,8 @@ export default {
     }
     //获取坐标
     const getMousePos = function (obj, e) {
-      var x = e.offsetX
-      var y = e.offsetY
+      const x = e.offsetX;
+      const y = e.offsetY;
       return {x, y}
     }
     //创建坐标点
@@ -238,11 +235,11 @@ export default {
 
     //坐标转换函数
     const pointTransfrom = function (pointArr, imgSize) {
-      var newPointArr = pointArr.map(p => {
+      const newPointArr = pointArr.map(p => {
         let x = Math.round(310 * p.x / parseInt(imgSize.imgWidth))
         let y = Math.round(155 * p.y / parseInt(imgSize.imgHeight))
         return {x, y}
-      })
+      });
       return newPointArr
     }
     return {

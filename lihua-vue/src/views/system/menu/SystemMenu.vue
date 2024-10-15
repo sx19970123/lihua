@@ -325,6 +325,8 @@ import {type FormInstance, message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import { useThemeStore } from "@/stores/modules/theme";
 import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
+import PickUp from "@/components/icon/pick-up/PickUp.vue";
+import Unfold from "@/components/icon/unfold/Unfold.vue";
 const themeStore = useThemeStore()
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {
