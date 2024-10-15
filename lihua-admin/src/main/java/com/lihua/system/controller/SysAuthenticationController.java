@@ -41,7 +41,6 @@ public class SysAuthenticationController extends BaseController {
 
     /**
      * 用户登录
-     * @param currentUser
      */
     @PostMapping("login")
     @RateLimiter
@@ -71,8 +70,6 @@ public class SysAuthenticationController extends BaseController {
 
     /**
      * 获取登录公钥
-     * @param requestKey
-     * @return
      */
     @GetMapping("publicKey/{requestKey}")
     public String getPublicKey(@PathVariable("requestKey") String requestKey) {
@@ -81,7 +78,6 @@ public class SysAuthenticationController extends BaseController {
 
     /**
      * 检擦登录配置
-     * @return
      */
     @GetMapping("checkLoginSetting")
     public String checkLoginSetting() {
@@ -92,7 +88,6 @@ public class SysAuthenticationController extends BaseController {
 
     /**
      * 从 SecurityContextHolder 中获取用户信息返回
-     * @return
      */
     @GetMapping("info")
     public String getUserInfo() {
@@ -112,7 +107,6 @@ public class SysAuthenticationController extends BaseController {
 
     /**
      * 数据更新
-     * @return
      */
     @PostMapping("reloadData")
     @RateLimiter
@@ -123,8 +117,6 @@ public class SysAuthenticationController extends BaseController {
 
     /**
      * 检查用户名是否重复
-     * @param username
-     * @return
      */
     @PostMapping("checkUserName/{username}")
     public String checkUserName(@PathVariable("username") String username) {

@@ -10,35 +10,26 @@ public interface SysLogService {
 
     /**
      * 保存日志到数据库
-     * @param sysLogVO
-     * @return
      */
     void insert(SysLogVO sysLogVO);
 
     /**
      * 查询日志列表
-     * @param sysLogDTO
-     * @return
      */
     IPage<? extends SysLogVO> findPage(SysLogDTO sysLogDTO);
 
     /**
      * 根据主键查询日志
-     * @return
      */
     SysLogVO findById(String id);
 
     /**
      * 根据缓存查询日志
-     * @param cacheKey
-     * @return
      */
     SysLogVO findByCacheKey(String cacheKey);
 
     /**
      * 导出 excel
-     * @param sysLogDTO
-     * @return
      */
     String exportExcel(SysLogDTO sysLogDTO);
 

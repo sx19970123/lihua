@@ -12,7 +12,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -56,8 +55,6 @@ public class LogAspect {
 
     /**
      * 异常通知，当执行方法发生异常时记录日志
-     * @param joinPoint
-     * @param log
      */
     @AfterThrowing(pointcut = "@annotation(log)", throwing = "exception")
     public void afterThrowing(JoinPoint joinPoint, Log log, Throwable exception) {

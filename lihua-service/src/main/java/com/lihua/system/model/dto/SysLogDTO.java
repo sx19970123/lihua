@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.lihua.model.BaseDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * 系统日志
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SysLogDTO extends BaseDTO {
     /**

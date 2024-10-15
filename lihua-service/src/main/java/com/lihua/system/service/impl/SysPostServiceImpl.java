@@ -14,7 +14,6 @@ import com.lihua.system.entity.SysPost;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.mapper.SysPostMapper;
 import com.lihua.system.model.dto.SysPostDTO;
-import com.lihua.system.model.vo.SysDeptVO;
 import com.lihua.system.model.vo.SysPostVO;
 import com.lihua.system.service.SysPostService;
 import com.lihua.utils.dict.DictUtils;
@@ -165,7 +164,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         // 无法倒入的部门列表
         List<SysPostVO> errorPostVos = new ArrayList<>();
         // 可导入的部门列表
-        List<SysPostVO> importPostVos = new ArrayList<>();
+        List<SysPostVO> importPostVos;
 
         // sysPostVOList 中存在的重复数据(code)
         Set<String> postCodeRepeatSet = new HashSet<>();
@@ -215,11 +214,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
             // 过滤邮箱（格式）
             boolean filterEmail = filterEmail(sysPostVO, errorPostVos);
-            if (!filterEmail) {
-                return false;
-            }
-
-            return true;
+            return filterEmail;
         }).toList();
 
         // 处理完毕后获得两批数据：通过校验可导入 / 数据存在异常需用户重新处理
@@ -413,8 +408,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     /**
      * 获取查询列表/导出excel相关的QueryWrapper
-     * @param dto
-     * @return
      */
     private QueryWrapper<SysPost> getQueryWrapper(SysPostDTO dto) {
         QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();

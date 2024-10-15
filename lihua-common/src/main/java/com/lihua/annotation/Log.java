@@ -16,25 +16,21 @@ public @interface Log {
 
     /**
      * 模块描述
-     * @return
      */
     String description();
 
     /**
      * 操作类型
-     * @return
      */
     LogTypeEnum type();
 
     /**
      * 排除参数
-     * @return
      */
     String[] excludeParams() default {};
 
     /**
      * 记录返回结果
-     * @return
      */
     boolean recordResult() default true;
 }

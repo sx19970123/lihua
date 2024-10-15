@@ -17,7 +17,6 @@ public class TreeUtils {
 
     /**
      * 通过lambda表达式构建
-     * @return
      */
     public static LambdaTreeUtils lambda() {
         return new LambdaTreeUtils();
@@ -26,9 +25,6 @@ public class TreeUtils {
     /**
      * 将 List<T> 构建为 树形结构 ，默认属性为 id parentId children
      * 可通过重载指定属性
-     * @param list
-     * @return
-     * @param <T>
      */
     public static <T> List<T> buildTree(List<T> list) {
         return buildTree(list,DEFAULT_ID,DEFAULT_PARENT_ID,DEFAULT_CHILDREN);
@@ -45,13 +41,13 @@ public class TreeUtils {
                 .map(item -> Objects.requireNonNull(get(item, finalPropKeyName)).toString())
                 .toList();
 
-        List<T> respList = new ArrayList<T>();
+        List<T> respList = new ArrayList<>();
 
         // 过滤出 parentKey（pid）不在 ids 集合中的数据，为根节点
         List<String> parentIds = list
                 .stream()
                 .filter(item -> {
-                    String parentId = (String) get(item, finalPropParentKeyName);
+                    String parentId = get(item, finalPropParentKeyName);
                     return org.springframework.util.StringUtils.hasText(parentId) && !ids.contains(parentId);
                 })
                 .map(item -> Objects.requireNonNull((String)get(item, finalPropParentKeyName)))
@@ -101,7 +97,9 @@ public class TreeUtils {
                 if (child == null) {
                     set(item,propChildrenName,new ArrayList<>());
                     child = getList(item, propChildrenName);
-                    child.addAll(children);
+                    if (child != null) {
+                        child.addAll(children);
+                    }
                 }
             }
 
@@ -142,7 +140,7 @@ public class TreeUtils {
         Class<?> cls = item.getClass();
         for (Method method : cls.getMethods()) {
             if (method.getName().equals("get" + prop)) {
-                Object invoke = null;
+                Object invoke;
                 try {
                     invoke = method.invoke(item);
                     if (invoke != null) {

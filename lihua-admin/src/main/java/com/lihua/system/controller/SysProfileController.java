@@ -37,8 +37,6 @@ public class SysProfileController extends BaseController {
 
     /**
      * 保存基础信息
-     * @param sysUser
-     * @return
      */
     @PostMapping("basics")
     @Log(description = "保存个人信息", type = LogTypeEnum.SAVE)
@@ -48,8 +46,6 @@ public class SysProfileController extends BaseController {
 
     /**
      * 保存主题
-     * @param sysUser
-     * @return
      */
     @PostMapping("theme")
     public String saveTheme(@RequestBody @Validated(ProfileValidation.ProfileThemeValidation.class) SysUser sysUser) {
@@ -58,8 +54,6 @@ public class SysProfileController extends BaseController {
 
     /**
      * 获取图片用户头像
-     * @param fullAvatarPath
-     * @return
      */
     @GetMapping("avatar")
     public ResponseEntity<StreamingResponseBody> getAvatar(@RequestParam("fullAvatarPath") String fullAvatarPath) {
@@ -68,7 +62,6 @@ public class SysProfileController extends BaseController {
 
     /**
      * 修改密码
-     * @return
      */
     @PostMapping("password")
     @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword", "confirmPassword" ,"oldPasswordRequestKey", "newPasswordRequestKey", "confirmPasswordRequestKey"})
@@ -106,8 +99,6 @@ public class SysProfileController extends BaseController {
 
     /**
      * 设置默认部门
-     * @param id
-     * @return
      */
     @PostMapping("default/{id}")
     public String setDefaultDept(@PathVariable("id") String id) {
@@ -116,8 +107,6 @@ public class SysProfileController extends BaseController {
 
     /**
      * 判断密码是否为默认密码
-     * @param newPassword
-     * @return
      */
     private boolean isDefaultPassword(String newPassword) {
         SysSetting setting = sysSettingService.getSysSettingByComponentName("DefaultPasswordSetting");

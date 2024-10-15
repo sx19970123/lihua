@@ -11,8 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-
 
 /**
  * 验证码请求controller，ajCaptcha 兼容 SpringBoot3 进行controller重写
@@ -29,7 +27,6 @@ public class CaptchaController extends BaseController{
     private SysSettingService sysSettingService;
     /**
      * 是否启用验证码
-     * @return
      */
     @GetMapping("enable")
     public String enable() {
@@ -38,9 +35,6 @@ public class CaptchaController extends BaseController{
 
     /**
      * 获取验证码
-     * @param data
-     * @param request
-     * @return
      */
     @PostMapping({"get"})
     public ResponseModel get(@RequestBody CaptchaVO data, HttpServletRequest request) {
@@ -52,9 +46,6 @@ public class CaptchaController extends BaseController{
 
     /**
      * 校验验证码
-     * @param data
-     * @param request
-     * @return
      */
     @PostMapping({"check"})
     public ResponseModel check(@RequestBody CaptchaVO data, HttpServletRequest request) {
@@ -66,7 +57,7 @@ public class CaptchaController extends BaseController{
         return this.captchaService.verification(data);
     }
 
-    public static final String getRemoteId(HttpServletRequest request) {
+    public static String getRemoteId(HttpServletRequest request) {
         String xfwd = request.getHeader("X-Forwarded-For");
         String ip = getRemoteIpFromXfwd(xfwd);
         String ua = request.getHeader("user-agent");

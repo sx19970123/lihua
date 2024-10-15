@@ -71,7 +71,6 @@ public class SysFileController extends BaseController {
     /**
      * 用于富文本编辑器的文件下载
      * @param filePath 文件路径
-     * @return
      */
     @GetMapping("download/editor")
     public ResponseEntity<StreamingResponseBody> download(@RequestParam(name = "filePath") String filePath) {
@@ -85,8 +84,6 @@ public class SysFileController extends BaseController {
 
     /**
      * 单文件上传
-     * @param file
-     * @return
      */
     @PostMapping("upload")
     @Log(description = "单文件上传", type = LogTypeEnum.UPLOAD)
@@ -96,8 +93,6 @@ public class SysFileController extends BaseController {
 
     /**
      * 多文件上传
-     * @param files
-     * @return
      */
     @PostMapping("uploads")
     @Log(description = "多文件上传", type = LogTypeEnum.UPLOAD)
@@ -108,7 +103,6 @@ public class SysFileController extends BaseController {
     /**
      * 通过 url 上传富文本文件
      * @param editorUrlFileModel 接收返回url实体
-     * @return
      */
     @PostMapping("editor/uploadByUrl")
     public String editorUpload(@RequestBody EditorUrlFileModel editorUrlFileModel) {
@@ -158,8 +152,6 @@ public class SysFileController extends BaseController {
 
     /**
      * 富文本上传文件
-     * @param files
-     * @return
      */
     @PostMapping("editor/uploads")
     public String editorUpload(@RequestParam("files") MultipartFile[] files) {
@@ -177,7 +169,6 @@ public class SysFileController extends BaseController {
     /**
      * 判断文件后缀名是否符合保存条件
      * @param filename 文件路径
-     * @return
      */
     private boolean endsWithEditorFileType(String filename) {
         for (String type : EDITOR_FILE_TYPE_ARRAY) {

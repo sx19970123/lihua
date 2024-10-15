@@ -37,7 +37,7 @@ public class SysPost extends BaseEntity {
     /**
      * 岗位名称
      */
-    @ExcelColumn(order = 0, index = 0, title = "*岗位名称", width = 12)
+    @ExcelColumn(index = 0, title = "*岗位名称", width = 12)
     @NotNull(message = "请输入岗位名称")
     private String name;
 

@@ -32,7 +32,7 @@ public class PreventDuplicateSubmitAspect {
     private RedisCache redisCache;
 
     @Before("@annotation(preventDuplicateSubmit)")
-    public void before(JoinPoint joinPoint, PreventDuplicateSubmit preventDuplicateSubmit) throws ExecutionException {
+    public void before(JoinPoint joinPoint, PreventDuplicateSubmit preventDuplicateSubmit) {
         // 获取请求
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         String rateLimiterName =

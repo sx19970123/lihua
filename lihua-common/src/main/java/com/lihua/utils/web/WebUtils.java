@@ -1,7 +1,6 @@
 package com.lihua.utils.web;
 
 import com.lihua.enums.ConstantEnum;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
@@ -9,6 +8,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 /**
@@ -18,8 +18,6 @@ public class WebUtils {
 
     /**
      * 将 json 数据进行响应
-     * @param response
-     * @param json
      */
     @SneakyThrows
     public static void renderJson(HttpServletResponse response, String json) {
@@ -31,7 +29,6 @@ public class WebUtils {
 
     /**
      * 获取当前请求的HttpServletRequest
-     * @return
      */
     public static HttpServletRequest getCurrentRequest() {
         return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
@@ -39,12 +36,13 @@ public class WebUtils {
 
     /**
      * 从请求中获取 token
-     * @param request
-     * @return
      */
-    public static String getToken(HttpServletRequest request) {
+    public static String getToken(@Nullable HttpServletRequest request) {
         // 获取 token
-        String token = request.getHeader(ConstantEnum.TOKEN_KEY.getValue());
+        String token = null;
+        if (request != null) {
+            token = request.getHeader(ConstantEnum.TOKEN_KEY.getValue());
+        }
         if (StringUtils.hasText(token)) {
             return token.replace(ConstantEnum.TOKEN_PREFIX.getValue(), "").trim();
         }

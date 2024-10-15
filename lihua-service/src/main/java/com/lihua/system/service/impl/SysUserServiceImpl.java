@@ -130,7 +130,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         checkUserData(sysUserDTO);
 
         BeanUtils.copyProperties(sysUserDTO, sysUser);
-        String id = null;
+        String id;
 
         // 插入/更新
         if (!StringUtils.hasText(sysUserDTO.getId())) {
@@ -248,7 +248,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         // 无法倒入的用户列表
         List<SysUserVO> errorUserVos = new ArrayList<>();
         // 可倒入的用户列表
-        List<SysUserVO> importUserVos = new ArrayList<>();
+        List<SysUserVO> importUserVos;
 
 
         // 记录到的重复数据：用户名/电话号码/邮箱
@@ -336,11 +336,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
             // 过滤掉excel表格中不符合的岗位（数量不匹配、系统不存在的数据）
             boolean filterPost = filterPost(sysUserVO, errorUserVos, sysDeptList);
-            if (!filterPost) {
-                return false;
-            }
-
-            return true;
+            return filterPost;
         }).toList();
 
         // 处理完毕后获得两批数据：通过校验可导入 / 数据存在异常需用户重新处理
@@ -403,7 +399,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     /**
      * 循环 sysUserVOS 记录重复数据
-     * @return
      */
     private void recordRepeatData(List<SysUserVO> sysUserVOS, Set<String> usernameRepeatSet, Set<String> phoneNumberRepeatSet, Set<String> emailRepeatSet) {
         // 去除列表中重复的数据（用户名/手机号码/邮箱）
@@ -435,8 +430,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     /**
      * 获取全部用户名
-     * @param sysUserVOS
-     * @return
      */
     private void getDbUserData(List<SysUserVO> sysUserVOS,
                                        Set<String> usernameDbSet,
@@ -468,7 +461,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     /**
      * 过滤重复数据
-     * @return
      */
     private boolean filterRepeatData(SysUserVO sysUserVO,
                                      List<SysUserVO> errorUserVos,
@@ -500,10 +492,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     /**
      * 过滤掉不合法的用户名
-     * @param sysUserVO
-     * @param errorUserVos
-     * @param usernames
-     * @return
      */
     private boolean filterUsername(SysUserVO sysUserVO,
                                    List<SysUserVO> errorUserVos,
@@ -524,10 +512,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     /**
      * 过滤掉不合法的手机号码
-     * @param sysUserVO
-     * @param errorUserVos
-     * @param phoneNumberDbSet
-     * @return
      */
     private boolean filterPhoneNumber(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, Set<String> phoneNumberDbSet) {
         String phoneNumber = sysUserVO.getPhoneNumber();
@@ -549,10 +533,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     /**
      * 过滤掉不合法的邮箱
-     * @param sysUserVO
-     * @param errorUserVos
-     * @param emailDbSet
-     * @return
      */
     private boolean filterEmail(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, Set<String> emailDbSet) {
         String email = sysUserVO.getEmail();
@@ -574,9 +554,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     /**
      * 过滤掉不合法的昵称
-     * @param sysUserVO
-     * @param errorUserVos
-     * @return
      */
     private boolean filterNickname(SysUserVO sysUserVO, List<SysUserVO> errorUserVos) {
         if (!StringUtils.hasText(sysUserVO.getNickname())) {
@@ -589,13 +566,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     /**
      * 过滤掉不合法的字典数据（性别、状态）
-     * @param sysUserVO
-     * @param errorUserVos
-     * @param userGender
-     * @param sysStatus
-     * @param genderJoin
-     * @param statusJoin
-     * @return
      */
     private boolean filterDictData(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<SysDictDataVO> userGender, List<SysDictDataVO> sysStatus, String genderJoin, String statusJoin) {
         List<SysDictDataVO> gender = userGender.stream().filter(ug -> ug.getLabel().equals(sysUserVO.getGender())).toList();
@@ -617,10 +587,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     /**
      * 过滤掉不合法的角色数据
-     * @param sysUserVO
-     * @param errorUserVos
-     * @param allRoleNameList
-     * @return
      */
     private boolean filterRole(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<String> allRoleNameList) {
         if (StringUtils.hasText(sysUserVO.getRoleName())) {
@@ -644,10 +610,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     /**
      * 过滤掉不合法的部门数据
-     * @param sysUserVO
-     * @param errorUserVos
-     * @param allDeptNameList
-     * @return
      */
     private boolean filterDept(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<String> allDeptNameList) {
         List<String> deptLabelList = sysUserVO.getDeptLabelList();
@@ -663,9 +625,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     /**
      * 过滤掉不合法的岗位
-     * @param sysUserVO
-     * @param errorUserVos
-     * @return
      */
     private boolean filterPost(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<SysDeptVO> sysDeptList) {
         List<String> deptLabelList = sysUserVO.getDeptLabelList();
@@ -800,13 +759,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         Map<String, List<SysUserDeptDTO>> groupByUserId = userDeptByUserIds.stream().collect(Collectors.groupingBy(SysUserDeptDTO::getUserId));
 
         // 为用户所属部门赋值
-        records.forEach(user -> {
-            groupByUserId.forEach((key, value) -> {
-                if (user.getId().equals(key)) {
-                    user.setDeptLabelList(value.stream().map(SysUserDeptDTO::getDeptName).toList());
-                }
-            });
-        });
+        records.forEach(user -> groupByUserId.forEach((key, value) -> {
+            if (user.getId().equals(key)) {
+                user.setDeptLabelList(value.stream().map(SysUserDeptDTO::getDeptName).toList());
+            }
+        }));
     }
 
     // 新增用户

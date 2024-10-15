@@ -3,7 +3,6 @@ package com.lihua.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.exception.ServiceException;
-import com.lihua.model.security.CurrentRouter;
 import com.lihua.system.entity.SysMenu;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysRoleMapper;
@@ -128,25 +127,6 @@ public class SysMenuServiceImpl implements SysMenuService {
         return status;
     }
 
-    // 处理 routerPathKey
-//    private void handleRouterPathKey(List<CurrentRouter> routerList, String parentKey) {
-//        for (CurrentRouter item : routerList) {
-//            String key = item.getPath().startsWith("/") ? item.getPath() : "/" + item.getPath();
-//            // 根据菜单层级关系设置key
-//            if ("0".equals(item.getParentId())) {
-//                item.setKey(key);
-//            } else if (parentKey != null){
-//                item.setKey(parentKey + key);
-//            }
-//            // 设置path
-//            item.setPath(item.getKey());
-//            // 存在子集继续递归
-//            if (item.getChildren() != null && !item.getChildren().isEmpty()) {
-//               handleRouterPathKey(item.getChildren(),item.getKey());
-//            }
-//        }
-//    }
-
 
     private List<SysMenu> findDeleteMenuSortInfo(List<String> ids) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
@@ -158,7 +138,6 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     /**
      * 处理同级菜单重新排序
-     * @param sysMenus
      */
     private void peerMenuReSort(List<SysMenu> sysMenus) {
        if (sysMenus.isEmpty()) {
@@ -186,7 +165,6 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     /**
      * 验证删除数据是否有未删除的子集
-     * @param ids
      */
     private void checkChildren(List<String> ids) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
@@ -211,7 +189,6 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     /**
      * 删除角色关联表数据
-     * @param ids
      */
     private void deleteRoleMenu(List<String> ids) {
         sysRoleMapper.deleteRoleMenuByMenuIds(ids);
@@ -219,7 +196,6 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     /**
      * 验证菜单状态
-     * @param ids
      */
     private void checkStatus(List<String> ids) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();

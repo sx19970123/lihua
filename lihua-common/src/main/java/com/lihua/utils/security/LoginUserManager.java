@@ -28,7 +28,6 @@ public class LoginUserManager {
 
     /**
      * 获取spring容器中的配置信息
-     * @return
      */
     private static LihuaConfig lihuaConfig() {
         return SpringUtils.getBean(LihuaConfig.class);
@@ -36,8 +35,6 @@ public class LoginUserManager {
 
     /**
      * 根据 token 获取用户信息
-     * @param token
-     * @return
      */
     public static LoginUser getLoginUser(String token) {
 
@@ -91,7 +88,6 @@ public class LoginUserManager {
 
     /**
      * 删除用户缓存
-     * @param token
      */
     public static void removeLoginUserCache(String token) {
         String decode = JwtUtils.decode(token);
@@ -101,8 +97,6 @@ public class LoginUserManager {
     /**
      * 获取 redis 存储的用户key
      * 用户key由四部分组成 1.固定前缀 2.用户id 3.当前时间戳 4.uuid随机数，中间由:连接
-     * @param userId
-     * @return
      */
     private static String getLoginUserKey(String userId) {
         return SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue()
@@ -114,8 +108,6 @@ public class LoginUserManager {
 
     /**
      * 通过缓存cacheKey获取用户id
-     * @param cacheKey
-     * @return
      */
     public static String getUserIdByCacheKey(String cacheKey) {
         if (!StringUtils.hasText(cacheKey)) {
@@ -132,8 +124,6 @@ public class LoginUserManager {
 
     /**
      * 通过缓存key获取用户登录时间戳
-     * @param cacheKey
-     * @return
      */
     public static long getLoginTimestampByCacheKey(String cacheKey) {
         if (!StringUtils.hasText(cacheKey)) {
@@ -150,8 +140,6 @@ public class LoginUserManager {
 
     /**
      * 通过缓存key获取用户登录时间
-     * @param cacheKey
-     * @return
      */
     public static LocalDateTime getLoginTimeByCacheKey(String cacheKey) {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(getLoginTimestampByCacheKey(cacheKey)), ZoneId.systemDefault());

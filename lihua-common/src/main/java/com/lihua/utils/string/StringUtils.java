@@ -4,8 +4,6 @@ public class StringUtils {
 
     /**
      * 字符串转首字母大写
-     * @param str
-     * @return
      */
     public static String initialUpperCase(String str) {
         if (!org.springframework.util.StringUtils.hasText(str)) {
@@ -21,8 +19,6 @@ public class StringUtils {
 
     /**
      * 字符串首字母小写
-     * @param str
-     * @return
      */
     public static String initialLowerCase(String str) {
         if (!org.springframework.util.StringUtils.hasText(str)) {

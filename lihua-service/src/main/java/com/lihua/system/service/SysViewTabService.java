@@ -9,15 +9,11 @@ import java.util.List;
 public interface SysViewTabService {
     /**
      * 根据用户id查询viewTab数据
-     * @param userId
-     * @return
      */
     List<CurrentViewTab> selectByUserId(String userId, List<CurrentRouter> routerVOList);
 
     /**
      * 保存viewTab收藏数据
-     * @param sysViewTab
-     * @return
      */
     CurrentViewTab save(SysViewTab sysViewTab);
 }

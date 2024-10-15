@@ -6,7 +6,6 @@ import com.lihua.system.entity.SysRole;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Set;
 
 public interface SysRoleMapper extends BaseMapper<SysRole> {
     // 根据用户id查询角色信息

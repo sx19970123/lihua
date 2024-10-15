@@ -106,7 +106,6 @@ public class SysProfileServiceImpl implements SysProfileService {
 
     /**
      * 验证手机号
-     * @param phoneNumber
      */
     private void checkPhoneNumber(String phoneNumber,String userId) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
@@ -123,7 +122,6 @@ public class SysProfileServiceImpl implements SysProfileService {
 
     /**
      * 验证邮箱
-     * @param email
      */
     private void checkEmailNumber(String email,String userId) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();

@@ -216,8 +216,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
     /**
      * 新增数据
-     * @param sysNoticeDTO
-     * @return
      */
     private String insert(SysNoticeDTO sysNoticeDTO) {
         SysNotice sysNotice = new SysNotice();
@@ -231,8 +229,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
     /**
      * 修改数据
-     * @param sysNoticeDTO
-     * @return
      */
     private String update(SysNoticeDTO sysNoticeDTO) {
         String status = getStatus(sysNoticeDTO.getId());
@@ -250,8 +246,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
     /**
      * 保存关联表数据
-     * @param id
-     * @param userIdList
      */
     private void saveUserNotice(String id, List<String> userIdList) {
         List<SysUserNotice> sysUserNotices = new ArrayList<>();
@@ -271,8 +265,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
     /**
      * 获取通知公告状态
-     * @param id
-     * @return
      */
     private String getStatus(String id) {
         QueryWrapper<SysNotice> queryWrapper = new QueryWrapper<>();

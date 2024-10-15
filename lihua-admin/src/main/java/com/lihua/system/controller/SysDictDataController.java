@@ -25,8 +25,6 @@ public class SysDictDataController extends BaseController {
 
     /**
      * 查询字典数据列表
-     * @param dictDataDTO
-     * @return
      */
     @PostMapping("list")
     public String findListByTypeCode(@RequestBody SysDictDataDTO dictDataDTO) {
@@ -38,8 +36,6 @@ public class SysDictDataController extends BaseController {
 
     /**
      * 查询下拉框中字典选项
-     * @param dictTypeCode
-     * @return
      */
     @GetMapping("option/{dictTypeCode}")
     public String findDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
@@ -53,8 +49,6 @@ public class SysDictDataController extends BaseController {
 
     /**
      * 保存字典数据
-     * @param sysDictData
-     * @return
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
@@ -65,8 +59,6 @@ public class SysDictDataController extends BaseController {
 
     /**
      * 删除字典数据
-     * @param ids
-     * @return
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping

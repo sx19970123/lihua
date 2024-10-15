@@ -10,27 +10,21 @@ public interface MonitorCacheService {
 
     /**
      * 内存占用
-     * @return
      */
     String memoryInfo();
 
     /**
      * 缓存组列表
-     * @return
      */
     List<CacheMonitor> cacheKeyGroups();
 
     /**
      * 根据key前缀获取所有相关 key
-     * @param keyPrefix
-     * @return
      */
     Set<String> cacheKeys(String keyPrefix);
 
     /**
      * 根据key获取缓存信息
-     * @param key
-     * @return
      */
     CacheMonitor cacheInfo(String key);
 

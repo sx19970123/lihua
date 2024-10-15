@@ -48,24 +48,22 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         // 配置拦截请求
-        http.authorizeHttpRequests(authorizeHttpRequestsCustomizer -> {
-            authorizeHttpRequestsCustomizer
-                    // 对于异步分发权限放开（涉及文件下载返回 ResponseEntity<StreamingResponseBody> 的情况）
-                    .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
-                    .requestMatchers(
-                            "/system/login", // 登录
-                            "/system/publicKey/**", // 获取公钥
-                            "/captcha/**", // 验证码
-                            "/system/sse/connect/**", // 连接sse
-                            "/system/file/download/**", // 文件下载
-                            "system/setting/GrayModelSetting", // 灰色模式设置
-                            "system/setting/SignInSetting", // 是否开启用户注册
-                            "/system/checkUserName/**", // 检查用户名
-                            "/system/register/**", // 注册
-                            "/druid/**" // druid数据库监控
-                    ).permitAll()
-                    .anyRequest().authenticated();
-        });
+        http.authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
+                // 对于异步分发权限放开（涉及文件下载返回 ResponseEntity<StreamingResponseBody> 的情况）
+                .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
+                .requestMatchers(
+                        "/system/login", // 登录
+                        "/system/publicKey/**", // 获取公钥
+                        "/captcha/**", // 验证码
+                        "/system/sse/connect/**", // 连接sse
+                        "/system/file/download/**", // 文件下载
+                        "system/setting/GrayModelSetting", // 灰色模式设置
+                        "system/setting/SignInSetting", // 是否开启用户注册
+                        "/system/checkUserName/**", // 检查用户名
+                        "/system/register/**", // 注册
+                        "/druid/**" // druid数据库监控
+                ).permitAll()
+                .anyRequest().authenticated());
 
         // 关闭csrf 关闭跨域拦截
         http
@@ -99,7 +97,6 @@ public class SecurityConfig {
 
     /**
      * 全局抛出 AuthenticationManager 用于用户信息验证
-     * @return
      */
     @Bean
     public AuthenticationManager authenticationManager() {

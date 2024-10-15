@@ -29,13 +29,8 @@ public class ControllerResponse<T> {
 
     /**
      * 将 状态码、状态信息、响应数据 进行封装返回
-     * @param resultCodeEnum
-     * @param msg
-     * @param data
-     * @return
-     * @param <T>
      */
     public static <T> ControllerResponse wrap(ResultCodeEnum resultCodeEnum, String msg, T data) {
-        return new ControllerResponse<T>(resultCodeEnum.getCode(), msg, data);
+        return new ControllerResponse<>(resultCodeEnum.getCode(), msg, data);
     }
 }

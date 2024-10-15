@@ -188,7 +188,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         // 无法倒入的部门列表
         List<SysDeptVO> errorDeptVos = new ArrayList<>();
         // 可导入的部门列表
-        List<SysDeptVO> importDeptVos = new ArrayList<>();
+        List<SysDeptVO> importDeptVos;
 
         // sysDeptVOS中存在的重复数据（name、code）
         Set<String> deptNameRepeatSet = new HashSet<>();
@@ -245,12 +245,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             }
 
             // 过滤namePath（验证部门名称路径的最后是否为部门名称）
-            boolean filterNamePath = filterNamePath(sysDeptVO, errorDeptVos);
-            if (!filterNamePath) {
-                return false;
-            }
-
-            return true;
+            return filterNamePath(sysDeptVO, errorDeptVos);
         }).toList();
 
         // 获取数据库中全部父级name-id

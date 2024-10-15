@@ -38,8 +38,6 @@ public enum ResultCodeEnum {
 
     /**
      * 通过枚举返回默认异常信息
-     * @param resultCodeEnum
-     * @return
      */
     public static String getDefaultExceptionMessage(ResultCodeEnum resultCodeEnum) {
         return resultCodeEnum.getCode() + "_" + resultCodeEnum.getDefaultMsg();

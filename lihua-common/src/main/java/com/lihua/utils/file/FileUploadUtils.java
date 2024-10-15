@@ -21,8 +21,6 @@ public class FileUploadUtils {
 
     /**
      * 单文件上传
-     * @param file
-     * @return
      */
     public static String upload(MultipartFile file) {
         return upload(file, false);
@@ -40,8 +38,6 @@ public class FileUploadUtils {
 
     /**
      * 多文件上传
-     * @param files
-     * @return
      */
     public static List<String> upload(MultipartFile[] files) {
         List<String> fileFullPathList = new ArrayList<>(files.length);

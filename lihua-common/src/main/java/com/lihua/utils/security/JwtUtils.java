@@ -12,8 +12,6 @@ public class JwtUtils {
 
     /**
      * 将一个字符串key 进行jwt 加密
-     * @param key
-     * @return
      */
     public static String create(String key) {
         return JWT
@@ -24,8 +22,6 @@ public class JwtUtils {
 
     /**
      * decode jwt
-     * @param jwtToken
-     * @return
      */
     public static String decode(String jwtToken) {
         return JWT
@@ -36,7 +32,6 @@ public class JwtUtils {
 
     /**
      * 验证 jwt 是否合法
-     * @param jwtToken
      */
     public static void verify(String jwtToken) {
         JWT

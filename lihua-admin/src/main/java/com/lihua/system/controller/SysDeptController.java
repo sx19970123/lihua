@@ -65,7 +65,6 @@ public class SysDeptController extends BaseController {
 
     /**
      * 菜单下拉框选项
-     * @return
      */
     @GetMapping("option")
     public String deptTreeOption() {

@@ -12,10 +12,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * 实现了 springsecurity 的 UserDetails
- * 用于 springsecurity内部认证处理
- */
 import java.util.List;
 
 @Data
@@ -103,7 +99,6 @@ public class LoginUser implements UserDetails {
 
     /**
      * 用户是否过期， true 表示未过期
-     * @return
      */
     @Override
     public boolean isAccountNonExpired() {
@@ -112,7 +107,6 @@ public class LoginUser implements UserDetails {
 
     /**
      * 用户是否锁定， true 表示未锁定
-     * @return
      */
     @Override
     public boolean isAccountNonLocked() {
@@ -121,7 +115,6 @@ public class LoginUser implements UserDetails {
 
     /**
      * 凭证（密码）是否过期， true 表示未过期
-     * @return
      */
     @Override
     public boolean isCredentialsNonExpired() {
@@ -130,7 +123,6 @@ public class LoginUser implements UserDetails {
 
     /**
      * 用户是否失效， true 表示已启用
-     * @return
      */
     @Override
     public boolean isEnabled() {

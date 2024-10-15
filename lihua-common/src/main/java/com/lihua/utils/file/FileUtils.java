@@ -13,10 +13,9 @@ public class FileUtils {
      * 通过网络url 地址获取文件名称
      * @param fileUrl 网络url地址
      * @param useRandomUUID 是否生成随机字符串
-     * @return
      */
     public static String getFileNameByURL(String fileUrl, boolean useRandomUUID) {
-        URL url = null;
+        URL url;
         try {
             url = new URL(fileUrl);
         } catch (MalformedURLException e) {

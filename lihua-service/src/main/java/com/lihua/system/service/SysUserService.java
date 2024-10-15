@@ -7,33 +7,27 @@ import com.lihua.system.model.dto.ResetPasswordDTO;
 import com.lihua.system.model.dto.SysUserDTO;
 import com.lihua.system.model.vo.SysUserVO;
 
-import java.io.File;
 import java.util.List;
 
 public interface SysUserService {
 
     /**
      * 用户列表页查询
-     * @param sysUserDTO
-     * @return
      */
     IPage<SysUserVO> findPage(SysUserDTO sysUserDTO);
 
     /**
      * 根据id查询用户信息
-     * @return
      */
     SysUserVO findById(String id);
 
     /**
      * 用户信息保存
-     * @return
      */
     String save(SysUserDTO sysUserDTO);
 
     /**
      * 删除用户信息
-     * @return
      */
     void deleteByIds(List<String> ids);
 
@@ -47,41 +41,31 @@ public interface SysUserService {
 
     /**
      * 导出excel
-     * @param sysUserDTO
-     * @return
      */
     String exportExcel(SysUserDTO sysUserDTO);
 
     /**
      * excel 批量导入
-     * @param sysUserVOS
-     * @return
      */
     ExcelImportResult importExcel(List<SysUserVO> sysUserVOS);
 
     /**
      * 系统用户选项（根据部门选择）
-     * @return
      */
     List<SysUser> userOption(String deptId);
 
     /**
      * 系统用户选项（根据用户id集合）
-     * @param userIdList
-     * @return
      */
     List<SysUser> userOption(List<String> userIdList);
 
     /**
      * 获取全部用户 id，包括停用用户
-     * @return
      */
     List<String> findAllUserIds();
 
     /**
      * 重置密码
-     * @param resetPasswordDTO
-     * @return
      */
     String resetPassword(ResetPasswordDTO resetPasswordDTO);
 }

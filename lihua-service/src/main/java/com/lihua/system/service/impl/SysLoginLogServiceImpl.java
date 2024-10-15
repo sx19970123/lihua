@@ -11,7 +11,6 @@ import com.lihua.system.service.SysLogService;
 import com.lihua.utils.excel.ExcelUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

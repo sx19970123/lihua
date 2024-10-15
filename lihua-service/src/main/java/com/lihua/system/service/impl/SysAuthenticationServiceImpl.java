@@ -8,7 +8,6 @@ import com.lihua.system.entity.*;
 import com.lihua.system.mapper.*;
 import com.lihua.system.model.dto.SysSettingDTO;
 import com.lihua.system.service.*;
-import com.lihua.utils.crypt.AesUtils;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.LoginUserManager;
@@ -346,23 +345,19 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
 
     private void handleSetViewTabKey(List<CurrentViewTab> currentViewTabList,List<CurrentRouter> routerList) {
-        currentViewTabList.forEach(tab -> {
-            routerList.forEach(item -> {
-                if (item.getId().equals(tab.getMenuId())) {
-                    tab.setRouterPathKey(item.getKey());
-                }
-                if (item.getChildren() != null && !item.getChildren().isEmpty()) {
-                    handleSetViewTabKey(currentViewTabList,item.getChildren());
-                }
-            });
-        });
+        currentViewTabList.forEach(tab -> routerList.forEach(item -> {
+            if (item.getId().equals(tab.getMenuId())) {
+                tab.setRouterPathKey(item.getKey());
+            }
+            if (item.getChildren() != null && !item.getChildren().isEmpty()) {
+                handleSetViewTabKey(currentViewTabList,item.getChildren());
+            }
+        }));
 
     }
 
     /**
      * 判断当前登录用户是否为超级管理员
-     * @param userId
-     * @return
      */
     private boolean isAdmin(String userId) {
         List<String> roleCodes = sysRoleMapper.selectCodeByUserId(userId);
@@ -372,9 +367,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     /**
      * spring security 默认将RULE_ 开头的字符串认定为角色，其余认定为权限；都存放在 GrantedAuthority 中
-     * @param roleList
-     * @param routerList
-     * @return
      */
     private List<String> handleAuthorities(List<CurrentRole> roleList,List<CurrentRouter> routerList) {
         // 过滤出用户权限信息
@@ -399,8 +391,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     /**
      * 处理menu数据为路由数据
-     * @param currentRouterList
-     * @return
      */
     public List<CurrentRouter> handleSysMenu(List<CurrentRouter> currentRouterList) {
         // 不需要权限数据

@@ -30,8 +30,6 @@ public class SysMenuController extends BaseController {
 
     /**
      * 列表查询
-     * @param sysMenu
-     * @return
      */
     @PostMapping("list")
     public String findList(@RequestBody SysMenu sysMenu) {
@@ -40,8 +38,6 @@ public class SysMenuController extends BaseController {
 
     /**
      * 根据主键查询
-     * @param id
-     * @return
      */
     @GetMapping("{id}")
     public String findById(@PathVariable("id") @NotNull(message = "请选择数据") String id) {
@@ -50,8 +46,6 @@ public class SysMenuController extends BaseController {
 
     /**
      * 保存菜单数据，根据不同菜单类型进行分别校验
-     * @param sysMenu
-     * @return
      */
 
     @PreAuthorize("hasRole('ROLE_admin')")
@@ -101,8 +95,6 @@ public class SysMenuController extends BaseController {
 
     /**
      * 根据id删除菜单数据
-     * @param ids
-     * @return
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
@@ -114,7 +106,6 @@ public class SysMenuController extends BaseController {
 
     /**
      * 菜单下拉框选项
-     * @return
      */
     @GetMapping("option")
     public String menuTreeOption() {

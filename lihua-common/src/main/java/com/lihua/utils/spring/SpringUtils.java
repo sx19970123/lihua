@@ -6,6 +6,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nullable;
+
 /**
  * 非 spring 管理的类获取 bean 容器工具类
  */
@@ -15,7 +17,7 @@ public class SpringUtils implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     @Override
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
+    public void setApplicationContext(@Nullable ApplicationContext context) throws BeansException {
         applicationContext = context;
     }
 

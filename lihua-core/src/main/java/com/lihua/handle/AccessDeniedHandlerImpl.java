@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 用户访问权限不足处理
- *
+ * <p>
  * 因配置了全局异常处理
  * 请在 GlobalExceptionHandle.handleRuntimeException 进行配置
  */

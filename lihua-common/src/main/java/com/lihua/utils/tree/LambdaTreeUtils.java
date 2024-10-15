@@ -24,9 +24,7 @@ public class LambdaTreeUtils {
         List<T> respTreeList = new ArrayList<>();
         // 获取全部根节点id
         List<String> parentKeyList = getParentKeyList(originCollection, getKeyMethod, getParentKeyMethod);
-        parentKeyList.forEach(parentKey -> {
-            respTreeList.addAll(build(originCollection,getKeyMethod,getParentKeyMethod,getChildrenMethod,setChildrenMethod,parentKey));
-        });
+        parentKeyList.forEach(parentKey -> respTreeList.addAll(build(originCollection,getKeyMethod,getParentKeyMethod,getChildrenMethod,setChildrenMethod,parentKey)));
         return respTreeList;
     }
 

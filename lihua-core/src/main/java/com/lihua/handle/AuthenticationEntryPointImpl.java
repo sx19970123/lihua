@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 /**
  * 用户未认证处理器
- *
+ * <p>
  * 因配置了全局异常处理
  * 请在 GlobalExceptionHandle.handleAuthenticationException 进行配置
  */

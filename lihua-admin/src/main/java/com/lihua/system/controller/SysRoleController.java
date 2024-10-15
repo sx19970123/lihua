@@ -28,8 +28,6 @@ public class SysRoleController extends BaseController {
 
     /**
      * 查询角色信息
-     * @param sysRoleDTO
-     * @return
      */
     @PostMapping("page")
     public String findPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysRoleDTO sysRoleDTO) {
@@ -38,8 +36,6 @@ public class SysRoleController extends BaseController {
 
     /**
      * 根据主键查询
-     * @param id
-     * @return
      */
     @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
@@ -48,8 +44,6 @@ public class SysRoleController extends BaseController {
 
     /**
      * 保存角色信息
-     * @param sysRole
-     * @return
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
@@ -60,9 +54,6 @@ public class SysRoleController extends BaseController {
 
     /**
      * 修改角色状态
-     * @param id
-     * @param currentStatus
-     * @return
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
@@ -73,8 +64,6 @@ public class SysRoleController extends BaseController {
 
     /**
      * 删除角色信息
-     * @param ids
-     * @return
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
@@ -86,7 +75,6 @@ public class SysRoleController extends BaseController {
 
     /**
      * 获取当前用户下的角色列表
-     * @return
      */
     @GetMapping("option")
     public String getRoleOption() {

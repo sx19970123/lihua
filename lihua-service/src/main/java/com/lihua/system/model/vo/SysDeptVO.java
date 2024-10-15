@@ -17,7 +17,7 @@ public class SysDeptVO extends SysDept {
     /**
      * 部门名称路径
      */
-    @ExcelColumn(order = 0, index = 0, title = "*部门名称路径", width = 12)
+    @ExcelColumn(index = 0, title = "*部门名称路径", width = 12)
     private String namePath;
 
     /**

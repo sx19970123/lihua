@@ -52,13 +52,11 @@ public class ServerSentEventsManager {
 
     // 向指定的用户列表发送消息
     public static <T> void send(List<String> userIds, ServerSentEventsResult<T> serverSentEventsResult) {
-        userIds.forEach(userId -> {
-            SSE_CACHE.forEach((key, sseEmitter) -> {
-                if (key.startsWith(userId)) {
-                    sendMessage(sseEmitter, key, serverSentEventsResult);
-                }
-            });
-        });
+        userIds.forEach(userId -> SSE_CACHE.forEach((key, sseEmitter) -> {
+            if (key.startsWith(userId)) {
+                sendMessage(sseEmitter, key, serverSentEventsResult);
+            }
+        }));
     }
 
     // 向指定单个用户发送消息

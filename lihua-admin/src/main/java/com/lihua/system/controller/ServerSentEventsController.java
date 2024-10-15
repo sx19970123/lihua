@@ -25,7 +25,6 @@ public class ServerSentEventsController extends BaseController {
 
     /**
      * 关闭 sse 连接
-     * @return
      */
     @PostMapping("close/{clientKey}")
     public String close(@PathVariable("clientKey") String clientKey) {

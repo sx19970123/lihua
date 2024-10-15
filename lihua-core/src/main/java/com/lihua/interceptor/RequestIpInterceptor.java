@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,8 +22,10 @@ public class RequestIpInterceptor implements HandlerInterceptor {
     private SysSettingService sysSettingService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        ipMatch(request.getRemoteAddr());
+    public boolean preHandle(@Nullable HttpServletRequest request, @Nullable HttpServletResponse response,@Nullable  Object handler) {
+        if (request != null) {
+            ipMatch(request.getRemoteAddr());
+        }
         return true;
     }
 

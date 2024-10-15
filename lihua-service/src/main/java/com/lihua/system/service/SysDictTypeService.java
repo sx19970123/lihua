@@ -10,38 +10,29 @@ public interface SysDictTypeService {
 
     /**
      * 列表查询
-     * @param dictTypeDTO
      * @return 列表数据
      */
     IPage<SysDictType> findPage(SysDictTypeDTO dictTypeDTO);
 
     /**
      * 根据id查询数据
-     * @param id
-     * @return
      */
     SysDictType findById(String id);
 
     /**
      * 保存方法
-     * @param sysDictType
      * @return 保存数据的主键id
      */
     String save(SysDictType sysDictType);
 
     /**
      * 批量删除数据
-     * @param ids
-     * @return
      */
     void deleteByIds(List<String> ids);
 
 
     /**
      * 修改状态
-     * @param id
-     * @param currentStatus
-     * @return
      */
     String updateStatus(String id, String currentStatus);
 

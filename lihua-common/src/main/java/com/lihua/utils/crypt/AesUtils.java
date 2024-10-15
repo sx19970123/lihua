@@ -1,20 +1,13 @@
 package com.lihua.utils.crypt;
 
-import com.lihua.enums.SysBaseEnum;
 import lombok.SneakyThrows;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.Base64;
-
-import static com.auth0.jwt.impl.PublicClaims.ALGORITHM;
-import static javax.crypto.Cipher.SECRET_KEY;
 
 /**
  * AES对称加密解密

@@ -27,7 +27,7 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户名
      */
-    @ExcelColumn(order = 0, index = 0, title = "用户信息->*用户名", width = 6)
+    @ExcelColumn(index = 0, title = "用户信息->*用户名", width = 6)
     @NotNull(message = "用户名不能为空")
     private String username;
 

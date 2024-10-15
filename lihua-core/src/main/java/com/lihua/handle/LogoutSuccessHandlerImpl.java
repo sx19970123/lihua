@@ -16,7 +16,7 @@ import java.io.IOException;
 @Component
 public class LogoutSuccessHandlerImpl extends BaseController implements LogoutSuccessHandler {
     @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         String token = WebUtils.getToken(request);
 
         LoginUser loginUser = LoginUserManager.getLoginUser(token);

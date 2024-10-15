@@ -24,8 +24,6 @@ public class GlobalExceptionHandle extends BaseController {
 
     /**
      * 捕获全局 RuntimeException 异常
-     * @param e
-     * @return
      */
     @ExceptionHandler(RuntimeException.class)
     public String handleRuntimeException(Exception e) {
@@ -35,8 +33,6 @@ public class GlobalExceptionHandle extends BaseController {
 
     /**
      * 捕获全局 ServiceException 异常
-     * @param e
-     * @return
      */
     @ExceptionHandler(ServiceException.class)
     public String handleServiceException(Exception e) {
@@ -46,8 +42,6 @@ public class GlobalExceptionHandle extends BaseController {
 
     /**
      * 捕获全局 FileException 异常
-     * @param e
-     * @return
      */
     @ExceptionHandler(FileException.class)
     public String handleFileException(Exception e) {
@@ -57,8 +51,6 @@ public class GlobalExceptionHandle extends BaseController {
 
     /**
      * 捕获全局 IpIllegalException 异常
-     * @param e
-     * @return
      */
     @ExceptionHandler(IpIllegalException.class)
     public String handleIpIllegalException(Exception e) {
@@ -68,8 +60,6 @@ public class GlobalExceptionHandle extends BaseController {
 
     /**
      * 捕获全局 RateLimiterException 异常
-     * @param e
-     * @return
      */
     @ExceptionHandler(RateLimiterException.class)
     public String handleRateLimiterException(Exception e) {
@@ -79,8 +69,6 @@ public class GlobalExceptionHandle extends BaseController {
 
     /**
      * 捕获全局 RateLimiterException 异常
-     * @param e
-     * @return
      */
     @ExceptionHandler(DuplicateSubmitException.class)
     public String handleDuplicateSubmitException(Exception e) {
@@ -90,8 +78,6 @@ public class GlobalExceptionHandle extends BaseController {
 
     /**
      * 捕获全局spring validation 异常信息
-     * @param e
-     * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public String handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
@@ -108,8 +94,6 @@ public class GlobalExceptionHandle extends BaseController {
 
     /**
      * 处理spring mvc 参数格式异常信息
-     * @param e
-     * @return
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public String handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
@@ -119,7 +103,6 @@ public class GlobalExceptionHandle extends BaseController {
 
     /**
      * 权限不足全局处理
-     * @return
      */
     @ExceptionHandler(AuthorizationDeniedException.class)
     public String handleAuthorizationDeniedException() {

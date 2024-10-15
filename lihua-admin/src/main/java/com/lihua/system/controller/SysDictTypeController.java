@@ -24,8 +24,6 @@ public class SysDictTypeController extends BaseController {
 
     /**
      * 字典类型查询
-     * @param dictTypeDTO
-     * @return
      */
     @PostMapping("page")
     public String findPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysDictTypeDTO dictTypeDTO) {
@@ -34,8 +32,6 @@ public class SysDictTypeController extends BaseController {
 
     /**
      * 根据主键查询
-     * @param id
-     * @return
      */
     @GetMapping("{id}")
     public String findById(@PathVariable("id") String id) {
@@ -44,8 +40,6 @@ public class SysDictTypeController extends BaseController {
 
     /**
      * 保存字典类型
-     * @param sysDictType
-     * @return
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
@@ -56,9 +50,6 @@ public class SysDictTypeController extends BaseController {
 
     /**
      * 修改字典状态
-     * @param id
-     * @param currentStatus
-     * @return
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
@@ -69,8 +60,6 @@ public class SysDictTypeController extends BaseController {
 
     /**
      * 删除字典类型
-     * @param ids
-     * @return
      */
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping

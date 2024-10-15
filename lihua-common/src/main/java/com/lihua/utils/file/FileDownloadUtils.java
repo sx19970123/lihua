@@ -136,7 +136,6 @@ public class FileDownloadUtils {
     /**
      * 文件下载
      * @param file 文件
-     * @return
      */
     public static ResponseEntity<StreamingResponseBody> download(File file) {
         if (file == null || !file.exists()) {
@@ -153,8 +152,6 @@ public class FileDownloadUtils {
 
     /**
      * 文件打包下载
-     * @param fileList
-     * @return
      */
     public static ResponseEntity<StreamingResponseBody> download(List<File> fileList) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -183,12 +180,8 @@ public class FileDownloadUtils {
 
     /**
      * 文件下载
-     * @param inputStream
-     * @param fileName
-     * @return
-     * @throws UnsupportedEncodingException
      */
-    public static ResponseEntity<StreamingResponseBody> download(InputStream inputStream, String fileName) throws UnsupportedEncodingException {
+    public static ResponseEntity<StreamingResponseBody> download(InputStream inputStream, String fileName) {
         if (!StringUtils.hasText(fileName)) {
             throw new FileException("请指定下载文件的名称");
         }

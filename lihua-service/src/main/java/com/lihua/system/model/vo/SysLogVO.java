@@ -30,7 +30,7 @@ public class SysLogVO implements Serializable {
     /**
      * 业务描述
      */
-    @ExcelColumn(order = 0, index = 0, title = "业务描述", width = 8)
+    @ExcelColumn(index = 0, title = "业务描述", width = 8)
     private String description;
 
     /**

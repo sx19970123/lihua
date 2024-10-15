@@ -71,7 +71,6 @@ public class ExcelUtils {
      *               设置为 1 的话，从表格中第三行开始读取
      *               根据表头层级数量进行指定，即表头层级数 - 1
      * @return 倒入数据集合
-     * @param <T>
      */
     public static <T> List<T> importExport(InputStream inputStream, Class<T> clazz, int rowNum) {
         return SaxExcelReader.of(clazz)
