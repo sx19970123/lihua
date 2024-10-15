@@ -177,7 +177,8 @@ const initSearch = () => {
       title: '缓存键值',
       key: 'cacheKey',
       dataIndex: 'cacheKey',
-      width: 570
+      ellipsis: true,
+      width: 700
     },
     {
       title: '用户名',
