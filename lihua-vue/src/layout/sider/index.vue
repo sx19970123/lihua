@@ -17,7 +17,7 @@ import {usePermissionStore} from "@/stores/modules/permission";
 import {useThemeStore} from "@/stores/modules/theme";
 import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
 import {useRoute,useRouter} from "vue-router";
-import {computed, reactive, watch} from "vue";
+import {computed, onMounted, reactive, watch} from "vue";
 const themeStore = useThemeStore()
 const route = useRoute()
 const router = useRouter()
@@ -25,9 +25,12 @@ const router = useRouter()
 const permission = usePermissionStore()
 const viewTabsStore = useViewTabsStore()
 const menu = computed(() => permission.menuRouters)
-const state = reactive({
+const state = reactive<{
+  selectedKeys: string[],
+  openKeys: string[]
+}>({
   selectedKeys: route.matched.map(r => r.path),
-  openKeys: route.matched.map(r => r.path)
+  openKeys: []
 })
 
 // 点击菜单跳转路由
@@ -43,10 +46,30 @@ const handleClickMenuItem = ({ key }: {key: string}) => {
   }
 }
 
+// 获取可展开的节点
+// 当菜单未收起并且不为顶部导航时，设置展开节点
+const getOpenKeys = (): string[] => {
+  // 展开收起状态
+  const collapsed = permission.collapsed
+  // 导航类型
+  const siderMode = themeStore.siderMode
+
+  if (!collapsed && siderMode !== 'horizontal') {
+    return route.matched.map(r => r.path)
+  } else {
+    return []
+  }
+}
+
+// 赋值展开节点
+onMounted(() => {
+  state.openKeys = getOpenKeys()
+})
+
 // 导航回显
 watch(()=> route.matched,(value)=> {
   state.selectedKeys = route.matched.map(r => r.path)
-  state.openKeys = value.map(r => r.path)
+  state.openKeys = getOpenKeys()
 })
 // 收起/展开
 watch(() => permission.collapsed,(value) => {
