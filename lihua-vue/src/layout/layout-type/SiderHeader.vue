@@ -9,7 +9,8 @@
                       :width="themeStore.siderWith"
                       v-model:collapsed="permission.collapsed"
                       collapsible
-                      breakpoint="lg"
+                      breakpoint="xl"
+                      :collapsedWidth="collapsedWidth"
       >
         <Logo class="logo"/>
         <!-- 侧边栏-->
@@ -40,9 +41,29 @@ import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
 import { usePermissionStore } from "@/stores/modules/permission";
 import {useThemeStore} from "@/stores/modules/theme";
+import {onMounted, onUnmounted, ref} from "vue";
 const themeStore = useThemeStore()
 const permission = usePermissionStore()
 const props = defineProps<{  showLayout: boolean }>()
+
+const collapsedWidth = ref<0|80>(document.body.offsetWidth < 768 ? 0 : 80)
+const handleResize = () => {
+  if (document.body.offsetWidth < 768) {
+    collapsedWidth.value = 0
+  } else {
+    collapsedWidth.value = 80
+  }
+}
+
+// dom渲染完毕后添加窗口监听
+onMounted(() => {
+  window.addEventListener("resize", handleResize)
+});
+
+// 组件销毁后删除监听
+onUnmounted(() => {
+  window.removeEventListener("resize", handleResize);
+});
 </script>
 
 <style scoped>

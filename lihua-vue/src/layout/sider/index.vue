@@ -48,32 +48,33 @@ const handleClickMenuItem = ({ key }: {key: string}) => {
 
 // 获取可展开的节点
 // 当菜单未收起并且不为顶部导航时，设置展开节点
-const getOpenKeys = (): string[] => {
+const setOpenKeys = () => {
   // 展开收起状态
   const collapsed = permission.collapsed
   // 导航类型
   const siderMode = themeStore.siderMode
 
   if (!collapsed && siderMode !== 'horizontal') {
-    return route.matched.map(r => r.path)
+    state.openKeys = route.matched.map(r => r.path)
   } else {
-    return []
+    state.openKeys = []
   }
 }
 
 // 赋值展开节点
 onMounted(() => {
-  state.openKeys = getOpenKeys()
+  setOpenKeys()
 })
 
 // 导航回显
 watch(()=> route.matched,(value)=> {
   state.selectedKeys = route.matched.map(r => r.path)
-  state.openKeys = getOpenKeys()
+  setOpenKeys()
 })
 // 收起/展开
 watch(() => permission.collapsed,(value) => {
   value? themeStore.foldSiderWidth(): themeStore.unfoldSiderWidth()
+  setOpenKeys()
 })
 </script>
 <style scoped>

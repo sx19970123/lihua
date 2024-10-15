@@ -1,9 +1,11 @@
 <template>
+  <div>
     <a-breadcrumb :routes="pageRoute" v-if="pageRoute && pageRoute.length > 1 && pageRoute[0].path !== ''">
-        <template #itemRender="{route}">
-          {{ route.meta.label }}
-        </template>
+      <template #itemRender="{route}">
+        {{ route.meta.label }}
+      </template>
     </a-breadcrumb>
+  </div>
 </template>
 <script lang="ts" setup>
 import {type RouteRecordRaw, useRoute} from "vue-router";

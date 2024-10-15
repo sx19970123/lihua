@@ -9,6 +9,18 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.9',
+            updateDate: '2024-10-15',
+            updateContent: [
+                '1. 修复批量插入时可能会出现的事务问题（修改用户@burningimlam）',
+                '2. 优化了部分代码结构',
+                '3. 升级spring boot版本为 3.3.4',
+                '4. 修复静态路由刷新页面不好使的bug',
+                '5. 当菜单未收起并且不为顶部导航时，菜单会自动展开',
+                '6. 新增窗口宽度减少到一定阈值时，侧边栏完全隐藏',
+            ]
+        },
+        {
             version: '1.0.0-beta.8',
             updateDate: '2024-10-14',
             updateContent: [
@@ -107,6 +119,7 @@ const updateRecords = [
             '3. 升级spring boot版本为 3.3.4',
             '4. 修复静态路由刷新页面不好使的bug',
             '5. 当菜单未收起并且不为顶部导航时，菜单会自动展开',
+            '6. 新增窗口宽度减少到一定阈值时，侧边栏完全隐藏',
         ]
     },
     {
