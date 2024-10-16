@@ -321,7 +321,11 @@ watch(() => selectedIds.value, (value, oldValue) => {
   if (value.length > oldValue.length) {
     const addUser = userList.value.filter(user => value.includes(user.id ? user.id : ''))
     if (addUser) {
-      selectUsers.value.push(...addUser)
+      addUser.forEach(user => {
+        if (!selectUsers.value.includes(user)) {
+          selectUsers.value.push(user)
+        }
+      })
     }
   } else {
     // 减少，获取到减少的id，从 selectUsers中删除对应数据

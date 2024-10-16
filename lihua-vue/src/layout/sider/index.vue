@@ -54,11 +54,15 @@ const setOpenKeys = () => {
   // 导航类型
   const siderMode = themeStore.siderMode
 
-  if (!collapsed && siderMode !== 'horizontal') {
-    state.openKeys = route.matched.map(r => r.path)
-  } else {
-    state.openKeys = []
-  }
+  // 确保菜单可以及时响应，增加setTimeout
+  setTimeout(() => {
+    if (!collapsed && siderMode !== 'horizontal') {
+      state.openKeys = route.matched.map(r => r.path)
+    } else {
+      state.openKeys = []
+    }
+  },0)
+
 }
 
 // 赋值展开节点
