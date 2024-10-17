@@ -1,7 +1,6 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.security.CurrentDept;
@@ -14,12 +13,11 @@ import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUserDept> implements SysUserDeptService {
@@ -45,11 +43,10 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
 
     @Override
     public boolean hasDept(String deptId) {
-        QueryWrapper<SysUserDept> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda()
-                .eq(SysUserDept::getDeptId,deptId)
-                .eq(SysUserDept::getUserId, LoginUserContext.getUserId());
-        return sysUserDeptMapper.selectCount(queryWrapper) > 0;
+        return this.lambdaQuery()
+            .eq(SysUserDept::getDeptId, deptId)
+            .eq(SysUserDept::getUserId, LoginUserContext.getUserId())
+            .exists();
     }
 
     @Override
@@ -68,20 +65,17 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
             }
 
             // 取消该用户所有默认部门
-            UpdateWrapper<SysUserDept> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.lambda()
-                    .eq(SysUserDept::getUserId, LoginUserContext.getUserId())
-                    .set(SysUserDept::getDefaultDept, "1");
-            sysUserDeptMapper.update(updateWrapper);
+            this.lambdaUpdate()
+                .eq(SysUserDept::getUserId, LoginUserContext.getUserId())
+                .set(SysUserDept::getDefaultDept, "1")
+                .update();
             // 设置默认部门
-            UpdateWrapper<SysUserDept> defaultDeptWrapper = new UpdateWrapper<>();
-            defaultDeptWrapper.lambda()
-                    .eq(SysUserDept::getUserId, LoginUserContext.getUserId())
-                    .eq(SysUserDept::getDeptId, deptId)
-                    .set(SysUserDept::getDefaultDept, "0");
-            sysUserDeptMapper.update(defaultDeptWrapper);
+            this.lambdaUpdate()
+                .eq(SysUserDept::getUserId, LoginUserContext.getUserId())
+                .eq(SysUserDept::getDeptId, deptId)
+                .set(SysUserDept::getDefaultDept, "0")
+                .update();
         }
-
 
         resetLoginUserDeptCache();
 
@@ -100,7 +94,7 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
             deptList = sysDeptMapper.selectByUserId(userId);
         }
         loginUser.setDeptList(deptList)
-                .setDeptTree(TreeUtils.buildTree(new ArrayList<>(deptList)));
+            .setDeptTree(TreeUtils.buildTree(new ArrayList<>(deptList)));
 
         LoginUserManager.setLoginUserCache(loginUser);
 
