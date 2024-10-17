@@ -27,6 +27,17 @@ export const findById = (id: string) => {
 }
 
 /**
+ * 查询预览
+ * @param id
+ */
+export const preview = (id: string) => {
+    return request<SysNoticeVO>({
+        url: "/system/notice/preview/" + id,
+        method: "get"
+    })
+}
+
+/**
  * 保存数据
  * @param data
  */

@@ -34,6 +34,11 @@ public class SysNoticeController extends BaseController {
         return success(sysNoticeService.findById(id));
     }
 
+    @GetMapping("preview/{id}")
+    public String preview(@PathVariable("id") String id) {
+        return success(sysNoticeService.preview(id));
+    }
+
     @PostMapping
     @Log(description = "保存通知公告", type = LogTypeEnum.SAVE)
     public String save(@RequestBody @Validated SysNoticeDTO sysNoticeDTO) {

@@ -28,6 +28,11 @@ public class SysUserNoticeVO implements Serializable {
     private String priority;
 
     /**
+     * 发布用户
+     */
+    private String releaseUser;
+
+    /**
      * 发布时间
      */
     private LocalDateTime releaseTime;

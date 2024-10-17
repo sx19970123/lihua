@@ -54,6 +54,11 @@ public class SysNotice extends BaseEntity {
     private LocalDateTime releaseTime;
 
     /**
+     * 发布人id
+     */
+    private String releaseId;
+
+    /**
      * 逻辑删除标识
      */
     private String delFlag;

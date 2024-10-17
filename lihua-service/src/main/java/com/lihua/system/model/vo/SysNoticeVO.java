@@ -15,4 +15,14 @@ public class SysNoticeVO extends SysNotice {
      * 指定用户
      */
     private List<String> userIdList = new ArrayList<>();
+
+    /**
+     * 创建用户
+     */
+    private String createUser;
+
+    /**
+     * 发布用户
+     */
+    private String releaseUser;
 }

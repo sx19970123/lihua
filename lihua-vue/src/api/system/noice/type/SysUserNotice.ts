@@ -12,6 +12,10 @@ export interface SysUserNoticeVO {
      */
     type?: string;
     /**
+     * 发布用户
+     */
+    releaseUser?: string;
+    /**
      * 公告优先级
      */
     priority?: string;
