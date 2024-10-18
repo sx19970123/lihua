@@ -7,8 +7,12 @@
           <a-typography-title>{{notice.title}}</a-typography-title>
           <!--    发布时间-->
           <a-space>
-            <a-typography-text type="secondary">admin</a-typography-text>
-            <a-typography-text type="secondary" v-if="notice.status === '1'">{{dayjs(notice.releaseTime).format('YYYY-MM-DD HH:mm')}}</a-typography-text>
+            <a-tooltip title="发布用户">
+              <a-typography-text type="secondary">{{notice.releaseUser}}</a-typography-text>
+            </a-tooltip>
+            <a-tooltip title="发布时间">
+              <a-typography-text type="secondary" v-if="notice.status === '1'">{{dayjs(notice.releaseTime).format('YYYY-MM-DD HH:mm')}}</a-typography-text>
+            </a-tooltip>
 <!--            已读未读-->
             <a-popover placement="bottom">
               <template #content>
@@ -54,7 +58,7 @@
 
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
-import {findById, findReadInfo} from "@/api/system/noice/Notice.ts";
+import {findReadInfo, preview} from "@/api/system/noice/Notice.ts";
 import Vditor from "vditor";
 import 'vditor/dist/index.css';
 import UserShow from "@/components/user-show/index.vue"
@@ -62,7 +66,6 @@ import {useThemeStore} from "@/stores/modules/theme.ts";
 import type {SysNoticeVO} from "@/api/system/noice/type/SysNotice.ts";
 import dayjs from "dayjs";
 import {message} from "ant-design-vue";
-import {getUserOptionByUserIds} from "@/api/system/user/User.ts";
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 const themeStore = useThemeStore();
 const props = defineProps<{
@@ -80,11 +83,11 @@ const readUserList = ref<SysUser[]>([])
 const unreadUserList = ref<SysUser[]>([])
 
 // 预览
-const preview = async () => {
+const handlePreview = async () => {
   spinning.value = true
   const noticeId = props.noticeId
-  // 根据id查询
-  const resp = await findById(noticeId)
+  // 后端查询预览
+  const resp = await preview(noticeId)
   if (resp.code === 200) {
     notice.value = resp.data
     // 通知内容回显
@@ -99,10 +102,6 @@ const preview = async () => {
     }
     spinning.value = false
 
-    // 创建人回显
-    if (notice.value.createId) {
-      await handleCreateUser(notice.value.createId)
-    }
     // 已读/未读回显
     if (props.showReadUser) {
       await handleReadInfo(noticeId)
@@ -110,11 +109,6 @@ const preview = async () => {
   } else {
     message.error(resp.msg)
   }
-}
-
-const handleCreateUser = async (createId: string) => {
-  const createUser = await getUserOptionByUserIds([createId])
-  notice.value.createUser = createUser.data[0].nickname
 }
 
 // 处理已读未读用户显示
@@ -136,11 +130,11 @@ const handleReadInfo = async (noticeId: string) => {
 }
 
 onMounted(() => {
-  preview()
+  handlePreview()
 })
 
 watch(() => props.noticeId, () => {
-  preview()
+  handlePreview()
 })
 </script>
 

@@ -10,9 +10,30 @@
             sys_notice.priority,
             sys_notice.release_time,
             sys_user_notice.read_flag,
-            sys_user_notice.star_flag
+            sys_user_notice.star_flag,
+            release_user.nickname AS releaseUser
         FROM sys_notice
         LEFT JOIN sys_user_notice ON sys_user_notice.notice_id = sys_notice.id
+        LEFT JOIN sys_user AS release_user ON release_user.id = sys_notice.release_id
         ${ew.customSqlSegment}
+    </select>
+
+    <select id="preview" resultType="com.lihua.system.model.vo.SysNoticeVO">
+        SELECT
+          sys_notice.id,
+          sys_notice.title,
+          sys_notice.type,
+          sys_notice.status,
+          sys_notice.priority,
+          sys_notice.content,
+          sys_notice.release_time,
+          create_user.nickname AS createUser,
+          release_user.nickname AS releaseUser
+        FROM
+          sys_notice
+          LEFT JOIN sys_user AS create_user ON create_user.id = sys_notice.create_id
+          LEFT JOIN sys_user AS release_user ON release_user.id = sys_notice.release_id
+        WHERE
+          sys_notice.id = #{id} AND sys_notice.del_flag = '0'
     </select>
 </mapper>

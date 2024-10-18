@@ -1,6 +1,8 @@
 <template>
     <!--    编辑器-->
-    <div id="editor"/>
+  <a-spin :spinning="spinning" tip="编辑器准备中...">
+    <div id="editor" :style="{height:  props.height ? props.height : '400px', width: props.width ? props.width : '100%'}"/>
+  </a-spin>
 </template>
 
 <script setup lang="ts">
@@ -17,7 +19,7 @@ const isDarkTheme = themeStore.isDarkTheme
 const editor = ref()
 // 文件上传 url 前缀
 const baseURL = import.meta.env.VITE_APP_BASE_API
-
+const spinning = ref<boolean>(true)
 // 定义prop传参
 const props = defineProps<{
   modelValue?: string,
@@ -69,6 +71,7 @@ onMounted(() => {
       pin: true                                                             // 固定工具栏
     },
     after() {                                                               // 编辑器初始化后的钩子函数
+      spinning.value = false                                                // 关闭加载loading
       if (props.modelValue) {
         editor.value.setValue(props.modelValue)                             // v-model 赋值
       }
@@ -89,7 +92,7 @@ onMounted(() => {
     },
     upload: {
       url: baseURL + '/system/file/editor/uploads',                         // 文件上传接口
-      headers: {'Authorization': 'Bearer ' + token.getToken()},                                 // 请求头获取token
+      headers: {'Authorization': 'Bearer ' + token.getToken()},             // 请求头获取token
       fieldName: 'files',                                                   // 文件上传接口参数名
       format(files, responseText) {                                         // 处理文件上传接口返回
         const resp:UploadType = JSON.parse(responseText)

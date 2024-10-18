@@ -38,7 +38,13 @@
                 <a-list-item-meta>
                   <!--                      发布时间-->
                   <template #description>
-                    {{ handleTime(dayjs(item.releaseTime).format('YYYY-MM-DD HH:mm')) }}
+                    <a-typography-text type="secondary" ellipsis>
+                      {{item.releaseUser}}
+                    </a-typography-text>
+                    <a-divider type="vertical" />
+                    <a-typography-text type="secondary">
+                      {{handleTime(dayjs(item.releaseTime).format('YYYY-MM-DD HH:mm')) }}
+                    </a-typography-text>
                   </template>
                   <!--                      标题-->
                   <template #title>

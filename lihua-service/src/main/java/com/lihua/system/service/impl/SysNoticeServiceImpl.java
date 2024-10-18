@@ -99,6 +99,11 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     }
 
     @Override
+    public SysNoticeVO preview(String id) {
+        return sysNoticeMapper.preview(id);
+    }
+
+    @Override
     @Transactional
     public String save(SysNoticeDTO sysNoticeDTO) {
         if ("1".equals(sysNoticeDTO.getUserScope()) &&
@@ -135,8 +140,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         updateWrapper.lambda().eq(SysNotice::getId, id)
                         .set(SysNotice::getStatus, "1")
                         .set(SysNotice::getReleaseTime, LocalDateTime.now())
-                        .set(SysNotice::getUpdateTime, LocalDateTime.now())
-                        .set(SysNotice::getUpdateId, LoginUserContext.getUserId());
+                        .set(SysNotice::getReleaseId, LoginUserContext.getUserId());
         sysNoticeMapper.update(updateWrapper);
 
         // 获取发送的消息 id title

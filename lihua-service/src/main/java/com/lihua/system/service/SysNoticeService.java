@@ -21,6 +21,11 @@ public interface SysNoticeService {
     SysNoticeVO findById(String id);
 
     /**
+     * 预览通知公告
+     */
+    SysNoticeVO preview(String id);
+
+    /**
      * 保存消息通知
      */
     String save(SysNoticeDTO sysNoticeDTO);

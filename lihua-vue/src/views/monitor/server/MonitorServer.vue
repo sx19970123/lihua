@@ -53,7 +53,7 @@ const init = async () => {
     tip: '服务数据加载中...'
   });
   const resp = await serverInfo()
-  
+
   if (resp.code === 200) {
     info.value = resp.data
     spinInstance.close()

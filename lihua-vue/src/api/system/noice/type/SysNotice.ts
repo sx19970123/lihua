@@ -70,6 +70,11 @@ export interface SysNoticeVO extends SysNotice {
      * 创建用户
      */
     createUser?: string;
+
+    /**
+     * 发布用户
+     */
+    releaseUser?: string;
 }
 
 export interface SysNoticeDTO extends SysNotice {

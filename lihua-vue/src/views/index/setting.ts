@@ -112,6 +112,14 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0-beta.10',
+        record: [
+            '1. 用户通知卡片新增显示发布人昵称',
+            '2. 修复查看消息通知一直是admin的bug',
+            '3. 富文本编辑器初始化期间新增loading遮罩',
+        ]
+    },
+    {
         version: '1.0.0-beta.9',
         record: [
             '1. 修复批量插入时可能会出现的事务问题（修改用户@burningimlam）',
@@ -120,6 +128,7 @@ const updateRecords = [
             '4. 修复静态路由刷新页面不好使的bug',
             '5. 当菜单未收起并且不为顶部导航时，菜单会自动展开',
             '6. 新增窗口宽度减少到一定阈值时，侧边栏完全隐藏',
+            '7. 修复选择用户组件用户重复的bug',
         ]
     },
     {
