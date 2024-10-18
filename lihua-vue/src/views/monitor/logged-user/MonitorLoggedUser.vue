@@ -206,7 +206,7 @@ const initSearch = () => {
       title: '操作',
       key: 'action',
       align: 'center',
-      width: '190px'
+      width: '100px'
     }
   ]
 
