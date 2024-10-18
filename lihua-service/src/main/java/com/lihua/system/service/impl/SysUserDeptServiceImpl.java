@@ -43,7 +43,7 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
 
     @Override
     public boolean hasDept(String deptId) {
-        return this.lambdaQuery()
+        return lambdaQuery()
             .eq(SysUserDept::getDeptId, deptId)
             .eq(SysUserDept::getUserId, LoginUserContext.getUserId())
             .exists();
@@ -65,12 +65,12 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
             }
 
             // 取消该用户所有默认部门
-            this.lambdaUpdate()
+            lambdaUpdate()
                 .eq(SysUserDept::getUserId, LoginUserContext.getUserId())
                 .set(SysUserDept::getDefaultDept, "1")
                 .update();
             // 设置默认部门
-            this.lambdaUpdate()
+            lambdaUpdate()
                 .eq(SysUserDept::getUserId, LoginUserContext.getUserId())
                 .eq(SysUserDept::getDeptId, deptId)
                 .set(SysUserDept::getDefaultDept, "0")
