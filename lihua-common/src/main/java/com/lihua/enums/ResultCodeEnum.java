@@ -35,12 +35,4 @@ public enum ResultCodeEnum {
      */
     private final String defaultMsg;
 
-
-    /**
-     * 通过枚举返回默认异常信息
-     */
-    public static String getDefaultExceptionMessage(ResultCodeEnum resultCodeEnum) {
-        return resultCodeEnum.getCode() + "_" + resultCodeEnum.getDefaultMsg();
-    }
-
 }

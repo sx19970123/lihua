@@ -12,11 +12,11 @@ public class MybatisPlusConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
 
-        //如果配置多个插件,切记分页最后添加
+        // 如果配置多个插件,切记分页最后添加
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
         // 分页溢出后自动查询第一页
         paginationInnerInterceptor.setOverflow(true);
-        // 分页数据库
+        // 数据库类型
         paginationInnerInterceptor.setDbType(DbType.MYSQL);
         interceptor.addInnerInterceptor(paginationInnerInterceptor);
         return interceptor;
