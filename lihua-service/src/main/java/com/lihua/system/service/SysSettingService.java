@@ -32,7 +32,7 @@ public interface SysSettingService {
     List<String> getIpBlackList();
 
     /**
-     * 获取默认密码
+     * 获取默认密码（已解密）
      */
     String getDefaultPassword();
 

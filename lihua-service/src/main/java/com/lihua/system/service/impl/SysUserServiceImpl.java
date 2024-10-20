@@ -691,7 +691,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             SysUser sysUser = new SysUser();
             String userId = String.valueOf(IdWorker.getId(sysUser));
             BeanUtils.copyProperties(sysUserVO, sysUser);
-            sysUser.setPassword(SecurityUtils.encryptPassword(SecurityUtils.defaultPasswordDecrypt(sysSettingService.getDefaultPassword())));
+            sysUser.setPassword(SecurityUtils.encryptPassword(sysSettingService.getDefaultPassword()));
             sysUser.setCreateTime(DateUtils.now());
             sysUser.setCreateId(LoginUserContext.getUserId());
             sysUser.setDelFlag("0");

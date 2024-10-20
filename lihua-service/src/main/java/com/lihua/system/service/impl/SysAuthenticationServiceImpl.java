@@ -118,8 +118,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     // 判断是否需要修改密码（登录密码与默认密码相同 或 到达管理员配置的修改密码时间）
     public void checkUpdatePassword(List<String> loginSettingComponentNameList, LoginUser loginUser, String password) {
-
-        if (SecurityUtils.matchesPassword(SecurityUtils.defaultPasswordDecrypt(sysSettingService.getDefaultPassword()), password)) {
+        if (SecurityUtils.matchesPassword(sysSettingService.getDefaultPassword(), password)) {
             loginSettingComponentNameList.add("LoginSettingResetPassword");
             return;
         }

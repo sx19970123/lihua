@@ -108,6 +108,6 @@ public class SysProfileController extends BaseController {
     private boolean isDefaultPassword(String newPassword) {
         String defaultPassword = sysSettingService.getDefaultPassword();
         // 对比解密后的默认密码
-        return SecurityUtils.defaultPasswordDecrypt(defaultPassword).equals(newPassword);
+        return defaultPassword.equals(newPassword);
     }
 }
