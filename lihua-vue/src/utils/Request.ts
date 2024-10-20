@@ -44,6 +44,37 @@ service.interceptors.response.use((resp) => {
         message.error(data.msg)
     }
     return resp;
+}, error => {
+    // 处理错误响应
+    if (error.response) {
+        // Nginx 返回的错误响应会带有状态码
+        const status = error.response.status;
+
+        switch (status) {
+            case 404:
+                message.error("资源未找到 (404)");
+                break;
+            case 413:
+                message.error("请求体超过限制大小 (413)");
+                break;
+            case 502:
+                message.error("网关错误 (502)");
+                break;
+            case 504:
+                message.error("网关超时 (504)");
+                break;
+            default:
+                message.error(`其他错误 (${status})`);
+        }
+        return Promise.reject({
+            msg: error.response.statusText,
+            code: status
+        });
+    } else {
+        message.error("无法连接到服务器或其他错误");
+    }
+
+    return Promise.reject(error);
 })
 
 // 数据返回统一封装样式

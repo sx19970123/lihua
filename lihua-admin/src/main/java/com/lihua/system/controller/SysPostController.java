@@ -77,7 +77,7 @@ public class SysPostController extends BaseController {
     @PostMapping("import")
     @Log(description = "导入岗位数据", type = LogTypeEnum.IMPORT)
     public String importExcel(@RequestParam("file") MultipartFile file) {
-        List<SysPostVO> sysPostVOList = ExcelUtils.importExport(file.getInputStream(), SysPostVO.class, 0);
+        List<SysPostVO> sysPostVOList = ExcelUtils.importExport(file, SysPostVO.class, 0);
         return success(sysPostService.importExcel(sysPostVOList));
     }
 }

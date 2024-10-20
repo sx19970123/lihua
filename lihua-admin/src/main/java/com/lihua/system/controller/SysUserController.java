@@ -94,7 +94,7 @@ public class SysUserController extends BaseController {
     @PostMapping("import")
     @Log(description = "批量导入用户信息", type = LogTypeEnum.IMPORT)
     public String importExcel(@RequestParam("file") MultipartFile file) {
-        List<SysUserVO> sysUserVOS = ExcelUtils.importExport(file.getInputStream(), SysUserVO.class, 1);
+        List<SysUserVO> sysUserVOS = ExcelUtils.importExport(file, SysUserVO.class, 1);
         return success(sysUserService.importExcel(sysUserVOS));
     }
 

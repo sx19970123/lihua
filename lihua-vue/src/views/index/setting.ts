@@ -9,6 +9,20 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.10',
+            updateDate: '2024-10-20',
+            updateContent: [
+                '1. 用户通知卡片新增显示发布人昵称',
+                '2. 修复查看消息通知一直是admin的bug',
+                '3. 富文本编辑器初始化期间新增loading遮罩',
+                '4. 获取当前时间修改为从工具类获取',
+                '5. 提取获取默认密码到SettingService中',
+                '6. excel导入添加后台判断上传文件格式',
+                '7. axios响应拦截器新增处理nginx返回的错误',
+                '8. 修復上传excel超过nginx限制后遮罩不关闭的bug',
+            ]
+        },
+        {
             version: '1.0.0-beta.9',
             updateDate: '2024-10-15',
             updateContent: [
@@ -117,6 +131,11 @@ const updateRecords = [
             '1. 用户通知卡片新增显示发布人昵称',
             '2. 修复查看消息通知一直是admin的bug',
             '3. 富文本编辑器初始化期间新增loading遮罩',
+            '4. 获取当前时间修改为从工具类获取',
+            '5. 提取获取默认密码到SettingService中',
+            '6. excel导入添加后台判断上传文件格式',
+            '7. axios响应拦截器新增处理nginx返回的错误',
+            '8. 修復上传excel超过nginx限制后遮罩不关闭的bug',
         ]
     },
     {

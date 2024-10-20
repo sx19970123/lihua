@@ -11,6 +11,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.stream.Collectors;
 
@@ -27,7 +28,6 @@ public class GlobalExceptionHandle extends BaseController {
      */
     @ExceptionHandler(RuntimeException.class)
     public String handleRuntimeException(Exception e) {
-        log.error(e.getMessage(), e);
         return error(ResultCodeEnum.ERROR, e.getMessage());
     }
 
@@ -36,7 +36,6 @@ public class GlobalExceptionHandle extends BaseController {
      */
     @ExceptionHandler(ServiceException.class)
     public String handleServiceException(Exception e) {
-        log.error(e.getMessage(), e);
         return error(ResultCodeEnum.ERROR, e.getMessage());
     }
 
@@ -45,16 +44,22 @@ public class GlobalExceptionHandle extends BaseController {
      */
     @ExceptionHandler(FileException.class)
     public String handleFileException(Exception e) {
-        log.error(e.getMessage(), e);
         return error(ResultCodeEnum.FILE_ERROR, e.getMessage());
+    }
+
+    /**
+     * 上传文件尺寸超过系统设置
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public String handelMaxUploadSizeExceededException() {
+        return error(ResultCodeEnum.MAX_UPLOAD_SIZE_EXCEEDED_ERROR);
     }
 
     /**
      * 捕获全局 IpIllegalException 异常
      */
     @ExceptionHandler(IpIllegalException.class)
-    public String handleIpIllegalException(Exception e) {
-        log.error(e.getMessage(), e);
+    public String handleIpIllegalException() {
         return error(ResultCodeEnum.IP_ILLEGAL_ERROR);
     }
 
@@ -62,8 +67,7 @@ public class GlobalExceptionHandle extends BaseController {
      * 捕获全局 RateLimiterException 异常
      */
     @ExceptionHandler(RateLimiterException.class)
-    public String handleRateLimiterException(Exception e) {
-        log.error(e.getMessage(), e);
+    public String handleRateLimiterException() {
         return error(ResultCodeEnum.RATE_LIMITER_ERROR);
     }
 
@@ -71,8 +75,7 @@ public class GlobalExceptionHandle extends BaseController {
      * 捕获全局 RateLimiterException 异常
      */
     @ExceptionHandler(DuplicateSubmitException.class)
-    public String handleDuplicateSubmitException(Exception e) {
-        log.error(e.getMessage(), e);
+    public String handleDuplicateSubmitException() {
         return error(ResultCodeEnum.DUPLICATE_SUBMIT_ERROR);
     }
 
@@ -88,7 +91,6 @@ public class GlobalExceptionHandle extends BaseController {
                 .map(ObjectError::getDefaultMessage)
                 .distinct()
                 .collect(Collectors.joining("；"));
-        log.error(errMessages, e);
         return error(ResultCodeEnum.PARAMS_MISSING, errMessages);
     }
 
@@ -97,7 +99,6 @@ public class GlobalExceptionHandle extends BaseController {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public String handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        log.error(e.getMessage(), e);
         return error(ResultCodeEnum.PARAMS_ERROR,e.getMessage());
     }
 

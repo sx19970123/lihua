@@ -10,10 +10,10 @@ import com.lihua.utils.spring.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,7 +64,7 @@ public class ExcelUtils {
 
     /**
      * excel 导入
-     * @param inputStream 流
+     * @param multipartFile 上传的excel文件
      * @param clazz 接收文件类型class
      * @param rowNum 从0开始数，对应第一行，1对应第二行，程序中设置未大于 rowNum
      *               即设置为 0 的话，从表格中第二行开始读取
@@ -72,11 +72,24 @@ public class ExcelUtils {
      *               根据表头层级数量进行指定，即表头层级数 - 1
      * @return 导入数据集合
      */
-    public static <T> List<T> importExport(InputStream inputStream, Class<T> clazz, int rowNum) {
-        return SaxExcelReader.of(clazz)
-                .rowFilter(row -> row.getRowNum() > rowNum)
-                .detectedMerge()
-                .read(inputStream);
+    public static <T> List<T> importExport(MultipartFile multipartFile, Class<T> clazz, int rowNum) {
+        // 判断上传的文件类型
+        String fileName = multipartFile.getOriginalFilename();
+        if (fileName != null) {
+            fileName = fileName.toLowerCase();
+            if (!fileName.endsWith(".xls") && !fileName.endsWith(".xlsx")) {
+                throw new ServiceException("请上传 .xls 或 .xlsx 类型的文件");
+            }
+        }
+
+        try {
+            return SaxExcelReader.of(clazz)
+                    .rowFilter(row -> row.getRowNum() > rowNum)
+                    .detectedMerge()
+                    .read(multipartFile.getInputStream());
+        } catch (IOException e) {
+            throw new ServiceException("Excel上传异常，获取InputStream失败");
+        }
     }
 
 
