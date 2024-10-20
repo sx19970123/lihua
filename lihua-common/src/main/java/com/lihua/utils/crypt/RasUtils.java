@@ -50,7 +50,6 @@ public class RasUtils {
     public static String encrypt(byte[] input, RasModel rasModel) {
         // 将公钥解码
         byte[] publicKeyByte = Base64.getDecoder().decode(rasModel.getPublicKey());
-
         // 获取公钥字节数组后通过X509Encoded和KeyFactory获取公钥对象
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyByte);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");

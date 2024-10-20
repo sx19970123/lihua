@@ -64,7 +64,7 @@ public class SysProfileServiceImpl implements SysProfileService {
     public String updatePassword(String newPassword) {
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         LoginUser loginUser = LoginUserContext.getLoginUser();
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateUtils.now();
         CurrentUser currentUser = loginUser.getUser();
         String password = SecurityUtils.encryptPassword(newPassword);
         updateWrapper.lambda().eq(SysUser::getId,currentUser.getId())
@@ -94,7 +94,7 @@ public class SysProfileServiceImpl implements SysProfileService {
         CurrentUser currentUser = loginUser.getUser();
         updateWrapper.lambda().eq(SysUser::getId,currentUser.getId())
                 .set(SysUser::getTheme,theme)
-                .set(SysUser::getUpdateTime, LocalDateTime.now());
+                .set(SysUser::getUpdateTime, DateUtils.now());
         int update = sysUserMapper.update(updateWrapper);
         if (update == 1) {
             currentUser.setTheme(theme);

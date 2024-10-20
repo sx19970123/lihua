@@ -56,7 +56,7 @@ public class JsonUtils {
     /**
      * 对象转为json并忽略null值
      */
-    public static <T>  String toJsonIgnoreNulls(T data) throws JsonProcessingException {
+    public static <T> String toJsonIgnoreNulls(T data) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         // 配置忽略 null 值
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);

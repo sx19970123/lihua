@@ -63,14 +63,14 @@ public class ExcelUtils {
     }
 
     /**
-     * excel 倒入
+     * excel 导入
      * @param inputStream 流
      * @param clazz 接收文件类型class
      * @param rowNum 从0开始数，对应第一行，1对应第二行，程序中设置未大于 rowNum
      *               即设置为 0 的话，从表格中第二行开始读取
      *               设置为 1 的话，从表格中第三行开始读取
      *               根据表头层级数量进行指定，即表头层级数 - 1
-     * @return 倒入数据集合
+     * @return 导入数据集合
      */
     public static <T> List<T> importExport(InputStream inputStream, Class<T> clazz, int rowNum) {
         return SaxExcelReader.of(clazz)

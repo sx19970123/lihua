@@ -15,13 +15,12 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 
 /**
  * 系统限流处理
- * @RateLimiter 注解的限流逻辑实现
+ * RateLimiter 注解的限流逻辑实现
  */
 @Aspect
 @Component

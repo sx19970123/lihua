@@ -3,6 +3,7 @@ package com.lihua.aspect;
 import com.lihua.annotation.Log;
 import com.lihua.handle.HandleRecodeLog;
 
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,13 +38,13 @@ public class LogAspect {
         // 当前请求 httpServletRequest
         HttpServletRequest httpServletRequest = WebUtils.getCurrentRequest();
         // 记录开始时间
-        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime startTime = DateUtils.now();
         // 执行方法
         Object proceed = proceedingJoinPoint.proceed();
         // 处理记录log
         handleRecodeLog.handleRecordLog(proceedingJoinPoint,
                 log,
-                Duration.between(startTime, LocalDateTime.now()).toMillis(),
+                Duration.between(startTime, DateUtils.now()).toMillis(),
                 proceed,
                 httpServletRequest.getRequestURI(),
                 httpServletRequest.getHeader("User-Agent"),

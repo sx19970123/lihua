@@ -15,7 +15,7 @@ import java.util.Base64;
 public class AesUtils {
 
     /**
-     * 生成 AES 密文
+     * 生成 AES 密钥
      * @return 密文对象
      */
     @SneakyThrows

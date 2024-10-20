@@ -16,6 +16,7 @@ import com.lihua.system.model.vo.SysUserNoticeVO;
 import com.lihua.system.service.SysNoticeService;
 import com.lihua.system.service.SysUserNoticeService;
 import com.lihua.system.service.SysUserService;
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.sse.ServerSentEventsManager;
 import jakarta.annotation.Resource;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -139,7 +139,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         UpdateWrapper<SysNotice> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda().eq(SysNotice::getId, id)
                         .set(SysNotice::getStatus, "1")
-                        .set(SysNotice::getReleaseTime, LocalDateTime.now())
+                        .set(SysNotice::getReleaseTime, DateUtils.now())
                         .set(SysNotice::getReleaseId, LoginUserContext.getUserId());
         sysNoticeMapper.update(updateWrapper);
 
@@ -178,7 +178,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         UpdateWrapper<SysNotice> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda().eq(SysNotice::getId, id)
                 .set(SysNotice::getStatus, "2")
-                .set(SysNotice::getUpdateTime, LocalDateTime.now())
+                .set(SysNotice::getUpdateTime, DateUtils.now())
                 .set(SysNotice::getUpdateId, LoginUserContext.getUserId());
         sysNoticeMapper.update(updateWrapper);
         return id;
@@ -226,7 +226,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         BeanUtils.copyProperties(sysNoticeDTO, sysNotice);
         sysNotice.setDelFlag("0");
         sysNotice.setCreateId(LoginUserContext.getUserId());
-        sysNotice.setCreateTime(LocalDateTime.now());
+        sysNotice.setCreateTime(DateUtils.now());
         sysNoticeMapper.insert(sysNotice);
         return sysNotice.getId();
     }
@@ -243,7 +243,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         SysNotice sysNotice = new SysNotice();
         BeanUtils.copyProperties(sysNoticeDTO, sysNotice);
         sysNotice.setUpdateId(LoginUserContext.getUserId());
-        sysNotice.setUpdateTime(LocalDateTime.now());
+        sysNotice.setUpdateTime(DateUtils.now());
         sysNoticeMapper.updateById(sysNotice);
         return sysNotice.getId();
     }

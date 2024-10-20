@@ -26,7 +26,7 @@ public class SecurityUtils {
     /**
      * 判断密码是否相同
      */
-    public static Boolean matchesPassword(String password,String encodedPassword) {
+    public static boolean matchesPassword(String password,String encodedPassword) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         return bCryptPasswordEncoder.matches(password,encodedPassword);
     }

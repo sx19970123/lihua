@@ -14,6 +14,7 @@ import com.lihua.system.model.vo.SysDeptVO;
 import com.lihua.system.service.SysDeptService;
 import com.lihua.system.service.SysPostService;
 import com.lihua.system.service.SysUserDeptService;
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
@@ -112,14 +113,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     private String update(SysDept sysDept) {
         sysDept.setUpdateId(LoginUserContext.getUserId());
-        sysDept.setUpdateTime(LocalDateTime.now());
+        sysDept.setUpdateTime(DateUtils.now());
         sysDeptMapper.updateById(sysDept);
         return sysDept.getId();
     }
 
     private String insert(SysDept sysDept) {
         sysDept.setCreateId(LoginUserContext.getUserId());
-        sysDept.setCreateTime(LocalDateTime.now());
+        sysDept.setCreateTime(DateUtils.now());
         sysDept.setDelFlag("0");
         sysDeptMapper.insert(sysDept);
         return sysDept.getId();
@@ -158,7 +159,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         updateWrapper.lambda()
                 .set(SysDept::getStatus, status)
                 .set(SysDept::getUpdateId, LoginUserContext.getUserId())
-                .set(SysDept::getUpdateTime, LocalDateTime.now())
+                .set(SysDept::getUpdateTime, DateUtils.now())
                 .eq(SysDept::getId, id);
         sysDeptMapper.update(null, updateWrapper);
         return status;
@@ -282,7 +283,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     private void batchInsert(List<SysDeptVO> importDeptVos) {
         List<SysDept> sysDeptList = new ArrayList<>();
         Map<String, SysDept> deptNameToDeptMap = new HashMap<>();
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateUtils.now();
         // 创建部门对象并生成 ID
         AtomicInteger index = new AtomicInteger(1);
         importDeptVos.forEach(deptVO -> {

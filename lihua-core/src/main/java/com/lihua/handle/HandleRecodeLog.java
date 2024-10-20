@@ -6,6 +6,7 @@ import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
 import com.lihua.system.model.vo.SysLogVO;
 import com.lihua.system.service.SysLogService;
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserManager;
@@ -19,7 +20,6 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +76,7 @@ public class HandleRecodeLog {
                 .setMethodName(name)
                 .setIpAddress(ip)
                 .setParams(params)
-                .setCreateTime(LocalDateTime.now())
+                .setCreateTime(DateUtils.now())
                 .setUrl(requestURI)
                 .setUserAgent(userAgent)
                 .setExecuteTime(time)

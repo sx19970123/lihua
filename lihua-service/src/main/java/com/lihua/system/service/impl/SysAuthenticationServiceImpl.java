@@ -8,6 +8,7 @@ import com.lihua.system.entity.*;
 import com.lihua.system.mapper.*;
 import com.lihua.system.model.dto.SysSettingDTO;
 import com.lihua.system.service.*;
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.JwtUtils;
 import com.lihua.utils.security.LoginUserManager;
@@ -118,10 +119,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     // 判断是否需要修改密码（登录密码与默认密码相同 或 到达管理员配置的修改密码时间）
     public void checkUpdatePassword(List<String> loginSettingComponentNameList, LoginUser loginUser, String password) {
 
-        // 获取默认密码
-        SysSetting defaultPasswordSetting = sysSettingService.getSysSettingByComponentName("DefaultPasswordSetting");
-        SysSettingDTO.DefaultPasswordSetting passwordSetting = JsonUtils.toObject(defaultPasswordSetting.getSettingJson(), SysSettingDTO.DefaultPasswordSetting.class);
-        if (SecurityUtils.matchesPassword(SecurityUtils.defaultPasswordDecrypt(passwordSetting.getDefaultPassword()), password)) {
+        if (SecurityUtils.matchesPassword(SecurityUtils.defaultPasswordDecrypt(sysSettingService.getDefaultPassword()), password)) {
             loginSettingComponentNameList.add("LoginSettingResetPassword");
             return;
         }
@@ -166,7 +164,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         }
 
         // 当前时间在目标时间之后，需要修改密码
-       if ( LocalDateTime.now().isAfter(targetTime)) {
+       if ( DateUtils.now().isAfter(targetTime)) {
            loginSettingComponentNameList.add("LoginSettingResetPassword");
        }
     }
@@ -262,7 +260,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             throw new ServiceException("用户注册未开放");
         }
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateUtils.now();
 
         // 用户注册
         SysUser sysUser = new SysUser();

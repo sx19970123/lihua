@@ -16,6 +16,7 @@ import com.lihua.system.mapper.SysPostMapper;
 import com.lihua.system.model.dto.SysPostDTO;
 import com.lihua.system.model.vo.SysPostVO;
 import com.lihua.system.service.SysPostService;
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
@@ -70,7 +71,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     private String insert(SysPost sysPost) {
-        sysPost.setCreateTime(LocalDateTime.now());
+        sysPost.setCreateTime(DateUtils.now());
         sysPost.setCreateId(LoginUserContext.getUserId());
         sysPost.setDelFlag("0");
         sysPostMapper.insert(sysPost);
@@ -79,7 +80,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     private String update(SysPost sysPost) {
         sysPost.setUpdateId(LoginUserContext.getUserId());
-        sysPost.setUpdateTime(LocalDateTime.now());
+        sysPost.setUpdateTime(DateUtils.now());
         sysPostMapper.updateById(sysPost);
         return sysPost.getId();
     }
@@ -147,7 +148,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         updateWrapper.lambda()
                 .set(SysPost::getStatus, status)
                 .set(SysPost::getUpdateId, LoginUserContext.getUserId())
-                .set(SysPost::getUpdateTime, LocalDateTime.now())
+                .set(SysPost::getUpdateTime, DateUtils.now())
                 .eq(SysPost::getId, id);
         sysPostMapper.update(null, updateWrapper);
         return status;
@@ -243,7 +244,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     // 批量插入
     private void batchInsert(List<SysPostVO> importPostVos) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateUtils.now();
         List<SysPost> sysPostList = new ArrayList<>();
         AtomicInteger index = new AtomicInteger(1);
         // 创建岗位对象并生成id

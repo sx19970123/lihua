@@ -4,15 +4,12 @@ import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
-import com.lihua.system.entity.SysSetting;
 import com.lihua.system.entity.SysUser;
-import com.lihua.system.model.dto.SysSettingDTO;
 import com.lihua.system.model.dto.SysUpdatePasswordDTO;
 import com.lihua.system.model.validation.ProfileValidation;
 import com.lihua.system.service.SysProfileService;
 import com.lihua.system.service.SysSettingService;
 import com.lihua.system.service.SysUserDeptService;
-import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.http.ResponseEntity;
@@ -109,15 +106,7 @@ public class SysProfileController extends BaseController {
      * 判断密码是否为默认密码
      */
     private boolean isDefaultPassword(String newPassword) {
-        SysSetting setting = sysSettingService.getSysSettingByComponentName("DefaultPasswordSetting");
-
-        if (setting == null) {
-            return false;
-        }
-
-        String settingJson = setting.getSettingJson();
-        SysSettingDTO.DefaultPasswordSetting defaultPasswordSetting = JsonUtils.toObject(settingJson, SysSettingDTO.DefaultPasswordSetting.class);
-        String defaultPassword = defaultPasswordSetting.getDefaultPassword();
+        String defaultPassword = sysSettingService.getDefaultPassword();
         // 对比解密后的默认密码
         return SecurityUtils.defaultPasswordDecrypt(defaultPassword).equals(newPassword);
     }

@@ -20,6 +20,7 @@ import com.lihua.system.model.dto.SysUserDeptDTO;
 import com.lihua.system.model.vo.SysDeptVO;
 import com.lihua.system.model.vo.SysUserVO;
 import com.lihua.system.service.*;
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
@@ -61,6 +62,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Resource
     private SysDeptMapper sysDeptMapper;
+
+    @Resource
+    private SysSettingService sysSettingService;
 
     // 校验手机号码
     private final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^1[3-9]\\d{9}$");
@@ -171,7 +175,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         updateWrapper.lambda()
                 .set(SysUser::getStatus, status)
                 .set(SysUser::getUpdateId, LoginUserContext.getUserId())
-                .set(SysUser::getUpdateTime, LocalDateTime.now())
+                .set(SysUser::getUpdateTime, DateUtils.now())
                 .eq(SysUser::getId, id);
         sysUserMapper.update(null, updateWrapper);
         return status;
@@ -336,8 +340,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             }
 
             // 过滤掉excel表格中不符合的岗位（数量不匹配、系统不存在的数据）
-            boolean filterPost = filterPost(sysUserVO, errorUserVos, sysDeptList);
-            return filterPost;
+            return filterPost(sysUserVO, errorUserVos, sysDeptList);
         }).toList();
 
         // 处理完毕后获得两批数据：通过校验可导入 / 数据存在异常需用户重新处理
@@ -386,7 +389,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         // 解密获取密码明文
         String password = SecurityUtils.decryptGetPassword(resetPasswordDTO.getPassword(), resetPasswordDTO.getPasswordRequestKey());
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateUtils.now();
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda()
                         .eq(SysUser::getId, resetPasswordDTO.getUserId())
@@ -682,14 +685,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         List<SysUserRole> sysUserRoleList = new ArrayList<>();
         List<SysUserDept> sysUserDeptList = new ArrayList<>();
         List<SysUserPost> sysUserPostList = new ArrayList<>();
+
         // 构建用户、用户角色、用户部门、用户岗位 数据
         importUserVos.forEach(sysUserVO -> {
             SysUser sysUser = new SysUser();
             String userId = String.valueOf(IdWorker.getId(sysUser));
             BeanUtils.copyProperties(sysUserVO, sysUser);
-            // todo 暂时写死默认密码，后期统一管理
-            sysUser.setPassword(SecurityUtils.encryptPassword("123456"));
-            sysUser.setCreateTime(LocalDateTime.now());
+            sysUser.setPassword(SecurityUtils.encryptPassword(SecurityUtils.defaultPasswordDecrypt(sysSettingService.getDefaultPassword())));
+            sysUser.setCreateTime(DateUtils.now());
             sysUser.setCreateId(LoginUserContext.getUserId());
             sysUser.setDelFlag("0");
             sysUser.setStatus("0");
@@ -704,7 +707,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                 for (String name : roleNames) {
                     List<String> roleIds = roleList.stream().filter(role -> role.getName().equals(name)).map(SysRole::getId).toList();
                     if (!roleIds.isEmpty()) {
-                        SysUserRole sysUserRole = new SysUserRole(userId, roleIds.get(0), LocalDateTime.now(), LoginUserContext.getUserId());
+                        SysUserRole sysUserRole = new SysUserRole(userId, roleIds.get(0), DateUtils.now(), LoginUserContext.getUserId());
                         sysUserRoleList.add(sysUserRole);
                     }
                 }
@@ -720,7 +723,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                     if (!deptVOList.isEmpty()) {
                         SysDeptVO sysDeptVO = deptVOList.get(0);
                         // 构建部门
-                        SysUserDept sysUserDept = new SysUserDept(userId, sysDeptVO.getId(), LocalDateTime.now(), LoginUserContext.getUserId(), "1");
+                        SysUserDept sysUserDept = new SysUserDept(userId, sysDeptVO.getId(), DateUtils.now(), LoginUserContext.getUserId(), "1");
                         sysUserDeptList.add(sysUserDept);
 
                         // 构建部门下岗位
@@ -732,7 +735,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                             for (String postName : postNames) {
                                 List<String> postIds = sysPostList.stream().filter(post -> post.getName().equals(postName)).map(SysPost::getId).toList();
                                 if (!postIds.isEmpty()) {
-                                    SysUserPost sysUserPost = new SysUserPost(userId, postIds.get(0), LocalDateTime.now(), LoginUserContext.getUserId());
+                                    SysUserPost sysUserPost = new SysUserPost(userId, postIds.get(0), DateUtils.now(), LoginUserContext.getUserId());
                                     sysUserPostList.add(sysUserPost);
                                 }
                             }
@@ -771,7 +774,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     // 新增用户
     private String insert(SysUser sysUser) {
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateUtils.now();
         // 密码加密
         sysUser.setPassword(SecurityUtils.encryptPassword(sysUser.getPassword()));
         sysUser.setCreateId(LoginUserContext.getUserId());
@@ -786,7 +789,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     // 更细用户信息
     private String update(SysUser sysUser) {
         sysUser.setUpdateId(LoginUserContext.getUserId());
-        sysUser.setCreateTime(LocalDateTime.now());
+        sysUser.setCreateTime(DateUtils.now());
         // 用户管理中无法更新用户密码。mp默认策略不更新null值数据
         sysUser.setPassword(null);
         sysUserMapper.updateById(sysUser);
@@ -861,7 +864,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         if (roleIdList != null && !roleIdList.isEmpty()) {
             // 组合数据
             List<SysUserRole> sysUserRoles = new ArrayList<>(roleIdList.size());
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = DateUtils.now();
             String loginUserId = LoginUserContext.getUserId();
             roleIdList.forEach(roleId -> sysUserRoles.add(new SysUserRole(userId, roleId, now, loginUserId)));
             sysUserRoleService.save(sysUserRoles);
@@ -877,7 +880,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         if (postIdList != null && !postIdList.isEmpty()) {
             // 组合数据
             List<SysUserPost> sysUserPosts  = new ArrayList<>(postIdList.size());
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = DateUtils.now();
             String loginUserId = LoginUserContext.getUserId();
             postIdList.forEach(postId -> sysUserPosts.add(new SysUserPost(userId, postId, now, loginUserId)));
             sysUserPostService.save(sysUserPosts);
@@ -892,7 +895,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         if (deptIdList != null && !deptIdList.isEmpty()) {
             // 组合数据
             List<SysUserDept> sysUserDeptList  = new ArrayList<>(deptIdList.size());
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = DateUtils.now();
             String loginUserId = LoginUserContext.getUserId();
             deptIdList.forEach(deptId -> sysUserDeptList.add(new SysUserDept(userId, deptId, now, loginUserId, deptId.equals(defaultDeptId) ? "0" : "1")));
 

@@ -32,6 +32,11 @@ public interface SysSettingService {
     List<String> getIpBlackList();
 
     /**
+     * 获取默认密码
+     */
+    String getDefaultPassword();
+
+    /**
      * 缓存ip黑名单
      */
     void cacheIpBlackList();

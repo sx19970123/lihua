@@ -7,6 +7,7 @@ import com.lihua.system.entity.SysMenu;
 import com.lihua.system.mapper.SysMenuMapper;
 import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.service.SysMenuService;
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -76,7 +76,7 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     private String insert(SysMenu sysMenu) {
         sysMenu.setCreateId(LoginUserContext.getUserId());
-        sysMenu.setCreateTime(LocalDateTime.now());
+        sysMenu.setCreateTime(DateUtils.now());
         sysMenu.setDelFlag("0");
         // 同级菜单sort + 1 TODO 未达到预期效果，后续再进行完善
         // sysMenuMapper.peerMenuSortAddOne(sysMenu.getParentId(), sysMenu.getSort());
@@ -86,7 +86,7 @@ public class SysMenuServiceImpl implements SysMenuService {
 
     private String update(SysMenu sysMenu) {
         sysMenu.setUpdateId(LoginUserContext.getUserId());
-        sysMenu.setUpdateTime(LocalDateTime.now());
+        sysMenu.setUpdateTime(DateUtils.now());
         sysMenuMapper.updateById(sysMenu);
         return sysMenu.getId();
     }
@@ -121,7 +121,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         updateWrapper.lambda()
                 .set(SysMenu::getStatus, status)
                 .set(SysMenu::getUpdateId, LoginUserContext.getUserId())
-                .set(SysMenu::getUpdateTime, LocalDateTime.now())
+                .set(SysMenu::getUpdateTime, DateUtils.now())
                 .in(SysMenu::getId, ids);
         sysMenuMapper.update(null, updateWrapper);
         return status;

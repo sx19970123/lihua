@@ -2,6 +2,7 @@ package com.lihua.model.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.lihua.utils.date.DateUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -102,7 +103,7 @@ public class LoginUser implements UserDetails {
      */
     @Override
     public boolean isAccountNonExpired() {
-        return expirationTime.isAfter(LocalDateTime.now());
+        return expirationTime.isAfter(DateUtils.now());
     }
 
     /**

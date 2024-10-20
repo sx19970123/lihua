@@ -25,16 +25,16 @@ public class DateUtils {
     }
 
     /**
-     * 获取当前实践戳
+     * 获取当前时间戳
      */
-    public static Long nowTimeStamp() {
+    public static long nowTimeStamp() {
         return timeStamp(now());
     }
 
     /**
-     * 获取指定时间的实践戳
+     * 获取指定时间的时间戳
      */
-    public static Long timeStamp(LocalDateTime localDateTime) {
+    public static long timeStamp(LocalDateTime localDateTime) {
         return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
@@ -57,7 +57,7 @@ public class DateUtils {
     /**
      * 两时间相差的分钟数
      */
-    public static Long differenceMinute(LocalDateTime time1, LocalDateTime time2) {
+    public static long differenceMinute(LocalDateTime time1, LocalDateTime time2) {
         long difference = timeStamp(time1) - timeStamp(time2);
         return difference / (60 * 1000);
     }

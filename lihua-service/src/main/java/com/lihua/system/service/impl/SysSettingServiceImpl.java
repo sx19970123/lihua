@@ -2,11 +2,13 @@ package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.cache.RedisCache;
+import com.lihua.exception.ServiceException;
 import com.lihua.system.entity.SysSetting;
 import com.lihua.system.mapper.SysSettingMapper;
 import com.lihua.system.model.dto.SysSettingDTO;
 import com.lihua.system.service.SysSettingService;
 import com.lihua.utils.json.JsonUtils;
+import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -105,6 +107,16 @@ public class SysSettingServiceImpl implements SysSettingService {
     public List<String> getIpBlackList() {
         List<String> ipBlackList = redisCache.getCacheList(IP_BLACKLIST_KEY, String.class);
         return ipBlackList == null ? new ArrayList<>(): ipBlackList;
+    }
+
+    @Override
+    public String getDefaultPassword() {
+        SysSetting defaultPasswordSetting = getSysSettingByComponentName("DefaultPasswordSetting");
+        if (defaultPasswordSetting == null) {
+            throw new ServiceException("默认密码配置不存在");
+        }
+        SysSettingDTO.DefaultPasswordSetting passwordSetting = JsonUtils.toObject(defaultPasswordSetting.getSettingJson(), SysSettingDTO.DefaultPasswordSetting.class);
+        return SecurityUtils.defaultPasswordDecrypt(passwordSetting.getDefaultPassword());
     }
 
     // 查询配置数据后进行缓存

@@ -9,6 +9,7 @@ import com.lihua.system.entity.SysDictData;
 import com.lihua.system.mapper.SysDictDataMapper;
 import com.lihua.system.model.dto.SysDictDataDTO;
 import com.lihua.system.service.SysDictDataService;
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtils;
@@ -17,7 +18,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +109,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
                 .lambda()
                 .set(SysDictData::getDictTypeCode,newTypeCode)
                 .set(SysDictData::getUpdateId,LoginUserContext.getUserId())
-                .set(SysDictData::getUpdateTime,LocalDateTime.now())
+                .set(SysDictData::getUpdateTime, DateUtils.now())
                 .eq(SysDictData::getDictTypeCode,oldTypeCode);
         sysDictDataMapper.update(updateWrapper);
     }
@@ -147,14 +147,14 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     private String insert(SysDictData sysDictData) {
         sysDictData.setCreateId(LoginUserContext.getUserId());
         sysDictData.setDelFlag("0");
-        sysDictData.setCreateTime(LocalDateTime.now());
+        sysDictData.setCreateTime(DateUtils.now());
         sysDictDataMapper.insert(sysDictData);
         return sysDictData.getId();
     }
 
     private String updateById(SysDictData sysDictData) {
         sysDictData.setUpdateId(LoginUserContext.getUserId());
-        sysDictData.setUpdateTime(LocalDateTime.now());
+        sysDictData.setUpdateTime(DateUtils.now());
         sysDictDataMapper.updateById(sysDictData);
         return sysDictData.getId();
     }

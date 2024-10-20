@@ -9,11 +9,11 @@ import com.lihua.system.entity.SysUserDept;
 import com.lihua.system.mapper.SysDeptMapper;
 import com.lihua.system.mapper.SysUserDeptMapper;
 import com.lihua.system.service.SysUserDeptService;
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +57,7 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
         // 超级管理员将关联表数据删除后再新增
         if (LoginUserContext.isAdmin()) {
             deleteByUserIds(Collections.singletonList(userId));
-            save(List.of(new SysUserDept(userId, deptId, LocalDateTime.now(), userId, "0")));
+            save(List.of(new SysUserDept(userId, deptId, DateUtils.now(), userId, "0")));
         } else {
             // 普通用户修改关联表
             if (!hasDept(deptId)) {

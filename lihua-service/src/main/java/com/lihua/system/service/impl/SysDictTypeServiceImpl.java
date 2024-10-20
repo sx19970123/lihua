@@ -10,6 +10,7 @@ import com.lihua.system.mapper.SysDictTypeMapper;
 import com.lihua.system.model.dto.SysDictTypeDTO;
 import com.lihua.system.service.SysDictDataService;
 import com.lihua.system.service.SysDictTypeService;
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -84,7 +84,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
 
     private String insert(SysDictType sysDictType) {
         sysDictType.setCreateId(LoginUserContext.getUserId());
-        sysDictType.setCreateTime(LocalDateTime.now());
+        sysDictType.setCreateTime(DateUtils.now());
         sysDictType.setDelFlag("0");
         sysDictTypeMapper.insert(sysDictType);
         return sysDictType.getId();
@@ -94,7 +94,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
         // 从数据库中查询旧数据，验证code是否有修改
         SysDictType oldDictType = sysDictTypeMapper.selectById(sysDictType.getId());
         sysDictType.setUpdateId(LoginUserContext.getUserId());
-        sysDictType.setUpdateTime(LocalDateTime.now());
+        sysDictType.setUpdateTime(DateUtils.now());
         sysDictTypeMapper.updateById(sysDictType);
         // 当code发生修改，更新dictData表中对应的DictTypeCode值
         if (!oldDictType.getCode().equals(sysDictType.getCode())) {
@@ -130,7 +130,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
         updateWrapper.lambda()
                 .set(SysDictType::getStatus, status)
                 .set(SysDictType::getUpdateId, LoginUserContext.getUserId())
-                .set(SysDictType::getUpdateTime, LocalDateTime.now())
+                .set(SysDictType::getUpdateTime, DateUtils.now())
                 .eq(SysDictType::getId, id);
         sysDictTypeMapper.update(null, updateWrapper);
 

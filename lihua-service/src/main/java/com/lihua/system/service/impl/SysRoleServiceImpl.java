@@ -10,12 +10,12 @@ import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.model.dto.SysRoleDTO;
 import com.lihua.system.service.SysMenuService;
 import com.lihua.system.service.SysRoleService;
+import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import java.time.LocalDateTime;
 import java.util.List;
 @Service
 public class SysRoleServiceImpl implements SysRoleService {
@@ -74,7 +74,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     private String insert(SysRole sysRole) {
         sysRole.setCreateId(LoginUserContext.getUserId());
-        sysRole.setCreateTime(LocalDateTime.now());
+        sysRole.setCreateTime(DateUtils.now());
         sysRole.setDelFlag("0");
         sysRoleMapper.insert(sysRole);
         return sysRole.getId();
@@ -82,7 +82,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     private String update(SysRole sysRole) {
         sysRole.setUpdateId(LoginUserContext.getUserId());
-        sysRole.setUpdateTime(LocalDateTime.now());
+        sysRole.setUpdateTime(DateUtils.now());
         sysRoleMapper.updateById(sysRole);
         return sysRole.getId();
     }
@@ -155,7 +155,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         updateWrapper.lambda()
                 .set(SysRole::getStatus, status)
                 .set(SysRole::getUpdateId, LoginUserContext.getUserId())
-                .set(SysRole::getUpdateTime, LocalDateTime.now())
+                .set(SysRole::getUpdateTime, DateUtils.now())
                 .eq(SysRole::getId, id);
         sysRoleMapper.update(null, updateWrapper);
         return status;
