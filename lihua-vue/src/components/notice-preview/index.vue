@@ -97,7 +97,7 @@ const handlePreview = async () => {
         mode: themeStore.isDarkTheme ? "dark" : "light",
         cdn: '/vditor',
         theme: {current: themeStore.isDarkTheme ? 'dark' : 'light'},                     // 内容主题
-        hljs: {style: themeStore.isDarkTheme ? 'solarized-dark256' : 'solarized-light'}, // 代码块主题
+        hljs: {style: themeStore.isDarkTheme ? 'a11y-dark' : 'solarized-light'}, // 代码块主题
       })
     }
     spinning.value = false
