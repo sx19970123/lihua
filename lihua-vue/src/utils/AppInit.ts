@@ -40,14 +40,13 @@ export const init = () => {
         // 清空组件keep-alive
         viewTabsStore.clearComponentsKeepAlive()
 
-        resolve('load success')
+        resolve(resp)
       } catch (e) {
-        reject(e)
+        // 此处产生了异常应该由then中各个方法处理，这里只进行打印即可
         console.error(e)
       }
     }).catch(e => {
       reject(e)
-      console.error(e)
     })
   })
 }

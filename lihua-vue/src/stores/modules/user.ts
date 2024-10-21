@@ -5,7 +5,7 @@ import token from "@/utils/Token.ts";
 import { message } from "ant-design-vue";
 import router from "@/router";
 import {getAuthInfo} from "@/api/system/auth/Auth.ts";
-import type { ResponseType } from "@/api/global/Type.ts";
+import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import type { AuthInfoType, UserInfoType} from "@/api/system/auth/type/AuthInfoType.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
@@ -64,16 +64,16 @@ export const useUserStore = defineStore('user', {
         async login(username: string, password: string, captchaVerification: string): Promise<ResponseType<string>> {
             try {
                 // 对密码进行加密处理，获取密文和requestKey
-                const {ciphertext, requestKey} = await rasEncryptPassword(password)
+                const { ciphertext, requestKey} = await rasEncryptPassword(password)
                 // 执行登录
-                const resp = await login(username, ciphertext, captchaVerification, requestKey);
+                const resp = await login(username, ciphertext, captchaVerification, requestKey)
                 if (resp.code === 200) {
                     // 登录成功后保存 token
                     setToken(resp.data);
                     return resp;
                 } else {
                     // 登录失败，则抛出异常并处理
-                    throw resp.msg;
+                    throw new ResponseError(resp.code, resp.msg);
                 }
             } catch (error) {
                 throw error;
@@ -156,8 +156,7 @@ export const useUserStore = defineStore('user', {
                         this.handleAvatar()
                         resolve(resp)
                     } else {
-                        message.error(resp.msg)
-                        reject(resp.msg)
+                        reject(new ResponseError(resp.code,resp.msg))
                     }
                 }).catch(err => {
                     reject(err)

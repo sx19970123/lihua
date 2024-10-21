@@ -49,6 +49,7 @@ import type {ProfileInfo} from "@/api/system/profile/type/SysProfile.ts";
 import {saveBasics} from "@/api/system/profile/Profile.ts";
 import {initDict} from "@/utils/Dict.ts"
 import {cloneDeep} from "lodash-es";
+import {ResponseError} from "@/api/global/Type.ts";
 const userStore = useUserStore()
 const {user_gender} = initDict('user_gender')
 const submitLoading = ref<boolean>(false)
@@ -107,12 +108,22 @@ const handleFinish = (values: {nickname: string,gender:string,email:string,phone
   }).then(resp => {
     if (resp.code === 200){
       message.success(resp.msg)
-      userStore.getUserInfo()
+      userStore.getUserInfo().catch(e => {
+        if (e instanceof ResponseError) {
+          message.error(e.msg)
+        } else {
+          console.log(e)
+        }
+      })
     } else {
       message.error(resp.msg)
     }
-  }).catch((error) => {
-    message.error(error as string)
+  }).catch((e) => {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
   }).finally(() => {
     submitLoading.value = false
   })

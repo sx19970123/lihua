@@ -73,6 +73,7 @@ import { init } from "@/utils/AppInit.ts";
 import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 import {ref} from "vue";
+import {ResponseError} from "@/api/global/Type.ts";
 const viewTabsStore = useViewTabsStore()
 const themeStore = useThemeStore()
 const userStore = useUserStore()
@@ -93,19 +94,25 @@ const handleClickMenu = async ({key}: {key: string}) => {
       break
     }
     case 'user-data-update': {
-      const resp = await reloadData()
-      if (resp.code === 200) {
-        init()
-            .then(() => {
-              // 重新加载ViewTag
-              viewTabsStore.init(route)
-              // 重新生成key
-              viewTabsStore.regenerateComponentKey()
-              message.success(resp.msg)
-            })
-            .catch((err) => message.error('拉取用户信息失败：' + err))
-      } else {
-        message.error(resp.msg)
+      try {
+        const resp = await reloadData()
+        if (resp.code === 200) {
+          init().then(() => {
+                // 重新加载ViewTag
+                viewTabsStore.init(route)
+                // 重新生成key
+                viewTabsStore.regenerateComponentKey()
+                message.success(resp.msg)
+              })
+        } else {
+          message.error(resp.msg)
+        }
+      } catch (e) {
+        if (e instanceof ResponseError) {
+          message.error(e.msg)
+        } else {
+          console.error(e)
+        }
       }
       break
     }

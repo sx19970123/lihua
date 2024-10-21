@@ -141,6 +141,7 @@ import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysLog} from "@/api/system/log/type/SysLog.ts";
 import {findLoginByCacheKey} from "@/api/system/log/Log.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 const initSearch = () => {
   // 选中的数据id集合
   const logoutCacheKeys = ref<Array<string>>([])
@@ -234,17 +235,25 @@ const initSearch = () => {
   // 加载查询数据
   const initList = async () => {
     queryLoading.value = true
-    const resp = await findList(queryParam.value.username, queryParam.value.nickname)
-    if (resp.code === 200) {
-      allDataList.value = resp.data
-      pagination.value.total = resp.data.length
-      // 每次执行 initList 后都从第一页开始
-      changePage(pagination.value.pageNum, pagination.value.pageSize)
+    try {
+      const resp = await findList(queryParam.value.username, queryParam.value.nickname)
+      if (resp.code === 200) {
+        allDataList.value = resp.data
+        pagination.value.total = resp.data.length
+        // 每次执行 initList 后都从第一页开始
+        changePage(pagination.value.pageNum, pagination.value.pageSize)
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
       queryLoading.value = false
-    } else {
-      message.error(resp.msg)
     }
-
   }
 
   // 点击查询按钮查询列表（页码从第一页开始）
@@ -312,15 +321,23 @@ const handleConfirm = async (cacheKey?: string) => {
     return
   }
 
-  const resp = await forceLogout(targetLogoutCacheKeys);
-  if (resp.code === 200) {
-    await initList()
-    message.success(resp.msg)
-  } else {
-    message.error(resp.msg)
+  try {
+    const resp = await forceLogout(targetLogoutCacheKeys);
+    if (resp.code === 200) {
+      await initList()
+      message.success(resp.msg)
+    } else {
+      message.error(resp.msg)
+    }
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
+  } finally {
+    openLogoutPopconfirm.value = false
   }
-
-  openLogoutPopconfirm.value = false
 }
 
 

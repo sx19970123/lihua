@@ -134,6 +134,7 @@ import {
 import {onMounted, ref} from "vue";
 import {message} from "ant-design-vue";
 import type {CacheMonitor} from "@/api/monitor/cache/type/CacheMonitor.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 // 内存占用大小
 const useMemory = ref<string>('')
 // 缓存类型集合
@@ -153,21 +154,37 @@ const loadingInfo = ref<boolean>(false)
 
 // 加载内存占用
 const initMemoryInfo = async () => {
-  const resp = await memoryInfo()
-  if (resp.code === 200) {
-    useMemory.value = resp.data + ' MB'
-  } else {
-    message.error(resp.msg)
+  try {
+    const resp = await memoryInfo()
+    if (resp.code === 200) {
+      useMemory.value = resp.data + ' MB'
+    } else {
+      message.error(resp.msg)
+    }
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
   }
 }
 
 // 加载缓存类型
 const initCacheKeyGroups = async () => {
-  const resp = await cacheKeyGroups()
-  if (resp.code === 200) {
-    keyTypeList.value = resp.data
-  } else {
-    message.error(resp.msg)
+  try {
+    const resp = await cacheKeyGroups()
+    if (resp.code === 200) {
+      keyTypeList.value = resp.data
+    } else {
+      message.error(resp.msg)
+    }
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.log(e)
+    }
   }
 }
 
@@ -188,17 +205,26 @@ const handleChangeKeyTypeItem = async ({item}:{item: CacheMonitor | undefined}) 
 const loadKeyList = async (item: CacheMonitor) => {
   loadingKeys.value = true
   // 查询缓存key
-  const resp = await cacheKeys(item.keyPrefix)
-  if (resp.code === 200) {
-    info.value = undefined
-    infoKey.value = undefined
-    keys.value = []
-    targetKeyType.value = item
-    resp.data.forEach(key => keys.value.push({key: key}))
-  } else {
-    message.error(resp.msg)
+  try {
+    const resp = await cacheKeys(item.keyPrefix)
+    if (resp.code === 200) {
+      info.value = undefined
+      infoKey.value = undefined
+      keys.value = []
+      targetKeyType.value = item
+      resp.data.forEach(key => keys.value.push({key: key}))
+    } else {
+      message.error(resp.msg)
+    }
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
+  } finally {
+    loadingKeys.value = false
   }
-  loadingKeys.value = false
 }
 
 // 处理点击缓存key
@@ -218,25 +244,42 @@ const handleClickKey = async ({item}:{item: {key: string | undefined}}) => {
 // 加载缓存内容
 const loadCacheInfo = async (key: string) => {
   loadingInfo.value = true
-  const resp = await cacheInfo(key)
-  if (resp.code === 200) {
-    info.value = resp.data
-  } else {
-    message.error(resp.msg)
+  try {
+    const resp = await cacheInfo(key)
+    if (resp.code === 200) {
+      info.value = resp.data
+    } else {
+      message.error(resp.msg)
+    }
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
+  } finally {
+    loadingInfo.value = false
   }
-  loadingInfo.value = false
 }
 
 // 删除缓存
 const removeCacheInfo = async (key: string) => {
-  const resp = await remove(key);
-  if (resp.code === 200) {
-    message.success(resp.msg)
-    if (targetKeyType.value) {
-      await loadKeyList(targetKeyType.value)
+  try {
+    const resp = await remove(key);
+    if (resp.code === 200) {
+      message.success(resp.msg)
+      if (targetKeyType.value) {
+        await loadKeyList(targetKeyType.value)
+      }
+    } else {
+      message.error(resp.msg)
     }
-  } else {
-    message.error(resp.msg)
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
   }
 }
 

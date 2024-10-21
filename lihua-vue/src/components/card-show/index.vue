@@ -129,18 +129,20 @@ const initClick = () => {
     }
 
     const bounding = containerRef.value?.getBoundingClientRect()
+    // 缩放状态设置为进行中
+    hoverStatus.value = 'activity'
     // 执行动画，先将缩放还原
     gsap.to('.' + props.cardKey, {
       scale: 1,
       duration: 0.1,
       // 缩放还原后再进行主要动画
       onComplete: () => {
+        // 状态修改为进行时
+        showStatus.value = 'activity'
         // 打开遮罩
         showMask.value = true
         // 关闭Y轴滚动条
         hiddenOverflowY()
-        // 状态修改为进行时
-        showStatus.value = 'activity'
         // container 设置为固定定位
         style.value = {position: 'fixed'}
         // 执行主要动画
@@ -159,6 +161,7 @@ const initClick = () => {
             // 动画播完 或 外部控制为已完成 并且 动画状态不为kill时，展示卡片内容
             if ((props.autoComplete || props.isComplete) && showStatus.value !== 'kill') {
               showStatus.value = 'complete'
+              hoverStatus.value = 'complete'
               emits('cardComplete', props.cardKey)
             }
           }
@@ -302,7 +305,7 @@ const initHover = () => {
       return
     }
 
-    if (hoverStatus.value === 'ready' || hoverStatus.value === 'complete' ) {
+    if (hoverStatus.value === 'ready' || hoverStatus.value === 'complete') {
       // 鼠标悬浮时抛出方法
       emits('cardReadyOver', props.cardKey)
       handleAddHoverStyle()
@@ -332,12 +335,13 @@ const initHover = () => {
     }
   }
   // 添加 hover 样式
+  // 缩放大于1才添加缩放样式
   const handleAddHoverStyle = () => {
-    if (props.isDetailVisible) {
+    if (props.hoverScale > 1) {
       style.value.cursor = 'pointer'
+      style.value.boxShadow = '0 8px 16px 0 rgba(0, 0, 0, 0.08)'
+      style.value.borderRadius = '8px'
     }
-    style.value.boxShadow = '0 8px 16px 0 rgba(0, 0, 0, 0.08)'
-    style.value.borderRadius = '8px'
   }
   // 移除 hover 样式
   const handleRemoveHoverStyle = () => {
@@ -346,12 +350,13 @@ const initHover = () => {
     style.value.borderRadius = ''
   }
   return {
+    hoverStatus,
     handleMouseOverCard,
     handleMouseLeaveCard
   }
 }
 
-const {handleMouseOverCard, handleMouseLeaveCard } = initHover()
+const {hoverStatus, handleMouseOverCard, handleMouseLeaveCard } = initHover()
 
 // 视口的宽度，用于定位展开后元素位置
 const innerWidth = ref<number>(window.innerWidth)

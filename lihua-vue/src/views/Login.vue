@@ -116,7 +116,7 @@ import token from "@/utils/Token.ts"
 import HeadThemeSwitch from "@/components/light-dark-switch/index.vue"
 import LoginSetting from "@/components/login-setting/index.vue"
 import UserRegister from "@/components/user-register/index.vue"
-import type {ResponseType} from "@/api/global/Type.ts";
+import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
 import {init} from "@/utils/AppInit.ts";
 import Token from "@/utils/Token.ts";
@@ -164,8 +164,7 @@ const initLogin = () => {
 const login = async ({captchaVerification}: { captchaVerification: string }) => {
   loginLoading.value = true
   try {
-    const resp = await userStore.login(loginForm.username, loginForm.password, captchaVerification);
-    const {code, msg} = resp as ResponseType<string>;
+    const {code, msg}: ResponseType<string> = await userStore.login(loginForm.username, loginForm.password, captchaVerification);
     if (code === 200) {
       if (rememberMe.value) {
         token.rememberMe(loginForm.username, loginForm.password)
@@ -176,7 +175,7 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
       // 检查是否需要登录后设置
       const loginSettingResp = await userStore.checkLoginSetting()
       if (loginSettingResp.code === 200) {
-        // 进入首页
+        // 登录后设置返回data为空，表示无需进行额外设置，进入首页
         if (loginSettingResp.data === null) {
           message.success("登录成功")
           await router.push("/index");
@@ -193,20 +192,21 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
       } else {
         message.error(loginSettingResp.msg)
       }
-      Token.removeLoginSettingResult()
-      loginLoading.value = false
-      // 路由跳转完成后的后续逻辑可以放在这里
     } else {
       message.error(msg);
       loginLoading.value = false
     }
-  } catch (error) {
-    message.error(error as string);
-    console.error("登录失败:", error);
-    // 处理登录失败的逻辑，例如显示错误提示
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg);
+    } else {
+      console.error("登录失败:", e);
+    }
+  } finally {
+    Token.removeLoginSettingResult()
     loginLoading.value = false
   }
-};
+}
 
 // 触发登录
 const handleFinish = () => {
@@ -242,10 +242,14 @@ const captcha = async () => {
     if (resp.code === 200) {
       enableCaptcha.value = resp.data
     } else {
-      console.error(resp.msg)
+      message.error(resp.msg)
     }
   } catch (e) {
-    errorMessage.value = '无法访问服务器，请检查网络连接'
+    if (e instanceof ResponseError) {
+      errorMessage.value = '无法访问服务器，请检查网络连接'
+    } else {
+      console.error(e)
+    }
   }
 }
 

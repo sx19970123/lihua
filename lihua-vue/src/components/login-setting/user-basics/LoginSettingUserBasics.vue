@@ -46,6 +46,7 @@ import type {ProfileInfo} from "@/api/system/profile/type/SysProfile.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {saveBasics} from "@/api/system/profile/Profile.ts";
 import {useUserStore} from "@/stores/modules/user.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 const userStore = useUserStore()
 const {user_gender} = initDict("user_gender")
 // 向外抛出函数
@@ -91,21 +92,30 @@ const handleNext = async (loading:Ref<boolean>) => {
   // 表单校验
   await userBasicRef.value?.validate()
   loading.value = true
-  // 保存基础信息
-  const resp = await saveBasics({
-    nickname: profileInfo.nickname,
-    gender: profileInfo.gender,
-    phoneNumber: profileInfo.phoneNumber === ''? undefined: profileInfo.phoneNumber,
-    email: profileInfo.email === ''? undefined: profileInfo.email,
-  })
+  try {
+    // 保存基础信息
+    const resp = await saveBasics({
+      nickname: profileInfo.nickname,
+      gender: profileInfo.gender,
+      phoneNumber: profileInfo.phoneNumber === ''? undefined: profileInfo.phoneNumber,
+      email: profileInfo.email === ''? undefined: profileInfo.email,
+    })
 
-  if (resp.code === 200) {
-    loading.value = false
-    // 重新加载用户信息
-    await userStore.getUserInfo()
-    emits('next', loading.value)
-  } else {
-    message.warn(resp.msg)
+    if (resp.code === 200) {
+      loading.value = false
+      // 重新加载用户信息
+      await userStore.getUserInfo()
+      emits('next', loading.value)
+    } else {
+      message.warn(resp.msg)
+    }
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
+  } finally {
     loading.value = false
   }
 }

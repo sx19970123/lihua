@@ -3,6 +3,7 @@ import {JSEncrypt} from "jsencrypt";
 import {createBrowserId} from "@/utils/BrowserId.ts";
 import {getPublicKey} from "@/api/system/auth/Auth.ts";
 import { v4 as uuidv4 } from 'uuid';
+import {ResponseError} from "@/api/global/Type.ts";
 // token 和 默认密码加密的密钥。后端需保持一致
 const TOKEN_KEY:string = await createBrowserId()
 const DEFAULT_PASSWORD_KEY = 'lihuaLIHUALIhuam';
@@ -61,14 +62,14 @@ export const rasEncryptPassword = (password: string): Promise<{ciphertext:string
     // 获取公钥
     const publicKeyResp = await getPublicKey(requestKey);
     if (publicKeyResp.code !== 200) {
-      reject("业务异常")
+      reject(new ResponseError(500, "业务异常"))
     }
 
     const publicKey = publicKeyResp.data
     // 进行密码加密
     const ciphertext = rsaEncrypt(password, publicKey);
     if (!ciphertext) {
-      reject("业务异常")
+      reject(new ResponseError(500, "业务异常"))
     }
 
     resolve({

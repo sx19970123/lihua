@@ -125,6 +125,7 @@ import {findListByUserId, read, star, findUnReadCount} from "@/api/system/noice/
 import type {SysUserNoticeVO} from "@/api/system/noice/type/SysUserNotice.ts";
 import {handleTime} from "@/utils/HandleDate.ts";
 import dayjs from "dayjs";
+import {type ErrorResponseType, ResponseError} from "@/api/global/Type.ts";
 
 const themeStore = useThemeStore();
 const userStore = useUserStore()
@@ -244,17 +245,28 @@ const initList = () => {
   // 查询列表
   const initNoticeList = async () => {
     loading.value = true
-    const resp = await findListByUserId(userStore.userId,query.value)
-    if (resp.code === 200) {
-      total.value = resp.data.total
-      resp.data.records.forEach(item => {
-        // 处理标星回显
-        if (item.starFlag) {
-          item.starFlagNumber = Number.parseInt(item.starFlag)
-        }
-        // 向列表中push
-        userNoticeList.value.push(item)
-      })
+    try {
+      const resp = await findListByUserId(userStore.userId,query.value)
+      if (resp.code === 200) {
+        total.value = resp.data.total
+        resp.data.records.forEach(item => {
+          // 处理标星回显
+          if (item.starFlag) {
+            item.starFlagNumber = Number.parseInt(item.starFlag)
+          }
+          // 向列表中push
+          userNoticeList.value.push(item)
+        })
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
       loading.value = false
     }
   }
