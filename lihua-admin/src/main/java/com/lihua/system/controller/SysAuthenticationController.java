@@ -139,7 +139,7 @@ public class SysAuthenticationController extends BaseController {
         String password = SecurityUtils.decryptGetPassword(sysRegisterDTO.getPassword(), sysRegisterDTO.getPasswordRequestKey());
 
         // 密码长度校验
-        if (password.length() <= 6 || password.length() >= 30 ) {
+        if (password.length() < 6 || password.length() >= 30 ) {
             return error(ResultCodeEnum.ERROR, "密码长度6-30位");
         }
 
