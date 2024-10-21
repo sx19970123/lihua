@@ -1,5 +1,5 @@
 /*!
- * Vditor v3.10.6 - A markdown editor written in TypeScript.
+ * Vditor v3.10.7 - A markdown editor written in TypeScript.
  *
  * MIT License
  *
@@ -2186,6 +2186,8 @@ var mathRender = __webpack_require__(982);
 var mediaRender = __webpack_require__(431);
 // EXTERNAL MODULE: ./src/ts/markdown/mermaidRender.ts
 var mermaidRender = __webpack_require__(570);
+// EXTERNAL MODULE: ./src/ts/markdown/SMILESRender.ts
+var SMILESRender = __webpack_require__(474);
 // EXTERNAL MODULE: ./src/ts/markdown/markmapRender.ts
 var markmapRender = __webpack_require__(593);
 // EXTERNAL MODULE: ./src/ts/markdown/mindmapRender.ts
@@ -2386,6 +2388,7 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
 
 
 
+
 var mergeOptions = function (options) {
     var _a;
     var defaultOption = {
@@ -2504,7 +2507,8 @@ var previewRender = function (previewElement, markdown, options) { return __awai
                     math: mergedOptions.math,
                 });
                 (0,mermaidRender/* mermaidRender */.i)(previewElement, mergedOptions.cdn, mergedOptions.mode);
-                (0,markmapRender/* markmapRender */.K)(previewElement, mergedOptions.cdn, mergedOptions.mode);
+                (0,SMILESRender/* SMILESRender */.J)(previewElement, mergedOptions.cdn, mergedOptions.mode);
+                (0,markmapRender/* markmapRender */.K)(previewElement, mergedOptions.cdn);
                 (0,flowchartRender/* flowchartRender */.P)(previewElement, mergedOptions.cdn);
                 (0,graphvizRender/* graphvizRender */.v)(previewElement, mergedOptions.cdn);
                 (0,chartRender/* chartRender */.p)(previewElement, mergedOptions.cdn, mergedOptions.mode);
@@ -2566,6 +2570,7 @@ var setCodeTheme = __webpack_require__(34);
 
 
 
+
 var Vditor = /** @class */ (function () {
     function Vditor() {
     }
@@ -2583,7 +2588,9 @@ var Vditor = /** @class */ (function () {
     Vditor.mathRender = mathRender/* mathRender */.H;
     /** 流程图/时序图/甘特图渲染 */
     Vditor.mermaidRender = mermaidRender/* mermaidRender */.i;
-    /** 支持markdown的思维导图 */
+    /** 化学物质结构渲染 */
+    Vditor.SMILESRender = SMILESRender/* SMILESRender */.J;
+    /** 支持 markdown 的思维导图 */
     Vditor.markmapRender = markmapRender/* markmapRender */.K;
     /** flowchart.js 渲染 */
     Vditor.flowchartRender = flowchartRender/* flowchartRender */.P;
@@ -2626,7 +2633,7 @@ var Vditor = /** @class */ (function () {
 /* harmony export */   "H": () => (/* binding */ _VDITOR_VERSION),
 /* harmony export */   "g": () => (/* binding */ Constants)
 /* harmony export */ });
-var _VDITOR_VERSION = "3.10.6";
+var _VDITOR_VERSION = "3.10.7";
 
 var Constants = /** @class */ (function () {
     function Constants() {
@@ -2638,24 +2645,43 @@ var Constants = /** @class */ (function () {
     Constants.EDIT_TOOLBARS = ["emoji", "headings", "bold", "italic", "strike", "link", "list",
         "ordered-list", "outdent", "indent", "check", "line", "quote", "code", "inline-code", "insert-after",
         "insert-before", "upload", "record", "table"];
-    Constants.CODE_THEME = ["abap", "algol", "algol_nu", "arduino", "autumn", "borland", "bw",
-        "colorful", "dracula", "emacs", "friendly", "fruity", "github", "igor", "lovelace", "manni", "monokai",
-        "monokailight", "murphy", "native", "paraiso-dark", "paraiso-light", "pastie", "perldoc", "pygments",
-        "rainbow_dash", "rrt", "solarized-dark", "solarized-dark256", "solarized-light", "swapoff", "tango", "trac",
-        "vim", "vs", "xcode", "ant-design"];
-    Constants.CODE_LANGUAGES = ["mermaid", "echarts", "mindmap", "plantuml", "abc", "graphviz", "flowchart", "apache",
-        "js", "ts", "html", "markmap",
-        // common
-        "properties", "apache", "bash", "c", "csharp", "cpp", "css", "coffeescript", "diff", "go", "xml", "http",
-        "json", "java", "javascript", "kotlin", "less", "lua", "makefile", "markdown", "nginx", "objectivec", "php",
-        "php-template", "perl", "plaintext", "python", "python-repl", "r", "ruby", "rust", "scss", "sql", "shell",
-        "swift", "ini", "typescript", "vbnet", "yaml",
-        "ada", "clojure", "dart", "erb", "fortran", "gradle", "haskell", "julia", "julia-repl", "lisp", "matlab",
-        "pgsql", "powershell", "sql_more", "stata", "cmake", "mathematica",
-        // ext
-        "solidity", "yul"
+    Constants.CODE_THEME = ["a11y-dark", "agate", "an-old-hope", "androidstudio",
+        "arta", "atom-one-dark", "atom-one-dark-reasonable", "base16/3024", "base16/apathy", "base16/apprentice", "base16/ashes", "base16/atelier-cave", "base16/atelier-dune",
+        "base16/atelier-estuary", "base16/atelier-forest", "base16/atelier-heath", "base16/atelier-lakeside", "base16/atelier-plateau", "base16/atelier-savanna", "base16/atelier-seaside", "base16/atelier-sulphurpool",
+        "base16/atlas", "base16/bespin", "base16/black-metal", "base16/black-metal-bathory", "base16/black-metal-burzum", "base16/black-metal-dark-funeral", "base16/black-metal-gorgoroth", "base16/black-metal-immortal", "base16/black-metal-khold", "base16/black-metal-marduk", "base16/black-metal-mayhem", "base16/black-metal-nile", "base16/black-metal-venom", "base16/brewer", "base16/bright", "base16/brogrammer",
+        "base16/brush-trees-dark", "base16/chalk", "base16/circus", "base16/classic-dark", "base16/codeschool", "base16/colors", "base16/danqing", "base16/darcula", "base16/dark-violet",
+        "base16/darkmoss", "base16/darktooth", "base16/decaf", "base16/default-dark", "base16/dracula", "base16/edge-dark", "base16/eighties", "base16/embers", "base16/equilibrium-dark",
+        "base16/equilibrium-gray-dark", "base16/espresso", "base16/eva", "base16/eva-dim", "base16/flat", "base16/framer", "base16/gigavolt", "base16/google-dark", "base16/grayscale-dark", "base16/green-screen", "base16/gruvbox-dark-hard", "base16/gruvbox-dark-medium",
+        "base16/gruvbox-dark-pale", "base16/gruvbox-dark-soft", "base16/hardcore", "base16/harmonic16-dark", "base16/heetch-dark", "base16/helios", "base16/hopscotch", "base16/horizon-dark", "base16/humanoid-dark", "base16/ia-dark", "base16/icy-dark", "base16/ir-black", "base16/isotope",
+        "base16/kimber", "base16/london-tube", "base16/macintosh", "base16/marrakesh", "base16/materia", "base16/material", "base16/material-darker", "base16/material-palenight", "base16/material-vivid",
+        "base16/mellow-purple", "base16/mocha", "base16/monokai", "base16/nebula", "base16/nord", "base16/nova", "base16/ocean", "base16/oceanicnext", "base16/onedark", "base16/outrun-dark",
+        "base16/papercolor-dark", "base16/paraiso", "base16/pasque", "base16/phd", "base16/pico", "base16/pop", "base16/porple", "base16/qualia", "base16/railscasts", "base16/rebecca",
+        "base16/ros-pine", "base16/ros-pine-moon", "base16/sandcastle", "base16/seti-ui", "base16/silk-dark", "base16/snazzy", "base16/solar-flare", "base16/solarized-dark", "base16/spacemacs", "base16/summercamp", "base16/summerfruit-dark",
+        "base16/synth-midnight-terminal-dark", "base16/tango", "base16/tender", "base16/tomorrow-night", "base16/twilight", "base16/unikitty-dark", "base16/vulcan",
+        "base16/windows-10", "base16/windows-95", "base16/windows-high-contrast", "base16/windows-nt", "base16/woodland", "base16/xcode-dusk", "base16/zenburn", "codepen-embed", "dark",
+        "devibeans", "far", "felipec", "github-dark", "github-dark-dimmed", "gml", "gradient-dark", "hybrid", "ir-black", "isbl-editor-dark", "kimbie-dark", "lioshi",
+        "monokai", "monokai-sublime", "night-owl", "nnfx-dark", "nord", "obsidian", "panda-syntax-dark", "paraiso-dark", "pojoaque", "qtcreator-dark", "rainbow", "shades-of-purple", "srcery", "stackoverflow-dark",
+        "sunburst", "tomorrow-night-blue", "tomorrow-night-bright", "tokyo-night-dark", "vs2015", "xt256",
+        "ant-design",
+        "a11y-light", "arduino-light", "ascetic", "atom-one-light", "base16/atelier-cave-light",
+        "base16/atelier-dune-light", "base16/atelier-estuary-light", "base16/atelier-forest-light", "base16/atelier-heath-light",
+        "base16/atelier-lakeside-light", "base16/atelier-plateau-light", "base16/atelier-savanna-light", "base16/atelier-seaside-light", "base16/atelier-sulphurpool-light", "base16/brush-trees",
+        "base16/classic-light", "base16/cupcake", "base16/cupertino", "base16/default-light", "base16/dirtysea", "base16/edge-light", "base16/equilibrium-gray-light", "base16/equilibrium-light",
+        "base16/fruit-soda", "base16/github", "base16/google-light", "base16/grayscale-light", "base16/gruvbox-light-hard", "base16/gruvbox-light-medium", "base16/gruvbox-light-soft",
+        "base16/harmonic16-light", "base16/heetch-light", "base16/humanoid-light", "base16/horizon-light", "base16/ia-light", "base16/material-lighter", "base16/mexico-light",
+        "base16/one-light", "base16/papercolor-light", "base16/ros-pine-dawn", "base16/sagelight", "base16/shapeshifter",
+        "base16/silk-light", "base16/solar-flare-light", "base16/solarized-light", "base16/summerfruit-light", "base16/synth-midnight-terminal-light", "base16/tomorrow",
+        "base16/unikitty-light", "base16/windows-10-light", "base16/windows-95-light", "base16/windows-high-contrast-light", "brown-paper", "base16/windows-nt-light",
+        "color-brewer", "docco", "foundation", "github", "googlecode", "gradient-light", "grayscale", "idea", "intellij-light", "isbl-editor-light", "kimbie-light",
+        "lightfair", "magula", "mono-blue", "nnfx-light", "panda-syntax-light", "paraiso-light", "purebasic", "qtcreator-light", "routeros", "school-book",
+        "stackoverflow-light", "tokyo-night-light", "vs", "xcode", "default"];
+    Constants.ALIAS_CODE_LANGUAGES = [
+        // 自定义
+        "abc", "plantuml", "mermaid", "flowchart", "echarts", "mindmap", "graphviz", "math", "markmap", "smiles",
+        // 别名
+        "js", "ts", "html", "toml", "c#", "bat"
     ];
-    Constants.CDN = "https://unpkg.com/vditor@".concat("3.10.6");
+    Constants.CDN = "https://unpkg.com/vditor@".concat("3.10.7");
     Constants.MARKDOWN_OPTIONS = {
         autoSpace: false,
         gfmAutoLink: true,
@@ -2695,6 +2721,45 @@ var Constants = /** @class */ (function () {
     return Constants;
 }());
 
+
+
+/***/ }),
+
+/***/ 474:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "J": () => (/* binding */ SMILESRender)
+/* harmony export */ });
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(793);
+/* harmony import */ var _util_addScript__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(998);
+/* harmony import */ var _adapterRender__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(781);
+/* harmony import */ var _util_function__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(446);
+
+
+
+
+var SMILESRender = function (element, cdn, theme) {
+    if (element === void 0) { element = document; }
+    if (cdn === void 0) { cdn = _constants__WEBPACK_IMPORTED_MODULE_0__/* .Constants.CDN */ .g.CDN; }
+    var SMILESElements = _adapterRender__WEBPACK_IMPORTED_MODULE_1__.SMILESRenderAdapter.getElements(element);
+    if (SMILESElements.length > 0) {
+        (0,_util_addScript__WEBPACK_IMPORTED_MODULE_2__/* .addScript */ .G)("".concat(cdn, "/dist/js/smiles-drawer/smiles-drawer.min.js?v=2.1.7"), "vditorAbcjsScript").then(function () {
+            var sd = new SmiDrawer({}, {});
+            SMILESElements.forEach(function (item) {
+                var code = _adapterRender__WEBPACK_IMPORTED_MODULE_1__.SMILESRenderAdapter.getCode(item).trim();
+                if (item.getAttribute("data-processed") === "true" || code.trim() === "") {
+                    return;
+                }
+                var id = "smiles" + (0,_util_function__WEBPACK_IMPORTED_MODULE_3__/* .genUUID */ .Wb)();
+                item.innerHTML = "<svg id=\"".concat(id, "\"></svg>");
+                sd.draw(code, '#' + id, theme === "dark" ? "dark" : undefined);
+                item.setAttribute("data-processed", "true");
+            });
+        });
+    }
+};
 
 
 /***/ }),
@@ -2743,6 +2808,7 @@ var abcRender = function (element, cdn) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SMILESRenderAdapter": () => (/* binding */ SMILESRenderAdapter),
 /* harmony export */   "abcRenderAdapter": () => (/* binding */ abcRenderAdapter),
 /* harmony export */   "chartRenderAdapter": () => (/* binding */ chartRenderAdapter),
 /* harmony export */   "flowchartRenderAdapter": () => (/* binding */ flowchartRenderAdapter),
@@ -2754,8 +2820,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "plantumlRenderAdapter": () => (/* binding */ plantumlRenderAdapter)
 /* harmony export */ });
 var mathRenderAdapter = {
-    getCode: function (mathElement) { return mathElement.textContent; },
+    getCode: function (el) { return el.textContent; },
     getElements: function (element) { return element.querySelectorAll(".language-math"); },
+};
+var SMILESRenderAdapter = {
+    getCode: function (el) { return el.textContent; },
+    getElements: function (element) { return element.querySelectorAll(".language-smiles"); },
 };
 var mermaidRenderAdapter = {
     /** 不仅要返回code，并且需要将 code 设置为 el 的 innerHTML */
@@ -2913,7 +2983,7 @@ var codeRender = function (element, option) {
             e.classList.contains("language-echarts") || e.classList.contains("language-mindmap") ||
             e.classList.contains("language-plantuml") || e.classList.contains("language-markmap") ||
             e.classList.contains("language-abc") || e.classList.contains("language-graphviz") ||
-            e.classList.contains("language-math")) {
+            e.classList.contains("language-math") || e.classList.contains("language-smiles")) {
             return false;
         }
         if (e.style.maxHeight.indexOf("px") > -1) {
@@ -3069,11 +3139,11 @@ var highlightRender = function (hljsOption, element, cdn) {
         style = "github";
     }
     var vditorHljsStyle = document.getElementById("vditorHljsStyle");
-    var href = "".concat(cdn, "/dist/js/highlight.js/styles/").concat(style, ".css");
+    var href = "".concat(cdn, "/dist/js/highlight.js/styles/").concat(style, ".min.css");
     if (vditorHljsStyle && vditorHljsStyle.getAttribute('href') !== href) {
         vditorHljsStyle.remove();
     }
-    (0,_util_addStyle__WEBPACK_IMPORTED_MODULE_1__/* .addStyle */ .c)("".concat(cdn, "/dist/js/highlight.js/styles/").concat(style, ".css"), "vditorHljsStyle");
+    (0,_util_addStyle__WEBPACK_IMPORTED_MODULE_1__/* .addStyle */ .c)("".concat(cdn, "/dist/js/highlight.js/styles/").concat(style, ".min.css"), "vditorHljsStyle");
     if (hljsOption.enable === false) {
         return;
     }
@@ -3081,56 +3151,62 @@ var highlightRender = function (hljsOption, element, cdn) {
     if (codes.length === 0) {
         return;
     }
-    (0,_util_addScript__WEBPACK_IMPORTED_MODULE_2__/* .addScript */ .G)("".concat(cdn, "/dist/js/highlight.js/highlight.pack.js"), "vditorHljsScript").then(function () {
-        (0,_util_addScript__WEBPACK_IMPORTED_MODULE_2__/* .addScript */ .G)("".concat(cdn, "/dist/js/highlight.js/solidity.min.js"), "vditorHljsSolidityScript").then(function () {
-            (0,_util_addScript__WEBPACK_IMPORTED_MODULE_2__/* .addScript */ .G)("".concat(cdn, "/dist/js/highlight.js/yul.min.js"), "vditorHljsYulScript").then(function () {
-                element.querySelectorAll("pre > code").forEach(function (block) {
-                    // ir & wysiwyg 区域不渲染
-                    if (block.parentElement.classList.contains("vditor-ir__marker--pre") ||
-                        block.parentElement.classList.contains("vditor-wysiwyg__pre")) {
-                        return;
+    (0,_util_addScript__WEBPACK_IMPORTED_MODULE_2__/* .addScript */ .G)("".concat(cdn, "/dist/js/highlight.js/highlight.min.js?v=11.7.0"), "vditorHljsScript").then(function () {
+        (0,_util_addScript__WEBPACK_IMPORTED_MODULE_2__/* .addScript */ .G)("".concat(cdn, "/dist/js/highlight.js/third-languages.js?v=1.0.1"), "vditorHljsThirdScript").then(function () {
+            element.querySelectorAll("pre > code").forEach(function (block) {
+                // ir & wysiwyg 区域不渲染
+                if (block.parentElement.classList.contains("vditor-ir__marker--pre") ||
+                    block.parentElement.classList.contains("vditor-wysiwyg__pre")) {
+                    return;
+                }
+                if (block.classList.contains("language-mermaid") || block.classList.contains("language-flowchart") ||
+                    block.classList.contains("language-echarts") || block.classList.contains("language-mindmap") ||
+                    block.classList.contains("language-plantuml") || block.classList.contains("language-smiles") ||
+                    block.classList.contains("language-abc") || block.classList.contains("language-graphviz") ||
+                    block.classList.contains("language-math")) {
+                    return;
+                }
+                if (hljsOption.defaultLang !== "" && block.className.indexOf("language-") === -1) {
+                    block.classList.add("language-" + hljsOption.defaultLang);
+                }
+                var language = hljsOption.defaultLang || block.className.replace("language-", "");
+                if (!window.hljs.getLanguage(language)) {
+                    language = "plaintext";
+                }
+                block.innerHTML = window.hljs.highlight(block.textContent, {
+                    language: language,
+                    ignoreIllegals: true
+                }).value;
+                block.classList.add("hljs");
+                if (!hljsOption.lineNumber) {
+                    return;
+                }
+                block.classList.add("vditor-linenumber");
+                var linenNumberTemp = block.querySelector(".vditor-linenumber__temp");
+                if (!linenNumberTemp) {
+                    linenNumberTemp = document.createElement("div");
+                    linenNumberTemp.className = "vditor-linenumber__temp";
+                    block.insertAdjacentElement("beforeend", linenNumberTemp);
+                }
+                var whiteSpace = getComputedStyle(block).whiteSpace;
+                var isSoftWrap = false;
+                if (whiteSpace === "pre-wrap" || whiteSpace === "pre-line") {
+                    isSoftWrap = true;
+                }
+                var lineNumberHTML = "";
+                var lineList = block.textContent.split(/\r\n|\r|\n/g);
+                lineList.pop();
+                lineList.map(function (line) {
+                    var lineHeight = "";
+                    if (isSoftWrap) {
+                        linenNumberTemp.textContent = line || "\n";
+                        lineHeight = " style=\"height:".concat(linenNumberTemp.getBoundingClientRect().height, "px\"");
                     }
-                    if (block.classList.contains("language-mermaid") || block.classList.contains("language-flowchart") ||
-                        block.classList.contains("language-echarts") || block.classList.contains("language-mindmap") ||
-                        block.classList.contains("language-plantuml") ||
-                        block.classList.contains("language-abc") || block.classList.contains("language-graphviz") ||
-                        block.classList.contains("language-math")) {
-                        return;
-                    }
-                    if (hljsOption.defaultLang !== "" && block.className.indexOf("language-") === -1) {
-                        block.classList.add("language-" + hljsOption.defaultLang);
-                    }
-                    hljs.highlightElement(block);
-                    if (!hljsOption.lineNumber) {
-                        return;
-                    }
-                    block.classList.add("vditor-linenumber");
-                    var linenNumberTemp = block.querySelector(".vditor-linenumber__temp");
-                    if (!linenNumberTemp) {
-                        linenNumberTemp = document.createElement("div");
-                        linenNumberTemp.className = "vditor-linenumber__temp";
-                        block.insertAdjacentElement("beforeend", linenNumberTemp);
-                    }
-                    var whiteSpace = getComputedStyle(block).whiteSpace;
-                    var isSoftWrap = false;
-                    if (whiteSpace === "pre-wrap" || whiteSpace === "pre-line") {
-                        isSoftWrap = true;
-                    }
-                    var lineNumberHTML = "";
-                    var lineList = block.textContent.split(/\r\n|\r|\n/g);
-                    lineList.pop();
-                    lineList.map(function (line) {
-                        var lineHeight = "";
-                        if (isSoftWrap) {
-                            linenNumberTemp.textContent = line || "\n";
-                            lineHeight = " style=\"height:".concat(linenNumberTemp.getBoundingClientRect().height, "px\"");
-                        }
-                        lineNumberHTML += "<span".concat(lineHeight, "></span>");
-                    });
-                    linenNumberTemp.style.display = "none";
-                    lineNumberHTML = "<span class=\"vditor-linenumber__rows\">".concat(lineNumberHTML, "</span>");
-                    block.insertAdjacentHTML("beforeend", lineNumberHTML);
+                    lineNumberHTML += "<span".concat(lineHeight, "></span>");
                 });
+                linenNumberTemp.style.display = "none";
+                lineNumberHTML = "<span class=\"vditor-linenumber__rows\">".concat(lineNumberHTML, "</span>");
+                block.insertAdjacentHTML("beforeend", lineNumberHTML);
             });
         });
     });
@@ -3179,13 +3255,14 @@ var init = function (el, code) {
     mm.setData(root, frontmatterOptions);
     mm.fit();
 };
-var markmapRender = function (element, cdn, theme) {
+var markmapRender = function (element, cdn) {
+    if (element === void 0) { element = document; }
     if (cdn === void 0) { cdn = _constants__WEBPACK_IMPORTED_MODULE_0__/* .Constants.CDN */ .g.CDN; }
     var markmapElements = _adapterRender__WEBPACK_IMPORTED_MODULE_1__.markmapRenderAdapter.getElements(element);
     if (markmapElements.length === 0) {
         return;
     }
-    (0,_util_addScript__WEBPACK_IMPORTED_MODULE_2__/* .addScript */ .G)("".concat(cdn, "/dist/js/markmap/markmap.min.js"), "vditorMermaidScript").then(function () {
+    (0,_util_addScript__WEBPACK_IMPORTED_MODULE_2__/* .addScript */ .G)("".concat(cdn, "/dist/js/markmap/markmap.min.js"), "vditorMarkerScript").then(function () {
         markmapElements.forEach(function (item) {
             var code = _adapterRender__WEBPACK_IMPORTED_MODULE_1__.markmapRenderAdapter.getCode(item);
             if (item.getAttribute("data-processed") === "true" || code.trim() === "") {
@@ -3223,6 +3300,7 @@ var markmapRender = function (element, cdn, theme) {
 
 
 var mathRender = function (element, options) {
+    if (element === void 0) { element = document; }
     var mathElements = _adapterRender__WEBPACK_IMPORTED_MODULE_1__.mathRenderAdapter.getElements(element);
     if (mathElements.length === 0) {
         return;
@@ -3516,6 +3594,7 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
 
 
 var mermaidRender = function (element, cdn, theme) {
+    if (element === void 0) { element = document; }
     if (cdn === void 0) { cdn = _constants__WEBPACK_IMPORTED_MODULE_0__/* .Constants.CDN */ .g.CDN; }
     var mermaidElements = _adapterRender__WEBPACK_IMPORTED_MODULE_1__.mermaidRenderAdapter.getElements(element);
     if (mermaidElements.length === 0) {
@@ -5042,7 +5121,10 @@ var markmapRender = __webpack_require__(593);
 var mindmapRender = __webpack_require__(558);
 // EXTERNAL MODULE: ./src/ts/markdown/plantumlRender.ts
 var plantumlRender = __webpack_require__(931);
+// EXTERNAL MODULE: ./src/ts/markdown/SMILESRender.ts
+var SMILESRender = __webpack_require__(474);
 ;// CONCATENATED MODULE: ./src/ts/util/processCode.ts
+
 
 
 
@@ -5112,8 +5194,11 @@ var processCodeRender = function (previewPanel, vditor) {
     else if (language === "mermaid") {
         (0,mermaidRender/* mermaidRender */.i)(previewPanel, vditor.options.cdn, vditor.options.theme);
     }
+    else if (language === "smiles") {
+        (0,SMILESRender/* SMILESRender */.J)(previewPanel, vditor.options.cdn, vditor.options.theme);
+    }
     else if (language === "markmap") {
-        (0,markmapRender/* markmapRender */.K)(previewPanel, vditor.options.cdn, vditor.options.theme);
+        (0,markmapRender/* markmapRender */.K)(previewPanel, vditor.options.cdn);
     }
     else if (language === "flowchart") {
         (0,flowchartRender/* flowchartRender */.P)(previewPanel, vditor.options.cdn);
@@ -7614,6 +7699,7 @@ var highlightToolbarWYSIWYG = function (vditor) {
                     focusToElement(event, range);
                 };
                 language_1.onkeyup = function (event) {
+                    var _a, _b;
                     if (event.isComposing ||
                         event.key === "Enter" ||
                         event.key === "ArrowUp" ||
@@ -7623,7 +7709,7 @@ var highlightToolbarWYSIWYG = function (vditor) {
                     }
                     var matchLangData = [];
                     var key = language_1.value.substring(0, language_1.selectionStart);
-                    (vditor.options.preview.hljs.langs || constants/* Constants.CODE_LANGUAGES */.g.CODE_LANGUAGES).forEach(function (keyName) {
+                    (vditor.options.preview.hljs.langs || constants/* Constants.ALIAS_CODE_LANGUAGES.concat */.g.ALIAS_CODE_LANGUAGES.concat(((_b = (_a = window.hljs) === null || _a === void 0 ? void 0 : _a.listLanguages()) !== null && _b !== void 0 ? _b : []).sort())).forEach(function (keyName) {
                         if (keyName.indexOf(key.toLowerCase()) > -1) {
                             matchLangData.push({
                                 html: keyName,
@@ -11143,6 +11229,7 @@ var templateObject_1;
 
 
 var processHint = function (vditor) {
+    var _a, _b;
     vditor.hint.render(vditor);
     var startContainer = (0,selection/* getEditorRange */.zh)(vditor).startContainer;
     // 代码块语言提示
@@ -11157,7 +11244,7 @@ var processHint = function (vditor) {
             var matchLangData_1 = [];
             var key_1 = preBeforeElement.textContent.substring(0, (0,selection/* getSelectPosition */.im)(preBeforeElement, vditor.ir.element).start)
                 .replace(constants/* Constants.ZWSP */.g.ZWSP, "");
-            (vditor.options.preview.hljs.langs || constants/* Constants.CODE_LANGUAGES */.g.CODE_LANGUAGES).forEach(function (keyName) {
+            (vditor.options.preview.hljs.langs || constants/* Constants.ALIAS_CODE_LANGUAGES.concat */.g.ALIAS_CODE_LANGUAGES.concat(((_b = (_a = window.hljs) === null || _a === void 0 ? void 0 : _a.listLanguages()) !== null && _b !== void 0 ? _b : []).sort())).forEach(function (keyName) {
                 if (keyName.indexOf(key_1.toLowerCase()) > -1) {
                     matchLangData_1.push({
                         html: keyName,
@@ -12000,6 +12087,7 @@ var mediaRender = __webpack_require__(431);
 
 
 
+
 var Preview = /** @class */ (function () {
     function Preview(vditor) {
         var _this = this;
@@ -12200,7 +12288,8 @@ var Preview = /** @class */ (function () {
         (0,codeRender/* codeRender */.O)(vditor.preview.previewElement, vditor.options.preview.hljs);
         (0,highlightRender/* highlightRender */.s)(vditor.options.preview.hljs, vditor.preview.previewElement, vditor.options.cdn);
         (0,mermaidRender/* mermaidRender */.i)(vditor.preview.previewElement, vditor.options.cdn, vditor.options.theme);
-        (0,markmapRender/* markmapRender */.K)(vditor.preview.previewElement, vditor.options.cdn, vditor.options.theme);
+        (0,markmapRender/* markmapRender */.K)(vditor.preview.previewElement, vditor.options.cdn);
+        (0,SMILESRender/* SMILESRender */.J)(vditor.preview.previewElement, vditor.options.cdn, vditor.options.theme);
         (0,flowchartRender/* flowchartRender */.P)(vditor.preview.previewElement, vditor.options.cdn);
         (0,graphvizRender/* graphvizRender */.v)(vditor.preview.previewElement, vditor.options.cdn);
         (0,chartRender/* chartRender */.p)(vditor.preview.previewElement, vditor.options.cdn, vditor.options.theme);
@@ -12807,6 +12896,8 @@ var Emoji_extends = (undefined && undefined.__extends) || (function () {
 
 
 
+
+
 var Emoji = /** @class */ (function (_super) {
     Emoji_extends(Emoji, _super);
     function Emoji(vditor, menuItem) {
@@ -12853,6 +12944,9 @@ var Emoji = /** @class */ (function (_super) {
                 else {
                     range.extractContents();
                     range.insertNode(document.createTextNode(value));
+                    if (!(0,hasClosest/* hasClosestBlock */.F9)(range.startContainer)) {
+                        modifyPre(vditor, range);
+                    }
                 }
                 range.collapse(false);
                 (0,selection/* setSelectionFocus */.Hc)(range);
@@ -12904,7 +12998,7 @@ var exportPDF = function (vditor) {
 };
 var exportHTML = function (vditor) {
     var content = getHTML(vditor);
-    var html = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"".concat(vditor.options.cdn, "/dist/index.css\"/>\n<script src=\"").concat(vditor.options.cdn, "/dist/js/i18n/").concat(vditor.options.lang, ".js\"></script>\n<script src=\"").concat(vditor.options.cdn, "/dist/method.min.js\"></script></head>\n<body><div class=\"vditor-reset\" id=\"preview\">").concat(content, "</div>\n<script>\n    const previewElement = document.getElementById('preview')\n    Vditor.setContentTheme('").concat(vditor.options.preview.theme.current, "', '").concat(vditor.options.preview.theme.path, "');\n    Vditor.codeRender(previewElement);\n    Vditor.highlightRender(").concat(JSON.stringify(vditor.options.preview.hljs), ", previewElement, '").concat(vditor.options.cdn, "');\n    Vditor.mathRender(previewElement, {\n        cdn: '").concat(vditor.options.cdn, "',\n        math: ").concat(JSON.stringify(vditor.options.preview.math), ",\n    });\n    Vditor.mermaidRender(previewElement, '").concat(vditor.options.cdn, "', '").concat(vditor.options.theme, "');\n    Vditor.markmapRender(previewElement, '").concat(vditor.options.cdn, "', '").concat(vditor.options.theme, "');\n    Vditor.flowchartRender(previewElement, '").concat(vditor.options.cdn, "');\n    Vditor.graphvizRender(previewElement, '").concat(vditor.options.cdn, "');\n    Vditor.chartRender(previewElement, '").concat(vditor.options.cdn, "', '").concat(vditor.options.theme, "');\n    Vditor.mindmapRender(previewElement, '").concat(vditor.options.cdn, "', '").concat(vditor.options.theme, "');\n    Vditor.abcRender(previewElement, '").concat(vditor.options.cdn, "');\n    ").concat(vditor.options.preview.render.media.enable ? 'Vditor.mediaRender(previewElement);' : "", "\n    Vditor.speechRender(previewElement);\n</script>\n<script src=\"").concat(vditor.options.cdn, "/dist/js/icons/").concat(vditor.options.icon, ".js\"></script></body></html>");
+    var html = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"".concat(vditor.options.cdn, "/dist/index.css\"/>\n<script src=\"").concat(vditor.options.cdn, "/dist/js/i18n/").concat(vditor.options.lang, ".js\"></script>\n<script src=\"").concat(vditor.options.cdn, "/dist/method.min.js\"></script></head>\n<body><div class=\"vditor-reset\" id=\"preview\">").concat(content, "</div>\n<script>\n    const previewElement = document.getElementById('preview')\n    Vditor.setContentTheme('").concat(vditor.options.preview.theme.current, "', '").concat(vditor.options.preview.theme.path, "');\n    Vditor.codeRender(previewElement);\n    Vditor.highlightRender(").concat(JSON.stringify(vditor.options.preview.hljs), ", previewElement, '").concat(vditor.options.cdn, "');\n    Vditor.mathRender(previewElement, {\n        cdn: '").concat(vditor.options.cdn, "',\n        math: ").concat(JSON.stringify(vditor.options.preview.math), ",\n    });\n    Vditor.mermaidRender(previewElement, '").concat(vditor.options.cdn, "', '").concat(vditor.options.theme, "');\n    Vditor.SMILESRender(previewElement, '").concat(vditor.options.cdn, "', '").concat(vditor.options.theme, "');\n    Vditor.markmapRender(previewElement, '").concat(vditor.options.cdn, "');\n    Vditor.flowchartRender(previewElement, '").concat(vditor.options.cdn, "');\n    Vditor.graphvizRender(previewElement, '").concat(vditor.options.cdn, "');\n    Vditor.chartRender(previewElement, '").concat(vditor.options.cdn, "', '").concat(vditor.options.theme, "');\n    Vditor.mindmapRender(previewElement, '").concat(vditor.options.cdn, "', '").concat(vditor.options.theme, "');\n    Vditor.abcRender(previewElement, '").concat(vditor.options.cdn, "');\n    ").concat(vditor.options.preview.render.media.enable ? 'Vditor.mediaRender(previewElement);' : "", "\n    Vditor.speechRender(previewElement);\n</script>\n<script src=\"").concat(vditor.options.cdn, "/dist/js/icons/").concat(vditor.options.icon, ".js\"></script></body></html>");
     download(vditor, html, content.substr(0, 10) + ".html");
 };
 
@@ -14161,6 +14255,10 @@ var undo_Undo = /** @class */ (function () {
         this[vditor.currentMode].lastText = text;
         vditor[vditor.currentMode].element.innerHTML = text;
         if (vditor.currentMode !== "sv") {
+            vditor[vditor.currentMode].element.querySelectorAll(".vditor-".concat(vditor.currentMode, "__preview"))
+                .forEach(function (blockElement) {
+                blockElement.outerHTML = vditor.lute.SpinVditorDOM(blockElement.parentElement.outerHTML);
+            });
             vditor[vditor.currentMode].element.querySelectorAll(".vditor-".concat(vditor.currentMode, "__preview[data-render='2']"))
                 .forEach(function (blockElement) {
                 processCodeRender(blockElement, vditor);

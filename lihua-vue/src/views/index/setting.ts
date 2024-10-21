@@ -126,6 +126,12 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0-beta.11',
+        record: [
+            '1. 更新Vditor版本，修复代码高亮无效的bug'
+        ]
+    },
+    {
         version: '1.0.0-beta.10',
         record: [
             '1. 用户通知卡片新增显示发布人昵称',

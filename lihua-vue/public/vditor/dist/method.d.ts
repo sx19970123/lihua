@@ -11,14 +11,16 @@ declare class Vditor {
     /** 为 element 中的代码块进行高亮渲染 */
     static highlightRender: (hljsOption?: IHljs, element?: HTMLElement | Document, cdn?: string) => void;
     /** 对数学公式进行渲染 */
-    static mathRender: (element: HTMLElement, options?: {
+    static mathRender: (element?: HTMLElement | Document, options?: {
         cdn?: string;
         math?: IMath;
     }) => void;
     /** 流程图/时序图/甘特图渲染 */
-    static mermaidRender: (element: HTMLElement, cdn: string, theme: string) => void;
-    /** 支持markdown的思维导图 */
-    static markmapRender: (element: HTMLElement, cdn: string, theme: string) => void;
+    static mermaidRender: (element: HTMLElement | Document, cdn: string, theme: string) => void;
+    /** 化学物质结构渲染 */
+    static SMILESRender: (element: HTMLElement | Document, cdn: string, theme: string) => void;
+    /** 支持 markdown 的思维导图 */
+    static markmapRender: (element?: HTMLElement | Document, cdn?: string) => void;
     /** flowchart.js 渲染 */
     static flowchartRender: (element: HTMLElement, cdn?: string) => void;
     /** 图表渲染 */
