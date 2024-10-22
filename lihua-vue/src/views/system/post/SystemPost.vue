@@ -267,6 +267,7 @@ import {downloadByPath, handleFunDownload} from "@/utils/FileDownload.ts";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import Spin from "@/components/spin";
+import {ResponseError} from "@/api/global/Type.ts";
 const {sys_status} = initDict("sys_status")
 const route = useRoute();
 
@@ -284,9 +285,19 @@ watch(() => route.query.deptId, (value) => {
 const initDept = () => {
   const deptTree = ref<Array<SysDept>>([])
   const initDeptTree = async () => {
-    const resp = await getDeptOption()
-    if (resp.code === 200 ) {
-      deptTree.value = resp.data
+    try {
+      const resp = await getDeptOption()
+      if (resp.code === 200 ) {
+        deptTree.value = resp.data
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
   initDeptTree()
@@ -391,7 +402,7 @@ const initSearch = () => {
     }
     await initPage()
   }
-  
+
   const initPage = async () => {
     tableLoad.value = true
     const resp = await findPage(postQuery.value)

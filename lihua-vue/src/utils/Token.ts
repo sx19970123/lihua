@@ -40,7 +40,11 @@ const removeUsername = () => {
 
 // password
 const getPassword = (): string => {
-    return decrypt(Cookies.get(PASSWORD_KEY))
+    const pwd = Cookies.get(PASSWORD_KEY)
+    if (pwd) {
+        return decrypt(pwd)
+    }
+    return pwd;
 }
 
 const setPassword = (password:string, expires: number): void => {

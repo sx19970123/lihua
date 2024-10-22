@@ -272,6 +272,7 @@ import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import PickUp from "@/components/icon/pick-up/PickUp.vue";
 import Unfold from "@/components/icon/unfold/Unfold.vue";
+import {ResponseError} from "@/api/global/Type.ts";
 const {sys_status} = initDict("sys_status")
 const router = useRouter()
 // 显示更多按钮
@@ -365,14 +366,22 @@ const initSearch = () => {
   // 查询列表
   const initList = async () => {
     tableLoad.value = true
-    const resp = await findList(deptQuery.value);
-    if (resp.code === 200) {
-      deptList.value = resp.data
+    try {
+      const resp = await findList(deptQuery.value);
+      if (resp.code === 200) {
+        deptList.value = resp.data
+        handleDeptStatus(deptList.value)
+      } else {
+        message.error(resp.msg);
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
       tableLoad.value = false
-
-      handleDeptStatus(deptList.value)
-    } else {
-      message.error(resp.msg);
     }
   }
 
@@ -503,12 +512,20 @@ const initSave = () => {
   // 根据id查询数据
   const selectById = async (event: MouseEvent,id: string) => {
     event.stopPropagation()
-    const resp = await findById(id)
-    if (resp.code === 200) {
-      handleModelStatus("修改部门")
-      sysDept.value = resp.data
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await findById(id)
+      if (resp.code === 200) {
+        handleModelStatus("修改部门")
+        sysDept.value = resp.data
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
 
@@ -533,18 +550,25 @@ const initSave = () => {
 
   // 初始化树型结构
   const initTreeData = async () => {
-    const resp = await getDeptOption()
-    if (resp.code === 200) {
-      const deepDeptList = cloneDeep(resp.data)
-      handleDeptTree(deepDeptList)
-      parentDeptList.value = [{
-        id: '0',
-        name: '根节点',
-        children: deepDeptList
-      }]
-    } else {
-      message.error(resp.msg)
-      console.error("获取单位树失败",resp.msg)
+    try {
+      const resp = await getDeptOption()
+      if (resp.code === 200) {
+        const deepDeptList = cloneDeep(resp.data)
+        handleDeptTree(deepDeptList)
+        parentDeptList.value = [{
+          id: '0',
+          name: '根节点',
+          children: deepDeptList
+        }]
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
 
@@ -560,33 +584,52 @@ const initSave = () => {
   const saveDept = async () => {
     await formRef.value?.validate()
     modalActive.saveLoading = true
-    const resp = await save(sysDept.value)
-    if (resp.code === 200) {
-      await initList()
-      await initTreeData()
+    try {
+      const resp = await save(sysDept.value)
+      if (resp.code === 200) {
+        await initList()
+        await initTreeData()
 
-      handleModelStatus()
-      message.success(resp.msg)
-    } else {
-      message.error(resp.msg)
+        handleModelStatus()
+        message.success(resp.msg)
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      modalActive.saveLoading = false
     }
-    modalActive.saveLoading = false
   }
 
   // 修改菜单状态
   const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
     event.stopPropagation()
-    const resp = await updateStatus(id, status)
     let newStatus: string = ''
-    if (resp.code === 200) {
-      newStatus = resp.data
-      message.success(resp.msg)
-    } else {
-      newStatus = status
-      message.error(resp.msg)
+    try {
+      const resp = await updateStatus(id, status)
+      if (resp.code === 200) {
+        newStatus = resp.data
+        message.success(resp.msg)
+      } else {
+        newStatus = status
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      // 重新赋值
+      handleDeptStatus(deptList.value, id, newStatus)
     }
-    // 重新赋值
-    handleDeptStatus(deptList.value, id, newStatus)
+
   }
 
   // 回显菜单状态
@@ -646,25 +689,35 @@ const initDelete = () => {
   const handleDelete = async (id?:string) => {
     const deleteIds = id ? [id] : [...selectedIds.value];
 
-    if (deleteIds.length > 0) {
-      const resp = await deleteData(deleteIds)
-      if (resp.code === 200) {
-        message.success(resp.msg);
-        // id 不存在则清空选中数据
-        if (!id) {
-          selectedIds.value = []
+    try {
+      if (deleteIds.length > 0) {
+        const resp = await deleteData(deleteIds)
+        if (resp.code === 200) {
+          message.success(resp.msg);
+          // id 不存在则清空选中数据
+          if (!id) {
+            selectedIds.value = []
+          } else {
+            selectedIds.value = selectedIds.value.filter(item => item !== id)
+          }
+          await initList()
+          await initTreeData()
         } else {
-          selectedIds.value = selectedIds.value.filter(item => item !== id)
+          message.error(resp.msg)
         }
-        await initList()
-        await initTreeData()
       } else {
-        message.error(resp.msg)
+        message.warning("请勾选数据")
       }
-    } else {
-      message.warning("请勾选数据")
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.log(e)
+      }
+    } finally {
+      closePopconfirm()
     }
-    closePopconfirm()
+
   }
 
   return {
@@ -724,6 +777,12 @@ const initExcel = () => {
         await initList()
       } else {
         message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
       }
     } finally {
       spinInstance.close()

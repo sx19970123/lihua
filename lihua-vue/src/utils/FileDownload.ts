@@ -1,6 +1,7 @@
 import { message } from "ant-design-vue";
 import Spin from '@/components/spin';
 import { defaultDownloadURL } from "@/api/system/file/File.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 
 // http正则表达式
 const httpRegex = /^(https?:\/\/)[^\s$.?#].[^\s]*$/;
@@ -26,10 +27,8 @@ export const handleFunDownload = (fun: Promise<any>, param?: DownloadParam) => {
             downloadByBlob(resp, param?.fileName);
         } else {
             const response = resp;
-
             if (response.code === 200) {
                 const data = response.data;
-
                 if (httpRegex.test(data)) {
                     download(data, param?.fileName);
                 } else {
@@ -39,13 +38,15 @@ export const handleFunDownload = (fun: Promise<any>, param?: DownloadParam) => {
                 message.error(response.msg);
             }
         }
-
+    }).catch((e) => {
+        if (e instanceof ResponseError) {
+            message.error(e.msg)
+        } else {
+            console.error(e)
+        }
+    }).finally(() => {
         spinInstance.close();
-    }).catch((error) => {
-        // 处理错误情况
-        message.error("下载失败: " + error.message);
-        spinInstance.close();
-    });
+    })
 }
 
 // 通过文件路径下载

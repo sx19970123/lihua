@@ -98,6 +98,7 @@ import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import UserShow from "@/components/user-show/index.vue"
 import {getUserOption, getUserOptionByUserIds} from "@/api/system/user/User.ts";
 import {message} from "ant-design-vue";
+import {ResponseError} from "@/api/global/Type.ts";
 const themeStore = useThemeStore();
 
 const props = defineProps({
@@ -151,21 +152,30 @@ const initDeptTree = () => {
   // 初始化部门数据
   const initDept = async () => {
     loadingTree.value = true
-    const resp = await getDeptOption()
-    if (resp.code === 200) {
-      // 单位树
-      sysDeptList.value = resp.data
-      // 未双向绑定的单位树
-      originDeptTree = resp.data
-      // 处理为扁平化数据
-      flattenTreeData(resp.data, flattenDeptList)
-      // 获取全部部门id
-      const mapIds = flattenDeptList.filter(item => item.id).map(item => item.id)
-      deptIds.push(... (mapIds as string[]))
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await getDeptOption()
+      if (resp.code === 200) {
+        // 单位树
+        sysDeptList.value = resp.data
+        // 未双向绑定的单位树
+        originDeptTree = resp.data
+        // 处理为扁平化数据
+        flattenTreeData(resp.data, flattenDeptList)
+        // 获取全部部门id
+        const mapIds = flattenDeptList.filter(item => item.id).map(item => item.id)
+        deptIds.push(... (mapIds as string[]))
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      loadingTree.value = false
     }
-    loadingTree.value = false
   }
 
   // 处理展开折叠

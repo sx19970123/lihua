@@ -414,6 +414,7 @@ import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useSettingStore} from "@/stores/modules/setting.ts";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
 import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 const settingStore = useSettingStore()
 const themeStore = useThemeStore();
 const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
@@ -878,19 +879,27 @@ const initDeptData = () => {
 
   // 加载部门信息
   const initDept = async () => {
-    const resp = await getDeptOption()
-    if (resp.code === 200) {
-      // 单位树
-      sysDeptList.value = resp.data
-      // 未双向绑定的单位树
-      originDeptTree = resp.data
-      // 处理为扁平化数据
-      flattenTreeData(resp.data, flattenDeptList)
-      // 获取全部部门id
-      const mapIds = flattenDeptList.filter(item => item.id).map(item => item.id)
-      deptIds.push(... (mapIds as string[]))
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await getDeptOption()
+      if (resp.code === 200) {
+        // 单位树
+        sysDeptList.value = resp.data
+        // 未双向绑定的单位树
+        originDeptTree = resp.data
+        // 处理为扁平化数据
+        flattenTreeData(resp.data, flattenDeptList)
+        // 获取全部部门id
+        const mapIds = flattenDeptList.filter(item => item.id).map(item => item.id)
+        deptIds.push(... (mapIds as string[]))
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
   initDept()
