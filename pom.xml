@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <mysql.version>8.2.0</mysql.version>
-        <mybatis-plus.version>3.5.7</mybatis-plus.version>
+        <mybatis-plus.version>3.5.8</mybatis-plus.version>
         <jwt.version>3.10.3</jwt.version>
         <myexcel.version>4.5.0</myexcel.version>
         <oshi.version>6.6.4</oshi.version>
