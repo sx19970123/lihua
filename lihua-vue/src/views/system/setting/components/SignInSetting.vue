@@ -162,9 +162,19 @@ const initRoleData = () => {
   const sysRoleList = ref<Array<SysRole>>([])
   // 加载角色信息
   const initRole = async () => {
-    const resp = await getRoleOption()
-    if (resp.code === 200) {
-      sysRoleList.value = resp.data
+    try {
+      const resp = await getRoleOption()
+      if (resp.code === 200) {
+        sysRoleList.value = resp.data
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
   initRole()
@@ -367,19 +377,29 @@ const initPostData = () => {
     // 新选中的部门id集合
     const newDeptIds = deptIds.filter(item => !originDeptIds.includes(item))
     // 后端查询新部门及岗位数据
-    const resp = await getPostOptionByDeptId(newDeptIds)
-    if (resp.code === 200) {
-      const data = resp.data
-      newDeptIds.forEach(deptId => {
-        sysPostList.value.push({
-          deptId: deptId,
-          deptName: cloneDeep(option).find((item:{label: string, value: string}) => item.value === deptId).label,
-          postList: sysPostsToPostOptional(data[deptId])
+    try {
+      const resp = await getPostOptionByDeptId(newDeptIds)
+      if (resp.code === 200) {
+        const data = resp.data
+        newDeptIds.forEach(deptId => {
+          sysPostList.value.push({
+            deptId: deptId,
+            deptName: cloneDeep(option).find((item:{label: string, value: string}) => item.value === deptId).label,
+            postList: sysPostsToPostOptional(data[deptId])
+          })
         })
-      })
-      // 回显部门
-      if (settingForm.value.postIds) {
-        initPostTag(settingForm.value.postIds)
+        // 回显部门
+        if (settingForm.value.postIds) {
+          initPostTag(settingForm.value.postIds)
+        }
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
       }
     }
   }
@@ -484,14 +504,18 @@ const handleSubmit = async () => {
   }
   submitLoading.value = true
   setting.value.settingJson = JSON.stringify(settingForm.value)
-  const resp = await settingStore.save(setting.value)
+  try {
+    const resp = await settingStore.save(setting.value)
 
-  if (resp.code === 200) {
-    message.success(resp.msg)
-  } else {
-    message.error(resp.msg)
+    if (resp.code === 200) {
+      message.success(resp.msg)
+    } else {
+      message.error(resp.msg)
+    }
+  } finally {
+    submitLoading.value = false
   }
-  submitLoading.value = false
+
 }
 
 // 监听部门关键字变化

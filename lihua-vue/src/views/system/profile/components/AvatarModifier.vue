@@ -73,6 +73,7 @@ import settings from "@/settings";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import { cloneDeep } from 'lodash-es'
 import {useThemeStore} from "@/stores/modules/theme.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 const themeStore = useThemeStore()
 const userStore = useUserStore()
 // 双向绑定值
@@ -203,9 +204,13 @@ const handleOk = async () => {
       }
 
     }
-  } catch (error) {
-    message.error("处理头像异常-" + error)
-    console.error('处理头像时出错:', error);
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      message.error("处理头像异常-" + e)
+      console.error('处理头像时出错:', e);
+    }
   }
 };
 

@@ -6,20 +6,19 @@ interface LoginType {
     requestKey: string
 }
 // 用户登录
-export const login = (  username: string,
-                        password: string,
-                        captchaVerification: string,
-                        requestKey: string) => {
-    const data: LoginType = {
-        username,
-        password,
-        captchaVerification,
-        requestKey
-    }
+export const login = (username: string,
+                      password: string,
+                      captchaVerification: string,
+                      requestKey: string) => {
     return request<string>({
         url: '/system/login',
         method: 'post',
-        data: data
+        data: {
+            username,
+            password,
+            captchaVerification,
+            requestKey
+        }
     })
 }
 

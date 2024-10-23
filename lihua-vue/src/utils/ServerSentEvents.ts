@@ -2,6 +2,8 @@ import {handleClose} from "@/api/system/sse/ServerSentEvents.ts";
 import {useUserStore} from "@/stores/modules/user.ts";
 import token from "@/utils/Token.ts"
 import {createBrowserId} from "@/utils/BrowserId.ts";
+import {ResponseError} from "@/api/global/Type.ts";
+import {message} from "ant-design-vue";
 const { getToken } = token
 export let eventSource: EventSource | null
 
@@ -32,7 +34,15 @@ export const close = async () => {
         eventSource = null
         // 主动退出情况下，通知后端释放sse资源
         if (getToken()) {
-            await handleClose(await createClientKey())
+           try {
+               await handleClose(await createClientKey())
+           } catch (e) {
+               if (e instanceof ResponseError) {
+                   message.error(e.msg)
+               } else {
+                   console.error(e)
+               }
+           }
         }
     }
 }

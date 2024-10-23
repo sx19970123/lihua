@@ -280,13 +280,22 @@ const initUserTable = () => {
   const handleClickTree = async (checkedKeys: string[]) => {
     if (checkedKeys.length > 0) {
       loadingUser.value = true
-      const resp = await getUserOption(checkedKeys[0])
-      if (resp.code === 200) {
-        userList.value = resp.data
-      } else {
-        message.error(resp.msg)
+      try {
+        const resp = await getUserOption(checkedKeys[0])
+        if (resp.code === 200) {
+          userList.value = resp.data
+        } else {
+          message.error(resp.msg)
+        }
+      } catch (e) {
+        if (e instanceof ResponseError) {
+          message.error(e.msg)
+        } else {
+          console.error(e)
+        }
+      } finally {
+        loadingUser.value = false
       }
-      loadingUser.value = false
     }
   }
 
@@ -317,10 +326,20 @@ const initModelUserId = async () => {
   }
 
   // 根据id获取用户信息（id、昵称、头像、部门）
-  const resp = await getUserOptionByUserIds(userIds)
-  if (resp.code === 200) {
-    userList.value = resp.data
-    selectedIds.value = resp.data.filter(user => user.id !== undefined).map(user => user.id) as string[]
+  try {
+    const resp = await getUserOptionByUserIds(userIds)
+    if (resp.code === 200) {
+      userList.value = resp.data
+      selectedIds.value = resp.data.filter(user => user.id !== undefined).map(user => user.id) as string[]
+    } else {
+      message.error(resp.msg)
+    }
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.log(e)
+    }
   }
 }
 

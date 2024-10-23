@@ -9,6 +9,7 @@ import {hasRouteRole} from "@/utils/Auth.ts";
 import {close, connect} from "@/utils/ServerSentEvents.ts";
 import {message} from "ant-design-vue";
 import Token from "@/utils/Token.ts";
+import {getLoginSetting} from "@/api/system/login/Login.ts";
 const { getToken } = token
 
 // 路由前置守卫
@@ -30,7 +31,7 @@ router.beforeEach(async (to, from, next) => {
                 await connect()
                 // 检查登录设置
                 if (to.fullPath === '/login' || !Token.getLoginSettingResult()) {
-                    const loginSettingResp = await userStore.checkLoginSetting()
+                    const loginSettingResp = await getLoginSetting()
                     if (loginSettingResp.code === 200) {
                         if (loginSettingResp.data !== null) {
                             next({ name: 'Login', state: {data: loginSettingResp.data} });

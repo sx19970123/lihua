@@ -108,6 +108,8 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
             content: () => '添加收藏',
             icon: () => h( StarFilled ),
           })
+        } else {
+          message.error(resp.msg)
         }
       }).catch(() => {
         message.error({
@@ -125,6 +127,8 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
             content: () => '取消收藏',
             icon: () => h( StarOutlined ),
           })
+        } else {
+          message.error(resp.msg)
         }
       }).catch(() => {
         message.error({
@@ -142,7 +146,14 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
             content: () => '固定页面',
             icon: () => h( LockOutlined ),
           })
+        } else {
+          message.error(resp.msg)
         }
+      }).catch(() => {
+        message.error({
+          content: () => '固定页面失败',
+          icon: () => h( LockOutlined ),
+        })
       })
       break
     }
@@ -154,7 +165,14 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
             content: () => '取消固定',
             icon: () => h( UnlockOutlined ),
           })
+        } else {
+          message.error(resp.msg)
         }
+      }).catch(() => {
+        message.error({
+          content: () => '取消固定失败',
+          icon: () => h( UnlockOutlined ),
+        })
       })
       break
     }

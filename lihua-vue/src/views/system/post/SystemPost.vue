@@ -405,19 +405,27 @@ const initSearch = () => {
 
   const initPage = async () => {
     tableLoad.value = true
-    const resp = await findPage(postQuery.value)
-    if (resp.code === 200) {
-      postList.value = resp.data.records
-      postTotal.value = resp.data.total
+    try {
+      const resp = await findPage(postQuery.value)
+      if (resp.code === 200) {
+        postList.value = resp.data.records
+        postTotal.value = resp.data.total
+        // 回显状态
+        postList.value.forEach(post => {
+          post.statusIsNormal = post.status === '0'
+          post.updateStatusLoading = false
+        })
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
       tableLoad.value = false
-
-      // 回显状态
-      postList.value.forEach(post => {
-        post.statusIsNormal = post.status === '0'
-        post.updateStatusLoading = false
-      })
-    } else {
-      message.error(resp.msg)
     }
   }
   queryPage()
@@ -499,12 +507,20 @@ const initSave = () => {
 
   const selectById = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
-    const resp = await findById(id)
-    if (resp.code === 200) {
-      handleModalStatus('修改岗位')
-      sysPost.value = resp.data
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await findById(id)
+      if (resp.code === 200) {
+        handleModalStatus('修改岗位')
+        sysPost.value = resp.data
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
 
@@ -520,41 +536,59 @@ const initSave = () => {
         sysPost.value.deptCode = item.code
       }
     })
-
     modalActive.saveLoading = true
-    const resp = await save(sysPost.value)
-    if (resp.code === 200) {
-      message.success(resp.msg)
-      modalActive.open = false
-      await initPage()
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await save(sysPost.value)
+      if (resp.code === 200) {
+        message.success(resp.msg)
+        modalActive.open = false
+        await initPage()
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      modalActive.saveLoading = false
     }
-    modalActive.saveLoading = false
   }
 
 
   // 修改角色状态
   const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
     event.stopPropagation()
-    const resp = await updateStatus(id, status)
     let newStatus: string = ''
-    if (resp.code === 200) {
-      newStatus = resp.data
-      message.success(resp.msg)
-    } else {
-      newStatus = status
-      message.error(resp.msg)
-    }
-    // 重新赋值
-    postList.value.some(post => {
-      if (post.id === id) {
-        post.status = newStatus
-        post.statusIsNormal = post.status === '0'
-        post.updateStatusLoading = false
-        return
+    try {
+      const resp = await updateStatus(id, status)
+      if (resp.code === 200) {
+        newStatus = resp.data
+        message.success(resp.msg)
+      } else {
+        newStatus = status
+        message.error(resp.msg)
       }
-    })
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      // 重新赋值
+      postList.value.some(post => {
+        if (post.id === id) {
+          post.status = newStatus
+          post.statusIsNormal = post.status === '0'
+          post.updateStatusLoading = false
+          return
+        }
+      })
+    }
+
   }
 
 
@@ -591,24 +625,34 @@ const initDelete = () => {
   const handleDelete = async (id?:string) => {
     const deleteIds = id ? [id] : [...selectedIds.value];
 
-    if (deleteIds.length > 0) {
-      const resp = await deleteData(deleteIds)
-      if (resp.code === 200) {
-        message.success(resp.msg);
-        // id 不存在则清空选中数据
-        if (!id) {
-          selectedIds.value = []
+    try {
+      if (deleteIds.length > 0) {
+        const resp = await deleteData(deleteIds)
+        if (resp.code === 200) {
+          message.success(resp.msg);
+          // id 不存在则清空选中数据
+          if (!id) {
+            selectedIds.value = []
+          } else {
+            selectedIds.value = selectedIds.value.filter(item => item !== id)
+          }
+          await initPage()
         } else {
-          selectedIds.value = selectedIds.value.filter(item => item !== id)
+          message.error(resp.msg)
         }
-        await initPage()
       } else {
-        message.error(resp.msg)
+        message.warning("请勾选数据")
       }
-    } else {
-      message.warning("请勾选数据")
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      closePopconfirm()
     }
-    closePopconfirm()
+
   }
 
   return {

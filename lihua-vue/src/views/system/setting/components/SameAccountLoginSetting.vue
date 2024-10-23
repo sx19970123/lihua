@@ -98,14 +98,18 @@ const rules: Record<string, Rule[]> = {
 const handleFinish = async () => {
   submitLoading.value = true
   setting.value.settingJson = JSON.stringify(settingForm.value)
-  const resp = await settingStore.save(setting.value)
+  try {
+    const resp = await settingStore.save(setting.value)
 
-  if (resp.code === 200) {
-    message.success(resp.msg)
-  } else {
-    message.error(resp.msg)
+    if (resp.code === 200) {
+      message.success(resp.msg)
+    } else {
+      message.error(resp.msg)
+    }
+  } finally {
+    submitLoading.value = false
   }
-  submitLoading.value = false
+
 }
 
 onMounted(() => init())

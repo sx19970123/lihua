@@ -350,18 +350,26 @@ const initLogInfo = () => {
   // 根据id查询日志详情
   const selectByCacheKey = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
-    const resp = await findLoginByCacheKey(id)
-    if (resp.code === 200) {
-      logInfo.value = resp.data
+    try {
+      const resp = await findLoginByCacheKey(id)
+      if (resp.code === 200) {
+        logInfo.value = resp.data
 
-      if (!resp.data) {
-        message.error('用户信息不存在')
+        if (!resp.data) {
+          message.error('用户信息不存在')
+        } else {
+          openModal.value = true
+        }
+
       } else {
-        openModal.value = true
+        message.error(resp.msg)
       }
-
-    } else {
-      message.error(resp.msg)
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
 

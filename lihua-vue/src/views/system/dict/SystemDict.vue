@@ -211,7 +211,7 @@
 <script setup lang="ts">
 import {reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
-import type {ResponseType } from "@/api/global/Type.ts"
+import {ResponseError, type ResponseType} from "@/api/global/Type.ts"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
 import {deleteData, findById, findPage, reloadCache, save, updateStatus} from "@/api/system/dict/DictType.ts";
 import dayjs from "dayjs";
@@ -337,19 +337,28 @@ const initSearch = () => {
   // 查询数据
   const queryPage = async () => {
     tableLoad.value = true
-    const resp = await findPage(dictTypeQuery.value)
-    if (resp.code === 200) {
-      dictTypeList.value = resp.data.records
-      dictTypeTotal.value = resp.data.total
-      // 回显状态
-      dictTypeList.value?.some(dictType => {
-        dictType.statusIsNormal = dictType.status === '0'
-        dictType.updateStatusLoading = false
-      })
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await findPage(dictTypeQuery.value)
+      if (resp.code === 200) {
+        dictTypeList.value = resp.data.records
+        dictTypeTotal.value = resp.data.total
+        // 回显状态
+        dictTypeList.value?.some(dictType => {
+          dictType.statusIsNormal = dictType.status === '0'
+          dictType.updateStatusLoading = false
+        })
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      tableLoad.value = false
     }
-    tableLoad.value = false
   }
   initPage()
   return {
@@ -416,30 +425,47 @@ const initSave = () => {
   const saveDictType = async () => {
       await formRef.value.validate()
       modalActive.saveLoading = true
-      const resp = await save(dictTypeData)
-      if (resp.code === 200) {
-        handleModelStatus()
-        message.success(resp.msg)
+      try {
+        const resp = await save(dictTypeData)
+        if (resp.code === 200) {
+          handleModelStatus()
+          message.success(resp.msg)
+          await queryPage()
+        } else {
+          message.error(resp.msg)
+        }
+      } catch (e) {
+        if (e instanceof ResponseError) {
+          message.error(e.msg)
+        } else {
+          console.error(e)
+        }
+      } finally {
         modalActive.saveLoading = false
-        await queryPage()
-      } else {
-        message.error(resp.msg)
       }
   }
 
   const getDictType = async (event: MouseEvent,id: string) => {
     event.stopPropagation()
-    const resp: ResponseType<SysDictType> = await findById(id)
-    if (resp.code === 200) {
-      handleModelStatus('编辑字典')
-      dictTypeData.id = resp.data.id
-      dictTypeData.name = resp.data.name
-      dictTypeData.code = resp.data.code
-      dictTypeData.type = resp.data.type
-      dictTypeData.status = resp.data.status
-      dictTypeData.remark = resp.data.remark
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp: ResponseType<SysDictType> = await findById(id)
+      if (resp.code === 200) {
+        handleModelStatus('编辑字典')
+        dictTypeData.id = resp.data.id
+        dictTypeData.name = resp.data.name
+        dictTypeData.code = resp.data.code
+        dictTypeData.type = resp.data.type
+        dictTypeData.status = resp.data.status
+        dictTypeData.remark = resp.data.remark
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
 
@@ -455,24 +481,33 @@ const initSave = () => {
   // 修改角色状态
   const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
     event.stopPropagation();
-    const resp = await updateStatus(id, status)
     let newStatus: string = ''
-    if (resp.code === 200) {
-      newStatus = resp.data
-      message.success(resp.msg)
-    } else {
-      newStatus = status
-      message.error(resp.msg)
-    }
-    // 重新赋值
-    dictTypeList.value.some(dictType => {
-      if (dictType.id === id) {
-        dictType.status = newStatus
-        dictType.statusIsNormal = dictType.status === '0'
-        dictType.updateStatusLoading = false
-        return
+    try {
+      const resp = await updateStatus(id, status)
+      if (resp.code === 200) {
+        newStatus = resp.data
+        message.success(resp.msg)
+      } else {
+        newStatus = status
+        message.error(resp.msg)
       }
-    })
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      // 重新赋值
+      dictTypeList.value.some(dictType => {
+        if (dictType.id === id) {
+          dictType.status = newStatus
+          dictType.statusIsNormal = dictType.status === '0'
+          dictType.updateStatusLoading = false
+          return
+        }
+      })
+    }
   }
 
   return {
@@ -509,18 +544,26 @@ const initDelete = () => {
     const deleteIds = id ? [id] : [...selectedIds.value];
 
     if (deleteIds.length > 0) {
-      const resp = await deleteData(deleteIds)
-      if (resp.code === 200) {
-        message.success(resp.msg);
-        // id 不存在则清空选中数据
-        if (!id) {
-          selectedIds.value = []
+      try {
+        const resp = await deleteData(deleteIds)
+        if (resp.code === 200) {
+          message.success(resp.msg);
+          // id 不存在则清空选中数据
+          if (!id) {
+            selectedIds.value = []
+          } else {
+            selectedIds.value = selectedIds.value.filter(item => item !== id)
+          }
+          await initPage()
         } else {
-          selectedIds.value = selectedIds.value.filter(item => item !== id)
+          message.error(resp.msg)
         }
-        await initPage()
-      } else {
-        message.error(resp.msg)
+      } catch (e) {
+        if (e instanceof ResponseError) {
+          message.error(e.msg)
+        } else {
+          console.error(e)
+        }
       }
     } else {
       message.warning("请勾选数据")
@@ -577,13 +620,22 @@ const initLoadCache = () => {
   // 执行刷新缓存
   const handleReloadCache = async () => {
     loadCache.value = true
-    const resp = await reloadCache()
-    if (resp.code === 200) {
-      message.success(resp.msg)
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await reloadCache()
+      if (resp.code === 200) {
+        message.success(resp.msg)
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      loadCache.value = false
     }
-    loadCache.value = false
   }
 
   return {

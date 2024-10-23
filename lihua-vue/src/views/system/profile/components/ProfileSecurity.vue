@@ -33,6 +33,7 @@ import type {Rule} from "ant-design-vue/es/form";
 import {useUserStore} from "@/stores/modules/user.ts";
 import {message} from "ant-design-vue";
 import PasswordInput from "@/components/password-input/index.vue";
+import {ResponseError} from "@/api/global/Type.ts";
 const userStore = useUserStore()
 const submitLoading = ref<boolean>(false)
 type passwordType = {
@@ -85,11 +86,15 @@ const handleFinish = async (data: passwordType) => {
     } else {
       message.error(resp.msg)
     }
-  } catch (error) {
-    message.error(error as string)
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
+  } finally {
+    submitLoading.value = false
   }
-  submitLoading.value = false
-
 }
 
 </script>

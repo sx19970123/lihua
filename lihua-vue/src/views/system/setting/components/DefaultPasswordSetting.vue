@@ -68,14 +68,17 @@ const handleFinish = async () => {
   const defaultPasswordForm: DefaultPassword = cloneDeep(settingForm.value)
   defaultPasswordForm.defaultPassword = defaultPasswordEncrypt(defaultPasswordForm.defaultPassword)
   setting.value.settingJson = JSON.stringify(defaultPasswordForm)
-  const resp = await settingStore.save(setting.value)
+  try {
+    const resp = await settingStore.save(setting.value)
 
-  if (resp.code === 200) {
+    if (resp.code === 200) {
       message.success(resp.msg)
-  } else {
-    message.error(resp.msg)
+    } else {
+      message.error(resp.msg)
+    }
+  } finally {
+    submitLoading.value = false
   }
-  submitLoading.value = false
 }
 
 // 页面加载完成后调用

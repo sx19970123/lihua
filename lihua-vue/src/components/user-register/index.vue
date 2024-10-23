@@ -79,6 +79,7 @@ import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
 import {rasEncryptPassword} from "@/utils/Crypto.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 const show = ref<boolean>(false)
 // 向父组件抛出切登录方法
 const emits = defineEmits(['goLogin'])
@@ -114,15 +115,24 @@ const equalToPassword = async (rule: any, value: string) => {
 // 失焦时触发检查用户名是否可用
 const handleCheckUsername = async (_rule: Rule, value: string) => {
   if (value) {
-    const resp = await checkUserName(value)
-    if (resp.code === 200) {
-      if (!resp.data) {
-        return Promise.reject('该用户名已存在')
+    try {
+      const resp = await checkUserName(value)
+      if (resp.code === 200) {
+        if (!resp.data) {
+          return Promise.reject('该用户名已存在')
+        } else {
+          return Promise.resolve();
+        }
       } else {
-        return Promise.resolve();
+        return Promise.reject(resp.msg)
       }
-    } else {
-      return Promise.reject(resp.msg)
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        return Promise.reject(e.msg)
+      } else {
+        console.error(e)
+        return Promise.reject("未知异常")
+      }
     }
   }
 }
@@ -184,8 +194,12 @@ const handleRegister = async ({captchaVerification}: { captchaVerification: stri
     } else {
       message.error(resp.msg)
     }
-  } catch (error) {
-    message.error(error as string)
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
   }
 
 }

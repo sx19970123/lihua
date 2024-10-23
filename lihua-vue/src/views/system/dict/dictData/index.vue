@@ -206,6 +206,7 @@ import { cloneDeep } from 'lodash-es';
 import {initDict, reLoadDict} from "@/utils/Dict.ts";
 import dictTag from "@/components/dict-tag/index.vue"
 import type {SysDictDataType, SysDictDataTypeDTO} from "@/api/system/dict/type/SysDictDataType.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 
 const props = defineProps<{
   typeCode: string,
@@ -276,13 +277,22 @@ const initSearch = () => {
   // 查询列表
   const queryList = async () => {
     tableLoading.value = true
-    const resp = await findList(dictDataQuery.value)
-    if (resp.code === 200) {
-      dictDataList.value = resp.data
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await findList(dictDataQuery.value)
+      if (resp.code === 200) {
+        dictDataList.value = resp.data
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      tableLoading.value = false
     }
-    tableLoading.value = false
   }
 
   // 重置列表查询
@@ -569,13 +579,21 @@ const initDelete = () => {
       handleDeleteTableData(id,list)
       message.success("成功")
     } else {
-      // 其余数据从库中删除
-      const resp = await deleteData([id])
-      if (resp.code === 200) {
-        handleDeleteTableData(id,list)
-        message.success(resp.msg)
-      } else {
-        message.error(resp.msg)
+      try {
+        // 其余数据从库中删除
+        const resp = await deleteData([id])
+        if (resp.code === 200) {
+          handleDeleteTableData(id,list)
+          message.success(resp.msg)
+        } else {
+          message.error(resp.msg)
+        }
+      } catch (e) {
+        if (e instanceof ResponseError) {
+          message.error(e.msg)
+        } else {
+          console.log(e)
+        }
       }
     }
     handleSort(list)

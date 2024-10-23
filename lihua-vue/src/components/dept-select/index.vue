@@ -54,6 +54,7 @@ import {useThemeStore} from "@/stores/modules/theme.ts";
 import {setDefaultDept} from "@/api/system/profile/Profile.ts";
 import {message} from "ant-design-vue";
 import {cloneDeep} from "lodash-es";
+import {ResponseError} from "@/api/global/Type.ts";
 
 const themeStore = useThemeStore();
 const userStore = useUserStore();
@@ -83,14 +84,22 @@ const handleSetDefaultDept = async (deptId: string) => {
     return;
   }
 
-  const resp = await setDefaultDept(deptId)
-  if (resp.code === 200) {
-    // 更新默认部门
-    userStore.updateDefaultDept(resp.data)
-    emits('deptSelect', resp.data)
-    message.success(resp.msg)
-  } else {
-    message.error(resp.msg)
+  try {
+    const resp = await setDefaultDept(deptId)
+    if (resp.code === 200) {
+      // 更新默认部门
+      userStore.updateDefaultDept(resp.data)
+      emits('deptSelect', resp.data)
+      message.success(resp.msg)
+    } else {
+      message.error(resp.msg)
+    }
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
   }
 }
 

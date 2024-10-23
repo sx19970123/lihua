@@ -327,6 +327,7 @@ import { useThemeStore } from "@/stores/modules/theme";
 import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
 import PickUp from "@/components/icon/pick-up/PickUp.vue";
 import Unfold from "@/components/icon/unfold/Unfold.vue";
+import {ResponseError} from "@/api/global/Type.ts";
 const themeStore = useThemeStore()
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {
@@ -434,15 +435,24 @@ const initSearch = () => {
   // 查询列表
   const initList = async () => {
     tableLoad.value = true
-    const resp = await findList(menuQuery.value)
-    if (resp.code === 200) {
-      // 列表数据
-      menuList.value = resp.data
+    try {
+      const resp = await findList(menuQuery.value)
+      if (resp.code === 200) {
+        // 列表数据
+        menuList.value = resp.data
+        // 回显状态
+        handleMenuStatus(menuList.value)
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
       tableLoad.value = false
-      // 回显状态
-      handleMenuStatus(menuList.value)
-    } else {
-      message.error(resp.msg)
     }
   }
 
@@ -569,12 +579,20 @@ const initSave = () => {
   // 根据id获取菜单数据
   const getMenu = async (event:MouseEvent, id:string) => {
     event.stopPropagation()
-    const resp = await findById(id)
-    if (resp.code === 200) {
-      handleModelStatus('编辑菜单')
-      sysMenu.value = resp.data
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await findById(id)
+      if (resp.code === 200) {
+        handleModelStatus('编辑菜单')
+        sysMenu.value = resp.data
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
   // 新增菜单
@@ -627,18 +645,26 @@ const initSave = () => {
       menuIds = [sysMenuVO.id ? sysMenuVO.id : '']
     }
 
-    const resp = await updateStatus(menuIds as string[], status)
     let newStatus: string = ''
-    if (resp.code === 200) {
-      newStatus = resp.data
-      message.success(resp.msg)
-    } else {
-      newStatus = status
-      message.error(resp.msg)
+    try {
+      const resp = await updateStatus(menuIds as string[], status)
+      if (resp.code === 200) {
+        newStatus = resp.data
+        message.success(resp.msg)
+      } else {
+        newStatus = status
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      // 重新赋值
+      menuIds.forEach(id => handleMenuStatus(menuList.value, id, newStatus))
     }
-    // 重新赋值
-    menuIds.forEach(id => handleMenuStatus(menuList.value, id, newStatus))
-
   }
 
   // 回显菜单状态
@@ -675,22 +701,29 @@ const initSave = () => {
 
   // 加载菜单树
   const initTreeData = async () => {
-    const resp = await menuTreeOption()
-    if (resp.code === 200) {
-      // 深拷贝数据
-      const menuTree = cloneDeep(resp.data)
-      // 过滤不需要的数据（只保留菜单和页面）
-      handleMenuTree(menuTree)
-      // 表单树
-      parentMenuTree.value = [{
-        label: '根节点',
-        id: '0',
-        menuType: 'directory',
-        children: menuTree
-      }]
-    } else {
-      message.error(resp.msg)
-      console.error('menuTreeOption异常',resp.msg)
+    try {
+      const resp = await menuTreeOption()
+      if (resp.code === 200) {
+        // 深拷贝数据
+        const menuTree = cloneDeep(resp.data)
+        // 过滤不需要的数据（只保留菜单和页面）
+        handleMenuTree(menuTree)
+        // 表单树
+        parentMenuTree.value = [{
+          label: '根节点',
+          id: '0',
+          menuType: 'directory',
+          children: menuTree
+        }]
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
 
@@ -709,16 +742,25 @@ const initSave = () => {
   const saveMenu = async () => {
     await formRef.value?.validate()
     modalActive.saveLoading = true
-    const resp = await save(sysMenu.value)
-    if (resp.code === 200) {
-      message.success(resp.msg)
-      await initList()
-      await initTreeData()
-      modalActive.open = false
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await save(sysMenu.value)
+      if (resp.code === 200) {
+        message.success(resp.msg)
+        await initList()
+        await initTreeData()
+        modalActive.open = false
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      modalActive.saveLoading = false
     }
-    modalActive.saveLoading = false
   }
 
   return {
@@ -757,25 +799,34 @@ const initDelete = () => {
   const handleDelete = async (id?:string) => {
     const deleteIds = id ? [id] : [...selectedIds.value];
 
-    if (deleteIds.length > 0) {
-      const resp = await deleteData(deleteIds)
-      if (resp.code === 200) {
-        message.success(resp.msg);
-        // id 不存在则清空选中数据
-        if (!id) {
-          selectedIds.value = []
+    try {
+      if (deleteIds.length > 0) {
+        const resp = await deleteData(deleteIds)
+        if (resp.code === 200) {
+          message.success(resp.msg);
+          // id 不存在则清空选中数据
+          if (!id) {
+            selectedIds.value = []
+          } else {
+            selectedIds.value = selectedIds.value.filter(item => item !== id)
+          }
+          await initList()
+          await initTreeData()
         } else {
-          selectedIds.value = selectedIds.value.filter(item => item !== id)
+          message.error(resp.msg)
         }
-        await initList()
-        await initTreeData()
       } else {
-        message.error(resp.msg)
+        message.warning("请勾选数据")
       }
-    } else {
-      message.warning("请勾选数据")
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      closePopconfirm()
     }
-    closePopconfirm()
   }
 
   return {

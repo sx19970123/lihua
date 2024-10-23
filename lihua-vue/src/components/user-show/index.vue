@@ -22,6 +22,8 @@ import {useUserStore} from "@/stores/modules/user.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import {ref} from "vue";
 import {getAvatar} from "@/api/system/profile/Profile.ts";
+import {ResponseError} from "@/api/global/Type.ts";
+import {message} from "ant-design-vue";
 const userStore = useUserStore();
 
 const props = defineProps<{
@@ -37,6 +39,12 @@ try {
     if (avatar.value.value && avatar.value.type === 'image') {
       getAvatar(avatar.value.value).then((resp:Blob) => {
         avatar.value.url = URL.createObjectURL(resp)
+      }).catch(e => {
+        if (e instanceof ResponseError) {
+          message.error(e.msg)
+        } else {
+          console.error(e)
+        }
       })
     }
   } else {

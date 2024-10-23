@@ -192,6 +192,7 @@ import type {SysLog, SysLogDTO} from "@/api/system/log/type/SysLog.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import dayjs from "dayjs";
 import {handleFunDownload} from "@/utils/FileDownload.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 
 const {sys_log_status} = initDict("sys_log_status")
 
@@ -302,13 +303,22 @@ const initSearch = () => {
 
   const initPage = async () => {
     tableLoad.value = true
-    const resp = await findLoginPage(logQuery.value)
-    if (resp.code === 200) {
-      logTotal.value = resp.data.total
-      logList.value = resp.data.records
+    try {
+      const resp = await findLoginPage(logQuery.value)
+      if (resp.code === 200) {
+        logTotal.value = resp.data.total
+        logList.value = resp.data.records
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
       tableLoad.value = false
-    } else {
-      message.error(resp.msg)
     }
   }
   queryPage()
@@ -339,17 +349,25 @@ const initLogInfo = () => {
   // 根据id查询日志详情
   const selectById = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
-    const resp = await findLoginById(id)
-
-    if (resp.code === 200) {
-      logInfo.value = resp.data
-      // 关闭删除/清空提示框
-      handleCloseClearPopconfirm()
-      closePopconfirm()
-      openModal.value = true
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await findLoginById(id)
+      if (resp.code === 200) {
+        logInfo.value = resp.data
+        // 关闭删除/清空提示框
+        handleCloseClearPopconfirm()
+        closePopconfirm()
+        openModal.value = true
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.log(e)
+      }
     }
+
   }
 
   return {
@@ -381,19 +399,28 @@ const initDelete = () => {
   const handleDelete = async () => {
     const deleteIds = [...selectedIds.value]
 
-    if (deleteIds.length > 0) {
-      const resp = await deleteLoginByIds(deleteIds)
-      if (resp.code === 200) {
-        message.success(resp.msg);
-        selectedIds.value = []
-        await initPage()
+    try {
+      if (deleteIds.length > 0) {
+        const resp = await deleteLoginByIds(deleteIds)
+        if (resp.code === 200) {
+          message.success(resp.msg);
+          selectedIds.value = []
+          await initPage()
+        } else {
+          message.error(resp.msg)
+        }
       } else {
-        message.error(resp.msg)
+        message.warning("请勾选数据")
       }
-    } else {
-      message.warning("请勾选数据")
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.log(e)
+      }
+    } finally {
+      closePopconfirm()
     }
-    closePopconfirm()
   }
 
   return {
@@ -427,15 +454,24 @@ const initClear = () => {
   }
   // 处理清空日志
   const handleClear = async () => {
-    const resp = await clearLoginLog()
-    if (resp.code === 200) {
-      message.success(resp.msg);
-      selectedIds.value = []
-      await initPage()
-    } else {
-      message.error(resp.msg);
+    try {
+      const resp = await clearLoginLog()
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        selectedIds.value = []
+        await initPage()
+      } else {
+        message.error(resp.msg);
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      handleCloseClearPopconfirm()
     }
-    handleCloseClearPopconfirm()
   }
 
   return {

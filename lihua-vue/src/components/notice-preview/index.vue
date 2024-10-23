@@ -67,6 +67,7 @@ import type {SysNoticeVO} from "@/api/system/noice/type/SysNotice.ts";
 import dayjs from "dayjs";
 import {message} from "ant-design-vue";
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 const themeStore = useThemeStore();
 const props = defineProps<{
   noticeId: string,
@@ -87,44 +88,62 @@ const handlePreview = async () => {
   spinning.value = true
   const noticeId = props.noticeId
   // 后端查询预览
-  const resp = await preview(noticeId)
-  if (resp.code === 200) {
-    notice.value = resp.data
-    // 通知内容回显
-    const dom = document.getElementById('previewDom')
-    if (dom instanceof HTMLDivElement && resp.data.content) {
-      await Vditor.preview(dom, resp.data.content, {
-        mode: themeStore.isDarkTheme ? "dark" : "light",
-        cdn: '/vditor',
-        theme: {current: themeStore.isDarkTheme ? 'dark' : 'light'},                     // 内容主题
-        hljs: {style: themeStore.isDarkTheme ? 'a11y-dark' : 'solarized-light'}, // 代码块主题
-      })
-    }
-    spinning.value = false
+  try {
+    const resp = await preview(noticeId)
+    if (resp.code === 200) {
+      notice.value = resp.data
+      // 通知内容回显
+      const dom = document.getElementById('previewDom')
+      if (dom instanceof HTMLDivElement && resp.data.content) {
+        await Vditor.preview(dom, resp.data.content, {
+          mode: themeStore.isDarkTheme ? "dark" : "light",
+          cdn: '/vditor',
+          theme: {current: themeStore.isDarkTheme ? 'dark' : 'light'},                     // 内容主题
+          hljs: {style: themeStore.isDarkTheme ? 'a11y-dark' : 'solarized-light'}, // 代码块主题
+        })
+      }
+      spinning.value = false
 
-    // 已读/未读回显
-    if (props.showReadUser) {
-      await handleReadInfo(noticeId)
+      // 已读/未读回显
+      if (props.showReadUser) {
+        await handleReadInfo(noticeId)
+      }
+    } else {
+      message.error(resp.msg)
     }
-  } else {
-    message.error(resp.msg)
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
   }
 }
 
 // 处理已读未读用户显示
 const handleReadInfo = async (noticeId: string) => {
-  const resp = await findReadInfo(noticeId)
-  if (resp.code === 200) {
-    const readInfoData = resp.data
-    const unRead = readInfoData["0"] as SysUser[]
-    const read = readInfoData["1"] as SysUser[]
-    // 未读
-    if (unRead) {
-      unreadUserList.value = unRead
+  try {
+    const resp = await findReadInfo(noticeId)
+    if (resp.code === 200) {
+      const readInfoData = resp.data
+      const unRead = readInfoData["0"] as SysUser[]
+      const read = readInfoData["1"] as SysUser[]
+      // 未读
+      if (unRead) {
+        unreadUserList.value = unRead
+      }
+      // 已读
+      if (read) {
+        readUserList.value = read
+      }
+    } else {
+      message.error(resp.msg)
     }
-    // 已读
-    if (read) {
-      readUserList.value = read
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.log(e)
     }
   }
 }

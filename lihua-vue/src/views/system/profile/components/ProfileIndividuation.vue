@@ -74,6 +74,8 @@ import { useThemeStore } from "@/stores/modules/theme";
 import { usePermissionStore } from "@/stores/modules/permission.ts";
 import { useViewTabsStore } from "@/stores/modules/viewTabs.ts";
 import {onUnmounted, ref} from "vue";
+import {ResponseError} from "@/api/global/Type.ts";
+import {message} from "ant-design-vue";
 const themeStore = useThemeStore()
 const userStore = useUserStore()
 const permissionStore = usePermissionStore()
@@ -83,14 +85,23 @@ const colorList = ref<Array<{name: string,color: string}>>(settings.colorOptions
 const submitLoading = ref<boolean>(false)
 // 卸载组件时触发，保存用户修改的内容
 onUnmounted(()=> {
-  userStore.saveTheme(JSON.stringify(themeStore.$state));
+  handleSubmitTheme()
 })
 
 // 处理保存主题
 const handleSubmitTheme = async () => {
   submitLoading.value = true
-  await userStore.saveTheme(JSON.stringify(themeStore.$state))
-  submitLoading.value = false
+  try {
+    await userStore.saveTheme(JSON.stringify(themeStore.$state))
+  } catch (e) {
+     if (e instanceof ResponseError) {
+       message.error(e.msg)
+     } else {
+       console.log(e)
+     }
+  } finally {
+    submitLoading.value = false
+  }
 }
 
 // 处理修改菜单分组模式

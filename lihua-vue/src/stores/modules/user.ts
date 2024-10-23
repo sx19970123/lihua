@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getLoginSetting, login, logout} from "@/api/system/login/Login.ts";
+import { login, logout} from "@/api/system/login/Login.ts";
 import {getAvatar, saveTheme, updatePassword} from "@/api/system/profile/Profile.ts";
 import token from "@/utils/Token.ts";
 import { message } from "ant-design-vue";
@@ -62,21 +62,17 @@ export const useUserStore = defineStore('user', {
     actions: {
         // 用户登录
         async login(username: string, password: string, captchaVerification: string): Promise<ResponseType<string>> {
-            try {
-                // 对密码进行加密处理，获取密文和requestKey
-                const { ciphertext, requestKey} = await rasEncryptPassword(password)
-                // 执行登录
-                const resp = await login(username, ciphertext, captchaVerification, requestKey)
-                if (resp.code === 200) {
-                    // 登录成功后保存 token
-                    setToken(resp.data);
-                    return resp;
-                } else {
-                    // 登录失败，则抛出异常并处理
-                    throw new ResponseError(resp.code, resp.msg);
-                }
-            } catch (error) {
-                throw error;
+            // 对密码进行加密处理，获取密文和requestKey
+            const { ciphertext, requestKey} = await rasEncryptPassword(password)
+            // 执行登录
+            const resp = await login(username, ciphertext, captchaVerification, requestKey)
+            if (resp.code === 200) {
+                // 登录成功后保存 token
+                setToken(resp.data);
+                return resp;
+            } else {
+                // 登录失败，则抛出异常并处理
+                throw new ResponseError(resp.code, resp.msg);
             }
         },
         // 修改密码
@@ -101,23 +97,12 @@ export const useUserStore = defineStore('user', {
                     if (resp.code === 200) {
                         resolve(resp)
                     } else {
-                        reject(resp.msg)
+                        reject(new ResponseError(resp.code, resp.msg))
                     }
                 } catch (error) {
                     reject(error)
                 }
             })
-        },
-        // 检查用户登录设置
-        checkLoginSetting(): Promise<ResponseType<string | null>> {
-           return new Promise((resolve, reject) => {
-               // 登录后必要信息校验
-               getLoginSetting().then(resp => {
-                   resolve(resp)
-               }).catch(error => {
-                   reject(error)
-               })
-           })
         },
         // 获取用户信息
         getUserInfo ():Promise<ResponseType<AuthInfoType>> {
@@ -166,9 +151,18 @@ export const useUserStore = defineStore('user', {
         // 退出登陆
         async handleLogout() {
             // 关闭 sse 连接
-            await close()
-            await logout()
-            this.clearUserInfo()
+            try {
+                await close()
+                await logout()
+            } catch (e) {
+                if (e instanceof ResponseError) {
+                    message.error(e.msg)
+                } else {
+                    console.error(e)
+                }
+            } finally {
+                this.clearUserInfo()
+            }
         },
         /**
          * 清空用户信息并重定向到登录页面
@@ -245,7 +239,12 @@ export const useUserStore = defineStore('user', {
                 if (avatar.value) {
                     getAvatar(avatar.value).then((resp: Blob) => {
                         avatar.url = URL.createObjectURL(resp)
-                    }).catch(() => {
+                    }).catch((e) => {
+                        if (e instanceof ResponseError) {
+                            message.error(e.msg)
+                        } else {
+                            console.error(e)
+                        }
                         this.$state.avatar = this.getDefaultAvatar()
                     })
                 } else {
@@ -257,8 +256,5 @@ export const useUserStore = defineStore('user', {
         getDefaultAvatar() {
             return {type: 'text', backgroundColor: 'rgb(191, 191, 191)', value: this.$state.nickname, url: ''}
         }
-    },
-    getters: {
-
     }
 })

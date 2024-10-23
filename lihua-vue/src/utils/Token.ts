@@ -42,7 +42,12 @@ const removeUsername = () => {
 const getPassword = (): string => {
     const pwd = Cookies.get(PASSWORD_KEY)
     if (pwd) {
-        return decrypt(pwd)
+        try {
+            return decrypt(pwd)
+        } catch (e) {
+            forgetMe()
+            console.error("cookie密码解密异常",e)
+        }
     }
     return pwd;
 }

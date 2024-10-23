@@ -209,7 +209,7 @@
       </a-table>
     </a-flex>
 
-    <a-modal v-model:open="modalActive.open" class="unselectable">
+    <a-modal v-model:open="modalActive.open">
       <template #title>
         <div style="margin-bottom: 24px">
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
@@ -538,20 +538,30 @@ const initSearch = () => {
   // 列表页查询
   const initPage = async () => {
     queryLoading.value = true
-    const resp = await findPage(userQuery.value)
-    if (resp.code === 200) {
-      userList.value = resp.data.records
-      userTotal.value = resp.data.total
+    try {
+      const resp = await findPage(userQuery.value)
+      if (resp.code === 200) {
+        userList.value = resp.data.records
+        userTotal.value = resp.data.total
 
-      // 回显状态
-      userList.value.forEach(user => {
-        user.statusIsNormal = user.status === '0'
-        user.updateStatusLoading = false
-      })
-    } else {
-      message.error(resp.msg)
+        // 回显状态
+        userList.value.forEach(user => {
+          user.statusIsNormal = user.status === '0'
+          user.updateStatusLoading = false
+        })
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      queryLoading.value = false
     }
-    queryLoading.value = false
+
   }
 
   // 条件检索初始页码设置为0
@@ -730,7 +740,12 @@ const initSave = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (error) {
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
       // 出现表单验证信息后跳转到表单首页
       toNextForm('basic')
     } finally {
@@ -741,42 +756,62 @@ const initSave = () => {
   // 处理改变状态
   const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
     event.stopPropagation()
-    const resp = await updateStatus(id, status)
     let newStatus: string = ''
-    if (resp.code === 200) {
-      newStatus = resp.data
-      message.success(resp.msg)
-    } else {
-      newStatus = status
-      message.error(resp.msg)
-    }
-    // 重新赋值
-    userList.value.some(user => {
-      if (user.id === id) {
-        user.status = newStatus
-        user.statusIsNormal =  user.status === '0'
-        user.updateStatusLoading = false
-        return
+    try {
+      const resp = await updateStatus(id, status)
+      if (resp.code === 200) {
+        newStatus = resp.data
+        message.success(resp.msg)
+      } else {
+        newStatus = status
+        message.error(resp.msg)
       }
-    })
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      // 重新赋值
+      userList.value.some(user => {
+        if (user.id === id) {
+          user.status = newStatus
+          user.statusIsNormal =  user.status === '0'
+          user.updateStatusLoading = false
+          return
+        }
+      })
+    }
+
   }
 
   // 根据id查询用户信息
   const getUserInfo = async (event: MouseEvent, userId: string) => {
     event.stopPropagation()
-    const resp = await findById(userId)
-    if (resp.code === 200) {
-      handleModelStatus("编辑用户")
-      // 表单数据赋值
-      sysUserDTO.value = resp.data
-      // 默认部门 / 岗位 回显
-      const deptIds = sysUserDTO.value.deptIdList
-      const postIds = sysUserDTO.value.postIdList
-      if (deptIds) {
-        await initPostByDeptIds(deptIds)
+    try {
+      const resp = await findById(userId)
+      if (resp.code === 200) {
+        handleModelStatus("编辑用户")
+        // 表单数据赋值
+        sysUserDTO.value = resp.data
+        // 默认部门 / 岗位 回显
+        const deptIds = sysUserDTO.value.deptIdList
+        const postIds = sysUserDTO.value.postIdList
+        if (deptIds) {
+          await initPostByDeptIds(deptIds)
+        }
+        if (postIds) {
+          initPostTag(postIds)
+        }
+      } else {
+        message.error(resp.msg)
       }
-      if (postIds) {
-        initPostTag(postIds)
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
       }
     }
   }
@@ -804,9 +839,17 @@ const initRoleData = () => {
   const sysRoleList = ref<Array<SysRole>>([])
   // 加载角色信息
   const initRole = async () => {
-    const resp = await getRoleOption()
-    if (resp.code === 200) {
-      sysRoleList.value = resp.data
+    try {
+      const resp = await getRoleOption()
+      if (resp.code === 200) {
+        sysRoleList.value = resp.data
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
   initRole()
@@ -1008,16 +1051,26 @@ const initPostData = () => {
     const newDeptIds = deptIds.filter(item => !originDeptIds.includes(item))
 
     // 后端查询新部门及岗位数据
-    const resp = await getPostOptionByDeptId(newDeptIds)
-    if (resp.code === 200) {
-      const data = resp.data
-      newDeptIds.forEach(deptId => {
-        sysPostList.value.push({
-          deptId: deptId,
-          deptName: cloneDeep(option).find((item:{label: string, value: string}) => item.value === deptId).label,
-          postList: sysPostsToPostOptional(data[deptId])
+    try {
+      const resp = await getPostOptionByDeptId(newDeptIds)
+      if (resp.code === 200) {
+        const data = resp.data
+        newDeptIds.forEach(deptId => {
+          sysPostList.value.push({
+            deptId: deptId,
+            deptName: cloneDeep(option).find((item:{label: string, value: string}) => item.value === deptId).label,
+            postList: sysPostsToPostOptional(data[deptId])
+          })
         })
-      })
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
 
@@ -1105,24 +1158,33 @@ const intiDelete = () => {
   const handleDelete = async (id?: string) => {
     const deleteIds = id ? [id] : [...selectedIds.value];
 
-    if (deleteIds.length > 0) {
-      const resp = await deleteByIds(deleteIds)
-      if (resp.code === 200) {
-        message.success(resp.msg);
-        // id 不存在则清空选中数据
-        if (!id) {
-          selectedIds.value = []
+    try {
+      if (deleteIds.length > 0) {
+        const resp = await deleteByIds(deleteIds)
+        if (resp.code === 200) {
+          message.success(resp.msg);
+          // id 不存在则清空选中数据
+          if (!id) {
+            selectedIds.value = []
+          } else {
+            selectedIds.value = selectedIds.value.filter(item => item !== id)
+          }
+          await initPage()
         } else {
-          selectedIds.value = selectedIds.value.filter(item => item !== id)
+          message.error(resp.msg)
         }
-        await initPage()
       } else {
-        message.error(resp.msg)
+        message.warning("请勾选数据")
       }
-    } else {
-      message.warning("请勾选数据")
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      closePopconfirm()
     }
-    closePopconfirm()
   }
 
   return {
@@ -1180,6 +1242,12 @@ const initExcel = () => {
         await initPage()
       } else {
         message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
       }
     } finally {
       spinInstance.close()
@@ -1243,8 +1311,8 @@ const initResetPassword = () => {
     resetPasswordLoading.value = true
     const password = resetPasswordForm.value.password
     const id = targetUserInfo.value.id
-    if (password && id) {
-      try {
+    try {
+      if (password && id) {
         // 密码加密处理
         const passwordEncrypt = await rasEncryptPassword(password)
         // 修改密码
@@ -1255,11 +1323,16 @@ const initResetPassword = () => {
         } else {
           message.error(resp.msg)
         }
-      } catch (error) {
-        message.error(error as string)
       }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      resetPasswordLoading.value = false
     }
-    resetPasswordLoading.value = false
   }
 
   return {

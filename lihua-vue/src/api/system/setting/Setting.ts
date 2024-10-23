@@ -6,7 +6,7 @@ import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
  * @param setting
  */
 export const insert = (setting :SystemSetting) => {
-    return request({
+    return request<String>({
         url: "system/setting",
         method: "POST",
         data: setting

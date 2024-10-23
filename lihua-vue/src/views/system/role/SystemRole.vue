@@ -164,7 +164,7 @@
             <a-radio v-for="item in sys_status" :value="item.value">{{item.label}}</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="菜单" class="form-item-single-line unselectable">
+        <a-form-item label="菜单" class="form-item-single-line">
           <a-checkable-tag v-model:checked="menuSetting.checked" @change="handleCheckedAll">全选/全不选</a-checkable-tag>
           <a-checkable-tag v-model:checked="menuSetting.expand" @change="handleExpandAll">展开/折叠</a-checkable-tag>
           <a-checkable-tag v-model:checked="menuSetting.checkStrictly" @click="menuSetting.checkStrictly ? role.menuIds = [] : ''">父子关联</a-checkable-tag>
@@ -213,6 +213,7 @@ import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
 import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRole.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
 // 列表查询相关
 const initSearch = () => {
@@ -309,20 +310,29 @@ const initSearch = () => {
   // 查询列表
   const initPage = async () => {
     tableLoad.value = true
-    const resp = await findPage(roleQuery.value)
-    if (resp.code === 200) {
-      roleList.value = resp.data.records
-      roleTotal.value = resp.data.total
+    try {
+      const resp = await findPage(roleQuery.value)
+      if (resp.code === 200) {
+        roleList.value = resp.data.records
+        roleTotal.value = resp.data.total
 
-      // 回显状态
-      roleList.value.forEach(role => {
-        role.statusIsNormal = role.status === '0'
-        role.updateStatusLoading = false
-      })
-    } else {
-      message.error(resp.msg)
+        // 回显状态
+        roleList.value.forEach(role => {
+          role.statusIsNormal = role.status === '0'
+          role.updateStatusLoading = false
+        })
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      tableLoad.value = false
     }
-    tableLoad.value = false
   }
   const resetPage = async () => {
     roleQuery.value = {
@@ -396,12 +406,20 @@ const initSave = () => {
   // 根据id获取角色，打开模态框
   const getRole = async (event:MouseEvent ,id: string) => {
     event.stopPropagation()
-    const resp = await findById(id)
-    if (resp.code === 200 && resp.data) {
-      await handleModelStatus("修改角色")
-      role.value = resp.data
-    } else {
-      console.error(resp.msg)
+    try {
+      const resp = await findById(id)
+      if (resp.code === 200 && resp.data) {
+        await handleModelStatus("修改角色")
+        role.value = resp.data
+      } else {
+        console.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
     }
   }
   // 重置表单
@@ -424,39 +442,57 @@ const initSave = () => {
     if (!Array.isArray(role.value.menuIds)) {
       role.value.menuIds = role.value.menuIds?.checked
     }
-    const resp = await save(role.value)
-    if (resp.code === 200) {
-      message.success(resp.msg)
-      modalActive.open = false
-      await initPage()
-    } else {
-      message.error(resp.msg)
-      console.error(resp.msg)
+    try {
+      const resp = await save(role.value)
+      if (resp.code === 200) {
+        message.success(resp.msg)
+        modalActive.open = false
+        await initPage()
+      } else {
+        message.error(resp.msg)
+        console.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      modalActive.saveLoading = false
     }
-    modalActive.saveLoading = false
   }
 
   // 修改角色状态
   const handleUpdateStatus = async (event:MouseEvent, id: string, status: string) => {
     event.stopPropagation()
-    const resp = await updateStatus(id, status)
     let newStatus: string = ''
-    if (resp.code === 200) {
-      newStatus = resp.data
-      message.success(resp.msg)
-    } else {
-      newStatus = status
-      message.error(resp.msg)
-    }
-    // 重新赋值
-    roleList.value.some(role => {
-      if (role.id === id) {
-        role.status = newStatus
-        role.statusIsNormal = role.status === '0'
-        role.updateStatusLoading = false
-        return
+    try {
+      const resp = await updateStatus(id, status)
+      if (resp.code === 200) {
+        newStatus = resp.data
+        message.success(resp.msg)
+      } else {
+        newStatus = status
+        message.error(resp.msg)
       }
-    })
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      // 重新赋值
+      roleList.value.some(role => {
+        if (role.id === id) {
+          role.status = newStatus
+          role.statusIsNormal = role.status === '0'
+          role.updateStatusLoading = false
+          return
+        }
+      })
+    }
   }
 
   return {
@@ -499,13 +535,21 @@ const useMenuTree = () => {
   })
   // 加载菜单树
   const initMenuTree = async () => {
-    const resp = await menuTreeOption()
-    if (resp.code === 200) {
-      menuSetting.value.flattenTree = []
-      menuSetting.value.menuOption = resp.data
-      flattenTreeData(menuSetting.value.menuOption,menuSetting.value.flattenTree)
-    } else {
-      message.error(resp.msg)
+    try {
+      const resp = await menuTreeOption()
+      if (resp.code === 200) {
+        menuSetting.value.flattenTree = []
+        menuSetting.value.menuOption = resp.data
+        flattenTreeData(menuSetting.value.menuOption,menuSetting.value.flattenTree)
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.log(e)
+      }
     }
   }
 
@@ -569,24 +613,33 @@ const initDelete = () => {
   const handleDelete = async (id?:string) => {
     const deleteIds = id ? [id] : [...selectedIds.value];
 
-    if (deleteIds.length > 0) {
-      const resp = await deleteData(deleteIds)
-      if (resp.code === 200) {
-        message.success(resp.msg);
-        // id 不存在则清空选中数据
-        if (!id) {
-          selectedIds.value = []
+    try {
+      if (deleteIds.length > 0) {
+        const resp = await deleteData(deleteIds)
+        if (resp.code === 200) {
+          message.success(resp.msg);
+          // id 不存在则清空选中数据
+          if (!id) {
+            selectedIds.value = []
+          } else {
+            selectedIds.value = selectedIds.value.filter(item => item !== id)
+          }
+          await initPage()
         } else {
-          selectedIds.value = selectedIds.value.filter(item => item !== id)
+          message.error(resp.msg)
         }
-        await initPage()
       } else {
-        message.error(resp.msg)
+        message.warning("请勾选数据")
       }
-    } else {
-      message.warning("请勾选数据")
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      closePopconfirm()
     }
-    closePopconfirm()
   }
 
   return {

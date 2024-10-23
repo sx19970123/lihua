@@ -213,6 +213,7 @@ const initClick = () => {
         style.value = {position: 'static', width: '', height: '', top: '', left: ''}
         // 动画执行完成后，状态修改为就绪
         showStatus.value = 'ready'
+        hoverStatus.value = 'complete'
         // 卡片关闭动画完成后抛出
         emits('cardReady', props.cardKey)
       }

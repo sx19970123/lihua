@@ -121,17 +121,20 @@ const handleFinish = async () => {
   }
   settingForm.value.ipList = [... ipSet]
   setting.value.settingJson = JSON.stringify(settingForm.value)
-  const resp = await settingStore.save(setting.value)
-  if (resp.code === 200) {
-    if (flag){
-      message.warn("已合并重复ip")
+  try {
+    const resp = await settingStore.save(setting.value)
+    if (resp.code === 200) {
+      if (flag){
+        message.warn("已合并重复ip")
+      }
+      message.success(resp.msg)
+      init()
+    } else {
+      message.error(resp.msg)
     }
-    message.success(resp.msg)
-    init()
-  } else {
-    message.error(resp.msg)
+  } finally {
+    submitLoading.value = false
   }
-  submitLoading.value = false
 }
 
 // 关闭ip限制保存配置

@@ -84,6 +84,7 @@
     <!--    验证码-->
     <transition name="verify" mode="out-in">
       <verify
+          class="unselectable"
           v-if="enableCaptcha"
           @success="login"
           @error="loadVerify"
@@ -120,6 +121,7 @@ import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
 import {init} from "@/utils/AppInit.ts";
 import Token from "@/utils/Token.ts";
+import {getLoginSetting} from "@/api/system/login/Login.ts";
 
 const router = useRouter()
 const verifyRef = useTemplateRef<InstanceType<typeof Verify>>("verifyRef")
@@ -173,7 +175,7 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
       }
 
       // 检查是否需要登录后设置
-      const loginSettingResp = await userStore.checkLoginSetting()
+      const loginSettingResp = await getLoginSetting()
       if (loginSettingResp.code === 200) {
         // 登录后设置返回data为空，表示无需进行额外设置，进入首页
         if (loginSettingResp.data === null) {

@@ -2,7 +2,7 @@ import { useDictStore } from "@/stores/modules/dict";
 import {getDictDataOption, getDictDataOptionByCodeList} from "@/api/system/dict/DictData.ts";
 import { ref, toRefs} from "vue";
 import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType.ts";
-import type {ResponseType} from "@/api/global/Type.ts";
+import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 import {message} from "ant-design-vue";
 // 初始化组件中需要的字典数据
 export const initDict = (...dictTypeCodes: string[]) => {
@@ -40,6 +40,12 @@ export const initDict = (...dictTypeCodes: string[]) => {
         } else {
           message.error(resp.msg)
         }
+      }).catch(e => {
+        if (e instanceof ResponseError) {
+          message.error(e.msg)
+        } else {
+          console.error(e)
+        }
       })
     }
 
@@ -64,7 +70,11 @@ export const reLoadDict = (code: string) => {
       if (resp.code === 200) {
         dictStore.setDict(code,resp.data)
         resolve(resp.data)
+      } else {
+        reject(new ResponseError(resp.code, resp.msg))
       }
+    }).catch(e => {
+      reject(e)
     })
   })
 }

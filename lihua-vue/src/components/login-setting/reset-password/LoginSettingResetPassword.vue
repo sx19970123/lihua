@@ -45,6 +45,7 @@ import type {Rule} from "ant-design-vue/es/form";
 import {useUserStore} from "@/stores/modules/user.ts";
 import {type FormInstance, message} from "ant-design-vue";
 import PasswordInput from "@/components/password-input/index.vue";
+import {ResponseError} from "@/api/global/Type.ts";
 const resetPasswordRef = useTemplateRef<FormInstance>("resetPasswordRef")
 const userStore = useUserStore()
 // 向外抛出函数
@@ -104,8 +105,12 @@ const handleNext = async (loading:Ref<boolean>) => {
     } else {
       message.error(resp.msg)
     }
-  } catch (error) {
-    message.error(error as string)
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
   }
 
 }
