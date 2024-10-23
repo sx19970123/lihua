@@ -9,6 +9,19 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.11',
+            updateDate: '2024-10-23',
+            updateContent: [
+                '1. 更新Vditor版本，修复代码高亮无效的bug',
+                '2. 优化卡片展示组件，设置悬浮缩放倍率>1才出现悬浮效果',
+                '3. 修复卡片悬浮组件，在展开动画开始前进行缩放，导致还原后卡片变大的bug',
+                '4. 新增ResponseError,封装该类进行高效的catch类型判断',
+                '5. 对系统中的异步调用进行重构，增加catch',
+                '6. 升级mybatis-plus到3.5.8',
+                '7. 记住我密码解密失败自动取消记住我'
+            ]
+        },
+        {
             version: '1.0.0-beta.10',
             updateDate: '2024-10-20',
             updateContent: [
@@ -131,7 +144,7 @@ const updateRecords = [
             '1. 更新Vditor版本，修复代码高亮无效的bug',
             '2. 优化卡片展示组件，设置悬浮缩放倍率>1才出现悬浮效果',
             '3. 修复卡片悬浮组件，在展开动画开始前进行缩放，导致还原后卡片变大的bug',
-            '4. 新增ResponseError，应重视接口调用中的catch并及时处理。封装该类进行高效的catch类型判断',
+            '4. 新增ResponseError,封装该类进行高效的catch类型判断',
             '5. 对系统中的异步调用进行重构，增加catch',
             '6. 升级mybatis-plus到3.5.8',
             '7. 记住我密码解密失败自动取消记住我'

@@ -20,6 +20,7 @@ export const useSettingStore = defineStore('setting', {
                     } else {
                         console.error(e)
                     }
+                    reject(e)
                 })
             })
         },
@@ -37,11 +38,7 @@ export const useSettingStore = defineStore('setting', {
                     return undefined
                 }
             } catch (e) {
-                if (e instanceof ResponseError) {
-                    message.error(e.msg)
-                } else {
-                    console.error(e)
-                }
+                console.error(e)
                 return undefined
             }
         }
