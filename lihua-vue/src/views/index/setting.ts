@@ -139,6 +139,12 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0-beta.12',
+        record: [
+            '1. 优化图标选择组件，通过dom元素懒加载，大幅优化组件打开速度'
+        ]
+    },
+    {
         version: '1.0.0-beta.11',
         record: [
             '1. 更新Vditor版本，修复代码高亮无效的bug',

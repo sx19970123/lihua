@@ -21,9 +21,17 @@
     </a-flex>
 <!--    四种类型图标切换-->
     <div :style="{maxHeight: props.maxHeight}" class="scrollbar">
-      <a-flex :gap="8" wrap="wrap"  style="margin-top: 30px">
-        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-show="segmentedValue === 'outlined'" v-for="icon in outlinedIconList"  @click="clickIcon(icon)">
-          <a-flex vertical align="center">
+      <a-flex :gap="8" wrap="wrap" style="margin-top: 30px">
+        <div class="icon-group"
+             :class="icon === modelValue ? 'icon-active' : ''"
+             v-show="segmentedValue === 'outlined'"
+             v-for="(icon, index) in outlinedIconList"
+             @click="clickIcon(icon)"
+             :data-index="index"
+             type="outlined"
+             ref="outlinedIconRef"
+        >
+          <a-flex vertical align="center" v-if="outlinedVisibleList[index]">
             <component class="icon-size" :is="icon"/>
             <div class="text-ellipsis" v-if="props.size !== 'small'">
               <div>
@@ -34,8 +42,16 @@
             </div>
           </a-flex>
         </div>
-        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-show="segmentedValue === 'filled'" v-for="icon in filledIconList"  @click="clickIcon(icon)">
-          <a-flex vertical align="center">
+        <div class="icon-group"
+             :class="icon === modelValue ? 'icon-active' : ''"
+             v-show="segmentedValue === 'filled'"
+             v-for="(icon, index) in filledIconList"
+             @click="clickIcon(icon)"
+             :data-index="index"
+             type="filled"
+             ref="filledIconRef"
+        >
+          <a-flex vertical align="center" v-if="filledVisibleList[index]">
             <component class="icon-size" :is="icon"/>
             <div class="text-ellipsis" v-if="props.size !== 'small'">
               <span>{{ icon.substring(0, icon.toLowerCase().indexOf(searchKeyword.toLowerCase())) }}</span>
@@ -44,8 +60,16 @@
             </div>
           </a-flex>
         </div>
-        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-show="segmentedValue === 'twoTone'" v-for="icon in twoToneIconList"  @click="clickIcon(icon)">
-          <a-flex vertical align="center">
+        <div class="icon-group"
+             :class="icon === modelValue ? 'icon-active' : ''"
+             v-show="segmentedValue === 'twoTone'"
+             v-for="(icon, index) in twoToneIconList"
+             @click="clickIcon(icon)"
+             :data-index="index"
+             type="twoTone"
+             ref="twoToneIconRef"
+        >
+          <a-flex vertical align="center" v-if="twoToneVisibleList[index]">
             <component class="icon-size" :is="icon"/>
             <div class="text-ellipsis" v-if="props.size !== 'small'">
               <span>{{ icon.substring(0, icon.toLowerCase().indexOf(searchKeyword.toLowerCase())) }}</span>
@@ -54,8 +78,16 @@
             </div>
           </a-flex>
         </div>
-        <div class="icon-group" :class="icon === modelValue ? 'icon-active' : ''" v-show="segmentedValue === 'custom'" v-for="icon in customIconLIst"  @click="clickIcon(icon)">
-          <a-flex vertical align="center">
+        <div class="icon-group"
+             :class="icon === modelValue ? 'icon-active' : ''"
+             v-show="segmentedValue === 'custom'"
+             v-for="(icon, index) in customIconLIst"
+             @click="clickIcon(icon)"
+             :data-index="index"
+             type="custom"
+             ref="customIconRef"
+        >
+          <a-flex vertical align="center" v-if="customVisibleList[index]">
             <component class="icon-size" :is="icon"/>
             <div class="text-ellipsis" v-if="props.size !== 'small'">
               <span>{{ icon.substring(0, icon.toLowerCase().indexOf(searchKeyword.toLowerCase())) }}</span>
@@ -70,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import {type Component, onMounted, type PropType, reactive, ref} from "vue";
+import {type Component, onMounted, onUnmounted, type PropType, reactive, ref, useTemplateRef, watch} from "vue";
 import * as Icons from "@ant-design/icons-vue";
 import {cloneDeep} from "lodash-es";
 import {useThemeStore} from "@/stores/modules/theme.ts";
@@ -107,7 +139,6 @@ const segmentedData = reactive([{
   value: 'custom'
 }]);
 const segmentedValue = ref(segmentedData[0].value);
-
 
 // v-modal
 const emits = defineEmits(['update:modelValue','click','loadComplete'])
@@ -174,32 +205,108 @@ const clickIcon = (icon: string | null) => {
   emits('click')
 }
 
-// 筛选图标
+// 筛选图标，筛选完成后重置懒加载
 const handleQueryIcons = () => {
   const keyword = searchKeyword.value
   switch (segmentedValue.value) {
     case 'filled': {
       filledIconList.value = finalFilledIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
+      setTimeout(() => { initLazy(filledIconRefList.value)})
       break
     }
     case 'outlined': {
       outlinedIconList.value = finalOutlinedIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
+      setTimeout(() => { initLazy(outlinedIconRefList.value)})
       break
     }
     case 'twoTone': {
       twoToneIconList.value = finalTwoToneIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
+      setTimeout(() => { initLazy(twoToneIconRefList.value)})
       break
     }
     case 'custom': {
       customIconLIst.value = finalCustomIconLIst.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
+      setTimeout(() => { initLazy(customIconRefList.value)})
       break
     }
+  }
+}
+
+// 懒加载控制图标显示隐藏
+// 实底
+const filledVisibleList = ref(Array(filledIconList.value.length).fill(false))
+// 线框
+const outlinedVisibleList = ref(Array(outlinedIconList.value.length).fill(false))
+// 双色
+const twoToneVisibleList = ref(Array(twoToneIconList.value.length).fill(false))
+// 自定义
+const customVisibleList = ref(Array(customIconLIst.value.length).fill(false))
+
+// 获取每种图标类型的dom集合
+// 实底
+const filledIconRefList = useTemplateRef<HTMLDivElement[]>("filledIconRef")
+// 线框
+const outlinedIconRefList = useTemplateRef<HTMLDivElement[]>("outlinedIconRef")
+// 双色
+const twoToneIconRefList = useTemplateRef<HTMLDivElement[]>("twoToneIconRef")
+// 自定义
+const customIconRefList = useTemplateRef<HTMLDivElement[]>("customIconRef")
+// 懒加载观察器
+let observer: IntersectionObserver
+// 懒加载初始化
+const initLazy = (observeDomList: HTMLDivElement[] | null) => {
+  // 创建一个视口监视器，监视 icon 中元素是否进入视口
+  if (!observer) {
+    observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        // 获取dom元素
+        const e = entry.target as HTMLDivElement
+        // 获取dom索引
+        const i = e.dataset.index
+        // 获取自定义dom type
+        const iconType = e.getAttribute("type")
+        // 通过控制VisibleList对应index元素，控制是否显示, entry.isIntersecting为元素是否出现在视口，boolean类型
+        switch (iconType) {
+          case "filled": {
+            filledVisibleList.value.splice(Number(i), 1, entry.isIntersecting);
+            break
+          }
+          case "outlined": {
+            outlinedVisibleList.value.splice(Number(i), 1, entry.isIntersecting);
+            break
+          }
+          case "twoTone": {
+            twoToneVisibleList.value.splice(Number(i), 1, entry.isIntersecting);
+            break
+          }
+          case "custom": {
+            customVisibleList.value.splice(Number(i), 1, entry.isIntersecting);
+            break
+          }
+        }
+      })
+    })
+  }
+
+  // 对传入的dom元素进行观察
+  if (observeDomList) {
+    observeDomList.forEach(e => {
+      observer.observe(e)
+    })
   }
 }
 
 // 组件初始化完成
 onMounted(() => {
   emits('loadComplete')
+  initLazy(outlinedIconRefList.value)
+})
+
+// 组件卸载消除所有观察
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect()
+  }
 })
 </script>
 <style>
