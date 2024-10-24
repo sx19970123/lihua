@@ -44,6 +44,7 @@ export const init = () => {
       } catch (e) {
         // 此处产生了异常应该由then中各个方法处理，这里只进行打印即可
         console.error(e)
+        reject(e)
       }
     }).catch(e => {
       reject(e)
