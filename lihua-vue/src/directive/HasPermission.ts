@@ -17,7 +17,7 @@ export default (app:App<Element>):void => {
           }
         }
       } else {
-        console.error('v-hasPermission 指令: 参数错误，请传入字符串数组，例 v-hasRole="[\'xxx:xxx:xxx\']"')
+        console.error('v-hasPermission 指令: 参数错误，请传入字符串数组，例 v-hasPermission="[\'xxx:xxx:xxx\']"')
       }
     }
   })

@@ -17,7 +17,6 @@ import {rasEncryptPassword} from "@/utils/Crypto.ts";
 const { setToken,removeToken } = token
 
 export const useUserStore = defineStore('user', {
-
     state: () => {
         // 用户相关数据
         const userInfo: UserInfoType = {}
@@ -104,8 +103,8 @@ export const useUserStore = defineStore('user', {
                 }
             })
         },
-        // 获取用户信息
-        getUserInfo ():Promise<ResponseType<AuthInfoType>> {
+        // 初始化用户信息
+        initUserInfo ():Promise<ResponseType<AuthInfoType>> {
             return new Promise((resolve, reject) => {
                 getAuthInfo().then((resp) => {
                     if (resp.code === 200) {

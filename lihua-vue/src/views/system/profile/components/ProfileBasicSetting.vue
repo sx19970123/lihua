@@ -108,7 +108,7 @@ const handleFinish = (values: {nickname: string,gender:string,email:string,phone
   }).then(resp => {
     if (resp.code === 200){
       message.success(resp.msg)
-      userStore.getUserInfo().catch(e => {
+      userStore.initUserInfo().catch(e => {
         if (e instanceof ResponseError) {
           message.error(e.msg)
         } else {

@@ -17,7 +17,7 @@ export const useThemeStore = defineStore('theme',{
         /**
          * 布局类型 sider-header / header-sider / header-content
          */
-        const layoutType: string = settings.layoutType
+        const layoutType: 'sider-header' | 'header-sider' | 'header-content' = settings.layoutType
 
         /**
          * 组件大小 small/ middle / large
@@ -215,7 +215,7 @@ export const useThemeStore = defineStore('theme',{
                 document.documentElement.setAttribute("sider-dark", "dark")
             } else {
                 this.siderBackgroundColor = 'rgba(255,255,255,1)'
-                document.documentElement.setAttribute("sider-dark", "none")
+                document.documentElement.setAttribute("sider-dark", "light")
             }
         },
         // 修改磨砂玻璃效果

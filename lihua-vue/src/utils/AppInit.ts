@@ -15,7 +15,7 @@ export const init = () => {
   const dictStore = useDictStore()
 
   return new Promise((resolve, reject) => {
-    userStore.getUserInfo().then((resp) => {
+    userStore.initUserInfo().then((resp) => {
       try {
         const metaRouterList = resp.data?.routers || []
         const staticRoutes = router.options.routes

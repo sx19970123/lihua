@@ -104,7 +104,7 @@ const handleNext = async (loading:Ref<boolean>) => {
     if (resp.code === 200) {
       loading.value = false
       // 重新加载用户信息
-      await userStore.getUserInfo()
+      await userStore.initUserInfo()
       emits('next', loading.value)
     } else {
       message.warn(resp.msg)
