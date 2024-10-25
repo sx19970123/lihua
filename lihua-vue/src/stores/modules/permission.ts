@@ -27,7 +27,7 @@ export const usePermissionStore = defineStore('permission',{
         // 初始化动态路由
         initDynamicRouter(metaRouterList: Array<RouterType>) {
             // 处理各个层级 Component
-            handleRouterComponent (metaRouterList)
+            handleRouterComponent(metaRouterList)
             // 顶级无父组件目录、页面添加layout父级
             metaRouterList.forEach(route => {
                 const isRoot= route.children === null || route.children.length === 0
@@ -35,7 +35,6 @@ export const usePermissionStore = defineStore('permission',{
                 const isMenuType = route.type === 'directory';
                 const isLinkType = route.type === 'link' // && route.meta.linkOpenType === 'inner';
                 if ((isPageType || isLinkType || isMenuType) && isRoot) {
-                    console.log(route)
                     const parentRoute: RouteRecordRaw  = {
                         children: [route as any],
                         path: "",
@@ -44,7 +43,7 @@ export const usePermissionStore = defineStore('permission',{
                     };
                     router.addRoute(parentRoute);
                 } else {
-                    router.addRoute(route as any);
+                    router.addRoute(route);
                 }
             });
         },
@@ -157,14 +156,14 @@ const handleSetComponent = (route: RouterType) => {
 }
 
 // 生成静态菜单数据
-const handleGenerateStaticMenuData = (staticRoutes: any[]) :ItemType[] => {
+const handleGenerateStaticMenuData = (staticRoutes: any[]): ItemType[] => {
     // 过滤导航栏分配type
     siderMenuFilter(staticRoutes)
     return handleGenerateMenuData(staticRoutes)
 }
 
 // 生成动态菜单数据
-const handleGenerateMenuData = (sidebarRouters:RouterType[]):ItemType[]  => {
+const handleGenerateMenuData = (sidebarRouters:RouterType[]): ItemType[] => {
     const childrenItemType: ItemType[] = []
     sidebarRouters.forEach(sidebar => {
         // 是否显示菜单
