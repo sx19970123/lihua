@@ -43,7 +43,7 @@ export const usePermissionStore = defineStore('permission',{
                     };
                     router.addRoute(parentRoute);
                 } else {
-                    router.addRoute(route);
+                    router.addRoute(route as any);
                 }
             });
         },

@@ -17,7 +17,7 @@ export const useThemeStore = defineStore('theme',{
         /**
          * 布局类型 sider-header / header-sider / header-content
          */
-        const layoutType: 'sider-header' | 'header-sider' | 'header-content' = settings.layoutType
+        const layoutType: string = settings.layoutType
 
         /**
          * 组件大小 small/ middle / large

@@ -9,6 +9,17 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.12',
+            updateDate: '2024-10-27',
+            updateContent: [
+                '1. 优化图标选择组件，通过dom元素懒加载，大幅优化组件打开速度',
+                '2. 修复用户选择组件刚加载时报错的bug',
+                '3. 修复controller中直接使用Validated校验数据不返回自定义错误信息的bug',
+                '4. 调整username校验规则，只允许出现大小写英文、数字、@、.',
+                '5. 调整最大分页页码限制'
+            ]
+        },
+        {
             version: '1.0.0-beta.11',
             updateDate: '2024-10-23',
             updateContent: [
