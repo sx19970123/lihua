@@ -17,6 +17,7 @@ import java.util.*;
 
 @RequestMapping("system/log")
 @RestController
+@Validated
 public class SysLogController extends BaseController {
 
     // 操作日志service

@@ -141,6 +141,7 @@ const handleCheckUsername = async (_rule: Rule, value: string) => {
 const rules: Record<string, Rule[]> = {
   username: [
     { required: true,message: "请输入用户名",trigger: ['change','blur']},
+    {pattern: /^[a-zA-Z0-9@.]+$/, message: "用户名只允许大小写英文、数字、@、.", trigger: ['change','blur']},
     { validator: handleCheckUsername, trigger:'blur'}
   ],
   password: [

@@ -22,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("system/post")
+@Validated
 public class SysPostController extends BaseController {
 
     @Resource

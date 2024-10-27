@@ -18,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("system/dictData")
+@Validated
 public class SysDictDataController extends BaseController {
 
     @Resource

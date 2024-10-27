@@ -607,7 +607,8 @@ const initSave = () => {
   // 表单验证
   const userRules: Record<string, Rule[]> = {
     username: [
-      {required: true, message: "请填写用户名", trigger: "change"}
+      {required: true, message: "请填写用户名", trigger: "change"},
+      {pattern: /^[a-zA-Z0-9@.]+$/, message: "用户名只允许大小写英文、数字、@、.", trigger: "change"}
     ],
     password: [
       {required: true, message: "请填写密码", trigger: "change"},

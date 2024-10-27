@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("system/notice")
+@Validated
 public class SysNoticeController extends BaseController {
 
     @Resource

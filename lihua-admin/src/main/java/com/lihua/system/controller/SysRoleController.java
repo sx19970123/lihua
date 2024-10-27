@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("system/role")
+@Validated
 public class SysRoleController extends BaseController {
 
     @Resource

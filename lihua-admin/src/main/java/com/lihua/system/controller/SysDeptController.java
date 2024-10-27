@@ -22,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("system/dept")
+@Validated
 public class SysDeptController extends BaseController {
 
     @Resource

@@ -15,7 +15,7 @@ public class BaseDTO implements Serializable {
     /**
      * 最大分页页码
      */
-    public static final int MAX_PAGE_NUM = 100;
+    public static final int MAX_PAGE_NUM = 999999999;
     /**
      * 最大分页大小
      */

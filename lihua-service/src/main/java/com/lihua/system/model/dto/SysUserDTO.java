@@ -31,6 +31,7 @@ public class SysUserDTO extends BaseDTO {
 
     // 用户名
     @NotNull(message = "请输入用户名")
+    @Pattern(regexp = "^[a-zA-Z0-9@.]+$", message = "用户名只允许大小写英文、数字、@、.")
     private String username;
 
     // 密码

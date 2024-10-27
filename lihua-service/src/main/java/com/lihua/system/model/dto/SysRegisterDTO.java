@@ -1,6 +1,7 @@
 package com.lihua.system.model.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 /**
@@ -13,6 +14,7 @@ public class SysRegisterDTO {
      * 用户名
      */
     @NotNull(message = "请输入用户名")
+    @Pattern(regexp = "^[a-zA-Z0-9@.]+$", message = "用户名只允许大小写英文、数字、@、.")
     private String username;
 
     /**

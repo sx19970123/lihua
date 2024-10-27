@@ -24,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("system/user")
+@Validated
 public class SysUserController extends BaseController {
 
     @Resource
@@ -85,7 +86,7 @@ public class SysUserController extends BaseController {
     }
 
     @PostMapping("option")
-    public String userOption(@RequestBody List<String> userIds) {
+    public String userOption(@RequestBody @NotEmpty(message = "集合不能为空") List<String> userIds) {
         return success(sysUserService.userOption(userIds));
     }
 

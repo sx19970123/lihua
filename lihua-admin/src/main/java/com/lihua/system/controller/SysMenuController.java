@@ -23,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("system/menu")
 @Slf4j
+@Validated
 public class SysMenuController extends BaseController {
 
     @Resource

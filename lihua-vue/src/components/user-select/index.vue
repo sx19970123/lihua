@@ -321,7 +321,7 @@ const { userColumn, userRowSelectionType, userList, selectedIds, selectUsers, lo
 // 用户id回显相关
 const initModelUserId = async () => {
   const userIds = props.value
-  if (!userIds) {
+  if (!userIds || userIds.length === 0) {
     return
   }
 
