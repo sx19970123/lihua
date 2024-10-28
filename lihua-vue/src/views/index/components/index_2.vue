@@ -1,10 +1,10 @@
 <template>
-  <card-show :cardKey="componentName as string"
+  <card-show
              style="width: 100%"
              :hover-scale="1.03"
              :expanded-width="600"
              :middle-style="{'background':themeStore.$state.isDarkTheme ? '#141414': '#fff','background-size': 'contain','border-radius':' 8px'}"
-  >
+            >
     <template #overview>
       <a-card :body-style="{height: '100px'}" class="card-background">
         <a-typography-title :level="4" ellipsis>关于狸花猫</a-typography-title>
@@ -111,7 +111,7 @@
   </card-show>
 </template>
 <script setup lang="ts">
-import CardShow from "@/components/card-show/index.vue";
+import CardShow from "@/components/card-expandable/index.vue";
 import {getCurrentInstance, ref} from "vue";
 import {useThemeStore} from "@/stores/modules/theme.ts";
 const componentName = getCurrentInstance()?.type.__name
