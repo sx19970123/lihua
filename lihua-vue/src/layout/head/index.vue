@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import Left from "@/layout/head/components/Left.vue"
 import Right from "@/layout/head/components/Right.vue"
-import { useThemeStore } from "@/stores/modules/theme";
+import { useThemeStore } from "@/stores/theme";
 const themeStore = useThemeStore()
 </script>
 

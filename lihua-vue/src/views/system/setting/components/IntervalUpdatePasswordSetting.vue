@@ -41,12 +41,12 @@
 
 <script setup lang="ts">
 import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
-import {useSettingStore} from "@/stores/modules/setting.ts";
+import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
 import type {IntervalUpdatePassword} from "@/api/system/setting/type/IntervalUpdatePassword.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import {isAdmin} from "@/utils/Auth.ts";
 const themeStore = useThemeStore()
 const componentName = getCurrentInstance()?.type.__name

@@ -105,8 +105,8 @@
 </template>
 
 <script setup lang="ts">
-import {useUserStore} from "@/stores/modules/user"
-import {useSettingStore} from "@/stores/modules/setting.ts";
+import {useUserStore} from "@/stores/user"
+import {useSettingStore} from "@/stores/setting.ts";
 import {useRouter} from 'vue-router'
 import {onMounted, reactive, ref, useTemplateRef} from "vue"
 import {message} from "ant-design-vue";

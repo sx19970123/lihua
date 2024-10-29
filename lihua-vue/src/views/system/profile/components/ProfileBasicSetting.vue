@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import {reactive, ref} from "vue";
-import {useUserStore} from "@/stores/modules/user";
+import {useUserStore} from "@/stores/user";
 import AvatarModifier from "@/views/system/profile/components/AvatarModifier.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";

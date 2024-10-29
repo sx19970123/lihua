@@ -32,7 +32,7 @@ import TabPaneMenu from "@/layout/view-tabs/components/TabPaneMenu.vue";
 import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
 import {computed, watch} from "vue";
 import { useRoute,useRouter } from "vue-router";
-import {useViewTabsStore} from "@/stores/modules/viewTabs";
+import {useViewTabsStore} from "@/stores/viewTabs";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 const viewTabsStore = useViewTabsStore()
 const route = useRoute()

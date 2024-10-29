@@ -67,12 +67,12 @@ import ImageCropper from "@/components/image-cropper/index.vue"
 import type {CropperDataType} from "@/components/image-cropper/CropperType.ts";
 import SysAvatar from "@/components/user-avatar/index.vue"
 import {upload} from "@/api/system/file/File.ts";
-import {useUserStore} from "@/stores/modules/user";
+import {useUserStore} from "@/stores/user";
 import {message, Modal} from 'ant-design-vue';
 import settings from "@/settings";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import { cloneDeep } from 'lodash-es'
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 const themeStore = useThemeStore()
 const userStore = useUserStore()

@@ -1,5 +1,5 @@
-import { useUserStore } from "@/stores/modules/user.ts";
-import { useThemeStore } from "@/stores/modules/theme.ts";
+import { useUserStore } from "@/stores/user.ts";
+import { useThemeStore } from "@/stores/theme.ts";
 
 let userStore: ReturnType<typeof useUserStore> | null = null;
 let themeStore: ReturnType<typeof useThemeStore> | null = null;

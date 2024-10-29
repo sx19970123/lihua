@@ -25,8 +25,8 @@
 </template>
 
 <script setup lang="ts">
-import { usePermissionStore } from "@/stores/modules/permission";
-import { useThemeStore } from "@/stores/modules/theme";
+import { usePermissionStore } from "@/stores/permission";
+import { useThemeStore } from "@/stores/theme";
 import {useRouter} from 'vue-router'
 import XiaoMiaoCool from "@/components/icon/xiaomiaozi/XiaoMiaoCool.vue";
 const router = useRouter()

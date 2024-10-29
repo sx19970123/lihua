@@ -31,11 +31,11 @@
 </template>
 
 <script setup lang="ts">
-import {useSettingStore} from "@/stores/modules/setting.ts";
+import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
 import type {SameAccountLoginSetting} from "@/api/system/setting/type/SameAccountLoginSetting.ts";
 import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import {message} from "ant-design-vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {isAdmin} from "@/utils/Auth.ts";

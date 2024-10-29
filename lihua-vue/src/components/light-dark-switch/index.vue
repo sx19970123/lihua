@@ -15,7 +15,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useThemeStore } from "@/stores/modules/theme";
+import { useThemeStore } from "@/stores/theme";
 import XiaoHeiMoon from "@/components/icon/xiaoheizi/XiaoHeiMoon.vue";
 import XiaoMiaoSun from "@/components/icon/xiaomiaozi/XiaoMiaoSun.vue";
 const themeStore = useThemeStore()

@@ -21,7 +21,7 @@
 </template>
 <script setup lang="ts">
 import CardShow from "@/components/card-show/index.vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import {getCurrentInstance} from "vue";
 const themeStore = useThemeStore();
 const componentName = getCurrentInstance()?.type.__name

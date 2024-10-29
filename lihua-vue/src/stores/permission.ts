@@ -12,7 +12,7 @@ import {hasRouteRole, isSiderGroup} from "@/utils/Auth.ts"
 import {isEqual} from "lodash-es"
 
 // 获取 views 下的所有 vue 组件
-const modules = import.meta.glob("../../views/**/*.vue")
+const modules = import.meta.glob("../views/**/*.vue")
 
 export const usePermissionStore = defineStore('permission',{
     state: ()=> {
@@ -143,7 +143,7 @@ const handleRouterComponent = (metaRouterList: Array<RouterType>) => {
 }
 // 设置动态路由的component
 const handleSetComponent = (route: RouterType) => {
-    for (let path in modules) {
+    for (const path in modules) {
         const dir = path.split('views')[1]
         if (dir === route.component) {
             route.component = () => modules[path]()

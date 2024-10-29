@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import SettingIcon from "@/components/icon/index.vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import {ref} from "vue";
 const themeStore = useThemeStore();
 // 父组件传值配置

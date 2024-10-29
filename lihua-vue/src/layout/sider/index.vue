@@ -13,9 +13,9 @@
 </template>
 
 <script setup lang="ts">
-import {usePermissionStore} from "@/stores/modules/permission";
-import {useThemeStore} from "@/stores/modules/theme";
-import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
+import {usePermissionStore} from "@/stores/permission";
+import {useThemeStore} from "@/stores/theme";
+import {useViewTabsStore} from "@/stores/viewTabs.ts";
 import {useRoute,useRouter} from "vue-router";
 import {computed, onMounted, reactive, watch} from "vue";
 const themeStore = useThemeStore()

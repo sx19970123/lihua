@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import UserAvatar from '@/components/user-avatar/index.vue'
-import {useUserStore} from "@/stores/modules/user.ts";
+import {useUserStore} from "@/stores/user.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import {ref} from "vue";
 import {getAvatar} from "@/api/system/profile/Profile.ts";

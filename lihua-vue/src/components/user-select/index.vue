@@ -90,7 +90,7 @@
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {flattenTreeData} from "@/utils/Tree.ts";
 import {onMounted, ref, watch} from "vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import {cloneDeep} from "lodash-es";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";

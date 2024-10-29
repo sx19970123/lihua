@@ -1,5 +1,5 @@
 import { type App } from 'vue'
-import { useUserStore } from "@/stores/modules/user.ts";
+import { useUserStore } from "@/stores/user.ts";
 import { cloneDeep } from 'lodash-es';
 const userStore = useUserStore()
 

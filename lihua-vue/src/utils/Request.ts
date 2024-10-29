@@ -1,7 +1,7 @@
 import axios, {type AxiosRequestConfig, type AxiosResponse} from 'axios';
 import token from "@/utils/Token.ts"
 import {type ResponseErrorType, ResponseError, type ResponseType} from "@/api/global/Type.ts"
-import { useUserStore } from "@/stores/modules/user";
+import { useUserStore } from "@/stores/user";
 import {message} from "ant-design-vue";
 import router from "@/router";
 

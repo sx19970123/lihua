@@ -105,8 +105,8 @@
 </template>
 
 <script setup lang="ts">
-import {useThemeStore} from "@/stores/modules/theme.ts";
-import {useSettingStore} from "@/stores/modules/setting.ts";
+import {useThemeStore} from "@/stores/theme.ts";
+import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref, watch} from "vue";
 import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
 import type {SignIn} from "@/api/system/setting/type/SignIn.ts";

@@ -49,8 +49,8 @@
 
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import {ref, watch} from "vue";
-import {useUserStore} from "@/stores/modules/user.ts";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useUserStore} from "@/stores/user.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import {setDefaultDept} from "@/api/system/profile/Profile.ts";
 import {message} from "ant-design-vue";
 import {cloneDeep} from "lodash-es";

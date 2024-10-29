@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import DefaultPasswordSetting from "@/views/system/setting/components/DefaultPasswordSetting.vue";
 import GrayModelSetting from "@/views/system/setting/components/GrayModelSetting.vue";
 import SignInSetting from "@/views/system/setting/components/SignInSetting.vue";

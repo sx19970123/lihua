@@ -17,8 +17,8 @@
 
 <script setup lang="ts">
 import {getBrowserType, getBrowserMajorVersion} from "@/utils/Browser.ts"
-import { useThemeStore } from "@/stores/modules/theme"
-import {useSettingStore} from "@/stores/modules/setting.ts";
+import { useThemeStore } from "@/stores/theme"
+import {useSettingStore} from "@/stores/setting.ts";
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import {ref, watch} from "vue";
 import 'dayjs/locale/zh-cn';

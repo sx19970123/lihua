@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import {useSettingStore} from "@/stores/modules/setting.ts";
+import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
 import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
 import type {VerificationCode} from "@/api/system/setting/type/VerificationCode.ts";
