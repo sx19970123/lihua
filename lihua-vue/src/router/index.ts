@@ -66,6 +66,7 @@ const routers = [
       {
         path: '/profile',
         component: () => import("@/views/system/profile/SystemProfile.vue"),
+        name: 'SystemProfile',
         meta: {
           label: '个人中心',
           icon: 'UserOutlined',
@@ -78,6 +79,7 @@ const routers = [
       {
         path: '/setting',
         component: () => import("@/views/system/setting/index.vue"),
+        name: 'SystemSetting',
         meta: {
           label: "系统设置",
           icon: "SettingOutlined",
