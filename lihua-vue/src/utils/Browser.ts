@@ -14,7 +14,7 @@ export const getBrowserMajorVersion = () => {
     return majorVersion
 }
 
-export const getBrowserInfo = () => {
+const getBrowserInfo = () => {
     const userAgent = navigator.userAgent;
     let browserName = '';
     let fullVersion = '';

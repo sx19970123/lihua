@@ -8,8 +8,10 @@ import type {RouterType} from "@/api/system/auth/type/AuthInfoType.ts";
 import { h } from "vue";
 import Icon from "@/components/icon/index.vue";
 import type {ItemType} from "ant-design-vue";
-import {hasRouteRole, isSiderGroup} from "@/utils/Auth.ts"
+import {hasRouteRole} from "@/utils/Auth.ts"
 import {isEqual} from "lodash-es"
+import {useThemeStore} from "@/stores/theme.ts";
+let themeStore: ReturnType<typeof useThemeStore> | null = null;
 
 // 获取 views 下的所有 vue 组件
 const modules = import.meta.glob("../views/**/*.vue")
@@ -227,4 +229,12 @@ const handleReloadMenu = (menuRouters: any[]) => {
             router.type = isSiderGroup()
         }
     })
+}
+
+// 是否为分组菜单
+const isSiderGroup = (): 'group' | undefined => {
+    if (!themeStore) {
+        themeStore = useThemeStore();
+    }
+    return themeStore.siderGroup ? 'group' : undefined
 }
