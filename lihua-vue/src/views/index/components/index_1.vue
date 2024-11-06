@@ -1,5 +1,5 @@
 <template>
-  <card-show :cardKey="componentName as string"
+  <card-show
              style="width: 100%"
              :hover-scale="1"
              :expanded-width="600"
@@ -42,13 +42,11 @@
 <script setup lang="ts">
 import CardShow from "@/components/card-show/index.vue";
 import UserAvatar from "@/components/user-avatar/index.vue"
-import {getCurrentInstance} from "vue";
 import {useUserStore} from "@/stores/user.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import dayjs from "dayjs";
 const userStore = useUserStore();
 const themeStore = useThemeStore();
-const componentName = getCurrentInstance()?.type.__name
 const daysOfWeek = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
 
 

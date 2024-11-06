@@ -1,5 +1,5 @@
 <template>
-  <card-show :cardKey="componentName as string"
+  <card-show
              style="width: 100%; cursor: pointer"
              :auto-complete="false"
              :is-detail-visible="false"
@@ -18,10 +18,8 @@
 </template>
 <script setup lang="ts">
 import CardShow from "@/components/card-show/index.vue";
-import {getCurrentInstance} from "vue";
 import router from "@/router";
-const componentName = getCurrentInstance()?.type.__name
-const handleClick = (key:string,show:boolean) => {
+const handleClick = (show:boolean) => {
   router.push("/document/web")
 }
 </script>

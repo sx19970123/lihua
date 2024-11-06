@@ -4,7 +4,6 @@
     <div
         class="card-show-container"
         ref="containerRef"
-        :class="props.cardKey"
         :style="style"
         @click="handleClickCard"
         @mouseover="handleMouseOverCard"
@@ -47,11 +46,6 @@ import {onMounted, onUnmounted, ref, useTemplateRef, watch} from "vue";
 import type { CSSProperties } from 'vue';
 // 接受父组件参数
 const props = defineProps({
-  // 组建key，用于标记组件唯一
-  cardKey: {
-    type: String,
-    required: true
-  },
   // 展开后的宽度
   expandedWidth: {
     type: Number
@@ -121,7 +115,7 @@ const initClick = () => {
     // 详情可见
     const detailVisible = showStatus.value === 'ready' && props.isDetailVisible
     // 卡片点击事件抛出
-    emits('cardClick', { key: props.cardKey, detailVisible: detailVisible})
+    emits('cardClick', {detailVisible: detailVisible})
 
     // 只有就绪状态才可点击
     if (!detailVisible) {
@@ -132,7 +126,7 @@ const initClick = () => {
     // 缩放状态设置为进行中
     hoverStatus.value = 'activity'
     // 执行动画，先将缩放还原
-    gsap.to('.' + props.cardKey, {
+    gsap.to(containerRef.value, {
       scale: 1,
       duration: 0.1,
       // 缩放还原后再进行主要动画
@@ -146,7 +140,7 @@ const initClick = () => {
         // container 设置为固定定位
         style.value = {position: 'fixed'}
         // 执行主要动画
-        gsap.fromTo('.' + props.cardKey, {
+        gsap.fromTo(containerRef.value, {
           width: bounding?.width,
           left: bounding?.left,
           top:  bounding?.top
@@ -162,7 +156,7 @@ const initClick = () => {
             if ((props.autoComplete || props.isComplete) && showStatus.value !== 'kill') {
               showStatus.value = 'complete'
               hoverStatus.value = 'complete'
-              emits('cardComplete', props.cardKey)
+              emits('cardComplete')
             }
           }
         })
@@ -190,7 +184,7 @@ const initClick = () => {
     }
 
     // 点击遮罩后抛出
-    emits('maskClick', props.cardKey)
+    emits('maskClick')
     const bounding = placeholderRef.value?.getBoundingClientRect()
     // 状态修改为进行时
     if (showStatus.value !== 'kill') {
@@ -201,7 +195,7 @@ const initClick = () => {
     // 关闭遮罩
     showMask.value = false
     // 执行主要动画
-    gsap.to('.' + props.cardKey, {
+    gsap.to(containerRef.value, {
       width: bounding?.width,
       height: bounding?.height,
       top: bounding?.top,
@@ -215,7 +209,7 @@ const initClick = () => {
         showStatus.value = 'ready'
         hoverStatus.value = 'complete'
         // 卡片关闭动画完成后抛出
-        emits('cardReady', props.cardKey)
+        emits('cardReady')
       }
     })
   }
@@ -308,10 +302,10 @@ const initHover = () => {
 
     if (hoverStatus.value === 'ready' || hoverStatus.value === 'complete') {
       // 鼠标悬浮时抛出方法
-      emits('cardReadyOver', props.cardKey)
+      emits('cardReadyOver')
       handleAddHoverStyle()
       hoverStatus.value = 'activity'
-      gsap.to('.' + props.cardKey, {
+      gsap.to(containerRef.value, {
         scale: props.hoverScale,
         duration: 0.1,
         onComplete: () => {
@@ -323,14 +317,14 @@ const initHover = () => {
   // 鼠标从卡片移出
   const handleMouseLeaveCard = () => {
     if (showStatus.value === 'ready') {
-      gsap.to('.' + props.cardKey, {
+      gsap.to(containerRef.value, {
         scale: 1,
         duration: 0.1,
         onComplete: () => {
           hoverStatus.value = 'ready'
           handleRemoveHoverStyle()
           // 鼠标悬浮结束后抛出
-          emits('cardReadyLeave', props.cardKey)
+          emits('cardReadyLeave')
         }
       })
     }

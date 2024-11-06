@@ -150,6 +150,12 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0-beta.13',
+        record: [
+            '1. 优化卡片展示组件，移除cardKey属性',
+        ]
+    },
+    {
         version: '1.0.0-beta.12',
         record: [
             '1. 优化图标选择组件，通过dom元素懒加载，大幅优化组件打开速度',

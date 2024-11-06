@@ -1,5 +1,5 @@
 <template>
-  <card-show :cardKey="componentName as string"
+  <card-show
              style="width: 100%"
              :auto-complete="false"
              :is-complete="middleComplete"
@@ -100,13 +100,12 @@ lihua-vue                 // 前端工程
 </template>
 <script setup lang="ts">
 import CardShow from "@/components/card-show/index.vue";
-import {getCurrentInstance, ref} from "vue";
+import {ref} from "vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {versionInfo} from "@/views/index/setting.ts";
 const themeStore = useThemeStore();
-const componentName = getCurrentInstance()?.type.__name
 const middleComplete = ref<boolean>(false)
-const handleClick = (key:string,show:boolean) => {
+const handleClick = (show:boolean) => {
   middleComplete.value = true
 }
 </script>

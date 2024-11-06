@@ -1,5 +1,5 @@
 <template>
-  <card-show :cardKey="componentName as string"
+  <card-show
              style="width: 100%; cursor: pointer"
              @card-click="handleClick"
              :is-detail-visible="false"
@@ -22,9 +22,7 @@
 <script setup lang="ts">
 import CardShow from "@/components/card-show/index.vue";
 import {useThemeStore} from "@/stores/theme.ts";
-import {getCurrentInstance} from "vue";
 const themeStore = useThemeStore();
-const componentName = getCurrentInstance()?.type.__name
 const handleClick = () => {
   window.open('https://gitee.com/yukino_git/lihua')
 }

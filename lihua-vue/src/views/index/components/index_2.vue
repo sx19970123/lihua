@@ -1,5 +1,5 @@
 <template>
-  <card-show :cardKey="componentName as string"
+  <card-show
              style="width: 100%"
              :hover-scale="1.03"
              :expanded-width="600"
@@ -112,9 +112,8 @@
 </template>
 <script setup lang="ts">
 import CardShow from "@/components/card-show/index.vue";
-import {getCurrentInstance, ref} from "vue";
+import {ref} from "vue";
 import {useThemeStore} from "@/stores/theme.ts";
-const componentName = getCurrentInstance()?.type.__name
 const showLihua = ref<boolean>(false)
 const themeStore = useThemeStore();
 </script>
