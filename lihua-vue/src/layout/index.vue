@@ -8,8 +8,8 @@
 import HeaderSider from "@/layout/layout-type/HeaderSider.vue";
 import SiderHeader from "@/layout/layout-type/SiderHeader.vue";
 import HeaderContent from "@/layout/layout-type/HeaderContent.vue"
-import { useThemeStore } from "@/stores/modules/theme";
-import { useViewTabsStore } from "@/stores/modules/viewTabs.ts";
+import { useThemeStore } from "@/stores/theme";
+import { useViewTabsStore } from "@/stores/viewTabs.ts";
 const themeStore = useThemeStore()
 const viewTabsStore = useViewTabsStore()
 

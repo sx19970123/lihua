@@ -1,8 +1,8 @@
 import router from "./router/index";
 import NProgress from "nprogress"
 import 'nprogress/nprogress.css'
-import { useUserStore } from "@/stores/modules/user"
-import { useThemeStore } from "@/stores/modules/theme";
+import { useUserStore } from "@/stores/user"
+import { useThemeStore } from "@/stores/theme";
 import token from "@/utils/Token.ts"
 import { init } from "@/utils/AppInit.ts";
 import {hasRouteRole} from "@/utils/Auth.ts";

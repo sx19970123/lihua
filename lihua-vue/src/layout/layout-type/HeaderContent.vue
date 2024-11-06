@@ -34,7 +34,7 @@ import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
-import {useThemeStore} from "@/stores/modules/theme";
+import {useThemeStore} from "@/stores/theme";
 import {onMounted, onUnmounted, ref} from "vue";
 const themeStore = useThemeStore()
 const props = defineProps<{  showLayout: boolean }>()

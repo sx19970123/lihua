@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import {defineProps, ref, watch} from 'vue';
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 const themeStore = useThemeStore();
 const { type, backgroundColor, value, size, url } = defineProps({
   // 头像类型

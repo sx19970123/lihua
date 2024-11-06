@@ -118,8 +118,8 @@ import type {SysNotice, SysNoticeDTO} from "@/api/system/noice/type/SysNotice.ts
 import {Button, message, notification} from "ant-design-vue";
 import {h, ref} from "vue";
 import {MessageOutlined, NotificationOutlined} from "@ant-design/icons-vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
-import {useUserStore} from "@/stores/modules/user.ts";
+import {useThemeStore} from "@/stores/theme.ts";
+import {useUserStore} from "@/stores/user.ts";
 import {getDictLabel, initDict} from "@/utils/Dict.ts";
 import {findListByUserId, read, star, findUnReadCount} from "@/api/system/noice/Notice.ts";
 import type {SysUserNoticeVO} from "@/api/system/noice/type/SysUserNotice.ts";

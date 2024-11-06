@@ -1,9 +1,9 @@
 import router from "@/router";
-import {useUserStore} from "@/stores/modules/user.ts";
-import {usePermissionStore} from "@/stores/modules/permission.ts";
-import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
-import {useThemeStore} from "@/stores/modules/theme.ts";
-import {useDictStore} from "@/stores/modules/dict.ts";
+import {useUserStore} from "@/stores/user.ts";
+import {usePermissionStore} from "@/stores/permission.ts";
+import {useViewTabsStore} from "@/stores/viewTabs.ts";
+import {useThemeStore} from "@/stores/theme.ts";
+import {useDictStore} from "@/stores/dict.ts";
 import {cloneDeep} from 'lodash-es'
 
 // 认证通过后加载系统所需的各种数据

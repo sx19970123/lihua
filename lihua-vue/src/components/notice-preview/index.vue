@@ -62,7 +62,7 @@ import {findReadInfo, preview} from "@/api/system/noice/Notice.ts";
 import Vditor from "vditor";
 import 'vditor/dist/index.css';
 import UserShow from "@/components/user-show/index.vue"
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import type {SysNoticeVO} from "@/api/system/noice/type/SysNotice.ts";
 import dayjs from "dayjs";
 import {message} from "ant-design-vue";

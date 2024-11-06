@@ -10,7 +10,7 @@
 </template>
 <script setup lang="ts">
 import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons-vue";
-import { usePermissionStore } from "@/stores/modules/permission";
+import { usePermissionStore } from "@/stores/permission";
 const permissionStore = usePermissionStore()
 </script>
 <style scoped>

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Layout from '@/layout/index.vue'
-
+import MiddleView from '@/components/middle-view/index.vue'
+import Iframe from '@/components/iframe/index.vue'
 /**
  * 说明：静态路由基于vue router，在项目中进行了逻辑定制
  * 1. meta 中 visible 设置为 true 的菜单/页面将会在导航中显示
@@ -25,7 +26,7 @@ import Layout from '@/layout/index.vue'
  *    visible...............................................在菜单中显示：true(默认)、false
  *    label.................................................菜单栏标题
  *    title.................................................鼠标悬浮显示的标题
- *    icon..................................................菜单图标，详见 https://antdv.com/components/icon-cn 自定义图标：@/components/icon
+ *    icon..................................................菜单图标，直接配置组件名即可。详见 https://antdv.com/components/icon-cn 自定义图标：@/components/icon
  *    viewTab...............................................在viewTab中显示：true(默认)、false
  *    affix.................................................在viewTab中固定：true、false(默认)
  *    viewTabSort...........................................固定在viewTab下的标签排序
@@ -47,10 +48,11 @@ const routers = [
     component: Layout,
     meta: { visible: true },
     children: [
-        // 首页
+      // 首页
       {
         path: '/index',
         component: () => import("@/views/index/index.vue"),
+        name: 'AppIndex',
         meta: {
           label: '首页',
           icon: 'HomeOutlined',
@@ -64,6 +66,7 @@ const routers = [
       {
         path: '/profile',
         component: () => import("@/views/system/profile/SystemProfile.vue"),
+        name: 'SystemProfile',
         meta: {
           label: '个人中心',
           icon: 'UserOutlined',
@@ -76,6 +79,7 @@ const routers = [
       {
         path: '/setting',
         component: () => import("@/views/system/setting/index.vue"),
+        name: 'SystemSetting',
         meta: {
           label: "系统设置",
           icon: "SettingOutlined",

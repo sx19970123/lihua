@@ -35,8 +35,8 @@
 </template>
 
 <script setup lang="ts">
-import {useSettingStore} from "@/stores/modules/setting.ts";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useSettingStore} from "@/stores/setting.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
 import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
 import type {GrayModel} from "@/api/system/setting/type/GrayModel.ts";

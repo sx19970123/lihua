@@ -45,13 +45,6 @@ export const defaultPasswordDecrypt = (encryptedPassword: string) => {
   return decrypted.toString(CryptoJS.enc.Utf8);
 }
 
-// 使用rsa公钥进行数据加密
-export const rsaEncrypt = (input: string, publicKey: string): string | false => {
-  const encryptor = new JSEncrypt();
-  encryptor.setPublicKey(publicKey);
-  return encryptor.encrypt(input);
-}
-
 // 密码加密
 export const rasEncryptPassword = (password: string): Promise<{ciphertext:string,requestKey:string}> => {
   return new Promise(async (resolve, reject) => {
@@ -77,4 +70,11 @@ export const rasEncryptPassword = (password: string): Promise<{ciphertext:string
       requestKey: requestKey
     })
   })
+}
+
+// 使用rsa公钥进行数据加密
+const rsaEncrypt = (input: string, publicKey: string): string | false => {
+  const encryptor = new JSEncrypt();
+  encryptor.setPublicKey(publicKey);
+  return encryptor.encrypt(input);
 }

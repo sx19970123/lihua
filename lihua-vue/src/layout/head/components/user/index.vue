@@ -65,13 +65,13 @@
 
 <script setup lang="ts">
 import UserAvatar from "@/components/user-avatar/index.vue"
-import { useUserStore } from "@/stores/modules/user";
+import { useUserStore } from "@/stores/user";
 import { useRouter,useRoute } from "vue-router";
 import {message} from "ant-design-vue";
 import {reloadData} from "@/api/system/auth/Auth.ts";
 import { init } from "@/utils/AppInit.ts";
-import {useViewTabsStore} from "@/stores/modules/viewTabs.ts";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useViewTabsStore} from "@/stores/viewTabs.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import {ref} from "vue";
 import {ResponseError} from "@/api/global/Type.ts";
 const viewTabsStore = useViewTabsStore()

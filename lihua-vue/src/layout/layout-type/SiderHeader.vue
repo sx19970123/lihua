@@ -39,8 +39,8 @@ import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
-import { usePermissionStore } from "@/stores/modules/permission";
-import {useThemeStore} from "@/stores/modules/theme";
+import { usePermissionStore } from "@/stores/permission";
+import {useThemeStore} from "@/stores/theme";
 import {onMounted, onUnmounted, ref} from "vue";
 const themeStore = useThemeStore()
 const permission = usePermissionStore()

@@ -113,7 +113,7 @@
 <script setup lang="ts">
 import CardShow from "@/components/card-show/index.vue";
 import {getCurrentInstance, ref} from "vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 const componentName = getCurrentInstance()?.type.__name
 const showLihua = ref<boolean>(false)
 const themeStore = useThemeStore();

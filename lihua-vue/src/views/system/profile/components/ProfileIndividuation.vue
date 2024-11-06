@@ -69,10 +69,10 @@ import ColorSelect from "@/components/color-select/index.vue"
 import NavSelect from "@/components/nav-type-select/index.vue"
 import NavColorSelect from "@/components/nav-color-select/index.vue"
 import settings from "@/settings";
-import { useUserStore } from "@/stores/modules/user";
-import { useThemeStore } from "@/stores/modules/theme";
-import { usePermissionStore } from "@/stores/modules/permission.ts";
-import { useViewTabsStore } from "@/stores/modules/viewTabs.ts";
+import { useUserStore } from "@/stores/user";
+import { useThemeStore } from "@/stores/theme";
+import { usePermissionStore } from "@/stores/permission.ts";
+import { useViewTabsStore } from "@/stores/viewTabs.ts";
 import {onUnmounted, ref} from "vue";
 import {ResponseError} from "@/api/global/Type.ts";
 import {message} from "ant-design-vue";

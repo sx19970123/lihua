@@ -50,7 +50,7 @@
 <script setup lang="ts">
 import CardShow from "@/components/card-show/index.vue";
 import {getCurrentInstance, ref} from "vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 const themeStore = useThemeStore();
 const componentName = getCurrentInstance()?.type.__name
 const middleComplete = ref<boolean>(false)

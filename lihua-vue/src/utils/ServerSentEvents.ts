@@ -1,5 +1,5 @@
 import {handleClose} from "@/api/system/sse/ServerSentEvents.ts";
-import {useUserStore} from "@/stores/modules/user.ts";
+import {useUserStore} from "@/stores/user.ts";
 import token from "@/utils/Token.ts"
 import {createBrowserId} from "@/utils/BrowserId.ts";
 import {ResponseError} from "@/api/global/Type.ts";

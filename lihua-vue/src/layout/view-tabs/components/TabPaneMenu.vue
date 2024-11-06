@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { useViewTabsStore } from "@/stores/modules/viewTabs";
+import { useViewTabsStore } from "@/stores/viewTabs";
 import { useRouter} from "vue-router";
 import { viewTab } from "@/api/system/view-tab/ViewTab.ts";
 import { message } from "ant-design-vue";

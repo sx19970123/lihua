@@ -1,8 +1,7 @@
-import { useUserStore } from "@/stores/modules/user.ts";
-import { useThemeStore } from "@/stores/modules/theme.ts";
+import { useUserStore } from "@/stores/user.ts";
+import { useThemeStore } from "@/stores/theme.ts";
 
 let userStore: ReturnType<typeof useUserStore> | null = null;
-let themeStore: ReturnType<typeof useThemeStore> | null = null;
 
 /**
  * 判断是否拥有指定的角色
@@ -31,15 +30,4 @@ export const hasRouteRole = (routeRoleList?: string[]): boolean => {
  */
 export const isAdmin = () => {
     return hasRouteRole(["ROLE_admin"]);
-}
-
-
-/**
- * 导航菜单是否为分组模式
- */
-export const isSiderGroup = (): 'group' | undefined => {
-    if (!themeStore) {
-        themeStore = useThemeStore();
-    }
-    return themeStore.siderGroup ? 'group' : undefined
 }

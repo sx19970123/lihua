@@ -9,7 +9,7 @@
 import Vditor from "vditor";
 import 'vditor/dist/index.css';
 import {onMounted, ref, watch} from "vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import token from "@/utils/Token.ts"
 import {message} from "ant-design-vue";
 // 暗色模式主题

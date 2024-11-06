@@ -66,7 +66,7 @@
 <script setup lang="ts">
 import CardShow from "@/components/card-show/index.vue";
 import {getCurrentInstance, ref} from "vue";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import {versionInfo} from "@/views/index/setting.ts";
 const latestVersion = versionInfo.lihuaUpdateLog[0]
 const themeStore = useThemeStore();

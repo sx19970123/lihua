@@ -102,10 +102,10 @@
 </template>
 
 <script setup lang="ts">
-import {type Component, onMounted, onUnmounted, type PropType, reactive, ref, useTemplateRef, watch} from "vue";
+import {type Component, onMounted, onUnmounted, type PropType, reactive, ref, useTemplateRef} from "vue";
 import * as Icons from "@ant-design/icons-vue";
 import {cloneDeep} from "lodash-es";
-import {useThemeStore} from "@/stores/modules/theme.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 const themeStore = useThemeStore();
 // 读取icon目录下图标(../icon/目录名/组件名.vue)
 const modules = import.meta.glob("../icon/*/*.vue")
