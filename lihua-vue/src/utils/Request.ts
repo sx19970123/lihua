@@ -70,7 +70,7 @@ service.interceptors.response.use((resp) => {
         }
         return Promise.reject(new ResponseError(status, error.response.statusText));
     } else {
-        const msg = "无法连接到服务器或其他错误"
+        const msg = "无法连接到服务器或服务器响应超时"
         console.error(msg);
         return Promise.reject(new ResponseError(500, msg));
     }
