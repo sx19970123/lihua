@@ -62,7 +62,7 @@ export const downloadByBlob = (blob: Blob, fileName?: string) => {
 }
 
 // 通过url地址下载
-export const download = (url: string, fileName?: string) => {
+const download = (url: string, fileName?: string) => {
     const linkElement = document.createElement('a');
     linkElement.href = url;
     if (fileName) {
