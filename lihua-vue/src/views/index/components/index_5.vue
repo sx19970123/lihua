@@ -7,6 +7,7 @@
                @card-click="handleClick"
                :hover-scale="1.03"
                :expanded-width="600"
+               :expanded-height="610"
                :middle-style="{'background':themeStore.$state.isDarkTheme ? '#141414': '#fff','border-radius':' 8px'}"
     >
       <template #overview>
@@ -30,7 +31,7 @@
         </a-card>
       </template>
       <template #detail>
-        <a-card class="scrollbar card-background" id="test" style="height: 610px">
+        <a-card class="scrollbar card-background" id="test">
           <a-typography-title :level="4" ellipsis>免费开源</a-typography-title>
           <a-typography-text ellipsis type="secondary">
             <a-typography-text type="secondary">基于</a-typography-text>

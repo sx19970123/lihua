@@ -6,6 +6,7 @@
              @card-click="handleClick"
              :hover-scale="1.01"
              :expanded-width="600"
+             :expanded-height="610"
              :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
   >
     <template #overview>
@@ -40,7 +41,7 @@
       </a-card>
     </template>
     <template #detail>
-      <a-card class="card-background" id="test" style="height: 600px">
+      <a-card class="card-background" id="test">
         <a-typography-title :level="4" ellipsis>更新日志</a-typography-title>
         <a-typography-text ellipsis type="secondary">
           <a-typography-text type="secondary">最新版本为：</a-typography-text>

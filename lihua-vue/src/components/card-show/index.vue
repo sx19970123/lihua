@@ -51,6 +51,11 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  // 展开后的高度
+  expandedHeight: {
+    type: Number,
+    required: true
+  },
   // 展开后距离页面顶端像素
   expandedTop: {
     type: Number,
@@ -80,6 +85,11 @@ const props = defineProps({
   isDetailVisible: {
     type: Boolean,
     default: true
+  },
+  // 窗口缩小时的最小间距
+  minWindowSpace: {
+    type: Number,
+    default: 16
   }
 })
 
@@ -141,6 +151,12 @@ const initClick = () => {
         hiddenOverflowY()
         // container 设置为固定定位
         style.value = {position: 'fixed'}
+
+        const side = innerWidth.value / 2 - getDetailWidth() / 2
+        const height = getDetailHeight()
+        const width = getDetailWidth()
+        const top = detailTop.value
+
         // 执行主要动画
         gsap.fromTo(containerRef.value, {
           width: bounding?.width,
@@ -148,12 +164,12 @@ const initClick = () => {
           right: bounding?.right,
           top:  bounding?.top
         },{
-          left: innerWidth.value / 2 - getDetailWidth() / 2,
-          right: innerWidth.value / 2 - getDetailWidth() / 2,
-          top: props.expandedTop,
-          width: getDetailWidth(),
-          height: getDetailHeight(),
-          duration: 0.40,
+          left: side,
+          right: side,
+          top: top,
+          width: width,
+          height: height,
+          duration: 0.4,
           ease: 'power2.out',
           onComplete: () => {
             // 动画播完 或 外部控制为已完成 并且 动画状态不为kill时，展示卡片内容
@@ -184,7 +200,6 @@ const initClick = () => {
     // 动画播放完才可关闭
     if (showStatus.value !== 'complete') {
       showStatus.value = 'kill'
-      // return;
     }
 
     // 点击遮罩后抛出
@@ -220,38 +235,50 @@ const initClick = () => {
 
   // 获取展开后高度
   const getDetailHeight = () => {
-    const ref = detailRef.value
-    if (ref) {
-      ref.style.display = 'block'
-      const bounding = ref.getBoundingClientRect()
-      ref.style.display = 'none'
-      return bounding?.height
+    let height = props.expandedHeight
+    let top = props.expandedTop
+    const minWindowSpace = props.minWindowSpace
+    // height + top > 视口 - 上下边距，表示此时视口内容不下容器和top值了，优先缩减top值
+    if (height + top > innerHeight.value - minWindowSpace * 2) {
+      // height 小于 视口边距时，缩小top值
+      if (height < innerHeight.value - minWindowSpace * 2) {
+        // 设置position top值
+        detailTop.value = (innerHeight.value - height) / 2
+      }
+      // 反之top值设置为默认最小值，开始缩小卡片值
+      else {
+        detailTop.value = minWindowSpace
+        // 设置高度为视口高度 - 上下间距
+        height = innerHeight.value - minWindowSpace * 2
+      }
     }
-
-    return 0;
+    // 防止缩小窗口状态下打开卡片，之后再放大窗口，应用的detailTop和height还沿用小窗口模式，在这里再次初始化值
+    else {
+      detailTop.value = props.expandedTop
+      height = props.expandedHeight
+    }
+    // 设置展开后插槽内元素的高度
+    if (detailRef.value) {
+      const firstChild = detailRef.value.firstElementChild as HTMLElement
+      if (firstChild) {
+        firstChild.style.height = height + 'px'
+      }
+    }
+    return height;
   }
 
   // 获取展开后的宽度
   const getDetailWidth = () => {
-    let width = 0
-    if (props.expandedWidth) {
-      width = props.expandedWidth
+    let width = props.expandedWidth
+    const minWindowSpace = props.minWindowSpace
+    if (width > innerWidth.value - minWindowSpace * 2) {
+      width = innerWidth.value - minWindowSpace * 2
     }
-    const ref = detailRef.value
-
-    if (ref && width === 0) {
-      ref.style.display = 'block'
-      const bounding = ref.getBoundingClientRect()
-      ref.style.display = 'none'
-      width = bounding.width
-    }
-
-    if (width > innerWidth.value - 16 * 2) {
-      width = innerWidth.value - 16 * 2
-    }
-
     return width;
   }
+
+  // 获取展开后的top值
+  const detailTop = ref<number|string>(props.expandedTop)
 
   // 隐藏滚动条
   const hiddenOverflowY = () => {
@@ -292,10 +319,11 @@ const initClick = () => {
     detailRef,
     handleClose,
     handleClickCard,
-    getDetailWidth
+    getDetailWidth,
+    getDetailHeight
   }
 }
-const {showStatus, showMask, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard,getDetailWidth } = initClick()
+const {showStatus, showMask, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard, getDetailWidth, getDetailHeight} = initClick()
 
 
 // 加载鼠标在卡片悬浮相关逻辑
@@ -381,18 +409,50 @@ onUnmounted(() => {
 // 窗口变化后重新设置展开卡片布局
 const windowWidthResize = () => {
   innerWidth.value = window.innerWidth
-  const padding: number = 16;
+  innerHeight.value = window.innerHeight
+  const minWindowSpace = props.minWindowSpace
+
   if (showStatus.value === 'complete' && containerRef.value) {
+    // 处理宽度
     // 视口缩小到比展开宽度 + 两面padding 窄时，固定两边间距，缩小卡片宽度
-    if (props.expandedWidth + padding * 2 > innerWidth.value) {
-      style.value.left = padding + 'px';
-      containerRef.value.style.width = innerWidth.value - padding * 2 + 'px'
+    if (props.expandedWidth + minWindowSpace * 2 > innerWidth.value) {
+      style.value.left = minWindowSpace + 'px';
+      containerRef.value.style.width = innerWidth.value - minWindowSpace * 2 + 'px'
     }
     // 视口缩小到比展开宽度 + 两面padding 宽时，只修改定位的left值
     else {
       const left = window.innerWidth / 2 - getDetailWidth() / 2
       style.value.left = left + 'px'
       containerRef.value.style.width = props.expandedWidth + 'px'
+    }
+
+    // 处理高度
+    if (detailRef.value) {
+      const firstChild = detailRef.value.firstElementChild as HTMLElement
+      if (firstChild) {
+        // 插槽内子节点高度
+        const firstChildHeight = firstChild.clientHeight
+        // 设定的展开后高度
+        const expandedHeight = props.expandedHeight
+
+        // 元素内节点高度小于组件设定的展开高度时，元素高度跟随视口
+        if (expandedHeight + props.expandedTop > innerHeight.value - minWindowSpace * 2) {
+          // height 小于 视口边距时，缩小top值
+          if (expandedHeight < innerHeight.value - minWindowSpace * 2) {
+            // 设置position top值
+            style.value.top = (innerHeight.value - firstChildHeight) / 2 + 'px'
+          }
+          // 反之top值设置为默认最小值，开始缩小卡片值
+          else {
+            style.value.top = minWindowSpace + 'px'
+            // 设置高度为视口高度 - 上下间距
+            firstChild.style.height = innerHeight.value - minWindowSpace * 2 + 'px'
+          }
+        } else {
+          firstChild.style.height = expandedHeight + 'px'
+          style.value.top = props.expandedTop + 'px'
+        }
+      }
     }
   }
 }

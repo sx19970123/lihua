@@ -6,6 +6,7 @@
              @card-click="handleClick"
              :hover-scale="1.03"
              :expanded-width="600"
+             :expanded-height="610"
              :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
   >
     <template #overview>
@@ -27,7 +28,7 @@
       </a-card>
     </template>
     <template #detail>
-      <a-card class="scrollbar" id="test" style="height: 600px">
+      <a-card class="scrollbar" id="test">
         <a-flex :gap="16"  align="center" style="margin-bottom: 10px">
           <img src="../static/icons8-java-logo-48.png">
           <a-typography-title :level="4" style="margin: 0" ellipsis>请作者喝一杯咖啡</a-typography-title>

@@ -5,6 +5,7 @@
              :expanded-width="600"
              :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
              :is-detail-visible="false"
+             :expanded-height="600"
   >
     <template #overview>
       <a-card>
@@ -33,7 +34,7 @@
       </a-card>
     </template>
     <template #detail>
-      <a-card class="scrollbar" id="test" style="border: none;height: 600px">
+      <a-card class="scrollbar" id="test" style="border: none;">
 
       </a-card>
     </template>
