@@ -48,7 +48,8 @@ import type { CSSProperties } from 'vue';
 const props = defineProps({
   // 展开后的宽度
   expandedWidth: {
-    type: Number
+    type: Number,
+    required: true
   },
   // 展开后距离页面顶端像素
   expandedTop: {
@@ -81,6 +82,7 @@ const props = defineProps({
     default: true
   }
 })
+
 // 动画状态类型
 type StatusType = 'ready' | 'activity' | 'complete' | 'kill'
 
@@ -143,9 +145,11 @@ const initClick = () => {
         gsap.fromTo(containerRef.value, {
           width: bounding?.width,
           left: bounding?.left,
+          right: bounding?.right,
           top:  bounding?.top
         },{
           left: innerWidth.value / 2 - getDetailWidth() / 2,
+          right: innerWidth.value / 2 - getDetailWidth() / 2,
           top: props.expandedTop,
           width: getDetailWidth(),
           height: getDetailHeight(),
@@ -229,19 +233,24 @@ const initClick = () => {
 
   // 获取展开后的宽度
   const getDetailWidth = () => {
+    let width = 0
     if (props.expandedWidth) {
-      return props.expandedWidth
+      width = props.expandedWidth
     }
     const ref = detailRef.value
 
-    if (ref) {
+    if (ref && width === 0) {
       ref.style.display = 'block'
       const bounding = ref.getBoundingClientRect()
       ref.style.display = 'none'
-      return bounding.width
+      width = bounding.width
     }
 
-    return 0;
+    if (width > innerWidth.value - 16 * 2) {
+      width = innerWidth.value - 16 * 2
+    }
+
+    return width;
   }
 
   // 隐藏滚动条
@@ -353,8 +362,10 @@ const initHover = () => {
 
 const {hoverStatus, handleMouseOverCard, handleMouseLeaveCard } = initHover()
 
-// 视口的宽度，用于定位展开后元素位置
+// 视口的宽度，用于定位展开后元素位置及视口宽度变化时对展开的卡片重新定位
 const innerWidth = ref<number>(window.innerWidth)
+// 视口的高度，视口宽高变化时对展开的卡片重新定位
+const innerHeight = ref<number>(window.innerHeight)
 
 // 监听窗口变化和键盘事件
 onMounted(() => {
@@ -367,12 +378,22 @@ onUnmounted(() => {
   window.removeEventListener("keydown", (event) => handleClose(event, 'keydown'));
 })
 
-// 窗口变化后重置 innerWidth 和 left 属性
+// 窗口变化后重新设置展开卡片布局
 const windowWidthResize = () => {
   innerWidth.value = window.innerWidth
-  if (showStatus.value === 'complete') {
-    const left = window.innerWidth / 2 - getDetailWidth() / 2
-    style.value.left = left + 'px';
+  const padding: number = 16;
+  if (showStatus.value === 'complete' && containerRef.value) {
+    // 视口缩小到比展开宽度 + 两面padding 窄时，固定两边间距，缩小卡片宽度
+    if (props.expandedWidth + padding * 2 > innerWidth.value) {
+      style.value.left = padding + 'px';
+      containerRef.value.style.width = innerWidth.value - padding * 2 + 'px'
+    }
+    // 视口缩小到比展开宽度 + 两面padding 宽时，只修改定位的left值
+    else {
+      const left = window.innerWidth / 2 - getDetailWidth() / 2
+      style.value.left = left + 'px'
+      containerRef.value.style.width = props.expandedWidth + 'px'
+    }
   }
 }
 
