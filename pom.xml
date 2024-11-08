@@ -13,15 +13,27 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <mysql.version>8.2.0</mysql.version>
-        <mybatis-plus.version>3.5.8</mybatis-plus.version>
+        <mybatis-plus.version>3.5.9</mybatis-plus.version>
         <jwt.version>3.10.3</jwt.version>
         <myexcel.version>4.5.0</myexcel.version>
         <oshi.version>6.6.4</oshi.version>
         <guava.version>33.3.1-jre</guava.version>
         <xxl-job.version>2.4.1</xxl-job.version>
     </properties>
+
+    <!--mybatis-plus统一版本管理-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-bom</artifactId>
+                <version>${mybatis-plus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -56,7 +68,11 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
-            <version>${mybatis-plus.version}</version>
+        </dependency>
+        <!--        mybatis-plus插件-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser</artifactId>
         </dependency>
         <!--        lombok-->
         <dependency>
