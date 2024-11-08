@@ -50,6 +50,7 @@
               <a-button html-type="submit"
                         type="primary"
                         class="register-form-item"
+                        :loading="registerLoading"
                         style="width: 100%">注册
               </a-button>
             </a-form-item>
@@ -80,6 +81,7 @@ import {message} from "ant-design-vue";
 import Verify from "@/components/verifition/index.vue";
 import {rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+const registerLoading = ref<boolean>()
 const show = ref<boolean>(false)
 // 向父组件抛出切登录方法
 const emits = defineEmits(['goLogin'])
@@ -172,6 +174,7 @@ const loadVerify = () => {
 
 // 用户注册
 const handleRegister = async ({captchaVerification}: { captchaVerification: string }) => {
+  registerLoading.value = true
   const {username, password, confirmPassword} = userRegister.value
   try {
     // 对密码加密处理
@@ -191,6 +194,7 @@ const handleRegister = async ({captchaVerification}: { captchaVerification: stri
       message.success("注册成功，即将前往登录")
       setTimeout(() => {
         goLogin(true)
+        registerLoading.value = false
       },1000)
     } else {
       message.error(resp.msg)
@@ -201,8 +205,8 @@ const handleRegister = async ({captchaVerification}: { captchaVerification: stri
     } else {
       console.error(e)
     }
+    registerLoading.value = false
   }
-
 }
 </script>
 

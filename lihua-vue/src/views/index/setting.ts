@@ -153,8 +153,10 @@ const updateRecords = [
         version: '1.0.0-beta.13',
         record: [
             '1. 优化卡片展示组件，移除cardKey属性，新增expandedHeight属性控制展开高度，支持根据视口自适应卡片显示大小及位置，通过minWindowSpace可指定视口小于卡片宽高时边缘间隙',
-            '2. 更新spring boot到3.3.5版本',
-            '3. 更新mybatis-plus到3.5.9版本'
+            '2. 未指定默认部门时，显示 设置默认部门 占位',
+            '3. 注册页面新增loading',
+            '4. 更新spring boot到3.3.5版本',
+            '5. 更新mybatis-plus到3.5.9版本'
         ]
     },
     {

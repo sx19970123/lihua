@@ -4,7 +4,8 @@
       <span class="header-right-item header-right" style="max-width: 130px">
         <a-typography-text ellipsis
                            class="text-default-color"
-                           :content="userStore.defaultDeptName"
+                           :type="userStore.defaultDeptName?'':'secondary'"
+                           :content="userStore.defaultDeptName?userStore.defaultDeptName:'设置默认部门'"
                            style="vertical-align: middle"/>
       </span>
     </a-tooltip>
