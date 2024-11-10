@@ -1,5 +1,5 @@
 <template>
-  <card-show
+  <expandable-card
              style="width: 100%; cursor: pointer"
              :is-detail-visible="false"
              :hover-scale="1"
@@ -14,13 +14,12 @@
         <a-typography-text type="secondary" ellipsis>新建子模块、获取用户上下文、工具类使用...</a-typography-text>
       </a-card>
     </template>
-  </card-show>
+  </expandable-card>
 </template>
 <script setup lang="ts">
-import CardShow from "@/components/card-show/index.vue";
-import router from "@/router";
+import ExpandableCard from "@/components/expandable-card/index.vue";
 const handleClick = (show:boolean) => {
-  router.push("/document/service")
+  window.open("http://120.26.52.238:81/#/server/","_blank");
 }
 </script>
 <style scoped>

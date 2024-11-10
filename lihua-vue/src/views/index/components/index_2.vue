@@ -1,5 +1,5 @@
 <template>
-  <card-show
+  <expandable-card
              style="width: 100%"
              :hover-scale="1.03"
              :expanded-width="600"
@@ -109,10 +109,10 @@
         </div>
       </a-card>
     </template>
-  </card-show>
+  </expandable-card>
 </template>
 <script setup lang="ts">
-import CardShow from "@/components/card-show/index.vue";
+import ExpandableCard from "@/components/expandable-card/index.vue";
 import {ref} from "vue";
 import {useThemeStore} from "@/stores/theme.ts";
 const showLihua = ref<boolean>(false)

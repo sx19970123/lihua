@@ -7,7 +7,7 @@
           <a-typography-link href="https://www.google.com/intl/zh-CN/chrome/" target="_blank">Chrome</a-typography-link>&nbsp;
           <a-typography-link href="https://www.microsoft.com/zh-cn/edge/" target="_blank">Edge</a-typography-link>&nbsp;
           <a-typography-link href="https://www.apple.com.cn/safari/" target="_blank">Safari</a-typography-link>&nbsp;
-        等主流浏览器。
+        等现代浏览器。
       </template>
     </a-alert>
 <!--    网站主要内容-->

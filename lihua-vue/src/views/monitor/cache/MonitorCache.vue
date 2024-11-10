@@ -5,7 +5,7 @@
       <a-card class="cache-card">
         <a-typography-title :level="5">缓存类型</a-typography-title>
         <div class="scrollbar cache-monitor-max-content-height">
-          <card-select :data-source="keyTypeList"
+          <selectable-card :data-source="keyTypeList"
                        item-key="keyPrefix"
                        :item-style="{width: '100%'}"
                        :gap="8"
@@ -21,7 +21,7 @@
                 </a-typography-text>
               </a-flex>
             </template>
-          </card-select>
+          </selectable-card>
         </div>
       </a-card>
       <a-card class="cache-card">
@@ -47,7 +47,7 @@
           </div>
         </a-flex>
         <div class="scrollbar cache-monitor-max-content-height">
-          <card-select :data-source="keys"
+          <selectable-card :data-source="keys"
                        item-key="key"
                        :item-style="{width: '100%'}"
                        :gap="8"
@@ -66,7 +66,7 @@
                </a-button>
              </a-flex>
             </template>
-          </card-select>
+          </selectable-card>
         </div>
       </a-card>
       <a-card class="cache-card">
@@ -110,7 +110,7 @@
           </a-descriptions>
         </a-spin>
 
-        <card-select
+        <selectable-card
             :data-source="[]"
             :item-style="{width: '100%'}"
             item-key="key"
@@ -123,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-import CardSelect from "@/components/card-select/index.vue"
+import SelectableCard from "@/components/selectable-card/index.vue"
 import {
   cacheInfo,
   cacheKeyGroups,

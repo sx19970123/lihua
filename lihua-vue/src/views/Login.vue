@@ -383,19 +383,17 @@ onMounted(() => {
 }
 
 .form {
-  width: 50%;
   min-width: 488px
 }
 
 .head-theme-switch {
-  position: fixed;
+  position: absolute;
   top: 16px;
   right: 24px;
 }
 
 .login-content {
   max-width: 1180px;
-  width: 85vw;
   height: 70vh;
 }
 

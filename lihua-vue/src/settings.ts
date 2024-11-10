@@ -130,5 +130,11 @@ export default {
             colorPrimary: 'rgb(22, 119, 255)'
         },
         algorithm: theme.defaultAlgorithm
-    }
+    },
+
+    /**
+     * 触发菜单变化宽度
+     * 视口宽度缩窄后，到达此宽度会触发菜单变化
+     */
+    menuToggleWidth: 768
 }

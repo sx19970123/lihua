@@ -1,13 +1,19 @@
 <template>
-  <a-flex align="center" justify="space-between">
-    <left v-if="themeStore.layoutType === 'sider-header'"/>
-    <right/>
+<!--  右侧头部组件-->
+  <a-flex align="center">
+<!--    全屏-->
+    <windows-change/>
+<!--    通知公告-->
+    <notification/>
+<!--    默认部门-->
+    <default-dept/>
+<!--    用户-->
+    <user/>
   </a-flex>
 </template>
 <script setup lang="ts">
-import Left from "@/layout/head/components/Left.vue"
-import Right from "@/layout/head/components/Right.vue"
-import { useThemeStore } from "@/stores/theme";
-const themeStore = useThemeStore()
+import User from "@/layout/head/components/user/index.vue"
+import WindowsChange from "@/layout/head/components/window-change/index.vue"
+import Notification from "@/layout/head/components/notice/index.vue"
+import DefaultDept from "@/layout/head/components/dept/index.vue"
 </script>
-

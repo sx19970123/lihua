@@ -1,5 +1,5 @@
 <template>
-  <card-show
+  <expandable-card
              style="width: 100%"
              :hover-scale="1"
              :expanded-width="600"
@@ -38,10 +38,10 @@
 
       </a-card>
     </template>
-  </card-show>
+  </expandable-card>
 </template>
 <script setup lang="ts">
-import CardShow from "@/components/card-show/index.vue";
+import ExpandableCard from "@/components/expandable-card/index.vue";
 import UserAvatar from "@/components/user-avatar/index.vue"
 import {useUserStore} from "@/stores/user.ts";
 import {useThemeStore} from "@/stores/theme.ts";

@@ -2,7 +2,7 @@
   <div>
     <!-- 展示 overview 和 detail 的容器-->
     <div
-        class="card-show-container"
+        class="expandable-card-container"
         ref="containerRef"
         :style="style"
         @click="handleClickCard"
@@ -14,7 +14,7 @@
         <slot name="overview"></slot>
       </div>
       <!-- 过渡时展示自定义封面 -->
-      <div v-if="showStatus === 'activity' || showStatus === 'kill'" class="card-show-middle">
+      <div v-if="showStatus === 'activity' || showStatus === 'kill'" class="expandable-card-middle">
         <div style="display: flex; height: 100%; width: 100%" :style="props.middleStyle">
           <div style="margin: auto">
             <!-- 居中显示的元素 -->
@@ -34,16 +34,16 @@
     </div>
 
     <!-- mask 打开时背景蒙版 -->
-    <Teleport to="body">
-      <div class="card-show-mask" v-show="showMask" @click="handleClose($event, 'mask')"></div>
-    </Teleport>
+    <Mask :show-mask="showMask" @click="handleClose($event, 'mask')"/>
   </div>
 </template>
 
 <script setup lang="ts">
+import Mask from "@/components/mask/index.vue"
 import { gsap } from 'gsap';
 import {onMounted, onUnmounted, ref, useTemplateRef, watch} from "vue";
 import type { CSSProperties } from 'vue';
+import {hiddenOverflowY} from "@/utils/ScrollbarUtil.ts";
 // 接受父组件参数
 const props = defineProps({
   // 展开后的宽度
@@ -106,7 +106,8 @@ type StatusType = 'ready' | 'activity' | 'complete' | 'kill'
  * */
 const emits = defineEmits(['cardClick','cardComplete','cardReady','cardReadyOver','cardReadyLeave','maskClick'])
 
-const initClick = () => {
+// 初始化ref
+const init = () => {
   // 占位元素的ref
   const placeholderRef = useTemplateRef<HTMLElement>("placeholderRef")
   // 容器元素ref
@@ -147,8 +148,6 @@ const initClick = () => {
         showStatus.value = 'activity'
         // 打开遮罩
         showMask.value = true
-        // 关闭Y轴滚动条
-        hiddenOverflowY()
         // container 设置为固定定位
         style.value = {position: 'fixed'}
 
@@ -209,8 +208,6 @@ const initClick = () => {
     if (showStatus.value !== 'kill') {
       showStatus.value = 'activity'
     }
-    // 打开y轴滚动条
-    showOverflowY()
     // 关闭遮罩
     showMask.value = false
     // 执行主要动画
@@ -280,36 +277,6 @@ const initClick = () => {
   // 获取展开后的top值
   const detailTop = ref<number|string>(props.expandedTop)
 
-  // 隐藏滚动条
-  const hiddenOverflowY = () => {
-    if (hasScrollbar()) {
-      document.body.style.overflowY = 'hidden'
-      document.body.style.width = 'calc(100% - 15px)'
-    }
-  }
-
-  // 显示滚动条
-  const showOverflowY = () => {
-    if (hasScrollbar()) {
-      document.body.style.overflowY = ''
-      document.body.style.removeProperty('width')
-    }
-  }
-
-  // 判断是否出现了滚动条
-  const hasScrollbar = (): boolean => {
-    // 获取页面的总高度和视口的高度
-    const body = document.body;
-    const html = document.documentElement;
-
-    const scrollHeight = Math.max(body.scrollHeight, body.offsetHeight,
-        html.clientHeight, html.scrollHeight, html.offsetHeight);
-    const clientHeight = window.innerHeight;
-
-    // 判断是否出现滚动条
-    return scrollHeight > clientHeight;
-  }
-
   return {
     showStatus,
     showMask,
@@ -323,7 +290,7 @@ const initClick = () => {
     getDetailHeight
   }
 }
-const {showStatus, showMask, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard, getDetailWidth, getDetailHeight} = initClick()
+const {showStatus, showMask, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard, getDetailWidth} = init()
 
 
 // 加载鼠标在卡片悬浮相关逻辑
@@ -410,9 +377,10 @@ onUnmounted(() => {
 const windowWidthResize = () => {
   innerWidth.value = window.innerWidth
   innerHeight.value = window.innerHeight
-  const minWindowSpace = props.minWindowSpace
-
   if (showStatus.value === 'complete' && containerRef.value) {
+    const minWindowSpace = props.minWindowSpace
+    // 隐藏Y轴滚动条
+    hiddenOverflowY()
     // 处理宽度
     // 视口缩小到比展开宽度 + 两面padding 窄时，固定两边间距，缩小卡片宽度
     if (props.expandedWidth + minWindowSpace * 2 > innerWidth.value) {
@@ -466,11 +434,11 @@ watch(() => props.isComplete, (value) => {
 </script>
 
 <style scoped>
-.card-show-container {
+.expandable-card-container {
   position: relative;
   z-index: 101;
 }
-.card-show-middle {
+.expandable-card-middle {
   position: absolute;
   top: 0;
   left: 0;
@@ -479,7 +447,7 @@ watch(() => props.isComplete, (value) => {
   width: 100%;
   background-color: rgba(0,0,0,0)
 }
-.card-show-mask {
+.expandable-card-mask {
   position: fixed;
   z-index: 100;
   background: rgba(0, 0, 0, 0.45);
@@ -492,7 +460,7 @@ watch(() => props.isComplete, (value) => {
 
 <style>
 [data-ground-glass = glass] {
-  .card-show-mask {
+  .expandable-card-mask {
     backdrop-filter: blur(6px);
   }
 }

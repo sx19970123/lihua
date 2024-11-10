@@ -1,6 +1,6 @@
 <template>
   <div>
-    <card-show
+    <expandable-card
                style="width: 100%"
                :auto-complete="false"
                :is-complete="middleComplete"
@@ -45,11 +45,11 @@
           </div>
         </a-card>
       </template>
-    </card-show>
+    </expandable-card>
   </div>
 </template>
 <script setup lang="ts">
-import CardShow from "@/components/card-show/index.vue";
+import ExpandableCard from "@/components/expandable-card/index.vue";
 import {ref} from "vue";
 import {useThemeStore} from "@/stores/theme.ts";
 const themeStore = useThemeStore();

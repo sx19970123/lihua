@@ -24,6 +24,8 @@ const router = useRouter()
 // pinia 中获取菜单数据
 const permission = usePermissionStore()
 const viewTabsStore = useViewTabsStore()
+// 抛出函数，当路由发生变化时，抛出函数
+const emits = defineEmits(['routeChange'])
 const menu = computed(() => permission.menuRouters)
 const state = reactive<{
   selectedKeys: string[],
@@ -35,9 +37,11 @@ const state = reactive<{
 
 // 点击菜单跳转路由
 const handleClickMenuItem = ({ key }: {key: string}) => {
-  const targetRoute = viewTabsStore.totalViewTabs.filter(tab => tab.routerPathKey === key)
-  if (targetRoute && targetRoute.length > 0) {
-    const routeInfo = targetRoute[0]
+  let routeInfo = viewTabsStore.getViewTabsByKey(key)
+  if (!routeInfo) {
+    routeInfo = viewTabsStore.getTotalTabByKey(key)
+  }
+  if (routeInfo) {
     // 路由跳转
     router.push({
       path: routeInfo.routerPathKey,
@@ -70,8 +74,9 @@ onMounted(() => {
   setOpenKeys()
 })
 
-// 导航回显
-watch(()=> route.matched,(value)=> {
+// 监听路由变化
+watch(()=> route.matched,()=> {
+  emits('routeChange')
   state.selectedKeys = route.matched.map(r => r.path)
   setOpenKeys()
 })

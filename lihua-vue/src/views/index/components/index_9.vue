@@ -1,5 +1,5 @@
 <template>
-  <card-show
+  <expandable-card
              style="width: 100%; cursor: pointer"
              @card-click="handleClick"
              :is-detail-visible="false"
@@ -18,10 +18,10 @@
         <a-typography-text type="secondary" ellipsis>Yukino/狸花猫</a-typography-text>
       </a-card>
     </template>
-  </card-show>
+  </expandable-card>
 </template>
 <script setup lang="ts">
-import CardShow from "@/components/card-show/index.vue";
+import ExpandableCard from "@/components/expandable-card/index.vue";
 import {useThemeStore} from "@/stores/theme.ts";
 const themeStore = useThemeStore();
 const handleClick = () => {

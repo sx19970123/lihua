@@ -8,6 +8,7 @@ import type {RouteLocationNormalizedLoaded} from "vue-router";
 import {hasRouteRole} from "@/utils/Auth.ts"
 import {isEqual} from "lodash-es"
 import {v4 as uuidv4} from "uuid";
+import {cloneDeep} from "lodash-es";
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         // viewTab 标签页数组
@@ -89,28 +90,65 @@ export const useViewTabsStore = defineStore('viewTabs',{
         // 根据key在total中获取tab对象
         getTotalTabByKey(key: string) {
             const index = this.$state.totalViewTabs.findIndex(tab => tab.routerPathKey === key)
-            return this.$state.totalViewTabs[index]
+            return cloneDeep(this.$state.totalViewTabs[index])
+        },
+        // 根据key在当前ViewTabs获取tab对象
+        getViewTabsByKey(key: string) {
+            const index = this.$state.viewTabs.findIndex(tab => tab.routerPathKey === key)
+            return this.getTabByIndex(index)
         },
         // 根据索引获取元素
         getTabByIndex(index: number) {
             return this.$state.viewTabs[index]
         },
         // 选中tab页，skip跳过不进行view-tab 管理
-        selectedViewTab(key: string,viewTab: boolean) {
-            if (viewTab) {
-                const tab = this.getTotalTabByKey(key)
-                if (tab) {
-                    // 包含
-                    if (!this.isIncludeViewTabs(key)) {
-                        this.addViewTab(tab)
-                    }
-                    this.$state.activeKey = key
-                    // 缓存数据
-                    handleAddTabCache(tab)
+        selectedViewTab(key: string, viewTab: boolean, tempQuery?: string) {
+            if (!viewTab) {
+                // 取消当前选中所有的 tab
+                this.$state.activeKey = '';
+                return;
+            }
+
+            let tab = this.getViewTabsByKey(key);
+            const isExistingTab = !!tab;
+
+            // 如果 tab 不存在，则从 totalTabs 中查找
+            if (!tab) {
+                tab = this.getTotalTabByKey(key);
+            }
+
+            // 处理 query 合并
+            if (tempQuery) {
+                tab.query = this.mergeTabQuery(tab.query, tempQuery);
+            }
+
+            // 如果 tab 是新添加的，执行 addViewTab 操作
+            if (!isExistingTab) {
+                this.addViewTab(tab);
+            }
+
+            // 更新选中的 tab
+            this.$state.activeKey = key;
+
+            // 缓存数据
+            handleAddTabCache(tab);
+        },
+        mergeTabQuery(originQuery?: string, tempQuery?: string): string {
+            if (!tempQuery) return originQuery || '';
+
+            try {
+                const tempQueryObj = JSON.parse(tempQuery);
+
+                if (originQuery) {
+                    const originQueryObj = JSON.parse(originQuery);
+                    Object.assign(originQueryObj, tempQueryObj);
+                    return JSON.stringify(originQueryObj);
                 }
-            } else {
-                // 取消当前选中所有的tab
-                this.$state.activeKey = ''
+
+                return tempQuery;
+            } catch (error) {
+                console.error("解析 query 失败:", error);
+                return originQuery || '';
             }
         },
         // 新开tab页

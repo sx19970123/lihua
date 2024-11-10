@@ -62,7 +62,7 @@
             <a-card v-if="settingForm.deptIds && settingForm.deptIds.length > 0">
               <a-typography-title :level="5">岗位</a-typography-title>
               <a-form-item class="form-item-width" >
-                <card-select
+                <selectable-card
                     :data-source="sysPostList"
                     empty-description="请选择部门"
                     item-key="deptId"
@@ -91,7 +91,7 @@
                       </div>
                     </div>
                   </template>
-                </card-select>
+                </selectable-card>
               </a-form-item>
             </a-card>
           </a-flex>
@@ -118,7 +118,7 @@ import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {flattenTreeData} from "@/utils/Tree.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
-import CardSelect from "@/components/card-select/index.vue";
+import SelectableCard from "@/components/selectable-card/index.vue";
 import {message} from "ant-design-vue";
 import {isAdmin} from "@/utils/Auth.ts";
 import {ResponseError} from "@/api/global/Type.ts";

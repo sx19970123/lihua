@@ -3,36 +3,44 @@
    <a-flex :gap="16" vertical>
      <!--检索条件-->
      <a-card :style="{border: 'none'}" :body-style="{'padding-bottom': '0'}">
-       <a-form :colon="false" :model="deptQuery">
-         <a-space size="small">
-           <a-form-item label="部门名称" name="name">
-             <a-input placeholder="请输入部门名称" v-model:value="deptQuery.name" allow-clear/>
-           </a-form-item>
-           <a-form-item label="部门编码" name="code">
-             <a-input placeholder="请输入部门编码" v-model:value="deptQuery.code" allow-clear/>
-           </a-form-item>
-           <a-form-item label="部门状态" name="status">
-             <a-select style="width: 120px;" placeholder="请选择" v-model:value="deptQuery.status" allow-clear>
-               <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
-             </a-select>
-           </a-form-item>
-           <a-form-item>
-             <a-button type="primary" @click="initList" :loading="tableLoad">
-               <template #icon>
-                 <SearchOutlined />
-               </template>
-               查 询
-             </a-button>
-           </a-form-item>
-           <a-form-item>
-             <a-button @click="resetList" :loading="tableLoad">
-               <template #icon>
-                 <RedoOutlined />
-               </template>
-               重 置
-             </a-button>
-           </a-form-item>
-         </a-space>
+       <a-form :colon="false">
+         <a-row :gutter="16">
+           <a-col>
+             <a-form-item label="部门名称" name="name">
+               <a-input placeholder="请输入部门名称" v-model:value="deptQuery.name" allow-clear/>
+             </a-form-item>
+           </a-col>
+           <a-col>
+             <a-form-item label="部门编码" name="code">
+               <a-input placeholder="请输入部门编码" v-model:value="deptQuery.code" allow-clear/>
+             </a-form-item>
+           </a-col>
+           <a-col>
+             <a-form-item label="部门状态" name="status">
+               <a-select style="width: 120px;" placeholder="请选择" v-model:value="deptQuery.status" allow-clear>
+                 <a-select-option v-for="item in sys_status" :value="item.value">{{item.label}}</a-select-option>
+               </a-select>
+             </a-form-item>
+           </a-col>
+           <a-col>
+             <a-form-item>
+               <a-space size="small">
+                 <a-button type="primary" @click="initList" :loading="tableLoad">
+                   <template #icon>
+                     <SearchOutlined />
+                   </template>
+                   查 询
+                 </a-button>
+                 <a-button @click="resetList" :loading="tableLoad">
+                   <template #icon>
+                     <RedoOutlined />
+                   </template>
+                   重 置
+                 </a-button>
+               </a-space>
+             </a-form-item>
+           </a-col>
+         </a-row>
        </a-form>
      </a-card>
      <a-table :pagination="false"
@@ -139,7 +147,7 @@
            </a-switch>
          </template>
          <template v-if="column.key === 'post'">
-           <a-tooltip placement="topLeft">
+           <a-tooltip>
              <template #title>
                {{ record.sysPostList?.map((sysPost:SysPost) => sysPost.name).join("、") }}
              </template>

@@ -1,39 +1,54 @@
 <template>
-  <a-layout>
-    <transition :name="themeStore.routeTransition" mode="out-in">
-      <a-layout-header class="hs-header" v-show="props.showLayout" :style="{'background': themeStore.layoutBackgroundColor}">
-        <a-flex align="center" justify="space-between">
-          <Logo class="logo"/>
-          <!--页头-->
-          <Head class="head"></Head>
-        </a-flex>
-      </a-layout-header>
-    </transition>
-
+  <div>
     <a-layout>
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-sider class="hs-sider"
-                        v-show="props.showLayout"
-                        :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
-                        :theme="themeStore.siderTheme"
-                        :width="themeStore.siderWith"
-                        v-model:collapsed="permission.collapsed"
-                        collapsible
-                        breakpoint="xl"
-                        :collapsedWidth="collapsedWidth"
-        >
-          <!-- 侧边栏-->
-          <Side class="sider-content sider-scrollbar"/>
-        </a-layout-sider>
+        <a-layout-header class="hs-header" v-show="props.showLayout" :style="{'background': themeStore.layoutBackgroundColor}">
+          <a-flex align="center" justify="space-between">
+            <Logo class="logo"/>
+            <!--页头-->
+            <Head class="head"></Head>
+          </a-flex>
+        </a-layout-header>
       </transition>
-      <!--    菜单开合开关-->
-      <a-layout-content>
-        <view-tabs class="view-tabs" v-if="themeStore.showViewTabs" :style="{'background': themeStore.layoutBackgroundColor, 'top': !props.showLayout ? '0' : '' }"/>
-        <!--内容-->
-        <Content class="layout-content"/>
-      </a-layout-content>
+
+      <a-layout>
+        <transition :name="themeStore.routeTransition" mode="out-in">
+          <a-layout-sider :class="siderClass"
+                          v-show="props.showLayout"
+                          :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
+                          :theme="themeStore.siderTheme"
+                          :width="themeStore.siderWith"
+                          v-model:collapsed="permissionStore.collapsed"
+                          :collapsedWidth="collapsedWidth"
+                          @collapse="handleChangeCollapse"
+                          :trigger="showMask?null:''"
+                          breakpoint="xl"
+                          collapsible
+          >
+            <!-- 窗口缩小到阈值后特殊侧边栏logo-->
+            <div class="sider-logo" :style="{width: showMask ? themeStore.siderWith + 'px' : '0px'}">
+              <a-flex align="center" justify="center" v-if="showMask">
+                <Logo style="margin: 0"/>
+              </a-flex>
+            </div>
+            <!-- 侧边栏-->
+            <Side class="sider-content sider-scrollbar"
+                  :class="siderClass === 'min-hs-sider' ? 'min-sider-content' : ''"
+                  @route-change="handleRouteChange"
+            />
+          </a-layout-sider>
+        </transition>
+        <!--    菜单开合开关-->
+        <a-layout-content>
+          <view-tabs class="view-tabs" v-if="themeStore.showViewTabs" :style="{'background': themeStore.layoutBackgroundColor, 'top': !props.showLayout ? '0' : '' }"/>
+          <!--内容-->
+          <Content class="layout-content"/>
+        </a-layout-content>
+      </a-layout>
     </a-layout>
-  </a-layout>
+    <!--  小窗口菜单遮罩  -->
+    <Mask :show-mask="showMask" @click="handleCloseSider"/>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -45,26 +60,70 @@ import { usePermissionStore } from "@/stores/permission";
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/theme";
 import {onMounted, onUnmounted, ref} from "vue";
+import Mask from "@/components/mask/index.vue";
+import settings from "@/settings.ts";
 const themeStore = useThemeStore()
-const permission = usePermissionStore()
-const props = defineProps<{  showLayout: boolean }>()
-const collapsedWidth = ref<0|80>(document.body.offsetWidth < 768 ? 0 : 80)
+const permissionStore = usePermissionStore()
+const menuToggleWidth = settings.menuToggleWidth
+const bodyWidth = ref<number>(document.body.offsetWidth)
+// 是否显示layout
+const props = defineProps<{ showLayout: boolean }>()
+// 菜单收起宽度，根据当前视口大小变化
+const collapsedWidth = ref<0|80>( bodyWidth.value < menuToggleWidth ? 0 : 80)
+// 菜单样式class，分为正常和小屏下抽屉样式
+const siderClass = ref<'hs-sider' | 'min-hs-sider'>(bodyWidth.value < menuToggleWidth ? 'min-hs-sider' :'hs-sider')
+// 小屏下抽屉样式遮罩
+const showMask = ref<boolean>(false)
+// 处理视口变化操作
 const handleResize = () => {
-  if (document.body.offsetWidth < 768) {
+  bodyWidth.value = document.body.offsetWidth
+  if (bodyWidth.value < menuToggleWidth) {
     collapsedWidth.value = 0
+    siderClass.value = 'min-hs-sider'
   } else {
     collapsedWidth.value = 80
+    siderClass.value = 'hs-sider'
+    showMask.value = false
+  }
+}
+
+// 展开时打开遮罩
+const handleChangeCollapse = (collapsed: boolean) => {
+  if (bodyWidth.value < menuToggleWidth && !collapsed) {
+    showMask.value = true
+  }
+}
+
+// 处理关闭菜单
+const handleCloseSider = () => {
+  permissionStore.collapsed = true
+  showMask.value = false
+}
+
+// 路由变化时自动关闭菜单
+const handleRouteChange = () => {
+  if (showMask.value) {
+    handleCloseSider()
+  }
+}
+
+// 键盘esc关闭菜单
+const handleKeyUp = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && showMask.value) {
+    handleCloseSider()
   }
 }
 
 // dom渲染完毕后添加窗口监听
 onMounted(() => {
   window.addEventListener("resize", handleResize)
+  window.addEventListener("keyup", handleKeyUp)
 });
 
 // 组件销毁后删除监听
 onUnmounted(() => {
-  window.removeEventListener("resize", handleResize);
+  window.removeEventListener("resize", handleResize)
+  window.removeEventListener("keyup", handleKeyUp)
 });
 </script>
 
@@ -85,8 +144,19 @@ onUnmounted(() => {
   top: 0;
   box-shadow: var(--lihua-layout-light-box-shadow);
 }
+.min-hs-sider {
+  z-index: 101;
+  height: 100vh;
+  position: fixed;
+  top: 48px;
+  box-shadow: var(--lihua-layout-light-box-shadow);
+}
 .sider-content {
   height: calc(100vh - 48px - 48px);
+}
+.min-sider-content {
+  height: 100vh;
+  background-color: #fff;
 }
 .head {
   margin-right: 32px;
@@ -94,6 +164,14 @@ onUnmounted(() => {
 .logo {
   padding: 0 8px 0 8px;
   margin-left: 32px;
+}
+.sider-logo {
+  height: 48px;
+  line-height:48px;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  transition: all 0.2s, background 0s;
 }
 .view-tabs {
   backdrop-filter: saturate(180%) blur(20px);
@@ -123,6 +201,26 @@ onUnmounted(() => {
   }
   .hs-sider {
     box-shadow: var(--lihua-layout-dark-box-shadow);
+  }
+  .min-hs-sider {
+    box-shadow: var(--lihua-layout-dark-box-shadow);
+  }
+  .sider-logo {
+    background-color: #141414;
+  }
+  .min-sider-content {
+    background-color: #141414;
+  }
+}
+[sider-dark = dark] {
+  .min-sider-content {
+    background-color: rgba(0,21,41);
+  }
+  .sider-logo {
+    span {
+      color: rgba(255, 255, 255, 0.85);
+    }
+    background-color: rgba(0,21,41);
   }
 }
 </style>

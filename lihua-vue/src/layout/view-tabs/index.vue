@@ -57,7 +57,9 @@ const {viewTabs, activeKey} = init()
  */
 watch(() => route.path,(value) => {
   // 切换tab
-  viewTabsStore.selectedViewTab(value,route?.meta?.viewTab as boolean)
+  viewTabsStore.selectedViewTab(value,
+      route?.meta?.viewTab as boolean,
+      Object.keys(route.query).length !== 0 ? JSON.stringify(route.query) : undefined)
   // 添加keepalive缓存
   addKeepAliveCache()
 })
@@ -67,7 +69,7 @@ watch(() => route.path,(value) => {
  * @param key
  */
 const handleSwitchTab = (key: string) => {
-  routeSkip(viewTabsStore.getTotalTabByKey(key))
+  routeSkip(viewTabsStore.getViewTabsByKey(key))
 }
 
 /**

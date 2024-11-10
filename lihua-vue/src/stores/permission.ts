@@ -61,14 +61,6 @@ export const usePermissionStore = defineStore('permission',{
         // 重新加载菜单
         reloadMenu() {
             handleReloadMenu(this.$state.menuRouters)
-        },
-        // 展开菜单
-        openCollapsed() {
-            this.$state.collapsed = true
-        },
-        // 折叠菜单
-        closeCollapsed() {
-            this.$state.collapsed = false
         }
     },
 })

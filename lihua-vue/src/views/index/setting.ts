@@ -9,6 +9,24 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.13',
+            updateDate: '2024-11-10',
+            updateContent: [
+                '开发文档上线，地址：http://120.26.52.238:81/ 目前尚未全部编写完成，后面会持续维护',
+                '1. 优化卡片展示组件，移除cardKey属性，新增expandedHeight属性控制展开高度，支持根据视口自适应卡片显示大小及位置，通过minWindowSpace可指定视口小于卡片宽高时边缘间隙',
+                '2. 在开启多任务栏的情况下，跳转路由新增支持query参数记忆。在业务中跳转路由携带query参数时，没有关闭对应tab页的情况下，再次切换到该路由，query参数不会丢失。对应issues：https://gitee.com/yukino_git/lihua/issues/IB37RW',
+                '3. 视口缩小到设定阈值时，侧边菜单展开样式修改为抽屉形式，防止展开菜单后挤压内容变形',
+                '4. 调整layout代码结构',
+                '5. 未指定默认部门时，显示 设置默认部门 占位',
+                '6. 登录页面布局优化，窗口缩小时登录表单居中',
+                '7. 调整部门管理列表页查询条件布局',
+                '8. 更新card-show组件名称为expandable-card，更新select-card名称为selectable-card',
+                '9. 注册页面新增loading',
+                '10. 更新spring boot到3.3.5版本',
+                '11. 更新mybatis-plus到3.5.9版本'
+            ]
+        },
+        {
             version: '1.0.0-beta.12',
             updateDate: '2024-10-27',
             updateContent: [
@@ -152,11 +170,18 @@ const updateRecords = [
     {
         version: '1.0.0-beta.13',
         record: [
+            '开发文档上线，地址：http://120.26.52.238:81/ 目前尚未全部编写完成，后面会持续维护',
             '1. 优化卡片展示组件，移除cardKey属性，新增expandedHeight属性控制展开高度，支持根据视口自适应卡片显示大小及位置，通过minWindowSpace可指定视口小于卡片宽高时边缘间隙',
-            '2. 未指定默认部门时，显示 设置默认部门 占位',
-            '3. 注册页面新增loading',
-            '4. 更新spring boot到3.3.5版本',
-            '5. 更新mybatis-plus到3.5.9版本'
+            '2. 在开启多任务栏的情况下，跳转路由新增支持query参数记忆。在业务中跳转路由携带query参数时，没有关闭对应tab页的情况下，再次切换到该路由，query参数不会丢失。对应issues：https://gitee.com/yukino_git/lihua/issues/IB37RW',
+            '3. 视口缩小到设定阈值时，侧边菜单展开样式修改为抽屉形式，防止展开菜单后挤压内容变形',
+            '4. 调整layout代码结构',
+            '5. 未指定默认部门时，显示 设置默认部门 占位',
+            '6. 登录页面布局优化，窗口缩小时登录表单居中',
+            '7. 调整部门管理列表页查询条件布局',
+            '8. 更新card-show组件名称为expandable-card，更新select-card名称为selectable-card',
+            '9. 注册页面新增loading',
+            '10. 更新spring boot到3.3.5版本',
+            '11. 更新mybatis-plus到3.5.9版本'
         ]
     },
     {

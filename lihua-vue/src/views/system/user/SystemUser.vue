@@ -299,7 +299,7 @@
         </div>
         <div v-show="segmented === 'post'">
           <a-form-item>
-            <card-select
+            <selectable-card
                 :data-source="sysPostList"
                 empty-description="请选择部门"
                 item-key="deptId"
@@ -328,7 +328,7 @@
                   </div>
                 </div>
               </template>
-            </card-select>
+            </selectable-card>
           </a-form-item>
         </div>
       </a-form>
@@ -391,7 +391,7 @@ import {
 } from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/Dict.ts"
 import {createVNode, onMounted, reactive, ref, useTemplateRef, watch} from "vue";
-import CardSelect from "@/components/card-select/index.vue"
+import SelectableCard from "@/components/selectable-card/index.vue"
 import PasswordInput from "@/components/password-input/index.vue"
 import DictTag from "@/components/dict-tag/index.vue"
 import dayjs from "dayjs";
