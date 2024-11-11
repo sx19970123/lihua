@@ -1,7 +1,7 @@
 <template>
   <!-- mask 打开时背景蒙版 -->
   <Teleport to="body">
-    <div class="lihua-mask" v-show="showMask" @click="handleClickMask($event)"></div>
+    <div class="lihua-mask" :style="{zIndex: zIndex}" v-show="showMask" @click="handleClickMask($event)"></div>
   </Teleport>
 </template>
 
@@ -9,8 +9,9 @@
 import {watch} from "vue";
 import {hiddenOverflowY, showOverflowY} from "@/utils/ScrollbarUtil.ts";
 // 控制遮罩开关
-const {showMask} = defineProps<{
-  showMask: boolean
+const {showMask, zIndex = 1000} = defineProps<{
+  showMask: boolean,
+  zIndex?: number
 }>()
 const emits = defineEmits(['click'])
 // 遮罩点击事件
@@ -30,7 +31,6 @@ watch(() => showMask, (value) => {
 <style scoped>
 .lihua-mask {
   position: fixed;
-  z-index: 5;
   background: rgba(0, 0, 0, 0.45);
   top: 0;
   left: 0;

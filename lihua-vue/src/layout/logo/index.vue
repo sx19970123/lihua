@@ -2,18 +2,21 @@
   <div class="logo unselectable" @click="goHome">
     <a-flex gap="middle" align="center" justify="center" v-if="themeStore.layoutType === 'header-sider' || themeStore.layoutType === 'header-content' || !permissionStore.collapsed">
       <div>
+        <!--    导航LOGO-->
         <a-avatar :style="{ backgroundColor: themeStore.getColorPrimary()}">
           <template #icon>
             <XiaoMiaoCool/>
           </template>
         </a-avatar>
       </div>
+      <!--    导航名称-->
       <a-typography-title class="title" ellipsis :level="4">
         <span :class="themeStore.layoutType !== 'header-sider' && themeStore.siderTheme === 'dark' ? 'main-name': ''">Lihua Admin</span>
       </a-typography-title>
     </a-flex>
     <a-flex align="center" justify="center" v-else>
       <div>
+        <!--    侧边导航（风格1）折叠时展示的LOGO-->
         <a-avatar :style="{ backgroundColor: themeStore.getColorPrimary()}">
           <template #icon>
             <XiaoMiaoCool/>

@@ -47,7 +47,7 @@
       </a-layout>
     </a-layout>
     <!--  小窗口菜单遮罩  -->
-    <Mask :show-mask="showMask" @click="handleCloseSider"/>
+    <Mask :show-mask="showMask" :z-index="100" @click="handleCloseSider"/>
   </div>
 </template>
 

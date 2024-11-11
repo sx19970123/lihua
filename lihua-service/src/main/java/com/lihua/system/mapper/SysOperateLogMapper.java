@@ -5,6 +5,6 @@ import com.lihua.system.entity.SysOperateLog;
 import org.apache.ibatis.annotations.Delete;
 
 public interface SysOperateLogMapper extends BaseMapper<SysOperateLog> {
-    @Delete("DELETE FROM sys_operate_log")
+    // 清空操作日志数据
     void clear();
 }

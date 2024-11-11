@@ -18,8 +18,10 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     // 用户登陆查询
     CurrentUser loginSelect(@Param("username") String username);
 
+    // 列表查询
     IPage<SysUserVO> findPage(@Param("iPage") IPage<SysUserVO> iPage, @Param(Constants.WRAPPER) QueryWrapper<SysUser> queryWrapper);
 
+    // 根据用户id集合查询对应的部门
     List<SysUserDeptDTO> findUserDeptByUserIds(@Param("userIds") List<String> userIds);
 
     // 根据id查询用户全部信息

@@ -5,6 +5,6 @@ import com.lihua.system.entity.SysLoginLog;
 import org.apache.ibatis.annotations.Delete;
 
 public interface SysLoginLogMapper extends BaseMapper<SysLoginLog> {
-    @Delete("DELETE FROM sys_login_log")
+    // 清空登录日志数据
     void clear();
 }

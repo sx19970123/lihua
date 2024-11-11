@@ -24,6 +24,7 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
 
     @Resource
     private SysUserDeptMapper sysUserDeptMapper;
+
     @Resource
     private SysDeptMapper sysDeptMapper;
 
@@ -97,7 +98,5 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
             .setDeptTree(TreeUtils.buildTree(new ArrayList<>(deptList)));
 
         LoginUserManager.setLoginUserCache(loginUser);
-
     }
-
 }

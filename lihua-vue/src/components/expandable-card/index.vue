@@ -436,7 +436,7 @@ watch(() => props.isComplete, (value) => {
 <style scoped>
 .expandable-card-container {
   position: relative;
-  z-index: 101;
+  z-index: 1001;
 }
 .expandable-card-middle {
   position: absolute;
@@ -447,21 +447,5 @@ watch(() => props.isComplete, (value) => {
   width: 100%;
   background-color: rgba(0,0,0,0)
 }
-.expandable-card-mask {
-  position: fixed;
-  z-index: 100;
-  background: rgba(0, 0, 0, 0.45);
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-}
 </style>
 
-<style>
-[data-ground-glass = glass] {
-  .expandable-card-mask {
-    backdrop-filter: blur(6px);
-  }
-}
-</style>
