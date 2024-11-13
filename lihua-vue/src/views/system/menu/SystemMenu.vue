@@ -319,7 +319,7 @@ import {reactive, ref, useTemplateRef} from "vue";
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
-import { flattenTreeData} from "@/utils/Tree.ts"
+import {flattenTree} from "@/utils/Tree.ts"
 import type {Rule} from "ant-design-vue/es/form";
 import {type FormInstance, message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
@@ -477,8 +477,7 @@ const initSearch = () => {
   // 展开折叠
   const handleExpanded = () => {
     if (expandedRowKeys.value.length == 0) {
-      const data:Array<SysMenu> = ([])
-      flattenTreeData(menuList.value,data)
+      const data = flattenTree(menuList.value)
       expandedRowKeys.value = data.filter(item => item.id).map(item => item.id as string)
     } else {
       expandedRowKeys.value = []
@@ -635,10 +634,9 @@ const initSave = () => {
   // 修改菜单状态
   const handleUpdateStatus = async (event: MouseEvent, sysMenuVO: SysMenuVO, status: string) => {
     event.stopPropagation()
-    let menuIds = ['']
+    let menuIds
     if (status == '0') {
-      const flattenMenuVo:SysMenuVO[] = []
-      flattenTreeData([sysMenuVO], flattenMenuVo)
+      const flattenMenuVo = flattenTree([sysMenuVO])
       // 获取当前及子节点 id
       menuIds = flattenMenuVo.map(menu => menu.id) as string[]
     } else {

@@ -208,7 +208,7 @@ import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
 import {menuTreeOption} from "@/api/system/menu/Menu.ts";
 import type {Rule} from "ant-design-vue/es/form";
-import {flattenTreeData} from "@/utils/Tree.ts";
+import {flattenTree} from "@/utils/Tree.ts";
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
@@ -538,9 +538,8 @@ const useMenuTree = () => {
     try {
       const resp = await menuTreeOption()
       if (resp.code === 200) {
-        menuSetting.value.flattenTree = []
         menuSetting.value.menuOption = resp.data
-        flattenTreeData(menuSetting.value.menuOption,menuSetting.value.flattenTree)
+        menuSetting.value.flattenTree = flattenTree(menuSetting.value.menuOption)
       } else {
         message.error(resp.msg)
       }

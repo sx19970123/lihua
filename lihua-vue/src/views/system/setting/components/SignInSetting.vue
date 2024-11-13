@@ -115,7 +115,7 @@ import {getRoleOption} from "@/api/system/role/Role.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import { cloneDeep } from 'lodash-es';
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
-import {flattenTreeData} from "@/utils/Tree.ts";
+import {flattenTree} from "@/utils/Tree.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import SelectableCard from "@/components/selectable-card/index.vue";
@@ -189,9 +189,8 @@ const {sysRoleList} = initRoleData()
 const initDeptData = () => {
   // 部门信息
   const sysDeptList = ref<Array<SysDept>>([])
-
   // 扁平化部门树
-  const flattenDeptList: Array<SysDept> = []
+  const flattenDeptList = ref<Array<SysDept>>([])
   // 部门树检索关键字
   const deptKeyword = ref<string>('')
   // 所有树型节点id
@@ -257,9 +256,9 @@ const initDeptData = () => {
         // 未双向绑定的单位树
         originDeptTree = resp.data
         // 处理为扁平化数据
-        flattenTreeData(resp.data, flattenDeptList)
+        flattenDeptList.value = flattenTree(resp.data)
         // 获取全部部门id
-        const mapIds = flattenDeptList.filter(item => item.id).map(item => item.id)
+        const mapIds = flattenDeptList.value.filter(item => item.id).map(item => item.id)
         deptIds.push(... (mapIds as string[]))
       } else {
         message.error(resp.msg)
@@ -338,7 +337,7 @@ const initPostData = () => {
     }> = []
     // 组合option
     value.forEach(item => {
-      flattenDeptList.forEach(dept => {
+      flattenDeptList.value.forEach(dept => {
         if (dept.id === item && dept.name) {
           option.push({
             value: dept.id,
@@ -543,7 +542,7 @@ watch(() => settingForm.value.deptIds, (value) => {
     // 加载岗位
     loadPost()
     // 更新 deptTreeSetting 的 checked 状态
-    deptTreeSetting.value.checked = ids.length === flattenDeptList.length;
+    deptTreeSetting.value.checked = ids.length === flattenDeptList.value.length;
   } else if (value && typeof value === 'object' && 'checked' in value) {
     // 如果 value 是包含 checked 属性的对象
     ids = (value as { checked: string[] }).checked;

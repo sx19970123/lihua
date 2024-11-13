@@ -168,6 +168,15 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0-beta.14',
+        record: [
+            '1. 调整flattenTree方法，并对调用的代码进行修改',
+            '2. 调整遮罩组件的可设置z-index，修复了特定条件下没有覆盖住导航trigger的bug',
+            '3. 更新ant-design-vue版本到4.2.6',
+            '4. 更新vite版本到5.4.6'
+        ]
+    },
+    {
         version: '1.0.0-beta.13',
         record: [
             '开发文档上线，地址：http://120.26.52.238:81/ 目前尚未全部编写完成，后面会持续维护',

@@ -400,7 +400,7 @@ import {getRoleOption} from "@/api/system/role/Role.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
 import {message, TreeSelect, Modal, type FormInstance} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
-import {flattenTreeData} from "@/utils/Tree.ts";
+import {flattenTree} from "@/utils/Tree.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import type {SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
@@ -864,9 +864,8 @@ const {sysRoleList} = initRoleData()
 const initDeptData = () => {
   // 部门信息
   const sysDeptList = ref<Array<SysDept>>([])
-
   // 扁平化部门树
-  const flattenDeptList: Array<SysDept> = []
+  let flattenDeptList = ref<Array<SysDept>>([])
   // 部门树检索关键字
   const deptKeyword = ref<string>('')
   // 所有树型节点id
@@ -931,9 +930,9 @@ const initDeptData = () => {
         // 未双向绑定的单位树
         originDeptTree = resp.data
         // 处理为扁平化数据
-        flattenTreeData(resp.data, flattenDeptList)
+        flattenDeptList.value = flattenTree(resp.data)
         // 获取全部部门id
-        const mapIds = flattenDeptList.filter(item => item.id).map(item => item.id)
+        const mapIds = flattenDeptList.value.filter(item => item.id).map(item => item.id)
         deptIds.push(... (mapIds as string[]))
       } else {
         message.error(resp.msg)
@@ -952,13 +951,12 @@ const initDeptData = () => {
     deptTreeSetting,
     deptKeyword,
     flattenDeptList,
-    deptIds,
     handleExpanded,
     handleCheckedAllKeys,
     filterTreeByLabel
   }
 }
-const {sysDeptList,deptTreeSetting,deptKeyword,flattenDeptList,deptIds,handleExpanded, handleCheckedAllKeys,filterTreeByLabel} = initDeptData()
+const {sysDeptList,deptTreeSetting,deptKeyword,flattenDeptList,handleExpanded, handleCheckedAllKeys,filterTreeByLabel} = initDeptData()
 
 // 加载岗位
 const initPostData = () => {
@@ -1012,7 +1010,7 @@ const initPostData = () => {
     }> = []
     // 组合option
     value.forEach(item => {
-      flattenDeptList.forEach(dept => {
+      flattenDeptList.value.forEach(dept => {
         if (dept.id === item && dept.name) {
           option.push({
             value: dept.id,
@@ -1392,7 +1390,7 @@ watch(() => sysUserDTO.value.deptIdList, (value) => {
   }
 
   // 更新 deptTreeSetting 的 checked 状态
-  deptTreeSetting.value.checked = ids.length === flattenDeptList.length;
+  deptTreeSetting.value.checked = ids.length === flattenDeptList.value.length;
 })
 </script>
 

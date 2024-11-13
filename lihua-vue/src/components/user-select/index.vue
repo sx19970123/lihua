@@ -88,7 +88,7 @@
 </template>
 <script lang="ts" setup>
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
-import {flattenTreeData} from "@/utils/Tree.ts";
+import {flattenTree} from "@/utils/Tree.ts";
 import {onMounted, ref, watch} from "vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
@@ -139,8 +139,6 @@ const initDeptTree = () => {
   const sysDeptList = ref<Array<SysDept>>([])
   // 没有进行双向绑定的单位树
   let originDeptTree: Array<SysDept> = ([])
-  // 扁平化部门树
-  const flattenDeptList: Array<SysDept> = []
   // 所有树型节点id
   const deptIds: string[] = []
   // 部门树检索关键字
@@ -160,7 +158,7 @@ const initDeptTree = () => {
         // 未双向绑定的单位树
         originDeptTree = resp.data
         // 处理为扁平化数据
-        flattenTreeData(resp.data, flattenDeptList)
+        const flattenDeptList = flattenTree(resp.data)
         // 获取全部部门id
         const mapIds = flattenDeptList.filter(item => item.id).map(item => item.id)
         deptIds.push(... (mapIds as string[]))

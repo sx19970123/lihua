@@ -259,7 +259,7 @@ import {initDict} from "@/utils/Dict.ts";
 import {deleteData, exportExcel, findById, findPage, importExcel, save, updateStatus} from "@/api/system/post/Post.ts";
 import {useRoute} from "vue-router";
 import type {Rule} from "ant-design-vue/es/form";
-import {flattenTreeData} from "@/utils/Tree.ts";
+import {flattenTree} from "@/utils/Tree.ts";
 import {type FormInstance, message, Modal} from "ant-design-vue";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
@@ -529,8 +529,7 @@ const initSave = () => {
     await formRef.value?.validate()
 
     // 设置岗位编码
-    const flattenTreeList: Array<SysDept> = []
-    flattenTreeData(deptTree.value, flattenTreeList)
+    const flattenTreeList = flattenTree(deptTree.value)
     flattenTreeList.forEach(item => {
       if (item.id === sysPost.value.deptId) {
         sysPost.value.deptCode = item.code

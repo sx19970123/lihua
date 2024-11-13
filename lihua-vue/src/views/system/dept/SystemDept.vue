@@ -271,7 +271,7 @@ import {initDict} from "@/utils/Dict.ts";
 import {cloneDeep} from "lodash-es";
 import type {Rule} from "ant-design-vue/es/form";
 import {useRouter} from "vue-router";
-import {flattenTreeData} from "@/utils/Tree.ts";
+import {flattenTree} from "@/utils/Tree.ts";
 import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import {downloadByPath, handleFunDownload} from "@/utils/FileDownload.ts";
@@ -414,8 +414,7 @@ const initSearch = () => {
   // 展开折叠
   const handleExpanded = () => {
     if (expandedRowKeys.value.length == 0) {
-      const data:Array<SysDeptVO> = ([])
-      flattenTreeData(deptList.value,data)
+      const data = flattenTree(deptList.value)
       expandedRowKeys.value = data.filter(item => item.id).map(item => item.id as string)
     } else {
       expandedRowKeys.value = []

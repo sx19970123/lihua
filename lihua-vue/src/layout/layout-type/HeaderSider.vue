@@ -21,7 +21,7 @@
                           v-model:collapsed="permissionStore.collapsed"
                           :collapsedWidth="collapsedWidth"
                           @collapse="handleChangeCollapse"
-                          :trigger="showMask?null:''"
+                          :trigger="showMask ? null : ''"
                           breakpoint="xl"
                           collapsible
           >
