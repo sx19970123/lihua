@@ -180,10 +180,10 @@
 import {initDict} from "@/utils/Dict"
 import {ref} from "vue";
 import {
-  findLoginPage,
+  queryLoginPage,
   deleteLoginByIds,
   clearLoginLog,
-  findLoginById,
+  queryLoginById,
   excelLoginExport
 } from "@/api/system/log/Log.ts";
 import {message} from "ant-design-vue";
@@ -304,7 +304,7 @@ const initSearch = () => {
   const initPage = async () => {
     tableLoad.value = true
     try {
-      const resp = await findLoginPage(logQuery.value)
+      const resp = await queryLoginPage(logQuery.value)
       if (resp.code === 200) {
         logTotal.value = resp.data.total
         logList.value = resp.data.records
@@ -350,7 +350,7 @@ const initLogInfo = () => {
   const selectById = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
     try {
-      const resp = await findLoginById(id)
+      const resp = await queryLoginById(id)
       if (resp.code === 200) {
         logInfo.value = resp.data
         // 关闭删除/清空提示框

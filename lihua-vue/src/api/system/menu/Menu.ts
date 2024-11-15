@@ -5,7 +5,7 @@ import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
  * 列表查询
  * @param data
  */
-export const findList = (data:SysMenu) => {
+export const queryList = (data:SysMenu) => {
   return request<Array<SysMenuVO>>({
     url: 'system/menu/list',
     method: 'post',
@@ -17,7 +17,7 @@ export const findList = (data:SysMenu) => {
  * 根据id查询详情
  * @param id
  */
-export const findById = (id: string) => {
+export const queryById = (id: string) => {
   return request<SysMenu>({
     url: 'system/menu/' + id,
     method: 'get'

@@ -314,7 +314,7 @@
 
 // 列表查询相关
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {deleteData, findById, findList, menuTreeOption, save, updateStatus} from "@/api/system/menu/Menu.ts";
+import {deleteData, queryById, queryList, menuTreeOption, save, updateStatus} from "@/api/system/menu/Menu.ts";
 import {reactive, ref, useTemplateRef} from "vue";
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
@@ -436,7 +436,7 @@ const initSearch = () => {
   const initList = async () => {
     tableLoad.value = true
     try {
-      const resp = await findList(menuQuery.value)
+      const resp = await queryList(menuQuery.value)
       if (resp.code === 200) {
         // 列表数据
         menuList.value = resp.data
@@ -579,7 +579,7 @@ const initSave = () => {
   const getMenu = async (event:MouseEvent, id:string) => {
     event.stopPropagation()
     try {
-      const resp = await findById(id)
+      const resp = await queryById(id)
       if (resp.code === 200) {
         handleModelStatus('编辑菜单')
         sysMenu.value = resp.data

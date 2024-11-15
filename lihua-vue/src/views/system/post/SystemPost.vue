@@ -37,7 +37,7 @@
             <a-col>
               <a-form-item>
                 <a-space size="small">
-                  <a-button type="primary" @click="queryPage" :loading="tableLoad">
+                  <a-button type="primary" @click="handleQueryPage" :loading="tableLoad">
                     <template #icon>
                       <SearchOutlined />
                     </template>
@@ -256,7 +256,7 @@ import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {createVNode, reactive, ref, useTemplateRef, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {initDict} from "@/utils/Dict.ts";
-import {deleteData, exportExcel, findById, findPage, importExcel, save, updateStatus} from "@/api/system/post/Post.ts";
+import {deleteData, exportExcel, queryById, queryPage, importExcel, save, updateStatus} from "@/api/system/post/Post.ts";
 import {useRoute} from "vue-router";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTree} from "@/utils/Tree.ts";
@@ -390,7 +390,7 @@ const initSearch = () => {
   const postList = ref<Array<SysPostVO>>([])
   const tableLoad = ref<boolean>(false)
 
-  const queryPage = async () => {
+  const handleQueryPage = async () => {
     postQuery.value.pageNum = 1
     await initPage()
   }
@@ -406,7 +406,7 @@ const initSearch = () => {
   const initPage = async () => {
     tableLoad.value = true
     try {
-      const resp = await findPage(postQuery.value)
+      const resp = await queryPage(postQuery.value)
       if (resp.code === 200) {
         postList.value = resp.data.records
         postTotal.value = resp.data.total
@@ -428,7 +428,7 @@ const initSearch = () => {
       tableLoad.value = false
     }
   }
-  queryPage()
+  handleQueryPage()
   return {
     postColumn,
     postList,
@@ -438,12 +438,12 @@ const initSearch = () => {
     tableLoad,
     postTotal,
     handleRowClick,
-    queryPage,
+    handleQueryPage,
     initPage,
     reloadPage
   }
 }
-const { postColumn,postList,postQuery,selectedIds,postRowSelectionType,handleRowClick,initPage,queryPage,reloadPage,tableLoad,postTotal } = initSearch()
+const { postColumn,postList,postQuery,selectedIds,postRowSelectionType,handleRowClick,initPage,handleQueryPage,reloadPage,tableLoad,postTotal } = initSearch()
 
 
 // 保存岗位
@@ -508,7 +508,7 @@ const initSave = () => {
   const selectById = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
     try {
-      const resp = await findById(id)
+      const resp = await queryById(id)
       if (resp.code === 200) {
         handleModalStatus('修改岗位')
         sysPost.value = resp.data

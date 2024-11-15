@@ -6,7 +6,7 @@ import type {PageResponseType} from "@/api/global/Type.ts";
  * 列表页查询
  * @param data
  */
-export const findPage = (data: SysDictTypeDTO) => {
+export const queryPage = (data: SysDictTypeDTO) => {
   return request<PageResponseType<SysDictTypeVO>>({
     url: 'system/dictType/page',
     method: 'post',
@@ -18,7 +18,7 @@ export const findPage = (data: SysDictTypeDTO) => {
  * 根据id查询
  * @param id
  */
-export const findById = (id: string) => {
+export const queryById = (id: string) => {
   return request<SysDictType>({
     url: 'system/dictType/' + id,
     method: 'get'

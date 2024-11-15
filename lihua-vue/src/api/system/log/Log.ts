@@ -11,7 +11,7 @@ export const getLogTypeOption = () => {
 }
 
 // 操作日志查询
-export const findOperatePage = (data: SysLogDTO) => {
+export const queryOperatePage = (data: SysLogDTO) => {
     return request<PageResponseType<SysLog>>({
         url: 'system/log/operate/page',
         method: "POST",
@@ -20,7 +20,7 @@ export const findOperatePage = (data: SysLogDTO) => {
 }
 
 // 查询操作日志详情
-export const findOperateById = (id: string) => {
+export const queryOperateById = (id: string) => {
     return request<SysLog>({
         url: 'system/log/operate/' + id,
         method: "get"
@@ -83,7 +83,7 @@ export const deleteLoginByIds = (ids: string[]) => {
 }
 
 // 查询登录日志详情
-export const findLoginById = (id: string) => {
+export const queryLoginById = (id: string) => {
     return request<SysLog>({
         url: 'system/log/login/' + id,
         method: "get"
@@ -91,7 +91,7 @@ export const findLoginById = (id: string) => {
 }
 
 // 查询登录日志详情
-export const findLoginByCacheKey = (cacheKey: string) => {
+export const queryLoginByCacheKey = (cacheKey: string) => {
     return request<SysLog>({
         url: 'system/log/login/cacheKey/' + cacheKey,
         method: "get"
@@ -101,7 +101,7 @@ export const findLoginByCacheKey = (cacheKey: string) => {
 
 
 // 登录日志查询
-export const findLoginPage = (data: SysLogDTO) => {
+export const queryLoginPage = (data: SysLogDTO) => {
     return request<PageResponseType<SysLog>>({
         url: 'system/log/login/page',
         method: "POST",

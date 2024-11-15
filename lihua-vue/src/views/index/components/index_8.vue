@@ -41,6 +41,9 @@
       </a-card>
     </template>
     <template #detail>
+      <div>
+        tst
+      </div>
       <a-card class="card-background" id="test">
         <a-typography-title :level="4" ellipsis>更新日志</a-typography-title>
         <a-typography-text ellipsis type="secondary">

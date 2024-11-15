@@ -151,7 +151,7 @@
                           show-size-changer
                           :total="dictTypeTotal"
                           :show-total="(total:number) => `共 ${total} 条`"
-                          @change="queryPage"/>
+                          @change="handleQueryPage"/>
           </a-flex>
         </template>
       </a-table>
@@ -213,7 +213,7 @@ import {reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
 import {ResponseError, type ResponseType} from "@/api/global/Type.ts"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {deleteData, findById, findPage, reloadCache, save, updateStatus} from "@/api/system/dict/DictType.ts";
+import {deleteData, queryById, queryPage, reloadCache, save, updateStatus} from "@/api/system/dict/DictType.ts";
 import dayjs from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";
@@ -332,13 +332,13 @@ const initSearch = () => {
   // 数据页码从1开始加载数据
   const initPage = async () => {
     dictTypeQuery.value.pageNum = 1
-    await queryPage()
+    await handleQueryPage()
   }
   // 查询数据
-  const queryPage = async () => {
+  const handleQueryPage = async () => {
     tableLoad.value = true
     try {
-      const resp = await findPage(dictTypeQuery.value)
+      const resp = await queryPage(dictTypeQuery.value)
       if (resp.code === 200) {
         dictTypeList.value = resp.data.records
         dictTypeTotal.value = resp.data.total
@@ -372,10 +372,10 @@ const initSearch = () => {
     handleRowClick,
     resetPage,
     initPage,
-    queryPage
+    handleQueryPage
   }
 }
-const {dictTypeQuery,dictTypeTotal,dictTypeList,dictTypeColumn,dictTypeRowSelectionType,selectedIds,tableLoad,handleRowClick,resetPage,initPage,queryPage} = initSearch()
+const {dictTypeQuery,dictTypeTotal,dictTypeList,dictTypeColumn,dictTypeRowSelectionType,selectedIds,tableLoad,handleRowClick,resetPage,initPage,handleQueryPage} = initSearch()
 
 // 数据保存相关
 const initSave = () => {
@@ -430,7 +430,7 @@ const initSave = () => {
         if (resp.code === 200) {
           handleModelStatus()
           message.success(resp.msg)
-          await queryPage()
+          await handleQueryPage()
         } else {
           message.error(resp.msg)
         }
@@ -448,7 +448,7 @@ const initSave = () => {
   const getDictType = async (event: MouseEvent,id: string) => {
     event.stopPropagation()
     try {
-      const resp: ResponseType<SysDictType> = await findById(id)
+      const resp: ResponseType<SysDictType> = await queryById(id)
       if (resp.code === 200) {
         handleModelStatus('编辑字典')
         dictTypeData.id = resp.data.id

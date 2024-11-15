@@ -25,7 +25,7 @@
             <a-form-item>
               <a-space size="small">
                 <a-button type="primary"
-                          @click="queryList"
+                          @click="handleQueryList"
                           :loading="tableLoading"
                 >
                   <template #icon>
@@ -198,7 +198,7 @@
 <script setup lang="ts">
 // 接收父组件传入的typeId
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deleteData, findList, save} from "@/api/system/dict/DictData.ts";
+import {deleteData, queryList, save} from "@/api/system/dict/DictData.ts";
 import {nextTick, reactive, ref} from "vue";
 import type { UnwrapRef } from 'vue';
 import {message} from "ant-design-vue";
@@ -275,10 +275,10 @@ const initSearch = () => {
   // 定义列表加载
   const tableLoading = ref<boolean>(false)
   // 查询列表
-  const queryList = async () => {
+  const handleQueryList = async () => {
     tableLoading.value = true
     try {
-      const resp = await findList(dictDataQuery.value)
+      const resp = await queryList(dictDataQuery.value)
       if (resp.code === 200) {
         dictDataList.value = resp.data
       } else {
@@ -301,25 +301,25 @@ const initSearch = () => {
     dictDataQuery.value.value = undefined
     dictDataQuery.value.label = undefined
     dictDataQuery.value.status = undefined
-    queryList()
+    handleQueryList()
   }
 
   const handleResizeColumn = (w: number, col: { width: number }) => {
     col.width = w;
   }
-  queryList()
+  handleQueryList()
   return {
     dictDataQuery,
     dictDataColumn,
     dictDataList,
-    queryList,
+    handleQueryList,
     resetList,
     tableLoading,
     expandedRowKeys,
     handleResizeColumn
   }
 }
-const {dictDataQuery, dictDataColumn, dictDataList, queryList, resetList, tableLoading, expandedRowKeys,handleResizeColumn} = initSearch()
+const {dictDataQuery, dictDataColumn, dictDataList, handleQueryList, resetList, tableLoading, expandedRowKeys,handleResizeColumn} = initSearch()
 
 // 新增/新增下级
 const initAdd = () => {

@@ -187,11 +187,11 @@
 import {initDict} from "@/utils/Dict"
 import {ref} from "vue";
 import {
-  findOperatePage,
+  queryOperatePage,
   getLogTypeOption,
   deleteOperateByIds,
   clearOperateLog,
-  findOperateById,
+  queryOperateById,
   excelOperateExport
 } from "@/api/system/log/Log.ts";
 import {message} from "ant-design-vue";
@@ -323,7 +323,7 @@ const initSearch = () => {
   const initPage = async () => {
     tableLoad.value = true
     try {
-      const resp = await findOperatePage(logQuery.value)
+      const resp = await queryOperatePage(logQuery.value)
       if (resp.code === 200) {
         logTotal.value = resp.data.total
         logList.value = resp.data.records
@@ -371,7 +371,7 @@ const initLogInfo = () => {
     event.stopPropagation()
 
     try {
-      const resp = await findOperateById(id)
+      const resp = await queryOperateById(id)
       if (resp.code === 200) {
         logInfo.value = resp.data
         // 关闭删除/清空提示框

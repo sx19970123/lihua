@@ -16,7 +16,7 @@
           <a-col>
             <a-form-item>
               <a-space size="small">
-                <a-button type="primary" @click="queryList" :loading="queryLoading">
+                <a-button type="primary" @click="handleQueryList" :loading="queryLoading">
                   <template #icon>
                     <SearchOutlined />
                   </template>
@@ -136,11 +136,11 @@
 import {ref} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import type {LoggedUserType} from "@/api/monitor/logged-user/type/LoggedUserType.ts";
-import {findList, forceLogout} from "@/api/monitor/logged-user/LoggedUser.ts";
+import {queryList, forceLogout} from "@/api/monitor/logged-user/LoggedUser.ts";
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysLog} from "@/api/system/log/type/SysLog.ts";
-import {findLoginByCacheKey} from "@/api/system/log/Log.ts";
+import {queryLoginByCacheKey} from "@/api/system/log/Log.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 const initSearch = () => {
   // 选中的数据id集合
@@ -236,7 +236,7 @@ const initSearch = () => {
   const initList = async () => {
     queryLoading.value = true
     try {
-      const resp = await findList(queryParam.value.username, queryParam.value.nickname)
+      const resp = await queryList(queryParam.value.username, queryParam.value.nickname)
       if (resp.code === 200) {
         allDataList.value = resp.data
         pagination.value.total = resp.data.length
@@ -257,7 +257,7 @@ const initSearch = () => {
   }
 
   // 点击查询按钮查询列表（页码从第一页开始）
-  const queryList = () => {
+  const handleQueryList = () => {
     pagination.value.pageNum = 1
     initList()
   }
@@ -288,13 +288,13 @@ const initSearch = () => {
     logoutCacheKeys,
     handleRowClick,
     initList,
-    queryList,
+    handleQueryList,
     changePage,
     resetList
   }
 }
 
-const {queryParam, currentPage, userColumn, pagination, queryLoading, userRowSelectionType, logoutCacheKeys, handleRowClick, initList, queryList, changePage, resetList} = initSearch()
+const {queryParam, currentPage, userColumn, pagination, queryLoading, userRowSelectionType, logoutCacheKeys, handleRowClick, initList, handleQueryList, changePage, resetList} = initSearch()
 
 
 const openLogoutPopconfirm = ref<boolean>(false)
@@ -351,7 +351,7 @@ const initLogInfo = () => {
   const selectByCacheKey = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
     try {
-      const resp = await findLoginByCacheKey(id)
+      const resp = await queryLoginByCacheKey(id)
       if (resp.code === 200) {
         logInfo.value = resp.data
 

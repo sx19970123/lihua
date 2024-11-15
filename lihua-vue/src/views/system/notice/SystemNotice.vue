@@ -228,7 +228,7 @@ import {initDict} from "@/utils/Dict.ts";
 import {reactive, ref, useTemplateRef} from "vue";
 import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/noice/type/SysNotice.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deleteByIds, findById, findPage, release, revoke, save} from "@/api/system/noice/Notice.ts";
+import {deleteByIds, queryById, queryPage, release, revoke, save} from "@/api/system/noice/Notice.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import {type FormInstance, message} from "ant-design-vue";
 import dayjs from "dayjs";
@@ -331,7 +331,7 @@ const initSearch = () => {
   const noticeList = ref<Array<SysNotice>>([])
   const tableLoad = ref<boolean>(false)
 
-  const queryPage = async () => {
+  const handleQueryPage = async () => {
     noticeQuery.value.pageNum = 1
     await initPage()
   }
@@ -347,7 +347,7 @@ const initSearch = () => {
   const initPage = async () => {
     tableLoad.value = true
     try {
-      const resp = await findPage(noticeQuery.value)
+      const resp = await queryPage(noticeQuery.value)
       if (resp.code === 200) {
         noticeList.value = resp.data.records
         noticeTotal.value = resp.data.total
@@ -364,7 +364,7 @@ const initSearch = () => {
       tableLoad.value = false
     }
   }
-  queryPage()
+  handleQueryPage()
   return {
     selectedIds,
     noticeRowSelectionType,
@@ -374,12 +374,12 @@ const initSearch = () => {
     tableLoad,
     noticeTotal,
     handleRowClick,
-    queryPage,
+    handleQueryPage,
     initPage,
     reloadPage,
   }
 }
-const {selectedIds, noticeRowSelectionType, noticeColumn, noticeQuery, noticeList, tableLoad, noticeTotal, handleRowClick, queryPage, initPage, reloadPage} = initSearch()
+const {selectedIds, noticeRowSelectionType, noticeColumn, noticeQuery, noticeList, tableLoad, noticeTotal, handleRowClick, handleQueryPage, initPage, reloadPage} = initSearch()
 
 // 表单保存
 const initSave = () => {
@@ -493,7 +493,7 @@ const initSave = () => {
       return
     }
     try {
-      const resp = await findById(id)
+      const resp = await queryById(id)
       if (resp.code === 200) {
         handleModalStatus("修改通知公告")
         sysNoticeVO.value = resp.data

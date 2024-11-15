@@ -4,7 +4,7 @@ import type {MapResponseType} from "@/api/global/Type.ts";
 /**
  * 列表查询
  */
-export const findList = (data: SysDictDataType) => {
+export const queryList = (data: SysDictDataType) => {
   return request<Array<SysDictDataType>>({
     url: 'system/dictData/list',
     method: 'post',

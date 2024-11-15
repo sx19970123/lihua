@@ -46,7 +46,7 @@
             <a-col>
               <a-form-item>
                 <a-space size="small">
-                  <a-button type="primary" @click="queryPage" :loading="queryLoading">
+                  <a-button type="primary" @click="handleQueryPage" :loading="queryLoading">
                     <template #icon>
                       <SearchOutlined />
                     </template>
@@ -380,8 +380,8 @@
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {
-  findPage,
-  findById,
+  queryPage,
+  queryById,
   save,
   deleteByIds,
   updateStatus,
@@ -539,7 +539,7 @@ const initSearch = () => {
   const initPage = async () => {
     queryLoading.value = true
     try {
-      const resp = await findPage(userQuery.value)
+      const resp = await queryPage(userQuery.value)
       if (resp.code === 200) {
         userList.value = resp.data.records
         userTotal.value = resp.data.total
@@ -565,7 +565,7 @@ const initSearch = () => {
   }
 
   // 条件检索初始页码设置为0
-  const queryPage = async () => {
+  const handleQueryPage = async () => {
     userQuery.value.pageNum = 1
     await initPage()
   }
@@ -593,11 +593,11 @@ const initSearch = () => {
     selectedIds,
     handleRowClick,
     initPage,
-    queryPage,
+    handleQueryPage,
     resetPage
   }
 }
-const {userColumn,userQuery,userList,userTotal,queryLoading,userRowSelectionType,selectedIds,handleRowClick,initPage,queryPage,resetPage } = initSearch()
+const {userColumn,userQuery,userList,userTotal,queryLoading,userRowSelectionType,selectedIds,handleRowClick,initPage,handleQueryPage,resetPage } = initSearch()
 
 // 数据保存相关
 const initSave = () => {
@@ -791,7 +791,7 @@ const initSave = () => {
   const getUserInfo = async (event: MouseEvent, userId: string) => {
     event.stopPropagation()
     try {
-      const resp = await findById(userId)
+      const resp = await queryById(userId)
       if (resp.code === 200) {
         handleModelStatus("编辑用户")
         // 表单数据赋值

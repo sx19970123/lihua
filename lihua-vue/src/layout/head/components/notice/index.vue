@@ -121,7 +121,7 @@ import {MessageOutlined, NotificationOutlined} from "@ant-design/icons-vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {useUserStore} from "@/stores/user.ts";
 import {getDictLabel, initDict} from "@/utils/Dict.ts";
-import {findListByUserId, read, star, findUnReadCount} from "@/api/system/noice/Notice.ts";
+import {queryListByUserId, read, star, queryUnReadCount} from "@/api/system/noice/Notice.ts";
 import type {SysUserNoticeVO} from "@/api/system/noice/type/SysUserNotice.ts";
 import {handleTime} from "@/utils/HandleDate.ts";
 import dayjs from "dayjs";
@@ -138,7 +138,7 @@ const unReadCount = ref<number>(0)
 // 查询未读数量
 const handleUnReadCount = async () => {
   try {
-    const resp = await findUnReadCount()
+    const resp = await queryUnReadCount()
     if (resp.code === 200) {
       unReadCount.value = resp.data
     } else {
@@ -254,7 +254,7 @@ const initList = () => {
   const initNoticeList = async () => {
     loading.value = true
     try {
-      const resp = await findListByUserId(userStore.userId,query.value)
+      const resp = await queryListByUserId(userStore.userId,query.value)
       if (resp.code === 200) {
         total.value = resp.data.total
         resp.data.records.forEach(item => {

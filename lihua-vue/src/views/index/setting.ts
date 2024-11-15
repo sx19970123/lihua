@@ -172,8 +172,10 @@ const updateRecords = [
         record: [
             '1. 调整flattenTree方法，并对调用的代码进行修改',
             '2. 调整遮罩组件的可设置z-index，修复了特定条件下没有覆盖住导航trigger的bug',
-            '3. 更新ant-design-vue版本到4.2.6',
-            '4. 更新vite版本到5.4.6'
+            '3. expandable-card组件支持详情插槽内添加多个元素（不推荐），当展开后视口高度不足时自动添加滚动条',
+            '4. 后端将数据库查询方法名中find前缀替换为query，前端将api获取数据函数名中find前缀换为query',
+            '5. 更新ant-design-vue版本到4.2.6',
+            '6. 更新vite版本到5.4.6'
         ]
     },
     {

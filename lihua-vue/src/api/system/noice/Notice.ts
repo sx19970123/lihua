@@ -8,7 +8,7 @@ import type {SysUserNoticeVO} from "@/api/system/noice/type/SysUserNotice.ts";
  * 分页查询
  * @param data
  */
-export const findPage = (data: SysNoticeDTO) => {
+export const queryPage = (data: SysNoticeDTO) => {
     return request<PageResponseType<SysNotice>>({
         url: "/system/notice/page",
         method: "post",
@@ -19,7 +19,7 @@ export const findPage = (data: SysNoticeDTO) => {
 /**
  * 根据id查询
  */
-export const findById = (id: string) => {
+export const queryById = (id: string) => {
     return request<SysNoticeVO>({
         url: "/system/notice/" + id,
         method: "get"
@@ -53,7 +53,7 @@ export const save = (data: SysNoticeVO) => {
  * 获取已读未读信息
  * @param id
  */
-export const findReadInfo = (id: string) => {
+export const queryReadInfo = (id: string) => {
     return request<MapResponseType<String,SysUser[]>>({
         url: "/system/notice/readInfo/" + id,
         method: "get"
@@ -97,7 +97,7 @@ export const deleteByIds = (ids: string[]) => {
  * @param userId
  * @param data
  */
-export const findListByUserId = (userId: string, data: SysNoticeDTO) => {
+export const queryListByUserId = (userId: string, data: SysNoticeDTO) => {
     return request<PageResponseType<SysUserNoticeVO>>({
         url: 'system/notice/list/' + userId,
         method: 'post',
@@ -131,7 +131,7 @@ export const read = (noticeId: string) => {
 /**
  * 获取未读消息总数
  */
-export const findUnReadCount = () => {
+export const queryUnReadCount = () => {
     return request<number>({
         url: '/system/notice/unread/count',
         method: 'get'
