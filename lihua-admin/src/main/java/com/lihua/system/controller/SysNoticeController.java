@@ -26,13 +26,13 @@ public class SysNoticeController extends BaseController {
     private SysUserNoticeService sysUserNoticeService;
 
     @PostMapping("page")
-    public String findPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysNoticeDTO sysNoticeDTO) {
-        return success(sysNoticeService.findPage(sysNoticeDTO));
+    public String queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysNoticeDTO sysNoticeDTO) {
+        return success(sysNoticeService.queryPage(sysNoticeDTO));
     }
 
     @GetMapping("{id}")
-    public String findById(@PathVariable("id") String id) {
-        return success(sysNoticeService.findById(id));
+    public String queryById(@PathVariable("id") String id) {
+        return success(sysNoticeService.queryById(id));
     }
 
     @GetMapping("preview/{id}")
@@ -66,13 +66,13 @@ public class SysNoticeController extends BaseController {
     }
 
     @PostMapping("list/{userId}")
-    public String findListByUserId(@PathVariable("userId") String userId, @RequestBody SysNoticeDTO sysNoticeDTO) {
-        return success(sysNoticeService.findListByUserId(userId, sysNoticeDTO));
+    public String queryListByUserId(@PathVariable("userId") String userId, @RequestBody SysNoticeDTO sysNoticeDTO) {
+        return success(sysNoticeService.queryListByUserId(userId, sysNoticeDTO));
     }
 
     @GetMapping("readInfo/{noticeId}")
-    public String findReadInfo(@PathVariable("noticeId") String noticeId) {
-        return success(sysUserNoticeService.findReadInfo(noticeId));
+    public String queryReadInfo(@PathVariable("noticeId") String noticeId) {
+        return success(sysUserNoticeService.queryReadInfo(noticeId));
     }
 
     @PostMapping("star/{noticeId}/{star}")
@@ -88,7 +88,7 @@ public class SysNoticeController extends BaseController {
     }
 
     @GetMapping("unread/count")
-    public String findUnReadCount() {
-        return success(sysUserNoticeService.findUnReadCount());
+    public String queryUnReadCount() {
+        return success(sysUserNoticeService.queryUnReadCount());
     }
 }

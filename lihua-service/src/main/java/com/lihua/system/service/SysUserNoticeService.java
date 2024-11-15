@@ -21,12 +21,12 @@ public interface SysUserNoticeService {
     /**
      * 根据 noticeId 获取全部用户id
      */
-    List<String> findUserIds(String noticeId);
+    List<String> queryUserIds(String noticeId);
 
     /**
      * 获取notice已读未读用户
      */
-    Map<String,List<SysUser>> findReadInfo(String noticeId);
+    Map<String,List<SysUser>> queryReadInfo(String noticeId);
 
     /**
      * 重制 notice 关联表状态
@@ -47,5 +47,5 @@ public interface SysUserNoticeService {
     /**
      * 获取未读消息总数
      */
-    int findUnReadCount();
+    int queryUnReadCount();
 }

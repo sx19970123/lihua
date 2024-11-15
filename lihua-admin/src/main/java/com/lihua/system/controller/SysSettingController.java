@@ -24,7 +24,7 @@ public class SysSettingController extends BaseController {
     }
 
     @GetMapping("{componentName}")
-    public String findSysSettingByComponentName(@PathVariable("componentName") String componentName) {
+    public String querySysSettingByComponentName(@PathVariable("componentName") String componentName) {
         return success(sysSettingService.getSysSettingByComponentName(componentName));
     }
 }

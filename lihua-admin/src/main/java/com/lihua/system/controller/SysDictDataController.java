@@ -28,24 +28,24 @@ public class SysDictDataController extends BaseController {
      * 查询字典数据列表
      */
     @PostMapping("list")
-    public String findListByTypeCode(@RequestBody SysDictDataDTO dictDataDTO) {
+    public String queryListByTypeCode(@RequestBody SysDictDataDTO dictDataDTO) {
         if (!StringUtils.hasText(dictDataDTO.getDictTypeCode())) {
             return error(ResultCodeEnum.ERROR,"数据字典类型id为空");
         }
-        return success(sysDictDataService.findList(dictDataDTO));
+        return success(sysDictDataService.queryList(dictDataDTO));
     }
 
     /**
      * 查询下拉框中字典选项
      */
     @GetMapping("option/{dictTypeCode}")
-    public String findDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
-        return success(sysDictDataService.findDictOptionList(dictTypeCode));
+    public String queryDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
+        return success(sysDictDataService.queryDictOptionList(dictTypeCode));
     }
 
     @PostMapping("option")
-    public String findDictOptionList(@RequestBody List<String> dictTypeCodeList) {
-        return success(sysDictDataService.findDictOptionList(dictTypeCodeList));
+    public String queryDictOptionList(@RequestBody List<String> dictTypeCodeList) {
+        return success(sysDictDataService.queryDictOptionList(dictTypeCodeList));
     }
 
     /**

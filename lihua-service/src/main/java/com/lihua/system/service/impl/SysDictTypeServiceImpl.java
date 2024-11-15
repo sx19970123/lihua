@@ -31,7 +31,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
 
 
     @Override
-    public IPage<SysDictType> findPage(SysDictTypeDTO dictTypeDTO) {
+    public IPage<SysDictType> queryPage(SysDictTypeDTO dictTypeDTO) {
         QueryWrapper<SysDictType> queryWrapper = new QueryWrapper<>();
         IPage<SysDictType> page = new Page<>(dictTypeDTO.getPageNum(), dictTypeDTO.getPageSize());
 
@@ -67,7 +67,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     }
 
     @Override
-    public SysDictType findById(String id) {
+    public SysDictType queryById(String id) {
         return sysDictTypeMapper.selectById(id);
     }
 

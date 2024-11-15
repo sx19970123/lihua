@@ -41,7 +41,7 @@ public class SysUserNoticeServiceImpl extends ServiceImpl<SysUserNoticeMapper, S
     }
 
     @Override
-    public List<String> findUserIds(String noticeId) {
+    public List<String> queryUserIds(String noticeId) {
         QueryWrapper<SysUserNotice> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .eq(SysUserNotice::getNoticeId, noticeId)
@@ -51,7 +51,7 @@ public class SysUserNoticeServiceImpl extends ServiceImpl<SysUserNoticeMapper, S
     }
 
     @Override
-    public Map<String, List<SysUser>> findReadInfo(String noticeId) {
+    public Map<String, List<SysUser>> queryReadInfo(String noticeId) {
         Map<String, List<SysUser>> resultMap = new HashMap<>();
 
         // 查询用户消息关联表
@@ -109,8 +109,8 @@ public class SysUserNoticeServiceImpl extends ServiceImpl<SysUserNoticeMapper, S
     }
 
     @Override
-    public int findUnReadCount() {
-        return sysUserNoticeMapper.findUnReadCount(LoginUserContext.getUserId());
+    public int queryUnReadCount() {
+        return sysUserNoticeMapper.queryUnReadCount(LoginUserContext.getUserId());
     }
 
 }

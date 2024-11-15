@@ -27,16 +27,16 @@ public class SysDictTypeController extends BaseController {
      * 字典类型查询
      */
     @PostMapping("page")
-    public String findPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysDictTypeDTO dictTypeDTO) {
-        return success(sysDictTypeService.findPage(dictTypeDTO));
+    public String queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysDictTypeDTO dictTypeDTO) {
+        return success(sysDictTypeService.queryPage(dictTypeDTO));
     }
 
     /**
      * 根据主键查询
      */
     @GetMapping("{id}")
-    public String findById(@PathVariable("id") String id) {
-        return success(sysDictTypeService.findById(id));
+    public String queryById(@PathVariable("id") String id) {
+        return success(sysDictTypeService.queryById(id));
     }
 
     /**

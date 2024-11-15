@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 
 public interface SysNoticeMapper extends BaseMapper<SysNotice> {
 
-    IPage<SysUserNoticeVO> findListByUserId(@Param("iPage") IPage<SysUserNoticeVO> iPage,
+    IPage<SysUserNoticeVO> queryListByUserId(@Param("iPage") IPage<SysUserNoticeVO> iPage,
                                             @Param(Constants.WRAPPER) QueryWrapper<SysUserNoticeVO> queryWrapper);
 
     SysNoticeVO preview(@Param("id") String id);

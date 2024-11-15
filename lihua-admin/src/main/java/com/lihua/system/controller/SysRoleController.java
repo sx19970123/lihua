@@ -31,16 +31,16 @@ public class SysRoleController extends BaseController {
      * 查询角色信息
      */
     @PostMapping("page")
-    public String findPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysRoleDTO sysRoleDTO) {
-        return success(sysRoleService.findPage(sysRoleDTO));
+    public String queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysRoleDTO sysRoleDTO) {
+        return success(sysRoleService.queryPage(sysRoleDTO));
     }
 
     /**
      * 根据主键查询
      */
     @GetMapping("{id}")
-    public String findById(@PathVariable("id") String id) {
-        return success(sysRoleService.findById(id));
+    public String queryById(@PathVariable("id") String id) {
+        return success(sysRoleService.queryById(id));
     }
 
     /**

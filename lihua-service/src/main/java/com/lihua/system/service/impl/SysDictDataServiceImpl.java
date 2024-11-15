@@ -35,7 +35,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     private RedisCache redisCache;
 
     @Override
-    public List<SysDictData> findList(SysDictDataDTO dictDataDTO) {
+    public List<SysDictData> queryList(SysDictDataDTO dictDataDTO) {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
         // 类型id
         if (StringUtils.hasText(dictDataDTO.getDictTypeCode())) {
@@ -66,16 +66,16 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     }
 
     @Override
-    public List<SysDictDataVO> findDictOptionList(String dictTypeCode) {
+    public List<SysDictDataVO> queryDictOptionList(String dictTypeCode) {
         List<SysDictDataVO> dictData = DictUtils.getDictData(dictTypeCode);
         return TreeUtils.buildTree(dictData);
     }
 
     @Override
-    public Map<String, List<SysDictDataVO>> findDictOptionList(List<String> dictTypeCodeList) {
+    public Map<String, List<SysDictDataVO>> queryDictOptionList(List<String> dictTypeCodeList) {
         Map<String, List<SysDictDataVO>> map = new HashMap<>();
         dictTypeCodeList.forEach(dictTypeCode -> {
-            List<SysDictDataVO> dictOptionList = findDictOptionList(dictTypeCode);
+            List<SysDictDataVO> dictOptionList = queryDictOptionList(dictTypeCode);
             map.put(dictTypeCode, dictOptionList);
         });
 

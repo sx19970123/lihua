@@ -13,12 +13,12 @@ public interface SysNoticeService {
     /**
      * 分页查询
      */
-    IPage<SysNotice> findPage(SysNoticeDTO sysNoticeDTO);
+    IPage<SysNotice> queryPage(SysNoticeDTO sysNoticeDTO);
 
     /**
      * 根据主键查询
      */
-    SysNoticeVO findById(String id);
+    SysNoticeVO queryById(String id);
 
     /**
      * 预览通知公告
@@ -48,5 +48,5 @@ public interface SysNoticeService {
     /**
      * 用户查询消息通知
      */
-    IPage<SysUserNoticeVO> findListByUserId(String userId, SysNoticeDTO sysNoticeDTO);
+    IPage<SysUserNoticeVO> queryListByUserId(String userId, SysNoticeDTO sysNoticeDTO);
 }

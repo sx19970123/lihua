@@ -32,8 +32,8 @@ public class SysDeptController extends BaseController {
     private SysUserDeptService sysUserDeptService;
 
     @PostMapping("list")
-    public String findDeptPostList(@RequestBody SysDept sysDept) {
-        List<SysDeptVO> deptPostList = sysDeptService.findDeptPostList(sysDept);
+    public String queryDeptPostList(@RequestBody SysDept sysDept) {
+        List<SysDeptVO> deptPostList = sysDeptService.queryDeptPostList(sysDept);
         return success(TreeUtils.buildTree(deptPostList));
     }
 
@@ -45,8 +45,8 @@ public class SysDeptController extends BaseController {
     }
 
     @GetMapping("{id}")
-    public String findById(@PathVariable("id") String id) {
-        return success(sysDeptService.findById(id));
+    public String queryById(@PathVariable("id") String id) {
+        return success(sysDeptService.queryById(id));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")

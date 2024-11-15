@@ -11,13 +11,13 @@ public interface SysDeptService {
     /**
      * 查询列表
      */
-    List<SysDept> findList(SysDept sysDept);
+    List<SysDept> queryList(SysDept sysDept);
 
 
     /**
      * 查询带有岗位信息的post列表
      */
-    List<SysDeptVO> findDeptPostList(SysDept sysDept);
+    List<SysDeptVO> queryDeptPostList(SysDept sysDept);
 
     /**
      * 保存单位
@@ -27,7 +27,7 @@ public interface SysDeptService {
     /**
      * 根据id查询单位
      */
-    SysDept findById(String id);
+    SysDept queryById(String id);
 
 
     /**

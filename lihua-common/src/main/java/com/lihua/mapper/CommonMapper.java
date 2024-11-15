@@ -13,5 +13,5 @@ import java.util.List;
 public interface CommonMapper {
 
     // 根据字典类型编码查询对应字典数据
-    List<SysDictDataVO> findByDictTypeCode(@Param("dictTypeCode") String dictTypeCode);
+    List<SysDictDataVO> queryByDictTypeCode(@Param("dictTypeCode") String dictTypeCode);
 }

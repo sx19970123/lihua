@@ -72,7 +72,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     private final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
 
     @Override
-    public IPage<SysUserVO> findPage(SysUserDTO sysUserDTO) {
+    public IPage<SysUserVO> queryPage(SysUserDTO sysUserDTO) {
         IPage<SysUserVO> iPage = new Page<>(sysUserDTO.getPageNum(), sysUserDTO.getPageSize());
 
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
@@ -104,7 +104,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
         queryWrapper.eq("del_flag","0").orderByDesc("sys_user.create_time");
 
-        iPage = sysUserMapper.findPage(iPage, queryWrapper);
+        iPage = sysUserMapper.queryPage(iPage, queryWrapper);
 
         if (iPage.getRecords().isEmpty()) {
             return iPage;
@@ -117,8 +117,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     }
 
     @Override
-    public SysUserVO findById(String id) {
-        SysUserVO sysUserVO = sysUserMapper.findById(id);
+    public SysUserVO queryById(String id) {
+        SysUserVO sysUserVO = sysUserMapper.queryById(id);
         // 设置默认部门id
         if (!sysUserVO.getDefaultDeptIdList().isEmpty()) {
             List<String> list = sysUserVO.getDefaultDeptIdList().stream().filter(StringUtils::hasText).toList();
@@ -212,7 +212,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
         queryWrapper.eq("sys_user.del_flag","0").orderByDesc("sys_user.id");
 
-        List<SysUserVO> exportList = sysUserMapper.findExportData(queryWrapper);
+        List<SysUserVO> exportList = sysUserMapper.queryExportData(queryWrapper);
 
         // 获取所有部门id
         List<String> deptIds = exportList
@@ -223,7 +223,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                 .toList();
 
         // 根据部门id获取岗位信息
-        List<SysPost> postList = sysPostService.findPostByDeptId(deptIds);
+        List<SysPost> postList = sysPostService.queryPostByDeptId(deptIds);
 
         // 创建deptId 与 post 映射
         Map<String, List<String>> postGroupByDeptId = postList
@@ -280,12 +280,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
 
         // 获取需要的角色数据
-        List<SysRole> roleList = sysRoleMapper.findAllRole();
+        List<SysRole> roleList = sysRoleMapper.queryAllRole();
         List<String> allRoleNameList = roleList.stream().map(SysRole::getName).toList();
 
 
         // 获取需要的部门/岗位数据
-        List<SysDeptVO> sysDeptList = sysDeptMapper.findAllDept();
+        List<SysDeptVO> sysDeptList = sysDeptMapper.queryAllDept();
         List<String> allDeptNameList = sysDeptList.stream().map(SysDept::getName).toList();
 
         // 开始过滤数据，返回false的数据将存储到 errorUserVos
@@ -368,16 +368,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Override
     public List<SysUser> userOption(String deptId) {
-        return sysUserMapper.findOptionByDeptId(deptId);
+        return sysUserMapper.queryOptionByDeptId(deptId);
     }
 
     @Override
     public List<SysUser> userOption(List<String> userIdList) {
-        return sysUserMapper.findOptionByUserIds(userIdList);
+        return sysUserMapper.queryOptionByUserIds(userIdList);
     }
 
     @Override
-    public List<String> findAllUserIds() {
+    public List<String> queryAllUserIds() {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().select(SysUser::getId)
                 .eq(SysUser::getDelFlag, "0");
@@ -454,12 +454,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         }
 
 
-        usernameDbSet.addAll(sysUserMapper.findUsername(collectUsername));
+        usernameDbSet.addAll(sysUserMapper.queryUsername(collectUsername));
         if (!collectPhoneNumber.isEmpty()) {
-            phoneNumberDbSet.addAll(sysUserMapper.findPhoneNumber(collectPhoneNumber));
+            phoneNumberDbSet.addAll(sysUserMapper.queryPhoneNumber(collectPhoneNumber));
         }
         if (!collectEmail.isEmpty()) {
-            emailDbSet.addAll(sysUserMapper.findEmail(collectEmail));
+            emailDbSet.addAll(sysUserMapper.queryEmail(collectEmail));
         }
     }
 
@@ -760,7 +760,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     // 处理用户所属部门
     private void handleUserDept(List<SysUserVO> records) {
         List<String> userIds = records.stream().map(SysUserVO::getId).toList();
-        List<SysUserDeptDTO> userDeptByUserIds = sysUserMapper.findUserDeptByUserIds(userIds);
+        List<SysUserDeptDTO> userDeptByUserIds = sysUserMapper.queryUserDeptByUserIds(userIds);
         Map<String, List<SysUserDeptDTO>> groupByUserId = userDeptByUserIds.stream().collect(Collectors.groupingBy(SysUserDeptDTO::getUserId));
 
         // 为用户所属部门赋值

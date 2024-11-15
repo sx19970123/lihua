@@ -14,8 +14,6 @@ import java.util.List;
  */
 public class DictUtils {
 
-    private static final String DICT_DATA_REDIS_PREFIX = SysBaseEnum.DICT_DATA_REDIS_PREFIX.getValue();
-
     private static final CommonMapper commonMapper;
 
     private static final RedisCache redisCache;
@@ -83,7 +81,7 @@ public class DictUtils {
         // 删除缓存
         removeDictCache(dictTypeCode);
         // 查询数据添加缓存
-        List<SysDictDataVO> sysDictDataVOList = commonMapper.findByDictTypeCode(dictTypeCode);
+        List<SysDictDataVO> sysDictDataVOList = commonMapper.queryByDictTypeCode(dictTypeCode);
         if (!sysDictDataVOList.isEmpty()) {
             DictUtils.setDictCache(dictTypeCode,sysDictDataVOList);
         }

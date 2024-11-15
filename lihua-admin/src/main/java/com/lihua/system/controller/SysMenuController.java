@@ -33,16 +33,16 @@ public class SysMenuController extends BaseController {
      * 列表查询
      */
     @PostMapping("list")
-    public String findList(@RequestBody SysMenu sysMenu) {
-        return success(sysMenuService.findList(sysMenu));
+    public String queryList(@RequestBody SysMenu sysMenu) {
+        return success(sysMenuService.queryList(sysMenu));
     }
 
     /**
      * 根据主键查询
      */
     @GetMapping("{id}")
-    public String findById(@PathVariable("id") @NotNull(message = "请选择数据") String id) {
-        return success(sysMenuService.findById(id));
+    public String queryById(@PathVariable("id") @NotNull(message = "请选择数据") String id) {
+        return success(sysMenuService.queryById(id));
     }
 
     /**

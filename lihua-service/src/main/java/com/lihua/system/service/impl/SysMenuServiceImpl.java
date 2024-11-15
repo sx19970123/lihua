@@ -27,10 +27,8 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Resource
     private SysRoleMapper sysRoleMapper;
 
-    private final String patternComponentName =  "([^/]+)\\.vue$";
-
     @Override
-    public List<SysMenu> findList(SysMenu sysMenu) {
+    public List<SysMenu> queryList(SysMenu sysMenu) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
 
         if (StringUtils.hasText(sysMenu.getLabel())) {
@@ -58,7 +56,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public SysMenu findById(String menuId) {
+    public SysMenu queryById(String menuId) {
         return sysMenuMapper.selectById(menuId);
     }
 
@@ -97,7 +95,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         checkStatus(ids);
         checkChildren(ids);
         // 删除前查询菜单的parentId和sort
-        List<SysMenu> sysMenus = findDeleteMenuSortInfo(ids);
+        //List<SysMenu> sysMenus = queryDeleteMenuSortInfo(ids);
         // 删除菜单
         sysMenuMapper.deleteByIds(ids);
         // 删除角色关联表数据
@@ -110,7 +108,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     public List<SysMenu> menuTreeOption() {
         SysMenu sysMenu = new SysMenu();
         sysMenu.setStatus("0");
-        return findList(sysMenu);
+        return queryList(sysMenu);
     }
 
     @Override
@@ -128,7 +126,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
 
-    private List<SysMenu> findDeleteMenuSortInfo(List<String> ids) {
+    private List<SysMenu> queryDeleteMenuSortInfo(List<String> ids) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .in(SysMenu::getId, ids)

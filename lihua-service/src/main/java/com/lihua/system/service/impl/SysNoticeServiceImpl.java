@@ -42,7 +42,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     private SysUserService sysUserService;
 
     @Override
-    public IPage<SysNotice> findPage(SysNoticeDTO sysNoticeDTO) {
+    public IPage<SysNotice> queryPage(SysNoticeDTO sysNoticeDTO) {
         IPage<SysNotice> iPage = new Page<>(sysNoticeDTO.getPageNum(), sysNoticeDTO.getPageSize());
         QueryWrapper<SysNotice> queryWrapper = new QueryWrapper<>();
 
@@ -82,7 +82,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     }
 
     @Override
-    public SysNoticeVO findById(String id) {
+    public SysNoticeVO queryById(String id) {
         // 查询 SysNotice 表
         SysNotice sysNotice = sysNoticeMapper.selectById(id);
         SysNoticeVO sysNoticeVO = new SysNoticeVO();
@@ -93,7 +93,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             return sysNoticeVO;
         }
         // 指定用户情况下，查询关联用户后返回
-        List<String> userIds = sysUserNoticeService.findUserIds(id);
+        List<String> userIds = sysUserNoticeService.queryUserIds(id);
         sysNoticeVO.setUserIdList(userIds);
         return sysNoticeVO;
     }
@@ -153,14 +153,14 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         if ("0".equals(sysNotice.getUserScope())) {
             // 发送范围为全部用户时，删除所有关联关系批量插入
             sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
-            saveUserNotice(id, sysUserService.findAllUserIds());
+            saveUserNotice(id, sysUserService.queryAllUserIds());
         } else {
             // 发送范围为指定用户时，重置star和read状态
             sysUserNoticeService.resetStatus(id);
         }
 
         // 获取被推送的用户id
-        List<String> userIds = sysUserNoticeService.findUserIds(id);
+        List<String> userIds = sysUserNoticeService.queryUserIds(id);
         // sse 推送数据
         ServerSentEventsManager.send(userIds, new ServerSentEventsResult<>(ServerSentEventsEnum.SSE_NOTICE, sysNotice));
         return id;
@@ -204,7 +204,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     }
 
     @Override
-    public IPage<SysUserNoticeVO> findListByUserId(String userId, SysNoticeDTO sysNoticeDTO) {
+    public IPage<SysUserNoticeVO> queryListByUserId(String userId, SysNoticeDTO sysNoticeDTO) {
         IPage<SysUserNoticeVO> iPage = new Page<>(sysNoticeDTO.getPageNum(), sysNoticeDTO.getPageSize());
         QueryWrapper<SysUserNoticeVO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("sys_user_notice.user_id", userId)
@@ -215,7 +215,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         if ("1".equals(sysNoticeDTO.getStar())) {
             queryWrapper.eq("sys_user_notice.star_flag", sysNoticeDTO.getStar());
         }
-        return sysNoticeMapper.findListByUserId(iPage, queryWrapper);
+        return sysNoticeMapper.queryListByUserId(iPage, queryWrapper);
     }
 
     /**

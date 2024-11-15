@@ -15,12 +15,12 @@ public interface SysPostService {
     /**
      * 分页查询
      */
-    IPage<SysPostVO> findPage(SysPostDTO dto);
+    IPage<SysPostVO> queryPage(SysPostDTO dto);
 
     /**
      * 根据id 查询
      */
-    SysPost findById(String id);
+    SysPost queryById(String id);
 
     /**
      * 保存岗位
@@ -35,12 +35,12 @@ public interface SysPostService {
     /**
      * 根据部门集合查询岗位信息
      */
-    List<SysPost> findPostByDeptId(List<String> deptIdList);
+    List<SysPost> queryPostByDeptId(List<String> deptIdList);
 
     /**
      * 根据部门几盒查询岗位数零
      */
-    Long findCountByDeptId(List<String> deptIdList);
+    Long queryCountByDeptId(List<String> deptIdList);
 
     /**
      * 根据部门id查询岗位集合

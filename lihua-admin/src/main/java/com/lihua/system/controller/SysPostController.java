@@ -30,13 +30,13 @@ public class SysPostController extends BaseController {
 
 
     @PostMapping("page")
-    public String findPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysPostDTO dto) {
-        return success(sysPostService.findPage(dto));
+    public String queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysPostDTO dto) {
+        return success(sysPostService.queryPage(dto));
     }
 
     @GetMapping("{id}")
-    public String findById(@PathVariable("id") String id) {
-        return success(sysPostService.findById(id));
+    public String queryById(@PathVariable("id") String id) {
+        return success(sysPostService.queryById(id));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")

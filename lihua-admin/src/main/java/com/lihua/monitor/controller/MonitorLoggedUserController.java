@@ -18,8 +18,8 @@ public class MonitorLoggedUserController extends BaseController {
     private MonitorLoggedUserService monitorLoggedUserService;
 
     @GetMapping
-    public String findList(String username, String nickname) {
-        return success(monitorLoggedUserService.findList(username, nickname));
+    public String queryList(String username, String nickname) {
+        return success(monitorLoggedUserService.queryList(username, nickname));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")

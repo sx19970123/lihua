@@ -42,13 +42,13 @@ public class SysLogController extends BaseController {
 
     // 操作日志------------------------------------------------------------
     @PostMapping("operate/page")
-    public String findOperatePage(@RequestBody @Validated(MaxPageSizeLimit.class) SysLogDTO sysLogDTO) {
-        return success(sysOperateLogService.findPage(sysLogDTO));
+    public String queryOperatePage(@RequestBody @Validated(MaxPageSizeLimit.class) SysLogDTO sysLogDTO) {
+        return success(sysOperateLogService.queryPage(sysLogDTO));
     }
 
     @GetMapping("operate/{id}")
-    public String findOperateById(@PathVariable("id") String id) {
-        return success(sysOperateLogService.findById(id));
+    public String queryOperateById(@PathVariable("id") String id) {
+        return success(sysOperateLogService.queryById(id));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")
@@ -78,18 +78,18 @@ public class SysLogController extends BaseController {
     // 登录日志------------------------------------------------------------
 
     @PostMapping("login/page")
-    public String findLoginPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysLogDTO sysLogDTO) {
-        return success(sysLoginLogService.findPage(sysLogDTO));
+    public String queryLoginPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysLogDTO sysLogDTO) {
+        return success(sysLoginLogService.queryPage(sysLogDTO));
     }
 
     @GetMapping("login/{id}")
-    public String findLoginById(@PathVariable("id") String id) {
-        return success(sysLoginLogService.findById(id));
+    public String queryLoginById(@PathVariable("id") String id) {
+        return success(sysLoginLogService.queryById(id));
     }
 
     @GetMapping("login/cacheKey/{cacheKey}")
-    public String findLoginByCacheKey(@PathVariable("cacheKey") String cacheKey) {
-        return success(sysLoginLogService.findByCacheKey(cacheKey));
+    public String queryLoginByCacheKey(@PathVariable("cacheKey") String cacheKey) {
+        return success(sysLoginLogService.queryByCacheKey(cacheKey));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")

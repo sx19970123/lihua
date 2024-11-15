@@ -12,12 +12,12 @@ public interface SysDictTypeService {
      * 列表查询
      * @return 列表数据
      */
-    IPage<SysDictType> findPage(SysDictTypeDTO dictTypeDTO);
+    IPage<SysDictType> queryPage(SysDictTypeDTO dictTypeDTO);
 
     /**
      * 根据id查询数据
      */
-    SysDictType findById(String id);
+    SysDictType queryById(String id);
 
     /**
      * 保存方法

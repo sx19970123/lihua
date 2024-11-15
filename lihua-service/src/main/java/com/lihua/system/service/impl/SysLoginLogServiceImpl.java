@@ -30,7 +30,7 @@ public class SysLoginLogServiceImpl implements SysLogService {
     }
 
     @Override
-    public IPage<? extends SysLogVO> findPage(SysLogDTO sysLogDTO) {
+    public IPage<? extends SysLogVO> queryPage(SysLogDTO sysLogDTO) {
         IPage<SysLoginLog> iPage = new Page<>(sysLogDTO.getPageNum(), sysLogDTO.getPageSize());
 
         QueryWrapper<SysLoginLog> queryWrapper = new QueryWrapper<>();
@@ -73,12 +73,12 @@ public class SysLoginLogServiceImpl implements SysLogService {
     }
 
     @Override
-    public SysLogVO findById(String id) {
+    public SysLogVO queryById(String id) {
         return sysLoginLogMapper.selectById(id);
     }
 
     @Override
-    public SysLogVO findByCacheKey(String cacheKey) {
+    public SysLogVO queryByCacheKey(String cacheKey) {
         QueryWrapper<SysLoginLog> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(SysLoginLog::getCacheKey, cacheKey);
         return sysLoginLogMapper.selectOne(queryWrapper);

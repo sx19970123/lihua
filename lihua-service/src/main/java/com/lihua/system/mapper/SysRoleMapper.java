@@ -23,9 +23,9 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     // 向sys_role_menu表中批量新增数据
     void insertRoleMenu(@Param("roleId") String roleId,@Param("menuIds") List<String> menuIds);
     // 根据roleId查询角色及绑定的菜单信息
-    SysRole findById(String roleId);
+    SysRole queryById(String roleId);
     // 根据用户id查询对应角色编码
     List<String> selectCodeByUserId(@Param("userId") String userId);
     // 查询所有角色，包含已停用状态
-    List<SysRole> findAllRole();
+    List<SysRole> queryAllRole();
 }

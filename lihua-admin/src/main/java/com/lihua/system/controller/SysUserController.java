@@ -31,13 +31,13 @@ public class SysUserController extends BaseController {
     private SysUserService sysUserService;
 
     @PostMapping("page")
-    public String findPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysUserDTO sysUserDTO) {
-        return success(sysUserService.findPage(sysUserDTO));
+    public String queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysUserDTO sysUserDTO) {
+        return success(sysUserService.queryPage(sysUserDTO));
     }
 
     @GetMapping("{id}")
-    public String findById(@PathVariable("id") String id) {
-        return success(sysUserService.findById(id));
+    public String queryById(@PathVariable("id") String id) {
+        return success(sysUserService.queryById(id));
     }
 
     @PreAuthorize("hasRole('ROLE_admin')")

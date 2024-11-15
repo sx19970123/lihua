@@ -22,7 +22,7 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
     private RedisCache redisCache;
 
     @Override
-    public List<LoggedUser> findList(String username, String nickName) {
+    public List<LoggedUser> queryList(String username, String nickName) {
 
         // 获取登录中用户所有key
         Set<String> keys = redisCache.keys(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue());

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lihua.mapper.CommonMapper">
 
-    <select id="findByDictTypeCode" resultType="com.lihua.model.dict.SysDictDataVO">
+    <select id="queryByDictTypeCode" resultType="com.lihua.model.dict.SysDictDataVO">
         SELECT
             sys_dict_data.id,
             sys_dict_data.parent_id,

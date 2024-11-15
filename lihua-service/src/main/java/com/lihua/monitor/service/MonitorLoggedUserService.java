@@ -9,7 +9,7 @@ public interface MonitorLoggedUserService {
     /**
      * 查询登录用户列表
      */
-    List<LoggedUser> findList(String username, String nickName);
+    List<LoggedUser> queryList(String username, String nickName);
 
     /**
      * 用户强退

@@ -303,8 +303,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Override
     public void checkSameAccount(String token) {
-        String s = redisCache.memoryInfo();
-        System.out.println(s);
         // 获取最大登录用户配置信息
         SysSetting sameAccountLoginSetting = sysSettingService.getSysSettingByComponentName("SameAccountLoginSetting");
 

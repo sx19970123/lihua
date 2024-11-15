@@ -49,15 +49,15 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
 
     @Override
-    public IPage<SysPostVO> findPage(SysPostDTO dto) {
+    public IPage<SysPostVO> queryPage(SysPostDTO dto) {
         IPage<SysPostVO> iPage = new Page<>(dto.getPageNum(), dto.getPageSize());
         QueryWrapper<SysPost> queryWrapper = getQueryWrapper(dto);
-        sysPostMapper.findPage(iPage,queryWrapper);
+        sysPostMapper.queryPage(iPage,queryWrapper);
         return iPage;
     }
 
     @Override
-    public SysPost findById(String id) {
+    public SysPost queryById(String id) {
         return sysPostMapper.selectById(id);
     }
 
@@ -113,7 +113,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     @Override
-    public List<SysPost> findPostByDeptId(List<String> deptIdList) {
+    public List<SysPost> queryPostByDeptId(List<String> deptIdList) {
         QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .in(SysPost::getDeptId,deptIdList)
@@ -122,7 +122,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     @Override
-    public Long findCountByDeptId(List<String> deptIdList) {
+    public Long queryCountByDeptId(List<String> deptIdList) {
         QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().in(SysPost::getDeptId,deptIdList);
         return sysPostMapper.selectCount(queryWrapper);
@@ -157,7 +157,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Override
     public String exportExcel(SysPostDTO dto) {
         QueryWrapper<SysPost> queryWrapper = getQueryWrapper(dto);
-        List<SysPostVO> sysPostVOList = sysPostMapper.findPage(queryWrapper);
+        List<SysPostVO> sysPostVOList = sysPostMapper.queryPage(queryWrapper);
         return ExcelUtils.excelExport(sysPostVOList, SysPostVO.class, "系统岗位");
     }
 

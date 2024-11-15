@@ -12,17 +12,17 @@ public interface SysDictDataService {
      * 列表查询
      * @return 列表数据
      */
-    List<SysDictData> findList(SysDictDataDTO dictDataDTO);
+    List<SysDictData> queryList(SysDictDataDTO dictDataDTO);
 
     /**
      * 获取字典数据option
      */
-    List<SysDictDataVO> findDictOptionList(String dictTypeCode);
+    List<SysDictDataVO> queryDictOptionList(String dictTypeCode);
 
     /**
      * 获取字典数据option
      */
-    Map<String, List<SysDictDataVO>> findDictOptionList(List<String> dictTypeCodeList);
+    Map<String, List<SysDictDataVO>> queryDictOptionList(List<String> dictTypeCodeList);
 
     /**
      * 保存方法

@@ -10,12 +10,12 @@ public interface SysMenuService {
     /**
      * 列表页查询
      */
-    List<SysMenu> findList(SysMenu sysMenu);
+    List<SysMenu> queryList(SysMenu sysMenu);
 
     /**
      * 根据id查询菜单
      */
-    SysMenu findById(String menuId);
+    SysMenu queryById(String menuId);
 
     /**
      * 保存菜单

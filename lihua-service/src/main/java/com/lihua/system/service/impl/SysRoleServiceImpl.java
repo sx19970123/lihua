@@ -27,7 +27,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     private SysMenuService sysMenuService;
 
     @Override
-    public IPage<SysRole> findPage(SysRoleDTO sysRoleDTO) {
+    public IPage<SysRole> queryPage(SysRoleDTO sysRoleDTO) {
         IPage<SysRole> iPage = new Page<>(sysRoleDTO.getPageNum(),sysRoleDTO.getPageSize());
         QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
         // 角色名称
@@ -50,8 +50,8 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public SysRole findById(String id) {
-        return sysRoleMapper.findById(id);
+    public SysRole queryById(String id) {
+        return sysRoleMapper.queryById(id);
     }
 
     @Transactional

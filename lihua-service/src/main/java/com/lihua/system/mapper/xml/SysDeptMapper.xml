@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lihua.system.mapper.SysDeptMapper">
 
-    <resultMap id="findAllDeptMap" type="com.lihua.system.model.vo.SysDeptVO">
+    <resultMap id="queryAllDeptMap" type="com.lihua.system.model.vo.SysDeptVO">
         <result column="deptId" property="id"/>
         <result column="deptName" property="name"/>
         <result column="deptCode" property="code"/>
@@ -57,7 +57,7 @@
             del_flag = '0' AND status = '0'
     </select>
 
-    <select id="findAllDept" resultMap="findAllDeptMap">
+    <select id="queryAllDept" resultMap="queryAllDeptMap">
         SELECT
             sys_dept.name as deptName,
             sys_dept.id as deptId,
@@ -70,7 +70,7 @@
         WHERE sys_dept.del_flag = '0'
     </select>
 
-    <select id="findDeptNameByNames" resultType="java.lang.String">
+    <select id="queryDeptNameByNames" resultType="java.lang.String">
         SELECT
             sys_dept.name
         FROM
@@ -83,7 +83,7 @@
         AND sys_dept.del_flag = '0'
     </select>
 
-    <select id="findDeptCodeByCodes" resultType="java.lang.String">
+    <select id="queryDeptCodeByCodes" resultType="java.lang.String">
         SELECT
         sys_dept.code
         FROM

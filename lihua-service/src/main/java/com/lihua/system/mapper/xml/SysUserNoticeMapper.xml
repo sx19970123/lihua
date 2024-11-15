@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lihua.system.mapper.SysUserNoticeMapper">
 
-    <select id="findUnReadCount" resultType="java.lang.Integer">
+    <select id="queryUnReadCount" resultType="java.lang.Integer">
         SELECT
             COUNT(1)
         FROM sys_notice

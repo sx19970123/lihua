@@ -14,12 +14,12 @@ public interface SysUserService {
     /**
      * 用户列表页查询
      */
-    IPage<SysUserVO> findPage(SysUserDTO sysUserDTO);
+    IPage<SysUserVO> queryPage(SysUserDTO sysUserDTO);
 
     /**
      * 根据id查询用户信息
      */
-    SysUserVO findById(String id);
+    SysUserVO queryById(String id);
 
     /**
      * 用户信息保存
@@ -62,7 +62,7 @@ public interface SysUserService {
     /**
      * 获取全部用户 id，包括停用用户
      */
-    List<String> findAllUserIds();
+    List<String> queryAllUserIds();
 
     /**
      * 重置密码

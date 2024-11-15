@@ -16,17 +16,17 @@ public interface SysLogService {
     /**
      * 查询日志列表
      */
-    IPage<? extends SysLogVO> findPage(SysLogDTO sysLogDTO);
+    IPage<? extends SysLogVO> queryPage(SysLogDTO sysLogDTO);
 
     /**
      * 根据主键查询日志
      */
-    SysLogVO findById(String id);
+    SysLogVO queryById(String id);
 
     /**
      * 根据缓存查询日志
      */
-    SysLogVO findByCacheKey(String cacheKey);
+    SysLogVO queryByCacheKey(String cacheKey);
 
     /**
      * 导出 excel

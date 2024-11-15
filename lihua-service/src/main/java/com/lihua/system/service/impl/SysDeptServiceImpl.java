@@ -51,7 +51,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
 
     @Override
-    public List<SysDept> findList(SysDept sysDept) {
+    public List<SysDept> queryList(SysDept sysDept) {
         QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
         // 部门名称
         if (StringUtils.hasText(sysDept.getName())) {
@@ -70,9 +70,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public List<SysDeptVO> findDeptPostList(SysDept sysDept) {
+    public List<SysDeptVO> queryDeptPostList(SysDept sysDept) {
         // 查询 dept 数据
-        List<SysDept> sysDeptList = findList(sysDept);
+        List<SysDept> sysDeptList = queryList(sysDept);
 
         if (sysDeptList.isEmpty()) {
             return new ArrayList<>();
@@ -82,7 +82,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
         // 根据dept id 查询岗位数据
         List<String> deptIds = sysDeptList.stream().map(SysDept::getId).toList();
-        List<SysPost> postByDeptIdList = sysPostService.findPostByDeptId(deptIds);
+        List<SysPost> postByDeptIdList = sysPostService.queryPostByDeptId(deptIds);
 
         // 部门岗位数据组合
         Map<String, List<SysPost>> postListGroupByDeptId =
@@ -127,7 +127,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public SysDept findById(String id) {
+    public SysDept queryById(String id) {
         return sysDeptMapper.selectById(id);
     }
 
@@ -147,7 +147,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     @Override
     public List<SysDept> deptTreeOption() {
-        List<SysDept> list = findList(new SysDept());
+        List<SysDept> list = queryList(new SysDept());
         return TreeUtils.buildTree(list);
     }
 
@@ -168,7 +168,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public String exportExcel(SysDept sysDept) {
         // 查询部门岗位信息
-        List<SysDeptVO> deptPostList = findDeptPostList(sysDept);
+        List<SysDeptVO> deptPostList = queryDeptPostList(sysDept);
         // 处理生成路径名称和岗位名称拼接
         deptPostList.forEach(post -> {
             // 路径名称
@@ -504,8 +504,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         }
 
         // 查询数据库相关数据
-        deptNameDbSet.addAll(sysDeptMapper.findDeptNameByNames(collectDeptName));
-        deptCodeDbSet.addAll(sysDeptMapper.findDeptCodeByCodes(collectDeptCode));
+        deptNameDbSet.addAll(sysDeptMapper.queryDeptNameByNames(collectDeptName));
+        deptCodeDbSet.addAll(sysDeptMapper.queryDeptCodeByCodes(collectDeptCode));
     }
 
     // 过滤表格内重复数据
@@ -586,7 +586,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     // 验证是否存在岗位
     private void checkPost(List<String> ids) {
-        Long count = sysPostService.findCountByDeptId(ids);
+        Long count = sysPostService.queryCountByDeptId(ids);
         if (count > 0) {
             throw new ServiceException("存在岗位不允许删除");
         }

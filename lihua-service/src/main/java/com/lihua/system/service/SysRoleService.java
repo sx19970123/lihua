@@ -11,12 +11,12 @@ public interface SysRoleService {
     /**
      * 分页查询
      */
-    IPage<SysRole> findPage(SysRoleDTO sysRoleDTO);
+    IPage<SysRole> queryPage(SysRoleDTO sysRoleDTO);
 
     /**
      * 根据id查询角色
      */
-    SysRole findById(String id);
+    SysRole queryById(String id);
 
     /**
      * 保存角色信息

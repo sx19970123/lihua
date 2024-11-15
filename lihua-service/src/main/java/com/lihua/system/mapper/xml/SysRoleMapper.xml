@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.lihua.system.mapper.SysRoleMapper">
 
-    <resultMap id="findByIdMap" type="com.lihua.system.entity.SysRole">
+    <resultMap id="queryByIdMap" type="com.lihua.system.entity.SysRole">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="code" property="code"/>
@@ -45,7 +45,7 @@
         </foreach>
     </select>
 
-    <select id="findById" resultMap="findByIdMap">
+    <select id="queryById" resultMap="queryByIdMap">
         SELECT id, name, code, status, remark, menu_Id FROM sys_role
         LEFT JOIN sys_role_menu ON sys_role.id = sys_role_menu.role_id
         WHERE sys_role.id = #{roleId}
@@ -70,7 +70,7 @@
         sys_role.status = '0' AND sys_role.del_flag = '0'
     </select>
 
-    <select id="findAllRole" resultType="com.lihua.system.entity.SysRole">
+    <select id="queryAllRole" resultType="com.lihua.system.entity.SysRole">
         SELECT
         <include refid="selectRoleItem"/>
         FROM
