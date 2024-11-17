@@ -6,10 +6,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.lihua.exception.ServiceException;
 import com.lihua.utils.spring.SpringUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -99,6 +101,29 @@ public class JsonUtils {
      */
     public static void isJson(String json) throws JsonProcessingException {
         objectMapper.readTree(json);
+    }
+
+    /**
+     * 对象深拷贝
+     */
+    public static <T> T deepCopy(T item) {
+        try {
+            return objectMapper.readValue(objectMapper.writeValueAsString(item), (Class<T>) item.getClass());
+        } catch (Exception e) {
+            throw new ServiceException("深拷贝执行异常");
+        }
+    }
+
+    /**
+     * 集合深拷贝
+     */
+    public static <T> List<T> deepCopyList(List<T> itemList) {
+        List<T> deepCopyList = new ArrayList<>();
+        if (itemList == null || itemList.isEmpty()) {
+            return deepCopyList;
+        }
+        itemList.forEach(item -> deepCopyList.add(deepCopy(item)));
+        return deepCopyList;
     }
 
     // 递归方法，遍历整个 JSON 结构并移除指定的键

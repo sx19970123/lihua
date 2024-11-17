@@ -1,6 +1,6 @@
 <template>
   <div class="logo unselectable" @click="goHome">
-    <a-flex gap="middle" align="center" justify="center" v-if="themeStore.layoutType === 'header-sider' || themeStore.layoutType === 'header-content' || !permissionStore.collapsed">
+    <a-flex gap="middle" align="center" justify="center" v-if="showTitle && (themeStore.layoutType === 'header-sider' || themeStore.layoutType === 'header-content' || !permissionStore.collapsed)">
       <div>
         <!--    导航LOGO-->
         <a-avatar :style="{ backgroundColor: themeStore.getColorPrimary()}">
@@ -35,7 +35,9 @@ import XiaoMiaoCool from "@/components/icon/xiaomiaozi/XiaoMiaoCool.vue";
 const router = useRouter()
 const permissionStore = usePermissionStore()
 const themeStore = useThemeStore()
-
+const {showTitle = true} = defineProps<{
+  showTitle?: boolean;
+}>()
 // 点击回到首页
 const goHome = async () => {
   await router.push("/index");

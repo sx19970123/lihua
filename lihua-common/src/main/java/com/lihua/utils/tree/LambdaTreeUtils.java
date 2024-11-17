@@ -1,5 +1,6 @@
 package com.lihua.utils.tree;
 
+import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.tree.functionalInterface.EntityGetterChildrenMethod;
 import com.lihua.utils.tree.functionalInterface.EntityGetterStringMethod;
 import com.lihua.utils.tree.functionalInterface.EntitySetterChildrenMethod;
@@ -9,23 +10,42 @@ import java.util.*;
 public class LambdaTreeUtils {
     /**
      * 构建树
-     * @param originCollection 待处理的扁平化树集合
+     * @param originList 待处理的扁平化树集合
      * @param getKeyMethod 获取树 id 方法
      * @param getParentKeyMethod 获取树 parentId 方法
      * @param getChildrenMethod 获取树 children 方法
      * @return 构建完成的树集合
      * @param <T> 业务类
      */
-    public <T> List<T> buildTree(List<T> originCollection,
+    public <T> List<T> buildTree(List<T> originList,
                                     EntityGetterStringMethod<T> getKeyMethod,
                                     EntityGetterStringMethod<T> getParentKeyMethod,
                                     EntityGetterChildrenMethod<T> getChildrenMethod,
                                     EntitySetterChildrenMethod<T> setChildrenMethod) {
+        // 将 originList 集合复制一份，避免修改原集合
+        List<T> originCollection = new ArrayList<>(originList);
         List<T> respTreeList = new ArrayList<>();
         // 获取全部根节点id
-        List<String> parentKeyList = getParentKeyList(originCollection, getKeyMethod, getParentKeyMethod);
+        List<String> parentKeyList = getParentKeyList(originList, getKeyMethod, getParentKeyMethod);
         parentKeyList.forEach(parentKey -> respTreeList.addAll(build(originCollection,getKeyMethod,getParentKeyMethod,getChildrenMethod,setChildrenMethod,parentKey)));
         return respTreeList;
+    }
+
+    /**
+     * 将树形集合 List<T> 扁平化，去除树形结构
+     * @param treeList 树形结构的list集合
+     * @param getChildrenMethod 获取树 children 方法
+     * @param setChildrenMethod 设置树 children 方法
+     * @return 扁平化的集合
+     * @param <T> 业务类
+     */
+    public <T> List<T> flattenTree(List<T> treeList, EntityGetterChildrenMethod<T> getChildrenMethod, EntitySetterChildrenMethod<T> setChildrenMethod) {
+        if (treeList == null || treeList.isEmpty()) {
+            return treeList;
+        }
+        List<T> flattenTree = new ArrayList<>();
+        flatten(treeList, flattenTree, getChildrenMethod, setChildrenMethod);
+        return flattenTree;
     }
 
     // 获取全部父节点id
@@ -86,5 +106,28 @@ public class LambdaTreeUtils {
         });
 
         return treeList;
+    }
+
+    /**
+     * 将树形结构扁平化
+     * @param list 树形结构集合
+     * @param flattenTree 扁平化后的元素集合
+     * @param getChildrenMethod 获取树 children 方法
+     * @param <T> 集合类型
+     */
+    private static <T> void flatten(List<T> list, List<T> flattenTree, EntityGetterChildrenMethod<T> getChildrenMethod, EntitySetterChildrenMethod<T> setChildrenMethod) {
+        list.forEach(item -> {
+            // 深拷贝item对象，防止修改原数据
+            T copyItem = JsonUtils.deepCopy(item);
+            // 清空item中的children属性
+            setChildrenMethod.apply(copyItem, new ArrayList<>());
+            // 向扁平化的集合中添加元素
+            flattenTree.add(copyItem);
+            // 继续递归获取每个对象
+            List<T> itemChildren = getChildrenMethod.apply(item);
+            if (itemChildren != null && !itemChildren.isEmpty()) {
+                flatten(itemChildren, flattenTree, getChildrenMethod, setChildrenMethod);
+            }
+        });
     }
 }

@@ -4,7 +4,7 @@
       <transition :name="themeStore.routeTransition" mode="out-in">
         <a-layout-header class="hs-header" v-show="props.showLayout" :style="{'background': themeStore.layoutBackgroundColor}">
           <a-flex align="center" justify="space-between">
-            <Logo class="logo"/>
+            <Logo class="logo" :show-title="siderClass !== 'min-hs-sider'"/>
             <!--页头-->
             <Head class="head"></Head>
           </a-flex>
@@ -134,7 +134,7 @@ onUnmounted(() => {
   height: 48px;
   line-height: 48px;
   backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
   box-shadow: var(--lihua-layout-light-box-shadow);
 }
 .hs-sider {
