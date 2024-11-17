@@ -265,8 +265,7 @@ const init = () => {
       if (firstChild) {
         const parentElement = firstChild?.parentElement;
         if (parentElement) {
-          // 为元素新增 scrollbar class，scrollbar为src/static/css/custom.css中定义的滚动条样式
-          parentElement.classList.add('scrollbar')
+          parentElement.classList.add('scroll-container')
           setTimeout(() => parentElement.style.setProperty('height', height + 'px', 'important'), 0)
         }
       }
@@ -459,5 +458,15 @@ watch(() => props.isComplete, (value) => {
   width: 100%;
   background-color: rgba(0,0,0,0)
 }
+.scroll-container {
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
 </style>
 

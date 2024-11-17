@@ -9,6 +9,23 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.14',
+            updateDate: '2024-11-17',
+            updateContent: [
+                '1. 调整flattenTree方法，并对调用的代码进行修改',
+                '2. 调整遮罩组件的可设置z-index，修复了特定条件下没有覆盖住导航trigger的bug',
+                '3. expandable-card组件支持详情插槽内添加多个元素（不推荐），当展开后视口高度不足时自动添加滚动条',
+                '4. 优化小窗口下的layout布局',
+                '5. 后端将数据库查询方法名中find前缀替换为query，前端将api获取数据函数名中find前缀换为query',
+                '6. 后端JsonUtils新增deepCopy（对象深拷贝）、deepCopyList（集合深拷贝）方法',
+                '7. 后端TreeUtils新增flattenTree（扁平化树）方法',
+                '8. 前端Tree.ts新增buildTree（构建树）方法',
+                '9. 更新myexcel版本4.5.6',
+                '10. 更新ant-design-vue版本到4.2.6',
+                '11. 更新vite版本到5.4.6'
+            ]
+        },
+        {
             version: '1.0.0-beta.13',
             updateDate: '2024-11-10',
             updateContent: [
@@ -175,11 +192,12 @@ const updateRecords = [
             '3. expandable-card组件支持详情插槽内添加多个元素（不推荐），当展开后视口高度不足时自动添加滚动条',
             '4. 优化小窗口下的layout布局',
             '5. 后端将数据库查询方法名中find前缀替换为query，前端将api获取数据函数名中find前缀换为query',
-            '6. 后端新增JsonUtils新增deepCopy（对象深拷贝）、deepCopyList（集合深拷贝）方法',
-            '7. 后端新增TreeUtils新增flattenTree（扁平化树）方法',
-            '8. 更新myexcel版本4.5.6',
-            '9. 更新ant-design-vue版本到4.2.6',
-            '10. 更新vite版本到5.4.6'
+            '6. 后端JsonUtils新增deepCopy（对象深拷贝）、deepCopyList（集合深拷贝）方法',
+            '7. 后端TreeUtils新增flattenTree（扁平化树）方法',
+            '8. 前端Tree.ts新增buildTree（构建树）方法',
+            '9. 更新myexcel版本4.5.6',
+            '10. 更新ant-design-vue版本到4.2.6',
+            '11. 更新vite版本到5.4.6'
         ]
     },
     {
