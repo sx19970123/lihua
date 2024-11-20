@@ -2,7 +2,7 @@ import request from "@/utils/Request.ts";
 import type {AuthInfoType} from "@/api/system/auth/type/AuthInfoType.ts";
 
 // 获取用户信息
-export const getAuthInfo = () => {
+export const queryAuthInfo = () => {
     return request<AuthInfoType>({
         url: '/system/info',
         method: 'get'

@@ -7,7 +7,7 @@ import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
  * 列表查询
  * @param data
  */
-export const findList = (data: SysDept) => {
+export const queryList = (data: SysDept) => {
   return request<Array<SysDeptVO>>({
     url: 'system/dept/list',
     method: 'post',
@@ -31,7 +31,7 @@ export const save = (data: SysDept) => {
  * 根据 id 查询数据
  * @param id
  */
-export const findById = (id: string) => {
+export const queryById = (id: string) => {
   return request<SysDept>({
     url: 'system/dept/' + id,
     method: 'get'

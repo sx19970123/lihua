@@ -16,7 +16,7 @@ export const insert = (setting :SystemSetting) => {
 /**
  * 根据组件名称获取配置
  */
-export const findSysSettingByComponentName = (componentName: string) => {
+export const querySysSettingByComponentName = (componentName: string) => {
     return request<SystemSetting>({
         url: "system/setting/" + componentName,
         method: "GET",

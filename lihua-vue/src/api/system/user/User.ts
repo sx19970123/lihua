@@ -4,7 +4,7 @@ import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUse
 import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 
 // 分页查询列表
-export const findPage = (data: SysUserDTO) => {
+export const queryPage = (data: SysUserDTO) => {
     return request<PageResponseType<SysUserVO>>({
         url: "system/user/page",
         method: "post",
@@ -13,7 +13,7 @@ export const findPage = (data: SysUserDTO) => {
 }
 
 // 根据id查询详情
-export const findById = (id: string) => {
+export const queryById = (id: string) => {
     return request<SysUserDTO>({
         url: "system/user/" + id,
         method: "get"

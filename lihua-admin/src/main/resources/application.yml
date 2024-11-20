@@ -1,4 +1,4 @@
-# 系统配置
+ # 系统配置
 lihua:
   # 令牌过期时间（分钟）
   tokenExpireTime: 60

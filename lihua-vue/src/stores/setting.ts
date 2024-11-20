@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
-import {findSysSettingByComponentName, insert} from "@/api/system/setting/Setting.ts";
+import {querySysSettingByComponentName, insert} from "@/api/system/setting/Setting.ts";
 import {message} from "ant-design-vue";
 import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 
@@ -30,7 +30,7 @@ export const useSettingStore = defineStore('setting', {
                 return undefined;
             }
             try {
-                const resp = await findSysSettingByComponentName(componentName)
+                const resp = await querySysSettingByComponentName(componentName)
                 if (resp.code === 200) {
                     return JSON.parse(resp.data.settingJson) as T
                 } else {

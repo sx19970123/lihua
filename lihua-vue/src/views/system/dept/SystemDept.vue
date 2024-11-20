@@ -259,8 +259,8 @@ import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {
   deleteData,
   getDeptOption,
-  findById,
-  findList,
+  queryById,
+  queryList,
   save,
   updateStatus,
   exportExcel, importExcel
@@ -375,7 +375,7 @@ const initSearch = () => {
   const initList = async () => {
     tableLoad.value = true
     try {
-      const resp = await findList(deptQuery.value);
+      const resp = await queryList(deptQuery.value);
       if (resp.code === 200) {
         deptList.value = resp.data
         handleDeptStatus(deptList.value)
@@ -520,7 +520,7 @@ const initSave = () => {
   const selectById = async (event: MouseEvent,id: string) => {
     event.stopPropagation()
     try {
-      const resp = await findById(id)
+      const resp = await queryById(id)
       if (resp.code === 200) {
         handleModelStatus("修改部门")
         sysDept.value = resp.data

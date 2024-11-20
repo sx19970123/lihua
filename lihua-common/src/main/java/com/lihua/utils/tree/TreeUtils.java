@@ -1,5 +1,6 @@
 package com.lihua.utils.tree;
 
+import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.string.StringUtils;
 
 import java.lang.reflect.Method;
@@ -9,7 +10,6 @@ import java.util.*;
  * 通用构建树方法
  */
 public class TreeUtils {
-
     private static final String DEFAULT_ID = "Id";
     private static final String DEFAULT_PARENT_ID = "ParentId";
     private static final String DEFAULT_CHILDREN = "Children";
@@ -31,12 +31,13 @@ public class TreeUtils {
     }
 
     public static <T> List<T> buildTree(List<T> list, String propKeyName,String propParentKeyName,String propChildrenName) {
+        List<T> originCollection = new ArrayList<>(list);
         final String finalPropKeyName = StringUtils.initialUpperCase(propKeyName);
         final String finalPropParentKeyName = StringUtils.initialUpperCase(propParentKeyName);
         final String finalPropChildrenName = StringUtils.initialUpperCase(propChildrenName);
 
         // 获取全部 key（id）集合
-        List<String> ids = list
+        List<String> ids = originCollection
                 .stream()
                 .map(item -> Objects.requireNonNull(get(item, finalPropKeyName)).toString())
                 .toList();
@@ -44,7 +45,7 @@ public class TreeUtils {
         List<T> respList = new ArrayList<>();
 
         // 过滤出 parentKey（pid）不在 ids 集合中的数据，为根节点
-        List<String> parentIds = list
+        List<String> parentIds = originCollection
                 .stream()
                 .filter(item -> {
                     String parentId = get(item, finalPropParentKeyName);
@@ -56,11 +57,28 @@ public class TreeUtils {
 
         // 当条件筛选时，根节点不一定全部都是相同的，所以根据不同的跟节点分别执行树的构建，最后将所有树都放到同一集合中
         parentIds.forEach(parentId -> {
-            List<T> build = build(list, finalPropKeyName, finalPropParentKeyName, finalPropChildrenName, parentId);
+            List<T> build = build(originCollection, finalPropKeyName, finalPropParentKeyName, finalPropChildrenName, parentId);
             respList.addAll(build);
         });
 
         return respList;
+    }
+
+    /**
+     * 将树形集合 List<T> 扁平化，去除树形结构，默认子节点属性为 children
+     */
+    public static <T> List<T> flattenTree(List<T> list) {
+        return flattenTree(list, DEFAULT_CHILDREN);
+    }
+
+    public static <T> List<T> flattenTree(List<T> list, String propChildrenName) {
+        if (list == null || list.isEmpty()) {
+            return list;
+        }
+
+        List<T> flattenTree = new ArrayList<>();
+        flatten(list, flattenTree, StringUtils.initialUpperCase(propChildrenName));
+        return flattenTree;
     }
 
     /**
@@ -115,6 +133,29 @@ public class TreeUtils {
         return treeList;
     }
 
+    /**
+     * 将树形结构扁平化
+     * @param list 树形结构集合
+     * @param flattenTree 扁平化后的元素集合
+     * @param propChildrenName 子节点属性名称
+     * @param <T> 集合类型
+     */
+    private static <T> void flatten(List<T> list, List<T> flattenTree, String propChildrenName) {
+        list.forEach(item -> {
+            // 深拷贝item对象，防止修改原数据
+            T copyItem = JsonUtils.deepCopy(item);
+            // 清空item中的children属性
+            set(copyItem, propChildrenName, new ArrayList<>());
+            // 向扁平化的集合中添加元素
+            flattenTree.add(copyItem);
+
+            // 继续递归获取每个对象
+            List<T> itemChildren = getList(item, propChildrenName);
+            if (itemChildren != null && !itemChildren.isEmpty()) {
+                flatten(itemChildren, flattenTree, propChildrenName);
+            }
+        });
+    }
 
     /**
      * 通过反射调用 get 方法，返回对象

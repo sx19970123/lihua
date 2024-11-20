@@ -46,13 +46,9 @@ public class SysMenuServiceImpl implements SysMenuService {
         queryWrapper.lambda().orderByAsc(SysMenu::getSort);
 
         List<SysMenu> sysMenus = sysMenuMapper.selectList(queryWrapper);
-        // 构建树形结构
-        return TreeUtils.lambda().buildTree(
-                sysMenus,
-                SysMenu::getId,
-                SysMenu::getParentId,
-                SysMenu::getChildren,
-                SysMenu::setChildren);
+        List<SysMenu> menus = TreeUtils.buildTree(sysMenus);
+        List<SysMenu> menus1 = TreeUtils.lambda().flattenTree(menus, SysMenu::getChildren, SysMenu::setChildren);
+        return menus;
     }
 
     @Override

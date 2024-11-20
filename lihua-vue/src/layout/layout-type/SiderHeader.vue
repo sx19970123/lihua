@@ -28,8 +28,8 @@
               <a-flex align="center" :gap="16">
                 <!--菜单开关-->
                 <HeadCollapsed @collapsed-change="handleChangeCollapse"/>
-                <!--面包屑-->
-                <Breadcrumb v-if="themeStore.layoutType === 'sider-header'"/>
+                <!--面包屑 宽度不足时隐藏-->
+                <Breadcrumb v-if="siderClass !== 'min-sh-sider'"/>
               </a-flex>
               <!-- 右侧头部-->
               <Head v-show="props.showLayout"/>
@@ -153,10 +153,10 @@ onUnmounted(() => {
   position: fixed;
   top: 0;
   box-shadow: var(--lihua-layout-light-box-shadow);
+  background-color: #fff !important;
 }
 .min-sider-content {
   height: calc(100vh - 32px - 32px);
-  background-color: #fff;
 }
 .sider-logo {
   background-color: #fff;
@@ -181,13 +181,13 @@ onUnmounted(() => {
   .sider-logo {
     background-color: #141414;
   }
-  .min-sider-content {
-    background-color: #141414;
+  .min-sh-sider {
+    background-color: #141414 !important;
   }
 }
 [sider-dark = dark] {
-  .min-sider-content {
-    background-color: rgba(0,21,41);
+  .min-sh-sider {
+    background-color: rgba(0,21,41) !important;
   }
   .sider-logo {
     span {

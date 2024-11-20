@@ -4,7 +4,7 @@ import {getAvatar, saveTheme, updatePassword} from "@/api/system/profile/Profile
 import token from "@/utils/Token.ts";
 import { message } from "ant-design-vue";
 import router from "@/router";
-import {getAuthInfo} from "@/api/system/auth/Auth.ts";
+import {queryAuthInfo} from "@/api/system/auth/Auth.ts";
 import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import type { AuthInfoType, UserInfoType} from "@/api/system/auth/type/AuthInfoType.ts";
@@ -106,7 +106,7 @@ export const useUserStore = defineStore('user', {
         // 初始化用户信息
         initUserInfo ():Promise<ResponseType<AuthInfoType>> {
             return new Promise((resolve, reject) => {
-                getAuthInfo().then((resp) => {
+                queryAuthInfo().then((resp) => {
                     if (resp.code === 200) {
                         const data = resp.data
                         const state = this.$state

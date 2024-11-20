@@ -3,7 +3,7 @@ import type {PageResponseType} from "@/api/global/Type.ts";
 import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRole.ts";
 
 // 分页查询列表
-export const findPage = (data: SysRoleDTO) => {
+export const queryPage = (data: SysRoleDTO) => {
   return request<PageResponseType<SysRoleVO>>({
     url: 'system/role/page',
     method: 'post',
@@ -12,7 +12,7 @@ export const findPage = (data: SysRoleDTO) => {
 }
 
 // 根据id查询数据
-export const findById = (id: string) => {
+export const queryById = (id: string) => {
   return request<SysRole>({
     url: 'system/role/' + id,
     method: 'get'

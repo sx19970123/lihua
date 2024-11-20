@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
-import {findReadInfo, preview} from "@/api/system/noice/Notice.ts";
+import {queryReadInfo, preview} from "@/api/system/noice/Notice.ts";
 import Vditor from "vditor";
 import 'vditor/dist/index.css';
 import UserShow from "@/components/user-show/index.vue"
@@ -123,7 +123,7 @@ const handlePreview = async () => {
 // 处理已读未读用户显示
 const handleReadInfo = async (noticeId: string) => {
   try {
-    const resp = await findReadInfo(noticeId)
+    const resp = await queryReadInfo(noticeId)
     if (resp.code === 200) {
       const readInfoData = resp.data
       const unRead = readInfoData["0"] as SysUser[]

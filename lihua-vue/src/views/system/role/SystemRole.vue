@@ -203,7 +203,7 @@
 <script setup lang="ts">
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {reactive, ref, watch} from "vue";
-import {deleteData, findById, findPage, save, updateStatus} from "@/api/system/role/Role.ts";
+import {deleteData, queryById, queryPage, save, updateStatus} from "@/api/system/role/Role.ts";
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
 import {menuTreeOption} from "@/api/system/menu/Menu.ts";
@@ -311,7 +311,7 @@ const initSearch = () => {
   const initPage = async () => {
     tableLoad.value = true
     try {
-      const resp = await findPage(roleQuery.value)
+      const resp = await queryPage(roleQuery.value)
       if (resp.code === 200) {
         roleList.value = resp.data.records
         roleTotal.value = resp.data.total
@@ -407,7 +407,7 @@ const initSave = () => {
   const getRole = async (event:MouseEvent ,id: string) => {
     event.stopPropagation()
     try {
-      const resp = await findById(id)
+      const resp = await queryById(id)
       if (resp.code === 200 && resp.data) {
         await handleModelStatus("修改角色")
         role.value = resp.data

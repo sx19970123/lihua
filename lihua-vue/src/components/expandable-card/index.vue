@@ -155,7 +155,6 @@ const init = () => {
         const height = getDetailHeight()
         const width = getDetailWidth()
         const top = detailTop.value
-
         // 执行主要动画
         gsap.fromTo(containerRef.value, {
           width: bounding?.width,
@@ -175,6 +174,7 @@ const init = () => {
             if ((props.autoComplete || props.isComplete) && showStatus.value !== 'kill') {
               showStatus.value = 'complete'
               hoverStatus.value = 'complete'
+              setExpandHeight(height)
               emits('cardComplete')
             }
           }
@@ -254,14 +254,22 @@ const init = () => {
       detailTop.value = props.expandedTop
       height = props.expandedHeight
     }
+    return height;
+  }
+
+  // 设置展开后详情元素的高度，并添加滚动条样式
+  const setExpandHeight = (height: number) => {
     // 设置展开后插槽内元素的高度
     if (detailRef.value) {
       const firstChild = detailRef.value.firstElementChild as HTMLElement
       if (firstChild) {
-        firstChild.style.height = height + 'px'
+        const parentElement = firstChild?.parentElement;
+        if (parentElement) {
+          parentElement.classList.add('scroll-container')
+          setTimeout(() => parentElement.style.setProperty('height', height + 'px', 'important'), 0)
+        }
       }
     }
-    return height;
   }
 
   // 获取展开后的宽度
@@ -398,27 +406,30 @@ const windowWidthResize = () => {
     if (detailRef.value) {
       const firstChild = detailRef.value.firstElementChild as HTMLElement
       if (firstChild) {
-        // 插槽内子节点高度
-        const firstChildHeight = firstChild.clientHeight
-        // 设定的展开后高度
-        const expandedHeight = props.expandedHeight
+        const parentElement = firstChild?.parentElement;
+        if (parentElement) {
+          // 插槽内子节点高度
+          const firstChildHeight = parentElement.clientHeight
+          // 设定的展开后高度
+          const expandedHeight = props.expandedHeight
 
-        // 元素内节点高度小于组件设定的展开高度时，元素高度跟随视口
-        if (expandedHeight + props.expandedTop > innerHeight.value - minWindowSpace * 2) {
-          // height 小于 视口边距时，缩小top值
-          if (expandedHeight < innerHeight.value - minWindowSpace * 2) {
-            // 设置position top值
-            style.value.top = (innerHeight.value - firstChildHeight) / 2 + 'px'
+          // 元素内节点高度小于组件设定的展开高度时，元素高度跟随视口
+          if (expandedHeight + props.expandedTop > innerHeight.value - minWindowSpace * 2) {
+            // height 小于 视口边距时，缩小top值
+            if (expandedHeight < innerHeight.value - minWindowSpace * 2) {
+              // 设置position top值
+              style.value.top = (innerHeight.value - firstChildHeight) / 2 + 'px'
+            }
+            // 反之top值设置为默认最小值，开始缩小卡片值
+            else {
+              style.value.top = minWindowSpace + 'px'
+              // 设置高度为视口高度 - 上下间距
+              parentElement.style.height = innerHeight.value - minWindowSpace * 2 + 'px'
+            }
+          } else {
+            parentElement.style.height = expandedHeight + 'px'
+            style.value.top = props.expandedTop + 'px'
           }
-          // 反之top值设置为默认最小值，开始缩小卡片值
-          else {
-            style.value.top = minWindowSpace + 'px'
-            // 设置高度为视口高度 - 上下间距
-            firstChild.style.height = innerHeight.value - minWindowSpace * 2 + 'px'
-          }
-        } else {
-          firstChild.style.height = expandedHeight + 'px'
-          style.value.top = props.expandedTop + 'px'
         }
       }
     }
@@ -447,5 +458,15 @@ watch(() => props.isComplete, (value) => {
   width: 100%;
   background-color: rgba(0,0,0,0)
 }
+.scroll-container {
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
 </style>
 

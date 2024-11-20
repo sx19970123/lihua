@@ -7,7 +7,7 @@ import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
  * 分页查询
  * @param data
  */
-export const findPage = (data: SysPostDTO) => {
+export const queryPage = (data: SysPostDTO) => {
     return request<PageResponseType<SysPostVO>>({
         url: "system/post/page",
         data: data,
@@ -31,7 +31,7 @@ export const save = (data: SysPost) => {
  * 根据 主键查询数据
  * @param id
  */
-export const findById = (id: string) => {
+export const queryById = (id: string) => {
     return request<SysPost>({
         url: 'system/post/' + id,
         method: 'get'
