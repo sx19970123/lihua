@@ -16,10 +16,7 @@
       <!-- 过渡时展示自定义封面 -->
       <div v-if="showStatus === 'activity' || showStatus === 'kill'" class="expandable-card-middle">
         <div style="display: flex; height: 100%; width: 100%" :style="props.middleStyle">
-          <div style="margin: auto">
-            <!-- 居中显示的元素 -->
             <slot name="middle"></slot>
-          </div>
         </div>
       </div>
       <!-- 当 showStatus !== 'complete' 时，执行动画前为获取其高度，会暂时将display设置为block，这不能在页面显示，所以showStatus === 'complete' 之前设置为全透明 -->
