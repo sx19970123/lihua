@@ -8,14 +8,14 @@
                                 @back="emits('back')"
   >
     <template #content>
-      <dept-select @dept-select="handleNext"/>
+      <default-dept @dept-select="handleNext"/>
     </template>
   </login-setting-base-component>
 </template>
 <script setup lang="ts">
 
 import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
-import DeptSelect from "@/components/dept-select/index.vue"
+import DefaultDept from "@/components/default-dept-select/index.vue"
 import type {Ref} from "vue";
 import {message} from "ant-design-vue";
 

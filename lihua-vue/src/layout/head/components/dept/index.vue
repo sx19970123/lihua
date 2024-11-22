@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import {useUserStore} from "@/stores/user.ts";
-import DefaultDept from "@/components/dept-select/index.vue"
+import DefaultDept from "@/components/default-dept-select/index.vue"
 import {ref} from "vue";
 const userStore = useUserStore();
 const open = ref<boolean>(false)
