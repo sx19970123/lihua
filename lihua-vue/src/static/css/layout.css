@@ -1,11 +1,11 @@
 /** 开启view-tabs / 显示show-layout / 导航类型为顶部导航 */
 [view-tabs=show][show-hide-layout=show][layout-type='header-content'] .layout-content {
-    min-height: calc(100vh - (64px + 52px));
+    min-height: calc(100vh - (48px + 52px));
 }
 
 /** 隐藏view-tabs / 显示show-layout / 导航类型为顶部导航 */
 [view-tabs=hide][show-hide-layout=show][layout-type='header-content'] .layout-content {
-    min-height: calc(100vh - 64px);
+    min-height: calc(100vh - 48px);
 }
 
 [view-tabs=show][show-hide-layout=hide] .layout-content {

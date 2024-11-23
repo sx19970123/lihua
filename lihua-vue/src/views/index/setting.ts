@@ -185,6 +185,17 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0-beta.15',
+        record: [
+            '1. 优化mask组件隐藏滚动条',
+            '2. 优化expandable-card组件更新小窗口滚动条，需插槽中只存在一个dom节点',
+            '3. 修改顶部导航小窗口下layout显示逻辑，小窗口下将自动切换为【侧边导航-风格2】样式，窗口扩大后复原',
+            '4. 顶部导航高度调整为48px，与其他布局header一致',
+            '5. 前端Debounce.ts新增debounce（函数防抖）方法',
+            '6. 修复【侧边导航-风格2】小窗口下出现滚动条的导航栏最后一个菜单点击不到的bug',
+        ]
+    },
+    {
         version: '1.0.0-beta.14',
         record: [
             '1. 调整flattenTree方法，并对调用的代码进行修改',

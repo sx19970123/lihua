@@ -74,12 +74,4 @@ onUnmounted(() =>  sessionStorage.removeItem('isRefreshed' + src.value))
 [view-tabs=show][show-hide-layout=hide] .lihua-iframe {
   min-height: calc(100vh - (52px + 35px));
 }
-
-[view-tabs=show][show-hide-layout=show][layout-type='header-content'] .lihua-iframe {
-  min-height: calc(100vh - (64px + 52px + 35px));
-}
-[view-tabs=hide][show-hide-layout=show][layout-type='header-content'] .lihua-iframe {
-  min-height: calc(100vh - (64px + 35px));
-}
-
 </style>

@@ -19,7 +19,7 @@ public class SseHeartbeat {
     @XxlJob("keepHeartbeat")
     public void keepHeartbeat () {
         String name = ServerSentEventsEnum.SSE_HEART_BEAT.name();
-        log.info(name);
+        log.info("开始执行sse定时任务，任务代码：{}",name);
         ServerSentEventsManager.send(new ServerSentEventsResult<>(ServerSentEventsEnum.SSE_HEART_BEAT, name));
     }
 }

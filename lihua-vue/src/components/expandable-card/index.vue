@@ -14,10 +14,11 @@
         <slot name="overview"></slot>
       </div>
       <!-- 过渡时展示自定义封面 -->
-      <div v-if="showStatus === 'activity' || showStatus === 'kill'" class="expandable-card-middle">
-        <div style="display: flex; height: 100%; width: 100%" :style="props.middleStyle">
-            <slot name="middle"></slot>
-        </div>
+      <div v-if="showStatus === 'activity' || showStatus === 'kill'"
+           class="expandable-card-middle"
+           style="display: flex; height: 100%; width: 100%"
+           :style="props.middleStyle">
+        <slot name="middle"></slot>
       </div>
       <!-- 当 showStatus !== 'complete' 时，执行动画前为获取其高度，会暂时将display设置为block，这不能在页面显示，所以showStatus === 'complete' 之前设置为全透明 -->
       <div v-show="showStatus === 'complete'" ref="detailRef" :style="showStatus === 'complete' ? 'opacity: 1' : 'opacity: 0'">
@@ -260,11 +261,8 @@ const init = () => {
     if (detailRef.value) {
       const firstChild = detailRef.value.firstElementChild as HTMLElement
       if (firstChild) {
-        const parentElement = firstChild?.parentElement;
-        if (parentElement) {
-          parentElement.classList.add('scroll-container')
-          setTimeout(() => parentElement.style.setProperty('height', height + 'px', 'important'), 0)
-        }
+        firstChild.classList.add('scrollbar')
+        setTimeout(() => firstChild.style.setProperty('height', height + 'px', 'important'), 0)
       }
     }
   }
@@ -403,30 +401,27 @@ const windowWidthResize = () => {
     if (detailRef.value) {
       const firstChild = detailRef.value.firstElementChild as HTMLElement
       if (firstChild) {
-        const parentElement = firstChild?.parentElement;
-        if (parentElement) {
-          // 插槽内子节点高度
-          const firstChildHeight = parentElement.clientHeight
-          // 设定的展开后高度
-          const expandedHeight = props.expandedHeight
+        // 插槽内子节点高度
+        const firstChildHeight = firstChild.clientHeight
+        // 设定的展开后高度
+        const expandedHeight = props.expandedHeight
 
-          // 元素内节点高度小于组件设定的展开高度时，元素高度跟随视口
-          if (expandedHeight + props.expandedTop > innerHeight.value - minWindowSpace * 2) {
-            // height 小于 视口边距时，缩小top值
-            if (expandedHeight < innerHeight.value - minWindowSpace * 2) {
-              // 设置position top值
-              style.value.top = (innerHeight.value - firstChildHeight) / 2 + 'px'
-            }
-            // 反之top值设置为默认最小值，开始缩小卡片值
-            else {
-              style.value.top = minWindowSpace + 'px'
-              // 设置高度为视口高度 - 上下间距
-              parentElement.style.height = innerHeight.value - minWindowSpace * 2 + 'px'
-            }
-          } else {
-            parentElement.style.height = expandedHeight + 'px'
-            style.value.top = props.expandedTop + 'px'
+        // 元素内节点高度小于组件设定的展开高度时，元素高度跟随视口
+        if (expandedHeight + props.expandedTop > innerHeight.value - minWindowSpace * 2) {
+          // height 小于 视口边距时，缩小top值
+          if (expandedHeight < innerHeight.value - minWindowSpace * 2) {
+            // 设置position top值
+            style.value.top = (innerHeight.value - firstChildHeight) / 2 + 'px'
           }
+          // 反之top值设置为默认最小值，开始缩小卡片值
+          else {
+            style.value.top = minWindowSpace + 'px'
+            // 设置高度为视口高度 - 上下间距
+            firstChild.style.height = innerHeight.value - minWindowSpace * 2 + 'px'
+          }
+        } else {
+          firstChild.style.height = expandedHeight + 'px'
+          style.value.top = props.expandedTop + 'px'
         }
       }
     }

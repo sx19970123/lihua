@@ -1,7 +1,7 @@
 <template>
   <!-- mask 打开时背景蒙版 -->
   <Teleport to="body">
-    <div class="lihua-mask" :style="{zIndex: zIndex}" v-show="showMask" @click="handleClickMask($event)"></div>
+    <div class="lihua-mask" :style="{zIndex: zIndex}" v-if="showMask" @click="handleClickMask($event)"></div>
   </Teleport>
 </template>
 

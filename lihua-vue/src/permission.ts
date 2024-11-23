@@ -16,8 +16,6 @@ const { getToken } = token
 router.beforeEach(async (to, from, next) => {
     const userStore = useUserStore();
     const themeStore = useThemeStore();
-
-    NProgress.configure({showSpinner: themeStore.layoutType !== 'header-content'})
     NProgress.start();
     const hasToken = getToken();
 

@@ -31,7 +31,7 @@
       </a-card>
     </template>
     <template #detail>
-      <a-card class="scrollbar card-background" id="test">
+      <a-card class="card-background" id="test">
         <a-typography-title :level="4" ellipsis>关于狸花猫</a-typography-title>
         <a-typography-text ellipsis type="secondary">
           <a-typography-text type="secondary">狸花猫是一款基于</a-typography-text>

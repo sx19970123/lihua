@@ -1,14 +1,15 @@
 <template>
-  <a-layout>
+<!--  小屏状态切换至header-sider布局-->
+  <header-sider v-if="isMiniWindow" :show-layout="props.showLayout"/>
+<!--  大屏状态使用header-content布局-->
+  <a-layout v-else>
     <div class="hc-header">
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="sider-scrollbar"
-                         :class="showScrollbar ? 'hc-layout-header-scrollbar' : 'hc-layout-header'"
-                         id="hcHeaderContent"
+        <a-layout-header class="hc-layout-header"
                          v-show="props.showLayout"
                          :style="themeStore.siderTheme === 'light' ?
-        { background: themeStore.layoutBackgroundColor } : ''" style="overflow-y: hidden;">
-          <a-flex align="center" justify="space-between" :style="showScrollbar ? 'margin-right: 8px; margin-left: 8px' :'margin-right: 32px; margin-left: 32px'">
+                          { background: themeStore.layoutBackgroundColor } : ''">
+          <a-flex align="center" justify="space-between" style="margin-right: 32px; margin-left: 32px">
             <!--logo-->
             <Logo class="logo"/>
             <!--导航-->
@@ -34,27 +35,39 @@ import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
+import HeaderSider from "@/layout/layout-type/HeaderSider.vue";
 import {useThemeStore} from "@/stores/theme";
-import {onMounted, onUnmounted, ref} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
+import settings from "@/settings.ts";
 const themeStore = useThemeStore()
-const props = defineProps<{  showLayout: boolean }>()
-// 是否出现横向滚动条
-const showScrollbar = ref<boolean>(false)
-let element = document.getElementById("hcHeaderContent");
-// 窗口尺寸变化时返回是否显示滚动条
-const handleResize = () => {
-  showScrollbar.value = !!(element && element.scrollWidth > element.clientWidth);
-}
-// dom渲染完毕后添加窗口监听
-onMounted(() => {
-  element = document.getElementById("hcHeaderContent")
-  window.addEventListener("resize", handleResize)
-});
+const props = defineProps<{showLayout: boolean }>()
+const bodyWidth = ref<number>(document.body.offsetWidth)
+const menuToggleWidth = settings.menuToggleWidth
+const isMiniWindow = computed(() => bodyWidth.value < menuToggleWidth)
 
-// 组件销毁后删除监听
+// 处理视口尺寸变化
+const handleResize = () => {
+  bodyWidth.value = document.body.offsetWidth;
+
+  // 处于小屏状态时，设置layout-type为header-sider，导航类型为inline。脱离小屏状态时还原
+  if (isMiniWindow.value) {
+    document.documentElement.setAttribute("layout-type", "header-sider")
+    themeStore.changeSiderMode('inline')
+  } else {
+    document.documentElement.setAttribute("layout-type", "header-content")
+    themeStore.changeSiderMode('horizontal')
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("resize", handleResize)
+  handleResize()
+})
+
 onUnmounted(() => {
-  window.removeEventListener("resize", handleResize);
-});
+  window.removeEventListener("resize", handleResize)
+})
+
 </script>
 
 <style scoped>
@@ -64,23 +77,19 @@ onUnmounted(() => {
 }
 .hc-layout-header {
   padding: 0;
-  height: 64px;
-  line-height: 64px;
+  height: 48px;
+  line-height: 48px;
   box-shadow: var(--lihua-layout-light-box-shadow);
 }
 
-.hc-layout-header-scrollbar {
-  padding: 0;
-  height: 64px;
-  line-height: 54px;
-  box-shadow: var(--lihua-layout-light-box-shadow);
-}
 .logo {
-  padding: 0 8px 0 8px;
+  padding-left: 8px;
 }
+
 .sider {
-  width: 100%;
-  margin: 0 32px 0 32px;
+  flex: 1 1 0;
+  min-width: 0;
+  margin-left: 32px;
 }
 </style>
 
@@ -94,9 +103,6 @@ onUnmounted(() => {
 }
 [data-theme = dark] {
   .hc-layout-header {
-    box-shadow: var(--lihua-layout-dark-box-shadow);
-  }
-  .hc-layout-header-scrollbar {
     box-shadow: var(--lihua-layout-dark-box-shadow);
   }
 }

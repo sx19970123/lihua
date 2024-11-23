@@ -155,7 +155,7 @@ onUnmounted(() => {
   height: calc(100vh - 48px - 48px);
 }
 .min-sider-content {
-  height: 100vh;
+  height: calc(100vh - 48px);
   background-color: #fff;
 }
 .head {
