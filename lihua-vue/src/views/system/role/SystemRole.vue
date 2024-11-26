@@ -187,6 +187,14 @@
             </a-tree>
           </a-card>
         </a-form-item>
+        <a-form-item>
+          <ease-tree-select :tree-data="menuSetting.menuOption">
+            <template #title="{label,menuType}">
+              {{label}}
+              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none'}"/>
+            </template>
+          </ease-tree-select>
+        </a-form-item>
         <a-form-item label="备注">
           <a-textarea v-model:value="role.remark" placeholder="请输入备注" :maxlength="200" show-count allow-clear/>
         </a-form-item>
@@ -206,6 +214,7 @@ import {reactive, ref, watch} from "vue";
 import {deleteData, queryById, queryPage, save, updateStatus} from "@/api/system/role/Role.ts";
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
+import EaseTreeSelect from "@/components/easy-tree-select/index.vue"
 import {menuTreeOption} from "@/api/system/menu/Menu.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTree} from "@/utils/Tree.ts";
