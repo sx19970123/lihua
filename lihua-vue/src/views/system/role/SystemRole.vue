@@ -187,14 +187,14 @@
             </a-tree>
           </a-card>
         </a-form-item>
-        <a-form-item>
-          <ease-tree-select :tree-data="menuSetting.menuOption">
-            <template #title="{label,menuType}">
-              {{label}}
-              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none'}"/>
-            </template>
-          </ease-tree-select>
-        </a-form-item>
+<!--        <a-form-item>-->
+<!--          <ease-tree-select :tree-data="menuSetting.menuOption">-->
+<!--            <template #title="{label,menuType}">-->
+<!--              {{label}}-->
+<!--              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none'}"/>-->
+<!--            </template>-->
+<!--          </ease-tree-select>-->
+<!--        </a-form-item>-->
         <a-form-item label="备注">
           <a-textarea v-model:value="role.remark" placeholder="请输入备注" :maxlength="200" show-count allow-clear/>
         </a-form-item>
