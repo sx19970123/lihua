@@ -5,7 +5,7 @@
  */
 export const versionInfo = {
     springBootVersion: ' 3.3.5',
-    vueVersion: ' 3.5.7',
+    vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
@@ -192,7 +192,10 @@ const updateRecords = [
             '3. 修改顶部导航小窗口下layout显示逻辑，小窗口下将自动切换为【侧边导航-风格2】样式，窗口扩大后复原',
             '4. 顶部导航高度调整为48px，与其他布局header一致',
             '5. 前端Debounce.ts新增debounce（函数防抖）方法',
-            '6. 修复【侧边导航-风格2】小窗口下出现滚动条的导航栏最后一个菜单点击不到的bug',
+            '6. 前端新增easy-tree-select组件，更简单的处理树形结构选择',
+            '7. 角色管理表单中 菜单选择逻辑使用easy-tree-select实现，简化业务组件代码',
+            '8. 修复【侧边导航-风格2】小窗口下出现滚动条的导航栏最后一个菜单点击不到的bug',
+            '9. vue版本升级为3.5.13',
         ]
     },
     {

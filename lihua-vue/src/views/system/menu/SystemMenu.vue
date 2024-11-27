@@ -314,7 +314,7 @@
 
 // 列表查询相关
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
-import {deleteData, queryById, queryList, menuTreeOption, save, updateStatus} from "@/api/system/menu/Menu.ts";
+import {deleteData, queryById, queryList, queryMenuTreeOption, save, updateStatus} from "@/api/system/menu/Menu.ts";
 import {reactive, ref, useTemplateRef} from "vue";
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
@@ -700,7 +700,7 @@ const initSave = () => {
   // 加载菜单树
   const initTreeData = async () => {
     try {
-      const resp = await menuTreeOption()
+      const resp = await queryMenuTreeOption()
       if (resp.code === 200) {
         // 深拷贝数据
         const menuTree = cloneDeep(resp.data)

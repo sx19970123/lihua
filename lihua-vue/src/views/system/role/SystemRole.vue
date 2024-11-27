@@ -164,37 +164,14 @@
             <a-radio v-for="item in sys_status" :value="item.value">{{item.label}}</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="菜单" class="form-item-single-line">
-          <a-checkable-tag v-model:checked="menuSetting.checked" @change="handleCheckedAll">全选/全不选</a-checkable-tag>
-          <a-checkable-tag v-model:checked="menuSetting.expand" @change="handleExpandAll">展开/折叠</a-checkable-tag>
-          <a-checkable-tag v-model:checked="menuSetting.checkStrictly" @click="menuSetting.checkStrictly ? role.menuIds = [] : ''">父子关联</a-checkable-tag>
+        <a-form-item label="菜单">
+          <easy-tree-select ref="easyTreeSelectRef" :tree-data="menuTreeOption" v-model="role.menuIds">
+            <template #title="{label,menuType}">
+              {{label}}
+              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none'}"/>
+            </template>
+          </easy-tree-select>
         </a-form-item>
-        <a-form-item label=" ">
-          <a-card :body-style="{padding: '8px'}">
-            <a-tree :tree-data="menuSetting.menuOption"
-                    :check-strictly="!menuSetting.checkStrictly"
-                    v-model:expanded-keys="menuSetting.expandKeys"
-                    v-model:checked-keys="role.menuIds"
-                    :field-names="{children:'children', title:'label', key:'id' }"
-                    :selectable="false"
-                    checkable
-
-            >
-              <template #title="{label,menuType}">
-                {{label}}
-                <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none'}"/>
-              </template>
-            </a-tree>
-          </a-card>
-        </a-form-item>
-<!--        <a-form-item>-->
-<!--          <ease-tree-select :tree-data="menuSetting.menuOption">-->
-<!--            <template #title="{label,menuType}">-->
-<!--              {{label}}-->
-<!--              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none'}"/>-->
-<!--            </template>-->
-<!--          </ease-tree-select>-->
-<!--        </a-form-item>-->
         <a-form-item label="备注">
           <a-textarea v-model:value="role.remark" placeholder="请输入备注" :maxlength="200" show-count allow-clear/>
         </a-form-item>
@@ -210,20 +187,20 @@
 
 <script setup lang="ts">
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {reactive, ref, watch} from "vue";
+import {reactive, ref, useTemplateRef, watch} from "vue";
 import {deleteData, queryById, queryPage, save, updateStatus} from "@/api/system/role/Role.ts";
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
-import EaseTreeSelect from "@/components/easy-tree-select/index.vue"
-import {menuTreeOption} from "@/api/system/menu/Menu.ts";
+import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
+import {queryMenuTreeOption} from "@/api/system/menu/Menu.ts";
 import type {Rule} from "ant-design-vue/es/form";
-import {flattenTree} from "@/utils/Tree.ts";
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
 import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRole.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
+const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
 // 列表查询相关
 const initSearch = () => {
   // 选中的数据id集合
@@ -395,8 +372,6 @@ const initSave = () => {
     if (modalActive.open) {
       // 加载菜单树
       await initMenuTree()
-      // 默认打开父子关联
-      menuSetting.value.checkStrictly = true
       // 重置表单
       resetForm()
     }
@@ -437,11 +412,8 @@ const initSave = () => {
       status: '0',
       menuIds: []
     }
-    // 默认展开/全选关闭
-    menuSetting.value.checked = false
-    menuSetting.value.expand = false
-    handleExpandAll()
-    handleCheckedAll()
+    // 重置树形选择组件
+    easyTreeSelectRef.value?.reset()
   }
 
   // 保存角色
@@ -517,89 +489,27 @@ const initSave = () => {
 
 const {modalActive,role,roleRules,handleUpdateStatus,handleModelStatus,getRole,saveRole} = initSave()
 
-// 菜单树相关
-const useMenuTree = () => {
-  type MenuSetting = {
-    // 菜单树
-    menuOption: Array<SysMenu>,
-    // 扁平化后的树
-    flattenTree: Array<SysMenu>,
-    // 展开的节点
-    expandKeys: string[],
-    // 是否全部展开
-    expand: boolean,
-    // 父子联动
-    checkStrictly: boolean
-    // 是否全部选中
-    checked: boolean,
-  }
-  // 菜单树
-  const menuSetting = ref<MenuSetting>({
-    menuOption: [],
-    flattenTree: [],
-    expandKeys: [],
-    expand: false,
-    checkStrictly: false,
-    checked: false,
+// 初始化菜单树
+const initMenuTree = () => {
+  const menuTreeOption = ref<SysMenu[]>([])
+  queryMenuTreeOption().then(resp => {
+    if (resp.code === 200) {
+      menuTreeOption.value = resp.data
+    } else {
+      message.error(resp.msg)
+    }
+  }).catch((e) => {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.log(e)
+    }
   })
-  // 加载菜单树
-  const initMenuTree = async () => {
-    try {
-      const resp = await menuTreeOption()
-      if (resp.code === 200) {
-        menuSetting.value.menuOption = resp.data
-        menuSetting.value.flattenTree = flattenTree(menuSetting.value.menuOption)
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.log(e)
-      }
-    }
-  }
-
-  // 处理全部展开
-  const handleExpandAll = () => {
-    menuSetting.value.expandKeys = []
-    if (menuSetting.value.expand) {
-      menuSetting.value.flattenTree.forEach(item => {
-        if (item.id) {
-          menuSetting.value.expandKeys.push(item.id)
-        }
-      })
-    } else {
-      menuSetting.value.expandKeys = []
-    }
-  }
-
-  // 处理全部选中
-  const handleCheckedAll = () => {
-    role.value.menuIds = []
-    if (menuSetting.value.checked) {
-      menuSetting.value.flattenTree.forEach(item => {
-        if (role.value.menuIds && item.id) {
-          if (Array.isArray(role.value.menuIds)) {
-            role.value.menuIds.push(item.id)
-          }
-        }
-      })
-    } else {
-      role.value.menuIds = []
-    }
-  }
-
   return {
-    menuSetting,
-    initMenuTree,
-    handleExpandAll,
-    handleCheckedAll,
+    menuTreeOption
   }
 }
-
-const { initMenuTree, menuSetting, handleExpandAll, handleCheckedAll } = useMenuTree()
+const { menuTreeOption } = initMenuTree()
 
 // 删除岗位
 const initDelete = () => {
@@ -658,19 +568,4 @@ const initDelete = () => {
   }
 }
 const {openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm} = initDelete()
-
-// 监听menuIds进行全选/非全选与数据同步
-watch(() => role.value.menuIds, (value) => {
-  let ids: string[] = [];
-
-  if (Array.isArray(value)) {
-    // 如果 value 是数组
-    ids = value;
-  } else if (value && typeof value === 'object' && 'checked' in value) {
-    // 如果 value 是包含 checked 属性的对象
-    ids = (value as { checked: string[] }).checked;
-  }
-  // 更新 checked 状态
-  menuSetting.value.checked = ids.length === menuSetting.value.flattenTree.length;
-});
 </script>

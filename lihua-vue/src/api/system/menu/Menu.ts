@@ -64,7 +64,7 @@ export const deleteData = (ids: Array<string>) => {
 /**
  * 获取系统全量菜单树选项数据
  */
-export const menuTreeOption = () => {
+export const queryMenuTreeOption = () => {
   return request<Array<SysMenu>>({
     url: 'system/menu/option',
     method: 'get'
