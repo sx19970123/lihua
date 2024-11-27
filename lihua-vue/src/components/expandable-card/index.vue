@@ -41,7 +41,7 @@ import Mask from "@/components/mask/index.vue"
 import { gsap } from 'gsap';
 import {onMounted, onUnmounted, ref, useTemplateRef, watch} from "vue";
 import type { CSSProperties } from 'vue';
-import {hiddenOverflowY} from "@/utils/ScrollbarUtil.ts";
+import {hiddenOverflowY} from "@/utils/Scrollbar.ts";
 // 接受父组件参数
 const props = defineProps({
   // 展开后的宽度
