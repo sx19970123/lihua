@@ -74,6 +74,8 @@ onUnmounted(() => {
 .hc-header {
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
+  position: relative;
+  z-index: 10;
 }
 .hc-layout-header {
   padding: 0;
