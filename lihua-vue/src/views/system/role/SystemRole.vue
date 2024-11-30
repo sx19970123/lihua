@@ -166,10 +166,10 @@
         </a-form-item>
         <a-form-item label="菜单">
           <easy-tree-select ref="easyTreeSelectRef" :tree-data="menuTreeOption" v-model="role.menuIds">
-            <template #title="{label,menuType}">
-              {{label}}
-              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none'}"/>
-            </template>
+<!--            <template #title="{label,menuType}">-->
+<!--              {{label}}-->
+<!--              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none'}"/>-->
+<!--            </template>-->
           </easy-tree-select>
         </a-form-item>
         <a-form-item label="备注">
