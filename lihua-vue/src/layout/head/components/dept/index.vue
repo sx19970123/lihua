@@ -10,7 +10,7 @@
       </span>
     </a-tooltip>
     <template #overlay>
-      <div class="default-dept-card scrollbar">
+      <div class="default-dept-card">
         <default-dept @dept-select="() => open = false"/>
       </div>
     </template>
@@ -29,16 +29,7 @@ const open = ref<boolean>(false)
 .default-dept-card {
   max-height: 500px;
   box-shadow: var(--lihua-light-box-shadow);
-  padding: 16px 16px 0 16px;
-  background-color: #ffffff;
   border-radius: 8px;
-}
-</style>
-<style>
-[data-theme=dark] {
-  .default-dept-card {
-    background-color: #1f1f1f;
-  }
 }
 </style>
 

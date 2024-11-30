@@ -166,10 +166,15 @@
         </a-form-item>
         <a-form-item label="菜单">
           <easy-tree-select ref="easyTreeSelectRef" :tree-data="menuTreeOption" v-model="role.menuIds">
-<!--            <template #title="{label,menuType}">-->
-<!--              {{label}}-->
-<!--              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none'}"/>-->
-<!--            </template>-->
+            <template #title="{label,menuType,keyword}">
+              <span v-if="label.indexOf(keyword) > -1">
+                <span>{{label.substring(0,label.indexOf(keyword))}}</span>
+                <span :style="{'color':  themeStore.getColorPrimary()}">{{keyword}}</span>
+                <span>{{label.substring(label.indexOf(keyword) + keyword.length)}}</span>
+              </span>
+              <span v-else>{{ label }}</span>
+              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none', 'margin-left': '8px'}"/>
+            </template>
           </easy-tree-select>
         </a-form-item>
         <a-form-item label="备注">
@@ -199,8 +204,11 @@ import dayjs from "dayjs";
 import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
 import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRole.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
 const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
+const themeStore = useThemeStore();
+
 // 列表查询相关
 const initSearch = () => {
   // 选中的数据id集合

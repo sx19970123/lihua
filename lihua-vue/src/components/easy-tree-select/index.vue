@@ -1,16 +1,19 @@
 <template>
   <div class="unselectable">
-    <a-checkable-tag v-if="multiple" v-model:checked="treeSetting.checked" @change="handleCheckedAll">全选/全不选</a-checkable-tag>
-    <a-checkable-tag v-if="multiple" v-model:checked="treeSetting.checkStrictly" @click="handleCheckStrictly">父子关联</a-checkable-tag>
-    <a-checkable-tag v-model:checked="treeSetting.expand" @change="handleExpandAll">展开/折叠</a-checkable-tag>
-    <a-card :body-style="{padding: '8px'}" style="margin-top: 4px">
-      <a-input class="keyword-input" placeholder="请输入关键词" v-model:value="keyword" allowClear @change="handleChangeKeyWord()"/>
+    <div v-if="showToolbar">
+      <a-checkable-tag v-if="multiple" v-model:checked="treeSetting.checked" @change="handleCheckedAll">全选/全不选</a-checkable-tag>
+      <a-checkable-tag v-if="multiple" v-model:checked="treeSetting.checkStrictly" @click="handleCheckStrictly">父子关联</a-checkable-tag>
+      <a-checkable-tag v-model:checked="treeSetting.expand" @change="handleExpandAll">展开/折叠</a-checkable-tag>
+    </div>
+    <a-card :body-style="bodyStyle" :bordered="false">
+      <a-input v-if="showSearch" class="keyword-input" :placeholder="searchPlaceholder" v-model:value="keyword" allowClear @change="handleChangeKeyWord()"/>
       <a-tree v-if="deepCloneTreeData && deepCloneTreeData.length > 0"
               :tree-data="deepCloneTreeData"
               :field-names="fieldNames"
               :check-strictly="!treeSetting.checkStrictly"
               v-model:expanded-keys="expandKeys"
               v-model:checked-keys="checkedKeys"
+              v-model:selected-keys="checkedKeys"
               :selectable="!multiple"
               :checkable="multiple"
               @check="handleSelect"
@@ -19,7 +22,7 @@
               ref="treeRef"
       >
         <template #title="item" v-if="hasTitleSlot">
-          <slot name="title" v-bind="{ ...item }"/>
+          <slot name="title" v-bind="{ ...item }" :keyword="keyword"/>
         </template>
         <template #title="data">
           <div v-if="data[fieldNames.title].indexOf(keyword) > -1">
@@ -31,14 +34,14 @@
         </template>
       </a-tree>
       <div v-else>
-        <a-empty/>
+        <a-empty style="margin-top: 8px"/>
       </div>
     </a-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref, useTemplateRef, watch, useSlots, nextTick} from "vue";
+import {ref, useTemplateRef, watch, useSlots, nextTick, onMounted} from "vue";
 import ATree from "ant-design-vue/es/tree/Tree"
 import { traverse } from "@/utils/Tree.ts";
 import { cloneDeep } from 'lodash-es'
@@ -52,11 +55,15 @@ const treeRef = useTemplateRef<InstanceType<typeof ATree>>("treeRef")
 // 接收的参数：
 // treeData 树形结构数据；
 // fieldNames 树形结构字段对应别名
+// multiple 是否支持多选
+// toolbar 是否显示工具栏
+// bodyStyle 卡片body样式
+// modelValue v-model双向绑定
 const {treeData, fieldNames = {
   children: 'children',
   title: 'label',
   key: 'id',
-}, multiple = true, modelValue} = defineProps<{
+}, defaultExpandAll = false, multiple = true, showToolbar = true, showSearch = true, searchPlaceholder = "请输入关键词", bodyStyle = {padding: '8px'}, modelValue} = defineProps<{
   // 树形结构数据
   treeData: Array<any>,
   // 树形结构别名
@@ -65,10 +72,20 @@ const {treeData, fieldNames = {
     title: string,
     key: string
   },
+  // 是否默认展开全部
+  defaultExpandAll?: boolean,
   // 是否支持多选
   multiple?: boolean,
+  // 显示工具栏
+  showToolbar?: boolean,
+  // 显示搜索框
+  showSearch?: boolean,
+  // 搜索框提示词
+  searchPlaceholder?: string,
+  // 卡片body样式
+  bodyStyle?: Object,
   // 双向绑定数据
-  modelValue: any[] | any,
+  modelValue?: any[] | any,
 }>()
 const emits = defineEmits(['update:modelValue'])
 
@@ -87,7 +104,6 @@ type TreeSettingType = {
 }
 // 树形结构控制属性
 const treeSetting = ref<TreeSettingType>({expand: false, checkStrictly: false, checked: false});
-
 // 展开的节点
 const expandKeys = ref<any[]>([])
 // 选中的节点
@@ -183,10 +199,12 @@ const handleChangeKeyWord = () => {
     deepCloneTreeData.value = handleFilterTree(treeData, key)
     // 展开全部树形结构
     treeSetting.value.expand = true
-    handleExpandAll()
   } else {
+    // 折叠全部树形结构
+    treeSetting.value.expand = false
     deepCloneTreeData.value = treeData
   }
+  handleExpandAll()
 }
 
 // 处理过滤树
@@ -226,13 +244,32 @@ const handleExpand = () => {
   treeSetting.value.expand = expandKeys.value.length === allParentKeys.value.length
 }
 
+// 处理选中节点回显
+const handleCheckedKey = () => {
+  if (modelValue) {
+    if (multiple) {
+      checkedKeys.value = modelValue
+    } else {
+      checkedKeys.value = [modelValue]
+    }
+    // 处理全选回显
+    handleAllChecked()
+  }
+}
+
 // 将树形结构key收集到 allKeys/allParentKeys 中
 const handleAllKeys = () => {
   traverse(treeData, (item) => {
     if (item && item[fieldNames.key]) {
+      // 全部key
       allKeys.value.push(item[fieldNames.key])
+      // 全部父节点key
       if (item[fieldNames.children] && item[fieldNames.children].length >= 0) {
         allParentKeys.value.push(item[fieldNames.key])
+      }
+      // 默认全部展开key
+      if (defaultExpandAll) {
+        expandKeys.value.push(item[fieldNames.key])
       }
     }
   }, fieldNames.children)
@@ -245,16 +282,10 @@ handleAllKeys()
 
 // 监听modelValue双向绑定变化
 watch(() => modelValue, () => {
-  if (modelValue) {
-    if (multiple) {
-      checkedKeys.value = modelValue
-    } else {
-      checkedKeys.value = [modelValue]
-    }
-    // 处理全选回显
-    handleAllChecked()
-  }
+  handleCheckedKey()
 })
+
+onMounted(() => handleCheckedKey())
 </script>
 
 <style scoped>
