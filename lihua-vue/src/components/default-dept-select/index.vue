@@ -6,9 +6,9 @@
                           :default-expand-all="true"
                           :multiple="false"
                           :field-names="{children:'children', title:'name', key:'id'}"
-                          :body-style="{padding: '16px'}"
+                          :body-style="{padding: '16px', backgroundColor: themeStore.isDarkTheme ? '#1f1f1f' : '', borderRadius: '8px'}"
+                          :bordered="false"
                           :show-toolbar="false"
-                          :max-height="300"
                           v-model="userStore.defaultDept.id"
         >
           <template #title="{name, code, id, keyword}">

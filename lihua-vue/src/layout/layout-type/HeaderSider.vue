@@ -3,11 +3,13 @@
     <a-layout>
       <transition :name="themeStore.routeTransition" mode="out-in">
         <a-layout-header class="hs-header" v-show="props.showLayout" :style="{'background': themeStore.layoutBackgroundColor}">
-          <a-flex align="center" justify="space-between">
-            <Logo class="logo" :show-title="siderClass !== 'min-hs-sider'"/>
-            <!--页头-->
-            <Head class="head"></Head>
-          </a-flex>
+          <div ref="headerRef">
+            <a-flex align="center" justify="space-between">
+              <Logo class="logo" :show-title="siderClass !== 'min-hs-sider'"/>
+              <!--页头-->
+              <Head class="head"></Head>
+            </a-flex>
+          </div>
         </a-layout-header>
       </transition>
 
@@ -33,7 +35,7 @@
             </div>
             <!-- 侧边栏-->
             <Side class="sider-content sider-scrollbar"
-                  :class="siderClass === 'min-hs-sider' ? 'min-sider-content' : ''"
+                  :class="{'min-sider-content': siderClass === 'min-hs-sider' ,'header-invisible-sider-content': !headerVisible}"
                   @route-change="handleRouteChange"
             />
           </a-layout-sider>
@@ -59,13 +61,17 @@ import Content from "@/layout/content/index.vue"
 import { usePermissionStore } from "@/stores/permission";
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/theme";
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, useTemplateRef} from "vue";
 import Mask from "@/components/mask/index.vue";
 import settings from "@/settings.ts";
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()
 const menuToggleWidth = settings.menuToggleWidth
 const bodyWidth = ref<number>(document.body.offsetWidth)
+// header dom
+const headerRef = useTemplateRef<HTMLDivElement>("headerRef")
+// header是否可见，用于在不固定header时动态调整sider高度
+const headerVisible = ref<boolean>(true)
 // 是否显示layout
 const props = defineProps<{ showLayout: boolean }>()
 // 菜单收起宽度，根据当前视口大小变化
@@ -114,16 +120,45 @@ const handleKeyUp = (event: KeyboardEvent) => {
   }
 }
 
+// 视口观察器，判断header是否消失在视口中
+let observer: IntersectionObserver
+// 创建观察
+const createObserver = () => {
+  if (!observer) {
+    observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            headerVisible.value = entry.isIntersecting
+          });
+        }
+    );
+
+    // 观察目标元素
+    if (headerRef.value) {
+      observer.observe(headerRef.value);
+    }
+  }
+};
+// 销毁观察
+const cleanupObserver = () => {
+  if (observer) {
+    // 停止观察
+    observer.disconnect();
+  }
+};
+
 // dom渲染完毕后添加窗口监听
 onMounted(() => {
   window.addEventListener("resize", handleResize)
   window.addEventListener("keyup", handleKeyUp)
+  createObserver()
 });
 
 // 组件销毁后删除监听
 onUnmounted(() => {
   window.removeEventListener("resize", handleResize)
   window.removeEventListener("keyup", handleKeyUp)
+  cleanupObserver()
 });
 </script>
 
@@ -153,6 +188,9 @@ onUnmounted(() => {
 }
 .sider-content {
   height: calc(100vh - 48px - 48px);
+}
+.header-invisible-sider-content {
+  height: calc(100vh - 48px);
 }
 .min-sider-content {
   height: calc(100vh - 48px);

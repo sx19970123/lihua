@@ -1,11 +1,11 @@
 <template>
-  <div class="unselectable">
+  <div class="unselectable" style="border-radius: 8px">
     <div v-if="showToolbar" style="margin-bottom: 4px">
       <a-checkable-tag v-if="multiple" v-model:checked="treeSetting.checked" @change="handleCheckedAll">全选/全不选</a-checkable-tag>
       <a-checkable-tag v-if="multiple" v-model:checked="treeSetting.checkStrictly" @click="handleCheckStrictly">父子关联</a-checkable-tag>
       <a-checkable-tag v-model:checked="treeSetting.expand" @change="handleExpandAll">展开/折叠</a-checkable-tag>
     </div>
-    <a-card :body-style="bodyStyle">
+    <a-card :body-style="bodyStyle" :bordered="bordered">
       <a-input v-if="showSearch" class="keyword-input" :placeholder="searchPlaceholder" v-model:value="keyword" allowClear @change="handleChangeKeyWord()"/>
       <div :style="maxHeight ? {maxHeight: maxHeight + 'px'} : {}" class="scrollbar" v-if="deepCloneTreeData && deepCloneTreeData.length > 0">
         <a-tree :tree-data="deepCloneTreeData"
@@ -19,6 +19,7 @@
                 @check="handleSelect"
                 @select="handleSelect"
                 @expand="handleExpand"
+                style="padding: 4px"
                 ref="treeRef"
         >
           <template #title="item" v-if="hasTitleSlot">
@@ -64,7 +65,7 @@ const {treeData, fieldNames = {
   children: 'children',
   title: 'label',
   key: 'id',
-}, defaultExpandAll = false, multiple = true, showToolbar = true, showSearch = true, searchPlaceholder = "请输入关键词", bodyStyle = {padding: '8px'}, maxHeight, modelValue} = defineProps<{
+}, defaultExpandAll = false, multiple = true, showToolbar = true, showSearch = true, searchPlaceholder = "请输入关键词", bodyStyle = {padding: '8px',borderRadius: '8px'}, maxHeight, bordered = true, modelValue} = defineProps<{
   // 树形结构数据
   treeData: Array<any>,
   // 树形结构别名
@@ -87,6 +88,8 @@ const {treeData, fieldNames = {
   bodyStyle?: Object,
   // 最大高度
   maxHeight?: number,
+  // 展示边框
+  bordered?: boolean,
   // 双向绑定数据
   modelValue: any[] | any,
 }>()
@@ -302,6 +305,6 @@ onMounted(() => handleCheckedKey())
 <style scoped>
 .keyword-input {
   height: 28px;
-  margin-bottom: 4px
+  margin-bottom: 8px
 }
 </style>

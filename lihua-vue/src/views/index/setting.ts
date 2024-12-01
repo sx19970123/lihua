@@ -4,7 +4,7 @@
  * 项目开发可以将 views/index 中内容删除，在 router 中重新配置首页即可
  */
 export const versionInfo = {
-    springBootVersion: ' 3.3.5',
+    springBootVersion: ' 3.3.6',
     vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
@@ -193,9 +193,11 @@ const updateRecords = [
             '4. 顶部导航高度调整为48px，与其他布局header一致',
             '5. 前端Debounce.ts新增debounce（函数防抖）方法',
             '6. 前端新增easy-tree-select组件，更简单的处理树形结构选择',
-            '7. 角色管理表单中 菜单选择逻辑使用easy-tree-select实现，简化业务组件代码',
+            '7. 切换默认部门/角色菜单树/用户部门树/系统设置部门树 使用easy-tree-select实现，简化业务组件代码',
             '8. 修复【侧边导航-风格2】小窗口下出现滚动条的导航栏最后一个菜单点击不到的bug',
-            '9. vue版本升级为3.5.13',
+            '9. 其他bug修复',
+            '10. vue版本升级为3.5.13',
+            '11. spring boot版本升级为3.3.6',
         ]
     },
     {
