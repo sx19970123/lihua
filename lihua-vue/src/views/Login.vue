@@ -15,66 +15,64 @@
         <transition name="card" mode="out-in">
 <!--      右侧表单-->
           <a-card class="login-card" v-if="showLogin" v-show="show">
-            <transition name="form" mode="out-in">
-              <div style="margin: 16px" v-if="show">
-                <div class="login-title">
-                  <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
-                  <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
-<!--                    根据配置显示注册-->
-                  <div v-if="enableRegister">
-                    <a-typography-text>没有账户？</a-typography-text>
-                    <a-typography-link @click="showLogin = false">快速注册
-                      <RightOutlined/>
-                    </a-typography-link>
-                  </div>
+            <div style="margin: 16px">
+              <div class="login-title">
+                <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
+                <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
+                <!--                    根据配置显示注册-->
+                <div v-if="enableRegister">
+                  <a-typography-text>没有账户？</a-typography-text>
+                  <a-typography-link @click="showLogin = false">快速注册
+                    <RightOutlined/>
+                  </a-typography-link>
                 </div>
-                <a-form :model="loginForm" @finish="handleFinish" :rules="loginRoles">
-                  <a-form-item name="username" hasFeedback>
-                    <a-input class="login-form-item"
-                             autocomplete="off"
-                             v-model:value="loginForm.username"
-                             placeholder="用户名"
-                    >
-                      <template #prefix>
-                        <UserOutlined class="input-prefix-icon-color"/>
-                      </template>
-                    </a-input>
-                  </a-form-item>
-                  <a-form-item name="password" hasFeedback>
-                    <a-input-password class="login-form-item"
-                                      v-model:value="loginForm.password"
-                                      placeholder="密码"
-                    >
-                      <template #prefix>
-                        <LockOutlined class="input-prefix-icon-color"/>
-                      </template>
-                    </a-input-password>
-                  </a-form-item>
-                  <a-form-item>
-                    <a-flex justify="space-between">
-                      <a-checkbox v-model:checked="rememberMe">记住账号</a-checkbox>
-                      <a-typography-link v-if="false">忘记密码</a-typography-link>
-                    </a-flex>
-                  </a-form-item>
-                  <a-form-item>
-                    <a-button html-type="submit"
-                              type="primary"
-                              class="login-form-item"
-                              :loading="loginLoading"
-                              style="width: 100%">登录
-                    </a-button>
-                  </a-form-item>
-                </a-form>
-                <a-divider plain v-if="false">其他方式</a-divider>
-                <a-flex justify="space-around" v-if="false">
-                  <a-button size="large" shape="circle"><WeiboCircleOutlined /></a-button>
-                  <a-button size="large" shape="circle"><WechatOutlined /></a-button>
-                  <a-button size="large" shape="circle"><AlipayCircleOutlined /></a-button>
-                  <a-button size="large" shape="circle"><QqOutlined /></a-button>
-                  <a-button size="large" shape="circle"><GitlabOutlined /></a-button>
-                </a-flex>
               </div>
-            </transition>
+              <a-form :model="loginForm" @finish="handleFinish" :rules="loginRoles">
+                <a-form-item name="username" hasFeedback>
+                  <a-input class="login-form-item"
+                           autocomplete="off"
+                           v-model:value="loginForm.username"
+                           placeholder="用户名"
+                  >
+                    <template #prefix>
+                      <UserOutlined class="input-prefix-icon-color"/>
+                    </template>
+                  </a-input>
+                </a-form-item>
+                <a-form-item name="password" hasFeedback>
+                  <a-input-password class="login-form-item"
+                                    v-model:value="loginForm.password"
+                                    placeholder="密码"
+                  >
+                    <template #prefix>
+                      <LockOutlined class="input-prefix-icon-color"/>
+                    </template>
+                  </a-input-password>
+                </a-form-item>
+                <a-form-item>
+                  <a-flex justify="space-between">
+                    <a-checkbox v-model:checked="rememberMe">记住账号</a-checkbox>
+                    <a-typography-link v-if="false">忘记密码</a-typography-link>
+                  </a-flex>
+                </a-form-item>
+                <a-form-item>
+                  <a-button html-type="submit"
+                            type="primary"
+                            class="login-form-item"
+                            :loading="loginLoading"
+                            style="width: 100%">登录
+                  </a-button>
+                </a-form-item>
+              </a-form>
+              <a-divider plain v-if="false">其他方式</a-divider>
+              <a-flex justify="space-around" v-if="false">
+                <a-button size="large" shape="circle"><WeiboCircleOutlined /></a-button>
+                <a-button size="large" shape="circle"><WechatOutlined /></a-button>
+                <a-button size="large" shape="circle"><AlipayCircleOutlined /></a-button>
+                <a-button size="large" shape="circle"><QqOutlined /></a-button>
+                <a-button size="large" shape="circle"><GitlabOutlined /></a-button>
+              </a-flex>
+            </div>
           </a-card>
 <!--            用户注册-->
           <user-register v-else @go-login="handleShowLogin"/>
@@ -431,7 +429,7 @@ onMounted(() => {
   opacity: 0;
 }
 
-
+/* 登录后设置卡片呼出 */
 .setting-enter-active {
   transition: all 0.75s ease-in-out;
 }
@@ -444,8 +442,9 @@ onMounted(() => {
   opacity: 1; /* 最终透明度为 1，完全可见 */
 }
 
+/* 登录后设置卡片隐藏 */
 .setting-leave-active {
-  transition: all 0.6s ease-out;
+  transition: all 0.5s ease-out;
 }
 .setting-leave-from {
   transform: translateY(0); /* 从原始位置开始 */

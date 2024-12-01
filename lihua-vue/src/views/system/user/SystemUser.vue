@@ -11,7 +11,7 @@
                     class="default-input-width"
                     placeholder="请选择部门"
                     v-model:value="userQuery.deptIdList"
-                    :show-checked-strategy="SHOW_ALL"
+                    show-checked-strategy="SHOW_ALL"
                     :maxTagCount="3"
                     :tree-data="sysDeptList"
                     :fieldNames="{children:'children', label:'name', value: 'id' }"
@@ -265,36 +265,11 @@
                 optionFilterProp="name"
                 :fieldNames="{label: 'name', value: 'id'}"/>
           </a-form-item>
-          <a-form-item label="部门" class="form-item-single-line">
-            <div style="margin-top: 0">
-              <a-checkable-tag v-model:checked="deptTreeSetting.checked" @click="handleCheckedAllKeys">全选/全不选</a-checkable-tag>
-              <a-checkable-tag v-model:checked="deptTreeSetting.expand" @click="handleExpanded">展开/折叠</a-checkable-tag>
-              <a-checkable-tag v-model:checked="deptTreeSetting.checkStrictly" @click=" deptTreeSetting.checkStrictly ? sysUserDTO.deptIdList = [] : ''">父子关联</a-checkable-tag>
-            </div>
-          </a-form-item>
-          <a-form-item label=" ">
-<!--              部门树-->
-            <div class="dept-card">
-              <a-input placeholder="检索部门树" v-model:value="deptKeyword" allowClear style="margin-bottom: 8px; height: 28px"/>
-              <a-tree
-                  :tree-data="sysDeptList"
-                  :field-names="{children:'children', title:'name', key: 'id' }"
-                  :check-strictly="!deptTreeSetting.checkStrictly"
-                  v-model:checked-keys="sysUserDTO.deptIdList"
-                  v-model:expanded-keys="deptTreeSetting.expandKeys"
-                  :selectable="false"
-                  checkable
-              >
-                <template  #title="{ name }">
-                  <div v-if="name.indexOf(deptKeyword) > -1">
-                    <span>{{name.substring(0,name.indexOf(deptKeyword))}}</span>
-                    <span :style="{'color':  themeStore.getColorPrimary()}">{{deptKeyword}}</span>
-                    <span>{{name.substring(name.indexOf(deptKeyword) + deptKeyword.length)}}</span>
-                  </div>
-                  <span v-else>{{ name }}</span>
-                </template>
-              </a-tree>
-            </div>
+          <a-form-item label="部门">
+            <easy-tree-select :tree-data="sysDeptList"
+                              v-model="sysUserDTO.deptIdList"
+                              :field-names="{ children:'children', title:'name', key: 'id' }"
+                              ref="easyTreeSelectRef"/>
           </a-form-item>
         </div>
         <div v-show="segmented === 'post'">
@@ -394,19 +369,19 @@ import {createVNode, onMounted, reactive, ref, useTemplateRef, watch} from "vue"
 import SelectableCard from "@/components/selectable-card/index.vue"
 import PasswordInput from "@/components/password-input/index.vue"
 import DictTag from "@/components/dict-tag/index.vue"
+import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
 import dayjs from "dayjs";
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
-import {message, TreeSelect, Modal, type FormInstance} from "ant-design-vue";
+import {message, Modal, type FormInstance} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
-import {flattenTree} from "@/utils/Tree.ts";
+import {traverse} from "@/utils/Tree.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import type {SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
-import {useThemeStore} from "@/stores/theme.ts";
 import {downloadByPath, handleFunDownload} from "@/utils/FileDownload.ts";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import Spin from "@/components/spin";
@@ -415,12 +390,9 @@ import {useSettingStore} from "@/stores/setting.ts";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
 import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
 const settingStore = useSettingStore()
-const themeStore = useThemeStore();
 const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
-const SHOW_ALL = TreeSelect.SHOW_ALL;
-// 没有进行双向绑定的单位树
-let originDeptTree: Array<SysDept> = ([])
 // 显示更多按钮
 const showMore = ref<boolean>(false)
 // 默认密码
@@ -705,6 +677,8 @@ const initSave = () => {
     // 重制部门岗位
     initPostByDeptIds([])
     initPostTag([])
+    // 重置树形选择组件
+    easyTreeSelectRef.value?.reset()
   }
 
   // 保存用户信息
@@ -714,7 +688,7 @@ const initSave = () => {
       modalActive.saveLoading = true
       const userDTO = cloneDeep(sysUserDTO.value)
       // 处理用户部门、手机号、邮箱
-      userDTO.deptIdList = handleDeptIdList()
+      userDTO.deptIdList = sysUserDTO.value.deptIdList
       userDTO.phoneNumber === "" ? sysUserDTO.value.phoneNumber = undefined : sysUserDTO.value.phoneNumber
       userDTO.email === "" ? sysUserDTO.value.email = undefined : sysUserDTO.value.email
 
@@ -864,62 +838,6 @@ const {sysRoleList} = initRoleData()
 const initDeptData = () => {
   // 部门信息
   const sysDeptList = ref<Array<SysDept>>([])
-  // 扁平化部门树
-  let flattenDeptList = ref<Array<SysDept>>([])
-  // 部门树检索关键字
-  const deptKeyword = ref<string>('')
-  // 所有树型节点id
-  const deptIds: string[] = []
-
-  type DeptTreeSettingType = {
-    // 展开的节点
-    expandKeys: string[],
-    // 是否全部展开
-    expand: boolean,
-    // 父子联动
-    checkStrictly: boolean
-    // 是否全部选中
-    checked: boolean,
-  }
-  // 部门树配置信息
-  const deptTreeSetting = ref<DeptTreeSettingType>({
-    expandKeys: [],
-    expand: false,
-    checkStrictly: false,
-    checked: false
-  })
-
-  // 处理展开折叠
-  const handleExpanded = () => {
-    // 全部展开
-    deptTreeSetting.value.expandKeys = []
-    if (deptTreeSetting.value.expand) {
-      deptTreeSetting.value.expandKeys.push(... deptIds)
-    }
-  }
-
-  // 处理全选
-  const handleCheckedAllKeys = () => {
-    sysUserDTO.value.deptIdList = []
-    if (deptTreeSetting.value.checked) {
-      sysUserDTO.value.deptIdList.push(... deptIds)
-    }
-  }
-
-  // 处理关键词过滤
-  const filterTreeByLabel = (tree: Array<SysDept>, keyword: string): Array<SysDept> => {
-    const cloneTree = cloneDeep(tree);
-
-    const filterNode = (node: SysDept): SysDept | null => {
-      if (node.children) {
-        node.children = node.children.map(filterNode).filter((child): child is SysDept => child !== null);
-      }
-      return node.name?.includes(keyword) || (node.children && node.children.length > 0) ? node : null;
-    };
-
-    return cloneTree.map(filterNode).filter((node: SysDept) => node !== null);
-  };
-
   // 加载部门信息
   const initDept = async () => {
     try {
@@ -927,13 +845,6 @@ const initDeptData = () => {
       if (resp.code === 200) {
         // 单位树
         sysDeptList.value = resp.data
-        // 未双向绑定的单位树
-        originDeptTree = resp.data
-        // 处理为扁平化数据
-        flattenDeptList.value = flattenTree(resp.data)
-        // 获取全部部门id
-        const mapIds = flattenDeptList.value.filter(item => item.id).map(item => item.id)
-        deptIds.push(... (mapIds as string[]))
       } else {
         message.error(resp.msg)
       }
@@ -947,16 +858,10 @@ const initDeptData = () => {
   }
   initDept()
   return {
-    sysDeptList,
-    deptTreeSetting,
-    deptKeyword,
-    flattenDeptList,
-    handleExpanded,
-    handleCheckedAllKeys,
-    filterTreeByLabel
+    sysDeptList
   }
 }
-const {sysDeptList,deptTreeSetting,deptKeyword,flattenDeptList,handleExpanded, handleCheckedAllKeys,filterTreeByLabel} = initDeptData()
+const {sysDeptList} = initDeptData()
 
 // 加载岗位
 const initPostData = () => {
@@ -981,25 +886,15 @@ const initPostData = () => {
   // 进入岗位页面加载部门
   const toPostForm = async () => {
     try {
-      postLoading.value = true
-      await initPostByDeptIds(handleDeptIdList())
+      if (sysUserDTO.value.deptIdList) {
+        postLoading.value = true
+        await initPostByDeptIds(sysUserDTO.value.deptIdList)
+      }
     } catch (error) {
       console.error(error)
     } finally {
       postLoading.value = false
     }
-  }
-
-  // 将 {checked: string[]} 或 string[] 数据处理为统一 数组
-  const handleDeptIdList = (): string[] => {
-    const obj = sysUserDTO.value.deptIdList as {checked: string[]} | string[]
-    let ids = []
-    if ((obj as {checked: string[]}).checked) {
-      ids = (obj as {checked: string[]}).checked
-    } else {
-      ids = (obj as string[])
-    }
-    return ids
   }
 
   // 通过部门id获取部门名称用于回显
@@ -1010,7 +905,7 @@ const initPostData = () => {
     }> = []
     // 组合option
     value.forEach(item => {
-      flattenDeptList.value.forEach(dept => {
+      traverse(sysDeptList.value, (dept) => {
         if (dept.id === item && dept.name) {
           option.push({
             value: dept.id,
@@ -1131,11 +1026,10 @@ const initPostData = () => {
     initPostTag,
     toPostForm,
     handleSelectPostId,
-    initPostByDeptIds,
-    handleDeptIdList
+    initPostByDeptIds
   }
 }
-const {sysPostList, postLoading, initPostTag, toPostForm ,handleSelectPostId,initPostByDeptIds,handleDeptIdList} = initPostData()
+const {sysPostList, postLoading, initPostTag, toPostForm ,handleSelectPostId,initPostByDeptIds} = initPostData()
 
 // 删除
 const intiDelete = () => {
@@ -1360,54 +1254,4 @@ onMounted(() => {
   initPage()
   initDefaultPassword()
 })
-
-// 监听关键词筛选
-watch(() => deptKeyword.value, (value) => {
-  if (value) {
-    // 关键词输入时全部展开
-    if (!deptTreeSetting.value.expand) {
-      deptTreeSetting.value.expand = true
-      handleExpanded()
-    }
-    // 对树型结构进行过滤
-    sysDeptList.value = filterTreeByLabel(originDeptTree, value)
-  } else {
-    // value 为空时，还原树
-    sysDeptList.value = cloneDeep(originDeptTree)
-  }
-})
-
-// 监听反向选中标签
-watch(() => sysUserDTO.value.deptIdList, (value) => {
-  let ids: string[] = [];
-
-  if (Array.isArray(value)) {
-    // 如果 value 是数组
-    ids = value;
-  } else if (value && typeof value === 'object' && 'checked' in value) {
-    // 如果 value 是包含 checked 属性的对象
-    ids = (value as { checked: string[] }).checked;
-  }
-
-  // 更新 deptTreeSetting 的 checked 状态
-  deptTreeSetting.value.checked = ids.length === flattenDeptList.value.length;
-})
 </script>
-
-<style>
-.dept-card {
-  border-radius: 8px;
-  padding: 16px;
-  margin-top: 4px;
-}
-[data-theme="light"] {
-  .dept-card {
-    border: 1px solid #d9d9d9;
-  }
-}
-[data-theme="dark"] {
-  .dept-card {
-    border: 1px solid #424242;
-  }
-}
-</style>

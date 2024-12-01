@@ -30,33 +30,11 @@
             <a-card>
               <a-typography-title :level="5">部门</a-typography-title>
               <a-form-item class="form-item-width">
-                <div style="margin-top: 0">
-                  <a-checkable-tag v-model:checked="deptTreeSetting.checked" @click="handleCheckedAllKeys">全选/全不选</a-checkable-tag>
-                  <a-checkable-tag v-model:checked="deptTreeSetting.expand" @click="handleExpanded">展开/折叠</a-checkable-tag>
-                  <a-checkable-tag v-model:checked="deptTreeSetting.checkStrictly" @click=" deptTreeSetting.checkStrictly ? settingForm.deptIds = [] : ''">父子关联</a-checkable-tag>
-                </div>
-                <!--              部门树-->
-                <div class="dept-card">
-                  <a-input placeholder="检索部门树" v-model:value="deptKeyword" allowClear style="margin-bottom: 8px; height: 28px"/>
-                  <a-tree
-                      :tree-data="sysDeptList"
-                      :field-names="{children:'children', title:'name', key: 'id' }"
-                      :check-strictly="!deptTreeSetting.checkStrictly"
-                      v-model:checked-keys="settingForm.deptIds"
-                      v-model:expanded-keys="deptTreeSetting.expandKeys"
-                      :selectable="false"
-                      checkable
-                  >
-                    <template  #title="{ name }">
-                      <div v-if="name.indexOf(deptKeyword) > -1">
-                        <span>{{name.substring(0,name.indexOf(deptKeyword))}}</span>
-                        <span :style="{'color':  themeStore.getColorPrimary()}">{{deptKeyword}}</span>
-                        <span>{{name.substring(name.indexOf(deptKeyword) + deptKeyword.length)}}</span>
-                      </div>
-                      <span v-else>{{ name }}</span>
-                    </template>
-                  </a-tree>
-                </div>
+                <easy-tree-select :tree-data="sysDeptList"
+                                  v-model="settingForm.deptIds"
+                                  :field-names="{children:'children', title:'name', key: 'id' }"
+                                  @change="loadPost"
+                />
               </a-form-item>
             </a-card>
             <a-card v-if="settingForm.deptIds && settingForm.deptIds.length > 0">
@@ -115,10 +93,11 @@ import {getRoleOption} from "@/api/system/role/Role.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import { cloneDeep } from 'lodash-es';
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
-import {flattenTree} from "@/utils/Tree.ts";
+import {traverse} from "@/utils/Tree.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import SelectableCard from "@/components/selectable-card/index.vue";
+import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
 import {message} from "ant-design-vue";
 import {isAdmin} from "@/utils/Auth.ts";
 import {ResponseError} from "@/api/global/Type.ts";
@@ -127,8 +106,6 @@ const settingStore = useSettingStore();
 const themeStore = useThemeStore();
 const submitLoading = ref<boolean>(false);
 
-// 没有进行双向绑定的单位树
-let originDeptTree: Array<SysDept> = ([])
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {
   const resp = await settingStore.getSetting<SignIn>(componentName);
@@ -137,6 +114,7 @@ const init = async () => {
   } else {
     await initDept()
     settingForm.value = resp
+    await loadPost()
   }
 }
 
@@ -189,62 +167,6 @@ const {sysRoleList} = initRoleData()
 const initDeptData = () => {
   // 部门信息
   const sysDeptList = ref<Array<SysDept>>([])
-  // 扁平化部门树
-  const flattenDeptList = ref<Array<SysDept>>([])
-  // 部门树检索关键字
-  const deptKeyword = ref<string>('')
-  // 所有树型节点id
-  const deptIds: string[] = []
-
-  type DeptTreeSettingType = {
-    // 展开的节点
-    expandKeys: string[],
-    // 是否全部展开
-    expand: boolean,
-    // 父子联动
-    checkStrictly: boolean
-    // 是否全部选中
-    checked: boolean,
-  }
-  // 部门树配置信息
-  const deptTreeSetting = ref<DeptTreeSettingType>({
-    expandKeys: [],
-    expand: false,
-    checkStrictly: false,
-    checked: false
-  })
-
-  // 处理展开折叠
-  const handleExpanded = () => {
-    // 全部展开
-    deptTreeSetting.value.expandKeys = []
-    if (deptTreeSetting.value.expand) {
-      deptTreeSetting.value.expandKeys.push(... deptIds)
-    }
-  }
-
-  // 处理全选
-  const handleCheckedAllKeys = () => {
-    settingForm.value.deptIds = []
-    if (deptTreeSetting.value.checked) {
-        settingForm.value.deptIds.push(... deptIds)
-    }
-  }
-
-  // 处理关键词过滤
-  const filterTreeByLabel = (tree: Array<SysDept>, keyword: string): Array<SysDept> => {
-    const cloneTree = cloneDeep(tree);
-
-    const filterNode = (node: SysDept): SysDept | null => {
-      if (node.children) {
-        node.children = node.children.map(filterNode).filter((child): child is SysDept => child !== null);
-      }
-      return node.name?.includes(keyword) || (node.children && node.children.length > 0) ? node : null;
-    };
-
-    return cloneTree.map(filterNode).filter((node: SysDept) => node !== null);
-  };
-
 
   // 加载部门信息
   const initDept = async () => {
@@ -253,13 +175,6 @@ const initDeptData = () => {
       if (resp.code === 200) {
         // 单位树
         sysDeptList.value = resp.data
-        // 未双向绑定的单位树
-        originDeptTree = resp.data
-        // 处理为扁平化数据
-        flattenDeptList.value = flattenTree(resp.data)
-        // 获取全部部门id
-        const mapIds = flattenDeptList.value.filter(item => item.id).map(item => item.id)
-        deptIds.push(... (mapIds as string[]))
       } else {
         message.error(resp.msg)
       }
@@ -274,17 +189,10 @@ const initDeptData = () => {
 
   return {
     sysDeptList,
-    deptTreeSetting,
-    deptKeyword,
-    flattenDeptList,
-    deptIds,
     initDept,
-    handleExpanded,
-    handleCheckedAllKeys,
-    filterTreeByLabel
   }
 }
-const {sysDeptList,deptTreeSetting,deptKeyword,flattenDeptList,initDept,handleExpanded, handleCheckedAllKeys,filterTreeByLabel} = initDeptData()
+const {sysDeptList,initDept} = initDeptData()
 // 岗位/默认部门
 const initPostData = () => {
 
@@ -308,25 +216,15 @@ const initPostData = () => {
   // 加载部门
   const loadPost = async () => {
     try {
-      postLoading.value = true
-      await initPostByDeptIds(handleDeptIdList())
+      if (settingForm.value.deptIds) {
+        postLoading.value = true
+        await initPostByDeptIds(settingForm.value.deptIds)
+      }
     } catch (error) {
       console.error(error)
     } finally {
       postLoading.value = false
     }
-  }
-
-  // 将 {checked: string[]} 或 string[] 数据处理为统一 数组
-  const handleDeptIdList = (): string[] => {
-    const obj = settingForm.value.deptIds as {checked: string[]} | string[]
-    let ids = []
-    if ((obj as {checked: string[]}).checked) {
-      ids = (obj as {checked: string[]}).checked
-    } else {
-      ids = (obj as string[])
-    }
-    return ids
   }
 
   // 通过部门id获取部门名称用于回显
@@ -337,7 +235,7 @@ const initPostData = () => {
     }> = []
     // 组合option
     value.forEach(item => {
-      flattenDeptList.value.forEach(dept => {
+      traverse(sysDeptList.value, (dept: SysDept) => {
         if (dept.id === item && dept.name) {
           option.push({
             value: dept.id,
@@ -460,8 +358,7 @@ const initPostData = () => {
     postLoading,
     loadPost,
     handleSelectPostId,
-    initPostByDeptIds,
-    handleDeptIdList
+    initPostByDeptIds
   }
 }
 const {sysPostList, postLoading, loadPost ,handleSelectPostId,} = initPostData()
@@ -514,43 +411,8 @@ const handleSubmit = async () => {
   } finally {
     submitLoading.value = false
   }
-
 }
 
-// 监听部门关键字变化
-watch(() => deptKeyword.value, (value) => {
-  if (value) {
-    // 关键词输入时全部展开
-    if (!deptTreeSetting.value.expand) {
-      deptTreeSetting.value.expand = true
-      handleExpanded()
-    }
-    // 对树型结构进行过滤
-    sysDeptList.value = filterTreeByLabel(originDeptTree, value)
-  } else {
-    // value 为空时，还原树
-    sysDeptList.value = cloneDeep(originDeptTree)
-  }
-})
-
-// 监听反向选中标签，显示岗位
-watch(() => settingForm.value.deptIds, (value) => {
-  let ids: string[] = [];
-  if (Array.isArray(value)) {
-    // 如果 value 是数组
-    ids = value;
-    // 加载岗位
-    loadPost()
-    // 更新 deptTreeSetting 的 checked 状态
-    deptTreeSetting.value.checked = ids.length === flattenDeptList.value.length;
-  } else if (value && typeof value === 'object' && 'checked' in value) {
-    // 如果 value 是包含 checked 属性的对象
-    ids = (value as { checked: string[] }).checked;
-    // 当settingForm.value.deptIds为对象时，提取值重新赋值，这时会再次触发watch，再次触发时执行后续逻辑
-    settingForm.value.deptIds = ids
-  }
-
-})
 onMounted(() => {
   init()
 })
@@ -560,23 +422,4 @@ onMounted(() => {
 .form-item-width {
   width: 260px;
 }
-.dept-card {
-  border-radius: 8px;
-  padding: 16px;
-  margin-top: 4px;
-}
 </style>
-
-<style>
-[data-theme="light"] {
-  .dept-card {
-    border: 1px solid #d9d9d9;
-  }
-}
-[data-theme="dark"] {
-  .dept-card {
-    border: 1px solid #424242;
-  }
-}
-</style>
-

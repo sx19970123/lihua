@@ -3,12 +3,13 @@
                                 description="请设置您的默认部门"
                                 icon="ApartmentOutlined"
                                 skip-msg="可在系统顶部栏设置"
-                                @next="() => message.warn('请选择默认部门')"
+                                :skip="!userStore.$state.defaultDeptCode"
+                                @next="handleNext"
                                 @skip="handleSkip"
                                 @back="emits('back')"
   >
     <template #content>
-      <default-dept @dept-select="handleNext"/>
+      <default-dept @dept-select="handleChangeDept"/>
     </template>
   </login-setting-base-component>
 </template>
@@ -18,16 +19,26 @@ import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBa
 import DefaultDept from "@/components/default-dept-select/index.vue"
 import type {Ref} from "vue";
 import {message} from "ant-design-vue";
-
+import {useUserStore} from "@/stores/user.ts";
+const userStore = useUserStore();
 // 向外抛出函数
 const emits = defineEmits(['back', 'skip', 'next'])
-const handleNext = (loading:Ref<boolean>) => {
-  setTimeout(() => {
-    loading.value = false
-    emits('next', loading.value)
-  },500)
+
+// 处理更新默认部门
+const handleChangeDept = (loading:Ref<boolean>) => {
+  loading.value = false
 }
 
+// 处理下一步
+const handleNext = (loading:Ref<boolean>) => {
+  if (userStore.$state.defaultDeptCode) {
+    emits('next', loading.value)
+  } else {
+    message.warn('请选择默认部门')
+  }
+}
+
+// 处理上一步
 const handleSkip = (loading:Ref<boolean>) => {
   loading.value = false
   emits('skip', loading.value)

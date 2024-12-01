@@ -8,6 +8,7 @@
                           :field-names="{children:'children', title:'name', key:'id'}"
                           :body-style="{padding: '16px'}"
                           :show-toolbar="false"
+                          :max-height="300"
                           v-model="userStore.defaultDept.id"
         >
           <template #title="{name, code, id, keyword}">
@@ -45,7 +46,6 @@ import {setDefaultDept} from "@/api/system/profile/Profile.ts";
 import {message} from "ant-design-vue";
 import {ResponseError} from "@/api/global/Type.ts";
 import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
-import Spin from "@/components/spin";
 const themeStore = useThemeStore();
 const userStore = useUserStore();
 const deptTree = ref<Array<SysDept>>(userStore.deptTrees)
@@ -71,8 +71,7 @@ const handleSetDefaultDept = async (deptId: string) => {
     if (resp.code === 200) {
       // 更新默认部门
       userStore.updateDefaultDept(resp.data)
-      emits('deptSelect', resp.data)
-      message.success(resp.msg)
+      emits('deptSelect', resp)
     } else {
       message.error(resp.msg)
     }

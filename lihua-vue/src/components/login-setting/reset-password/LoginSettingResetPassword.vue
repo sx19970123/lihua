@@ -111,6 +111,8 @@ const handleNext = async (loading:Ref<boolean>) => {
     } else {
       console.error(e)
     }
+  } finally {
+    loading.value = false
   }
 
 }

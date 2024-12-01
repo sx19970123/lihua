@@ -39,6 +39,7 @@ import HeaderSider from "@/layout/layout-type/HeaderSider.vue";
 import {useThemeStore} from "@/stores/theme";
 import {computed, onMounted, onUnmounted, ref} from "vue";
 import settings from "@/settings.ts";
+import {showOverflowY} from "@/utils/Scrollbar.ts";
 const themeStore = useThemeStore()
 const props = defineProps<{showLayout: boolean }>()
 const bodyWidth = ref<number>(document.body.offsetWidth)
@@ -57,6 +58,7 @@ const handleResize = () => {
     document.documentElement.setAttribute("layout-type", "header-content")
     themeStore.changeSiderMode('horizontal')
   }
+  showOverflowY()
 }
 
 onMounted(() => {

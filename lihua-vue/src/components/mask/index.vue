@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import {watch} from "vue";
+import {onBeforeUnmount, watch} from "vue";
 import {hiddenOverflowY, showOverflowY} from "@/utils/Scrollbar.ts";
 // 控制遮罩开关
 const {showMask, zIndex = 1000} = defineProps<{
@@ -18,6 +18,12 @@ const emits = defineEmits(['click'])
 const handleClickMask = (event: KeyboardEvent | MouseEvent) => {
   emits('click', event, 'mask')
 }
+
+// 组件卸载时处理显示滚动条
+onBeforeUnmount(() => {
+  showOverflowY()
+})
+
 // 判断遮罩是否打开，打开时调用隐藏Y轴滚动条，关闭时显示滚动条
 watch(() => showMask, (value) => {
   if (value) {

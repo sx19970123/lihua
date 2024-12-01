@@ -176,8 +176,8 @@ onUnmounted(() => {
 .view-tabs {
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  position: absolute;
-  z-index: 1;
+  position: relative;
+  z-index: 1
 }
 </style>
 

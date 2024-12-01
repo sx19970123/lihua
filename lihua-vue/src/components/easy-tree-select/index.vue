@@ -1,38 +1,39 @@
 <template>
   <div class="unselectable">
-    <div v-if="showToolbar">
+    <div v-if="showToolbar" style="margin-bottom: 4px">
       <a-checkable-tag v-if="multiple" v-model:checked="treeSetting.checked" @change="handleCheckedAll">全选/全不选</a-checkable-tag>
       <a-checkable-tag v-if="multiple" v-model:checked="treeSetting.checkStrictly" @click="handleCheckStrictly">父子关联</a-checkable-tag>
       <a-checkable-tag v-model:checked="treeSetting.expand" @change="handleExpandAll">展开/折叠</a-checkable-tag>
     </div>
-    <a-card :body-style="bodyStyle" :bordered="false">
+    <a-card :body-style="bodyStyle">
       <a-input v-if="showSearch" class="keyword-input" :placeholder="searchPlaceholder" v-model:value="keyword" allowClear @change="handleChangeKeyWord()"/>
-      <a-tree v-if="deepCloneTreeData && deepCloneTreeData.length > 0"
-              :tree-data="deepCloneTreeData"
-              :field-names="fieldNames"
-              :check-strictly="!treeSetting.checkStrictly"
-              v-model:expanded-keys="expandKeys"
-              v-model:checked-keys="checkedKeys"
-              v-model:selected-keys="checkedKeys"
-              :selectable="!multiple"
-              :checkable="multiple"
-              @check="handleSelect"
-              @select="handleSelect"
-              @expand="handleExpand"
-              ref="treeRef"
-      >
-        <template #title="item" v-if="hasTitleSlot">
-          <slot name="title" v-bind="{ ...item }" :keyword="keyword"/>
-        </template>
-        <template #title="data">
-          <div v-if="data[fieldNames.title].indexOf(keyword) > -1">
-            <span>{{data[fieldNames.title].substring(0,data[fieldNames.title].indexOf(keyword))}}</span>
-            <span :style="{'color':  themeStore.getColorPrimary()}">{{keyword}}</span>
-            <span>{{data[fieldNames.title].substring(data[fieldNames.title].indexOf(keyword) + keyword.length)}}</span>
-          </div>
-          <span v-else>{{ data[fieldNames.title] }}</span>
-        </template>
-      </a-tree>
+      <div :style="maxHeight ? {maxHeight: maxHeight + 'px'} : {}" class="scrollbar" v-if="deepCloneTreeData && deepCloneTreeData.length > 0">
+        <a-tree :tree-data="deepCloneTreeData"
+                :field-names="fieldNames"
+                :check-strictly="!treeSetting.checkStrictly"
+                v-model:expanded-keys="expandKeys"
+                v-model:checked-keys="checkedKeys"
+                v-model:selected-keys="checkedKeys"
+                :selectable="!multiple"
+                :checkable="multiple"
+                @check="handleSelect"
+                @select="handleSelect"
+                @expand="handleExpand"
+                ref="treeRef"
+        >
+          <template #title="item" v-if="hasTitleSlot">
+            <slot name="title" v-bind="{ ...item }" :keyword="keyword"/>
+          </template>
+          <template #title="data" v-else>
+            <div v-if="data[fieldNames.title].indexOf(keyword) > -1">
+              <span>{{data[fieldNames.title].substring(0,data[fieldNames.title].indexOf(keyword))}}</span>
+              <span :style="{'color':  themeStore.getColorPrimary()}">{{keyword}}</span>
+              <span>{{data[fieldNames.title].substring(data[fieldNames.title].indexOf(keyword) + keyword.length)}}</span>
+            </div>
+            <span v-else>{{ data[fieldNames.title] }}</span>
+          </template>
+        </a-tree>
+      </div>
       <div v-else>
         <a-empty style="margin-top: 8px"/>
       </div>
@@ -63,7 +64,7 @@ const {treeData, fieldNames = {
   children: 'children',
   title: 'label',
   key: 'id',
-}, defaultExpandAll = false, multiple = true, showToolbar = true, showSearch = true, searchPlaceholder = "请输入关键词", bodyStyle = {padding: '8px'}, modelValue} = defineProps<{
+}, defaultExpandAll = false, multiple = true, showToolbar = true, showSearch = true, searchPlaceholder = "请输入关键词", bodyStyle = {padding: '8px'}, maxHeight, modelValue} = defineProps<{
   // 树形结构数据
   treeData: Array<any>,
   // 树形结构别名
@@ -84,10 +85,15 @@ const {treeData, fieldNames = {
   searchPlaceholder?: string,
   // 卡片body样式
   bodyStyle?: Object,
+  // 最大高度
+  maxHeight?: number,
   // 双向绑定数据
-  modelValue?: any[] | any,
+  modelValue: any[] | any,
 }>()
-const emits = defineEmits(['update:modelValue'])
+
+// update:modelValue：v-model 双向绑定
+// change 双向绑定值发生变化时触发
+const emits = defineEmits(['update:modelValue', 'change'])
 
 defineExpose({
   reset: () => handleReset()
@@ -113,7 +119,7 @@ const allKeys = ref<any[]>([])
 // 全部父级节点（children）
 const allParentKeys = ref<any[]>([])
 // 模糊搜索
-const keyword = ref<string>("")
+const keyword = ref<string>('')
 // 深度克隆的树形数据，值会跟随关键词变化
 const deepCloneTreeData = ref<any[]>(treeData)
 
@@ -164,11 +170,13 @@ const handleCheckStrictly = () => {
   }
 }
 
-// 处理重置组件：全部取消选中、取消展开、关闭父子关联，双向绑定数据清空
+// 处理重置组件：全部取消选中、取消展开、关闭父子关联，清空keyword关键字，双向绑定数据清空
 const handleReset = () => {
   treeSetting.value.expand = false
   treeSetting.value.checked = false
   treeSetting.value.checkStrictly = false
+  keyword.value = ''
+  handleChangeKeyWord()
   handleExpandAll()
   handleCheckedAll()
 }
@@ -226,10 +234,12 @@ const handleUpdateModelValue = (selected: any[]) => {
   // 多选情况下，v-model绑定数组
   if (multiple) {
     emits('update:modelValue', selected)
+    emits('change', selected)
   }
   // 反之绑定单个元素
   else {
     emits('update:modelValue', selected[0])
+    emits('change', selected[0])
   }
 }
 
@@ -285,6 +295,7 @@ watch(() => modelValue, () => {
   handleCheckedKey()
 })
 
+// 加载组件时处理v-model回显
 onMounted(() => handleCheckedKey())
 </script>
 
