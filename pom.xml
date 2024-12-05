@@ -38,7 +38,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.6</version>
+        <version>3.4.0</version>
         <relativePath/>
     </parent>
 
@@ -126,6 +126,12 @@
             <version>${xxl-job.version}</version>
         </dependency>
 
+        <!-- tianai-captcha 验证码 -->
+        <dependency>
+            <groupId>cloud.tianai.captcha</groupId>
+            <artifactId>tianai-captcha-springboot-starter</artifactId>
+            <version>1.5.1</version>
+        </dependency>
     </dependencies>
 
     <modules>
@@ -170,7 +176,7 @@
                     <include>**/*.txt</include>
                     <include>META-INF/services/*</include>
                     <include>META-INF/spring/*</include>
-                    <include>images/**/**/*</include>
+                    <include>captcha-images/**/**/*</include>
                 </includes>
             </resource>
             <resource>

@@ -16,6 +16,10 @@ interface ImportMeta {
     readonly env: ImportMetaEnv;
 }
 
+interface Window {
+    initTAC: (tacPath: string, config: object, style: object) => Promise<any>;
+}
+
 declare module 'js-cookie'
 
 declare module 'nprogress'

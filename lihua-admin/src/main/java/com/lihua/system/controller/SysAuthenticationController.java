@@ -1,5 +1,6 @@
 package com.lihua.system.controller;
 
+import cloud.tianai.captcha.application.ImageCaptchaApplication;
 import com.lihua.annotation.Log;
 import com.lihua.annotation.RateLimiter;
 import com.lihua.enums.LogTypeEnum;
@@ -19,7 +20,6 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("system")
 public class SysAuthenticationController extends BaseController {
@@ -32,6 +32,9 @@ public class SysAuthenticationController extends BaseController {
 
     @Resource
     private SysProfileService sysProfileService;
+
+    @Resource
+    private ImageCaptchaApplication imageCaptchaApplication;
 
     /**
      * 用户登录

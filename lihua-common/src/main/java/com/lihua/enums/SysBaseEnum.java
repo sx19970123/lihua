@@ -34,7 +34,12 @@ public enum SysBaseEnum {
     /**
      * 验证码redis前缀
      */
-    CAPTCHA_REDIS_PREFIX("RUNNING:CAPTCHA:"),
+    CAPTCHA_REDIS_PREFIX("REDIS_CACHE_CAPTCHA:"),
+
+    /**
+     * 二次验证redis前缀
+     */
+    SECONDARY_CAPTCHA_REDIS_PREFIX("REDIS_CACHE_SECONDARY_CAPTCHA:"),
 
     /**
      * redis缓存临时可访问文件前缀

@@ -97,6 +97,8 @@
                      @go-login="handleGoLogin"
       ></login-setting>
     </transition>
+
+    <tianai-captcha/>
   </a-flex>
 
 </template>
@@ -113,6 +115,7 @@ import token from "@/utils/Token.ts"
 import HeadThemeSwitch from "@/components/light-dark-switch/index.vue"
 import LoginSetting from "@/components/login-setting/index.vue"
 import UserRegister from "@/components/user-register/index.vue"
+import TianaiCaptcha from "@/components/tianai-captcha/index.vue"
 import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
 import {init} from "@/utils/AppInit.ts";

@@ -97,6 +97,37 @@ logging:
     com.lihua: debug
     org.springframework: info
 
+ # 滑块验证码配置， 详细请看 cloud.tianai.captcha.autoconfiguration.ImageCaptchaProperties 类
+captcha:
+  # 如果项目中使用到了redis，滑块验证码会自动把验证码数据存到redis中， 这里配置redis的key的前缀
+  prefix: REDIS_CACHE_CAPTCHA
+  # 验证码过期时间，默认是2分钟,单位毫秒， 可以根据自身业务进行调整
+  expire:
+    # 缓存时间 1分钟
+    default: 60000
+    # 点选类型验证码缓存时间 2分钟
+    WORD_IMAGE_CLICK: 120000
+  # 使用自定义资源
+  init-default-resource: true
+  # 缓存控制
+  local-cache-enabled: true
+  # 验证码缓存数量
+  local-cache-size: 20
+  # 缓存拉取失败后等待时间
+  local-cache-wait-time: 5000
+  # 缓存检查间隔
+  local-cache-period: 2000
+  # 配置字体包，供文字点选验证码使用,可以配置多个，不配置使用默认的字体
+#  font-path:
+#    - classpath:font/SimHei.ttf
+  secondary:
+    # 开启二次验证
+    enabled: true
+    # 二次验证过期时间 一分钟
+    expire: 60000
+    # 二次验证缓存key前缀
+    keyPrefix: REDIS_CACHE_SECONDARY_CAPTCHA
+
 xxl-job:
   # 是否启用定时任务
   enable: false
