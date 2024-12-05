@@ -80,16 +80,8 @@
       </div>
     </a-flex>
     <!--    验证码-->
-<!--    <transition name="verify" mode="out-in">-->
-<!--      <verify-->
-<!--          class="unselectable"-->
-<!--          v-if="enableCaptcha"-->
-<!--          @success="login"-->
-<!--          @error="loadVerify"-->
-<!--          ref="verifyRef"-->
-<!--          :captcha-type="captchaType"-->
-<!--          :imgSize="{ width: '330px', height: '155px' }"/>-->
-<!--    </transition>-->
+    <tianai-captcha ref="tianaiCaptchaRef"/>
+
     <!--    登录设置-->
     <transition name="setting" mode="out-in">
       <login-setting :component-names="settingComponentNames"
@@ -97,8 +89,6 @@
                      @go-login="handleGoLogin"
       ></login-setting>
     </transition>
-
-    <tianai-captcha/>
   </a-flex>
 
 </template>
@@ -123,8 +113,8 @@ import Token from "@/utils/Token.ts";
 import {getLoginSetting} from "@/api/system/login/Login.ts";
 
 const router = useRouter()
-//InstanceType<typeof Verify>
-const verifyRef = useTemplateRef<any>("verifyRef")
+//
+const verifyRef = useTemplateRef<InstanceType<typeof TianaiCaptcha>>("tianaiCaptchaRef")
 const rememberMe = ref<boolean>(token.enableRememberMe())
 const showSetting = ref<boolean>(false)
 const showContent = ref<boolean>(true)
@@ -220,7 +210,7 @@ const handleFinish = () => {
 }
 
 // 验证码
-const enableCaptcha = ref<boolean>(false)
+const enableCaptcha = ref<boolean>(true)
 const captchaType = ref<string>('blockPuzzle')
 // 随机加载滑块/点击验证码
 const loadVerify = () => {
@@ -231,11 +221,11 @@ const loadVerify = () => {
 }
 // 显示验证码
 const showVerify = () => {
-  verifyRef.value.show()
+  verifyRef.value?.show()
 }
 // 关闭验证码
 const hideVerify = () => {
-  verifyRef.value.closeBox()
+  verifyRef.value?.close()
 }
 // 是否启用验证码
 const captcha = async () => {
