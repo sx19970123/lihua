@@ -36,12 +36,6 @@
             <artifactId>lihua-service</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <!--        系统验证码模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-captcha</artifactId>
-            <version>1.0.0</version>
-        </dependency>
     </dependencies>
 
 </project>

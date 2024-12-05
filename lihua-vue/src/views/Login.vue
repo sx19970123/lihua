@@ -80,17 +80,16 @@
       </div>
     </a-flex>
     <!--    验证码-->
-    <transition name="verify" mode="out-in">
-      <verify
-          class="unselectable"
-          v-if="enableCaptcha"
-          @success="login"
-          @error="loadVerify"
-          ref="verifyRef"
-          :captcha-type="captchaType"
-          :imgSize="{ width: '330px', height: '155px' }"
-      />
-    </transition>
+<!--    <transition name="verify" mode="out-in">-->
+<!--      <verify-->
+<!--          class="unselectable"-->
+<!--          v-if="enableCaptcha"-->
+<!--          @success="login"-->
+<!--          @error="loadVerify"-->
+<!--          ref="verifyRef"-->
+<!--          :captcha-type="captchaType"-->
+<!--          :imgSize="{ width: '330px', height: '155px' }"/>-->
+<!--    </transition>-->
     <!--    登录设置-->
     <transition name="setting" mode="out-in">
       <login-setting :component-names="settingComponentNames"
@@ -108,7 +107,6 @@ import {useSettingStore} from "@/stores/setting.ts";
 import {useRouter} from 'vue-router'
 import {onMounted, reactive, ref, useTemplateRef} from "vue"
 import {message} from "ant-design-vue";
-import Verify from "@/components/verifition/index.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {enable} from "@/api/system/captcha/Captcha.ts";
 import token from "@/utils/Token.ts"
@@ -122,7 +120,8 @@ import Token from "@/utils/Token.ts";
 import {getLoginSetting} from "@/api/system/login/Login.ts";
 
 const router = useRouter()
-const verifyRef = useTemplateRef<InstanceType<typeof Verify>>("verifyRef")
+//InstanceType<typeof Verify>
+const verifyRef = useTemplateRef<any>("verifyRef")
 const rememberMe = ref<boolean>(token.enableRememberMe())
 const showSetting = ref<boolean>(false)
 const showContent = ref<boolean>(true)
@@ -332,7 +331,7 @@ onMounted(() => {
   transition()
   initLogin()
   handleRedirect()
-  captcha()
+  // captcha()
   initRegisterSetting()
 })
 

@@ -60,15 +60,14 @@
     </a-card>
 
     <!--    验证码-->
-    <transition name="verify" mode="out-in">
-      <verify
-          @success="handleRegister"
-          @error="loadVerify"
-          ref="verifyRef"
-          :captcha-type="captchaType"
-          :imgSize="{ width: '330px', height: '155px' }"
-      />
-    </transition>
+<!--    <transition name="verify" mode="out-in">-->
+<!--      <verify-->
+<!--          @success="handleRegister"-->
+<!--          @error="loadVerify"-->
+<!--          ref="verifyRef"-->
+<!--          :captcha-type="captchaType"-->
+<!--          :imgSize="{ width: '330px', height: '155px' }"/>-->
+<!--    </transition>-->
   </div>
 </template>
 
@@ -78,7 +77,6 @@ import PasswordInput from "@/components/password-input/index.vue"
 import type {Rule} from "ant-design-vue/es/form";
 import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
-import Verify from "@/components/verifition/index.vue";
 import {rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 const registerLoading = ref<boolean>()
@@ -161,8 +159,8 @@ const handleFinish = () => {
   verifyRef.value.show()
 }
 
-// 验证码
-const verifyRef = useTemplateRef<InstanceType<typeof Verify>>("verifyRef")
+// 验证码InstanceType<typeof Verify>
+const verifyRef = useTemplateRef<any>("verifyRef")
 const captchaType = ref<string>('blockPuzzle')
 // 随机加载滑块/点击验证码
 const loadVerify = () => {

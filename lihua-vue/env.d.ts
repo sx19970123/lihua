@@ -22,8 +22,6 @@ declare module 'nprogress'
 
 declare module 'crypto-js'
 
-declare module '@/components/verifition/index.vue'
-
 declare module 'vue-cropper'
 
 declare module 'sortablejs'

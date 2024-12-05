@@ -97,38 +97,6 @@ logging:
     com.lihua: debug
     org.springframework: info
 
-# aj 验证码
-aj:
-  captcha:
-    # 自定义滑块背景图，原图尺寸为310*155，格式必须为png，存放在lihua-captcha模块的resource/images/custom-jigsaw/original目录下
-    jigsaw: classpath:images/custom-jigsaw
-    # 存放点击验证码图片的目录，存放在lihua-captcha模块的resource/images/custom-pic-click目录下
-    pic-click: classpath:images/custom-pic-click
-    # 验证码缓存类型，支持 redis/local
-    cache-type: redis
-    # 实例化验证码类型
-    type: default
-    # 水印
-    water-mark: '@lihua'
-    # 误差值 5 像素
-    slip-offset: 5
-    # 坐标加密
-    aes-status: true
-    # 点选字体大小
-    font-size: 30
-    # 一分钟接口请求限制
-    #req-frequency-limit-enable: false
-    # 验证失败10次锁定get接口
-    #req-get-lock-limit: 10
-    # 验证失败后锁定时间间隔 360 秒
-    #req-get-lock-seconds: 360
-    # get请求一分钟内次数限制
-    #req-get-minute-limit: 30
-    # check接口一分钟内次数限制
-    #req-check-minute-limit: 60
-    # verify接口一分钟内次数限制
-    #req-verify-minute-limit: 60
-
 xxl-job:
   # 是否启用定时任务
   enable: false

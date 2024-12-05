@@ -133,7 +133,6 @@
         <module>lihua-core</module>
         <module>lihua-common</module>
         <module>lihua-service</module>
-        <module>lihua-captcha</module>
     </modules>
 
     <build>
