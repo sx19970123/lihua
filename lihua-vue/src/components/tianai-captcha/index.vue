@@ -1,8 +1,6 @@
 <template>
   <div>
-    <transition name="verify" mode="out-in">
-      <div id="lihua-tian-captcha" class="tian-captcha"/>
-    </transition>
+    <div id="lihua-tian-captcha" class="tian-captcha"/>
     <Mask :show-mask="showMask"/>
   </div>
 </template>
@@ -137,7 +135,7 @@ const destroy = () => {
 <style>
 /* 验证码外部容器样式 */
 #tianai-captcha-parent {
-  box-shadow: var(--lihua-dark-box-shadow) !important;
+  box-shadow: var(--lihua-light-box-shadow) !important;
   border-radius: 8px !important;
   width: 334px !important;
   height: 326px !important;
@@ -179,6 +177,10 @@ const destroy = () => {
 }
 
 [data-theme = 'dark'] {
+  /* 验证码外部容器样式 */
+  #tianai-captcha-parent {
+    box-shadow: var(--lihua-dark-box-shadow) !important;
+  }
   /* 滑动提示文字样式 */
   #tianai-captcha-slider-move-track-font {
     color: rgba(255, 255, 255, 0.85) !important;
