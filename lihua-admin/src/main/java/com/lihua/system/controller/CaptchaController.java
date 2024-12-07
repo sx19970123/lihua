@@ -6,18 +6,25 @@ import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import cloud.tianai.captcha.common.constant.CaptchaTypeConstant;
 import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
+import com.lihua.annotation.PreventDuplicateSubmit;
+import com.lihua.model.web.BaseController;
+import com.lihua.system.service.SysSettingService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 
+
 @RestController
 @RequestMapping("captcha")
-public class CaptchaController {
+public class CaptchaController extends BaseController {
 
     @Resource
     private ImageCaptchaApplication imageCaptchaApplication;
+
+    @Resource
+    private SysSettingService sysSettingService;
 
     // 验证码验证方式枚举
     private static final String[] CAPTCHA_TYPES = {
@@ -26,6 +33,12 @@ public class CaptchaController {
             CaptchaTypeConstant.ROTATE,
             CaptchaTypeConstant.WORD_IMAGE_CLICK
     };
+
+    // 是否启用验证码
+    @GetMapping("enable")
+    public String enable() {
+        return success(sysSettingService.enableCaptcha());
+    }
 
     // 获取验证码
     @PostMapping("get")

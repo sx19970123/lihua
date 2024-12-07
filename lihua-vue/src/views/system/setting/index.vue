@@ -15,7 +15,7 @@
 
             <a-menu-item-group title="登录设置">
               <a-menu-item key="SignInSetting"> 自助注册</a-menu-item>
-              <a-menu-item key="VerificationCodeSetting"> 登录验证码</a-menu-item>
+              <a-menu-item key="VerificationCodeSetting"> 验证码</a-menu-item>
             </a-menu-item-group>
 
             <a-menu-item-group title="访问控制">

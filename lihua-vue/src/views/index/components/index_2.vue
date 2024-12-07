@@ -95,7 +95,7 @@
           </a-typography-title>
           <a-typography-text>
             <p style="text-indent: 2em">
-              管理员角色用户可以对系统进行进一步配置，包括默认密码设置、定期修改密码、同账号登录限制、自助注册配置、登录验证码开关、IP 黑名单和灰色模式。
+              管理员角色用户可以对系统进行进一步配置，包括默认密码设置、定期修改密码、同账号登录限制、自助注册配置、验证码开关、IP 黑名单和灰色模式。
             </p>
           </a-typography-text>
           <a-typography-title :level="5">

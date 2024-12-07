@@ -1,4 +1,4 @@
-package com.lihua.system.banner;
+package com.lihua.started;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

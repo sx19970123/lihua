@@ -1,6 +1,7 @@
 package com.lihua.system.controller;
 
 import cloud.tianai.captcha.application.ImageCaptchaApplication;
+import cloud.tianai.captcha.spring.plugins.secondary.SecondaryVerificationApplication;
 import com.lihua.annotation.Log;
 import com.lihua.annotation.RateLimiter;
 import com.lihua.enums.LogTypeEnum;
@@ -43,16 +44,11 @@ public class SysAuthenticationController extends BaseController {
     @RateLimiter
     @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password", "requestKey"}, recordResult = false)
     public String login(@RequestBody @Valid CurrentUser currentUser) {
-        // todo 验证码
-        // 开启验证码情况下进行验证
-//        if (sysSettingService.enableCaptcha()) {
-//            CaptchaVO captchaVO = new CaptchaVO();
-//            captchaVO.setCaptchaVerification(currentUser.getCaptchaVerification());
-//            ResponseModel verificationModel = captchaService.verification(captchaVO);
-//            if (!verificationModel.isSuccess()) {
-//                return error(ResultCodeEnum.ERROR, verificationModel.getRepMsg());
-//            }
-//        }
+        // 校验验证码
+        boolean checked = checkCaptcha(currentUser.getCaptchaVerification());
+        if (!checked) {
+            return error(ResultCodeEnum.CAPTCHA_ERROR);
+        }
 
         // 0.对密码进行AES解密
         currentUser.setPassword(SecurityUtils.decryptGetPassword(currentUser.getPassword(), currentUser.getRequestKey()));
@@ -125,14 +121,11 @@ public class SysAuthenticationController extends BaseController {
     @RateLimiter
     @Log(description = "用户注册", type = LogTypeEnum.REGISTER, excludeParams = {"password", "confirmPassword"}, recordResult = false)
     public String register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO) {
-        // todo 验证码
         // 校验验证码
-//        CaptchaVO captchaVO = new CaptchaVO();
-//        captchaVO.setCaptchaVerification(sysRegisterDTO.getCaptchaVerification());
-//        ResponseModel verificationModel = captchaService.verification(captchaVO);
-//        if (!verificationModel.isSuccess()) {
-//            return error(ResultCodeEnum.ERROR, verificationModel.getRepMsg());
-//        }
+        boolean checked = checkCaptcha(sysRegisterDTO.getCaptchaVerification());
+        if (!checked) {
+            return error(ResultCodeEnum.CAPTCHA_ERROR);
+        }
 
         // 获取解密后的密码
         String password = SecurityUtils.decryptGetPassword(sysRegisterDTO.getPassword(), sysRegisterDTO.getPasswordRequestKey());
@@ -152,5 +145,17 @@ public class SysAuthenticationController extends BaseController {
 
         // 注册
         return success(sysAuthenticationService.register(sysRegisterDTO.getUsername(), password));
+    }
+
+    // 校验验证码
+    private boolean checkCaptcha(String captchaVerification) {
+        if (!sysSettingService.enableCaptcha()) {
+            return true;
+        }
+
+        if (imageCaptchaApplication instanceof SecondaryVerificationApplication) {
+            return ((SecondaryVerificationApplication) imageCaptchaApplication).secondaryVerification(captchaVerification);
+        }
+        return false;
     }
 }

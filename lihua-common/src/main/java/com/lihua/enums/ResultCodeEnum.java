@@ -24,7 +24,8 @@ public enum ResultCodeEnum {
     RATE_LIMITER_ERROR (502,"系统繁忙，请稍后再试"),
     DUPLICATE_SUBMIT_ERROR (503,"请勿重复提交"),
     MAX_UPLOAD_SIZE_EXCEEDED_ERROR (504,"上传的文件超过了允许的最大大小限制"),
-    SERVER_UNAVAILABLE (505,"服务器维护中");
+    SERVER_UNAVAILABLE (505,"服务器维护中"),
+    CAPTCHA_ERROR(506,"验证码错误");
 
     /**
      * 状态码

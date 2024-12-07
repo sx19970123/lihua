@@ -58,16 +58,8 @@
       </div>
       </transition>
     </a-card>
-
     <!--    验证码-->
-<!--    <transition name="verify" mode="out-in">-->
-<!--      <verify-->
-<!--          @success="handleRegister"-->
-<!--          @error="loadVerify"-->
-<!--          ref="verifyRef"-->
-<!--          :captcha-type="captchaType"-->
-<!--          :imgSize="{ width: '330px', height: '155px' }"/>-->
-<!--    </transition>-->
+    <tianai-captcha ref="tianaiCaptchaRef" @success="handleRegister"/>
   </div>
 </template>
 
@@ -79,8 +71,12 @@ import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
 import {rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
 const registerLoading = ref<boolean>()
 const show = ref<boolean>(false)
+const {enableCaptcha} = defineProps<{
+  enableCaptcha: boolean
+}>()
 // 向父组件抛出切登录方法
 const emits = defineEmits(['goLogin'])
 const goLogin = (clearLoginForm: boolean) => {
@@ -154,24 +150,25 @@ const rules: Record<string, Rule[]> = {
   ]
 }
 
-// 表单验证通过后提交注册
+// 触发注册
 const handleFinish = () => {
-  verifyRef.value.show()
+  if (enableCaptcha) {
+    showVerify()
+  } else {
+    handleRegister("registerCaptcha")
+  }
 }
 
 // 验证码InstanceType<typeof Verify>
-const verifyRef = useTemplateRef<any>("verifyRef")
-const captchaType = ref<string>('blockPuzzle')
-// 随机加载滑块/点击验证码
-const loadVerify = () => {
-  setTimeout(() => {
-    captchaType.value = Math.random() < 0.5 ? 'blockPuzzle' : 'clickWord';
-  },700)
+const verifyRef = useTemplateRef<InstanceType<typeof TianaiCaptcha>>("tianaiCaptchaRef")
 
+// 表单验证通过后提交注册
+const showVerify = () => {
+  verifyRef.value?.show()
 }
 
 // 用户注册
-const handleRegister = async ({captchaVerification}: { captchaVerification: string }) => {
+const handleRegister = async (captchaVerification: string) => {
   registerLoading.value = true
   const {username, password, confirmPassword} = userRegister.value
   try {

@@ -75,12 +75,12 @@
             </div>
           </a-card>
 <!--            用户注册-->
-          <user-register v-else @go-login="handleShowLogin"/>
+          <user-register v-else @go-login="handleShowLogin" :enable-captcha="enableCaptcha"/>
         </transition>
       </div>
     </a-flex>
     <!--    验证码-->
-    <tianai-captcha ref="tianaiCaptchaRef"/>
+    <tianai-captcha ref="tianaiCaptchaRef" @success="login"/>
 
     <!--    登录设置-->
     <transition name="setting" mode="out-in">
@@ -113,7 +113,6 @@ import Token from "@/utils/Token.ts";
 import {getLoginSetting} from "@/api/system/login/Login.ts";
 
 const router = useRouter()
-//
 const verifyRef = useTemplateRef<InstanceType<typeof TianaiCaptcha>>("tianaiCaptchaRef")
 const rememberMe = ref<boolean>(token.enableRememberMe())
 const showSetting = ref<boolean>(false)
@@ -153,7 +152,7 @@ const initLogin = () => {
 }
 
 // 登录请求
-const login = async ({captchaVerification}: { captchaVerification: string }) => {
+const login = async (captchaVerification: string) => {
   loginLoading.value = true
   try {
     const {code, msg}: ResponseType<string> = await userStore.login(loginForm.username, loginForm.password, captchaVerification);
@@ -200,25 +199,18 @@ const login = async ({captchaVerification}: { captchaVerification: string }) => 
   }
 }
 
+// 验证码
+const enableCaptcha = ref<boolean>(false)
+
 // 触发登录
 const handleFinish = () => {
   if (enableCaptcha.value) {
     showVerify()
   } else {
-    login({captchaVerification: 'loginCaptcha'})
+    login('loginCaptcha')
   }
 }
 
-// 验证码
-const enableCaptcha = ref<boolean>(true)
-const captchaType = ref<string>('blockPuzzle')
-// 随机加载滑块/点击验证码
-const loadVerify = () => {
-  setTimeout(() => {
-    captchaType.value = Math.random() < 0.5 ? 'blockPuzzle' : 'clickWord';
-  },700)
-
-}
 // 显示验证码
 const showVerify = () => {
   verifyRef.value?.show()
@@ -324,7 +316,7 @@ onMounted(() => {
   transition()
   initLogin()
   handleRedirect()
-  // captcha()
+  captcha()
   initRegisterSetting()
 })
 

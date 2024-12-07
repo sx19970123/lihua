@@ -1,11 +1,11 @@
 <template>
   <div style="margin: 8px">
     <a-form layout="vertical">
-      <a-form-item label="登录验证码">
+      <a-form-item label="验证码">
         <template #tooltip>
           <a-tooltip>
             <template #title>
-              登陆时是否需要验证码
+              登陆或注册等场景下是否需要验证码
             </template>
             <QuestionCircleOutlined style="margin-left: 4px"/>
           </a-tooltip>
@@ -43,7 +43,7 @@ const settingForm = ref<VerificationCode>({
 
 // 保存到数据库中的对象
 const setting = ref<SystemSetting>({
-  settingName: '登录验证码',
+  settingName: '验证码',
   settingComponentName: componentName,
   settingJson: JSON.stringify(settingForm.value)
 })
