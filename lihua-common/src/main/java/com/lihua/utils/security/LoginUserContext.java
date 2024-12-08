@@ -4,6 +4,7 @@ import com.lihua.cache.RedisCache;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.model.security.*;
 import com.lihua.utils.spring.SpringUtils;
+import com.lihua.utils.tree.TreeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -72,7 +73,8 @@ public class LoginUserContext implements Serializable {
      * 获取当前用户所有部门（树型结构）
      */
     public static List<CurrentDept> getDeptTree() {
-        return getLoginUser().getDeptTree();
+        List<CurrentDept> deptList = getLoginUser().getDeptList();
+        return TreeUtils.buildTree(deptList);
     }
 
     /**

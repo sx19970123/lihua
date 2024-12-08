@@ -57,11 +57,6 @@ public class LoginUser implements UserDetails {
     private List<CurrentDept> deptList = new ArrayList<>();
 
     /**
-     * 用户部门信息（tree结构）
-     */
-    private List<CurrentDept> deptTree = new ArrayList<>();
-
-    /**
      * 用户岗位信息
      */
     private List<CurrentPost> postList = new ArrayList<>();

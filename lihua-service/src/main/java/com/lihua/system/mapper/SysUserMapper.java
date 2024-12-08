@@ -44,7 +44,4 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     // 根据用户id获取用户头像/昵称等信息
     List<SysUser> queryOptionByUserIds(@Param("userIdList") List<String> userIdList);
-
-    // 检查用户名是否存在
-    String checkUserName(String username);
 }

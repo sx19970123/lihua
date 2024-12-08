@@ -94,8 +94,7 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
         } else {
             deptList = sysDeptMapper.selectByUserId(userId);
         }
-        loginUser.setDeptList(deptList)
-            .setDeptTree(TreeUtils.buildTree(new ArrayList<>(deptList)));
+        loginUser.setDeptList(deptList);
 
         LoginUserManager.setLoginUserCache(loginUser);
     }

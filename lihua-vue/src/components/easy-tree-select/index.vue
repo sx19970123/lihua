@@ -5,7 +5,7 @@
       <a-checkable-tag v-if="multiple" v-model:checked="treeSetting.checkStrictly" @click="handleCheckStrictly">父子关联</a-checkable-tag>
       <a-checkable-tag v-model:checked="treeSetting.expand" @change="handleExpandAll">展开/折叠</a-checkable-tag>
     </div>
-    <a-card :body-style="bodyStyle" :bordered="bordered">
+    <a-card :body-style="bodyStyle" :bordered="bordered" style="box-shadow: none">
       <a-input v-if="showSearch" class="keyword-input" :placeholder="searchPlaceholder" v-model:value="keyword" allowClear @change="handleChangeKeyWord()"/>
       <div :style="maxHeight ? {maxHeight: maxHeight + 'px'} : {}" class="scrollbar" v-if="deepCloneTreeData && deepCloneTreeData.length > 0">
         <a-tree :tree-data="deepCloneTreeData"
@@ -48,6 +48,7 @@ import ATree from "ant-design-vue/es/tree/Tree"
 import { traverse } from "@/utils/Tree.ts";
 import { cloneDeep } from 'lodash-es'
 import { useThemeStore } from "@/stores/theme.ts";
+import DefaultDept from "@/components/default-dept-select/index.vue";
 const themeStore = useThemeStore();
 // 是否使用具名插槽title
 const slots = useSlots();

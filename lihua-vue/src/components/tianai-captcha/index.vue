@@ -205,10 +205,16 @@ const replaceLoadingElement = () => {
     background-size: 120%;
   }
 }
-
 /* 验证失败样式 */
 #tianai-captcha .content .tianai-captcha-tips.tianai-captcha-tips-error {
   background-color: #ff4d4f !important;
+}
+/* 拼接类型验证统一圆角 */
+#tianai-captcha.tianai-captcha-concat .tianai-captcha-slider-concat-bg-img {
+  border-radius: 5px;
+}
+#tianai-captcha.tianai-captcha-concat .tianai-captcha-slider-concat-img-div {
+  border-radius: 5px 5px 0 0;
 }
 [data-theme = 'dark'] {
   /* 验证码外部容器样式 */

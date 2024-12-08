@@ -3,8 +3,6 @@ package com.lihua.system.service.impl;
 import com.lihua.config.LihuaConfig;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
-import com.lihua.system.mapper.SysMenuMapper;
-import com.lihua.system.mapper.SysRoleMapper;
 import com.lihua.system.mapper.SysUserMapper;
 import com.lihua.utils.date.DateUtils;
 import jakarta.annotation.Resource;
@@ -15,12 +13,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LoginUserDetailsServiceImpl implements UserDetailsService {
+
     @Resource
     private SysUserMapper sysUserMapper;
-    @Resource
-    private SysMenuMapper sysMenuMapper;
-    @Resource
-    private SysRoleMapper sysRoleMapper;
+
     @Resource
     private LihuaConfig lihuaConfig;
 

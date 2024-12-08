@@ -17,6 +17,7 @@ import com.lihua.system.service.SysProfileService;
 import com.lihua.system.service.SysSettingService;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
+import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +31,6 @@ public class SysAuthenticationController extends BaseController {
 
     @Resource
     private SysSettingService sysSettingService;
-
-    @Resource
-    private SysProfileService sysProfileService;
 
     @Resource
     private ImageCaptchaApplication imageCaptchaApplication;
@@ -76,7 +74,7 @@ public class SysAuthenticationController extends BaseController {
     @GetMapping("checkLoginSetting")
     public String checkLoginSetting() {
         String loginSettingComponentName = sysAuthenticationService
-                .checkLoginSetting(LoginUserContext.getLoginUser(), sysProfileService.getPassword());
+                .checkLoginSetting(LoginUserContext.getLoginUser());
         return success(loginSettingComponentName);
     }
 
@@ -89,7 +87,7 @@ public class SysAuthenticationController extends BaseController {
         // 前端 store 用户数据
         AuthInfo authInfo = new AuthInfo();
         authInfo.setUserInfo(loginUser.getUser() != null ? loginUser.getUser() : new CurrentUser());
-        authInfo.setDepts(loginUser.getDeptTree());
+        authInfo.setDepts(TreeUtils.buildTree(loginUser.getDeptList()));
         authInfo.setPosts(loginUser.getPostList());
         authInfo.setRoles(loginUser.getRoleList());
         authInfo.setPermissions(loginUser.getPermissionList().stream().filter(item -> !item.startsWith("ROLE_")).toList());

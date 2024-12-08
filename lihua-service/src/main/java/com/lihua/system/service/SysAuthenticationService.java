@@ -13,7 +13,7 @@ public interface SysAuthenticationService {
     /**
      * 登录后必要信息校验，对应于前端 components/login-setting 下的组件进行处理
      */
-    String checkLoginSetting(LoginUser loginUser, String password);
+    String checkLoginSetting(LoginUser loginUser);
 
     /**
      * 缓存用户信息
