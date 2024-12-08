@@ -167,7 +167,7 @@ const login = async (captchaVerification: string) => {
       const loginSettingResp = await getLoginSetting()
       if (loginSettingResp.code === 200) {
         // 登录后设置返回data为空，表示无需进行额外设置，进入首页
-        if (loginSettingResp.data === null) {
+        if (loginSettingResp.data.length === 0) {
           message.success("登录成功")
           await router.push("/index");
         } else {
@@ -222,7 +222,7 @@ const captcha = async () => {
     }
   } catch (e) {
     if (e instanceof ResponseError) {
-      errorMessage.value = '无法访问服务器，请检查网络连接'
+      errorMessage.value = '无法访问服务器'
     } else {
       console.error(e)
     }
@@ -240,18 +240,17 @@ const handleRedirect = () => {
 
 // 当需要登陆后配置时，刷新页面读取路由携带参数，加载配置页面
 const routerCheckLoginSetting = () => {
-  const settingComponentNameList = history.state.settingComponentNameList
-  if (settingComponentNameList && settingComponentNameList.length > 0) {
-    startLoginSetting(settingComponentNameList)
-  }
+  startLoginSetting(history.state.settingComponentNameList)
 }
 
 // 开始登录后配置
 const startLoginSetting = (settingComponentNameList: string[]) => {
-  showLogin.value = false
-  showSetting.value = true
-  showContent.value = false
-  settingComponentNames.value = settingComponentNameList
+  if (settingComponentNameList && settingComponentNameList.length > 0) {
+    showLogin.value = false
+    showSetting.value = true
+    showContent.value = false
+    settingComponentNames.value = settingComponentNameList
+  }
 }
 
 // 显示登录卡片动画
