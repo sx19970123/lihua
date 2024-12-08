@@ -80,7 +80,6 @@ lihua
             <a-descriptions-item label="表单验证">spring-boot-starter-validation</a-descriptions-item>
             <a-descriptions-item label="服务器信息">oshi-core</a-descriptions-item>
             <a-descriptions-item label="定时任务">xxl-job-core</a-descriptions-item>
-            <a-descriptions-item label="验证码">spring-boot-starter-captcha</a-descriptions-item>
           </a-descriptions>
         </div>
       </a-card>

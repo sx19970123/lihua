@@ -38,9 +38,9 @@
         </a-typography-link>
       </a-card-grid>
       <a-card-grid >
-        <a-typography-link ellipsis href="https://gitee.com/anji-plus/captcha/" target="_blank">
-          <img src="../static/aj-logo.jpg" style="width: 16px;height: 16px;margin-right: 4px"/>
-          AJ-Captcha
+        <a-typography-link ellipsis href="https://gitee.com/dromara/tianai-captcha" target="_blank">
+          <img src="../static/tianai.png" style="width: 16px;height: 16px;margin-right: 4px"/>
+          tianaiCAPTCHA
         </a-typography-link>
       </a-card-grid>
       <a-card-grid >

@@ -3,6 +3,8 @@ package com.lihua.system.service;
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.security.CurrentUser;
 
+import java.util.List;
+
 public interface SysAuthenticationService {
 
     /**
@@ -13,7 +15,7 @@ public interface SysAuthenticationService {
     /**
      * 登录后必要信息校验，对应于前端 components/login-setting 下的组件进行处理
      */
-    String checkLoginSetting(LoginUser loginUser);
+    List<String> checkLoginSetting(LoginUser loginUser);
 
     /**
      * 缓存用户信息

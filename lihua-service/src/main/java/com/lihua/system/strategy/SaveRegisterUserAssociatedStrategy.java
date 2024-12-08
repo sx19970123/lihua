@@ -2,7 +2,6 @@ package com.lihua.system.strategy;
 
 import com.lihua.system.model.dto.SysSettingDTO;
 
-import java.util.List;
 
 /**
  * 保存注册用户关联数据

@@ -31,8 +31,9 @@ router.beforeEach(async (to, from, next) => {
                 if (to.fullPath === '/login' || !Token.getLoginSettingResult()) {
                     const loginSettingResp = await getLoginSetting()
                     if (loginSettingResp.code === 200) {
-                        if (loginSettingResp.data !== null) {
-                            next({ name: 'Login', state: {data: loginSettingResp.data} });
+                        const data = loginSettingResp.data
+                        if (data.length > 0) {
+                            next({ name: 'Login', state: {settingComponentNameList: data} });
                         }
                     } else {
                         message.error(loginSettingResp.msg)

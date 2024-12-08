@@ -14,7 +14,7 @@
       <div class="form">
         <transition name="card" mode="out-in">
 <!--      右侧表单-->
-          <a-card class="login-card" v-if="showLogin" v-show="show">
+          <a-card class="login-card" v-if="isLogin" v-show="showLogin">
             <div style="margin: 16px">
               <div class="login-title">
                 <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
@@ -22,7 +22,7 @@
                 <!--                    根据配置显示注册-->
                 <div v-if="enableRegister">
                   <a-typography-text>没有账户？</a-typography-text>
-                  <a-typography-link @click="showLogin = false">快速注册
+                  <a-typography-link @click="isLogin = false">快速注册
                     <RightOutlined/>
                   </a-typography-link>
                 </div>
@@ -126,9 +126,9 @@ interface LoginFormType {
   password: string
 }
 // 显示登录卡片
-const show = ref<boolean>(false)
+const showLogin = ref<boolean>(false)
 // 显示登录/注册组件
-const showLogin = ref<boolean>(true)
+const isLogin = ref<boolean>(true)
 
 const loginForm = reactive<LoginFormType>({
   username: '',
@@ -143,7 +143,7 @@ const loginRoles: Record<string, Rule[]> = {
 }
 
 // 启用记住账号后赋值账号密码
-const initLogin = () => {
+const initRememberMe = () => {
   if (rememberMe.value) {
     const usernamePassword = token.getUsernamePassword()
     loginForm.username = usernamePassword.username
@@ -171,14 +171,9 @@ const login = async (captchaVerification: string) => {
           message.success("登录成功")
           await router.push("/index");
         } else {
-          hideVerify()
           await init()
-          // 加载登录配置
-          showSetting.value = true
-          showContent.value = false
-          settingComponentNames.value.push(...loginSettingResp.data.split(","))
-          // 关闭登录卡片
-          show.value = false
+          // 开始登录后配置
+          startLoginSetting(loginSettingResp.data)
         }
       } else {
         message.error(loginSettingResp.msg)
@@ -215,10 +210,7 @@ const handleFinish = () => {
 const showVerify = () => {
   verifyRef.value?.show()
 }
-// 关闭验证码
-const hideVerify = () => {
-  verifyRef.value?.close()
-}
+
 // 是否启用验证码
 const captcha = async () => {
   try {
@@ -248,24 +240,29 @@ const handleRedirect = () => {
 
 // 当需要登陆后配置时，刷新页面读取路由携带参数，加载配置页面
 const routerCheckLoginSetting = () => {
-  if (history.state.data) {
-    showSetting.value = true
-    showContent.value = false
-    settingComponentNames.value.push(...history.state.data.split(","))
+  const settingComponentNameList = history.state.settingComponentNameList
+  if (settingComponentNameList && settingComponentNameList.length > 0) {
+    startLoginSetting(settingComponentNameList)
   }
 }
 
-// 动画效果
-const transition = () => {
-  setTimeout(() => {
-    show.value = true
-  }, 100)
+// 开始登录后配置
+const startLoginSetting = (settingComponentNameList: string[]) => {
+  showLogin.value = false
+  showSetting.value = true
+  showContent.value = false
+  settingComponentNames.value = settingComponentNameList
+}
+
+// 显示登录卡片动画
+const showLoginCardTransition = () => {
+  setTimeout(() => showLogin.value = true, 100)
 }
 
 // 从注册页面/配置页面切换到登录页面
 const handleShowLogin = (clearLoginForm: boolean) => {
-  showLogin.value = true
-  show.value = false
+  isLogin.value = true
+  showLogin.value = false
 
   // 根据参数清空表单
   if (clearLoginForm) {
@@ -274,9 +271,7 @@ const handleShowLogin = (clearLoginForm: boolean) => {
     rememberMe.value = false
   }
 
-  setTimeout(() => {
-    show.value = true
-  }, 100)
+  showLoginCardTransition()
 }
 
 // 从配置页面退回到登录页面
@@ -287,8 +282,8 @@ const handleGoLogin = async () => {
   showSetting.value = false
   settingComponentNames.value = []
   // 清空路由参数
-  if (history.state.data) {
-    history.state.data = undefined
+  if (history.state.settingComponentNameList) {
+    history.state.settingComponentNameList = undefined
   }
   // 没有勾选记住账号情况下清空账号密码
   if (!rememberMe.value) {
@@ -303,21 +298,29 @@ const handleGoLogin = async () => {
 
 }
 
+// 是否开启自处注册
 const enableRegister = ref<boolean>(false)
-const initRegisterSetting = async () => {
-  const resp = await settingStore.getSetting<SignIn>('SignInSetting')
-  if (resp) {
-    enableRegister.value = resp.enable || false
-  }
+const initRegisterSetting = () => {
+   settingStore.getSetting<SignIn>('SignInSetting').then(resp => {
+     if (resp) {
+       enableRegister.value = resp.enable || false
+     }
+   })
 }
 
 onMounted(() => {
-  routerCheckLoginSetting()
-  transition()
-  initLogin()
-  handleRedirect()
-  captcha()
+  // 是否开启注册
   initRegisterSetting()
+  // 显示登录卡片
+  showLoginCardTransition()
+  // 加载记住我
+  initRememberMe()
+  // 是否启用验证码
+  captcha()
+  // 检查history.state中是否存在登陆后配置
+  routerCheckLoginSetting()
+  // 检查history.state中是否存在异常提示
+  handleRedirect()
 })
 
 </script>

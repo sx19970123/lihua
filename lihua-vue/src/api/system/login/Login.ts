@@ -62,7 +62,7 @@ export const register = (username: string,
 
 // 登录后必要信息校验
 export const getLoginSetting = () => {
-    return request<string | null>({
+    return request<string[]>({
         url: '/system/checkLoginSetting',
         method: 'get',
     })

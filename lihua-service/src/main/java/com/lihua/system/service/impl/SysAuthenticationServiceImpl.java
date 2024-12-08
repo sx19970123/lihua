@@ -69,7 +69,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
 
     @Override
-    public String checkLoginSetting(LoginUser loginUser) {
+    public List<String> checkLoginSetting(LoginUser loginUser) {
         // 需要进行登陆后设置的组件名集合
         List<String> loginSettingComponentNameList = new ArrayList<>();
 
@@ -85,13 +85,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             }
         });
 
-        // 将对应组件名称处理为逗号分割返回
-        String loginSettingComponentName = null;
-        if (!loginSettingComponentNameList.isEmpty()) {
-            loginSettingComponentName = String.join(",", loginSettingComponentNameList);
-        }
-
-        return loginSettingComponentName;
+        return loginSettingComponentNameList;
     }
 
 

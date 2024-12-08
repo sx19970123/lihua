@@ -13,7 +13,6 @@ import com.lihua.model.security.LoginUser;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.dto.SysRegisterDTO;
 import com.lihua.system.service.SysAuthenticationService;
-import com.lihua.system.service.SysProfileService;
 import com.lihua.system.service.SysSettingService;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
@@ -73,9 +72,7 @@ public class SysAuthenticationController extends BaseController {
      */
     @GetMapping("checkLoginSetting")
     public String checkLoginSetting() {
-        String loginSettingComponentName = sysAuthenticationService
-                .checkLoginSetting(LoginUserContext.getLoginUser());
-        return success(loginSettingComponentName);
+        return success(sysAuthenticationService.checkLoginSetting(LoginUserContext.getLoginUser()));
     }
 
     /**

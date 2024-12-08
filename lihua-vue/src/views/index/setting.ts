@@ -4,10 +4,20 @@
  * 项目开发可以将 views/index 中内容删除，在 router 中重新配置首页即可
  */
 export const versionInfo = {
-    springBootVersion: ' 3.3.6',
+    springBootVersion: ' 3.4.0',
     vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.0.0-beta.16',
+            updateDate: '2024-12-08',
+            updateContent: [
+                '1. 因spring boot 3.4.0兼容性问题，更换系统验证码实现，由aj替换为tianai',
+                '2. 优化后端 获取登录用户信息、检查登录后设置、用户注册关联表保存 代码结构，进行功能扩展时添加对应接口的实现类即可',
+                '3. spring boot版本更新到 3.4.0',
+                '4. 其他细节优化调整'
+            ]
+        },
         {
             version: '1.0.0-beta.15',
             updateDate: '2024-12-01',
@@ -201,6 +211,15 @@ export const versionInfo = {
 
 // 更新记录
 const updateRecords = [
+    {
+        version: '1.0.0-beta.16',
+        record: [
+            '1. 因spring boot 3.4.0兼容性问题，更换系统验证码实现，由aj替换为tianai',
+            '2. 优化后端 获取登录用户信息、检查登录后设置、用户注册关联表保存 代码结构，进行功能扩展时添加对应接口的实现类即可',
+            '3. spring boot版本更新到 3.4.0',
+            '4. 其他细节优化调整'
+        ]
+    },
     {
         version: '1.0.0-beta.15',
         record: [
