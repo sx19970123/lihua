@@ -48,7 +48,6 @@ import ATree from "ant-design-vue/es/tree/Tree"
 import { traverse } from "@/utils/Tree.ts";
 import { cloneDeep } from 'lodash-es'
 import { useThemeStore } from "@/stores/theme.ts";
-import DefaultDept from "@/components/default-dept-select/index.vue";
 const themeStore = useThemeStore();
 // 是否使用具名插槽title
 const slots = useSlots();
