@@ -212,6 +212,13 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0-beta.17',
+        record: [
+            '1. 优化expandable-card组件在不传入middle插槽时使用detail过渡',
+            '2. 新增expandable-card组件演示demo',
+        ]
+    },
+    {
         version: '1.0.0-beta.16',
         record: [
             '1. 因spring boot 3.4.0兼容性问题，更换系统验证码实现，由aj替换为tianai',

@@ -1,13 +1,12 @@
 <template>
   <div>
     <!-- 展示 overview 和 detail 的容器-->
-    <div
-        class="expandable-card-container"
-        ref="containerRef"
-        :style="style"
-        @click="handleClickCard"
-        @mouseover="handleMouseOverCard"
-        @mouseleave="handleMouseLeaveCard"
+    <div class="expandable-card"
+         ref="containerRef"
+         :style="style"
+         @click="handleClickCard"
+         @mouseover="handleMouseOverCard"
+         @mouseleave="handleMouseLeaveCard"
     >
       <!-- 展示概述信息 -->
       <div v-if="showStatus === 'ready'">
@@ -16,12 +15,14 @@
       <!-- 过渡时展示自定义封面 -->
       <div v-if="showStatus === 'activity' || showStatus === 'kill'"
            class="expandable-card-middle"
-           style="display: flex; height: 100%; width: 100%"
            :style="props.middleStyle">
-        <slot name="middle"></slot>
+<!--        使用了自定义过渡插槽-->
+        <slot name="middle" v-if="hasMiddleSlot"/>
+<!--        没使用自定义过渡，过渡时展示详情插槽-->
+        <slot name="detail" v-else/>
       </div>
-      <!-- 当 showStatus !== 'complete' 时，执行动画前为获取其高度，会暂时将display设置为block，这不能在页面显示，所以showStatus === 'complete' 之前设置为全透明 -->
-      <div v-show="showStatus === 'complete'" ref="detailRef" :style="showStatus === 'complete' ? 'opacity: 1' : 'opacity: 0'">
+      <!-- 需要动态设置detail内的元素高度，所以需要保留detail的dom节点，所以showStatus === 'complete' 之前设置为全透明 -->
+      <div v-show="showStatus === 'complete'" ref="detailRef" :style="{opacity: showStatus === 'complete' ? 1 : 0}">
         <slot name="detail"></slot>
       </div>
     </div>
@@ -39,9 +40,12 @@
 <script setup lang="ts">
 import Mask from "@/components/mask/index.vue"
 import { gsap } from 'gsap';
-import {onMounted, onUnmounted, ref, useTemplateRef, watch} from "vue";
+import {onMounted, onUnmounted, ref, useSlots, useTemplateRef, watch} from "vue";
 import type { CSSProperties } from 'vue';
 import {hiddenOverflowY} from "@/utils/Scrollbar.ts";
+// 是否使用具名插槽middle
+const slots = useSlots();
+const hasMiddleSlot = !!slots.middle
 // 接受父组件参数
 const props = defineProps({
   // 展开后的宽度
@@ -117,7 +121,8 @@ const init = () => {
   const showStatus = ref<StatusType>('ready')
   // 展开后改变css定位布局
   const style = ref<CSSProperties>({position: 'static'})
-
+  // 展开后的高度
+  const expandedHeight = ref<number>(props.expandedHeight)
   // 显示遮罩
   const showMask = ref<boolean>(false)
 
@@ -132,48 +137,53 @@ const init = () => {
     if (!detailVisible) {
       return
     }
-
     const bounding = containerRef.value?.getBoundingClientRect()
-    // 缩放状态设置为进行中
-    hoverStatus.value = 'activity'
+
     // 执行动画，先将缩放还原
     gsap.to(containerRef.value, {
       scale: 1,
       duration: 0.1,
+      onStart: () => {
+        // 缩放状态设置为进行中
+        hoverStatus.value = 'activity'
+      },
       // 缩放还原后再进行主要动画
       onComplete: () => {
-        // 状态修改为进行时
-        showStatus.value = 'activity'
-        // 打开遮罩
-        showMask.value = true
-        // container 设置为固定定位
-        style.value = {position: 'fixed'}
-
+        // 获取展开后参数
         const side = innerWidth.value / 2 - getDetailWidth() / 2
         const height = getDetailHeight()
         const width = getDetailWidth()
         const top = detailTop.value
+        // 为展开后高度赋值
+        expandedHeight.value = height
         // 执行主要动画
         gsap.fromTo(containerRef.value, {
           width: bounding?.width,
           left: bounding?.left,
           right: bounding?.right,
-          top:  bounding?.top
+          top:  bounding?.top,
+          opacity: 0,
         },{
           left: side,
           right: side,
           top: top,
           width: width,
           height: height,
+          opacity: 1,
           duration: 0.4,
           ease: 'power2.out',
+          onStart: () => {
+            // 打开遮罩
+            showMask.value = true
+            // 状态修改为进行时
+            showStatus.value = 'activity'
+            // container 设置为固定定位
+            style.value = {position: 'fixed'}
+          },
           onComplete: () => {
             // 动画播完 或 外部控制为已完成 并且 动画状态不为kill时，展示卡片内容
             if ((props.autoComplete || props.isComplete) && showStatus.value !== 'kill') {
-              showStatus.value = 'complete'
-              hoverStatus.value = 'complete'
-              setExpandHeight(height)
-              emits('cardComplete')
+              handleExpandComplete()
             }
           }
         })
@@ -262,7 +272,9 @@ const init = () => {
       const firstChild = detailRef.value.firstElementChild as HTMLElement
       if (firstChild) {
         firstChild.classList.add('scrollbar')
-        setTimeout(() => firstChild.style.setProperty('height', height + 'px', 'important'), 0)
+        setTimeout(() => {
+          firstChild.style.setProperty('height', height + 'px', 'important')
+        }, 0)
       }
     }
   }
@@ -280,6 +292,14 @@ const init = () => {
   // 获取展开后的top值
   const detailTop = ref<number|string>(props.expandedTop)
 
+  // 处理展开完成
+  const handleExpandComplete = () => {
+    showStatus.value = 'complete'
+    hoverStatus.value = 'complete'
+    emits('cardComplete')
+    setExpandHeight(expandedHeight.value)
+  }
+
   return {
     showStatus,
     showMask,
@@ -290,10 +310,11 @@ const init = () => {
     handleClose,
     handleClickCard,
     getDetailWidth,
-    getDetailHeight
+    getDetailHeight,
+    handleExpandComplete
   }
 }
-const {showStatus, showMask, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard, getDetailWidth} = init()
+const {showStatus, showMask, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard, getDetailWidth, handleExpandComplete} = init()
 
 
 // 加载鼠标在卡片悬浮相关逻辑
@@ -431,34 +452,19 @@ const windowWidthResize = () => {
 // 监听 isComplete 变化，当 autoComplete 为 false 时，isComplete 为true 改变 showStatus 状态
 watch(() => props.isComplete, (value) => {
   if (!props.autoComplete && props.isDetailVisible && showStatus.value === 'activity' && value) {
-    showStatus.value = 'complete'
+    handleExpandComplete()
   }
 })
 </script>
 
 <style scoped>
-.expandable-card-container {
-  position: relative;
-  z-index: 1001;
+.expandable-card {
+  z-index: 1001
 }
 .expandable-card-middle {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  display: flex;
+  height: 100%;
   width: 100%;
-  background-color: rgba(0,0,0,0)
+  overflow: hidden;
 }
-.scroll-container {
-  overflow-y: scroll;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.scroll-container::-webkit-scrollbar {
-  display: none;
-}
-
 </style>
-
