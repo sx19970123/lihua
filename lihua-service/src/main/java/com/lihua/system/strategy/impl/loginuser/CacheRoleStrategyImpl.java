@@ -1,4 +1,4 @@
-package com.lihua.system.strategy.impl.cacheLoginUser;
+package com.lihua.system.strategy.impl.loginuser;
 
 import com.lihua.model.security.CurrentRole;
 import com.lihua.model.security.LoginUser;

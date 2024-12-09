@@ -1,4 +1,4 @@
-package com.lihua.system.strategy.impl.checkLoginSetting;
+package com.lihua.system.strategy.impl.loginsetting;
 
 import com.lihua.model.security.LoginUser;
 import com.lihua.system.entity.SysSetting;

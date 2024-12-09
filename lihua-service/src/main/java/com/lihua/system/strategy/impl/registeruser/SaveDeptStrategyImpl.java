@@ -1,4 +1,4 @@
-package com.lihua.system.strategy.impl.saveRegisterUserAssociated;
+package com.lihua.system.strategy.impl.registeruser;
 
 import com.lihua.system.entity.SysUserDept;
 import com.lihua.system.model.dto.SysSettingDTO;
