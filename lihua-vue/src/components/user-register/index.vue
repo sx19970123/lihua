@@ -2,7 +2,7 @@
   <div>
     <a-card class="register">
       <transition name="form" mode="out-in">
-        <div style="margin: 16px" v-show="show">
+        <div style="margin: 16px" v-show="showForm">
           <div class="register-title">
             <a-typography-title :level="2">欢迎注册狸花猫</a-typography-title>
             <a-typography-text>已有账户？</a-typography-text>
@@ -73,7 +73,7 @@ import {rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
 const registerLoading = ref<boolean>()
-const show = ref<boolean>(false)
+const showForm = ref<boolean>(false)
 const {enableCaptcha} = defineProps<{
   enableCaptcha: boolean
 }>()
@@ -84,7 +84,7 @@ const goLogin = (clearLoginForm: boolean) => {
 }
 
 setTimeout(() => {
-  show.value = true
+  showForm.value = true
 }, 100)
 
 // 用户注册实体

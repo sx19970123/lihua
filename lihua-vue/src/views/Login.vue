@@ -14,65 +14,67 @@
       <div class="form">
         <transition name="card" mode="out-in">
 <!--      右侧表单-->
-          <a-card class="login-card" v-if="isLogin" v-show="showLogin">
-            <div style="margin: 16px">
-              <div class="login-title">
-                <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
-                <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
-                <!--                    根据配置显示注册-->
-                <div v-if="enableRegister">
-                  <a-typography-text>没有账户？</a-typography-text>
-                  <a-typography-link @click="isLogin = false">快速注册
-                    <RightOutlined/>
-                  </a-typography-link>
+          <a-card class="login-card" v-if="isLogin" v-show="showForm">
+            <transition name="form" mode="out-in">
+              <div style="margin: 16px" v-show="showForm">
+                <div class="login-title">
+                  <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
+                  <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
+                  <!--                    根据配置显示注册-->
+                  <div v-if="enableRegister">
+                    <a-typography-text>没有账户？</a-typography-text>
+                    <a-typography-link @click="isLogin = false">快速注册
+                      <RightOutlined/>
+                    </a-typography-link>
+                  </div>
                 </div>
+                <a-form :model="loginForm" @finish="handleFinish" :rules="loginRoles">
+                  <a-form-item name="username" hasFeedback>
+                    <a-input class="login-form-item"
+                             autocomplete="off"
+                             v-model:value="loginForm.username"
+                             placeholder="用户名"
+                    >
+                      <template #prefix>
+                        <UserOutlined class="input-prefix-icon-color"/>
+                      </template>
+                    </a-input>
+                  </a-form-item>
+                  <a-form-item name="password" hasFeedback>
+                    <a-input-password class="login-form-item"
+                                      v-model:value="loginForm.password"
+                                      placeholder="密码"
+                    >
+                      <template #prefix>
+                        <LockOutlined class="input-prefix-icon-color"/>
+                      </template>
+                    </a-input-password>
+                  </a-form-item>
+                  <a-form-item>
+                    <a-flex justify="space-between">
+                      <a-checkbox v-model:checked="rememberMe">记住账号</a-checkbox>
+                      <a-typography-link v-if="false">忘记密码</a-typography-link>
+                    </a-flex>
+                  </a-form-item>
+                  <a-form-item>
+                    <a-button html-type="submit"
+                              type="primary"
+                              class="login-form-item"
+                              :loading="loginLoading"
+                              style="width: 100%">登录
+                    </a-button>
+                  </a-form-item>
+                </a-form>
+                <a-divider plain v-if="false">其他方式</a-divider>
+                <a-flex justify="space-around" v-if="false">
+                  <a-button size="large" shape="circle"><WeiboCircleOutlined /></a-button>
+                  <a-button size="large" shape="circle"><WechatOutlined /></a-button>
+                  <a-button size="large" shape="circle"><AlipayCircleOutlined /></a-button>
+                  <a-button size="large" shape="circle"><QqOutlined /></a-button>
+                  <a-button size="large" shape="circle"><GitlabOutlined /></a-button>
+                </a-flex>
               </div>
-              <a-form :model="loginForm" @finish="handleFinish" :rules="loginRoles">
-                <a-form-item name="username" hasFeedback>
-                  <a-input class="login-form-item"
-                           autocomplete="off"
-                           v-model:value="loginForm.username"
-                           placeholder="用户名"
-                  >
-                    <template #prefix>
-                      <UserOutlined class="input-prefix-icon-color"/>
-                    </template>
-                  </a-input>
-                </a-form-item>
-                <a-form-item name="password" hasFeedback>
-                  <a-input-password class="login-form-item"
-                                    v-model:value="loginForm.password"
-                                    placeholder="密码"
-                  >
-                    <template #prefix>
-                      <LockOutlined class="input-prefix-icon-color"/>
-                    </template>
-                  </a-input-password>
-                </a-form-item>
-                <a-form-item>
-                  <a-flex justify="space-between">
-                    <a-checkbox v-model:checked="rememberMe">记住账号</a-checkbox>
-                    <a-typography-link v-if="false">忘记密码</a-typography-link>
-                  </a-flex>
-                </a-form-item>
-                <a-form-item>
-                  <a-button html-type="submit"
-                            type="primary"
-                            class="login-form-item"
-                            :loading="loginLoading"
-                            style="width: 100%">登录
-                  </a-button>
-                </a-form-item>
-              </a-form>
-              <a-divider plain v-if="false">其他方式</a-divider>
-              <a-flex justify="space-around" v-if="false">
-                <a-button size="large" shape="circle"><WeiboCircleOutlined /></a-button>
-                <a-button size="large" shape="circle"><WechatOutlined /></a-button>
-                <a-button size="large" shape="circle"><AlipayCircleOutlined /></a-button>
-                <a-button size="large" shape="circle"><QqOutlined /></a-button>
-                <a-button size="large" shape="circle"><GitlabOutlined /></a-button>
-              </a-flex>
-            </div>
+            </transition>
           </a-card>
 <!--            用户注册-->
           <user-register v-else @go-login="handleShowLogin" :enable-captcha="enableCaptcha"/>
@@ -126,7 +128,7 @@ interface LoginFormType {
   password: string
 }
 // 显示登录卡片
-const showLogin = ref<boolean>(false)
+const showForm = ref<boolean>(false)
 // 显示登录/注册组件
 const isLogin = ref<boolean>(true)
 
@@ -246,7 +248,7 @@ const routerCheckLoginSetting = () => {
 // 开始登录后配置
 const startLoginSetting = (settingComponentNameList: string[]) => {
   if (settingComponentNameList && settingComponentNameList.length > 0) {
-    showLogin.value = false
+    showForm.value = false
     showSetting.value = true
     showContent.value = false
     settingComponentNames.value = settingComponentNameList
@@ -255,13 +257,13 @@ const startLoginSetting = (settingComponentNameList: string[]) => {
 
 // 显示登录卡片动画
 const showLoginCardTransition = () => {
-  setTimeout(() => showLogin.value = true, 100)
+  setTimeout(() => showForm.value = true, 100)
 }
 
 // 从注册页面/配置页面切换到登录页面
 const handleShowLogin = (clearLoginForm: boolean) => {
   isLogin.value = true
-  showLogin.value = false
+  showForm.value = false
 
   // 根据参数清空表单
   if (clearLoginForm) {
@@ -308,10 +310,10 @@ const initRegisterSetting = () => {
 }
 
 onMounted(() => {
-  // 是否开启注册
-  initRegisterSetting()
   // 显示登录卡片
   showLoginCardTransition()
+  // 是否开启注册
+  initRegisterSetting()
   // 加载记住我
   initRememberMe()
   // 是否启用验证码
