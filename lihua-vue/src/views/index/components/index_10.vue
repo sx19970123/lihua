@@ -1,9 +1,6 @@
 <template>
   <expandable-card
              style="width: 100%"
-             :auto-complete="false"
-             :is-complete="middleComplete"
-             @card-click="handleClick"
              :hover-scale="1.03"
              :expanded-width="600"
              :expanded-height="610"
@@ -45,10 +42,6 @@
 <script setup lang="ts">
 import ExpandableCard from "@/components/expandable-card/index.vue";
 import { ref} from "vue";
-const middleComplete = ref<boolean>(false)
-const handleClick = (show:boolean) => {
-  middleComplete.value = true
-}
 </script>
 <style scoped>
 .child {

@@ -7,8 +7,8 @@
                        :hover-scale="1.01"
                        :auto-complete="false"
                        :is-complete="loadSuccess"
-                       @card-click="handleCardClick"
-                       @card-ready="handleCardReady"
+                       @before-card-expand="handleCardClick"
+                       @after-card-close="handleCardReady"
                        style="width: 30%"
       >
         <template #overview>
@@ -42,6 +42,7 @@ import {ref} from "vue";
 const loadSuccess = ref<boolean>(false)
 // 处理点击卡片模拟异步请求
 const handleCardClick = () => {
+  console.log("123")
   setTimeout(() => {
     loadSuccess.value = true
   }, 1500)

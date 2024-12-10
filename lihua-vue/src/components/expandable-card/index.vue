@@ -100,13 +100,14 @@ type StatusType = 'ready' | 'activity' | 'complete' | 'kill'
 
 // 定义向外抛出的函数
 /**
- * cardClick 点击卡片时触发
- * cardComplete 卡片展开完成时触发
- * cardReady 卡片折叠完成时触发
- * cardReadyOver 鼠标移入卡片时触发
- * cardReadyLeave 鼠标移出卡片时触发
+ * beforeCardExpand   卡片展开前触发（卡片就绪状态下点击卡片触发）
+ * afterCardExpand    卡片展开前触后（卡片展开完成后触发）
+ * beforeCardClose    卡片关闭前触发（卡片展开状态下触发关闭时触发）
+ * afterCardClose     卡片关闭后触发（卡片关闭完成后触发）
+ * onMouseEnter       鼠标移入卡片时触发
+ * onMouseLeave       鼠标移出卡片时触发
  * */
-const emits = defineEmits(['cardClick','cardComplete','cardReady','cardReadyOver','cardReadyLeave','maskClick'])
+const emits = defineEmits(['beforeCardExpand','afterCardExpand','beforeCardClose','afterCardClose','onMouseEnter','onMouseLeave'])
 
 // 初始化ref
 const init = () => {
@@ -131,12 +132,13 @@ const init = () => {
     // 详情可见
     const detailVisible = showStatus.value === 'ready' && props.isDetailVisible
     // 卡片点击事件抛出
-    emits('cardClick', {detailVisible: detailVisible})
+    emits('beforeCardExpand', detailVisible)
 
     // 只有就绪状态才可点击
     if (!detailVisible) {
       return
     }
+
     const bounding = containerRef.value?.getBoundingClientRect()
 
     // 执行动画，先将缩放还原
@@ -149,6 +151,8 @@ const init = () => {
       },
       // 缩放还原后再进行主要动画
       onComplete: () => {
+        // container 设置为固定定位
+        style.value = {position: 'fixed'}
         // 获取展开后参数
         const side = innerWidth.value / 2 - getDetailWidth() / 2
         const height = getDetailHeight()
@@ -177,11 +181,9 @@ const init = () => {
             showMask.value = true
             // 状态修改为进行时
             showStatus.value = 'activity'
-            // container 设置为固定定位
-            style.value = {position: 'fixed'}
           },
           onComplete: () => {
-            // 动画播完 或 外部控制为已完成 并且 动画状态不为kill时，展示卡片内容
+            // 动画播完 或 外部控制为已完成 并且 动画状态不为kill时，展示内容
             if ((props.autoComplete || props.isComplete) && showStatus.value !== 'kill') {
               handleExpandComplete()
             }
@@ -209,15 +211,7 @@ const init = () => {
       showStatus.value = 'kill'
     }
 
-    // 点击遮罩后抛出
-    emits('maskClick')
     const bounding = placeholderRef.value?.getBoundingClientRect()
-    // 状态修改为进行时
-    if (showStatus.value !== 'kill') {
-      showStatus.value = 'activity'
-    }
-    // 关闭遮罩
-    showMask.value = false
     // 执行主要动画
     gsap.to(containerRef.value, {
       width: bounding?.width,
@@ -226,6 +220,16 @@ const init = () => {
       left: bounding?.left,
       duration: 0.4,
       ease: 'power2.out',
+      onStart: () => {
+        // 状态修改为进行时
+        if (showStatus.value !== 'kill') {
+          showStatus.value = 'activity'
+        }
+        // 卡片关闭前触发
+        emits('beforeCardClose')
+        // 关闭遮罩
+        showMask.value = false
+      },
       onComplete: () => {
         // 恢复 container 默认的静态布局
         style.value = {position: 'static', width: '', height: '', top: '', left: ''}
@@ -233,7 +237,7 @@ const init = () => {
         showStatus.value = 'ready'
         hoverStatus.value = 'complete'
         // 卡片关闭动画完成后抛出
-        emits('cardReady')
+        emits('afterCardClose')
       }
     })
   }
@@ -296,7 +300,7 @@ const init = () => {
   const handleExpandComplete = () => {
     showStatus.value = 'complete'
     hoverStatus.value = 'complete'
-    emits('cardComplete')
+    emits('afterCardExpand')
     setExpandHeight(expandedHeight.value)
   }
 
@@ -329,13 +333,15 @@ const initHover = () => {
     }
 
     if (hoverStatus.value === 'ready' || hoverStatus.value === 'complete') {
-      // 鼠标悬浮时抛出方法
-      emits('cardReadyOver')
-      handleAddHoverStyle()
-      hoverStatus.value = 'activity'
       gsap.to(containerRef.value, {
         scale: props.hoverScale,
         duration: 0.1,
+        onStart: () => {
+          // 鼠标悬浮时抛出方法
+          emits('onMouseEnter')
+          handleAddHoverStyle()
+          hoverStatus.value = 'activity'
+        },
         onComplete: () => {
           hoverStatus.value = 'complete'
         }
@@ -352,7 +358,7 @@ const initHover = () => {
           hoverStatus.value = 'ready'
           handleRemoveHoverStyle()
           // 鼠标悬浮结束后抛出
-          emits('cardReadyLeave')
+          emits('onMouseLeave')
         }
       })
     }

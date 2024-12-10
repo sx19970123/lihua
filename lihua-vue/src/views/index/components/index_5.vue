@@ -2,7 +2,6 @@
   <div>
     <expandable-card
                style="width: 100%"
-               :auto-complete="false"
                :is-complete="middleComplete"
                @card-click="handleClick"
                :hover-scale="1.03"

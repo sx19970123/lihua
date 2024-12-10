@@ -1,9 +1,6 @@
 <template>
   <expandable-card
              style="width: 100%"
-             :auto-complete="false"
-             :is-complete="middleComplete"
-             @card-click="handleClick"
              :hover-scale="1.01"
              :expanded-width="600"
              :expanded-height="610"
@@ -71,10 +68,6 @@ import {useThemeStore} from "@/stores/theme.ts";
 import {versionInfo} from "@/views/index/setting.ts";
 const latestVersion = versionInfo.lihuaUpdateLog[0]
 const themeStore = useThemeStore();
-const middleComplete = ref<boolean>(false)
-const handleClick = (show:boolean) => {
-  middleComplete.value = true
-}
 </script>
 <style scoped>
 .card-background {
