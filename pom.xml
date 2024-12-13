@@ -176,7 +176,7 @@
                     <include>**/*.txt</include>
                     <include>META-INF/services/*</include>
                     <include>META-INF/spring/*</include>
-                    <include>captcha-images/**/**/*</include>
+                    <include>captcha-images/**</include>
                 </includes>
             </resource>
             <resource>
