@@ -14,11 +14,10 @@ const { getToken } = token
 
 // 路由前置守卫
 router.beforeEach(async (to, from, next) => {
-    const userStore = useUserStore();
-    const themeStore = useThemeStore();
-    NProgress.start();
-    const hasToken = getToken();
-
+    NProgress.start()
+    const userStore = useUserStore()
+    const themeStore = useThemeStore()
+    const hasToken = getToken()
     if (hasToken) {
         try {
             // 判断是否已拉取用户信息
@@ -45,7 +44,7 @@ router.beforeEach(async (to, from, next) => {
                     // 已登录状态下，请求登陆页面自动跳转到首页
                     to.path === "/login" ? next('/index') : next({ ...to, replace: true })
                 } else {
-                    next("/403");
+                    next("/403")
                 }
             } else {
                 // 连接到sse
@@ -53,25 +52,28 @@ router.beforeEach(async (to, from, next) => {
                 if (hasRouteRole(to?.meta?.role as string[])) {
                     next();
                 } else {
-                    next("/403");
+                    next("/403")
                 }
             }
         } catch (error) {
-            console.error(error);
-            userStore.clearUserInfo();
+            console.error(error)
+            // 关闭sse连接
             await close()
-            next("/login");
+            // 清空用户信息
+            userStore.clearUserInfo()
+            // 重定向到登录页面
+            next({name: "Login", state: {msg: "初始化用户信息异常"}})
         }
     } else {
-        // token 失效后重置主题后重定向到登陆页
+        // 重置主题
         themeStore.resetState();
+        // 关闭sse连接
         await close()
-        if (to.path === "/407") {
+        if (to.meta && to.meta.allowAnonymous) {
             next()
         } else {
-            to.path !== "/login" ? next("/login") : next()
+            to.path !== "/login" ? next({name: "Login", state: {msg: "身份验证过期，请重新登陆"}}) : next()
         }
-
     }
 
     NProgress.done();

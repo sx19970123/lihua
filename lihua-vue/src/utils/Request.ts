@@ -2,9 +2,7 @@ import axios, {type AxiosRequestConfig, type AxiosResponse} from 'axios';
 import token from "@/utils/Token.ts"
 import {type ResponseErrorType, ResponseError, type ResponseType} from "@/api/global/Type.ts"
 import { useUserStore } from "@/stores/user";
-import {message} from "ant-design-vue";
 import router from "@/router";
-
 const { getToken } = token
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
@@ -30,8 +28,11 @@ service.interceptors.response.use((resp) => {
     const data = resp.data
     // token 失效或解析异常，清空用户信息返回登陆
     if (data.code === 401) {
+        // 清空用户信息
         const userStore= useUserStore()
-        userStore.clearUserInfo(data.msg)
+        userStore.clearUserInfo()
+        // 路由跳转到登录页
+        router.push({name: 'Login', state: {msg: data.msg}})
         throw data.msg
     }
     // 配置的非法ip访问
@@ -41,7 +42,7 @@ service.interceptors.response.use((resp) => {
     }
     // 服务器处理文件异常，提示异常信息
     if (data.code === 501) {
-        message.error(data.msg)
+        new ResponseError(data.code, data.msg)
     }
     return resp;
 }, error => {
@@ -75,23 +76,6 @@ service.interceptors.response.use((resp) => {
         return Promise.reject(new ResponseError(500, msg));
     }
 })
-
-// 数据返回统一封装样式
-// function request<T>(config: AxiosRequestConfig): Promise<ResponseType<T>>;
-// function request(config: AxiosRequestConfig): Promise<Blob>;
-// function request<T>(config: AxiosRequestConfig) {
-//     return new Promise<ResponseType<T> & Blob>((resolve, reject) => {
-//         service
-//             .request<ResponseType<T> & Blob>(config)
-//             .then((response: AxiosResponse<ResponseType<T> & Blob>) => {
-//                 resolve(response.data)
-//             })
-//             .catch((err) => {
-//                 reject(err);
-//             });
-//     });
-// }
-// export default request
 
 // 数据返回统一封装样式
 export default <T> (config: AxiosRequestConfig) => {

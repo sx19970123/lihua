@@ -135,7 +135,10 @@ const settingPage = () => {
 
 // 退出登陆
 const logout = () => {
-  userStore.handleLogout()
+  userStore.handleLogout().then(() => {
+    message.success("退出成功")
+    router.push('/login')
+  })
 }
 </script>
 

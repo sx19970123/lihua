@@ -34,6 +34,7 @@ import Iframe from '@/components/iframe/index.vue'
  *    linkOpenType..........................................标记当前路由类型为link情况下的打开方式：'inner' | 'new-page'
  *    link..................................................link的链接地址
  *    role..................................................标记哪些角色的用户可访问此页面/目录及以下页面/目录：['ROLE_admin','ROLE_normal',...]，不配置或配置为[]则所有用户均可访问
+ *    allowAnonymous........................................是否允许在未登录的情况下访问：true、false、undefined（默认）
  */
 
 const routers = [
@@ -96,12 +97,15 @@ const routers = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import("@/views/Login.vue"),
+    component: () => import("@/views/Login.vue")
   },
   // 407
   {
     path: "/407",
     component: () => import("@/views/error/407/index.vue"),
+    meta: {
+      allowAnonymous: true
+    }
   },
   // 403
   {

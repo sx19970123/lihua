@@ -18,14 +18,14 @@ export const connect = async () => {
                 console.error("Server-Sent Events 连接失败，eventSource：", eventSource)
             }
         },1000)
-    }
 
-    eventSource.onerror = (event) => {
-        console.error("Server-Sent Events 连接中断", event)
-    }
+        eventSource.onerror = (event) => {
+            console.error("Server-Sent Events 连接中断", event)
+        }
 
-    eventSource.onopen = (event: Event) => {
-        console.log("Server-Sent Events 重连成功")
+        eventSource.onopen = (event: Event) => {
+            console.log("Server-Sent Events 重连成功")
+        }
     }
 }
 

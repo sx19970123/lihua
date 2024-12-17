@@ -510,7 +510,7 @@ const initMenuTree = () => {
     if (e instanceof ResponseError) {
       message.error(e.msg)
     } else {
-      console.log(e)
+      console.error(e)
     }
   })
   return {

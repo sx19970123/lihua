@@ -3,7 +3,6 @@ import { login, logout} from "@/api/system/login/Login.ts";
 import {getAvatar, saveTheme, updatePassword} from "@/api/system/profile/Profile.ts";
 import token from "@/utils/Token.ts";
 import { message } from "ant-design-vue";
-import router from "@/router";
 import {queryAuthInfo} from "@/api/system/auth/Auth.ts";
 import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
@@ -164,39 +163,37 @@ export const useUserStore = defineStore('user', {
             }
         },
         /**
-         * 清空用户信息并重定向到登录页面
-         * @param msg
+         * 清空用户信息
          */
-        clearUserInfo(msg?: string) {
-            const state = this.$state
+        clearUserInfo() {
+            const userState = this.$state
 
             // 用户相关赋值
-            state.userInfo = {}
-            state.userId = ''
-            state.nickname = ''
-            state.username = ''
-            state.avatar = this.getDefaultAvatar()
+            userState.userInfo = {}
+            userState.userId = ''
+            userState.nickname = ''
+            userState.username = ''
+            userState.avatar = this.getDefaultAvatar()
 
             // 收藏固定菜单赋值
-            state.viewTabs = []
+            userState.viewTabs = []
 
             // 角色权限相关赋值
-            state.roles = []
-            state.roleCodes = []
-            state.permissions = []
+            userState.roles = []
+            userState.roleCodes = []
+            userState.permissions = []
 
             // 部门相关赋值
-            state.deptTrees = []
-            state.defaultDept = {}
-            state.defaultDeptName = ''
-            state.defaultDeptCode = ''
+            userState.deptTrees = []
+            userState.defaultDept = {}
+            userState.defaultDeptName = ''
+            userState.defaultDeptCode = ''
 
             // 岗位相关赋值
-            state.posts = []
-            state.defaultDeptPosts = []
+            userState.posts = []
+            userState.defaultDeptPosts = []
 
             removeToken()
-            router.push({name: "Login", state: {msg: msg}})
         },
         // 更新默认部门
         updateDefaultDept(defaultDept: SysDept) {
@@ -217,11 +214,9 @@ export const useUserStore = defineStore('user', {
                             message.success("主题已保存")
                             resolve(resp)
                         } else {
-                            message.error(resp.msg)
                             reject(resp.msg)
                         }
                     }).catch((error) => {
-                        message.error(error as string)
                         reject(error.msg)
                     })
                 } else {
