@@ -1,25 +1,14 @@
 <template>
   <div>
-    <a-tooltip placement="bottom" v-if="isFull" title="全屏">
+    <a-tooltip placement="bottom" :title="isFull ? '进入全屏' : '退出全屏'" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
       <div class="header-right-item header-right" @click="handleWindowChange">
         <a-avatar :size="32" style="background-color: rgba(0,0,0,0)">
-          <FullscreenOutlined class="icon-default-color"/>
-        </a-avatar>
-      </div>
-    </a-tooltip>
-    <a-tooltip placement="bottom" v-else>
-      <template #title>
-        退出全屏
-      </template>
-      <div class="header-right-item header-right" @click="handleWindowChange">
-        <a-avatar :size="32" style="background-color: rgba(0,0,0,0)">
-          <FullscreenExitOutlined class="icon-default-color"/>
+          <FullscreenOutlined class="icon-default-color" v-if="isFull"/>
+          <FullscreenExitOutlined class="icon-default-color" v-else/>
         </a-avatar>
       </div>
     </a-tooltip>
   </div>
-
-
 </template>
 
 <script setup lang="ts">

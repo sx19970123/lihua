@@ -1,6 +1,6 @@
 <template>
   <a-dropdown v-model:open="open" trigger="click" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
-    <a-tooltip title="默认部门">
+    <a-tooltip title="默认部门" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
       <span class="header-right-item header-right" style="max-width: 130px">
         <a-typography-text ellipsis
                            class="text-default-color"

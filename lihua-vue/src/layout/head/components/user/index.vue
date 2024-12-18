@@ -1,6 +1,6 @@
 <template>
   <a-dropdown trigger="click" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
-    <a-tooltip title="个人中心">
+    <a-tooltip title="个人中心" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
       <div class="header-right-item header-right">
         <user-avatar :size="34" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
       </div>

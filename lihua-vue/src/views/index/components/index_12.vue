@@ -7,7 +7,6 @@
              :expanded-width="600"
              @card-click="handleClick"
              :expanded-height="610"
-             :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
   >
     <template #overview>
       <a-card :body-style="{height: '124px'}">

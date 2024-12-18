@@ -84,7 +84,7 @@
 
         <template #bodyCell="{column,record,text}">
           <template v-if="column.key === 'title'">
-            <a-tooltip placement="topLeft" ellipsis>
+            <a-tooltip ellipsis>
               <template #title>
                 {{text}}
               </template>

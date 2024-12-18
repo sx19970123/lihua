@@ -121,7 +121,7 @@
        </template>
       <template #bodyCell="{column,record,text}">
         <template v-if="column.key === 'description'">
-          <a-tooltip placement="topLeft" ellipsis>
+          <a-tooltip ellipsis>
             <template #title>
               {{text}}
             </template>

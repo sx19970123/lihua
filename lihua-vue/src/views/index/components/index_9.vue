@@ -6,7 +6,6 @@
              :hover-scale="1"
              :expanded-width="600"
              :expanded-height="610"
-             :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
   >
     <template #overview>
       <a-card :body-style="{height: '124px'}">

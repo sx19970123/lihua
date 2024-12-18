@@ -13,9 +13,8 @@
         <slot name="overview"></slot>
       </div>
       <!-- 过渡时展示自定义封面 -->
-      <div v-if="showStatus === 'activity' || showStatus === 'kill'"
-           class="expandable-card-middle"
-           :style="props.middleStyle">
+      <div v-show="showStatus === 'activity' || showStatus === 'kill'"
+           class="expandable-card-middle">
 <!--        使用了自定义过渡插槽-->
         <slot name="middle" v-if="hasMiddleSlot"/>
 <!--        没使用自定义过渡，过渡时展示详情插槽-->
@@ -63,10 +62,6 @@ const props = defineProps({
     type: Number,
     default: 100
   },
-  // 过渡中的css
-  middleStyle: {
-    type: Object
-  },
   // 鼠标悬浮缩放倍率
   hoverScale: {
     type: Number,
@@ -100,6 +95,7 @@ type StatusType = 'ready' | 'activity' | 'complete' | 'kill'
 
 // 定义向外抛出的函数
 /**
+ * cardClick          点击卡片触发（卡片就绪状态下点击卡片触发）
  * beforeCardExpand   卡片展开前触发（卡片就绪状态下点击卡片触发）
  * afterCardExpand    卡片展开前触后（卡片展开完成后触发）
  * beforeCardClose    卡片关闭前触发（卡片展开状态下触发关闭时触发）
@@ -107,7 +103,7 @@ type StatusType = 'ready' | 'activity' | 'complete' | 'kill'
  * onMouseEnter       鼠标移入卡片时触发
  * onMouseLeave       鼠标移出卡片时触发
  * */
-const emits = defineEmits(['beforeCardExpand','afterCardExpand','beforeCardClose','afterCardClose','onMouseEnter','onMouseLeave'])
+const emits = defineEmits(['cardClick','beforeCardExpand','afterCardExpand','beforeCardClose','afterCardClose','onMouseEnter','onMouseLeave'])
 
 // 初始化ref
 const init = () => {
@@ -132,15 +128,16 @@ const init = () => {
     // 详情可见
     const detailVisible = showStatus.value === 'ready' && props.isDetailVisible
     // 卡片点击事件抛出
-    emits('beforeCardExpand', detailVisible)
+    emits('cardClick', detailVisible)
 
     // 只有就绪状态才可点击
     if (!detailVisible) {
       return
     }
-
     const bounding = containerRef.value?.getBoundingClientRect()
 
+    // 即将执行动画前触发
+    emits('beforeCardExpand')
     // 执行动画，先将缩放还原
     gsap.to(containerRef.value, {
       scale: 1,

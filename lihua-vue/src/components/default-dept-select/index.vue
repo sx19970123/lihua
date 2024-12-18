@@ -15,7 +15,7 @@
             <div @mouseover="handleMouseOver(id)" @mouseleave="handleMouseLeave" @click="handleSetDefaultDept(id)">
               <a-space>
                 <a-flex :gap="8">
-                  <a-tooltip :title="userStore.defaultDept.id !== id ? '点击设为默认部门' : '默认部门'" placement="right">
+                  <a-tooltip :title="userStore.defaultDept.id !== id ? '点击设为默认部门' : '默认部门'" placement="right" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
                     <div v-if="name.indexOf(keyword) > -1">
                       <span>{{ name.substring(0, name.indexOf(keyword)) }}</span>
                       <span :style="{'color':  themeStore.getColorPrimary()}">{{ keyword }}</span>

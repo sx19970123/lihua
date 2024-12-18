@@ -7,7 +7,6 @@
                :hover-scale="1.03"
                :expanded-width="600"
                :expanded-height="610"
-               :middle-style="{'background':themeStore.$state.isDarkTheme ? '#141414': '#fff','border-radius':' 8px'}"
     >
       <template #overview>
         <a-card class="card-background" :body-style="{height: '100px'}">
