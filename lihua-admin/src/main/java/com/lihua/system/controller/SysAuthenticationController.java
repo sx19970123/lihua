@@ -68,7 +68,7 @@ public class SysAuthenticationController extends BaseController {
     }
 
     /**
-     * 检擦登录配置
+     * 检查登录配置
      */
     @GetMapping("checkLoginSetting")
     public String checkLoginSetting() {
