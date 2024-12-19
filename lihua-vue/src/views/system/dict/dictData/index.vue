@@ -356,7 +356,8 @@ const initAdd = () => {
       status: '0',
       sort: generateDefaultSort(data.children),
       dictTypeCode: props.typeCode,
-      parentId: data.id
+      parentId: data.id,
+      tagStyle: 'default',
     }
 
     data.children.push(item)
