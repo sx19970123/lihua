@@ -218,7 +218,8 @@ const updateRecords = [
             '2. 新增expandable-card组件演示demo',
             '3. 静态路由中meta新增allowAnonymous是否允许在未登录的情况下访问路由属性，设置为true在未登录下也能访问',
             '4. 优化页面中layout中的tooltip组件绑定dom对象',
-            '5. 调整优化代码结构',
+            '5. 修复dict-tag树形字典全路径无效的bug',
+            '6. 调整优化代码结构',
         ]
     },
     {

@@ -49,7 +49,7 @@
                   <!--                      标题-->
                   <template #title>
                     <a-flex justify="space-between" align="flex-start">
-                      <a-tooltip :title="item.title">
+                      <a-tooltip :title="item.title" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
                         <a-typography-text class="notice-title" ellipsis>
                           {{ item.title }}
                         </a-typography-text>
