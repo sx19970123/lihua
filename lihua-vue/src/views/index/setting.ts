@@ -4,7 +4,7 @@
  * 项目开发可以将 views/index 中内容删除，在 router 中重新配置首页即可
  */
 export const versionInfo = {
-    springBootVersion: ' 3.4.0',
+    springBootVersion: ' 3.4.1',
     vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
@@ -220,6 +220,8 @@ const updateRecords = [
             '4. 优化页面中layout中的tooltip组件绑定dom对象',
             '5. 修复dict-tag树形字典全路径无效的bug',
             '6. 调整优化代码结构',
+            '7. spring boot版本升级为3.4.1',
+            '8. xxl-job版本升级为2.4.2',
         ]
     },
     {

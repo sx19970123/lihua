@@ -19,7 +19,7 @@
         <myexcel.version>4.5.6</myexcel.version>
         <oshi.version>6.6.4</oshi.version>
         <guava.version>33.3.1-jre</guava.version>
-        <xxl-job.version>2.4.1</xxl-job.version>
+        <xxl-job.version>2.4.2</xxl-job.version>
     </properties>
 
     <!--mybatis-plus统一版本管理-->
@@ -38,7 +38,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
         <relativePath/>
     </parent>
 
