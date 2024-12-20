@@ -64,7 +64,7 @@ const treeRef = useTemplateRef<InstanceType<typeof ATree>>("treeRef")
 const {treeData, fieldNames = {
   children: 'children',
   title: 'label',
-  key: 'id',
+  key: 'id'
 }, defaultExpandAll = false, multiple = true, showToolbar = true, showSearch = true, searchPlaceholder = "请输入关键词", bodyStyle = {padding: '8px',borderRadius: '8px'}, maxHeight, bordered = true, modelValue} = defineProps<{
   // 树形结构数据
   treeData: Array<any>,

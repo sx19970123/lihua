@@ -1,8 +1,10 @@
 <template>
-  <a-flex vertical :gap="16" style="padding: 8px">
-    <demo1/>
-    <demo2/>
-  </a-flex>
+  <a-card>
+    <a-flex vertical :gap="16">
+      <demo1/>
+      <demo2/>
+    </a-flex>
+  </a-card>
 </template>
 
 <script setup lang="ts">
