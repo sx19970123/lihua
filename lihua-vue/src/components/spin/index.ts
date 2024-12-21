@@ -1,7 +1,7 @@
 import {defineComponent, createApp, h, type CSSProperties} from "vue";
-import {useThemeStore} from "@/stores/theme";
-import type {SimpleSpinConfig, SpinConfig, SpinInstance} from "./Type.ts";
+import type { SpinConfig, SpinInstance } from "./Type.ts";
 import { Spin } from "ant-design-vue";
+import {useThemeStore} from "@/stores/theme.ts";
 
 /** @name 单例 **/
 let singleInstance: SpinInstance | undefined = undefined;
@@ -40,11 +40,7 @@ export function createSpinComponent(options: SpinConfig) {
 }
 
 /** @name 入口函数 **/
-function service(simpleSpinConfig: SimpleSpinConfig): SpinInstance {
-  const options: SpinConfig = {
-    tip: simpleSpinConfig.tip,
-    target: simpleSpinConfig.target
-  }
+function service(options: SpinConfig = {}): SpinInstance {
   if (singleInstance) return singleInstance;
   const resolved = resolveOptions(options);
   const instance = createSpinComponent({
