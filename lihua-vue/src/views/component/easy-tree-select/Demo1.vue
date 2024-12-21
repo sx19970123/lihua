@@ -1,5 +1,5 @@
 <template>
-  <a-typography-title :level="4">最简单的树形选择</a-typography-title>
+  <a-typography-title :level="4">基础用法</a-typography-title>
   <a-typography-text>选中的值：{{value}}</a-typography-text>
   <a-row>
     <a-col :span="6">

@@ -22,7 +22,7 @@ const baseURL = import.meta.env.VITE_APP_BASE_API
 const spinning = ref<boolean>(true)
 // 定义prop传参
 const props = defineProps<{
-  modelValue?: string,
+  modelValue: string | undefined,
   height?: string,
   width?: string
 }>()

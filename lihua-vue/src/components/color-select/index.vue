@@ -28,10 +28,10 @@ const data = defineProps<{
 const emits = defineEmits(['update:color','update:value','click'])
 
 // 点击对应颜色返回颜色值，赋值给v-model。执行 @click 方法
-const selectedColor = ({color, key}: ColorSelectItem) => {
+const selectedColor = ({color, name, key}: ColorSelectItem) => {
   emits('update:color',color)
   emits('update:value',key)
-  emits('click',color,data.dataSource)
+  emits('click',{color, name, key})
 };
 </script>
 

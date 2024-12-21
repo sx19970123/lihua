@@ -1,5 +1,5 @@
 <template>
-  <a-typography-title :level="4">最简单的字典回显</a-typography-title>
+  <a-typography-title :level="4">基础用法</a-typography-title>
   <dict-tag dict-data-value="0" :dict-data-option="sys_status"/>
   <dict-tag dict-data-value="1" :dict-data-option="sys_status"/>
 </template>

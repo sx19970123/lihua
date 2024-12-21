@@ -141,7 +141,7 @@ const segmentedData = reactive([{
 const segmentedValue = ref(segmentedData[0].value);
 
 // v-modal
-const emits = defineEmits(['update:modelValue','click','loadComplete'])
+const emits = defineEmits(['update:modelValue','click'])
 
 const props = defineProps({
   modelValue: {
@@ -201,8 +201,9 @@ const clickIcon = (icon: string | null) => {
   if (props.modelValue === icon) {
     icon = null
   }
-  emits('update:modelValue',cloneDeep(icon))
-  emits('click')
+  const cloneIcon = cloneDeep(icon)
+  emits('update:modelValue', cloneIcon)
+  emits('click', cloneIcon)
 }
 
 // 筛选图标，筛选完成后重置懒加载
@@ -298,7 +299,6 @@ const initLazy = (observeDomList: HTMLDivElement[] | null) => {
 
 // 组件初始化完成
 onMounted(() => {
-  emits('loadComplete')
   initLazy(outlinedIconRefList.value)
 })
 

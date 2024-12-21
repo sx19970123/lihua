@@ -1,5 +1,5 @@
 <template>
-  <a-typography-title :level="4">最简单的展开卡片</a-typography-title>
+  <a-typography-title :level="4">基础用法</a-typography-title>
   <expandable-card :expanded-height="600" :expanded-width="600" :hover-scale="1.01">
     <template #overview>
       <a-card>

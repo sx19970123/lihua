@@ -72,7 +72,7 @@ export default {
             color: 'rgb(47, 84, 235)',
         },
         {
-            name: '淡紫儿',
+            name: '酱紫',
             color: 'rgb(114, 46, 209)',
         }
     ],

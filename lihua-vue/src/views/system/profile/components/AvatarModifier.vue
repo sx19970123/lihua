@@ -45,8 +45,8 @@
         <!--        头像编辑-->
         <image-cropper v-if="avatarType === 'image'"
                        ref="imageCropperRef"
-                       v-model:change="avatarImg"
-                       v-model="avatarUrl"
+                       v-model:realTime="avatarImg"
+                       v-model:img="avatarUrl"
                        wight="900px"
                        height="350px"
                        :auto-crop-width="150"

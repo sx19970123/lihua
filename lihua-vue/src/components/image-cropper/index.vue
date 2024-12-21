@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-flex vertical :gap="8">
-      <div :style="{ height: props.height,width: props.wight}">
+      <div :style="{ height: props.height,width: props.wight}" style="margin: auto;">
         <vue-cropper ref="cropperRef"
                      :img="img"
                      :outputSize="props.outputSize"
@@ -73,13 +73,12 @@ import 'vue-cropper/dist/index.css'
 import {defineProps, ref, useTemplateRef} from 'vue';
 import type {CropperDataType} from "@/components/image-cropper/CropperType.ts";
 import {message} from "ant-design-vue";
-import {cloneDeep} from 'lodash-es'
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 const cropperRef = useTemplateRef<InstanceType<typeof VueCropper>>("cropperRef")
 
 const props = defineProps({
-  // 裁剪图片的地址 url 地址, base64, blob
-  modelValue: {
+  // v-modal:img 图片地址
+  img: {
     type: String
   },
   // 裁剪生成图片的质量
@@ -164,8 +163,8 @@ const props = defineProps({
   },
   // 图片根据截图框输出比例倍数
   enlarge: {
-    type: String,
-    default: '1'
+    type: Number,
+    default: 1
   },
   // 图片默认渲染方式 contain , cover, 100px, 100% auto
   mode: {
@@ -180,8 +179,8 @@ const props = defineProps({
     type: String,
     default: '350px'
   },
-  // v-modal:change
-  change: {
+  // v-modal:realTime
+  realTime: {
     type: Object
   }
 });
@@ -189,11 +188,11 @@ const props = defineProps({
 /**
  * 上传的图片
  */
-const img = ref<string | null>(props.modelValue as string)
+const img = ref<string | null>(props.img as string)
 /**
  * 双向绑定
  */
-const emit = defineEmits(['update:change','update:modelValue'])
+const emit = defineEmits(['update:realTime','update:img'])
 /**
  * 供父组件获取二进制文件
  */
@@ -212,7 +211,7 @@ defineExpose({
  * @param data
  */
 const handleRealTime = (data: CropperDataType) => {
-  emit('update:change',data)
+  emit('update:realTime',data)
 }
 
 /**
@@ -236,7 +235,7 @@ const handleCustomRequest = (uploadRequest: UploadRequestOption) => {
     if (file instanceof Blob) {
       const url = URL.createObjectURL(file)
       img.value = url
-      emit('update:modelValue', cloneDeep(url))
+      emit('update:img', url)
     } else {
       message.error("头像上传失败")
     }
@@ -271,6 +270,6 @@ const changeScale = (scale: number) => {
  */
 const deleteImg = () => {
   img.value = null
-  emit('update:modelValue', null)
+  emit('update:img', null)
 }
 </script>
