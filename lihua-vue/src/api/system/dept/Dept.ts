@@ -63,7 +63,7 @@ export const deleteData = (ids: Array<string>) => {
 }
 
 /**
- * 单位下拉树
+ * 单位下拉树（全量数据）
  */
 export const getDeptOption = () => {
   return request<Array<SysDept>>({

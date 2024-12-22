@@ -17,6 +17,7 @@
             <a-divider class="divider"/>
             <div class="scrollbar" :style="{height: props.height + 'px'}">
               <a-tree
+                  v-if="sysDeptList && sysDeptList.length > 0"
                   :tree-data="sysDeptList"
                   :field-names="{children:'children', title:'name', key: 'id' }"
                   default-expand-all
@@ -33,6 +34,7 @@
                   <span v-else>{{ name }}</span>
                 </template>
               </a-tree>
+              <a-empty v-else style="margin-top: 6px" :description="props.emptyDescription"/>
             </div>
           </a-spin>
         </div>
@@ -91,6 +93,7 @@ import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {flattenTree} from "@/utils/Tree.ts";
 import {onMounted, ref, watch} from "vue";
 import {useThemeStore} from "@/stores/theme.ts";
+import {useUserStore} from "@/stores/user.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import {cloneDeep} from "lodash-es";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
@@ -121,15 +124,22 @@ const props = defineProps({
   value: {
     type: Array<String>,
   },
-  avatar:{
-    type: Array<String>
-  },
   nickname:{
     type: Array<String>
+  },
+  username:{
+    type: Array<String>
+  },
+  allDeptData: {
+    type: Boolean,
+    default: true
+  },
+  emptyDescription: {
+    type: String
   }
 })
 
-const emits = defineEmits(['update:value','update:avatar','update:nickname','change'])
+const emits = defineEmits(['update:id','update:nickname','update:username','change'])
 
 // 部门相关
 const initDeptTree = () => {
@@ -149,19 +159,19 @@ const initDeptTree = () => {
   const loadingTree = ref<boolean>(false)
   // 初始化部门数据
   const initDept = async () => {
+    // 非全量数据，从userStore中获取部门信息
+    if (!props.allDeptData) {
+      const userStore = useUserStore();
+      handleDeptData(userStore.deptTrees)
+     return;
+    }
+
+    // 全量数据，从后端查询
     loadingTree.value = true
     try {
       const resp = await getDeptOption()
       if (resp.code === 200) {
-        // 单位树
-        sysDeptList.value = resp.data
-        // 未双向绑定的单位树
-        originDeptTree = resp.data
-        // 处理为扁平化数据
-        const flattenDeptList = flattenTree(resp.data)
-        // 获取全部部门id
-        const mapIds = flattenDeptList.filter(item => item.id).map(item => item.id)
-        deptIds.push(... (mapIds as string[]))
+        handleDeptData(resp.data)
       } else {
         message.error(resp.msg)
       }
@@ -174,6 +184,19 @@ const initDeptTree = () => {
     } finally {
       loadingTree.value = false
     }
+  }
+
+  // 处理部门数据
+  const handleDeptData = (data: Array<SysDept>) => {
+    // 单位树
+    sysDeptList.value = data
+    // 未双向绑定的单位树
+    originDeptTree = data
+    // 处理为扁平化数据
+    const flattenDeptList = flattenTree(data)
+    // 获取全部部门id
+    const mapIds = flattenDeptList.filter(item => item.id).map(item => item.id)
+    deptIds.push(... (mapIds as string[]))
   }
 
   // 处理展开折叠
@@ -361,8 +384,8 @@ watch(() => selectedIds.value, (value, oldValue) => {
   }
 
   emits('update:nickname', selectUsers.value.map(user => user.nickname))
-  emits('update:value', selectUsers.value.map(user => user.id))
-  emits('update:avatar', selectUsers.value.map(user => user.avatar))
+  emits('update:id', selectUsers.value.map(user => user.id))
+  emits('update:username', selectUsers.value.map(user => user.username))
   emits('change', selectUsers.value)
 })
 
@@ -382,21 +405,30 @@ onMounted(() => {
 .user-show {
   position: relative;
 }
-.user-show:hover:after {
+
+.user-show::after {
   content: '\274C';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color:rgba(0, 0, 0, 0.06);
+  background-color: rgba(0, 0, 0, 0.06);
   z-index: 1;
-  border-radius: 20px;
+  border-radius: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   backdrop-filter: saturate(180%) blur(20px);
+  opacity: 0;
+  transition: opacity 0.17s ease;
+  pointer-events: none;
+}
+
+.user-show:hover::after {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .dept-keyword-input {

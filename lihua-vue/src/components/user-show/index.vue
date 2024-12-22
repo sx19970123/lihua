@@ -62,7 +62,8 @@ try {
 <style>
 .lihua-user-select {
   border: 1px solid #d9d9d9;
-  border-radius: 16px;
+  border-radius: 20px;
+  padding: 2px;
   display: inline-block;
   margin: 4px;
   box-shadow: var(--lihua-layout-light-box-shadow);

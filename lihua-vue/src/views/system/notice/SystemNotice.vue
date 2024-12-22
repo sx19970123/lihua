@@ -199,7 +199,7 @@
                   <user-select :bordered="false"
                                :width="700"
                                :body-style="{padding: '8px'}"
-                               v-model:value="sysNoticeVO.userIdList"
+                               v-model:id="sysNoticeVO.userIdList"
                                @change="handleSelectUserInfo"
                   />
                 </template>

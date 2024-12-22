@@ -74,6 +74,7 @@
             sys_user.id,
             sys_user.username,
             sys_user.nickname,
+            sys_user.avatar,
             sys_user.gender,
             sys_user.status,
             sys_user.create_time,
