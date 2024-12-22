@@ -11,7 +11,7 @@
  Target Server Version : 90001 (9.0.1)
  File Encoding         : 65001
 
- Date: 22/12/2024 18:51:52
+ Date: 22/12/2024 19:31:33
 */
 
 SET NAMES utf8mb4;
@@ -195,28 +195,7 @@ CREATE TABLE `sys_login_log`  (
 -- ----------------------------
 -- Records of sys_login_log
 -- ----------------------------
-
--- ----------------------------
--- Table structure for sys_login_setting
--- ----------------------------
-DROP TABLE IF EXISTS `sys_login_setting`;
-CREATE TABLE `sys_login_setting`  (
-  `id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '主键',
-  `component_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组件名称',
-  `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '设置描述',
-  `sort` int NULL DEFAULT NULL COMMENT '排序',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '状态',
-  `create_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人id',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_id` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '更新人id',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '删除标识',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录后设置管理表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of sys_login_setting
--- ----------------------------
+INSERT INTO `sys_login_log` VALUES ('1870784549947613186', '用户登录', 'LOGIN', '登录', 'com.lihua.system.controller.SysAuthenticationController', 'login', '0:0:0:0:0:0:0:1', 'admin', 'admin', '1', '2024-12-22 18:52:49', 78, '{\"currentUser\":\"{\\\"username\\\":\\\"admin\\\",\\\"captchaVerification\\\":\\\"CONCAT_818f664adea04b6193b1dc6887930008\\\"}\"}', NULL, NULL, NULL, '/system/login', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', '0', '0', 'REDIS_CACHE_LOGIN_USER:1:1734864768859:b9a9de47cc574da688b3347205912f0b');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -540,7 +519,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$7uob8wEDL7VvXmC9wC4MZ.7Ut3qJOaiFVErYgpsbhAWxSA8jZWL9u', 'admin', '{\"value\":\"XiaoMiaoCool\",\"type\":\"icon\",\"backgroundColor\":\"conic-gradient(from 45deg, rgb(22, 119, 255),rgb(245, 34, 45),rgb(250, 84, 28),rgb(250, 173, 20),rgb(19, 194, 194),rgb(82, 196, 26),rgb(47, 84, 235),rgb(114, 46, 209))\"}', '1', '0', '{\"layoutType\":\"header-sider\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":true,\"colorPrimary\":\"rgb(114, 46, 209)\",\"antColorPrimary\":\"#642ab5\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(20,20,20,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":false,\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"zoom\",\"grayModel\":\"none\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(114, 46, 209)\"}}}', '0', NULL, '2024-06-02 16:57:25', '1', '2024-12-22 17:52:22', '2024-10-04 20:59:29', '2651518588@qq.com', '15510916240', NULL, '0');
+INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$7uob8wEDL7VvXmC9wC4MZ.7Ut3qJOaiFVErYgpsbhAWxSA8jZWL9u', 'admin', '{\"value\":\"XiaoMiaoCool\",\"type\":\"icon\",\"backgroundColor\":\"conic-gradient(from 45deg, rgb(22, 119, 255),rgb(245, 34, 45),rgb(250, 84, 28),rgb(250, 173, 20),rgb(19, 194, 194),rgb(82, 196, 26),rgb(47, 84, 235),rgb(114, 46, 209))\"}', '1', '0', '{\"layoutType\":\"header-sider\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":false,\"colorPrimary\":\"rgb(114, 46, 209)\",\"antColorPrimary\":\"#722ed1\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":false,\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"zoom\",\"grayModel\":\"none\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(114, 46, 209)\"}}}', '0', NULL, '2024-06-02 16:57:25', '1', '2024-12-22 19:13:40', '2024-10-04 20:59:29', '2651518588@qq.com', '15510916240', NULL, '0');
 
 -- ----------------------------
 -- Table structure for sys_user_dept

@@ -9,6 +9,22 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.17',
+            updateDate: '2024-12-22',
+            updateContent: [
+                '1. 新增组件展示页面',
+                '2. 在线文档-内置组件上线',
+                '3. 优化expandable-card组件在不传入middle插槽时使用detail过渡',
+                '4. 新增expandable-card组件演示demo',
+                '5. 静态路由中meta新增allowAnonymous是否允许在未登录的情况下访问路由属性，设置为true在未登录下也能访问',
+                '6. 优化页面中layout中的tooltip组件绑定dom对象',
+                '7. 修复dict-tag树形字典全路径无效的bug',
+                '8. 调整优化代码结构',
+                '9. spring boot版本升级为3.4.1',
+                '10. xxl-job版本升级为2.4.2',
+            ]
+        },
+        {
             version: '1.0.0-beta.16',
             updateDate: '2024-12-08',
             updateContent: [
@@ -214,14 +230,16 @@ const updateRecords = [
     {
         version: '1.0.0-beta.17',
         record: [
-            '1. 优化expandable-card组件在不传入middle插槽时使用detail过渡',
-            '2. 新增expandable-card组件演示demo',
-            '3. 静态路由中meta新增allowAnonymous是否允许在未登录的情况下访问路由属性，设置为true在未登录下也能访问',
-            '4. 优化页面中layout中的tooltip组件绑定dom对象',
-            '5. 修复dict-tag树形字典全路径无效的bug',
-            '6. 调整优化代码结构',
-            '7. spring boot版本升级为3.4.1',
-            '8. xxl-job版本升级为2.4.2',
+            '1. 新增组件展示页面',
+            '2. 在线文档-内置组件上线',
+            '3. 优化expandable-card组件在不传入middle插槽时使用detail过渡',
+            '4. 新增expandable-card组件演示demo',
+            '5. 静态路由中meta新增allowAnonymous是否允许在未登录的情况下访问路由属性，设置为true在未登录下也能访问',
+            '6. 优化页面中layout中的tooltip组件绑定dom对象',
+            '7. 修复dict-tag树形字典全路径无效的bug',
+            '8. 调整优化代码结构',
+            '9. spring boot版本升级为3.4.1',
+            '10. xxl-job版本升级为2.4.2',
         ]
     },
     {
