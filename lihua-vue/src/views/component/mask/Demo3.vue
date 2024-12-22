@@ -25,5 +25,4 @@ const openSpin = () => {
     spin.close()
   },1500)
 }
-
 </script>
