@@ -1,17 +1,17 @@
 /*
  Navicat Premium Dump SQL
 
- Source Server         : 127.0.0.1
+ Source Server         : MySql
  Source Server Type    : MySQL
- Source Server Version : 80400 (8.4.0)
+ Source Server Version : 90001 (9.0.1)
  Source Host           : localhost:3306
  Source Schema         : lihua
 
  Target Server Type    : MySQL
- Target Server Version : 80400 (8.4.0)
+ Target Server Version : 90001 (9.0.1)
  File Encoding         : 65001
 
- Date: 22/10/2024 09:17:38
+ Date: 22/12/2024 18:51:52
 */
 
 SET NAMES utf8mb4;
@@ -75,38 +75,6 @@ CREATE TABLE `sys_dict_data`  (
 -- ----------------------------
 -- Records of sys_dict_data
 -- ----------------------------
-INSERT INTO `sys_dict_data` VALUES ('1', '0', '1', '是', '0', 2, '系统选项是', '0', NULL, NULL, '1', '2024-03-14 13:31:41', '1', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768153329837694977', '0', '1766758645678043137', '树形字典', 'tree', 1, NULL, '0', '1', '2024-03-14 13:52:59', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768153331267952642', '0', '1766758645678043137', '一般字典', 'default', 2, NULL, '0', '1', '2024-03-14 13:53:00', '1', '2024-03-14 13:59:21', '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768169289755815938', '1768153332689821697', '1766758645678043137', '其他2', 'o1', 1, NULL, '0', '1', '2024-03-14 14:56:24', '1', '2024-03-14 15:27:38', '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768178926144090113', '1768169289755815938', '1766758645678043137', 'qita3', 'o3', 1, NULL, '0', '1', '2024-03-14 15:34:42', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768445908919676929', '1768153332689821697', '1766758645678043137', '123', '312', 2, NULL, '0', '1', '2024-03-15 09:15:35', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768446977636724738', '1768153332689821697', '1766758645678043137', '666', '666', 3, NULL, '0', '1', '2024-03-15 09:19:50', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768511746280398850', '1768153331267952642', '1766758645678043137', '1', '1', 1, NULL, '0', '1', '2024-03-15 13:37:12', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768512214658326529', '1768153331267952642', '1766758645678043137', '2', '2', 2, NULL, '0', '1', '2024-03-15 13:39:04', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768512477536329729', '1768153331267952642', '1766758645678043137', '3', '3', 3, NULL, '0', '1', '2024-03-15 13:40:07', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768514109091225601', '1768153331267952642', '1766758645678043137', '4', '4', 4, NULL, '0', '1', '2024-03-15 13:46:36', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768521531268669442', '1768514109091225601', '1766758645678043137', '5', '5', 1, NULL, '0', '1', '2024-03-15 14:16:05', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768521752086192130', '1768153331267952642', '1766758645678043137', '5', '5', 5, NULL, '0', '1', '2024-03-15 14:16:58', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768521971699949570', '1768153331267952642', '1766758645678043137', '6', '6', 6, NULL, '0', '1', '2024-03-15 14:17:50', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768522081397776385', '1768153331267952642', '1766758645678043137', '7', '7', 7, NULL, '0', '1', '2024-03-15 14:18:16', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768522274612584449', '1768153331267952642', '1766758645678043137', '8', '8', 8, NULL, '0', '1', '2024-03-15 14:19:02', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768522468615921666', '1768153331267952642', '1766758645678043137', '9', '9', 90, NULL, '0', '1', '2024-03-15 14:19:49', NULL, NULL, '1', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768523041901780994', '1768153331267952642', '1766758645678043137', '10', '10', 913, NULL, '0', '1', '2024-03-15 14:22:05', NULL, NULL, '1', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768523105671979010', '1768153331267952642', '1766758645678043137', '11', '11', 9141, NULL, '0', '1', '2024-03-15 14:22:21', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768523826605727745', '1768153331267952642', '1766758645678043137', '12', '12', 9142, NULL, '0', '1', '2024-03-15 14:25:13', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768524286381137922', '1768153329837694977', '1766758645678043137', '1', '1', 1, NULL, '0', '1', '2024-03-15 14:27:02', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768524400394903553', '1768153329837694977', '1766758645678043137', '2', '2', 2, NULL, '0', '1', '2024-03-15 14:27:29', NULL, NULL, '1', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768524459643641857', '1768153329837694977', '1766758645678043137', '3', '3', 3, NULL, '0', '1', '2024-03-15 14:27:43', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768524632725790722', '1768153329837694977', '1766758645678043137', '4', '4', 4, NULL, '0', '1', '2024-03-15 14:28:25', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768525031620878338', '1768153329837694977', '1766758645678043137', '5', '5', 55, NULL, '0', '1', '2024-03-15 14:30:00', NULL, NULL, '1', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768525148650348545', '1768153329837694977', '1766758645678043137', '7', '7', 56, NULL, '0', '1', '2024-03-15 14:30:28', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768525278619246593', '1768153329837694977', '1766758645678043137', '123', '123', 57, NULL, '0', '1', '2024-03-15 14:30:59', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768525360294928385', '1768153329837694977', '1766758645678043137', '13123', '123123', 58, NULL, '0', '1', '2024-03-15 14:31:18', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768525473704714241', '1768153329837694977', '1766758645678043137', '44', '44', 59, NULL, '0', '1', '2024-03-15 14:31:45', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768525621910446081', '1768153329837694977', '1766758645678043137', '1', '1', 602, NULL, '0', '1', '2024-03-15 14:32:21', NULL, NULL, '1', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1768553675202408450', '1768527062662258690', '1766758645678043137', '4', '4', 3, NULL, '0', '1', '2024-03-15 16:23:49', NULL, NULL, '0', NULL);
-INSERT INTO `sys_dict_data` VALUES ('1770356149437501442', '0', 'yes-no', '测试', 'test', 1, NULL, '0', '1', '2024-03-20 15:46:12', '1', '2024-03-20 16:00:47', '0', 'default');
 INSERT INTO `sys_dict_data` VALUES ('1771163317281083393', '0', 'sys_status', '正常', '0', 1, NULL, '0', '1', '2024-03-22 21:13:36', '1', '2024-03-24 13:42:09', '0', 'processing');
 INSERT INTO `sys_dict_data` VALUES ('1771163394133315585', '0', 'sys_status', '停用', '1', 2, NULL, '0', '1', '2024-03-22 21:13:54', '1', '2024-03-22 21:18:01', '0', 'error');
 INSERT INTO `sys_dict_data` VALUES ('1771165766595235841', '0', 'sys_dict_type', '一般字典', '0', 1, NULL, '0', '1', '2024-03-22 21:23:20', '1', '2024-03-24 20:46:11', '0', 'processing');
@@ -148,7 +116,13 @@ INSERT INTO `sys_dict_data` VALUES ('1823522986106695682', '0', 'sys_log_status'
 INSERT INTO `sys_dict_data` VALUES ('1823522988254179330', '0', 'sys_log_status', '失败', '1', 2, NULL, '0', '1', '2024-08-14 08:52:14', '1', '2024-08-14 08:52:43', '0', 'error');
 INSERT INTO `sys_dict_data` VALUES ('1840380919319064578', '0', 'sys_user_register_type', '管理员注册', '0', 1, NULL, '0', '1', '2024-09-29 21:19:38', NULL, NULL, '0', 'processing');
 INSERT INTO `sys_dict_data` VALUES ('1840380921978253313', '0', 'sys_user_register_type', '用户自助注册', '1', 2, NULL, '0', '1', '2024-09-29 21:19:39', NULL, NULL, '0', 'success');
-INSERT INTO `sys_dict_data` VALUES ('2', '0', '1', '否', '1', 1, '系统选项2否', '0', NULL, NULL, '1', '2024-03-15 16:30:56', '0', NULL);
+INSERT INTO `sys_dict_data` VALUES ('1869716623098253313', '0', 'test_tree', '节点1', '1', 1, NULL, '0', '1', '2024-12-19 20:09:15', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` VALUES ('1869716680958676994', '1869716623098253313', 'test_tree', '节点1-1', '1-1', 1, NULL, '0', '1', '2024-12-19 20:09:29', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` VALUES ('1869716725632208898', '1869716623098253313', 'test_tree', '节点1-2', '1-2', 2, NULL, '0', '1', '2024-12-19 20:09:40', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` VALUES ('1869716755554373633', '0', 'test_tree', '节点2', '2', 2, NULL, '0', '1', '2024-12-19 20:09:47', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` VALUES ('1869716801964347394', '1869716755554373633', 'test_tree', '节点2-1', '2-1', 1, NULL, '0', '1', '2024-12-19 20:09:58', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` VALUES ('1869716862974693377', '1869716755554373633', 'test_tree', '节点2-2', '2-2', 2, NULL, '0', '1', '2024-12-19 20:10:12', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` VALUES ('1869719177509081090', '1869716862974693377', 'test_tree', '节点2-2-1', '2-2-1', 1, NULL, '0', '1', '2024-12-19 20:19:24', '1', '2024-12-19 20:52:53', '0', 'processing');
 
 -- ----------------------------
 -- Table structure for sys_dict_type
@@ -186,6 +160,7 @@ INSERT INTO `sys_dict_type` VALUES ('1814602561218945026', '用户范围', 'sys_
 INSERT INTO `sys_dict_type` VALUES ('1814603011422953473', '优先级别', 'sys_notice_priority', '0', '通知公告优先程度', '1', '2024-07-20 18:07:26', '1', '2024-07-29 22:13:21', '0', '0');
 INSERT INTO `sys_dict_type` VALUES ('1823522921661214721', '日志执行结果', 'sys_log_status', '0', '日志记录程序执行是否成功', '1', '2024-08-14 08:51:59', '1', '2024-09-23 09:05:30', '0', '0');
 INSERT INTO `sys_dict_type` VALUES ('1840380676900876290', '用户注册类型', 'sys_user_register_type', '0', '用户注册类型：管理员注册、用户自助注册', '1', '2024-09-29 21:18:41', NULL, NULL, '0', '0');
+INSERT INTO `sys_dict_type` VALUES ('1869716543582638081', '树形字典测试', 'test_tree', '1', NULL, '1', '2024-12-19 20:08:56', NULL, NULL, '0', '0');
 
 -- ----------------------------
 -- Table structure for sys_login_log
@@ -284,20 +259,11 @@ INSERT INTO `sys_menu` VALUES ('1776948212783730690', '031f293f02c84e4d9e27f866e
 INSERT INTO `sys_menu` VALUES ('1777536058626834433', '1775035631645659138', '角色管理', '角色管理', 'page', '/role', '/system/role/SystemRole.vue', '0', '0', 'page', 'TeamOutlined', 2, '1', '2024-04-09 11:16:36', '1', '2024-06-02 12:23:03', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1777536311941824513', '1775035631645659138', '用户管理', '用户管理', 'page', '/user', '/system/user/SystemUser.vue', '0', '0', 'page', 'UserSwitchOutlined', 1, '1', '2024-04-09 11:17:36', '1', '2024-06-02 12:22:57', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1777536895235293186', '1775035631645659138', '部门管理', '部门管理', 'page', '/dept', '/system/dept/SystemDept.vue', '0', '0', 'page', 'ApartmentOutlined', 4, '1', '2024-04-09 11:19:56', '1', '2024-06-02 12:23:50', '0', NULL, '0', NULL, NULL, '0', 'inner');
-INSERT INTO `sys_menu` VALUES ('1777538040162844673', '0', '日志管理', '日志管理', 'directory', '/log', NULL, '0', '0', 'directory', 'FileSearchOutlined', 3, '1', '2024-04-09 11:24:28', '1', '2024-08-14 15:38:36', '0', NULL, '0', NULL, NULL, '0', 'inner');
-INSERT INTO `sys_menu` VALUES ('1777538768721838082', '1777538040162844673', '登录日志', '登录日志', 'page', '/login', '/system/log/SystemLoginLog.vue', '0', '0', 'page', 'FileProtectOutlined', 1, '1', '2024-04-09 11:27:22', '1', '2024-08-14 15:43:44', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1777538040162844673', '0', '日志管理', '日志管理', 'directory', '/log', NULL, '0', '0', 'directory', 'FileSearchOutlined', 3, '1', '2024-04-09 11:24:28', '1', '2024-11-13 21:04:51', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1777538768721838082', '1777538040162844673', '登录日志', '登录日志', 'page', '/login', '/system/log/SystemLoginLog.vue', '0', '0', 'page', 'FileProtectOutlined', 1, '1', '2024-04-09 11:27:22', '1', '2024-11-13 21:04:51', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1777539832263114753', '1775035631645659138', '通知公告', '通知公告', 'page', '/system/notice', '/system/notice/SystemNotice.vue', '0', '0', 'page', 'MessageOutlined', 7, '1', '2024-04-09 11:31:36', '1', '2024-07-10 21:14:30', '0', NULL, '0', NULL, NULL, '0', 'inner');
-INSERT INTO `sys_menu` VALUES ('1780421335728918529', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:21:40', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('1780422393649885185', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:25:52', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('1780422522222088193', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:26:23', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('1780422633165615105', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:26:49', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('1780422872471621633', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:27:46', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('1780422881095110657', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:27:48', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('1780423014360743938', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:28:20', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('1780423917344051201', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:31:55', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `sys_menu` VALUES ('1780427329154502657', NULL, 'admin', 'admin', 'page', NULL, NULL, NULL, NULL, 'page', NULL, NULL, '1', '2024-04-17 10:45:29', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `sys_menu` VALUES ('1784084466574819330', '1775035631645659138', '岗位管理', '岗位管理', 'page', '/post', '/system/post/SystemPost.vue', '0', '0', 'page', 'ScheduleOutlined', 5, '1', '2024-04-27 12:57:38', '1', '2024-06-16 18:46:09', '0', NULL, '0', NULL, NULL, '0', 'inner');
-INSERT INTO `sys_menu` VALUES ('1823518320191033346', '1777538040162844673', '操作日志', '操作日志', 'page', '/operate', '/system/log/SystemOperateLog.vue', '0', '0', 'page', 'FileSyncOutlined', 2, '1', '2024-08-14 08:33:42', '1', '2024-08-14 15:44:24', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1823518320191033346', '1777538040162844673', '操作日志', '操作日志', 'page', '/operate', '/system/log/SystemOperateLog.vue', '0', '0', 'page', 'FileSyncOutlined', 2, '1', '2024-08-14 08:33:42', '1', '2024-11-13 21:04:52', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1838036266821033985', '0', '系统监控', '系统监控', 'directory', '/monitor', NULL, '0', '0', 'directory', 'FundViewOutlined', 4, '1', '2024-09-23 10:02:50', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1838036487672111105', '1838036266821033985', '数据监控', '数据监控', 'page', '/druid', '/monitor/druid/MonitorDruid.vue', '0', '1', 'link', 'DatabaseOutlined', 4, '1', '2024-09-23 10:03:42', '1', '2024-10-02 13:33:54', '0', '由druid数据库连接池提供，如需开启监控，请在后台引入druid后进行相关配置。', '0', '', NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1838487275271753729', '1838036266821033985', '在线用户', '在线用户', 'page', '/loggedUser', '/monitor/logged-user/MonitorLoggedUser.vue', '0', '0', 'page', 'UserOutlined', 0, '1', '2024-09-24 15:54:59', '1', '2024-09-24 18:23:11', '0', NULL, '0', NULL, NULL, '0', 'inner');
@@ -314,6 +280,18 @@ INSERT INTO `sys_menu` VALUES ('1842179977343860738', '1777536895235293186', '�
 INSERT INTO `sys_menu` VALUES ('1842180022327771137', '1784084466574819330', '岗位编辑', '岗位编辑', 'perms', NULL, NULL, '0', '0', 'system:post:modify', NULL, 1, '1', '2024-10-04 20:28:38', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1842180212346519554', '1838487275271753729', '用户强退', '用户强退', 'perms', NULL, NULL, '0', '0', 'system:loginUser:clear', NULL, 1, '1', '2024-10-04 20:29:23', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` VALUES ('1842180329170468866', '1840684744634474498', '删除缓存', '删除缓存', 'perms', NULL, NULL, '0', '0', 'system:cache:delete', NULL, 1, '1', '2024-10-04 20:29:51', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1866101773239513090', '0', '系统组件', '系统组件', 'directory', '/component', NULL, '0', '0', 'directory', 'SkinOutlined', 5, '1', '2024-12-09 20:45:08', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1866102220608172033', '1866101773239513090', '可展开卡片', '可展开卡片', 'page', '/expandable-card', '/component/expandable-card/ExpandedCardIndex.vue', '0', '0', 'page', 'BlockOutlined', 1, '1', '2024-12-09 20:46:55', '1', '2024-12-09 21:38:32', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1869722347316580354', '1866101773239513090', '字典标签', '字典标签', 'page', '/dict-tag', '/component/dict-tag/DictTagIndex.vue', '0', '0', 'page', 'TagOutlined', 3, '1', '2024-12-19 20:32:00', '1', '2024-12-22 17:46:53', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1870098893441273858', '1866101773239513090', '简单树形选择', '简单树形选择', 'page', '/easy-tree-select', '/component/easy-tree-select/EasyTreeSelectIndex.vue', '0', '0', 'page', 'ApartmentOutlined', 5, '1', '2024-12-20 21:28:16', '1', '2024-12-22 17:47:19', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1870290012938657794', '1866101773239513090', '颜色选择', '颜色选择', 'page', '/color-select', '/component/color-select/ColorSelectIndex.vue', '0', '0', 'page', 'BgColorsOutlined', 8, '1', '2024-12-21 10:07:42', '1', '2024-12-22 17:47:49', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1870301196588900353', '1866101773239513090', '富文本编辑器', '富文本编辑器', 'page', '/editor', '/component/editor/EditorIndex.vue', '0', '0', 'page', 'EditOutlined', 7, '1', '2024-12-21 10:52:08', '1', '2024-12-22 17:47:35', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1870319939100565506', '1866101773239513090', '图标选择', '图标选择', 'page', '/icon-select', '/component/icon-select/IconSelectIndex.vue', '0', '0', 'page', 'InfoOutlined', 9, '1', '2024-12-21 12:06:37', '1', '2024-12-22 17:47:59', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1870342042247979009', '1866101773239513090', '图片裁剪', '图片裁剪', 'page', '/image-cropper', '/component/image-cropper/ImageCropperIndex.vue', '0', '0', 'page', 'GatewayOutlined', 10, '1', '2024-12-21 13:34:27', '1', '2024-12-22 17:48:10', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1870463250452930562', '1866101773239513090', '全屏遮罩&Spin', '全屏遮罩&Spin', 'page', '/mask', '/component/mask/MaskIndex.vue', '0', '0', 'page', 'MacCommandOutlined', 4, '1', '2024-12-21 21:36:05', '1', '2024-12-22 17:50:18', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1870661733822672897', '1866101773239513090', '可选择卡片', '可选择卡片', 'page', '/selectable-card', '/component/selectable-card/SelectableCardIndex.vue', '0', '0', 'page', 'ProfileOutlined', 6, '1', '2024-12-22 10:44:47', '1', '2024-12-22 17:47:29', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1870738350989291522', '1866101773239513090', '用户展示', '用户展示', 'page', '/user-show', '/component/user-show/UserShowIndex.vue', '0', '0', 'page', 'TeamOutlined', 2, '1', '2024-12-22 15:49:14', '1', '2024-12-22 17:46:44', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` VALUES ('1870752914480996354', '1866101773239513090', '用户选择', '用户选择', 'page', '/user-select', '/component/user-select/UserSelectIndex.vue', '0', '0', 'page', 'ContactsOutlined', 11, '1', '2024-12-22 16:47:06', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
 
 -- ----------------------------
 -- Table structure for sys_notice
@@ -341,7 +319,7 @@ CREATE TABLE `sys_notice`  (
 -- ----------------------------
 -- Records of sys_notice
 -- ----------------------------
-INSERT INTO `sys_notice` VALUES ('1', '如何使用Vditor', '1', '1', '3', '0', 'Vditor 是一款**所见即所得**编辑器，支持 *Markdown*。\n\n* 不熟悉 Markdown 可使用工具栏或快捷键进行排版\n* 熟悉 Markdown 可直接排版，也可切换为分屏预览\n\n更多细节和用法请参考 [Vditor - 浏览器端的 Markdown 编辑器](https://ld246.com/article/1549638745630)，同时也欢迎向我们提出建议或报告问题，谢谢 ❤️\n\n## 教程\n\n这是一篇讲解如何正确使用 **Markdown** 的排版示例，学会这个很有必要，能让你的文章有更佳清晰的排版。\n\n> 引用文本：Markdown is a text formatting syntax inspired\n\n## 语法指导\n\n### 普通内容\n\n这段内容展示了在内容里面一些排版格式，比如：\n\n- **加粗** - `**加粗**`\n- *倾斜* - `*倾斜*`\n- ~~删除线~~ - `~~删除线~~`\n- `Code 标记` - `` `Code 标记` ``\n- [超级链接](https://ld246.com) - `[超级链接](https://ld246.com)`\n- [username@gmail.com](mailto:username@gmail.com) - `[username@gmail.com](mailto:username@gmail.com)`\n\n### 提及用户\n\n@Vanessa 通过 `@User` 可以在内容中提及用户，被提及的用户将会收到系统通知。\n\n> NOTE:\n>\n> 1. @用户名之后需要有一个空格\n> 2. 新手没有艾特的功能权限\n\n### 表情符号 Emoji\n\n支持大部分标准的表情符号，可使用输入法直接输入，也可手动输入字符格式。通过输入 `:` 触发自动完成，可在个人设置中[设置常用表情](https://ld246.com/settings/function)。\n\n#### 一些表情例子\n\n😄 😆 😵 😭 😰 😅  😢 😤 😍 😌\n👍 👎 💯 👏 🔔 🎁 ❓ 💣 ❤️ ☕️ 🌀 🙇 💋 🙏 💢\n\n### 大标题 - Heading 3\n\n你可以选择使用 H1 至 H6，使用 ##(N) 打头。建议帖子或回帖中的顶级标题使用 Heading 3，不要使用 1 或 2，因为 1 是系统站点级，2 是帖子标题级。\n\n> NOTE: 别忘了 # 后面需要有空格！\n\n#### Heading 4\n\n##### Heading 5\n\n###### Heading 6\n\n### 图片\n\n```\n![alt 文本](http://image-path.png)\n![alt 文本](http://image-path.png \"图片 Title 值\")\n```\n\n支持复制粘贴直接上传。\n\n### 代码块\n\n#### 普通\n\n```\n*emphasize*    **strong**\n_emphasize_    __strong__\nvar a = 1\n```\n\n#### 语法高亮支持\n\n如果在 ``` 后面跟随语言名称，可以有语法高亮的效果哦，比如:\n\n##### 演示 Go 代码高亮\n\n```go\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n	fmt.Println(\"Hello, 世界\")\n}\n```\n\n##### 演示 Java 高亮\n\n```java\npublic class HelloWorld {\n\n    public static void main(String[] args) {\n        System.out.println(\"Hello World!\");\n    }\n\n}\n```\n\n> Tip: 语言名称支持下面这些: `ruby`, `python`, `js`, `html`, `erb`, `css`, `coffee`, `bash`, `json`, `yml`, `xml` ...\n\n### 有序、无序、任务列表\n\n#### 无序列表\n\n- Java\n  - Spring\n    - IoC\n    - AOP\n- Go\n  - gofmt\n  - Wide\n- Node.js\n  - Koa\n  - Express\n\n#### 有序列表\n\n1. Node.js\n   1. Express\n   2. Koa\n   3. Sails\n2. Go\n   1. gofmt\n   2. Wide\n3. Java\n   1. Latke\n   2. IDEA\n\n#### 任务列表\n\n- [X] 发布 Sym\n- [X] 发布 Solo\n- [ ] 预约牙医\n\n### 表格\n\n如果需要展示数据什么的，可以选择使用表格。\n\n| header 1 | header 2 |\n| -------- | -------- |\n| cell 1   | cell 2   |\n| cell 3   | cell 4   |\n| cell 5   | cell 6   |\n\n### 隐藏细节\n\n<details>\n<summary>这里是摘要部分。</summary>\n这里是细节部分。\n</details>\n\n### 段落\n\n空行可以将内容进行分段，便于阅读。（这是第一段）\n\n使用空行在 Markdown 排版中相当重要。（这是第二段）\n\n### 链接引用\n\n[链接文本][链接标识]\n\n[链接标识]: https://b3log.org\n```\n[链接文本][链接标识]\n\n[链接标识]: https://b3log.org\n```\n\n### 数学公式\n\n多行公式块：\n\n$$\n\\frac{1}{\n  \\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\n  \\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {\n    1+\\frac{e^{-6\\pi}}\n    {1+\\frac{e^{-8\\pi}}{1+\\cdots}}\n  }\n}\n$$\n\n行内公式：\n\n公式 $a^2 + b^2 = \\color{red}c^2$ 是行内。\n\n### 脑图\n\n```mindmap\n- 教程\n- 语法指导\n  - 普通内容\n  - 提及用户\n  - 表情符号 Emoji\n    - 一些表情例子\n  - 大标题 - Heading 3\n    - Heading 4\n      - Heading 5\n        - Heading 6\n  - 图片\n  - 代码块\n    - 普通\n    - 语法高亮支持\n      - 演示 Go 代码高亮\n      - 演示 Java 高亮\n  - 有序、无序、任务列表\n    - 无序列表\n    - 有序列表\n    - 任务列表\n  - 表格\n  - 隐藏细节\n  - 段落\n  - 链接引用\n  - 数学公式\n  - 脑图\n  - 流程图\n  - 时序图\n  - 甘特图\n  - 图表\n  - 五线谱\n  - Graphviz\n  - 多媒体\n  - 脚注\n- 快捷键\n```\n\n### 流程图\n\n```mermaid\ngraph TB\n    c1-->a2\n    subgraph one\n    a1-->a2\n    end\n    subgraph two\n    b1-->b2\n    end\n    subgraph three\n    c1-->c2\n    end\n```\n\n### 时序图\n\n```mermaid\nsequenceDiagram\n    Alice->>John: Hello John, how are you?\n    loop Every minute\n        John-->>Alice: Great!\n    end\n```\n\n### 甘特图\n\n```mermaid\ngantt\n    title A Gantt Diagram\n    dateFormat  YYYY-MM-DD\n    section Section\n    A task           :a1, 2019-01-01, 30d\n    Another task     :after a1  , 20d\n    section Another\n    Task in sec      :2019-01-12  , 12d\n    another task      : 24d\n```\n\n### 图表\n\n```echarts\n{\n  \"title\": { \"text\": \"最近 30 天\" },\n  \"tooltip\": { \"trigger\": \"axis\", \"axisPointer\": { \"lineStyle\": { \"width\": 0 } } },\n  \"legend\": { \"data\": [\"帖子\", \"用户\", \"回帖\"] },\n  \"xAxis\": [{\n      \"type\": \"category\",\n      \"boundaryGap\": false,\n      \"data\": [\"2019-05-08\",\"2019-05-09\",\"2019-05-10\",\"2019-05-11\",\"2019-05-12\",\"2019-05-13\",\"2019-05-14\",\"2019-05-15\",\"2019-05-16\",\"2019-05-17\",\"2019-05-18\",\"2019-05-19\",\"2019-05-20\",\"2019-05-21\",\"2019-05-22\",\"2019-05-23\",\"2019-05-24\",\"2019-05-25\",\"2019-05-26\",\"2019-05-27\",\"2019-05-28\",\"2019-05-29\",\"2019-05-30\",\"2019-05-31\",\"2019-06-01\",\"2019-06-02\",\"2019-06-03\",\"2019-06-04\",\"2019-06-05\",\"2019-06-06\",\"2019-06-07\"],\n      \"axisTick\": { \"show\": false },\n      \"axisLine\": { \"show\": false }\n  }],\n  \"yAxis\": [{ \"type\": \"value\", \"axisTick\": { \"show\": false }, \"axisLine\": { \"show\": false }, \"splitLine\": { \"lineStyle\": { \"color\": \"rgba(0, 0, 0, .38)\", \"type\": \"dashed\" } } }],\n  \"series\": [\n    {\n      \"name\": \"帖子\", \"type\": \"line\", \"smooth\": true, \"itemStyle\": { \"color\": \"#d23f31\" }, \"areaStyle\": { \"normal\": {} }, \"z\": 3,\n      \"data\": [\"18\",\"14\",\"22\",\"9\",\"7\",\"18\",\"10\",\"12\",\"13\",\"16\",\"6\",\"9\",\"15\",\"15\",\"12\",\"15\",\"8\",\"14\",\"9\",\"10\",\"29\",\"22\",\"14\",\"22\",\"9\",\"10\",\"15\",\"9\",\"9\",\"15\",\"0\"]\n    },\n    {\n      \"name\": \"用户\", \"type\": \"line\", \"smooth\": true, \"itemStyle\": { \"color\": \"#f1e05a\" }, \"areaStyle\": { \"normal\": {} }, \"z\": 2,\n      \"data\": [\"31\",\"33\",\"30\",\"23\",\"16\",\"29\",\"23\",\"37\",\"41\",\"29\",\"16\",\"13\",\"39\",\"23\",\"38\",\"136\",\"89\",\"35\",\"22\",\"50\",\"57\",\"47\",\"36\",\"59\",\"14\",\"23\",\"46\",\"44\",\"51\",\"43\",\"0\"]\n    },\n    {\n      \"name\": \"回帖\", \"type\": \"line\", \"smooth\": true, \"itemStyle\": { \"color\": \"#4285f4\" }, \"areaStyle\": { \"normal\": {} }, \"z\": 1,\n      \"data\": [\"35\",\"42\",\"73\",\"15\",\"43\",\"58\",\"55\",\"35\",\"46\",\"87\",\"36\",\"15\",\"44\",\"76\",\"130\",\"73\",\"50\",\"20\",\"21\",\"54\",\"48\",\"73\",\"60\",\"89\",\"26\",\"27\",\"70\",\"63\",\"55\",\"37\",\"0\"]\n    }\n  ]\n}\n```\n\n### 五线谱\n\n```abc\nX: 24\nT: Clouds Thicken\nC: Paul Rosen\nS: Copyright 2005, Paul Rosen\nM: 6/8\nL: 1/8\nQ: 3/8=116\nR: Creepy Jig\nK: Em\n|:\"Em\"EEE E2G|\"C7\"_B2A G2F|\"Em\"EEE E2G|\\\n\"C7\"_B2A \"B7\"=B3|\"Em\"EEE E2G|\n\"C7\"_B2A G2F|\"Em\"GFE \"D (Bm7)\"F2D|\\\n1\"Em\"E3-E3:|2\"Em\"E3-E2B|:\"Em\"e2e gfe|\n\"G\"g2ab3|\"Em\"gfeg2e|\"D\"fedB2A|\"Em\"e2e gfe|\\\n\"G\"g2ab3|\"Em\"gfe\"D\"f2d|\"Em\"e3-e3:|\n```\n\n### Graphviz\n\n```graphviz\ndigraph finite_state_machine {\n    rankdir=LR;\n    size=\"8,5\"\n    node [shape = doublecircle]; S;\n    node [shape = point ]; qi\n\n    node [shape = circle];\n    qi -> S;\n    S  -> q1 [ label = \"a\" ];\n    S  -> S  [ label = \"a\" ];\n    q1 -> S  [ label = \"a\" ];\n    q1 -> q2 [ label = \"ddb\" ];\n    q2 -> q1 [ label = \"b\" ];\n    q2 -> q2 [ label = \"b\" ];\n}\n```\n\n### Flowchart\n\n```flowchart\nst=>start: Start\nop=>operation: Your Operation\ncond=>condition: Yes or No?\ne=>end\n\nst->op->cond\ncond(yes)->e\ncond(no)->op\n```\n\n### 多媒体\n\n支持 v.qq.com，youtube.com，youku.com，coub.com，facebook.com/video，dailymotion.com，.mp4，.m4v，.ogg，.ogv，.webm，.mp3，.wav 链接解析\n\nhttps://v.qq.com/x/cover/zf2z0xpqcculhcz/y0016tj0qvh.html\n\n### 脚注\n\n这里是一个脚注引用[^1]，这里是另一个脚注引用[^bignote]。\n\n[^1]: 第一个脚注定义。\n    \n[^bignote]: 脚注定义可使用多段内容。\n    \n       缩进对齐的段落包含在这个脚注定义内。\n    \n       ```\n       可以使用代码块。\n       ```\n       还有其他行级排版语法，比如**加粗**和[链接](https://b3log.org)。\n    \n```\n这里是一个脚注引用[^1]，这里是另一个脚注引用[^bignote]。\n[^1]: 第一个脚注定义。\n[^bignote]: 脚注定义可使用多段内容。\n\n    缩进对齐的段落包含在这个脚注定义内。\n\n    ```\n    可以使用代码块。\n    ```\n\n    还有其他行级排版语法，比如**加粗**和[链接](https://b3log.org)。\n```\n\n## 快捷键\n\n我们的编辑器支持很多快捷键，具体请参考 [键盘快捷键](https://ld246.com/article/1474030007391)（或者按 \"`?` \"😼）\n', '0', '1', '2024-07-02 13:47:20', '1842185571819786241', '2024-10-04 20:52:01', '2024-10-04 20:52:01', NULL, 'ceshi');
+INSERT INTO `sys_notice` VALUES ('1', '如何使用Vditor', '1', '1', '3', '1', 'Vditor 是一款**所见即所得**编辑器，支持 *Markdown*。\n\n* 不熟悉 Markdown 可使用工具栏或快捷键进行排版\n* 熟悉 Markdown 可直接排版，也可切换为分屏预览\n\n更多细节和用法请参考 [Vditor - 浏览器端的 Markdown 编辑器](https://ld246.com/article/1549638745630)，同时也欢迎向我们提出建议或报告问题，谢谢 ❤️\n\n## 教程\n\n这是一篇讲解如何正确使用 **Markdown** 的排版示例，学会这个很有必要，能让你的文章有更佳清晰的排版。\n\n> 引用文本：Markdown is a text formatting syntax inspired\n\n## 语法指导\n\n### 普通内容\n\n这段内容展示了在内容里面一些排版格式，比如：\n\n- **加粗** - `**加粗**`\n- *倾斜* - `*倾斜*`\n- ~~删除线~~ - `~~删除线~~`\n- `Code 标记` - `` `Code 标记` ``\n- [超级链接](https://ld246.com) - `[超级链接](https://ld246.com)`\n- [username@gmail.com](mailto:username@gmail.com) - `[username@gmail.com](mailto:username@gmail.com)`\n\n### 提及用户\n\n@Vanessa 通过 `@User` 可以在内容中提及用户，被提及的用户将会收到系统通知。\n\n> NOTE:\n>\n> 1. @用户名之后需要有一个空格\n> 2. 新手没有艾特的功能权限\n\n### 表情符号 Emoji\n\n支持大部分标准的表情符号，可使用输入法直接输入，也可手动输入字符格式。通过输入 `:` 触发自动完成，可在个人设置中[设置常用表情](https://ld246.com/settings/function)。\n\n#### 一些表情例子\n\n😄 😆 😵 😭 😰 😅  😢 😤 😍 😌\n👍 👎 💯 👏 🔔 🎁 ❓ 💣 ❤️ ☕️ 🌀 🙇 💋 🙏 💢\n\n### 大标题 - Heading 3\n\n你可以选择使用 H1 至 H6，使用 ##(N) 打头。建议帖子或回帖中的顶级标题使用 Heading 3，不要使用 1 或 2，因为 1 是系统站点级，2 是帖子标题级。\n\n> NOTE: 别忘了 # 后面需要有空格！\n\n#### Heading 4\n\n##### Heading 5\n\n###### Heading 6\n\n### 图片\n\n```\n![alt 文本](http://image-path.png)\n![alt 文本](http://image-path.png \"图片 Title 值\")\n```\n\n支持复制粘贴直接上传。\n\n### 代码块\n\n#### 普通\n\n```\n*emphasize*    **strong**\n_emphasize_    __strong__\nvar a = 1\n```\n\n#### 语法高亮支持\n\n如果在 ``` 后面跟随语言名称，可以有语法高亮的效果哦，比如:\n\n##### 演示 Go 代码高亮\n\n```go\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n	fmt.Println(\"Hello, 世界\")\n}\n```\n\n##### 演示 Java 高亮\n\n```java\npublic class HelloWorld {\n\n    public static void main(String[] args) {\n        System.out.println(\"Hello World!\");\n    }\n\n}\n```\n\n> Tip: 语言名称支持下面这些: `ruby`, `python`, `js`, `html`, `erb`, `css`, `coffee`, `bash`, `json`, `yml`, `xml` ...\n\n### 有序、无序、任务列表\n\n#### 无序列表\n\n- Java\n  - Spring\n    - IoC\n    - AOP\n- Go\n  - gofmt\n  - Wide\n- Node.js\n  - Koa\n  - Express\n\n#### 有序列表\n\n1. Node.js\n   1. Express\n   2. Koa\n   3. Sails\n2. Go\n   1. gofmt\n   2. Wide\n3. Java\n   1. Latke\n   2. IDEA\n\n#### 任务列表\n\n- [X] 发布 Sym\n- [X] 发布 Solo\n- [ ] 预约牙医\n\n### 表格\n\n如果需要展示数据什么的，可以选择使用表格。\n\n| header 1 | header 2 |\n| -------- | -------- |\n| cell 1   | cell 2   |\n| cell 3   | cell 4   |\n| cell 5   | cell 6   |\n\n### 隐藏细节\n\n<details>\n<summary>这里是摘要部分。</summary>\n这里是细节部分。\n</details>\n\n### 段落\n\n空行可以将内容进行分段，便于阅读。（这是第一段）\n\n使用空行在 Markdown 排版中相当重要。（这是第二段）\n\n### 链接引用\n\n[链接文本][链接标识]\n\n[链接标识]: https://b3log.org\n```\n[链接文本][链接标识]\n\n[链接标识]: https://b3log.org\n```\n\n### 数学公式\n\n多行公式块：\n\n$$\n\\frac{1}{\n  \\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\n  \\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {\n    1+\\frac{e^{-6\\pi}}\n    {1+\\frac{e^{-8\\pi}}{1+\\cdots}}\n  }\n}\n$$\n\n行内公式：\n\n公式 $a^2 + b^2 = \\color{red}c^2$ 是行内。\n\n### 脑图\n\n```mindmap\n- 教程\n- 语法指导\n  - 普通内容\n  - 提及用户\n  - 表情符号 Emoji\n    - 一些表情例子\n  - 大标题 - Heading 3\n    - Heading 4\n      - Heading 5\n        - Heading 6\n  - 图片\n  - 代码块\n    - 普通\n    - 语法高亮支持\n      - 演示 Go 代码高亮\n      - 演示 Java 高亮\n  - 有序、无序、任务列表\n    - 无序列表\n    - 有序列表\n    - 任务列表\n  - 表格\n  - 隐藏细节\n  - 段落\n  - 链接引用\n  - 数学公式\n  - 脑图\n  - 流程图\n  - 时序图\n  - 甘特图\n  - 图表\n  - 五线谱\n  - Graphviz\n  - 多媒体\n  - 脚注\n- 快捷键\n```\n\n### 流程图\n\n```mermaid\ngraph TB\n    c1-->a2\n    subgraph one\n    a1-->a2\n    end\n    subgraph two\n    b1-->b2\n    end\n    subgraph three\n    c1-->c2\n    end\n```\n\n### 时序图\n\n```mermaid\nsequenceDiagram\n    Alice->>John: Hello John, how are you?\n    loop Every minute\n        John-->>Alice: Great!\n    end\n```\n\n### 甘特图\n\n```mermaid\ngantt\n    title A Gantt Diagram\n    dateFormat  YYYY-MM-DD\n    section Section\n    A task           :a1, 2019-01-01, 30d\n    Another task     :after a1  , 20d\n    section Another\n    Task in sec      :2019-01-12  , 12d\n    another task      : 24d\n```\n\n### 图表\n\n```echarts\n{\n  \"title\": { \"text\": \"最近 30 天\" },\n  \"tooltip\": { \"trigger\": \"axis\", \"axisPointer\": { \"lineStyle\": { \"width\": 0 } } },\n  \"legend\": { \"data\": [\"帖子\", \"用户\", \"回帖\"] },\n  \"xAxis\": [{\n      \"type\": \"category\",\n      \"boundaryGap\": false,\n      \"data\": [\"2019-05-08\",\"2019-05-09\",\"2019-05-10\",\"2019-05-11\",\"2019-05-12\",\"2019-05-13\",\"2019-05-14\",\"2019-05-15\",\"2019-05-16\",\"2019-05-17\",\"2019-05-18\",\"2019-05-19\",\"2019-05-20\",\"2019-05-21\",\"2019-05-22\",\"2019-05-23\",\"2019-05-24\",\"2019-05-25\",\"2019-05-26\",\"2019-05-27\",\"2019-05-28\",\"2019-05-29\",\"2019-05-30\",\"2019-05-31\",\"2019-06-01\",\"2019-06-02\",\"2019-06-03\",\"2019-06-04\",\"2019-06-05\",\"2019-06-06\",\"2019-06-07\"],\n      \"axisTick\": { \"show\": false },\n      \"axisLine\": { \"show\": false }\n  }],\n  \"yAxis\": [{ \"type\": \"value\", \"axisTick\": { \"show\": false }, \"axisLine\": { \"show\": false }, \"splitLine\": { \"lineStyle\": { \"color\": \"rgba(0, 0, 0, .38)\", \"type\": \"dashed\" } } }],\n  \"series\": [\n    {\n      \"name\": \"帖子\", \"type\": \"line\", \"smooth\": true, \"itemStyle\": { \"color\": \"#d23f31\" }, \"areaStyle\": { \"normal\": {} }, \"z\": 3,\n      \"data\": [\"18\",\"14\",\"22\",\"9\",\"7\",\"18\",\"10\",\"12\",\"13\",\"16\",\"6\",\"9\",\"15\",\"15\",\"12\",\"15\",\"8\",\"14\",\"9\",\"10\",\"29\",\"22\",\"14\",\"22\",\"9\",\"10\",\"15\",\"9\",\"9\",\"15\",\"0\"]\n    },\n    {\n      \"name\": \"用户\", \"type\": \"line\", \"smooth\": true, \"itemStyle\": { \"color\": \"#f1e05a\" }, \"areaStyle\": { \"normal\": {} }, \"z\": 2,\n      \"data\": [\"31\",\"33\",\"30\",\"23\",\"16\",\"29\",\"23\",\"37\",\"41\",\"29\",\"16\",\"13\",\"39\",\"23\",\"38\",\"136\",\"89\",\"35\",\"22\",\"50\",\"57\",\"47\",\"36\",\"59\",\"14\",\"23\",\"46\",\"44\",\"51\",\"43\",\"0\"]\n    },\n    {\n      \"name\": \"回帖\", \"type\": \"line\", \"smooth\": true, \"itemStyle\": { \"color\": \"#4285f4\" }, \"areaStyle\": { \"normal\": {} }, \"z\": 1,\n      \"data\": [\"35\",\"42\",\"73\",\"15\",\"43\",\"58\",\"55\",\"35\",\"46\",\"87\",\"36\",\"15\",\"44\",\"76\",\"130\",\"73\",\"50\",\"20\",\"21\",\"54\",\"48\",\"73\",\"60\",\"89\",\"26\",\"27\",\"70\",\"63\",\"55\",\"37\",\"0\"]\n    }\n  ]\n}\n```\n\n### 五线谱\n\n```abc\nX: 24\nT: Clouds Thicken\nC: Paul Rosen\nS: Copyright 2005, Paul Rosen\nM: 6/8\nL: 1/8\nQ: 3/8=116\nR: Creepy Jig\nK: Em\n|:\"Em\"EEE E2G|\"C7\"_B2A G2F|\"Em\"EEE E2G|\\\n\"C7\"_B2A \"B7\"=B3|\"Em\"EEE E2G|\n\"C7\"_B2A G2F|\"Em\"GFE \"D (Bm7)\"F2D|\\\n1\"Em\"E3-E3:|2\"Em\"E3-E2B|:\"Em\"e2e gfe|\n\"G\"g2ab3|\"Em\"gfeg2e|\"D\"fedB2A|\"Em\"e2e gfe|\\\n\"G\"g2ab3|\"Em\"gfe\"D\"f2d|\"Em\"e3-e3:|\n```\n\n### Graphviz\n\n```graphviz\ndigraph finite_state_machine {\n    rankdir=LR;\n    size=\"8,5\"\n    node [shape = doublecircle]; S;\n    node [shape = point ]; qi\n\n    node [shape = circle];\n    qi -> S;\n    S  -> q1 [ label = \"a\" ];\n    S  -> S  [ label = \"a\" ];\n    q1 -> S  [ label = \"a\" ];\n    q1 -> q2 [ label = \"ddb\" ];\n    q2 -> q1 [ label = \"b\" ];\n    q2 -> q2 [ label = \"b\" ];\n}\n```\n\n### Flowchart\n\n```flowchart\nst=>start: Start\nop=>operation: Your Operation\ncond=>condition: Yes or No?\ne=>end\n\nst->op->cond\ncond(yes)->e\ncond(no)->op\n```\n\n### 多媒体\n\n支持 v.qq.com，youtube.com，youku.com，coub.com，facebook.com/video，dailymotion.com，.mp4，.m4v，.ogg，.ogv，.webm，.mp3，.wav 链接解析\n\nhttps://v.qq.com/x/cover/zf2z0xpqcculhcz/y0016tj0qvh.html\n\n### 脚注\n\n这里是一个脚注引用[^1]，这里是另一个脚注引用[^bignote]。\n\n[^1]: 第一个脚注定义。\n    \n[^bignote]: 脚注定义可使用多段内容。\n    \n       缩进对齐的段落包含在这个脚注定义内。\n    \n       ```\n       可以使用代码块。\n       ```\n       还有其他行级排版语法，比如**加粗**和[链接](https://b3log.org)。\n    \n```\n这里是一个脚注引用[^1]，这里是另一个脚注引用[^bignote]。\n[^1]: 第一个脚注定义。\n[^bignote]: 脚注定义可使用多段内容。\n\n    缩进对齐的段落包含在这个脚注定义内。\n\n    ```\n    可以使用代码块。\n    ```\n\n    还有其他行级排版语法，比如**加粗**和[链接](https://b3log.org)。\n```\n\n## 快捷键\n\n我们的编辑器支持很多快捷键，具体请参考 [键盘快捷键](https://ld246.com/article/1474030007391)（或者按 \"`?` \"😼）\n', '0', '1', '2024-07-02 13:47:20', '1', '2024-12-12 10:13:46', '2024-12-12 10:13:47', '1', 'ceshi');
 INSERT INTO `sys_notice` VALUES ('1842148808657141762', '关于狸花猫', '1', '2', '2', '0', '#### 关于狸花猫\n\n狸花猫是一款基于 **SpringBoot** 和 **Vue** 的权限管理系统\n\n##### 为什么叫狸花猫\n\n家里养了两只狸花猫，想用它们作为系统的主题。用它们任何一只的名字命名都不太合适，干脆就按它们的品种来命名了。\n\n##### 系统功能\n\n系统包含完整的基于角色控制的 RBAC 权限管理系统，包括菜单管理、角色管理和用户管理。此外，还提供部门和岗位管理，适用于大多数业务场景，用户支持多部门并可指定默认部门，前后端均提供接口获取用户的默认信息。\n\n##### 字典管理\n\n系统字典支持普通字典和树形字典，并提供工具类用于获取和翻译字典信息，前端还提供 dict-tag 组件，可以通过字典 value 直接展示字典 label，并自动匹配 tag 样式。\n\n##### 通知公告\n\n通知公告集成了 Vditor 富文本解析器，并使用 SSE 实现了消息的实时发送与接收。\n\n##### 个人中心\n\n个人中心支持个性化系统主题配置，支持主题、布局、导航等页面设置。\n\n##### 系统设置\n\n管理员角色用户可以对系统进行进一步配置，包括默认密码设置、定期修改密码、同账号登录限制、自助注册配置、登录验证码开关、IP 黑名单和灰色模式。\n\n##### 其他功能\n\n系统还提供了日志服务、在线用户监控、缓存监控、服务监控以及定时任务等功能。\n', '1', '1', '2024-10-04 18:24:36', '1842151025015455745', '2024-10-04 20:39:31', '2024-10-04 20:39:30', NULL, NULL);
 
 -- ----------------------------
@@ -376,7 +354,8 @@ CREATE TABLE `sys_operate_log`  (
 -- ----------------------------
 -- Records of sys_operate_log
 -- ----------------------------
-INSERT INTO `sys_operate_log` VALUES ('1848534042906341378', '清空操作日志', 'DELETE', '删除数据', 'com.lihua.system.controller.SysLogController', 'clearOperateLog', '0:0:0:0:0:0:0:1', '1', 'admin', 'admin', '2024-10-22 09:17:15', 41, NULL, '{\"code\":200,\"msg\":\"成功\",\"data\":null}', NULL, NULL, '/system/log/operate/clear', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0', '0', '0', 'REDIS_CACHE_LOGIN_USER:1:1729559764897:e3842d2eca8a4e4cb01fc50daf332d93');
+INSERT INTO `sys_operate_log` VALUES ('1870784126293549058', '清空登录日志', 'DELETE', '删除数据', 'com.lihua.system.controller.SysLogController', 'clearLoginLog', '0:0:0:0:0:0:0:1', '1', 'admin', 'admin', '2024-12-22 18:51:08', 8, NULL, '{\"code\":200,\"msg\":\"成功\",\"data\":null}', NULL, NULL, '/system/log/login/clear', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', '1', '0', 'REDIS_CACHE_LOGIN_USER:1:1734864607965:d1143fb5ad1a42d39fc819b25491b864');
+INSERT INTO `sys_operate_log` VALUES ('1870784158908456961', '删除操作日志', 'DELETE', '删除数据', 'com.lihua.system.controller.SysLogController', 'deleteOperateByIds', '0:0:0:0:0:0:0:1', '1', 'admin', 'admin', '2024-12-22 18:51:16', 8, '{\"ids\":\"[\\\"1870784126293549058\\\"]\"}', '{\"code\":200,\"msg\":\"成功\",\"data\":null}', NULL, NULL, '/system/log/operate', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', '0', '0', 'REDIS_CACHE_LOGIN_USER:1:1734864607965:d1143fb5ad1a42d39fc819b25491b864');
 
 -- ----------------------------
 -- Table structure for sys_post
@@ -432,7 +411,8 @@ CREATE TABLE `sys_role`  (
 -- Records of sys_role
 -- ----------------------------
 INSERT INTO `sys_role` VALUES ('1', '超级管理员', 'ROLE_admin', '0', '0', NULL, '2024-05-16 21:32:55', '1', '2024-06-19 22:49:48', NULL);
-INSERT INTO `sys_role` VALUES ('1842149851067514881', '访客用户', 'ROLE_visitor', '0', '0', '1', '2024-10-04 18:28:45', NULL, NULL, '');
+INSERT INTO `sys_role` VALUES ('1842149851067514881', '访客用户', 'ROLE_visitor', '0', '0', '1', '2024-10-04 18:28:45', '1', '2024-12-22 17:17:31', '');
+INSERT INTO `sys_role` VALUES ('1861768418410799106', '角色测试', 'ROLE_TEST', '0', '0', '1', '2024-11-27 21:45:56', '1', '2024-11-30 20:53:24', NULL);
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -482,6 +462,29 @@ INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1838487275271753729'
 INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1838581685913554946');
 INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1840684744634474498');
 INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1841350424845307905');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1842179763459522561');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1842179829247180801');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1842179926320152578');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1842179977343860738');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1842180022327771137');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1842180212346519554');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1842180329170468866');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1866101773239513090');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1866102220608172033');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1869722347316580354');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1870098893441273858');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1870290012938657794');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1870301196588900353');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1870319939100565506');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1870342042247979009');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1870463250452930562');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1870661733822672897');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1870738350989291522');
+INSERT INTO `sys_role_menu` VALUES ('1842149851067514881', '1870752914480996354');
+INSERT INTO `sys_role_menu` VALUES ('1861768418410799106', '1777536058626834433');
+INSERT INTO `sys_role_menu` VALUES ('1861768418410799106', '1777536311941824513');
+INSERT INTO `sys_role_menu` VALUES ('1861768418410799106', '1842179763459522561');
+INSERT INTO `sys_role_menu` VALUES ('1861768418410799106', '1842179829247180801');
 
 -- ----------------------------
 -- Table structure for sys_setting
@@ -502,7 +505,7 @@ INSERT INTO `sys_setting` VALUES ('GrayModelSetting', '灰色模式', 0x7B22656E
 INSERT INTO `sys_setting` VALUES ('IntervalUpdatePasswordSetting', '定期修改密码', 0x7B22656E61626C65223A66616C73652C22756E6974223A226D6F6E7468227D);
 INSERT INTO `sys_setting` VALUES ('RestrictAccessIpSetting', '限制访问IP', 0x7B22656E61626C65223A66616C73652C2269704C697374223A5B22225D7D);
 INSERT INTO `sys_setting` VALUES ('SameAccountLoginSetting', '同账号登录限制', 0x7B22656E61626C65223A66616C73652C226D6178696D756D223A317D);
-INSERT INTO `sys_setting` VALUES ('SignInSetting', '自助注册', 0x7B22656E61626C65223A747275652C2264657074496473223A5B2231383130323236323034373930363537303235222C2231383432313238343039363030393137353035222C2231383432313238353930323734373536363039222C2231383432313238373334373638353239343039222C2231383432313238393338333933363030303032225D2C2264656661756C74446570744964223A2231383130323236323034373930363537303235222C22706F7374496473223A5B2231383130353839353036393138303630303334222C2231383130353839353036393138303630303335222C2231383432313239333333333239323634363432222C2231383432313239343439333433373133323832225D2C22726F6C65496473223A5B2231383432313439383531303637353134383831225D7D);
+INSERT INTO `sys_setting` VALUES ('SignInSetting', '自助注册', 0x7B22656E61626C65223A747275652C2264657074496473223A5B2231383130323236323034373930363537303235222C2231383432313238343039363030393137353035225D2C2264656661756C74446570744964223A6E756C6C2C22706F7374496473223A5B2231383432313838303839333932303431393836225D2C22726F6C65496473223A5B2231383432313439383531303637353134383831225D7D);
 INSERT INTO `sys_setting` VALUES ('VerificationCodeSetting', '登录验证码', 0x7B22656E61626C65223A747275657D);
 
 -- ----------------------------
@@ -537,8 +540,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$7uob8wEDL7VvXmC9wC4MZ.7Ut3qJOaiFVErYgpsbhAWxSA8jZWL9u', 'admin', '{\"value\":\"XiaoMiaoHappy\",\"type\":\"icon\",\"backgroundColor\":\"conic-gradient(from 45deg, rgb(22, 119, 255),rgb(245, 34, 45),rgb(250, 84, 28),rgb(250, 173, 20),rgb(19, 194, 194),rgb(82, 196, 26),rgb(47, 84, 235),rgb(114, 46, 209))\"}', '1', '0', '{\"layoutType\":\"header-sider\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":false,\"colorPrimary\":\"rgb(114, 46, 209)\",\"antColorPrimary\":\"#722ed1\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(255,255,255,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":true,\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"zoom\",\"grayModel\":\"none\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(114, 46, 209)\"}}}', '0', NULL, '2024-06-02 16:57:25', '1', '2024-10-10 21:55:27', '2024-10-04 20:59:29', '2651518588@qq.com', '15510916240', NULL, '0');
-INSERT INTO `sys_user` VALUES ('1842185571819786241', 'yukino', '$2a$10$RAJPixH5S/TnSmnr4a64CO/Cu4Y6a2Bp0H/fiNv6ILmELT7LHZ90a', 'Yukino', '{\"value\":\"XiaoMiaoCool\",\"type\":\"icon\",\"backgroundColor\":\"conic-gradient(from 45deg, rgb(22, 119, 255),rgb(245, 34, 45),rgb(250, 84, 28),rgb(250, 173, 20),rgb(19, 194, 194),rgb(82, 196, 26),rgb(47, 84, 235),rgb(114, 46, 209))\"}', '2', '0', '{\"layoutType\":\"sider-header\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":true,\"colorPrimary\":\"rgb(22, 119, 255)\",\"antColorPrimary\":\"#1668dc\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(20,20,20,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":false,\"siderWith\":200,\"originSiderWith\":200,\"routeTransition\":\"zoom\",\"grayModel\":\"none\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(22, 119, 255)\"}}}', '0', NULL, '2024-10-04 20:50:41', '1842185571819786241', '2024-10-04 21:02:57', '2024-10-04 20:50:59', NULL, NULL, NULL, '1');
+INSERT INTO `sys_user` VALUES ('1', 'admin', '$2a$10$7uob8wEDL7VvXmC9wC4MZ.7Ut3qJOaiFVErYgpsbhAWxSA8jZWL9u', 'admin', '{\"value\":\"XiaoMiaoCool\",\"type\":\"icon\",\"backgroundColor\":\"conic-gradient(from 45deg, rgb(22, 119, 255),rgb(245, 34, 45),rgb(250, 84, 28),rgb(250, 173, 20),rgb(19, 194, 194),rgb(82, 196, 26),rgb(47, 84, 235),rgb(114, 46, 209))\"}', '1', '0', '{\"layoutType\":\"header-sider\",\"componentSize\":\"default\",\"showViewTabs\":true,\"isDarkTheme\":true,\"colorPrimary\":\"rgb(114, 46, 209)\",\"antColorPrimary\":\"#642ab5\",\"siderTheme\":\"light\",\"groundGlass\":true,\"affixHead\":true,\"layoutBackgroundColor\":\"rgba(20,20,20,0.6)\",\"siderBackgroundColor\":\"rgba(255,255,255,1)\",\"siderMode\":\"inline\",\"siderGroup\":false,\"siderWith\":220,\"originSiderWith\":220,\"routeTransition\":\"zoom\",\"grayModel\":\"none\",\"themeConfig\":{\"token\":{\"colorPrimary\":\"rgb(114, 46, 209)\"}}}', '0', NULL, '2024-06-02 16:57:25', '1', '2024-12-22 17:52:22', '2024-10-04 20:59:29', '2651518588@qq.com', '15510916240', NULL, '0');
 
 -- ----------------------------
 -- Table structure for sys_user_dept
@@ -556,12 +558,7 @@ CREATE TABLE `sys_user_dept`  (
 -- ----------------------------
 -- Records of sys_user_dept
 -- ----------------------------
-INSERT INTO `sys_user_dept` VALUES ('1', '1810226204790657025', '2024-10-04 17:23:32', '1', '0');
-INSERT INTO `sys_user_dept` VALUES ('1842185571819786241', '1810226204790657025', '2024-10-04 20:50:41', NULL, '0');
-INSERT INTO `sys_user_dept` VALUES ('1842185571819786241', '1842128409600917505', '2024-10-04 20:50:41', NULL, '1');
-INSERT INTO `sys_user_dept` VALUES ('1842185571819786241', '1842128590274756609', '2024-10-04 20:50:41', NULL, '1');
-INSERT INTO `sys_user_dept` VALUES ('1842185571819786241', '1842128734768529409', '2024-10-04 20:50:41', NULL, '1');
-INSERT INTO `sys_user_dept` VALUES ('1842185571819786241', '1842128938393600002', '2024-10-04 20:50:41', NULL, '1');
+INSERT INTO `sys_user_dept` VALUES ('1', '1842128590274756609', '2024-12-01 13:36:09', '1', '0');
 
 -- ----------------------------
 -- Table structure for sys_user_notice
@@ -579,8 +576,7 @@ CREATE TABLE `sys_user_notice`  (
 -- ----------------------------
 -- Records of sys_user_notice
 -- ----------------------------
-INSERT INTO `sys_user_notice` VALUES ('1', '1', '0', '0', NULL);
-INSERT INTO `sys_user_notice` VALUES ('1842185571819786241', '1', '0', '0', NULL);
+INSERT INTO `sys_user_notice` VALUES ('1', '1', '1', '1', '2024-12-19 22:01:03');
 
 -- ----------------------------
 -- Table structure for sys_user_post
@@ -599,8 +595,6 @@ CREATE TABLE `sys_user_post`  (
 -- ----------------------------
 INSERT INTO `sys_user_post` VALUES ('1', '1', '2024-06-02 16:57:25', '1');
 INSERT INTO `sys_user_post` VALUES ('1', '3', '2024-06-02 16:57:25', '1');
-INSERT INTO `sys_user_post` VALUES ('1842185571819786241', '1810589506918060034', '2024-10-04 20:50:41', NULL);
-INSERT INTO `sys_user_post` VALUES ('1842185571819786241', '1810589506918060035', '2024-10-04 20:50:41', NULL);
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -618,7 +612,6 @@ CREATE TABLE `sys_user_role`  (
 -- Records of sys_user_role
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES ('1', '1', '2024-06-02 16:57:25', '1');
-INSERT INTO `sys_user_role` VALUES ('1842185571819786241', '1842149851067514881', '2024-10-04 20:50:41', NULL);
 
 -- ----------------------------
 -- Table structure for sys_view_tab
@@ -635,6 +628,6 @@ CREATE TABLE `sys_view_tab`  (
 -- ----------------------------
 -- Records of sys_view_tab
 -- ----------------------------
-INSERT INTO `sys_view_tab` VALUES ('1842185571819786241', '1777536311941824513', '0', '0');
+INSERT INTO `sys_view_tab` VALUES ('1', '1777536311941824513', '0', '1');
 
 SET FOREIGN_KEY_CHECKS = 1;
