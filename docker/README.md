@@ -65,6 +65,7 @@ server构建使用openjdk:21，将lihua-admin-exec.jar复制到指定路径下�
 
 第一次部署时，容器全部启动后需手动执行sql文件，可使用navicat等工具连接数据库后运行项目下的sql文件（xxl-job的sql文件请参考其官方文档）。
 
+卷映射对应的服务器路径为：`/var/lib/docker/volumes`
 
 
 **配置仅包含最基础的项目启动，更多需求请根据项目情况修改dockerfile和compose.yaml**
