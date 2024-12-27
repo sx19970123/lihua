@@ -1,0 +1,5 @@
+FROM openjdk:21
+LABEL author=yukino
+COPY ./xxl-job-admin-2.4.2-SNAPSHOT.jar /app/app.jar
+EXPOSE 8081
+ENTRYPOINT ["java","-jar","/app/app.jar"]

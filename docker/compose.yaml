@@ -1,0 +1,96 @@
+name: lihua
+services:
+  # 后端 java
+  server:
+    container_name: lihua-web-server                # 启动容器名
+    build:                                          # 通过./server中的dockerfile构建镜像
+      context: ./server
+      dockerfile: dockerfile
+    environment:                                    # 配置环境变量
+      - BASE_FILE_PATH=/lihua/data/                   # 文件上传目录（包含生成log路径及excel导出路径）
+      - DB_HOST=lihua-mysql                           # mysql地址，默认使用mysql容器名即可
+      - DB_PORT=3306                                  # mysql端口，根据dockerfile暴露端口配置
+      - DB_USERNAME=username                          # mysql用户名
+      - DB_PASSWORD=password                          # mysql密码
+      - REDIS_HOST=lihua-redis                        # redis地址，默认使用redis容器名即可
+      - REDIS_PORT=6379                               # redis端口，根据dockerfile暴露端口配置
+      - REDIS_PASSWORD=password                       # redis密码
+      - XXL_JOB_HOST=lihua-xxl-job                    # xxl-job地址，默认使用xxl-job容器名即可
+      - XXL_JOB_PORT=8081                             # xxl-job端口，根据dockerfile暴露端口配置
+    networks:                                       # 同主机下共享的自定义网络
+      - network
+    volumes:                                        # 挂载卷
+      - server-data:/lihua/data/
+
+  # 前端 vue
+  client:
+    container_name: lihua-web-client                # 启动容器名
+    build:                                          # 通过./client中的dockerfile构建镜像
+      context: ./client
+      dockerfile: dockerfile
+    ports:                                          # 端口映射，将容器80端口映射到主机80端口
+      - "80:80"
+    networks:                                       # 同主机下共享的自定义网络
+      - network
+
+  # mysql数据库
+  mysql:
+    container_name: lihua-mysql                     # 启动容器名
+    image: mysql:8.0                                # 通过官方mysql:8.0构建镜像
+    ports:                                          # 端口映射，将容器3306端口映射到主机3306端口
+      - "3306:3306"
+    environment:                                    # 配置环境变量
+      - MYSQL_ROOT_PASSWORD=password                # root用户密码
+    networks:                                       # 同主机下共享的自定义网络
+      - network
+    volumes:                                        # 挂载卷
+      - mysql-conf:/etc/mysql/
+      - mysql-data:/var/lib/mysql
+
+  # redis 缓存
+  redis:
+    container_name: lihua-redis                     # 启动容器名
+    image: redis:6.0                                # 通过官方redis:6.0构建镜像
+    command: redis-server --requirepass password    # 指定redis密码
+    networks:                                       # 同主机下共享的自定义网络
+      - network
+    volumes:                                        # 挂载卷
+      - redis-data:/data
+    ports:                                          # 端口映射，将容器6379端口映射到主机6379端口
+      - "6379:6379"
+
+  # xxl-job定时任务
+  xxl-job:
+    container_name: lihua-xxl-job                   # 启动容器名
+    build:                                          # 通过./xxl-job中的dockerfile构建镜像
+      context: ./xxl-job
+      dockerfile: dockerfile
+    environment:                                    # 配置环境变量
+      - DB_HOST=lihua-mysql                           # mysql地址，默认使用mysql容器名即可
+      - DB_PORT=3306                                  # mysql端口，根据dockerfile暴露端口配置
+      - DB_USERNAME=username                          # mysql用户名
+      - DB_PASSWORD=password                          # mysql密码
+    networks:                                       # 同主机下共享的自定义网络
+      - network
+    ports:                                          # 端口映射，将容器8081端口映射到主机8081端口
+      - "8081:8081"
+
+  # 开发文档
+  doc:
+    container_name: lihua-web-document              # 启动容器名
+    build:                                          # 通过./document中的dockerfile构建镜像
+      context: ./document
+      dockerfile: dockerfile
+    ports:                                          # 端口映射，将容器80端口映射到主机81端口
+      - "81:80"
+
+# 容器间共享网络
+networks:
+  network:
+
+# 卷挂载
+volumes:
+  mysql-conf:
+  mysql-data:
+  redis-data:
+  server-data:

@@ -1,0 +1,10 @@
+# nginx 官方镜像
+FROM nginx
+# 作者yukino
+LABEL author=yukino
+# 复制dist到nginx默认配置/usr/share/nginx/html下
+COPY ./dist /usr/share/nginx/html
+# 复制配置文件nginx.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
+# 抛出端口
+EXPOSE 80

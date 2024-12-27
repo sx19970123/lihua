@@ -1,0 +1,84 @@
+ # 系统配置
+lihua:
+  # 令牌过期时间（分钟）
+  tokenExpireTime: 60
+  # 令牌刷新阈值（分钟）距令牌过期15分钟内时，有新请求时对令牌进行刷新
+  refreshThreshold: 15
+  # 下载用临时token过期时间（分钟）。-1：不对静态资源进行安全限制
+  fileDownloadExpireTime: 30
+  # 允许跨域的最长时间
+  corsMaxAge: 3600
+  # sse 过期时长（28800000 毫秒 8小时），超过连接时长前端在线情况会自动发起重连
+  sseExpireTime: 28800000
+  # 上传文件路径 mac windows 注意目录切换
+  uploadFilePath: D:/home/lihua/
+  # 文件导出路径
+  exportFilePath: D:/home/lihua/export/
+
+spring:
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/lihua
+    username: root
+    password: 123456
+    hikari:
+      # 最大连接数默认 10
+      maximum-pool-size: 30
+      # 最小空闲连接 默认10
+      minimum-idle: 30
+      # 等待连接池连接最大时长（毫秒）
+      connection-timeout: 5000
+      # 空闲连接最大时长（毫秒）
+      idle-timeout: 0
+      # 连接生命时长（毫秒）
+      max-lifetime: 25800
+
+  # redis配置
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      # 读取超时
+      timeout: 3000
+      # 连接超时
+      connectTimeout: 5000
+      # lettuce连接池
+      lettuce:
+        pool:
+          # 最小空闲连接
+          min-idle: 5
+          # 最大空闲连接
+          max-idle: 10
+          # 最大连接数
+          max-active: 100
+          # 连接分配应该阻塞的最大时间
+          max-wait: 2000
+
+# 日志配置
+logging:
+  file:
+    name: D:/home/lihua/logs/lihua.log
+  level:
+    com.lihua: debug
+    org.springframework: info
+
+xxl-job:
+  # 是否启用定时任务
+  enable: false
+  # 调度中心部署地址
+  adminAddress: http://127.0.0.1:8081/xxl-job-admin
+  # 执行器通讯token
+  accessToken: default_token
+  # 执行器应用名称
+  appName: lihua
+  # 执行器注册地址
+  address:
+  # 执行器ip
+  ip:
+  # 执行器端口号
+  port: 0
+  # 执行器日志保存目录
+  logPath: D:/home/lihua/job-logs
+  # 执行器日志保存天数
+  logRetentionDays: 30

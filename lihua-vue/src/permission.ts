@@ -72,7 +72,7 @@ router.beforeEach(async (to, from, next) => {
         if (to.meta && to.meta.allowAnonymous) {
             next()
         } else {
-            to.path !== "/login" ? next({name: "Login", state: {msg: "身份验证过期，请重新登陆"}}) : next()
+            to.path !== "/login" ? next({name: "Login"}) : next()
         }
     }
 
