@@ -3,7 +3,7 @@ FROM nginx
 # 作者yukino
 LABEL author=yukino
 # 复制dist到nginx默认配置/usr/share/nginx/html下
-COPY ./dist /usr/share/nginx/html
+COPY ./dist /usr/share/nginx/html/dist
 # 复制配置文件nginx.conf
 COPY ./nginx.conf /etc/nginx/nginx.conf
 # 抛出端口
