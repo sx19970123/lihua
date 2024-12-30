@@ -5,9 +5,9 @@ import { theme } from "ant-design-vue";
  */
 export default {
     /**
-     * 默认语言
+     * 系统版本
      */
-    defaultLocalLanguage: 'cn',
+    version: "1.0.0-beta.18",
 
     /**
      * 暗色模式 true； 亮色模式 false

@@ -24,7 +24,7 @@
                          :style="{'background': themeStore.layoutBackgroundColor}">
           <transition :name="themeStore.routeTransition" mode="out-in">
             <!--    菜单收缩-->
-            <a-flex class="sh-head" justify="space-between">
+            <a-flex class="sh-head" justify="space-between" v-show="props.showLayout">
               <a-flex align="center" :gap="16">
                 <!--菜单开关-->
                 <HeadCollapsed @collapsed-change="handleChangeCollapse"/>
@@ -32,7 +32,7 @@
                 <Breadcrumb v-if="siderClass !== 'min-sh-sider'"/>
               </a-flex>
               <!-- 右侧头部-->
-              <Head v-show="props.showLayout"/>
+              <Head/>
             </a-flex>
           </transition>
           <view-tabs v-if="themeStore.showViewTabs"/>

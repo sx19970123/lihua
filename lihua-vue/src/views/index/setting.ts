@@ -9,6 +9,17 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0-beta.18',
+            updateDate: '2024-12-30',
+            updateContent: [
+                '1. 重构登录页面，将注册/登录业务逻辑分离，未来新增登录模式更具扩展性',
+                '2. 注册完成后跳转到登录卡片自动带入用户名',
+                '3. 修复侧边导航-风格1隐藏layout顶部不隐藏的bug',
+                '4. 新增docker部署相关文件',
+                '5. 其他细节优化调整',
+            ]
+        },
+        {
             version: '1.0.0-beta.17',
             updateDate: '2024-12-22',
             updateContent: [
@@ -227,6 +238,16 @@ export const versionInfo = {
 
 // 更新记录
 const updateRecords = [
+    {
+        version: '1.0.0-beta.18',
+        record: [
+            '1. 重构登录页面，将注册/登录业务逻辑分离，未来新增登录模式更具扩展性',
+            '2. 注册完成后跳转到登录卡片自动带入用户名',
+            '3. 修复侧边导航-风格1隐藏layout顶部不隐藏的bug',
+            '4. 新增docker部署相关文件',
+            '5. 其他细节优化调整',
+        ]
+    },
     {
         version: '1.0.0-beta.17',
         record: [

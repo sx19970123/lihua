@@ -1,13 +1,13 @@
 <template>
   <div class="login-setting scrollbar">
-    <a-carousel style="width: 600px;border: none; border-radius: 8px;" :dots="false" ref="carouselRef">
+    <a-carousel class="login-setting-carousel" :dots="false" ref="carouselRef">
       <component :is="component"
                  :key="index"
                  v-for="(component, index) in componentList"
                  @back="handleBack"
                  @skip="handleSkip"
                  @next="handleNext"
-                 @goLogin="emits('goLogin')"
+                 @goLogin="handleGoLogin"
       />
     </a-carousel>
   </div>
@@ -17,7 +17,9 @@
 <script setup lang="ts">
 import {ref, useTemplateRef} from "vue";
 import type {CarouselRef} from "ant-design-vue/es/carousel";
+import {useUserStore} from "@/stores/user.ts";
 
+const userStore = useUserStore();
 const carouselRef = useTemplateRef<CarouselRef>("carouselRef")
 const emits = defineEmits(['goLogin'])
 // 需要加载的设置项集合
@@ -51,12 +53,25 @@ const handleNext = (loading:boolean) => {
     carouselRef.value?.next()
   }
 }
+// 退回登录
+const handleGoLogin = async () => {
+  // 调用退出接口
+  await userStore.handleLogout()
+  // 调用父方法
+  emits('goLogin')
+}
 </script>
 
 <style scoped>
 .login-setting{
+  position: fixed;
   margin: auto;
   max-height: 100vh;
+}
+.login-setting-carousel {
+  width: 600px;
+  border: none;
+  border-radius: 8px;
 }
 :deep(.slick-list) {
   border-radius: 8px;
