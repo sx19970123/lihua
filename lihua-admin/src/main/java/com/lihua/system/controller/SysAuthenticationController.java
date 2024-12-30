@@ -21,6 +21,9 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 用户身份验证/授权/登录数据获取/注册
+ */
 @RestController
 @RequestMapping("system")
 public class SysAuthenticationController extends BaseController {
@@ -112,6 +115,9 @@ public class SysAuthenticationController extends BaseController {
         return success(sysAuthenticationService.checkUserName(username));
     }
 
+    /**
+     * 用户注册
+     */
     @PostMapping("register")
     @RateLimiter
     @Log(description = "用户注册", type = LogTypeEnum.REGISTER, excludeParams = {"password", "confirmPassword"}, recordResult = false)
