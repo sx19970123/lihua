@@ -50,8 +50,9 @@ public class JsonUtils {
         try {
             return toJsonIgnoreNulls(data);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return data.getClass().getCanonicalName();
+            String canonicalName = data.getClass().getCanonicalName();
+            log.error("此对象无法转换为Json数据，返回全限定类名：{}，error message：{}", canonicalName, e.getMessage());
+            return canonicalName;
         }
     }
 

@@ -15,6 +15,11 @@ lihua:
   # 文件导出路径
   exportFilePath: ${BASE_FILE_PATH}export/
 
+# 处理因linux系统临时文件清理导致文件上传报错
+server:
+  tomcat:
+    basedir: ${BASE_FILE_PATH}temp
+
 spring:
   # 数据源配置
   datasource:
