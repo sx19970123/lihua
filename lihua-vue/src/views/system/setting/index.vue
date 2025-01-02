@@ -2,7 +2,7 @@
   <div class="header-content-center">
     <a-card>
       <a-row>
-        <a-col :span="4">
+        <a-col :lg="{span: 4}" :md="{span: 6}" :sm="{span: 8}" :xs="{span: 10}">
           <a-menu v-model:selected-keys="selectKeys"
                   style="height: 100%"
                   @click="handleChangeSetting"
@@ -27,9 +27,9 @@
             </a-menu-item-group>
           </a-menu>
         </a-col>
-        <a-col :span="20">
+        <a-col :lg="{span: 20}" :md="{span: 18}" :sm="{span: 16}" :xs="{span: 14}">
           <transition :name="themeStore.routeTransition" mode="out-in">
-            <component :is="activeComponent" style="margin: 20px"/>
+            <component :is="activeComponent" class="scrollbar" style="padding: 20px"/>
           </transition>
         </a-col>
       </a-row>

@@ -279,6 +279,7 @@ export const useThemeStore = defineStore('theme',{
             this.$state.siderGroup = settings.siderGroup
             this.$state.grayModel = settings.grayModel
             this.changeDataDark()
+            this.changeGroundGlass()
         },
         // 折叠侧边栏
         foldSiderWidth()  {

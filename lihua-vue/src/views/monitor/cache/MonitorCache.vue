@@ -1,7 +1,7 @@
 <template>
   <a-flex vertical :gap="16">
     <a-alert :message="'Redis 内存占用：' + useMemory" show-icon/>
-    <a-flex :gap="16">
+    <a-flex :gap="16" wrap="wrap">
       <a-card class="cache-card">
         <a-typography-title :level="5">缓存类型</a-typography-title>
         <div class="scrollbar cache-monitor-max-content-height">
@@ -292,7 +292,7 @@ onMounted(() => {
 <style scoped>
 .cache-card {
   flex: 1;
-  overflow: hidden
+  min-width: 300px;
 }
 </style>
 <style>

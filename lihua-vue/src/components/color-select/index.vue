@@ -1,5 +1,5 @@
 <template>
-  <div class="color-container">
+  <a-flex>
     <template v-for="item in data.dataSource">
       <a-tooltip :title="item.name">
         <div class="color-block" :style="{ background: item.color }" @click="selectedColor(item)">
@@ -12,7 +12,7 @@
         </div>
       </a-tooltip>
     </template>
-  </div>
+  </a-flex>
 </template>
 
 <script setup lang="ts">
@@ -36,15 +36,11 @@ const selectedColor = ({color, name, key}: ColorSelectItem) => {
 </script>
 
 <style scoped>
-.color-container {
-  display: flex;
-  flex-wrap: nowrap;
-}
-
 .color-block {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
   height: 20px;
   width: 20px;
   border-radius: 8px;

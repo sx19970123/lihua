@@ -2,16 +2,16 @@
  <div class="header-content-center">
      <a-card>
        <a-row>
-         <a-col :span="4">
+         <a-col :lg="{span: 4}" :md="{span: 6}" :xs="{span: 8}">
            <a-menu v-model:selectedKeys="selectedKeys" @click="handleChangeUserMenu" style="height: 100%">
              <a-menu-item key="Individuation"> 样式布局</a-menu-item>
              <a-menu-item key="Basic"> 基础设置</a-menu-item>
              <a-menu-item key="Security"> 安全设置</a-menu-item>
            </a-menu>
          </a-col>
-         <a-col :span="20">
+         <a-col :lg="{span: 20}" :md="{span: 18}" :xs="{span: 16}">
            <transition :name="themeStore.routeTransition" mode="out-in">
-              <component :is="activeComponent" style="margin: 20px"/>
+              <component :is="activeComponent" class="scrollbar" style="padding: 20px"/>
            </transition>
          </a-col>
        </a-row>

@@ -163,7 +163,7 @@ onUnmounted(() => {
 }
 </style>
 
-<style>
+<style lang="scss">
 [data-head-affix = affix] {
   .sh-header {
     position: sticky;

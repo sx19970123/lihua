@@ -3,16 +3,16 @@ package com.lihua.system.controller;
 import cloud.tianai.captcha.application.ImageCaptchaApplication;
 import cloud.tianai.captcha.application.vo.CaptchaResponse;
 import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
-import cloud.tianai.captcha.common.constant.CaptchaTypeConstant;
 import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
-import com.lihua.annotation.PreventDuplicateSubmit;
+import com.lihua.enums.CaptchaTypeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.service.SysSettingService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -26,14 +26,6 @@ public class CaptchaController extends BaseController {
     @Resource
     private SysSettingService sysSettingService;
 
-    // 验证码验证方式枚举
-    private static final String[] CAPTCHA_TYPES = {
-            CaptchaTypeConstant.SLIDER,
-            CaptchaTypeConstant.CONCAT,
-            CaptchaTypeConstant.ROTATE,
-            CaptchaTypeConstant.WORD_IMAGE_CLICK
-    };
-
     // 是否启用验证码
     @GetMapping("enable")
     public String enable() {
@@ -43,8 +35,9 @@ public class CaptchaController extends BaseController {
     // 获取验证码
     @PostMapping("get")
     public CaptchaResponse<ImageCaptchaVO> getCaptcha() {
+        List<String> captchaTypes = CaptchaTypeEnum.allValue();
         // 获取随机验证码类型
-        String type = CAPTCHA_TYPES[ThreadLocalRandom.current().nextInt(CAPTCHA_TYPES.length)];
+        String type = captchaTypes.get(ThreadLocalRandom.current().nextInt(captchaTypes.size()));
         return imageCaptchaApplication.generateCaptcha(type);
     }
 

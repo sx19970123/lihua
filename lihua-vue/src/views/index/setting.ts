@@ -239,6 +239,18 @@ export const versionInfo = {
 // 更新记录
 const updateRecords = [
     {
+        version: '1.0.0',
+        record: [
+            '1. 重构验证码类型，通过CaptchaTypeEnum进行统一维护',
+            '2. 验证码图片替换为猫猫背景，并注释掉了【旋转】【拼接样式】，可在CaptchaTypeEnum中修改。自定义背景图片可在lihua-admin的resources下captcha-images文件夹修改',
+            '3. 修复重置主题时背景虚化不生效的bug',
+            '4. 修复移动端菜单logo颜色不同步的bug',
+            '5. 修复header中通知公告触发tooltip后显示跳动的bug',
+            '6. 对个人中心、系统设置、缓存监控进行响应式优化',
+            '7. 修复linux中上传图片控制台报错的bug',
+        ]
+    },
+    {
         version: '1.0.0-beta.18',
         record: [
             '1. 重构登录页面，将注册/登录业务逻辑分离，未来新增登录模式更具扩展性',

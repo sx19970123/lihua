@@ -46,14 +46,16 @@
                       {{handleTime(dayjs(item.releaseTime).format('YYYY-MM-DD HH:mm')) }}
                     </a-typography-text>
                   </template>
-                  <!--                      标题-->
                   <template #title>
                     <a-flex justify="space-between" align="flex-start">
-                      <a-tooltip :title="item.title" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
-                        <a-typography-text class="notice-title" ellipsis>
-                          {{ item.title }}
-                        </a-typography-text>
-                      </a-tooltip>
+                      <!--                      标题-->
+                      <div>
+                        <a-tooltip :title="item.title" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
+                          <a-typography-text class="notice-title" ellipsis>
+                            {{ item.title }}
+                          </a-typography-text>
+                        </a-tooltip>
+                      </div>
                       <!--                      标星-->
                       <a-rate :count="1"
                               class="notice-star"
