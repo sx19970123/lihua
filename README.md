@@ -8,11 +8,11 @@
 #### 线上体验地址
 > 为完整体验项目功能，请自行注册账号体验
 
-[体验预览](http://8.140.227.114/)
+[体验预览](http://lihua.xyz)
 
 #### 开发文档地址
 
-[开发文档](http://8.140.227.114:81/)
+[开发文档](http://doc.lihua.xyz)
 
 #### 功能介绍
 [介绍视频](https://www.bilibili.com/video/BV14Z1oY8EKh/?spm_id_from=333.1007.0.0&vd_source=3635d5214bc4b48c5071c18a6643fec8)

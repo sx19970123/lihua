@@ -231,7 +231,7 @@ onMounted(() => {
 }
 
 .form {
-  width: 488px
+  min-width: 488px
 }
 
 .head-theme-switch {
