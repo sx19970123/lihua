@@ -50,8 +50,9 @@
                 {{item.version}}
                 <a-typography-text type="secondary">{{item.updateDate}}</a-typography-text>
               </a-typography-title>
+              <a-alert v-if="item.title" strong :message="item.title" style="margin-bottom: 8px;margin-right: 8px">{{item.title}}</a-alert>
               <a-flex v-for="content in item.updateContent" vertical>
-                <a-typography-text >{{content}}</a-typography-text>
+                <a-typography-text>{{content}}</a-typography-text>
               </a-flex>
             </a-timeline-item>
           </a-timeline>

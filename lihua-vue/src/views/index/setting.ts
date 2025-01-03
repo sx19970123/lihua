@@ -9,6 +9,20 @@ export const versionInfo = {
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
+            version: '1.0.0',
+            updateDate: '2025-01-03',
+            title: "2024年1月3日，狸花猫在 Gitee 创建了仓库。十个月后，上线了体验版。经过三个月的 bug 修复和功能优化，2025年1月3日，1.0.0 正式版上线🎉🎉🎉！未来将继续对功能进行维护和完善，感谢大家的 Star 和支持！",
+            updateContent: [
+                '1. 重构验证码类型，通过CaptchaTypeEnum进行统一维护',
+                '2. 验证码图片替换为猫猫背景，并注释掉了【旋转】【拼接样式】，可在CaptchaTypeEnum中修改。自定义背景图片可在lihua-admin的resources下captcha-images文件夹修改',
+                '3. 修复重置主题时背景虚化不生效的bug',
+                '4. 修复移动端菜单logo颜色不同步的bug',
+                '5. 修复header中通知公告触发tooltip后显示跳动的bug',
+                '6. 对个人中心、系统设置、缓存监控进行响应式优化',
+                '7. 修复linux中上传图片控制台报错的bug',
+            ]
+        },
+        {
             version: '1.0.0-beta.18',
             updateDate: '2024-12-30',
             updateContent: [
@@ -83,7 +97,7 @@ export const versionInfo = {
             version: '1.0.0-beta.13',
             updateDate: '2024-11-10',
             updateContent: [
-                '开发文档上线，地址：http://120.26.52.238:81/ 目前尚未全部编写完成，后面会持续维护',
+                '开发文档上线，地址：' + import.meta.env.VITE_APP_DOC_API + ' 目前尚未全部编写完成，后面会持续维护',
                 '1. 优化卡片展示组件，移除cardKey属性，新增expandedHeight属性控制展开高度，支持根据视口自适应卡片显示大小及位置，通过minWindowSpace可指定视口小于卡片宽高时边缘间隙',
                 '2. 在开启多任务栏的情况下，跳转路由新增支持query参数记忆。在业务中跳转路由携带query参数时，没有关闭对应tab页的情况下，再次切换到该路由，query参数不会丢失。对应issues：https://gitee.com/yukino_git/lihua/issues/IB37RW',
                 '3. 视口缩小到设定阈值时，侧边菜单展开样式修改为抽屉形式，防止展开菜单后挤压内容变形',
@@ -220,8 +234,8 @@ export const versionInfo = {
         {
             version: '1.0.0-beta.2',
             updateDate: '2024-10-05',
+            title: '狸花猫后台管理系统beta版正式上线🎉🎉🎉',
             updateContent: [
-                '狸花猫后台管理系统正式上线🎉🎉🎉',
                 '1. 基于角色的权限管理',
                 '2. 部门岗位功能，适用于大部分业务细分权限',
                 '3. 管理员系统设置，根据需求进行多种配置修改',
