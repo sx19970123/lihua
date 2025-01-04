@@ -2,15 +2,15 @@
   <a-flex class="login-background" justify="center" align="center">
 <!--      主题切换开关-->
     <head-theme-switch class="head-theme-switch"/>
-    <a-flex class="login-content" :gap="64" align="center" v-if="!showSetting">
+    <a-flex class="login-content" :gap="96" align="center" v-if="!showSetting">
 <!--        左侧标题-->
       <div class="title">
         <transition name="fade" mode="out-in">
           <div v-show="showTitle">
-            <a-typography-title class="title-main">狸花猫后台管理系统<a-tag style="margin-left: 8px" :bordered="false">
-              {{ settings.version }}</a-tag>
+            <a-typography-title class="title-item">狸花猫后台管理系统
+              <a-tag style="margin-left: 8px;margin-top:8px;align-self: flex-start;" :bordered="false">{{ settings.version }}</a-tag>
             </a-typography-title>
-            <a-typography-title :level="2" class="title-subhead">
+            <a-typography-title :level="2" class="title-item">
               基于SpringBoot 3.x 和 vue3.x
             </a-typography-title>
           </div>
@@ -203,13 +203,10 @@ onMounted(() => {
   animation: gradientAnimation 30s ease infinite;
 }
 
-.title-main {
-  margin-top: 64px;
-  margin-right: 64px;
-}
 
-.title-subhead {
-  margin-right: 64px;
+.title-item {
+  display: flex;
+  margin: auto;
 }
 
 @keyframes gradientAnimation {
@@ -231,7 +228,7 @@ onMounted(() => {
 }
 
 .form {
-  min-width: 488px
+  width: 488px;
 }
 
 .head-theme-switch {
@@ -246,7 +243,7 @@ onMounted(() => {
 }
 
 .login-card {
-  width: 380px;
+  max-width: 380px;
   margin: 64px;
   padding-left: 16px;
   padding-right: 16px;
