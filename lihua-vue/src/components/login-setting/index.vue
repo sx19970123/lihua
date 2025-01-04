@@ -73,6 +73,14 @@ const handleGoLogin = async () => {
   border: none;
   border-radius: 8px;
 }
+
+@media screen and (max-width: 600px) {
+  .login-setting-carousel {
+    width: 96vw;
+    margin: auto;
+  }
+}
+
 :deep(.slick-list) {
   border-radius: 8px;
 }
