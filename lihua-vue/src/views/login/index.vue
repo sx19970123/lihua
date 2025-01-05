@@ -240,7 +240,7 @@ onMounted(() => {
 /* 视口宽度小于378时，卡片取96视口宽度 居中 */
 @media screen and (max-width: 378px) {
   .login-card {
-    width: 96vw;
+    width: calc(100vw - 32px);
     margin: auto;
   }
 }

@@ -49,6 +49,7 @@
     </a-card>
     <a-card :body-style="{padding: 0}" :style="{'border-bottom': 'none'}">
         <a-table
+            :scroll="{ x: 1050 }"
             :columns="dictDataColumn"
             :data-source="dictDataList"
             :loading="tableLoading"

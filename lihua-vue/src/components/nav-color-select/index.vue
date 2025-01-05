@@ -2,7 +2,7 @@
   <div class="color-container">
     <a-tooltip title="亮色">
       <div class="color-block" style="background: #ffffff" @click="handleClickNavColor('light')">
-        <CheckOutlined class="color-selected" v-if="props.modelValue === 'light'"/>
+        <CheckOutlined class="color-selected" :style="{color: themeStore.colorPrimary}" v-if="props.modelValue === 'light'"/>
       </div>
     </a-tooltip>
     <a-tooltip title="暗色">
@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
-
+import {useThemeStore} from "@/stores/theme.ts";
 // 接收全部颜色 items 和 双向绑定的颜色值 modelValue
 const props = defineProps<{
   modelValue: string
@@ -23,6 +23,8 @@ const props = defineProps<{
 
 // 使用 update:modelValue 定义 更新 v-model 方法
 const emits = defineEmits(['update:modelValue','click'])
+
+const themeStore = useThemeStore()
 
 const handleClickNavColor = (key: string) => {
   emits('update:modelValue',key)

@@ -76,7 +76,7 @@
                :scroll="{x: 1500}"
       >
         <template #title>
-          <a-flex :gap="8">
+          <a-flex :gap="8" wrap="wrap" >
             <a-button type="primary" @click="handleModelStatus('新增用户')">
               <template #icon>
                 <PlusOutlined />

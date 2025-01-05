@@ -1,9 +1,9 @@
 <template>
-  <div :style="{width: props.width + 'px'}">
-    <a-card :bordered="props.bordered" :body-style="props.bodyStyle" style="box-shadow: none;">
-      <a-flex>
+  <div class="scrollbar">
+    <a-card :bordered="props.bordered" :body-style="props.bodyStyle" style="box-shadow: none;" :style="{width: props.width + 'px'}">
+      <a-row>
 <!--        部门检索组件-->
-        <div class="full-width">
+        <a-col :span="8" class="full-width">
           <a-spin :spinning="loadingTree">
             <a-input placeholder="请输入部门名称"
                      v-model:value="deptKeyword"
@@ -37,8 +37,9 @@
               <a-empty v-else style="margin-top: 6px" :description="props.emptyDescription"/>
             </div>
           </a-spin>
-        </div>
+        </a-col>
 <!--        用户勾选组件-->
+        <a-col :span="8">
           <a-table :columns="userColumn"
                    :loading="loadingUser"
                    :row-selection="userRowSelectionType"
@@ -51,8 +52,9 @@
                    size="small"
                    row-key="id"
           />
+        </a-col>
 <!--        已选用户组件-->
-        <div class="full-width">
+        <a-col :span="8" class="full-width">
           <div class="user-show-title">
             <a-flex justify="space-between">
               <div>
@@ -80,11 +82,10 @@
                          v-for="user in selectUsers"
                          :avatar-json="user.avatar"
                          :nickname="user.nickname"/>
-
             </a-flex>
           </div>
-        </div>
-      </a-flex>
+        </a-col>
+      </a-row>
     </a-card>
   </div>
 </template>
@@ -363,7 +364,6 @@ const initModelUserId = async () => {
     }
   }
 }
-
 
 // 监听选中用户id获取selectUsers进行已选头像的显示和双向绑定赋值
 watch(() => selectedIds.value, (value, oldValue) => {

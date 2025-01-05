@@ -39,15 +39,15 @@
                       :dataSource="avatarBackgroundColor"
         />
         <!--        图标选取-->
-        <icon-select v-if="avatarType === 'icon'" v-model="avatarIcon" size="large"/>
+        <icon-select v-if="avatarType === 'icon'" v-model="avatarIcon" :size="iconSize"/>
         <!--        文本编辑-->
-        <a-input v-if="avatarType === 'text'" v-model:value="avatarText" style="width: 260px;" size="large"/>
+        <a-input v-if="avatarType === 'text'" v-model:value="avatarText" style="max-width: 260px;" size="large" placeholder="请输入头像文本"/>
         <!--        头像编辑-->
         <image-cropper v-if="avatarType === 'image'"
                        ref="imageCropperRef"
                        v-model:realTime="avatarImg"
                        v-model:img="avatarUrl"
-                       wight="900px"
+                       :wight="imageCropperWight + 'px'"
                        height="350px"
                        :auto-crop-width="150"
                        :auto-crop-height="150" />
@@ -60,7 +60,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {ref, useTemplateRef} from "vue";
+import {onMounted, onUnmounted, ref, useTemplateRef} from "vue";
 import ColorSelect from "@/components/color-select/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
 import ImageCropper from "@/components/image-cropper/index.vue"
@@ -88,6 +88,10 @@ const init = () => {
   const avatarType = ref<string>(modelValue.type)
   // 默认头像背景颜色
   const avatarColor = ref<string>(modelValue.backgroundColor)
+  // 图标选择尺寸
+  const iconSize = ref<'small' | 'large' | 'default'>('large')
+  // 图片裁剪宽度
+  const imageCropperWight = ref<number>(0)
 
   // 图片地址
   const avatarUrl = ref<string>(modelValue.url)
@@ -114,6 +118,30 @@ const init = () => {
     name: '跟随系统',
     color: 'conic-gradient(from 45deg, ' + settings.colorOptions.map(item => item.color).join(",") + ')'
   })
+
+  // 处理窗口宽度 1050 / 680 / 492 划分图标选择器尺寸
+  const handleWindowWith = () => {
+    const width = window.innerWidth
+
+    if (width > 1050) {
+      iconSize.value = 'large'
+    } else if (width < 1050 && width > 680) {
+      iconSize.value = 'default'
+    } else {
+      iconSize.value = 'small'
+    }
+
+    // 视口宽度 - dialog 外边距 - dialog 内边距
+    if (width <= 1050) {
+      imageCropperWight.value = width - 48 - 32
+    } else {
+      imageCropperWight.value = 954
+    }
+
+  }
+
+  handleWindowWith()
+
   return {
     open,
     avatarType,
@@ -122,7 +150,10 @@ const init = () => {
     avatarBackgroundColor,
     avatarIcon,
     avatarText,
-    avatarUrl
+    avatarUrl,
+    iconSize,
+    imageCropperWight,
+    handleWindowWith
   }
 }
 const {
@@ -133,7 +164,10 @@ const {
   avatarBackgroundColor,
   avatarIcon,
   avatarText,
-  avatarUrl
+  avatarUrl,
+  iconSize,
+  imageCropperWight,
+  handleWindowWith
 } = init()
 
 // 头像选择ref
@@ -233,6 +267,20 @@ const showConfirm = () => {
     }
   });
 };
+
+// 组件创建完成后获取抽屉展开宽度
+onMounted(() => {
+  window.addEventListener('resize', () => {
+    handleWindowWith()
+  })
+})
+// 组件销毁后删除监听
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    handleWindowWith()
+  })
+})
+
 </script>
 
 <style scoped>

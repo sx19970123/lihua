@@ -1,7 +1,7 @@
 <template>
   <a-flex>
     <template v-for="item in data.dataSource">
-      <a-tooltip :title="item.name">
+      <a-tooltip :title="item.name" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
         <div class="color-block" :style="{ background: item.color }" @click="selectedColor(item)">
           <div v-if="data.color">
             <CheckOutlined class="color-selected" v-if="item.color === data.color"/>

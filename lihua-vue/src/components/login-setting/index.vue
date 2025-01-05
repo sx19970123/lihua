@@ -76,7 +76,7 @@ const handleGoLogin = async () => {
 
 @media screen and (max-width: 600px) {
   .login-setting-carousel {
-    width: 96vw;
+    width: calc(100vw - 32px);
     margin: auto;
   }
 }
