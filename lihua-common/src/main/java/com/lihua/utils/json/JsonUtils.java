@@ -22,10 +22,20 @@ import java.util.List;
  */
 @Slf4j
 public class JsonUtils {
+
+    // 无特殊配置的objectMapper
     private static final ObjectMapper objectMapper;
 
+    // 序列化排除空值/空集合/''字符串的objectMapper
+    private static final ObjectMapper excludeNullWriter;
+
     static {
-        objectMapper =  SpringUtils.getBean(ObjectMapper.class);
+        // 从容器中获取objectMapper
+        objectMapper = SpringUtils.getBean(ObjectMapper.class);
+        // 复制objectMapper，设置忽略空值
+        ObjectMapper copyObjectMapper = objectMapper.copy();
+        copyObjectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        excludeNullWriter = copyObjectMapper;
     }
 
     /**
@@ -39,6 +49,12 @@ public class JsonUtils {
         return objectMapper.writeValueAsString(data);
     }
 
+    /**
+     * 对象转为json并忽略null值
+     */
+    public static <T> String toJsonIgnoreNulls(T data) throws JsonProcessingException {
+        return excludeNullWriter.writeValueAsString(data);
+    }
 
     /**
      * 对象转为json，无法转换的对象将返回全限定类名
@@ -54,16 +70,6 @@ public class JsonUtils {
             log.error("此对象无法转换为Json数据，返回全限定类名：{}，error message：{}", canonicalName, e.getMessage());
             return canonicalName;
         }
-    }
-
-    /**
-     * 对象转为json并忽略null值
-     */
-    public static <T> String toJsonIgnoreNulls(T data) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        // 配置忽略 null 值
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        return mapper.writeValueAsString(data);
     }
 
     /**

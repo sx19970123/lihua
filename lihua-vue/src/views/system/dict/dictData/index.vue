@@ -208,6 +208,7 @@ import {initDict, reLoadDict} from "@/utils/Dict.ts";
 import dictTag from "@/components/dict-tag/index.vue"
 import type {SysDictDataType, SysDictDataTypeDTO} from "@/api/system/dict/type/SysDictDataType.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+import {v4 as uuidv4} from "uuid";
 
 const props = defineProps<{
   typeCode: string,
@@ -329,7 +330,8 @@ const initAdd = () => {
 
   // 处理新增
   const handleAdd = async () => {
-    const tempId = await generateTempId() as string
+    const tempId = generateTempId()
+    console.log(tempId)
     // 新增默认数据
     const item: SysDictDataType = {
       id: tempId,
@@ -351,7 +353,7 @@ const initAdd = () => {
     if (!data.children) {
       data.children = []
     }
-    const tempId = await generateTempId() as string
+    const tempId = generateTempId()
     const item = {
       id: tempId,
       status: '0',
@@ -422,9 +424,7 @@ const initAdd = () => {
   }
   // 生成临时id
   const generateTempId = () => {
-    return new Promise((resolve) => {
-      setTimeout(() => { resolve('add-' + new Date().getTime()) },10)
-    })
+    return 'add-' + uuidv4()
   }
   // 检查是否为临时id
   const checkIsTempId = (id: string): boolean => {

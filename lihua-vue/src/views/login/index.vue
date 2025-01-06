@@ -132,7 +132,7 @@ const initLoginSetting = () => {
     setTimeout(() => {
       // 登录卡片弹出动画
       handleShowForm()
-    }, 500)
+    }, 200)
   }
 
   return {
@@ -201,7 +201,7 @@ onMounted(() => {
   overflow: hidden;
   background-image:linear-gradient(-135deg,#C2FFD8 10%,#465EFB 100%);
   background-size: 200% 200%;
-  animation: gradientAnimation 20s ease infinite;
+  animation: gradientAnimation 30s ease infinite;
 }
 
 /* 渐变动画 */
@@ -272,10 +272,10 @@ onMounted(() => {
 
 /* 登录后设置卡片呼出 */
 .setting-enter-active {
-  transition: all 0.75s ease-in-out;
+  transition: all 0.7s cubic-bezier(0.4, 0.0, 0.10, 1);
 }
 .setting-enter-from {
-  transform: translateY(1000px);
+  transform: translateY(100%);
   opacity: 0;
 }
 .setting-enter-to {
@@ -285,14 +285,14 @@ onMounted(() => {
 
 /* 登录后设置卡片隐藏 */
 .setting-leave-active {
-  transition: all 0.5s ease-out;
+  transition: all 0.2s cubic-bezier(0.25, 0.0, 1, 1);
 }
 .setting-leave-from {
   transform: translateY(0);
   opacity: 1;
 }
 .setting-leave-to {
-  transform: translateY(1100px);
+  transform: translateY(100%);
   opacity: 0;
 }
 

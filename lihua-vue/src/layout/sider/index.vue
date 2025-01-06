@@ -17,7 +17,7 @@ import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
 import {useViewTabsStore} from "@/stores/viewTabs.ts";
 import {useRoute,useRouter} from "vue-router";
-import {computed, onMounted, reactive, watch} from "vue";
+import {computed, nextTick, onMounted, reactive, watch} from "vue";
 const themeStore = useThemeStore()
 const route = useRoute()
 const router = useRouter()
@@ -58,14 +58,14 @@ const setOpenKeys = () => {
   // 导航类型
   const siderMode = themeStore.siderMode
 
-  // 确保菜单可以及时响应，增加setTimeout
-  setTimeout(() => {
+  // 确保菜单可以及时响应
+  nextTick(() => {
     if (!collapsed && siderMode !== 'horizontal') {
       state.openKeys = route.matched.map(r => r.path)
     } else {
       state.openKeys = []
     }
-  },0)
+  })
 
 }
 

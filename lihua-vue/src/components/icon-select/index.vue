@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import {type Component, onMounted, onUnmounted, type PropType, reactive, ref, useTemplateRef} from "vue";
+import {type Component, nextTick, onMounted, onUnmounted, type PropType, reactive, ref, useTemplateRef} from "vue";
 import * as Icons from "@ant-design/icons-vue";
 import {cloneDeep} from "lodash-es";
 import {useThemeStore} from "@/stores/theme.ts";
@@ -223,22 +223,22 @@ const handleQueryIcons = () => {
   switch (segmentedValue.value) {
     case 'filled': {
       filledIconList.value = finalFilledIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
-      setTimeout(() => { initLazy(filledIconRefList.value)})
+      nextTick(() => { initLazy(filledIconRefList.value)})
       break
     }
     case 'outlined': {
       outlinedIconList.value = finalOutlinedIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
-      setTimeout(() => { initLazy(outlinedIconRefList.value)})
+      nextTick(() => { initLazy(outlinedIconRefList.value)})
       break
     }
     case 'twoTone': {
       twoToneIconList.value = finalTwoToneIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
-      setTimeout(() => { initLazy(twoToneIconRefList.value)})
+      nextTick(() => { initLazy(twoToneIconRefList.value)})
       break
     }
     case 'custom': {
       customIconLIst.value = finalCustomIconLIst.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
-      setTimeout(() => { initLazy(customIconRefList.value)})
+      nextTick(() => { initLazy(customIconRefList.value)})
       break
     }
   }

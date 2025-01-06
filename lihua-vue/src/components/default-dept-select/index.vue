@@ -15,7 +15,7 @@
             <div @mouseover="handleMouseOver(id)" @mouseleave="handleMouseLeave" @click="handleSetDefaultDept(id)">
               <a-space>
                 <a-flex :gap="8">
-                  <a-tooltip :title="userStore.defaultDept.id !== id ? '点击设为默认部门' : '默认部门'" placement="right" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+                  <a-tooltip :title="userStore.defaultDept.id !== id ? '点击设为默认部门' : '默认部门'" placement="right" :arrow="false" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
                     <div v-if="name.indexOf(keyword) > -1">
                       <span>{{ name.substring(0, name.indexOf(keyword)) }}</span>
                       <span :style="{'color':  themeStore.getColorPrimary()}">{{ keyword }}</span>
@@ -23,7 +23,7 @@
                     </div>
                     <span v-else>{{ name }}</span>
                   </a-tooltip>
-                  <a-typography-text type="secondary">{{ code }}</a-typography-text>
+                  <a-typography-text type="secondary" v-if="showDeptCode">{{ code }}</a-typography-text>
                 </a-flex>
                 <span v-if="userStore.defaultDept.id === id">
                  <a-tag :color="themeStore.getColorPrimary()" :bordered="false" style="margin-bottom: 2px">默认</a-tag>
@@ -52,6 +52,10 @@ const deptTree = ref<Array<SysDept>>(userStore.deptTrees)
 
 // 鼠标移入的id
 const hoverId = ref<string | undefined>()
+
+const {showDeptCode = true} = defineProps<{
+  showDeptCode?: boolean;
+}>()
 
 const emits = defineEmits(['keywordChange','deptSelect'])
 

@@ -9,7 +9,7 @@
                                 @back="emits('back')"
   >
     <template #content>
-      <default-dept @dept-select="handleChangeDept"/>
+      <default-dept @dept-select="handleChangeDept" :show-dept-code="false"/>
     </template>
   </login-setting-base-component>
 </template>
