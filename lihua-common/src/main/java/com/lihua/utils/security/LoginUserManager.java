@@ -43,6 +43,9 @@ public class LoginUserManager {
 
         try {
             LoginUser loginUser = redisCache.getCacheObject(decode, LoginUser.class);
+            if (loginUser == null) {
+                return null;
+            }
             loginUser.setCacheKey(decode);
             return loginUser;
         } catch (Exception e) {
