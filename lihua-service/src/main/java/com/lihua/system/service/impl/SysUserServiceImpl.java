@@ -250,6 +250,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     @Transactional
     @Override
     public ExcelImportResult importExcel(List<SysUserVO> sysUserVOS) {
+        String defaultPassword = sysSettingService.getDefaultPassword();
+        if ("".equals(defaultPassword)) {
+            throw new ServiceException("请联系管理员配置默认密码");
+        }
+
         // 无法倒入的用户列表
         List<SysUserVO> errorUserVos = new ArrayList<>();
         // 可倒入的用户列表
@@ -680,7 +685,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     // 批量保存
     private void batchInsert(List<SysUserVO> importUserVos, List<SysRole> roleList, List<SysDeptVO> sysDeptList) {
-
         List<SysUser> sysUserList = new ArrayList<>();
         List<SysUserRole> sysUserRoleList = new ArrayList<>();
         List<SysUserDept> sysUserDeptList = new ArrayList<>();

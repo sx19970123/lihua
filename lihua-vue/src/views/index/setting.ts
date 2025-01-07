@@ -1,12 +1,9 @@
 // 当前版本更新记录
 const activeUpdate = [
     {
-        version: '1.0.1',
+        version: '1.0.2',
         record: [
-            '1. 优化自适应，在移动端有更好的体验',
-            '2. 导航颜色选择/导航栏类型选中指示根据主题颜色变化',
-            '3. 优化登陆后设置卡片，防止移动换滑动直接进入系统，同时仅存在一项配置，无法通过检擦元素显示后面内容，重写切换动画',
-            '4. 修复JsonUtil调用toJsonIgnoreNulls时无法处理LocalDate/LocalDateTime的 bug',
+
         ]
     }
 ]
@@ -21,6 +18,18 @@ export const versionInfo = {
     vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.0.1',
+            updateDate: '2025-01-07',
+            updateContent: [
+                '1. 优化自适应，在移动端有更好的体验',
+                '2. 导航颜色选择/导航栏类型选中指示根据主题颜色变化',
+                '3. 优化登陆后设置卡片，防止移动换滑动直接进入系统，同时仅存在一项配置，无法通过检擦元素显示后面内容，重写切换动画',
+                '4. 修复JsonUtil调用toJsonIgnoreNulls时无法处理LocalDate/LocalDateTime的 bug',
+                '5. 修复修改默认密码密钥后，删除默认密码数据也无法登录的bug',
+                '如何修改密钥请参考：https://gitee.com/yukino_git/lihua/issues/IBFWG4#note_36173102_link',
+            ]
+        },
         {
             version: '1.0.0',
             updateDate: '2025-01-03',

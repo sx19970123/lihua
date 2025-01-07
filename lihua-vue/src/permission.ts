@@ -62,7 +62,7 @@ router.beforeEach(async (to, from, next) => {
             // 清空用户信息
             userStore.clearUserInfo()
             // 重定向到登录页面
-            next({name: "Login", state: {msg: "初始化用户信息异常"}})
+            next({name: "Login"})
         }
     } else {
         // 重置主题

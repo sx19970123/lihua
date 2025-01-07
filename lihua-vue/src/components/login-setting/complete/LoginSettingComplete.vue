@@ -3,25 +3,14 @@
                                 icon="CheckCircleOutlined"
                                 mainBtnTitle="进入系统"
                                 description="一切就绪！点击下方按钮进入系统。"
-                                :back="false"
                                 :show-main-btn-icon="false"
+                                :back="false"
                                 :skip="false"
-                                @next="toIndex"
-
+                                @next="emits('complete')"
   />
 </template>
 
 <script setup lang="ts">
 import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
-import router from "@/router";
-import Token from "@/utils/Token.ts";
-
-const toIndex = async () => {
-  Token.setLoginSettingResult()
-  await router.push("/index")
-}
+const emits = defineEmits(['complete'])
 </script>
-
-<style scoped>
-
-</style>

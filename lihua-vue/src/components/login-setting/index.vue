@@ -4,11 +4,12 @@
       <template v-for="(component,index) in componentList" :key="index">
 <!--        防止移动端滑动和pc端通过修改css直接显示到最后一步，只加载当前显示的组件，由transition实现切换动画，keep-alive记录上一页的值-->
         <transition :name="transitionType" mode="out-in" v-if="activeComponent === component">
-          <keep-alive :include="componentList">
+          <keep-alive :include="componentList" v-if="!isComplete">
             <component :is="component"
                        @back="handleBack"
                        @skip="handleSkip"
                        @next="handleNext"
+                       @complete="handleComplete"
                        @goLogin="handleGoLogin"
             />
           </keep-alive>
@@ -23,6 +24,8 @@
 import {ref, useTemplateRef} from "vue";
 import type {CarouselRef} from "ant-design-vue/es/carousel";
 import {useUserStore} from "@/stores/user.ts";
+import Token from "@/utils/Token.ts";
+import router from "@/router";
 
 const emits = defineEmits(['goLogin'])
 
@@ -45,7 +48,8 @@ const carouselRef = useTemplateRef<CarouselRef>("carouselRef")
 const activeComponent = ref<string>("LoginSettingStart")
 // 动画类型
 const transitionType = ref<'next'|'back'>('next')
-
+// 是否完成
+const isComplete = ref<boolean>(false)
 // 上一页
 const handleBack = () => {
   activeComponent.value = componentList[componentList.indexOf(activeComponent.value) - 1]
@@ -65,6 +69,13 @@ const handleNext = (loading:boolean) => {
 // 跳过
 const handleSkip = (loading:boolean) => {
   handleNext(loading)
+}
+
+// 完成
+const handleComplete = () => {
+  isComplete.value = true
+  Token.setLoginSettingResult()
+  setTimeout(() => router.push("/index"), 200)
 }
 
 // 退回登录

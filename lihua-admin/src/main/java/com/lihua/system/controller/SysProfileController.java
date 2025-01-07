@@ -88,7 +88,7 @@ public class SysProfileController extends BaseController {
         }
 
         if (isDefaultPassword(newPassword)) {
-            return  error(ResultCodeEnum.ERROR,"新密码不能为默认密码");
+            return error(ResultCodeEnum.ERROR,"新密码不能为默认密码");
         }
 
         return success(sysProfileService.updatePassword(newPassword));
