@@ -39,7 +39,7 @@
 <script setup lang="ts">
 import Mask from "@/components/mask/index.vue"
 import { gsap } from 'gsap';
-import {onMounted, onUnmounted, ref, useSlots, useTemplateRef, watch} from "vue";
+import {nextTick, onMounted, onUnmounted, ref, useSlots, useTemplateRef, watch} from "vue";
 import type { CSSProperties } from 'vue';
 import {hiddenOverflowY} from "@/utils/Scrollbar.ts";
 // 是否使用具名插槽middle
@@ -273,9 +273,7 @@ const init = () => {
       const firstChild = detailRef.value.firstElementChild as HTMLElement
       if (firstChild) {
         firstChild.classList.add('scrollbar')
-        setTimeout(() => {
-          firstChild.style.setProperty('height', height + 'px', 'important')
-        }, 0)
+        nextTick(() => firstChild.style.setProperty('height', height + 'px', 'important'))
       }
     }
   }

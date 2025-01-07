@@ -4,7 +4,7 @@
       <div class="nav-select-content" @click="handleClockNavType('sider-header')">
         <div class="nav-select-sub-top"/>
         <div class="nav-select-menu-left"/>
-        <CheckOutlined class="nav-select-check-icon" v-if="props.modelValue === 'sider-header'"/>
+        <CheckOutlined class="nav-select-check-icon" :style="{color: themeStore.colorPrimary}" v-if="props.modelValue === 'sider-header'"/>
       </div>
     </a-tooltip>
 
@@ -12,24 +12,28 @@
       <div class="nav-select-content" @click="handleClockNavType('header-sider')">
         <div class="nav-select-top"/>
         <div class="nav-select-menu-sub-left"/>
-        <CheckOutlined class="nav-select-check-icon"  v-if="props.modelValue === 'header-sider'"/>
+        <CheckOutlined class="nav-select-check-icon" :style="{color: themeStore.colorPrimary}" v-if="props.modelValue === 'header-sider'"/>
       </div>
     </a-tooltip>
 
     <a-tooltip title="顶部导航">
       <div class="nav-select-content" @click="handleClockNavType('header-content')">
         <div class="nav-select-menu-top"/>
-        <CheckOutlined class="nav-select-check-icon" v-if="props.modelValue === 'header-content'"/>
+        <CheckOutlined class="nav-select-check-icon" :style="{color: themeStore.colorPrimary}" v-if="props.modelValue === 'header-content'"/>
       </div>
     </a-tooltip>
   </a-flex>
 </template>
 
 <script setup lang="ts">
+import {useThemeStore} from "@/stores/theme.ts";
+
 const props = defineProps<{
   modelValue: string
 }>()
 const emits = defineEmits(['update:modelValue','click','change'])
+
+const themeStore = useThemeStore()
 
 const handleClockNavType = (key: string) => {
   emits('update:modelValue',key)
@@ -43,7 +47,6 @@ const handleClockNavType = (key: string) => {
   position: absolute;
   bottom: 6px;
   right: 6px;
-  color: #1677ff;
   font-weight: 700;
   font-size: 14px;
 }

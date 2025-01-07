@@ -199,7 +199,7 @@
     </a-modal>
     <!--    字典配置抽屉-->
     <a-drawer v-model:open="drawerAction.openDrawer"
-              :width="1100"
+              :width="drawerAction.width"
               :destroyOnClose="true"
               :title="drawerAction.title"
               :body-style="{'padding-top': '0'}">
@@ -209,7 +209,7 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref} from "vue";
+import {onMounted, onUnmounted, reactive, ref, watch} from "vue";
 import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
 import {ResponseError, type ResponseType} from "@/api/global/Type.ts"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
@@ -585,13 +585,15 @@ const initDictConfig = () => {
     openDrawer: boolean,
     title?: string,
     typeCode: string,
-    type: string
+    type: string,
+    width: number
   }
   const drawerAction = reactive<drawerAction>({
     openDrawer: false,
     title: '',
     typeCode: '',
     type: '',
+    width: 1100
   })
   const openDictConfig = (event: any ,dictType: SysDictType) => {
     event.stopPropagation()
@@ -604,13 +606,18 @@ const initDictConfig = () => {
       drawerAction.type = dictType.type
     }
   }
+  const getDrawerWidth = () => {
+    const width = window.innerWidth
+    drawerAction.width = width >= 1100 ? 1100 : width
+  }
 
   return {
     drawerAction,
-    openDictConfig
+    openDictConfig,
+    getDrawerWidth
   }
 }
-const {drawerAction,openDictConfig} = initDictConfig()
+const {drawerAction,openDictConfig,getDrawerWidth} = initDictConfig()
 
 // 处理刷新缓存
 const initLoadCache = () => {
@@ -645,5 +652,20 @@ const initLoadCache = () => {
 }
 
 const {handleReloadCache, loadCache} = initLoadCache()
+
+// 组件创建完成后获取抽屉展开宽度
+onMounted(() => {
+  getDrawerWidth()
+
+  window.addEventListener('resize', () => {
+    getDrawerWidth()
+  })
+})
+// 组件销毁后删除监听
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    getDrawerWidth()
+  })
+})
 
 </script>

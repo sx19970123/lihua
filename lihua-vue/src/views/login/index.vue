@@ -1,16 +1,16 @@
 <template>
   <a-flex class="login-background" justify="center" align="center">
-<!--      主题切换开关-->
-    <head-theme-switch class="head-theme-switch"/>
-    <a-flex class="login-content" :gap="64" align="center" v-if="!showSetting">
+    <a-flex align="center" :gap="208" v-if="!showSetting">
+      <!--      主题切换开关-->
+      <head-theme-switch class="head-theme-switch"/>
 <!--        左侧标题-->
       <div class="title">
         <transition name="fade" mode="out-in">
           <div v-show="showTitle">
-            <a-typography-title class="title-main">狸花猫后台管理系统<a-tag style="margin-left: 8px" :bordered="false">
-              {{ settings.version }}</a-tag>
+            <a-typography-title>狸花猫后台管理系统
+              <a-tag :bordered="false">{{ settings.version }}</a-tag>
             </a-typography-title>
-            <a-typography-title :level="2" class="title-subhead">
+            <a-typography-title :level="2">
               基于SpringBoot 3.x 和 vue3.x
             </a-typography-title>
           </div>
@@ -132,7 +132,7 @@ const initLoginSetting = () => {
     setTimeout(() => {
       // 登录卡片弹出动画
       handleShowForm()
-    }, 500)
+    }, 200)
   }
 
   return {
@@ -193,6 +193,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 登录背景 */
 .login-background {
   position: relative;
   width: 100%;
@@ -203,15 +204,7 @@ onMounted(() => {
   animation: gradientAnimation 30s ease infinite;
 }
 
-.title-main {
-  margin-top: 64px;
-  margin-right: 64px;
-}
-
-.title-subhead {
-  margin-right: 64px;
-}
-
+/* 渐变动画 */
 @keyframes gradientAnimation {
   0% {
     background-position: 0 50%;
@@ -224,33 +217,39 @@ onMounted(() => {
   }
 }
 
-@media screen and (max-width: 1000px) {
+/* 视口小于1300 像素时，隐藏title */
+@media screen and (max-width: 1200px) {
   .title {
     display: none;
   }
 }
 
-.form {
-  min-width: 488px
+/* 登录卡片 */
+.login-card {
+  max-width: 380px;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-radius: 24px;
 }
 
+/* 表单 */
+.form {
+  width: 378px;
+}
+
+/* 视口宽度小于378时，卡片取96视口宽度 居中 */
+@media screen and (max-width: 378px) {
+  .login-card {
+    width: calc(100vw - 32px);
+    margin: auto;
+  }
+}
+
+/* 暗色模式切换开关 */
 .head-theme-switch {
   position: absolute;
   top: 16px;
   right: 24px;
-}
-
-.login-content {
-  max-width: 1180px;
-  height: 70vh;
-}
-
-.login-card {
-  width: 380px;
-  margin: 64px;
-  padding-left: 16px;
-  padding-right: 16px;
-  border-radius: 24px;
 }
 
 .card-enter-active {
@@ -273,28 +272,28 @@ onMounted(() => {
 
 /* 登录后设置卡片呼出 */
 .setting-enter-active {
-  transition: all 0.75s ease-in-out;
+  transition: all 0.7s cubic-bezier(0.4, 0.0, 0.10, 1);
 }
 .setting-enter-from {
-  transform: translateY(1000px); /* 从下方 100px 开始 */
-  opacity: 0; /* 初始透明度为 0，不可见 */
+  transform: translateY(100%);
+  opacity: 0;
 }
 .setting-enter-to {
-  transform: translateY(0); /* 移动到原始位置 */
-  opacity: 1; /* 最终透明度为 1，完全可见 */
+  transform: translateY(0);
+  opacity: 1;
 }
 
 /* 登录后设置卡片隐藏 */
 .setting-leave-active {
-  transition: all 0.5s ease-out;
+  transition: all 0.2s cubic-bezier(0.25, 0.0, 1, 1);
 }
 .setting-leave-from {
-  transform: translateY(0); /* 从原始位置开始 */
-  opacity: 1; /* 初始透明度为 1 */
+  transform: translateY(0);
+  opacity: 1;
 }
 .setting-leave-to {
-  transform: translateY(1100px); /* 离开时向下移动 100px */
-  opacity: 0; /* 最终透明度为 0，完全消失 */
+  transform: translateY(100%);
+  opacity: 0;
 }
 
 </style>

@@ -6,10 +6,11 @@
 
     <groupId>com.lihua</groupId>
     <artifactId>lihua</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>pom</packaging>
 
     <properties>
+        <lihua.version>1.0.1</lihua.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,17 +21,37 @@
         <oshi.version>6.6.4</oshi.version>
         <guava.version>33.3.1-jre</guava.version>
         <xxl-job.version>2.4.2</xxl-job.version>
+        <tianai-captcha.version>1.5.1</tianai-captcha.version>
     </properties>
 
-    <!--mybatis-plus统一版本管理-->
+<!--    统一进行版本管理-->
     <dependencyManagement>
         <dependencies>
+            <!--mybatis-plus版本管理-->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-bom</artifactId>
                 <version>${mybatis-plus.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!--        核心模块版本管理-->
+            <dependency>
+                <groupId>com.lihua</groupId>
+                <artifactId>lihua-core</artifactId>
+                <version>${lihua.version}</version>
+            </dependency>
+            <!--        公共模块版本管理-->
+            <dependency>
+                <groupId>com.lihua</groupId>
+                <artifactId>lihua-common</artifactId>
+                <version>${lihua.version}</version>
+            </dependency>
+            <!--        系统内置功能服务层版本管理-->
+            <dependency>
+                <groupId>com.lihua</groupId>
+                <artifactId>lihua-service</artifactId>
+                <version>${lihua.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -130,7 +151,7 @@
         <dependency>
             <groupId>cloud.tianai.captcha</groupId>
             <artifactId>tianai-captcha-springboot-starter</artifactId>
-            <version>1.5.1</version>
+            <version>${tianai-captcha.version}</version>
         </dependency>
     </dependencies>
 

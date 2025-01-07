@@ -194,7 +194,10 @@
               </a-tooltip>
             </a-form-item-rest>
             <a-form-item-rest>
-              <a-popover trigger="click" destroyTooltipOnHide>
+              <a-popover trigger="click"
+                         destroyTooltipOnHide
+                         :overlayInnerStyle="{maxWidth: 'calc(100vw - 48px)', marginLeft: '24px', marginRight: '24px'}"
+                         :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
                 <template #content>
                   <user-select :bordered="false"
                                :width="700"

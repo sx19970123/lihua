@@ -112,8 +112,9 @@ public class SysSettingServiceImpl implements SysSettingService {
     @Override
     public String getDefaultPassword() {
         SysSetting defaultPasswordSetting = getSysSettingByComponentName("DefaultPasswordSetting");
+        // 没有配置默认密码情况下返回 ""
         if (defaultPasswordSetting == null) {
-            throw new ServiceException("默认密码配置不存在");
+            return "";
         }
         SysSettingDTO.DefaultPasswordSetting passwordSetting = JsonUtils.toObject(defaultPasswordSetting.getSettingJson(), SysSettingDTO.DefaultPasswordSetting.class);
         return SecurityUtils.defaultPasswordDecrypt(passwordSetting.getDefaultPassword());

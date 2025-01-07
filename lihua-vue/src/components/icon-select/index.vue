@@ -2,26 +2,29 @@
   <div :class="props.size"
        :style="{'width':props.width}"
   >
-    <a-flex :gap="8">
-<!--      图标筛选-->
-      <a-segmented v-model:value="segmentedValue" :options="segmentedData" @change="handleQueryIcons"/>
-      <a-input placeholder="筛选图标"
-               v-if="showSearch"
-               style="max-width: 140px"
-               @change="handleQueryIcons"
-               v-model:value="searchKeyword"
-               allow-clear
-      />
-      <a-button @click="showSearch = !showSearch">
-        <template #icon>
-          <ZoomOutOutlined v-if="showSearch"/>
-          <SearchOutlined v-else/>
-        </template>
-      </a-button>
-    </a-flex>
+    <div class="scrollbar" style="margin: 0 0 2px 0">
+      <a-flex :gap="8" :style="{width: showSearch ? '412px' : 'auto'}" style="margin: 6px 0 6px 0">
+        <!--      图标筛选-->
+        <a-segmented v-model:value="segmentedValue" :options="segmentedData" @change="handleQueryIcons"/>
+        <a-input placeholder="筛选图标"
+                 v-if="showSearch"
+                 style="max-width: 140px"
+                 @change="handleQueryIcons"
+                 v-model:value="searchKeyword"
+                 allow-clear
+        />
+        <a-button @click="showSearch = !showSearch">
+          <template #icon>
+            <ZoomOutOutlined v-if="showSearch"/>
+            <SearchOutlined v-else/>
+          </template>
+        </a-button>
+      </a-flex>
+    </div>
 <!--    四种类型图标切换-->
     <div :style="{maxHeight: props.maxHeight}" class="scrollbar">
-      <a-flex :gap="8" wrap="wrap" style="margin-top: 30px">
+      <a-flex :gap="8" wrap="wrap">
+<!--        线框-->
         <div class="icon-group"
              :class="icon === modelValue ? 'icon-active' : ''"
              v-show="segmentedValue === 'outlined'"
@@ -42,6 +45,7 @@
             </div>
           </a-flex>
         </div>
+<!--        实底-->
         <div class="icon-group"
              :class="icon === modelValue ? 'icon-active' : ''"
              v-show="segmentedValue === 'filled'"
@@ -60,6 +64,7 @@
             </div>
           </a-flex>
         </div>
+<!--        拼色-->
         <div class="icon-group"
              :class="icon === modelValue ? 'icon-active' : ''"
              v-show="segmentedValue === 'twoTone'"
@@ -78,6 +83,7 @@
             </div>
           </a-flex>
         </div>
+<!--        自定义-->
         <div class="icon-group"
              :class="icon === modelValue ? 'icon-active' : ''"
              v-show="segmentedValue === 'custom'"
@@ -96,13 +102,18 @@
             </div>
           </a-flex>
         </div>
+<!--        条件筛选无匹配图标空状态-->
+        <a-empty v-if="segmentedValue === 'outlined' && outlinedIconList.length == 0" description="无匹配图标" style="margin: auto"/>
+        <a-empty v-if="segmentedValue === 'filled' && filledIconList.length == 0" description="无匹配图标" style="margin: auto"/>
+        <a-empty v-if="segmentedValue === 'twoTone' && twoToneIconList.length == 0" description="无匹配图标" style="margin: auto"/>
+        <a-empty v-if="segmentedValue === 'custom' && customIconLIst.length == 0" description="无匹配图标" style="margin: auto"/>
       </a-flex>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {type Component, onMounted, onUnmounted, type PropType, reactive, ref, useTemplateRef} from "vue";
+import {type Component, nextTick, onMounted, onUnmounted, type PropType, reactive, ref, useTemplateRef} from "vue";
 import * as Icons from "@ant-design/icons-vue";
 import {cloneDeep} from "lodash-es";
 import {useThemeStore} from "@/stores/theme.ts";
@@ -212,22 +223,22 @@ const handleQueryIcons = () => {
   switch (segmentedValue.value) {
     case 'filled': {
       filledIconList.value = finalFilledIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
-      setTimeout(() => { initLazy(filledIconRefList.value)})
+      nextTick(() => { initLazy(filledIconRefList.value)})
       break
     }
     case 'outlined': {
       outlinedIconList.value = finalOutlinedIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
-      setTimeout(() => { initLazy(outlinedIconRefList.value)})
+      nextTick(() => { initLazy(outlinedIconRefList.value)})
       break
     }
     case 'twoTone': {
       twoToneIconList.value = finalTwoToneIconList.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
-      setTimeout(() => { initLazy(twoToneIconRefList.value)})
+      nextTick(() => { initLazy(twoToneIconRefList.value)})
       break
     }
     case 'custom': {
       customIconLIst.value = finalCustomIconLIst.filter(item => item.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)
-      setTimeout(() => { initLazy(customIconRefList.value)})
+      nextTick(() => { initLazy(customIconRefList.value)})
       break
     }
   }
