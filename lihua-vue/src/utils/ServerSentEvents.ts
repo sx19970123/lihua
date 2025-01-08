@@ -4,27 +4,35 @@ import token from "@/utils/Token.ts"
 import {createBrowserId} from "@/utils/BrowserId.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {message} from "ant-design-vue";
+import {nextTick} from "vue";
 const { getToken } = token
 export let eventSource: EventSource | null
-
+// 重连次数
+let reconnectionFrequency = 0
 // 连接到SSE服务
 export const connect = async () => {
     if (!eventSource) {
         eventSource = new EventSource(import.meta.env.VITE_APP_BASE_API + "/system/sse/connect/" + await createClientKey())
-        setTimeout(() => {
+        await nextTick(() => {
             if (eventSource && eventSource.readyState === 0) {
                 console.log("Server-Sent Events 连接成功")
             } else {
                 console.error("Server-Sent Events 连接失败，eventSource：", eventSource)
             }
-        },1000)
+        })
 
         eventSource.onerror = (event) => {
             console.error("Server-Sent Events 连接中断", event)
         }
 
         eventSource.onopen = (event: Event) => {
-            console.log("Server-Sent Events 重连成功")
+            if (reconnectionFrequency === 3) {
+                console.log("Server-Sent Events 超出重连次数")
+                close()
+            } else {
+                reconnectionFrequency++
+                console.log(`Server-Sent Events 重新连接（${reconnectionFrequency}）`)
+            }
         }
     }
 }
@@ -36,7 +44,7 @@ export const close = async () => {
         // 关闭 eventSource 连接
         eventSource.close()
         eventSource = null
-        // 主动退出情况下，通知后端释放sse资源
+        // 通知后端释放sse资源
         if (getToken()) {
            try {
                await handleClose(await createClientKey())

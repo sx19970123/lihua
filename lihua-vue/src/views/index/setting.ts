@@ -3,7 +3,7 @@ const activeUpdate = [
     {
         version: '1.0.2',
         record: [
-
+            '1. sse新增重连次数限制，超出重连次数后关闭sse连接'
         ]
     }
 ]
