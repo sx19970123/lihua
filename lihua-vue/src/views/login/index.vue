@@ -18,12 +18,11 @@
       </div>
 <!--      右侧表单-->
       <div class="form">
-        <transition name="card" mode="out-in">
-          <a-card class="login-card" v-show="showForm">
-            <transition name="form" mode="out-in">
+        <transition name="card" mode="out-in" v-show="showCard">
+          <a-card class="login-card">
+            <transition name="form" mode="out-in" v-show="showCard">
               <!-- 用户登录/注册等卡片内表单在这儿通过组件形式切换 -->
-              <component v-if="showForm"
-                         :is="activeComponent"
+              <component :is="activeComponent"
                          :enable-captcha="enableCaptcha"
                          :error-message="errorMessage"
                          @change-component="handleChangeComponent"
@@ -57,7 +56,7 @@ import {ResponseError} from "@/api/global/Type.ts";
 import settings from "@/settings"
 
 // 显示登录卡片
-const showForm = ref<boolean>(false)
+const showCard = ref<boolean>(false)
 // 显示左侧title
 const showTitle = ref<boolean>(false)
 // 验证码
@@ -91,7 +90,7 @@ const initChangeComponent = () => {
     }
 
     activeComponent.value = target[0].com
-    handleShowForm()
+    handleShowCard()
   }
 
   return {
@@ -110,7 +109,7 @@ const initLoginSetting = () => {
   const startLoginSetting = (settingComponentNameList: string[]) => {
     if (settingComponentNameList && settingComponentNameList.length > 0) {
       showTitle.value = false
-      showForm.value = false
+      showCard.value = false
       showSetting.value = true
       settingComponentNames.value = settingComponentNameList
     }
@@ -123,7 +122,7 @@ const initLoginSetting = () => {
   const handleGoLogin = async () => {
     // 关闭设置页面
     showSetting.value = false
-    showForm.value = false
+    showCard.value = false
     settingComponentNames.value = []
     // 清空路由参数
     if (history.state.settingComponentNameList) {
@@ -131,7 +130,7 @@ const initLoginSetting = () => {
     }
     setTimeout(() => {
       // 登录卡片弹出动画
-      handleShowForm()
+      handleShowCard()
     }, 200)
   }
 
@@ -173,11 +172,11 @@ const handleRedirect = () => {
   }
 }
 
-// 显示form表单
-const handleShowForm = () => {
-  showForm.value = false
+// 显示卡片
+const handleShowCard = () => {
+  showCard.value = false
   showTitle.value = true
-  setTimeout(() => showForm.value = true, 100)
+  setTimeout(() => showCard.value = true, 100)
 }
 
 onMounted(() => {
@@ -257,7 +256,7 @@ onMounted(() => {
 }
 
 .card-enter-from {
-  transform: translateY(80px) scale(88%) rotateY(24deg);
+  transform: translateY(80px) scale(88%);
   opacity: 0;
 }
 
