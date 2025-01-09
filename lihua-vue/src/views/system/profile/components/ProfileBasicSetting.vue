@@ -1,40 +1,76 @@
 <template>
   <div>
-    <a-form layout="vertical"
+    <a-form
             :model="profileInfo"
             :rules="userRoles"
+            :colon="false"
+            :label-col="{ style: { marginTop: '4px' } }"
             @finish="handleFinish"
             @finishFailed="handleFinishFailed"
     >
-      <a-row :span="8">
-        <a-form-item label="头像">
-          <avatar-modifier v-model="profileInfo.avatar"/>
-        </a-form-item>
+      <a-row :span="8" style="margin-bottom: 10px">
+        <avatar-modifier v-model="profileInfo.avatar"/>
       </a-row>
-      <a-form-item label="用户昵称" name="nickname">
-        <a-input class="form-item-width" placeholder="请输入用户昵称" v-model:value="profileInfo.nickname" allow-clear show-count/>
-      </a-form-item>
-      <a-form-item label="手机号码" name="phoneNumber">
-        <a-input class="form-item-width" placeholder="请输入手机号码" v-model:value="profileInfo.phoneNumber" allow-clear/>
-      </a-form-item>
-      <a-form-item label="电子邮箱" name="email">
-        <a-auto-complete class="form-item-width" placeholder="请输入电子邮箱"  v-model:value="profileInfo.email" @search="emailHandleSearch" :options="emailOptions" allow-clear>
-          <template #option="{ value: val }">
-            {{ val.split('@')[0] }} @
-            <span style="font-weight: bold">{{ val.split('@')[1] }}</span>
-          </template>
-        </a-auto-complete>
-      </a-form-item>
-      <a-form-item label="性别" name="gender">
-        <a-radio-group v-model:value="profileInfo.gender">
-          <a-radio :value="item.value" v-for="item in user_gender">{{item.label}}</a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item>
-        <a-flex :gap="16">
-          <a-button type="primary" html-type="submit" :loading="submitLoading">提 交</a-button>
-        </a-flex>
-      </a-form-item>
+<!--      <a-card>-->
+        <a-form-item label="用户昵称" class="basic-form-item">
+          <dynamic-border-input v-model="profileInfo.nickname"/>
+          <!--        <a-input class="form-item-width"-->
+          <!--                 placeholder="请输入用户昵称"-->
+          <!--                 @focus="handleFocus()"-->
+          <!--                 @blur="handleBlur()"-->
+          <!--                 @mouseover="handleMouseOver()"-->
+          <!--                 @mouseout="handleMouseOut()"-->
+          <!--                 size="large"-->
+          <!--                 v-model:value="profileInfo.nickname"-->
+          <!--                 :style="{'border-color': showBordered || isGetFocus ? themeStore.getColorPrimary() : 'rgba(0,0,0,0)'}"-->
+          <!--        >-->
+          <!--          <template #suffix>-->
+          <!--            <a-button :icon="h(CheckOutlined)" type="text" size="small" :style="{color: themeStore.getColorPrimary()}"  v-if="isGetFocus"></a-button>-->
+          <!--            <EditOutlined class="input-prefix-icon-color" v-else/>-->
+          <!--          </template>-->
+          <!--        </a-input>-->
+        </a-form-item>
+        <a-form-item label="手机号码" class="basic-form-item" name="phoneNumber">
+          <dynamic-border-input v-model="profileInfo.phoneNumber"/>
+          <!--        <a-input class="form-item-width" placeholder="请输入手机号码" v-model:value="profileInfo.phoneNumber" allow-clear/>-->
+        </a-form-item>
+        <a-form-item label="电子邮箱" class="basic-form-item" name="email">
+          <dynamic-border-input v-model="profileInfo.email"/>
+          <!--        <a-auto-complete class="form-item-width" placeholder="请输入电子邮箱"  v-model:value="profileInfo.email" @search="emailHandleSearch" :options="emailOptions" allow-clear>-->
+          <!--          <template #option="{ value: val }">-->
+          <!--            {{ val.split('@')[0] }} @-->
+          <!--            <span style="font-weight: bold">{{ val.split('@')[1] }}</span>-->
+          <!--          </template>-->
+          <!--        </a-auto-complete>-->
+        </a-form-item>
+        <a-form-item label="用户性别" class="basic-form-item">
+          <dynamic-border-select v-model="profileInfo.gender"/>
+          <!--        <a-select class="form-item-width" v-model:value="profileInfo.gender" :bordered="false">-->
+          <!--          <template #suffixIcon><EditOutlined class="input-prefix-icon-color" style="font-size: 14px"/></template>-->
+          <!--          <a-select-option :value="item.value" v-for="item in user_gender">{{item.label}}</a-select-option>-->
+          <!--        </a-select>-->
+          <!--        <a-radio-group v-model:value="profileInfo.gender">-->
+          <!--          <a-radio :value="item.value" v-for="item in user_gender">{{item.label}}</a-radio>-->
+          <!--        </a-radio-group>-->
+        </a-form-item>
+        <a-divider/>
+        <a-typography-title :level="5">部门信息</a-typography-title>
+        <a-typography-text>
+          {{userStore.defaultDept.name}}
+          <a-tag style="margin-left: 8px" color="processing">默认部门</a-tag>
+          <a-tag v-for="post in userStore.defaultDeptPosts">{{post.name}}</a-tag>
+        </a-typography-text>
+        <a-divider/>
+        <a-typography-title :level="5">其他信息</a-typography-title>
+        <a-form-item label="我的角色">
+          <a-tag v-for="roleName in userStore.roles.map(item => item.name)" :color="themeStore.getColorPrimary()">{{roleName}}</a-tag>
+        </a-form-item>
+        <a-form-item v-if="false">
+          <a-flex :gap="16">
+            <a-button type="primary" html-type="submit" :loading="submitLoading">提 交</a-button>
+          </a-flex>
+        </a-form-item>
+<!--      </a-card>-->
     </a-form>
   </div>
 </template>
@@ -50,10 +86,13 @@ import {saveBasics} from "@/api/system/profile/Profile.ts";
 import {initDict} from "@/utils/Dict.ts"
 import {cloneDeep} from "lodash-es";
 import {ResponseError} from "@/api/global/Type.ts";
+import {useThemeStore} from "@/stores/theme.ts";
+import DynamicBorderInput from "@/components/dynamic-border-input/index.vue"
+import DynamicBorderSelect from "@/components/dynamic-border-select/index.vue"
 const userStore = useUserStore()
 const {user_gender} = initDict('user_gender')
 const submitLoading = ref<boolean>(false)
-
+const themeStore = useThemeStore()
 
 // 初始化数据
 const init = () => {
@@ -147,12 +186,13 @@ const emailHandleSearch = (val: string) => {
 };
 
 const  {profileInfo, userRoles}= init()
-
-
 </script>
 
 <style scoped>
 .form-item-width {
-  width: 270px;
+  width: 370px;
+}
+.basic-form-item {
+  margin-bottom: 22px;
 }
 </style>
