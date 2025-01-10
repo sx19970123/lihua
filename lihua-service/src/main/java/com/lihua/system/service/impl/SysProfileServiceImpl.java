@@ -14,6 +14,7 @@ import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,24 +35,58 @@ public class SysProfileServiceImpl implements SysProfileService {
 
         // 修改
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.lambda()
-                .eq(SysUser::getId,currentUser.getId())
-                .set(SysUser::getAvatar,sysUser.getAvatar())
-                .set(SysUser::getNickname,sysUser.getNickname())
-                .set(SysUser::getPhoneNumber,sysUser.getPhoneNumber())
-                .set(SysUser::getEmail,sysUser.getEmail())
-                .set(SysUser::getGender,sysUser.getGender())
+
+        // 头像
+        if (StringUtils.hasText(sysUser.getAvatar())) {
+            updateWrapper.lambda().set(SysUser::getAvatar,sysUser.getAvatar());
+        }
+        // 昵称
+        if (StringUtils.hasText(sysUser.getNickname())) {
+            updateWrapper.lambda().set(SysUser::getNickname,sysUser.getNickname());
+        }
+        // 手机号码
+        if (StringUtils.hasText(sysUser.getPhoneNumber())) {
+            updateWrapper.lambda().set(SysUser::getPhoneNumber,sysUser.getPhoneNumber());
+        }
+        // 邮箱
+        if (StringUtils.hasText(sysUser.getEmail())) {
+            updateWrapper.lambda().set(SysUser::getEmail,sysUser.getEmail());
+        }
+        // 性别
+        if (StringUtils.hasText(sysUser.getGender())) {
+            updateWrapper.lambda().set(SysUser::getGender,sysUser.getGender());
+        }
+
+        // 更新时间/更新人
+        updateWrapper.lambda().eq(SysUser::getId,currentUser.getId())
                 .set(SysUser::getUpdateTime, DateUtils.now())
                 .set(SysUser::getUpdateId,currentUser.getId());
 
+        // 执行更新
         int update = sysUserMapper.update(updateWrapper);
+
         // 更新缓存
         if (update == 1) {
-            currentUser.setAvatar(sysUser.getAvatar());
-            currentUser.setEmail(sysUser.getEmail());
-            currentUser.setPhoneNumber(sysUser.getPhoneNumber());
-            currentUser.setGender(sysUser.getGender());
-            currentUser.setNickname(sysUser.getNickname());
+            // 头像
+            if (StringUtils.hasText(sysUser.getAvatar())) {
+                currentUser.setAvatar(sysUser.getAvatar());
+            }
+            // 昵称
+            if (StringUtils.hasText(sysUser.getNickname())) {
+                currentUser.setNickname(sysUser.getNickname());
+            }
+            // 手机号码
+            if (StringUtils.hasText(sysUser.getPhoneNumber())) {
+                currentUser.setPhoneNumber(sysUser.getPhoneNumber());
+            }
+            // 邮箱
+            if (StringUtils.hasText(sysUser.getEmail())) {
+                currentUser.setEmail(sysUser.getEmail());
+            }
+            // 性别
+            if (StringUtils.hasText(sysUser.getGender())) {
+                currentUser.setGender(sysUser.getGender());
+            }
             LoginUser loginUser = LoginUserContext.getLoginUser();
             loginUser.setUser(currentUser);
             LoginUserManager.setLoginUserCache(loginUser);

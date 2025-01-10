@@ -7,37 +7,19 @@
     </a-tooltip>
     <template #overlay>
       <a-menu class="user-card" @click="handleClickMenu">
-        <a-menu-item disabled style="cursor: default">
+        <a-menu-item key="user-center">
           <a-flex align="center" :gap="12">
             <user-avatar :size="48" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
             <a-flex vertical>
-              <a-typography-text :copyable="{ tooltip: false }" strong>
-                <a-tooltip placement="bottom" title="用户昵称">
-                  {{userStore.$state.nickname}}
-                </a-tooltip>
-              </a-typography-text>
-              <a-typography-text :copyable="{ tooltip: false }">
-                <a-tooltip placement="bottom" title="用户uid">
-                  {{userStore.$state.userId}}
-                </a-tooltip>
-              </a-typography-text>
+              <a-typography-text ellipsis :copyable="{ tooltip: false }" strong v-model:content="userStore.$state.nickname" style="max-width: 120px"/>
+              <a-tooltip :title="userStore.$state.userId" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+                <a-typography-text ellipsis :copyable="{ tooltip: false }" v-model:content="userStore.$state.userId" style="max-width: 120px"/>
+              </a-tooltip>
             </a-flex>
-          </a-flex>
-        </a-menu-item>
-        <a-menu-item disabled style="cursor: default" v-if="userStore.$state.defaultDeptPosts.length > 0">
-          <a-flex wrap="wrap" gap="small">
-            <a-tooltip placement="bottom" :title="'岗位编码：' + post.code" v-for="post in userStore.$state.defaultDeptPosts" >
-              <a-tag :color="themeStore.getColorPrimary()" style="margin: 0" :bordered="false">{{post.name}}</a-tag>
-            </a-tooltip>
+            <RightOutlined class="input-prefix-icon-color" style="position: absolute; right: 8px"/>
           </a-flex>
         </a-menu-item>
         <a-menu-divider/>
-        <a-menu-item key="user-center">
-          <a-flex :gap="8">
-            <UserOutlined />
-            <span>个人中心</span>
-          </a-flex>
-        </a-menu-item>
         <a-menu-item key="user-data-update">
           <a-flex :gap="8">
             <CloudSyncOutlined />
@@ -144,8 +126,7 @@ const logout = () => {
 
 <style scoped>
 .user-card {
-  min-width: 220px;
-  max-width: 260px;
+  width: 220px;
   box-shadow: var(--lihua-light-box-shadow);
 }
 </style>

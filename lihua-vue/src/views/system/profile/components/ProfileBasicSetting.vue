@@ -1,98 +1,113 @@
 <template>
-  <div>
-    <a-form
-            :model="profileInfo"
-            :rules="userRoles"
-            :colon="false"
-            :label-col="{ style: { marginTop: '4px' } }"
-            @finish="handleFinish"
-            @finishFailed="handleFinishFailed"
-    >
-      <a-row :span="8" style="margin-bottom: 10px">
-        <avatar-modifier v-model="profileInfo.avatar"/>
-      </a-row>
-<!--      <a-card>-->
-        <a-form-item label="用户昵称" class="basic-form-item">
-          <dynamic-border-input v-model="profileInfo.nickname"/>
-          <!--        <a-input class="form-item-width"-->
-          <!--                 placeholder="请输入用户昵称"-->
-          <!--                 @focus="handleFocus()"-->
-          <!--                 @blur="handleBlur()"-->
-          <!--                 @mouseover="handleMouseOver()"-->
-          <!--                 @mouseout="handleMouseOut()"-->
-          <!--                 size="large"-->
-          <!--                 v-model:value="profileInfo.nickname"-->
-          <!--                 :style="{'border-color': showBordered || isGetFocus ? themeStore.getColorPrimary() : 'rgba(0,0,0,0)'}"-->
-          <!--        >-->
-          <!--          <template #suffix>-->
-          <!--            <a-button :icon="h(CheckOutlined)" type="text" size="small" :style="{color: themeStore.getColorPrimary()}"  v-if="isGetFocus"></a-button>-->
-          <!--            <EditOutlined class="input-prefix-icon-color" v-else/>-->
-          <!--          </template>-->
-          <!--        </a-input>-->
-        </a-form-item>
-        <a-form-item label="手机号码" class="basic-form-item" name="phoneNumber">
-          <dynamic-border-input v-model="profileInfo.phoneNumber"/>
-          <!--        <a-input class="form-item-width" placeholder="请输入手机号码" v-model:value="profileInfo.phoneNumber" allow-clear/>-->
-        </a-form-item>
-        <a-form-item label="电子邮箱" class="basic-form-item" name="email">
-          <dynamic-border-input v-model="profileInfo.email"/>
-          <!--        <a-auto-complete class="form-item-width" placeholder="请输入电子邮箱"  v-model:value="profileInfo.email" @search="emailHandleSearch" :options="emailOptions" allow-clear>-->
-          <!--          <template #option="{ value: val }">-->
-          <!--            {{ val.split('@')[0] }} @-->
-          <!--            <span style="font-weight: bold">{{ val.split('@')[1] }}</span>-->
-          <!--          </template>-->
-          <!--        </a-auto-complete>-->
-        </a-form-item>
-        <a-form-item label="用户性别" class="basic-form-item">
-          <dynamic-border-select v-model="profileInfo.gender"/>
-          <!--        <a-select class="form-item-width" v-model:value="profileInfo.gender" :bordered="false">-->
-          <!--          <template #suffixIcon><EditOutlined class="input-prefix-icon-color" style="font-size: 14px"/></template>-->
-          <!--          <a-select-option :value="item.value" v-for="item in user_gender">{{item.label}}</a-select-option>-->
-          <!--        </a-select>-->
-          <!--        <a-radio-group v-model:value="profileInfo.gender">-->
-          <!--          <a-radio :value="item.value" v-for="item in user_gender">{{item.label}}</a-radio>-->
-          <!--        </a-radio-group>-->
-        </a-form-item>
-        <a-divider/>
-        <a-typography-title :level="5">部门信息</a-typography-title>
-        <a-typography-text>
-          {{userStore.defaultDept.name}}
-          <a-tag style="margin-left: 8px" color="processing">默认部门</a-tag>
-          <a-tag v-for="post in userStore.defaultDeptPosts">{{post.name}}</a-tag>
-        </a-typography-text>
-        <a-divider/>
-        <a-typography-title :level="5">其他信息</a-typography-title>
-        <a-form-item label="我的角色">
-          <a-tag v-for="roleName in userStore.roles.map(item => item.name)" :color="themeStore.getColorPrimary()">{{roleName}}</a-tag>
-        </a-form-item>
-        <a-form-item v-if="false">
-          <a-flex :gap="16">
-            <a-button type="primary" html-type="submit" :loading="submitLoading">提 交</a-button>
-          </a-flex>
-        </a-form-item>
-<!--      </a-card>-->
-    </a-form>
-  </div>
+  <a-form
+      ref="formRef"
+      :model="profileInfo"
+      :rules="userRoles"
+      :colon="false"
+      :label-col="{ style: { marginTop: '4px' } }"
+  >
+    <a-flex gap="small" wrap="wrap" class="scrollbar">
+      <!--      个人中心卡片-->
+      <a-card class="info-card">
+        <div style="max-width: 400px;margin: auto">
+          <a-form-item>
+            <avatar-modifier v-model="profileInfo.avatar" @change="(value: string) => handleFinish({avatar: value})"/>
+          </a-form-item>
+          <a-form-item label="用户昵称" name="nickname">
+            <dynamic-border-input ref="dynamicInputRef"
+                                  required
+                                  v-model="profileInfo.nickname"
+                                  @reset="handleClearValidate"
+                                  @submit="(value: string) => handleFinish({nickname : value})"
+            />
+          </a-form-item>
+          <a-form-item label="手机号码" name="phoneNumber">
+            <dynamic-border-input ref="dynamicInputRef"
+                                  v-model="profileInfo.phoneNumber"
+                                  @reset="handleClearValidate"
+                                  @submit="(value: string) => handleFinish({phoneNumber : value})"/>
+          </a-form-item>
+          <a-form-item label="电子邮箱" name="email">
+            <dynamic-border-input ref="dynamicInputRef"
+                                  v-model="profileInfo.email"
+                                  @reset="handleClearValidate"
+                                  @submit="(value: string) => handleFinish({email : value})"/>
+          </a-form-item>
+          <a-form-item label="用户性别">
+            <dynamic-border-select ref="dynamicInputRef"
+                                   v-model="profileInfo.gender"
+                                   :options="user_gender" @submit="(value: string) => handleFinish({gender : value})"/>
+          </a-form-item>
+        </div>
+      </a-card>
+      <a-flex vertical gap="small" style="flex: 1;">
+        <!--      部门和岗位卡片-->
+        <a-card class="info-card">
+          <a-typography-title :level="5">部门岗位</a-typography-title>
+          <selectable-card :dataSource="deptList"
+                           itemKey="id"
+                           v-model="defaultDeptId"
+                           @change="handleChangeDefaultDept"
+          >
+          <template #content="{item, color}">
+            <a-flex vertical gap="small">
+              <a-flex gap="small">
+                <a-typography-text strong>
+                  {{item.name}}
+                </a-typography-text>
+                <a-tag :color="color" v-show="item.code === userStore.defaultDept.code">默认部门</a-tag>
+              </a-flex>
+              <a-typography-text type="secondary">
+                {{item.code}}
+              </a-typography-text>
+              <div v-if="postList.filter(post => post.deptId === item.id).length > 0">
+                <a-tag v-for="post in postList.filter(post => post.deptId === item.id)">
+                  {{post.name}}
+                </a-tag>
+              </div>
+              <div v-else>
+                <a-typography-text  type="secondary">暂无岗位</a-typography-text>
+              </div>
+            </a-flex>
+            </template>
+          </selectable-card>
+        </a-card>
+        <!--      部门和岗位卡片-->
+        <a-card class="info-card">
+          <a-typography-title :level="5">我的角色</a-typography-title>
+          <a-form-item>
+            <a-tag v-for="roleName in userStore.roles.map(item => item.name)" :color="themeStore.getColorPrimary()">{{roleName}}</a-tag>
+          </a-form-item>
+        </a-card>
+      </a-flex>
+    </a-flex>
+  </a-form>
 </template>
 
 <script setup lang="ts">
-import {reactive, ref} from "vue";
+import {nextTick, reactive, ref, useTemplateRef} from "vue";
 import {useUserStore} from "@/stores/user";
 import AvatarModifier from "@/views/system/profile/components/AvatarModifier.vue";
 import type {Rule} from "ant-design-vue/es/form";
-import {message} from "ant-design-vue";
+import {type FormInstance, message} from "ant-design-vue";
 import type {ProfileInfo} from "@/api/system/profile/type/SysProfile.ts";
-import {saveBasics} from "@/api/system/profile/Profile.ts";
+import {saveBasics, setDefaultDept} from "@/api/system/profile/Profile.ts";
 import {initDict} from "@/utils/Dict.ts"
 import {cloneDeep} from "lodash-es";
 import {ResponseError} from "@/api/global/Type.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import DynamicBorderInput from "@/components/dynamic-border-input/index.vue"
 import DynamicBorderSelect from "@/components/dynamic-border-select/index.vue"
+import SelectableCard from "@/components/selectable-card/index.vue"
+import {flattenTree} from "@/utils/Tree"
+import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+
 const userStore = useUserStore()
 const {user_gender} = initDict('user_gender')
-const submitLoading = ref<boolean>(false)
 const themeStore = useThemeStore()
+
+const formRef = useTemplateRef<FormInstance>("formRef")
+const dynamicInputRef = useTemplateRef<InstanceType<typeof DynamicBorderInput>>("dynamicInputRef")
 
 // 初始化数据
 const init = () => {
@@ -121,78 +136,95 @@ const init = () => {
       { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码'}
     ]
   })
-
   return {
     profileInfo,
     userRoles
   }
 }
 
+const { profileInfo, userRoles }= init()
+
 /**
  * 保存用户信息
  * @param values
  */
-const handleFinish = (values: {nickname: string,gender:string,email:string,phoneNumber:string}) => {
-  submitLoading.value = true
-  // 保存到数据库删除url属性
-  const avatar = cloneDeep(profileInfo.avatar)
-  delete avatar.url
-
-  saveBasics({
-    avatar: JSON.stringify(avatar),
-    nickname: values.nickname,
-    gender: values.gender,
-    email: values.email,
-    phoneNumber: values.phoneNumber
-  }).then(resp => {
+const handleFinish = async (values: {avatar?: string,nickname?: string, gender?: string, email?: string, phoneNumber?: string}) => {
+  try {
+    const resp = await saveBasics(values)
     if (resp.code === 200){
+      dynamicInputRef.value?.success()
       message.success(resp.msg)
-      userStore.initUserInfo().catch(e => {
-        if (e instanceof ResponseError) {
-          message.error(e.msg)
-        } else {
-          console.log(e)
-        }
-      })
+      // 重新获取用户信息
+      await userStore.initUserInfo()
     } else {
+      dynamicInputRef.value?.error()
       message.error(resp.msg)
     }
-  }).catch((e) => {
+  } catch(e) {
     if (e instanceof ResponseError) {
       message.error(e.msg)
     } else {
       console.error(e)
     }
-  }).finally(() => {
-    submitLoading.value = false
-  })
-}
-
-const handleFinishFailed = ({ errorFields }: { errorFields: any }) => {
-  if (errorFields.length > 0) {
-    message.error("请将表单填写完整")
+    dynamicInputRef.value?.error()
   }
 }
 
-const emailOptions = ref<{ value: string }[]>([]);
-const emailHandleSearch = (val: string) => {
-  let res: { value: string }[];
-  if (!val || val.indexOf('@') >= 0) {
-    res = [];
-  } else {
-    res = ['qq.com','126.com', '163.com','aliyun.com','sina.com','sohu.com','gmail.com','outlook.com','hotmail.com'].map(domain => ({ value: `${val}@${domain}` }));
+// 清除验证提示
+const handleClearValidate = () => {
+  if (!formRef.value) {
+    return
   }
-  emailOptions.value = res;
-};
+  formRef.value.clearValidate()
+}
 
-const  {profileInfo, userRoles}= init()
+// 初始化部门相关逻辑
+const initDept = () => {
+  // 默认部门id
+  const defaultDeptId = ref<string|undefined>(userStore.defaultDept.id)
+  // 部门列表
+  const deptList = flattenTree(userStore.deptTrees)
+  // 岗位列表
+  const postList = userStore.posts
+  // 修改默认部门
+  const handleChangeDefaultDept = async ({item}:{item: SysDept}) => {
+    // item 为空，表示取消了选中，手动将defaultDeptId赋值为默认部门id
+    if (!item || !item.id) {
+      await nextTick(() => defaultDeptId.value = userStore.defaultDept.id)
+      return
+    }
+    // 修改默认部门
+    try {
+      const resp = await setDefaultDept(item.id)
+      if (resp.code === 200) {
+        // 更新默认部门
+        userStore.updateDefaultDept(resp.data)
+        message.success(resp.msg)
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    }
+  }
+
+  return {
+    deptList,
+    defaultDeptId,
+    postList,
+    handleChangeDefaultDept
+  }
+}
+const {deptList, defaultDeptId, postList, handleChangeDefaultDept} = initDept()
+
 </script>
-
 <style scoped>
-.form-item-width {
-  width: 370px;
-}
-.basic-form-item {
-  margin-bottom: 22px;
+.info-card {
+  flex: 1;
+  min-width: 300px
 }
 </style>

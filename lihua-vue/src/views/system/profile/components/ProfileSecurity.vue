@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 8px">
+  <a-card>
     <a-form :colon="false" layout="vertical" :model="password" :rules="rules" @finish="handleFinish">
       <a-form-item label="旧密码" name="oldPassword">
         <a-input-password class="form-item-width"
@@ -24,7 +24,7 @@
         <a-button type="primary" html-type="submit" :loading="submitLoading">提 交</a-button>
       </a-form-item>
     </a-form>
-  </div>
+  </a-card>
 </template>
 <script setup lang="ts">
 

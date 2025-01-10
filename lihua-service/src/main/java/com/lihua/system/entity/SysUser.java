@@ -35,8 +35,6 @@ public class SysUser extends BaseEntity {
     /**
      * 用户昵称
      */
-    @NotNull(message = "用户昵称不能为空",
-            groups = ProfileValidation.ProfileSaveValidation.class)
     @Size(max = 20,
         message = "用户昵称最大不能超过20字符",
         groups = ProfileValidation.ProfileSaveValidation.class)
@@ -50,8 +48,6 @@ public class SysUser extends BaseEntity {
     /**
      * 用户性别
      */
-    @NotNull(message = "用户性别不能为空",
-            groups = ProfileValidation.ProfileSaveValidation.class)
     private String gender;
 
     /**

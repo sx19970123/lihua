@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <a-card>
     <a-form layout="vertical">
       <!-- 主题设置 -->
       <a-typography-title :level="5">主题设置</a-typography-title>
@@ -56,11 +56,8 @@
           <a-select-option value="trick">整活</a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item>
-        <a-button type="primary" @click="handleSubmitTheme" :loading="submitLoading">提 交</a-button>
-      </a-form-item>
     </a-form>
-  </div>
+  </a-card>
 
 </template>
 <script setup lang="ts">
@@ -85,11 +82,11 @@ const colorList = ref<Array<{name: string,color: string}>>(settings.colorOptions
 const submitLoading = ref<boolean>(false)
 // 卸载组件时触发，保存用户修改的内容
 onUnmounted(()=> {
-  handleSubmitTheme()
+  handleSaveTheme()
 })
 
 // 处理保存主题
-const handleSubmitTheme = async () => {
+const handleSaveTheme = async () => {
   submitLoading.value = true
   try {
     await userStore.saveTheme(JSON.stringify(themeStore.$state))
@@ -115,6 +112,3 @@ const handleChangeLayoutType = (key: string) => {
   }
 }
 </script>
-<style scoped>
-
-</style>

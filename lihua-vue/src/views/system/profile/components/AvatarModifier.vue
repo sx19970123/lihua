@@ -79,7 +79,7 @@ const userStore = useUserStore()
 // 双向绑定值
 const props = defineProps(['modelValue'])
 // 双向绑定修改方法
-const emits = defineEmits(['update:modelValue'])
+const emits = defineEmits(['update:modelValue','change'])
 const init = () => {
   // 控制modal开关
   const open = ref<boolean>(false)
@@ -225,6 +225,9 @@ const handleOk = async () => {
 
     if (updatedData.value) {
       emits('update:modelValue', updatedData);
+      const cloneData = cloneDeep(updatedData);
+      delete cloneData.url;
+      emits('change', JSON.stringify(cloneData));
       open.value = false;
     } else {
       if (avatarType.value === 'image') {

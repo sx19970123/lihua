@@ -1,7 +1,6 @@
 <template>
   <div>
-    <a-input class="input"
-             size="large"
+    <a-input size="large"
              v-model:value="value"
              :style="{'border-color': showBordered || isGetFocus ? themeStore.getColorPrimary() : 'rgba(0,0,0,0)'}"
              :readonly="loading"
@@ -9,7 +8,6 @@
              @mouseover="handleMouseOver"
              @mouseout="handleMouseOut"
              @change="handleValueChange"
-
     >
       <template #suffix>
         <a-button :icon="h(CheckOutlined)"
@@ -36,19 +34,23 @@ const props = defineProps({
   modelValue: {
     type: String,
     required: false
+  },
+  required: {
+    type: Boolean,
+    default: false
   }
 })
 // 抛出方法
-const emits = defineEmits(['update:modelValue','submit']);
+const emits = defineEmits(['update:modelValue','submit','reset']);
 // 暴露函数
 defineExpose({
   // 提交成功，设置为失焦并关闭loading
   success: () => {
-    isGetFocus.value = false
-    loading.value = false
     if (element.value) {
       element.value.blur()
     }
+    isGetFocus.value = false
+    loading.value = false
   },
   // 失败关闭loading
   error: () => {
@@ -63,6 +65,7 @@ const finalValue = ref<string|undefined>(props.modelValue)
 const value = ref<string|undefined>(props.modelValue)
 // 提交保存loading
 const loading = ref<boolean>(false)
+// input element元素
 const element = ref<HTMLElement | null>(null)
 
 // 处理双向绑定
@@ -71,12 +74,13 @@ const handleValueChange = () => {
 }
 // 点击提交按钮
 const handleSubmit = () => {
-  loading.value = true
   // 点击提交按钮让组件一直处于聚焦状态
-  if (element.value) {
-    element.value.focus()
-    nextTick(() => handleFocus())
+  getFocus()
+  // 必填项没有填写时直接返回
+  if (props.required && !value.value) {
+    return
   }
+  loading.value = true
   emits('submit', value.value)
 }
 // 显示边框
@@ -94,12 +98,15 @@ const handleBlur = (event: FocusEvent) => {
   if (element && element.id === uuid) {
     handleSubmit()
   }
-  // 点击了外部
+  // 点击外部/提交成功/必填项未填写 触发
   else {
-    if (!loading.value) {
+    if (loading.value) {
+      finalValue.value = value.value
+    } else {
       value.value = finalValue.value
-      handleValueChange()
+      emits('reset', finalValue.value)
     }
+    handleValueChange()
   }
   isGetFocus.value = false
 }
@@ -110,6 +117,13 @@ const handleMouseOver = () => {
 // 鼠标移出
 const handleMouseOut = () => {
   showBordered.value = false
+}
+// 获取焦点
+const getFocus = () => {
+  if (element.value) {
+    element.value.focus()
+    nextTick(() => handleFocus())
+  }
 }
 
 onMounted(() => {
@@ -133,10 +147,3 @@ onUnmounted(() => {
   }
 })
 </script>
-
-<style scoped>
-.input {
-  max-width: 370px;
-  text-align: right;
-}
-</style>

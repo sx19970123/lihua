@@ -1,8 +1,9 @@
 <template>
   <div>
-    <a-select style="max-width: 370px"
-              v-model:value="value"
+    <a-select v-model:value="value"
               :bordered="isGetFocus || showBordered"
+              :field-names="props.fieldNames"
+              :options="props.options"
               size="large"
               @focus="handleFocus"
               @blur="handleBlur"
@@ -16,11 +17,21 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref} from "vue";
-// 双向绑定
+import {ref} from "vue";
 const props = defineProps({
+  // 双向绑定
   modelValue: {
     type: String,
+    required: false
+  },
+  // 下拉值
+  options: {
+    type: Array,
+    required: true
+  },
+  // 下拉字段属性绑定
+  fieldNames: {
+    type: Object,
     required: false
   }
 })
@@ -44,7 +55,8 @@ const value = ref<string|undefined>(props.modelValue)
 const loading = ref<boolean>(false)
 // 处理双向绑定
 const handleValueChange = () => {
-  emits('update:modelValue', value)
+  emits('update:modelValue', value.value)
+  emits('submit', value.value)
 }
 
 // 显示边框
