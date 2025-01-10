@@ -79,7 +79,7 @@ const routers = [
       },
       {
         path: '/setting',
-        component: () => import("@/views/system/setting/index.vue"),
+        component: () => import("@/views/system/setting/SystemSetting.vue"),
         name: 'SystemSetting',
         meta: {
           label: "系统设置",
