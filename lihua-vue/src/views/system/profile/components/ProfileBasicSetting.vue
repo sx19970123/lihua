@@ -1,14 +1,16 @@
 <template>
   <a-form
       ref="formRef"
+      :hideRequiredMark="true"
       :model="profileInfo"
       :rules="userRoles"
       :colon="false"
       :label-col="{ style: { marginTop: '4px' } }"
   >
-    <a-flex gap="small" wrap="wrap" class="scrollbar">
+    <a-flex gap="small" wrap="wrap">
       <!--      个人中心卡片-->
-      <a-card class="info-card">
+      <a-card class="info-card" style="flex: 1">
+        <a-typography-title :level="5">个人信息</a-typography-title>
         <div style="max-width: 400px;margin: auto">
           <a-form-item>
             <avatar-modifier v-model="profileInfo.avatar" @change="(value: string) => handleFinish({avatar: value})"/>
@@ -40,7 +42,7 @@
           </a-form-item>
         </div>
       </a-card>
-      <a-flex vertical gap="small" style="flex: 1;">
+      <a-flex vertical gap="small" style="flex: 1.68;">
         <!--      部门和岗位卡片-->
         <a-card class="info-card">
           <a-typography-title :level="5">部门岗位</a-typography-title>
@@ -85,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick, reactive, ref, useTemplateRef} from "vue";
+import {nextTick, reactive, ref, useTemplateRef, watch} from "vue";
 import {useUserStore} from "@/stores/user";
 import AvatarModifier from "@/views/system/profile/components/AvatarModifier.vue";
 import type {Rule} from "ant-design-vue/es/form";
@@ -221,6 +223,10 @@ const initDept = () => {
 }
 const {deptList, defaultDeptId, postList, handleChangeDefaultDept} = initDept()
 
+// 默认部门id变化时同步选中
+watch(() => userStore.defaultDept.id, (value) => {
+  defaultDeptId.value = value
+})
 </script>
 <style scoped>
 .info-card {

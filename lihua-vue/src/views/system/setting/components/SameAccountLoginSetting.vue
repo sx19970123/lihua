@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 8px">
+  <a-card>
     <a-form layout="vertical" :model="settingForm" @finish="handleFinish" :rules="rules">
       <a-form-item label="同账号登录限制">
         <template #tooltip>
@@ -27,7 +27,7 @@
         </div>
       </transition>
     </a-form>
-  </div>
+  </a-card>
 </template>
 
 <script setup lang="ts">

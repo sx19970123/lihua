@@ -74,6 +74,6 @@ const handleFlatten = <T> (tree:Array<T>, resultList:Array<T> , children: string
     }
     // 去除children属性
     item[children] = undefined
-    resultList.push(item)
+    resultList.unshift(item)
   })
 }

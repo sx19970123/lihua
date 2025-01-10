@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 8px">
+  <a-card>
     <a-form layout="vertical">
       <a-form-item label="验证码">
         <template #tooltip>
@@ -13,7 +13,7 @@
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
       </a-form-item>
     </a-form>
-  </div>
+  </a-card>
 </template>
 
 <script setup lang="ts">

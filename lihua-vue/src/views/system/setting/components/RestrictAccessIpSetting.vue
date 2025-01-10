@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 8px">
+  <a-card>
     <a-form
         layout="vertical"
         @finish="handleFinish"
@@ -60,7 +60,7 @@
         </div>
       </transition>
     </a-form>
-  </div>
+  </a-card>
 </template>
 
 <script setup lang="ts">

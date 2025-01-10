@@ -1,39 +1,55 @@
 <template>
   <div class="header-content-center">
-    <a-card>
-      <a-row>
-        <a-col :lg="{span: 4}" :md="{span: 6}" :sm="{span: 8}" :xs="{span: 10}">
+    <a-row :gutter="8">
+      <a-col :xxl="{span: 4}" :xl="{span: 5}" :lg="{span: 6}" :md="{span: 6}" :sm="{span: 6}" :xs="{span: 6}">
+        <a-card style="height: 100%">
           <a-menu v-model:selected-keys="selectKeys"
-                  style="height: 100%"
+                  style="border: 0;width: 100%"
+                  :inlineCollapsed="collapsed"
                   @click="handleChangeSetting"
           >
-            <a-menu-item-group title="账号安全设置">
-              <a-menu-item key="DefaultPasswordSetting"> 系统默认密码</a-menu-item>
-              <a-menu-item key="IntervalUpdatePassword"> 定期修改密码</a-menu-item>
-              <a-menu-item key="SameAccountLoginSetting"> 同账号登录限制</a-menu-item>
+            <a-menu-item-group title="账号">
+              <a-menu-item key="DefaultPasswordSetting">
+                <KeyOutlined />
+                <span>系统默认密码</span>
+              </a-menu-item>
+              <a-menu-item key="IntervalUpdatePassword">
+                <FieldTimeOutlined />
+                <span>定期修改密码</span>
+              </a-menu-item>
+              <a-menu-item key="SameAccountLoginSetting">
+                <LoginOutlined />
+                <span>同账号登录限制</span>
+              </a-menu-item>
             </a-menu-item-group>
-
-            <a-menu-item-group title="登录设置">
-              <a-menu-item key="SignInSetting"> 自助注册</a-menu-item>
-              <a-menu-item key="VerificationCodeSetting"> 验证码</a-menu-item>
+            <a-menu-item-group title="登录">
+              <a-menu-item key="SignInSetting">
+                <IdcardOutlined />
+                <span>自助注册</span>
+              </a-menu-item>
+              <a-menu-item key="VerificationCodeSetting">
+                <RobotOutlined />
+                <span>验证码</span>
+              </a-menu-item>
             </a-menu-item-group>
-
-            <a-menu-item-group title="访问控制">
-              <a-menu-item key="RestrictAccessIpSetting"> 限制访问IP</a-menu-item>
-            </a-menu-item-group>
-
-            <a-menu-item-group title="其他设置">
-              <a-menu-item key="GrayModelSetting"> 灰色模式</a-menu-item>
+            <a-menu-item-group title="其他">
+              <a-menu-item key="RestrictAccessIpSetting">
+                <GatewayOutlined />
+                <span>限制访问IP</span>
+              </a-menu-item>
+              <a-menu-item key="GrayModelSetting"> <BgColorsOutlined />
+                <span>灰色模式</span>
+              </a-menu-item>
             </a-menu-item-group>
           </a-menu>
-        </a-col>
-        <a-col :lg="{span: 20}" :md="{span: 18}" :sm="{span: 16}" :xs="{span: 14}">
-          <transition :name="themeStore.routeTransition" mode="out-in">
-            <component :is="activeComponent" class="scrollbar" style="padding: 20px"/>
-          </transition>
-        </a-col>
-      </a-row>
-    </a-card>
+        </a-card>
+      </a-col>
+      <a-col :xxl="{span: 20}" :xl="{span: 19}" :lg="{span: 18}" :md="{span: 18}" :sm="{span: 18}" :xs="{span: 18}">
+        <transition :name="themeStore.routeTransition" mode="out-in">
+          <component class="scrollbar" :is="activeComponent" style="height: 100%"/>
+        </transition>
+      </a-col>
+    </a-row>
   </div>
 </template>
 
@@ -46,10 +62,10 @@ import UpdatePasswordSetting from "@/views/system/setting/components/IntervalUpd
 import VerificationCodeSetting from "@/views/system/setting/components/VerificationCodeSetting.vue";
 import RestrictAccessIpSetting from "@/views/system/setting/components/RestrictAccessIpSetting.vue";
 import SameAccountLoginSetting from "@/views/system/setting/components/SameAccountLoginSetting.vue";
-import {markRaw, ref} from "vue";
+import {markRaw, onMounted, onUnmounted, ref} from "vue";
 
 const themeStore = useThemeStore()
-
+const collapsed = ref<boolean>(false)
 const allComponents = ref([
   {
     name: 'DefaultPasswordSetting',
@@ -89,9 +105,22 @@ const handleChangeSetting = ({key}: {key: string}) => {
   const target = allComponents.value.filter(item => item.name === key)[0]
   activeComponent.value = target.com
 }
+// 处理屏幕宽度变化
+const handleChangeInnerWidth = () => {
+  const width = window.innerWidth
+  collapsed.value = width <= 992;
+}
+
+onMounted(() => {
+  handleChangeInnerWidth()
+  window.addEventListener('resize', () => {
+    handleChangeInnerWidth()
+  })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    handleChangeInnerWidth()
+  })
+})
 </script>
-
-
-<style scoped>
-
-</style>

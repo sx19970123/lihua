@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 8px">
+  <a-card>
     <a-form layout="vertical" :model="settingForm" :rules="rules" @finish="handleFinish">
       <a-form-item class="form-item-width" label="默认密码" name="defaultPassword">
         <template #tooltip>
@@ -16,7 +16,7 @@
         <a-button type="primary" html-type="submit" :loading="submitLoading">提 交</a-button>
       </a-form-item>
     </a-form>
-  </div>
+  </a-card>
 </template>
 
 <script setup lang="ts">

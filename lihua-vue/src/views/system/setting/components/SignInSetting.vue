@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 8px;padding-right: 20px">
+  <a-card>
     <a-form layout="vertical" :model="settingForm">
       <a-form-item label="自助注册">
         <template #tooltip>
@@ -79,7 +79,7 @@
         </div>
       </transition>
     </a-form>
-  </div>
+  </a-card>
 </template>
 
 <script setup lang="ts">

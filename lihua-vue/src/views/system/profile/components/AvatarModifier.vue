@@ -224,9 +224,12 @@ const handleOk = async () => {
     }
 
     if (updatedData.value) {
+      // 双向绑定
       emits('update:modelValue', updatedData);
+      // 删除临时url
       const cloneData = cloneDeep(updatedData);
       delete cloneData.url;
+      // 触发change事件
       emits('change', JSON.stringify(cloneData));
       open.value = false;
     } else {

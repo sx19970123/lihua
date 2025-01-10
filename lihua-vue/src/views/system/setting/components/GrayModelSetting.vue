@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 8px">
+  <a-card>
     <a-form layout="vertical" :model="settingForm">
       <a-form-item label="灰色模式">
         <template #tooltip>
@@ -31,7 +31,7 @@
         </div>
       </transition>
     </a-form>
-  </div>
+  </a-card>
 </template>
 
 <script setup lang="ts">
