@@ -31,17 +31,17 @@ export const usePermissionStore = defineStore('permission',{
             // 处理各个层级 Component
             handleRouterComponent(metaRouterList)
             // 顶级无父组件目录、页面添加layout父级
-            metaRouterList.forEach(route => {
+            metaRouterList.forEach((route, index) => {
                 const isRoot= route.children === null || route.children.length === 0
                 const isPageType = route.type === 'page';
                 const isMenuType = route.type === 'directory';
-                const isLinkType = route.type === 'link' // && route.meta.linkOpenType === 'inner';
+                const isLinkType = route.type === 'link';
                 if ((isPageType || isLinkType || isMenuType) && isRoot) {
                     const parentRoute: RouteRecordRaw  = {
                         children: [route as any],
                         path: "",
                         component: Layout,
-                        name: route.name? route.name: 'Parent' + route.id
+                        name: route.name? route.name + index: 'Parent' + route.id
                     };
                     router.addRoute(parentRoute);
                 } else {
