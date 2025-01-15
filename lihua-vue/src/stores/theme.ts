@@ -259,7 +259,7 @@ export const useThemeStore = defineStore('theme',{
             this.$state.antColorPrimary = color
             return color
         },
-        // 主题复原
+        // 主题重置
         resetState() {
             this.$state.layoutType = settings.layoutType
             this.$state.componentSize = settings.componentSize

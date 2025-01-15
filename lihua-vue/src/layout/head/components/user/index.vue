@@ -7,7 +7,7 @@
     </a-tooltip>
     <template #overlay>
       <a-menu class="user-card" @click="handleClickMenu">
-        <a-menu-item key="user-center">
+        <a-menu-item key="user-overview">
           <a-flex align="center" :gap="12">
             <user-avatar :size="48" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
             <a-flex vertical>
@@ -17,6 +17,13 @@
               </a-tooltip>
             </a-flex>
             <RightOutlined class="input-prefix-icon-color" style="position: absolute; right: 8px"/>
+          </a-flex>
+        </a-menu-item>
+        <a-menu-divider/>
+        <a-menu-item key="user-center">
+          <a-flex :gap="8">
+            <UserOutlined />
+            <span>个人中心</span>
           </a-flex>
         </a-menu-item>
         <a-menu-divider/>
@@ -67,6 +74,10 @@ const isVisitor = ref<boolean>(userStore.$state.roleCodes.filter(item => item ==
 // 处理点击个人中心按钮
 const handleClickMenu = async ({key}: {key: string}) => {
   switch (key) {
+    case 'user-overview': {
+      userInfo()
+      break
+    }
     case 'user-center': {
       userInfo()
       break
@@ -99,7 +110,7 @@ const handleClickMenu = async ({key}: {key: string}) => {
       break
     }
     case 'logout': {
-      logout()
+      await logout()
       break
     }
   }
@@ -116,11 +127,10 @@ const settingPage = () => {
 }
 
 // 退出登陆
-const logout = () => {
-  userStore.handleLogout().then(() => {
-    message.success("退出成功")
-    router.push('/login')
-  })
+const logout = async () => {
+  await userStore.handleLogout()
+  message.success("退出成功")
+  await router.push('/login')
 }
 </script>
 
