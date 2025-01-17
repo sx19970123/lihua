@@ -13,6 +13,11 @@ import org.springframework.stereotype.Component;
 public class LihuaConfig {
 
     /**
+     * 系统版本
+     */
+    private String version;
+
+    /**
      * redis 中 token 过期时间
      */
     private Long tokenExpireTime;

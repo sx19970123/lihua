@@ -6,5 +6,5 @@
 /_/     |______|_| |_|  |_|\__,_|\__,_| |_____/| .__/|_|  |_|_| |_|\__, | |____/ \___/ \___/ \__| /_/
                                                | |                  __/ |
                                                |_|                 |___/
-:: Application Name ::    ${spring.application.name}
+:: Application Name ::    ${spring.application.name}-${lihua.version}
 :: App Server  Port ::    ${server.port}
