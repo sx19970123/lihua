@@ -7,7 +7,7 @@ export default {
     /**
      * 系统版本
      */
-    version: "1.0.1",
+    version: "1.0.2",
 
     /**
      * 暗色模式 true； 亮色模式 false

@@ -29,7 +29,7 @@ MySQL 8+
 
 node 20+（或兼容 vue3 版本）
 
-Redis 5+
+Redis 
 
 #### 关于狸花猫
 

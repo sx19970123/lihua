@@ -10,9 +10,12 @@
         </a-avatar>
       </div>
       <!--    导航名称-->
-      <a-typography-title class="title" ellipsis :level="4">
-        <span :class="themeStore.layoutType !== 'header-sider' && themeStore.siderTheme === 'dark' ? 'main-name': ''">Lihua Admin</span>
-      </a-typography-title>
+      <a-typography-title class="title"
+                          :class="themeStore.layoutType !== 'header-sider' && themeStore.siderTheme === 'dark' ? 'main-name': ''"
+                          :level="4"
+                          ellipsis
+                          content="Lihua Admin"
+      />
     </a-flex>
     <a-flex align="center" justify="center" v-else>
       <div>

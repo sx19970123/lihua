@@ -38,9 +38,7 @@
                 <a-list-item-meta>
                   <!--                      发布时间-->
                   <template #description>
-                    <a-typography-text type="secondary" ellipsis>
-                      {{item.releaseUser}}
-                    </a-typography-text>
+                    <a-typography-text type="secondary" ellipsis v-model:content="item.releaseUser"/>
                     <a-divider type="vertical" />
                     <a-typography-text type="secondary">
                       {{handleTime(dayjs(item.releaseTime).format('YYYY-MM-DD HH:mm')) }}
@@ -51,9 +49,7 @@
                       <!--                      标题-->
                       <div>
                         <a-tooltip :title="item.title" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
-                          <a-typography-text class="notice-title" ellipsis>
-                            {{ item.title }}
-                          </a-typography-text>
+                          <a-typography-text class="notice-title" ellipsis v-model:content="item.title"/>
                         </a-tooltip>
                       </div>
                       <!--                      标星-->
