@@ -11,7 +11,7 @@
  Target Server Version : 90001 (9.0.1)
  File Encoding         : 65001
 
- Date: 22/12/2024 19:31:33
+ Date: 17/01/2025 16:18:26
 */
 
 SET NAMES utf8mb4;
@@ -116,13 +116,14 @@ INSERT INTO `sys_dict_data` VALUES ('1823522986106695682', '0', 'sys_log_status'
 INSERT INTO `sys_dict_data` VALUES ('1823522988254179330', '0', 'sys_log_status', '失败', '1', 2, NULL, '0', '1', '2024-08-14 08:52:14', '1', '2024-08-14 08:52:43', '0', 'error');
 INSERT INTO `sys_dict_data` VALUES ('1840380919319064578', '0', 'sys_user_register_type', '管理员注册', '0', 1, NULL, '0', '1', '2024-09-29 21:19:38', NULL, NULL, '0', 'processing');
 INSERT INTO `sys_dict_data` VALUES ('1840380921978253313', '0', 'sys_user_register_type', '用户自助注册', '1', 2, NULL, '0', '1', '2024-09-29 21:19:39', NULL, NULL, '0', 'success');
-INSERT INTO `sys_dict_data` VALUES ('1869716623098253313', '0', 'test_tree', '节点1', '1', 1, NULL, '0', '1', '2024-12-19 20:09:15', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` VALUES ('1869716623098253313', '0', 'test_tree', '节点1', '1', 1, NULL, '0', '1', '2024-12-19 20:09:15', '1', '2025-01-17 16:14:47', '0', 'default');
 INSERT INTO `sys_dict_data` VALUES ('1869716680958676994', '1869716623098253313', 'test_tree', '节点1-1', '1-1', 1, NULL, '0', '1', '2024-12-19 20:09:29', NULL, NULL, '0', 'default');
 INSERT INTO `sys_dict_data` VALUES ('1869716725632208898', '1869716623098253313', 'test_tree', '节点1-2', '1-2', 2, NULL, '0', '1', '2024-12-19 20:09:40', NULL, NULL, '0', 'default');
-INSERT INTO `sys_dict_data` VALUES ('1869716755554373633', '0', 'test_tree', '节点2', '2', 2, NULL, '0', '1', '2024-12-19 20:09:47', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` VALUES ('1869716755554373633', '0', 'test_tree', '节点2', '2', 2, NULL, '0', '1', '2024-12-19 20:09:47', '1', '2025-01-17 16:14:48', '0', 'default');
 INSERT INTO `sys_dict_data` VALUES ('1869716801964347394', '1869716755554373633', 'test_tree', '节点2-1', '2-1', 1, NULL, '0', '1', '2024-12-19 20:09:58', NULL, NULL, '0', 'default');
 INSERT INTO `sys_dict_data` VALUES ('1869716862974693377', '1869716755554373633', 'test_tree', '节点2-2', '2-2', 2, NULL, '0', '1', '2024-12-19 20:10:12', NULL, NULL, '0', 'default');
 INSERT INTO `sys_dict_data` VALUES ('1869719177509081090', '1869716862974693377', 'test_tree', '节点2-2-1', '2-2-1', 1, NULL, '0', '1', '2024-12-19 20:19:24', '1', '2024-12-19 20:52:53', '0', 'processing');
+INSERT INTO `sys_dict_data` VALUES ('1880166202906210305', '0', 'sys_user_register_type', '批量导入注册', '2', 3, NULL, '0', '1', '2025-01-17 16:12:09', NULL, NULL, '0', 'default');
 
 -- ----------------------------
 -- Table structure for sys_dict_type
@@ -159,8 +160,8 @@ INSERT INTO `sys_dict_type` VALUES ('1814191516905033729', '公告类型', 'sys_
 INSERT INTO `sys_dict_type` VALUES ('1814602561218945026', '用户范围', 'sys_notice_user_scope', '0', '通知公告接收消息的用户范围', '1', '2024-07-20 18:05:39', NULL, NULL, '0', '0');
 INSERT INTO `sys_dict_type` VALUES ('1814603011422953473', '优先级别', 'sys_notice_priority', '0', '通知公告优先程度', '1', '2024-07-20 18:07:26', '1', '2024-07-29 22:13:21', '0', '0');
 INSERT INTO `sys_dict_type` VALUES ('1823522921661214721', '日志执行结果', 'sys_log_status', '0', '日志记录程序执行是否成功', '1', '2024-08-14 08:51:59', '1', '2024-09-23 09:05:30', '0', '0');
-INSERT INTO `sys_dict_type` VALUES ('1840380676900876290', '用户注册类型', 'sys_user_register_type', '0', '用户注册类型：管理员注册、用户自助注册', '1', '2024-09-29 21:18:41', NULL, NULL, '0', '0');
-INSERT INTO `sys_dict_type` VALUES ('1869716543582638081', '树形字典测试', 'test_tree', '1', NULL, '1', '2024-12-19 20:08:56', NULL, NULL, '0', '0');
+INSERT INTO `sys_dict_type` VALUES ('1840380676900876290', '用户注册类型', 'sys_user_register_type', '0', '用户注册类型：管理员注册、用户自助注册、批量导入注册', '1', '2024-09-29 21:18:41', '1', '2025-01-17 16:12:24', '0', '0');
+INSERT INTO `sys_dict_type` VALUES ('1869716543582638081', '树形字典测试', 'test_tree', '1', NULL, '1', '2024-12-19 20:08:56', '1', '2025-01-17 16:14:23', '0', '0');
 
 -- ----------------------------
 -- Table structure for sys_login_log
@@ -195,7 +196,6 @@ CREATE TABLE `sys_login_log`  (
 -- ----------------------------
 -- Records of sys_login_log
 -- ----------------------------
-INSERT INTO `sys_login_log` VALUES ('1870784549947613186', '用户登录', 'LOGIN', '登录', 'com.lihua.system.controller.SysAuthenticationController', 'login', '0:0:0:0:0:0:0:1', 'admin', 'admin', '1', '2024-12-22 18:52:49', 78, '{\"currentUser\":\"{\\\"username\\\":\\\"admin\\\",\\\"captchaVerification\\\":\\\"CONCAT_818f664adea04b6193b1dc6887930008\\\"}\"}', NULL, NULL, NULL, '/system/login', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', '0', '0', 'REDIS_CACHE_LOGIN_USER:1:1734864768859:b9a9de47cc574da688b3347205912f0b');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -333,8 +333,7 @@ CREATE TABLE `sys_operate_log`  (
 -- ----------------------------
 -- Records of sys_operate_log
 -- ----------------------------
-INSERT INTO `sys_operate_log` VALUES ('1870784126293549058', '清空登录日志', 'DELETE', '删除数据', 'com.lihua.system.controller.SysLogController', 'clearLoginLog', '0:0:0:0:0:0:0:1', '1', 'admin', 'admin', '2024-12-22 18:51:08', 8, NULL, '{\"code\":200,\"msg\":\"成功\",\"data\":null}', NULL, NULL, '/system/log/login/clear', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', '1', '0', 'REDIS_CACHE_LOGIN_USER:1:1734864607965:d1143fb5ad1a42d39fc819b25491b864');
-INSERT INTO `sys_operate_log` VALUES ('1870784158908456961', '删除操作日志', 'DELETE', '删除数据', 'com.lihua.system.controller.SysLogController', 'deleteOperateByIds', '0:0:0:0:0:0:0:1', '1', 'admin', 'admin', '2024-12-22 18:51:16', 8, '{\"ids\":\"[\\\"1870784126293549058\\\"]\"}', '{\"code\":200,\"msg\":\"成功\",\"data\":null}', NULL, NULL, '/system/log/operate', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', '0', '0', 'REDIS_CACHE_LOGIN_USER:1:1734864607965:d1143fb5ad1a42d39fc819b25491b864');
+INSERT INTO `sys_operate_log` VALUES ('1880167650670899202', '清空操作日志', 'DELETE', '删除数据', 'com.lihua.system.controller.SysLogController', 'clearOperateLog', '0:0:0:0:0:0:0:1', '1', 'admin', 'admin', '2025-01-17 16:17:54', 6, NULL, '{\"code\":200,\"msg\":\"成功\",\"data\":null}', NULL, NULL, '/system/log/operate/clear', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', '0', '0', 'REDIS_CACHE_LOGIN_USER:1:1737101477729:9ad9a9672b13410d9ee4ad10f14c06a3');
 
 -- ----------------------------
 -- Table structure for sys_post

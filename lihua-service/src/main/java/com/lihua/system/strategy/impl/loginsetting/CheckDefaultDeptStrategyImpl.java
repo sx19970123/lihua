@@ -21,6 +21,11 @@ public class CheckDefaultDeptStrategyImpl implements CheckLoginSettingStrategy {
     public String checkSetting(LoginUser loginUser) {
         List<CurrentDept> deptList = loginUser.getDeptList();
 
+        // 没有配置部门的用户
+        if (deptList.isEmpty()) {
+            return null;
+        }
+
         // 判断默认部门是否存在
         List<CurrentDept> defDeptList = deptList.stream().filter(item -> "0".equals(item.getDefaultDept())).toList();
         if (defDeptList.isEmpty()) {

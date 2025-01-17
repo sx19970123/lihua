@@ -622,6 +622,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
      */
     private boolean filterDept(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<String> allDeptNameList) {
         List<String> deptLabelList = sysUserVO.getDeptLabelList();
+        // 允许部门为空
+        if (deptLabelList == null) {
+            return true;
+        }
         for (String deptLabel : deptLabelList) {
             if (!allDeptNameList.contains(deptLabel)) {
                 sysUserVO.setImportErrorMsg("部门 " + deptLabel + " 不存在，请检查数据或联系管理员");
@@ -636,8 +640,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
      * 过滤掉不合法的岗位
      */
     private boolean filterPost(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<SysDeptVO> sysDeptList) {
-        List<String> deptLabelList = sysUserVO.getDeptLabelList();
-        List<String> postLabelList = sysUserVO.getPostLabelList();
+        List<String> deptLabelList = sysUserVO.getDeptLabelList() == null ? new ArrayList<>() : sysUserVO.getDeptLabelList();
+        List<String> postLabelList = sysUserVO.getPostLabelList() == null ? new ArrayList<>() : sysUserVO.getPostLabelList();
         // 正常情况下部门集合和岗位集合大小是相同的，当岗位集合数量 > 部门集合数量时，即数据有误
         if (postLabelList.size() > deptLabelList.size()) {
             sysUserVO.setImportErrorMsg("部门与岗位数量不匹配，请检查数据");
@@ -700,6 +704,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             sysUser.setCreateId(LoginUserContext.getUserId());
             sysUser.setDelFlag("0");
             sysUser.setStatus("0");
+            sysUser.setRegisterType("2");
             sysUser.setId(userId);
 
             // 构建用户
@@ -717,8 +722,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                 }
             }
             // 构建部门/岗位
-            List<String> deptLabelList = sysUserVO.getDeptLabelList();
-            List<String> postLabelList = sysUserVO.getPostLabelList();
+            List<String> deptLabelList = sysUserVO.getDeptLabelList() == null ? new ArrayList<>() : sysUserVO.getDeptLabelList();
+            List<String> postLabelList = sysUserVO.getPostLabelList() == null ? new ArrayList<>() : sysUserVO.getPostLabelList();
             if (!deptLabelList.isEmpty()) {
                 // 循环计数器
                 AtomicInteger index = new AtomicInteger();
