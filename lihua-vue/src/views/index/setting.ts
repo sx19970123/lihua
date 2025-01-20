@@ -3,7 +3,7 @@ const activeUpdate = [
     {
         version: '1.0.3',
         record: [
-
+            '1. 修复导航菜单1，顶部导航的header在table设置了固定列时被遮挡的问题'
         ]
     }
 ]

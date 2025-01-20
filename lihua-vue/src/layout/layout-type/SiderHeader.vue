@@ -130,7 +130,7 @@ onUnmounted(() => {
 
 <style scoped>
 .sh-header {
-  z-index: 1;
+  z-index: 3;
   height: auto;
   padding: 0;
   backdrop-filter: saturate(180%) blur(20px);
@@ -145,7 +145,7 @@ onUnmounted(() => {
   position: sticky;
   height: 100vh;
   top: 0;
-  z-index: 2;
+  z-index: 4;
   box-shadow: var(--lihua-layout-light-box-shadow);
 }
 .min-sh-sider {
@@ -168,7 +168,6 @@ onUnmounted(() => {
   .sh-header {
     position: sticky;
     top: 0;
-    z-index: 1;
   }
 }
 [data-theme = dark] {

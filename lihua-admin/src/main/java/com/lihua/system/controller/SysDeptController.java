@@ -6,7 +6,6 @@ import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysDept;
 import com.lihua.system.model.vo.SysDeptVO;
 import com.lihua.system.service.SysDeptService;
-import com.lihua.system.service.SysUserDeptService;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.tree.TreeUtils;
@@ -28,8 +27,6 @@ public class SysDeptController extends BaseController {
     @Resource
     private SysDeptService sysDeptService;
 
-    @Resource
-    private SysUserDeptService sysUserDeptService;
 
     @PostMapping("list")
     public String queryDeptPostList(@RequestBody SysDept sysDept) {

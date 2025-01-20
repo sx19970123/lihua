@@ -102,7 +102,6 @@ onUnmounted(() => {
   .hc-header {
     position: sticky;
     top: 0;
-    z-index: 2;
   }
 }
 [data-theme = dark] {
