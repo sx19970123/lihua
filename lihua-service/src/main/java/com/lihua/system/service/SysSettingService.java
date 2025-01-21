@@ -3,6 +3,7 @@ package com.lihua.system.service;
 import com.lihua.system.entity.SysSetting;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SysSettingService {
 
@@ -14,7 +15,7 @@ public interface SysSettingService {
     /**
      * 初始化配置
      */
-    List<SysSetting> initSetting();
+    void initSetting();
 
     /**
      * 根据组件名称获取配置

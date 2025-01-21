@@ -88,9 +88,7 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
     @Override
     public void remove(String keyPrefix) {
         Set<String> keys = cacheKeys(keyPrefix);
-        for (String key : keys) {
-            redisCache.delete(key);
-        }
+        redisCache.delete(keys);
 
         // 系统配置和 ip 黑名单删除后立即刷新
         if (keyPrefix.startsWith(SYSTEM_SETTING_REDIS_PREFIX.getValue())) {

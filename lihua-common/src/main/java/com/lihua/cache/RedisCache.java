@@ -49,7 +49,28 @@ public class RedisCache {
      * @param <T> 集合类型
      */
     public <T> void setCacheList(String key, List<T> valueList) {
-        redisTemplate.opsForList().rightPushAll(key, valueList.toArray());
+        redisTemplate.opsForList().rightPushAll(key, valueList);
+    }
+
+    /**
+     * 缓存整个 map
+     * @param key RedisKey
+     * @param map map集合
+     * @param <T> mapValue类型
+     */
+    public <T> void setCacheMap(String key, Map<String, T> map) {
+        redisTemplate.opsForHash().putAll(key, map);
+    }
+
+    /**
+     * 缓存map中单条数据
+     * @param key RedisKey
+     * @param mapKey MapKey
+     * @param mapValue MapValue
+     * @param <T> mapValue类型
+     */
+    public <T> void setCacheMapItem(String key, String mapKey, T mapValue) {
+        redisTemplate.opsForHash().put(key, mapKey, mapValue);
     }
 
     /**
@@ -96,6 +117,38 @@ public class RedisCache {
         return range.stream()
                 .map(value -> objectMapper.convertValue(value, clazz))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 根据 redisKey 获取 Map
+     * @param key redisKey
+     * @param clazz MapKey
+     * @return 获取的Map
+     * @param <T> MapValue类型
+     */
+    public <T> Map<String, T> getCacheMap(String key, Class<T> clazz) {
+      return redisTemplate
+              .opsForHash()
+              .entries(key)
+              .entrySet()
+              .stream()
+              .collect(Collectors.toMap(entry -> entry.getKey().toString(), entry -> objectMapper.convertValue(entry.getValue(), clazz)));
+    }
+
+    /** 根据 redisKey 和 MapKey 获取数据
+     * @param key redisKey
+     * @param mapKey MapKey
+     * @param clazz 获取的数据类型
+     * @return 获取的数据
+     * @param <T> 获取的数据类型
+     */
+    public <T> T getCacheMapItem(String key, String mapKey, Class<T> clazz) {
+        Object item = redisTemplate.opsForHash().get(key, mapKey);
+        if (item == null) {
+            return null;
+        }
+
+        return objectMapper.convertValue(item, clazz);
     }
 
     /**
@@ -152,7 +205,25 @@ public class RedisCache {
      * @param keys redisKey
      */
     public Long delete(String... keys) {
-        return redisTemplate.delete(List.of(keys));
+        return delete(List.of(keys));
+    }
+
+    /**
+     * 根据多个key批量删除缓存数据
+     * @param keys redisKey
+     */
+    public Long delete(Collection<String> keys) {
+        return redisTemplate.delete(keys);
+    }
+
+    /**
+     * 根据redisKey和 MapKeys 删除map中数据
+     * @param redisKey redisKey
+     * @param mapKeys mapKey
+     * @return 删除数量
+     */
+    public Long deleteMapValue(String redisKey, List<String> mapKeys) {
+        return redisTemplate.opsForHash().delete(redisKey, mapKeys);
     }
 
     /**

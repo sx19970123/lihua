@@ -28,7 +28,6 @@ public interface MonitorCacheService {
      */
     CacheMonitor cacheInfo(String key);
 
-
     /**
      * 根据前缀删除缓存
      */

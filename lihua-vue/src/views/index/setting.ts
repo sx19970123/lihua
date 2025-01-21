@@ -3,7 +3,9 @@ const activeUpdate = [
     {
         version: '1.0.3',
         record: [
-            '1. 修复导航菜单1，顶部导航的header在table设置了固定列时被遮挡的问题'
+            '1. 修复导航菜单1，顶部导航的header在table设置了固定列时被遮挡的问题',
+            '2. redisCache工具类新增hash相关方法',
+            '3. 系统设置缓存类型由list修改为hash，并优化相关代码',
         ]
     }
 ]

@@ -2,7 +2,6 @@ package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.cache.RedisCache;
-import com.lihua.exception.ServiceException;
 import com.lihua.system.entity.SysSetting;
 import com.lihua.system.mapper.SysSettingMapper;
 import com.lihua.system.model.dto.SysSettingDTO;
@@ -16,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.lihua.enums.SysBaseEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
 import static com.lihua.enums.SysBaseEnum.SYSTEM_SETTING_REDIS_PREFIX;
@@ -39,38 +40,30 @@ public class SysSettingServiceImpl implements SysSettingService {
     public String insert(SysSetting sysSetting) {
         sysSettingMapper.deleteById(sysSetting.getSettingComponentName());
         sysSettingMapper.insert(sysSetting);
-        // 新增后重新缓存
-        reCacheSetting(getSettingList());
+        // redis缓存
+        cacheSettingItem(sysSetting);
         return sysSetting.getSettingComponentName();
     }
 
     @Override
-    public List<SysSetting> initSetting() {
-        List<SysSetting> sysSettingList = redisCache.getCacheList(REDIS_SETTING_KEY, SysSetting.class);
-
-        if (sysSettingList == null) {
-            return getSettingList();
-        }
-
-        // 缓存中数据为空则查询数据库后进行缓存
-        if (sysSettingList.isEmpty()) {
-            return getSettingList();
-        }
-
-        return sysSettingList;
+    public void initSetting() {
+        // 重新设置缓存
+        reCacheSetting(getSettingMap());
     }
 
     @Override
     public SysSetting getSysSettingByComponentName(String componentName) {
-        List<SysSetting> settings = initSetting()
-                .stream()
-                .filter(item -> componentName.equals(item.getSettingComponentName()))
-                .toList();
-        if (settings.isEmpty()) {
-            return null;
+        SysSetting sysSetting = redisCache.getCacheMap(REDIS_SETTING_KEY, SysSetting.class).get(componentName);
+        // 从缓存中获取配置不存在时，从数据库查询对应配置
+        if (sysSetting == null) {
+            SysSetting dbSysSetting = sysSettingMapper.selectById(componentName);
+            // 查询到对应配置后，设置缓存并返回
+            if (dbSysSetting != null) {
+                cacheSettingItem(dbSysSetting);
+                return dbSysSetting;
+            }
         }
-
-        return settings.get(0);
+        return sysSetting;
     }
 
     @Override
@@ -120,13 +113,6 @@ public class SysSettingServiceImpl implements SysSettingService {
         return SecurityUtils.defaultPasswordDecrypt(passwordSetting.getDefaultPassword());
     }
 
-    // 查询配置数据后进行缓存
-    private List<SysSetting> getSettingList() {
-        List<SysSetting> sysSettings = sysSettingMapper.selectList(new QueryWrapper<>());
-        reCacheSetting(sysSettings);
-        return sysSettings;
-    }
-
     // 缓存ip黑名单
     @Override
     public void cacheIpBlackList() {
@@ -145,10 +131,23 @@ public class SysSettingServiceImpl implements SysSettingService {
         redisCache.setCacheList(IP_BLACKLIST_KEY, ipSetting.getIpList());
     }
 
+    // 获取系统设置数据
+    private Map<String, SysSetting> getSettingMap() {
+        // 数据库查询全部设置项
+        List<SysSetting> sysSettings = sysSettingMapper.selectList(new QueryWrapper<>());
+        // 转为map，key为组件名称，value为配置对象
+        return sysSettings.stream().collect(Collectors.toMap(SysSetting::getSettingComponentName, setting -> setting));
+    }
+
     // 重新缓存系统设置
-    private void reCacheSetting(List<SysSetting> sysSettings) {
+    private void reCacheSetting(Map<String, SysSetting> sysSettingMap) {
         redisCache.delete(REDIS_SETTING_KEY);
-        redisCache.setCacheList(REDIS_SETTING_KEY, sysSettings);
+        redisCache.setCacheMap(REDIS_SETTING_KEY, sysSettingMap);
         cacheIpBlackList();
+    }
+
+    // 缓存某一项系统设置
+    private void cacheSettingItem(SysSetting sysSetting) {
+        redisCache.setCacheMapItem(REDIS_SETTING_KEY, sysSetting.getSettingComponentName(), sysSetting);
     }
 }
