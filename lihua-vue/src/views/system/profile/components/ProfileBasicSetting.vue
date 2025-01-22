@@ -95,7 +95,6 @@ import {type FormInstance, message} from "ant-design-vue";
 import type {ProfileInfo} from "@/api/system/profile/type/SysProfile.ts";
 import {saveBasics, setDefaultDept} from "@/api/system/profile/Profile.ts";
 import {initDict} from "@/utils/Dict.ts"
-import {cloneDeep} from "lodash-es";
 import {ResponseError} from "@/api/global/Type.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import DynamicBorderInput from "@/components/dynamic-border-input/index.vue"

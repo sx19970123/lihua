@@ -6,6 +6,8 @@ const activeUpdate = [
             '1. 修复导航菜单1，顶部导航的header在table设置了固定列时被遮挡的问题',
             '2. redisCache工具类新增hash相关方法',
             '3. 系统设置缓存类型由list修改为hash，并优化相关代码',
+            '4. 修改redisCache中list类型缓存设置逻辑',
+            '5. 优化日志系统日志，由业务判断返回error情况下日志记录为执行失败',
         ]
     }
 ]
@@ -20,6 +22,17 @@ export const versionInfo = {
     vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.0.3',
+            updateDate: '2025-01-22',
+            updateContent: [
+                '1. 修复导航菜单1，顶部导航的header在table设置了固定列时被遮挡的问题',
+                '2. redisCache工具类新增hash相关方法',
+                '3. 系统设置缓存类型由list修改为hash，并优化相关代码',
+                '4. 修改redisCache中list类型缓存设置逻辑',
+                '5. 优化日志系统日志，由业务判断返回error情况下日志记录为执行失败',
+            ]
+        },
         {
             version: '1.0.2',
             updateDate: '2025-01-17',
