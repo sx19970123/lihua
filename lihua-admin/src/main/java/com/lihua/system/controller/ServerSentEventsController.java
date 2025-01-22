@@ -1,7 +1,5 @@
 package com.lihua.system.controller;
 
-import com.lihua.annotation.Log;
-import com.lihua.enums.LogTypeEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.web.BaseController;
 import com.lihua.utils.security.LoginUserContext;
@@ -19,7 +17,6 @@ public class ServerSentEventsController extends BaseController {
     /**
      * 启动 sse 连接
      */
-    @Log(description = "SSE连接", type = LogTypeEnum.OTHER)
     @GetMapping("connect/{clientKey}")
     public SseEmitter connect(@PathVariable("clientKey") String clientKey) {
         log.info("Server-Sent Events clientKey【{}】请求连接，请求IP为【{}】",clientKey, WebUtils.getIpAddress());
