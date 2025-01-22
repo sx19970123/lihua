@@ -6,7 +6,7 @@
 
     <groupId>com.lihua</groupId>
     <artifactId>lihua</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -17,7 +17,7 @@
     </parent>
 
     <properties>
-        <lihua.version>1.0.2</lihua.version>
+        <lihua.version>1.0.3</lihua.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

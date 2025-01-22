@@ -49,7 +49,10 @@ public class RedisCache {
      * @param <T> 集合类型
      */
     public <T> void setCacheList(String key, List<T> valueList) {
-        redisTemplate.opsForList().rightPushAll(key, valueList);
+        if (valueList != null) {
+            ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
+            valueList.forEach(value -> stringObjectListOperations.rightPush(key, value));
+        }
     }
 
     /**

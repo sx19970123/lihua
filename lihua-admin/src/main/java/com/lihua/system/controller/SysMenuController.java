@@ -63,7 +63,7 @@ public class SysMenuController extends BaseController {
         // 校验 query 是否为json参数
         if (StringUtils.hasText(sysMenu.getQuery())) {
             try {
-                JsonUtils.isJson(sysMenu.getQuery());
+                JsonUtils.isJson(sysMenu.getQuery().replace("\"",",,,"));
             } catch (JsonProcessingException e) {
                 return error(ResultCodeEnum.PARAMS_ERROR);
             }

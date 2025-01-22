@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -39,6 +41,10 @@ public class HandleRecodeLog {
     // 操作日志service
     @Resource(name = "sysOperateLogService")
     private SysLogService sysOperateLogService;
+
+    private static final Pattern CODE_PATTERN = Pattern.compile("\"code\":(\\d+)");
+    private static final Pattern MSG_PATTERN = Pattern.compile("\"msg\":\"([^\"]*?)\"");
+    private static final Pattern DATA_PATTERN = Pattern.compile("\"data\":\"([^\"]*?)\"");
 
     /**
      * 通过传入参数整理组合为Log对象存入数据库
@@ -83,11 +89,11 @@ public class HandleRecodeLog {
                 .setDelFlag("0")
                 .setExecuteStatus("0");
 
+        String result = (resultObject instanceof String) ?
+                (String) resultObject :
+                (resultObject != null) ? resultObject.getClass().getName() : null;
         // 返回值
         if (logAnnotation.recordResult()) {
-            String result = (resultObject instanceof String) ?
-                    (String) resultObject :
-                    (resultObject != null) ? resultObject.getClass().getName() : null;
             sysLogVO.setResult(result);
         }
 
@@ -96,20 +102,36 @@ public class HandleRecodeLog {
             sysLogVO.setErrorMsg(exception.getMessage())
                     .setErrorStack(Arrays.toString(exception.getStackTrace()))
                     .setExecuteStatus("1");
+        } else {
+            // 使用正则表达式来获取执行状态
+            if (result != null) {
+                Matcher codeMatcher = CODE_PATTERN.matcher(result);
+                // result 返回code值不为200即为执行失败，再通过正则表达式获取失败msg
+                if (codeMatcher.find() && !"200".equals(codeMatcher.group(1))) {
+                    Matcher msgMatcher = MSG_PATTERN.matcher(result);
+                    if (msgMatcher.find()) {
+                        sysLogVO.setErrorMsg(msgMatcher.group(1))
+                                .setErrorStack("由业务判断返回ERROR，无堆栈信息")
+                                .setExecuteStatus("1");
+                    }
+
+                }
+            }
         }
 
         // 日志插入数据库
         // 登录日志单独保存
         if ("LOGIN".equals(type.getCode())) {
             // 从登录成功的返回值中获取token，拿到用户信息
-            if (resultObject != null) {
-                Map<String, String> loginSuccessResultMap = JsonUtils.toObject(resultObject.toString(), Map.class);
-                String token = loginSuccessResultMap.get("data");
-                LoginUser loginUser = LoginUserManager.getLoginUser(token);
-                if (loginUser != null) {
-                    sysLogVO.setCreateId(loginUser.getUser().getId());
-                    sysLogVO.setCreateName(loginUser.getUser().getNickname());
-                    sysLogVO.setCacheKey(loginUser.getCacheKey());
+            if (result != null && "0".equals(sysLogVO.getExecuteStatus())) {
+                Matcher matcher = DATA_PATTERN.matcher(result);
+                if (matcher.find()) {
+                    LoginUser loginUser = LoginUserManager.getLoginUser(matcher.group(1));
+                    if (loginUser != null) {
+                        sysLogVO.setCreateId(loginUser.getUser().getId());
+                        sysLogVO.setCreateName(loginUser.getUser().getNickname());
+                        sysLogVO.setCacheKey(loginUser.getCacheKey());
+                    }
                 }
             }
             // 登录参数中获取 username
