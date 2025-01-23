@@ -3,7 +3,7 @@ const activeUpdate = [
     {
         version: '1.1.0',
         record: [
-
+            '1. 菜单状态从停用切换到正常时，自动展开操作项'
         ]
     }
 ]

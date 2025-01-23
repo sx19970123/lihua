@@ -641,6 +641,8 @@ const initSave = () => {
       menuIds = flattenMenuVo.map(menu => menu.id) as string[]
     } else {
       menuIds = [sysMenuVO.id ? sysMenuVO.id : '']
+      // 菜单启用时展开子菜单
+      expandedRowKeys.value.push(...menuIds)
     }
 
     let newStatus: string = ''

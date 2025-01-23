@@ -55,7 +55,6 @@ public class FileUploadUtils {
         return fileFullPathList;
     }
 
-
     private static String upload(InputStream inputStream, String fullFilePath) {
         File file = new File(fullFilePath);
 
