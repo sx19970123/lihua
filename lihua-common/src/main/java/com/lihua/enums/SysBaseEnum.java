@@ -59,8 +59,12 @@ public enum SysBaseEnum {
      */
     DEFAULT_PASSWORD_KEY("lihuaLIHUALIhuam"),
 
-    DEFAULT_PASSWORD_IV("mauhILAUHILauhil");
+    DEFAULT_PASSWORD_IV("mauhILAUHILauhil"),
 
+    /**
+     * 附件临时路径信息加密key
+     */
+    ATTACHMENT_URL_KEY("AtTaChMeNtUrLkEy");
 
     private final String value;
 }

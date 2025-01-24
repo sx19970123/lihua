@@ -5,6 +5,7 @@ import com.lihua.system.entity.SysAttachment;
 import com.lihua.system.model.dto.SysAttachmentDTO;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 public interface SysAttachmentService {
@@ -47,4 +48,10 @@ public interface SysAttachmentService {
      */
     List<String> getDownloadURL(List<String> pathList);
 
+    /**
+     * 本地文件下载
+     * @param key 文件路径及过期时间密文
+     * @return 文件
+     */
+    File localDownload(String key);
 }

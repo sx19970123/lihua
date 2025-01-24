@@ -10,7 +10,6 @@ import com.lihua.system.model.dto.SysUserDTO;
 import com.lihua.system.model.vo.SysUserVO;
 import com.lihua.system.service.SysUserService;
 import com.lihua.utils.excel.ExcelUtils;
-import com.lihua.utils.file.FileDownloadUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.SneakyThrows;
@@ -77,7 +76,7 @@ public class SysUserController extends BaseController {
     @Log(description = "批量导出用户信息", type = LogTypeEnum.EXPORT)
     public String exportExcel(@RequestBody SysUserDTO sysUserDTO) {
         String path = sysUserService.exportExcel(sysUserDTO);
-        return success(FileDownloadUtils.addToDownloadableList(path));
+        return success(path);
     }
 
     @GetMapping("option/{deptId}")

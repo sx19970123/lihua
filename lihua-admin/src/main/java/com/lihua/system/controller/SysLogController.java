@@ -6,7 +6,6 @@ import com.lihua.model.validation.MaxPageSizeLimit;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.model.dto.SysLogDTO;
 import com.lihua.system.service.SysLogService;
-import com.lihua.utils.file.FileDownloadUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -71,7 +70,7 @@ public class SysLogController extends BaseController {
     @Log(description = "导出操作日志", type = LogTypeEnum.EXPORT)
     public String exportOperateExcel(@RequestBody SysLogDTO sysLogDTO) {
         String path = sysOperateLogService.exportExcel(sysLogDTO);
-        return success(FileDownloadUtils.addToDownloadableList(path));
+        return success(path);
     }
 
 
@@ -112,7 +111,7 @@ public class SysLogController extends BaseController {
     @Log(description = "导出登录日志", type = LogTypeEnum.EXPORT)
     public String exportLoginExcel(@RequestBody SysLogDTO sysLogDTO) {
         String path = sysLoginLogService.exportExcel(sysLogDTO);
-        return success(FileDownloadUtils.addToDownloadableList(path));
+        return success(path);
     }
 
 }

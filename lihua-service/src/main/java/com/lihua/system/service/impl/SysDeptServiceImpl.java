@@ -17,7 +17,6 @@ import com.lihua.system.service.SysUserDeptService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
-import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
@@ -262,8 +261,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             String errExcelName = LoginUserContext.getUserId() + "_导入失败_" + UUID.randomUUID().toString().replace("-","");
             // 导出excel
             errExcelPath = ExcelUtils.excelExport(errorDeptVos, SysDeptVO.class, errExcelName);
-            // 添加excel到可下载队列
-            FileDownloadUtils.addToDownloadableList(errExcelPath);
         }
 
         // 插入数据

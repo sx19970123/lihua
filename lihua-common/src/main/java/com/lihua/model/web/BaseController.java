@@ -1,7 +1,7 @@
 package com.lihua.model.web;
 
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.utils.file.FileDownloadUtils;
+import com.lihua.utils.file.FileUtils;
 import com.lihua.utils.json.JsonUtils;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
@@ -36,15 +36,15 @@ public class BaseController {
     }
 
     public static ResponseEntity<StreamingResponseBody> success(File file) {
-        return FileDownloadUtils.download(file);
+        return FileUtils.download(file);
     }
 
     public static ResponseEntity<StreamingResponseBody> success(List<File> fileList) {
-        return FileDownloadUtils.download(fileList);
+        return FileUtils.download(fileList);
     }
 
     public static ResponseEntity<StreamingResponseBody> success(InputStream inputStream, String fileName) throws UnsupportedEncodingException {
-        return FileDownloadUtils.download(inputStream, fileName);
+        return FileUtils.download(inputStream, fileName);
     }
 
     public static String error(ResultCodeEnum resultCodeEnum, String message) {

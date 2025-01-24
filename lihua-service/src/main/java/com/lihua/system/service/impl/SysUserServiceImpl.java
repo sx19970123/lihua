@@ -23,7 +23,6 @@ import com.lihua.system.service.*;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
-import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
@@ -355,8 +354,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             String errExcelName = LoginUserContext.getUserId() + "_导入失败_" + UUID.randomUUID().toString().replace("-","");
             // 导出excel
             errExcelPath = ExcelUtils.excelExport(errorUserVos, SysUserVO.class, errExcelName);
-            // 添加excel到可下载队列
-            FileDownloadUtils.addToDownloadableList(errExcelPath);
         }
         // 插入数据
         if (!importUserVos.isEmpty()) {

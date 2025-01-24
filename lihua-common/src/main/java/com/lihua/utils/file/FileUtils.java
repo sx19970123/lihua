@@ -1,20 +1,129 @@
 package com.lihua.utils.file;
 
+import com.lihua.config.LihuaConfig;
+import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.FileException;
+import com.lihua.utils.spring.SpringUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+/**
+ *  文件上传工具类
+ */
+@Slf4j
 public class FileUtils {
 
+    private static final LihuaConfig lihuaConfig;
+
+    static {
+        lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
+    }
+
     /**
-     * 通过网络url 地址获取文件名称
-     * @param fileUrl 网络url地址
-     * @param useRandomUUID 是否生成随机字符串
+     * 单文件上传
      */
-    public static String getFileNameByURL(String fileUrl, boolean useRandomUUID) {
+    public static String upload(MultipartFile file, String businessCode) {
+        String fullFilePath = getFullFilePath(file.getContentType(), businessCode);
+        try {
+            return upload(file.getInputStream(), fullFilePath);
+        } catch (IOException e) {
+            throw new FileException("文件上传异常");
+        }
+    }
+
+    /**
+     * 多文件上传
+     */
+    public static List<String> upload(MultipartFile[] files, String businessCode) {
+        List<String> fileFullPathList = new ArrayList<>(files.length);
+        for (MultipartFile file : files) {
+            fileFullPathList.add(upload(file, businessCode));
+        }
+        return fileFullPathList;
+    }
+
+    /**
+     * url文件上传
+     * @param url 文件链接
+     */
+    public static String upload(String url, String businessCode) {
+        // 判断url是否合法
+        if (!StringUtils.hasText(url)) {
+            throw new FileException("文件URL不存在");
+        }
+
+        //获取文件名
+        String fullFilePath = getFullFilePathByURL(url, businessCode);
+
+        // 获取inputStream调用上传方法
+        try(InputStream inputStream = new URL(url).openStream()) {
+            return upload(inputStream, fullFilePath);
+        } catch (Exception e) {
+            log.error("上传网络附件失败，返回原路径");
+            log.error(e.getMessage(),e);
+            return url;
+        }
+    }
+
+    /**
+     * 获取文件全路径名称
+     * @param contentType 文件类型
+     * @return 文件路径+名称
+     */
+    public static String getFullFilePath(String contentType) {
+        return getFullFilePath(contentType, null);
+    }
+
+    /**
+     * 获取文件全路径名称
+     * @param contentType 文件类型
+     * @param businessCode 业务编码
+     * @return 文件路径+名称
+     */
+    public static String getFullFilePath(String contentType, String businessCode) {
+        // 通过随机uuid重新命名数据库中保存的文件名称
+        String fileName = UUID.randomUUID().toString().replace("-", "");
+
+        if (StringUtils.hasText(contentType)) {
+            String[] typeSplit = contentType.split("/");
+            if (typeSplit.length > 1 && StringUtils.hasText(typeSplit[1])) {
+                fileName = fileName + "." + typeSplit[1].toLowerCase();
+            }
+        }
+
+        if (!fileName.contains(".")) {
+            log.error("文件【{}】名称获取后缀名异常", fileName);
+        }
+
+        return generateFilePath(fileName, businessCode);
+    }
+
+    /**
+     * 获取url文件名称
+     * @param fileUrl 文件url
+     * @return 文件名称
+     */
+    public static String getFileNameByURL(String fileUrl) {
         URL url;
         try {
             url = new URL(fileUrl);
@@ -22,13 +131,162 @@ public class FileUtils {
             throw new FileException("获取文件名称失败，请检查URL地址是否包含文件名称");
         }
 
-        String fileName = Paths.get(url.getPath()).getFileName().toString();
+        return Paths.get(url.getPath()).getFileName().toString();
+    }
 
-        if (useRandomUUID) {
-            String uuid = UUID.randomUUID().toString().replace("-","");
-            return uuid + "_" + fileName;
+    /**
+     * 文件下载
+     * @param file 文件
+     */
+    public static ResponseEntity<StreamingResponseBody> download(File file) {
+        if (file == null || !file.exists()) {
+            throw new FileException(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
+        }
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            return download(fileInputStream, file.getName());
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            throw new FileException(e.getMessage());
+        }
+    }
+
+    /**
+     * 文件打包下载
+     */
+    public static ResponseEntity<StreamingResponseBody> download(List<File> fileList) {
+        if (fileList == null || fileList.isEmpty()) {
+            throw new FileException("文件集合为空");
         }
 
-        return fileName;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+
+        try {
+            // 将文件循环打包到ZIP输入流
+            for (File file : fileList) {
+                addToZipFile(file, zipOutputStream);
+            }
+
+            // 关闭 ZIP 输出流
+            zipOutputStream.finish();
+            zipOutputStream.close();
+
+            // 创建输入流资源
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            InputStreamResource inputStreamResource = new InputStreamResource(byteArrayInputStream);
+
+            return download(inputStreamResource.getInputStream(), fileList.get(0).getName() + "等" + fileList.size() + "个文件.zip");
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            throw new FileException(e.getMessage());
+        }
     }
+
+    /**
+     * 文件下载
+     */
+    public static ResponseEntity<StreamingResponseBody> download(InputStream inputStream, String fileName) {
+        if (!StringUtils.hasText(fileName)) {
+            throw new FileException("请指定下载文件的名称");
+        }
+        fileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+        StreamingResponseBody stream = out -> {
+            try {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+                throw new FileException(e.getMessage());
+            } finally {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
+        };
+
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename*=UTF-8''" + fileName)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(stream);
+    }
+
+
+    // 文件上传
+    private static String upload(InputStream inputStream, String fullFilePath) {
+        File file = new File(fullFilePath);
+
+        File parentDir = file.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            if (!parentDir.mkdirs()) {
+                throw new FileException("创建文件夹失败");
+            }
+        }
+
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            throw new FileException("上传文件失败" + e.getMessage());
+        }
+
+        return file.getAbsolutePath();
+    }
+
+    /**
+     * 文件打包到zip
+     * @param file 单个文件
+     * @param zipOutputStream zip输出流
+     * @throws IOException io异常
+     */
+    private static void addToZipFile(File file, ZipOutputStream zipOutputStream) throws IOException {
+        if (file.exists()) {
+            // 创建 ZIP 文件条目
+            zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+
+            // 将文件内容写入 ZIP 文件条目中
+            FileInputStream fileInputStream = new FileInputStream(file);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fileInputStream.read(buffer)) > 0) {
+                zipOutputStream.write(buffer, 0, length);
+            }
+
+            // 关闭当前 ZIP 文件条目
+            zipOutputStream.closeEntry();
+            fileInputStream.close();
+        } else {
+            throw new FileException("文件不存在");
+        }
+    }
+
+    // 根据url获取文件名称
+    private static String getFullFilePathByURL(String fileUrl, String businessCode) {
+        String fileNameByURL = getFileNameByURL(fileUrl);
+        return generateFilePath(fileNameByURL, businessCode);
+    }
+
+    // 生成文件路径，与文件名拼接
+    private static String generateFilePath(String fileName, String businessCode) {
+
+        String dateFormat = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+
+        // 文件目录通过配置文件指定目录 + 业务编码 + 年月日路径
+        if (StringUtils.hasText(businessCode)) {
+            return Paths.get(lihuaConfig.getUploadFilePath(), businessCode, dateFormat, fileName).toString();
+        }
+
+        // 业务编码为空时直接拼接日期和文件名
+        return Paths.get(lihuaConfig.getUploadFilePath(), dateFormat, fileName).toString();
+    }
+
 }

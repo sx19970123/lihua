@@ -19,7 +19,6 @@ import com.lihua.system.service.SysPostService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
-import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
@@ -225,8 +224,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
             String errExcelName = LoginUserContext.getUserId() + "_导入失败_" + UUID.randomUUID().toString().replace("-","");
             // 导出excel
             errExcelPath = ExcelUtils.excelExport(errorPostVos, SysPostVO.class, errExcelName);
-            // 添加excel到可下载队列
-            FileDownloadUtils.addToDownloadableList(errExcelPath);
         }
 
         // 插入数据

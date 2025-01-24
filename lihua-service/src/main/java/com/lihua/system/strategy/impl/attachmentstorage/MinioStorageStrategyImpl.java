@@ -11,12 +11,12 @@ public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
 
 
     @Override
-    public String uploadFile(MultipartFile file, boolean isPublic) {
+    public String uploadFile(MultipartFile file) {
         return "";
     }
 
     @Override
-    public String uploadFile(String url, boolean isPublic) {
+    public String uploadFile(String url) {
         return "";
     }
 
@@ -26,7 +26,7 @@ public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
-    public String mergeChunks(String MD5, int total, boolean isPublic) {
+    public String mergeChunks(String MD5, int total) {
         return "";
     }
 
@@ -36,7 +36,7 @@ public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
-    public String getDownloadURL(String path, int expiryInSeconds) {
+    public String getDownloadURL(String path, long expiryInMinutes) {
         return "";
     }
 

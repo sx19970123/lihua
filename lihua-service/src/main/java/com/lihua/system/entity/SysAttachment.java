@@ -43,6 +43,11 @@ public class SysAttachment implements Serializable {
     private String path;
 
     /**
+     * 业务编码
+     */
+    private String businessCode;
+
+    /**
      * 业务名称，关联文件所属的业务模块
      */
     private String businessName;

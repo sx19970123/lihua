@@ -8,23 +8,15 @@ import com.lihua.exception.FileException;
 import com.lihua.model.web.BaseController;
 import com.lihua.model.web.EditorFileModel;
 import com.lihua.model.web.EditorUrlFileModel;
-import com.lihua.utils.file.FileDownloadUtils;
-import com.lihua.utils.file.FileUploadUtils;
 import com.lihua.utils.file.FileUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 @RestController
@@ -49,9 +41,6 @@ public class SysFileController extends BaseController {
     @GetMapping("download")
     @Log(description = "附件下载", type = LogTypeEnum.DOWNLOAD)
     public ResponseEntity<StreamingResponseBody> download(@RequestParam(name = "filePath") String filePath, @RequestParam(name = "split", defaultValue = ",") String split) {
-        // 验证请求的文件是否允许下载
-        FileDownloadUtils.isDownloadable(filePath, split);
-
         String[] filePathArray = filePath.split(split);
 
         // 单文件直接调用下载
@@ -88,7 +77,7 @@ public class SysFileController extends BaseController {
     @PostMapping("upload")
     @Log(description = "单文件上传", type = LogTypeEnum.UPLOAD)
     public String upload(@RequestParam("file") MultipartFile file) {
-        return success(FileUploadUtils.upload(file));
+        return success(FileUtils.upload(file, null));
     }
 
     /**
@@ -97,7 +86,7 @@ public class SysFileController extends BaseController {
     @PostMapping("uploads")
     @Log(description = "多文件上传", type = LogTypeEnum.UPLOAD)
     public String uploads(@RequestParam("files") MultipartFile[] files) {
-        return success(FileUploadUtils.upload(files));
+        return success(FileUtils.upload(files, null));
     }
 
     /**
@@ -107,47 +96,10 @@ public class SysFileController extends BaseController {
     @PostMapping("editor/uploadByUrl")
     public String editorUpload(@RequestBody EditorUrlFileModel editorUrlFileModel) {
         String url = editorUrlFileModel.getUrl();
-
-        // 判断url是否合法
-        if (!StringUtils.hasText(url)) {
-            return error(ResultCodeEnum.FILE_ERROR, "文件URL不存在");
-        }
-
-        // 获取文件名称
-        String fileName = EDITOR_FILE_PREFIX + FileUtils.getFileNameByURL(url,true);
-
-        // 非目标格式，不将数据保存，直接返回原url
-        if (!endsWithEditorFileType(fileName)) {
-            editorUrlFileModel.setOriginalURL(url);
-            editorUrlFileModel.setUrl(url);
-            return error(ResultCodeEnum.FILE_ERROR, editorUrlFileModel);
-        }
-
-        // 组合文件路径
-        String filePath = lihuaConfig.getUploadFilePath() + "editor/" + fileName;
-
-        // 获取流
-        try (InputStream in = new URL(url).openStream()) {
-            // 文件获取到本地服务器
-            Path path = Paths.get(filePath);
-
-            // 判断文件夹是否存在，不存在创建文件夹
-            if (!Files.exists(path.getParent())) {
-                Files.createDirectories(path.getParent());
-            }
-
-            Files.copy(in, path);
-            // 封装返回数据
-            editorUrlFileModel.setOriginalURL(url);
-            editorUrlFileModel.setUrl(filePath);
-            return success(ResultCodeEnum.EDITOR_SUCCESS, editorUrlFileModel);
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-            // 无法保存图片的情况下，将原图url返回
-            editorUrlFileModel.setOriginalURL(url);
-            editorUrlFileModel.setUrl(url);
-            return error(ResultCodeEnum.FILE_ERROR, editorUrlFileModel);
-        }
+        String filePath = FileUtils.upload(url, null);
+        editorUrlFileModel.setOriginalURL(url);
+        editorUrlFileModel.setUrl(filePath);
+        return success(ResultCodeEnum.EDITOR_SUCCESS, editorUrlFileModel);
     }
 
     /**
@@ -156,7 +108,7 @@ public class SysFileController extends BaseController {
     @PostMapping("editor/uploads")
     public String editorUpload(@RequestParam("files") MultipartFile[] files) {
         // 上传文件
-        List<String> upload = FileUploadUtils.upload(files, true);
+        List<String> upload = FileUtils.upload(files, null);
         // 构建返回
         EditorFileModel editorFileModel = new EditorFileModel();
         Map<String, String> map = new HashMap<>();

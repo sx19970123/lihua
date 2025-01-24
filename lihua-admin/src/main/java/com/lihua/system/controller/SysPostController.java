@@ -9,7 +9,6 @@ import com.lihua.system.model.dto.SysPostDTO;
 import com.lihua.system.model.vo.SysPostVO;
 import com.lihua.system.service.SysPostService;
 import com.lihua.utils.excel.ExcelUtils;
-import com.lihua.utils.file.FileDownloadUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.SneakyThrows;
@@ -70,7 +69,7 @@ public class SysPostController extends BaseController {
     @Log(description = "导出岗位数据", type = LogTypeEnum.EXPORT)
     public String exportExcel(SysPostDTO dto) {
         String path = sysPostService.exportExcel(dto);
-        return success(FileDownloadUtils.addToDownloadableList(path));
+        return success(path);
     }
 
     @SneakyThrows

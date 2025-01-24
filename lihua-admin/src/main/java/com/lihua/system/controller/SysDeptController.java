@@ -7,7 +7,6 @@ import com.lihua.system.entity.SysDept;
 import com.lihua.system.model.vo.SysDeptVO;
 import com.lihua.system.service.SysDeptService;
 import com.lihua.utils.excel.ExcelUtils;
-import com.lihua.utils.file.FileDownloadUtils;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
@@ -74,7 +73,7 @@ public class SysDeptController extends BaseController {
     @Log(description = "批量导出部门", type = LogTypeEnum.EXPORT)
     public String exportExcel(@RequestBody SysDept sysDept) {
         String path = sysDeptService.exportExcel(sysDept);
-        return success(FileDownloadUtils.addToDownloadableList(path));
+        return success(path);
     }
 
     @SneakyThrows

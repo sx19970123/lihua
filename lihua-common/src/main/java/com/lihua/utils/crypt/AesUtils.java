@@ -6,6 +6,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -48,6 +49,35 @@ public class AesUtils {
     public static String decryptToString(String ciphertext, SecretKey secretKey) {
         return new String(Base64.getDecoder().decode(decrypt(ciphertext, secretKey)), StandardCharsets.UTF_8);
     }
+
+    /**
+     * AES 使用16位字符串加密
+     * @param input 被加密的内容
+     * @param secretKey 密钥，16位字符串
+     * @return BASE64编码后的密文
+     */
+    @SneakyThrows
+    public static String encrypt(String input, String secretKey) {
+        Cipher instance = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(), "AES");
+        instance.init(Cipher.ENCRYPT_MODE,keySpec);
+        return Base64.getEncoder().encodeToString(instance.doFinal(input.getBytes()));
+    }
+
+    /**
+     * AES 解密为字符串
+     * @param ciphertext 密文
+     * @param secretKey 密钥
+     * @return 解密字符串
+     */
+    @SneakyThrows
+    public static String decryptToString(String ciphertext, String secretKey) {
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(), "AES");
+        cipher.init(Cipher.DECRYPT_MODE, keySpec);
+        return new String(cipher.doFinal(Base64.getDecoder().decode(ciphertext)));
+    }
+
 
     /**
      * AES 解密为字节数组

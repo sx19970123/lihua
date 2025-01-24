@@ -44,6 +44,11 @@ public class LihuaConfig {
     private Long sseExpireTime;
 
     /**
+     * 文件上传服务类型
+     */
+    private String uploadFileModel;
+
+    /**
      * 文件上传路径
      */
     private String uploadFilePath;
