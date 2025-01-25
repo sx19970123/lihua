@@ -7,7 +7,6 @@ import {ResponseError} from "@/api/global/Type.ts";
 // token 和 默认密码加密的密钥。后端需保持一致
 const TOKEN_KEY:string = await createBrowserId()
 const DEFAULT_PASSWORD_KEY = 'lihuaLIHUALIhuam';
-const DEFAULT_PASSWORD_IV = 'mauhILAUHILauhil';
 // token数据加密
 export const encrypt = (data: string):string => {
   return CryptoJS.AES.encrypt(data, TOKEN_KEY,{mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7}).toString()
@@ -21,10 +20,8 @@ export const decrypt = (data: string):string => {
 // 默认密码数据加密
 export const defaultPasswordEncrypt = (defaultPassword: string) => {
   const key = CryptoJS.enc.Utf8.parse(DEFAULT_PASSWORD_KEY);
-  const iv = CryptoJS.enc.Utf8.parse(DEFAULT_PASSWORD_IV);
   const encrypted = CryptoJS.AES.encrypt(defaultPassword, key, {
-    iv: iv,
-    mode: CryptoJS.mode.CBC,
+    mode: CryptoJS.mode.ECB,
     padding: CryptoJS.pad.Pkcs7
   });
   return encrypted.toString();
@@ -32,12 +29,9 @@ export const defaultPasswordEncrypt = (defaultPassword: string) => {
 // 默认密码解密
 export const defaultPasswordDecrypt = (encryptedPassword: string) => {
   const key = CryptoJS.enc.Utf8.parse(DEFAULT_PASSWORD_KEY);
-  const iv = CryptoJS.enc.Utf8.parse(DEFAULT_PASSWORD_IV);
-
   // 解密
   const decrypted = CryptoJS.AES.decrypt(encryptedPassword, key, {
-    iv: iv,
-    mode: CryptoJS.mode.CBC,
+    mode: CryptoJS.mode.ECB,
     padding: CryptoJS.pad.Pkcs7
   });
 

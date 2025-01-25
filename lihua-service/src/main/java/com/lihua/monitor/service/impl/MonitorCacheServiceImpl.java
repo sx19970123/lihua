@@ -78,6 +78,10 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
                 cacheMonitor.setValue(JsonUtils.toJson(redisCache.getCacheList(key, Object.class)));
                 break;
             }
+            case "hash": {
+                cacheMonitor.setValue(JsonUtils.toJson(redisCache.getCacheMap(key, Object.class)));
+                break;
+            }
             // todo：当业务需要有其他数据类型时，可在此添加
         }
 

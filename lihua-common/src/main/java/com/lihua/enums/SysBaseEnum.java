@@ -53,13 +53,10 @@ public enum SysBaseEnum {
 
     /**
      * 系统默认密码的加密key和 iv
-     * 需与前端 src/utils/Crypto.ts 中定义的 DEFAULT_PASSWORD_KEY、DEFAULT_PASSWORD_IV 一致
-     * DEFAULT_PASSWORD_KEY、DEFAULT_PASSWORD_IV 为 16位长度的字符串
+     * 需与前端 src/utils/Crypto.ts 中定义的 DEFAULT_PASSWORD_KEY 一致
      * 更多修改密钥请参考 https://gitee.com/yukino_git/lihua/issues/IBFWG4#note_36173102_link
      */
     DEFAULT_PASSWORD_KEY("lihuaLIHUALIhuam"),
-
-    DEFAULT_PASSWORD_IV("mauhILAUHILauhil"),
 
     /**
      * 附件临时路径信息加密key

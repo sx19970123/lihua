@@ -10,9 +10,6 @@ import com.lihua.utils.crypt.RasUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -82,8 +79,6 @@ public class SecurityUtils {
      * @return 原密码
      */
     public static String defaultPasswordDecrypt(String encryptedPassword) {
-        return AesUtils.decrypt(encryptedPassword,
-                new SecretKeySpec(SysBaseEnum.DEFAULT_PASSWORD_KEY.getValue().getBytes(), "AES"),
-                new IvParameterSpec(SysBaseEnum.DEFAULT_PASSWORD_IV.getValue().getBytes()));
+        return AesUtils.decryptToString(encryptedPassword, SysBaseEnum.DEFAULT_PASSWORD_KEY.getValue());
     }
 }
