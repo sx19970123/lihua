@@ -11,11 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-
-import java.io.File;
 import java.util.List;
 
-@RestController("system/attachment")
+@RestController
+@RequestMapping("system/attachment")
 public class SysAttachmentController extends BaseController {
 
     @Resource
@@ -31,9 +30,10 @@ public class SysAttachmentController extends BaseController {
         return success(sysAttachmentService.queryById(id));
     }
 
-    @PostMapping("upload")
+    @PostMapping("upload/{businessCode}")
     @Log(description = "附件上传", type = LogTypeEnum.UPLOAD)
-    public String upload(@RequestParam("file") MultipartFile file) {
+    public String upload(@RequestParam("file") MultipartFile file, @PathVariable("businessCode") String businessCode) {
+        System.out.println(businessCode);
         return success(sysAttachmentService.save(file));
     }
 
@@ -65,6 +65,6 @@ public class SysAttachmentController extends BaseController {
     @GetMapping("download/p/{path}")
     @Log(description = "附件下载（公开）", type = LogTypeEnum.DOWNLOAD)
     public ResponseEntity<StreamingResponseBody> publicDownload(@PathVariable("path") String path) {
-        return success(new File(path));
+        return success(sysAttachmentService.publicDownload(path));
     }
 }

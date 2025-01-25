@@ -23,15 +23,20 @@ import java.util.Map;
 @Service
 public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, SysAttachment> implements SysAttachmentService {
 
+    // 不同附件存储方法实现策略
     @Resource
     private Map<String, AttachmentStorageStrategy> attachmentStorageStrategyMap;
 
+    // 附件存储模式
     @Value("${lihua.uploadFileModel}")
     private String uploadFileModel;
 
+    // 文件下载链接有效期
     @Value("${lihua.fileDownloadExpireTime}")
     private String fileDownloadExpireTime;
 
+    // 公开文件的业务编码，publicLocalDownload 中判断包含业务编码的文件才会进行返回
+    private final List<String> publicBusinessCodeList = List.of("");
 
     @Override
     public IPage<SysAttachment> queryPage(SysAttachmentDTO sysAttachmentDTO) {
@@ -71,6 +76,9 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     @Override
     public File localDownload(String key) {
+        if (!"LOCAL".equals(uploadFileModel)) {
+            throw new FileException("存储模式不受支持");
+        }
         String params;
         try {
             // 解密数据
@@ -92,6 +100,22 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         }
 
         return new File(splitParams[0]);
+    }
+
+    @Override
+    public File publicDownload(String path) {
+        // 根据路径和公开业务编码进行查询
+        boolean exists = lambdaQuery()
+                .eq(SysAttachment::getPath, path)
+                .in(SysAttachment::getBusinessCode, publicBusinessCodeList)
+                .exists();
+        if (!exists) {
+            return null;
+        }
+
+        AttachmentStorageStrategy strategy = getStrategy();
+        return strategy.download(path);
+
     }
 
     // 获取 AttachmentStorageStrategy 对应实现

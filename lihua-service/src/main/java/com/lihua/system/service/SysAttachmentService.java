@@ -49,9 +49,17 @@ public interface SysAttachmentService {
     List<String> getDownloadURL(List<String> pathList);
 
     /**
-     * 本地文件下载
+     * 公开文件下载
+     * @param path 文件路径
+     * @return 文件
+     */
+    File publicDownload(String path);
+
+    /**
+     * 本地文件下载（仅LOCAL模式下使用，其他存储方式中直接通过文件服务器获取）
      * @param key 文件路径及过期时间密文
      * @return 文件
      */
     File localDownload(String key);
+
 }

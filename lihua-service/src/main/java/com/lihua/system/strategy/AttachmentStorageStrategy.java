@@ -2,6 +2,7 @@ package com.lihua.system.strategy;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -61,5 +62,5 @@ public interface AttachmentStorageStrategy {
      * @param path 文件路径
      * @return 下载的文件流
      */
-    InputStream download(String path);
+    File download(String path);
 }
