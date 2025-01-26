@@ -24,7 +24,7 @@ public interface SysAttachmentService {
      * 保存附件信息
      * @return 附件id
      */
-    String save(MultipartFile file);
+    String save(MultipartFile file, String businessCode);
 
     /**
      * 附件批量删除

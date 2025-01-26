@@ -1,19 +1,15 @@
 package com.lihua.system.strategy.impl.attachmentstorage;
 
 import com.lihua.enums.SysBaseEnum;
-import com.lihua.exception.FileException;
 import com.lihua.system.strategy.AttachmentStorageStrategy;
 import com.lihua.utils.crypt.AesUtils;
 import com.lihua.utils.date.DateUtils;
+import com.lihua.utils.file.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -21,8 +17,8 @@ import java.time.LocalDateTime;
 public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
 
     @Override
-    public String uploadFile(MultipartFile file) {
-        return "";
+    public String uploadFile(MultipartFile file, String businessCode) {
+        return FileUtils.upload(file, businessCode);
     }
 
     @Override
@@ -58,7 +54,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
-    public File download(String path) {
-        return new File(path);
+    public File download(String path, String originalName) {
+        return new File(path, originalName);
     }
 }

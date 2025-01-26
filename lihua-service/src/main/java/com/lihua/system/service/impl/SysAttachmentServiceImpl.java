@@ -11,6 +11,8 @@ import com.lihua.system.service.SysAttachmentService;
 import com.lihua.system.strategy.AttachmentStorageStrategy;
 import com.lihua.utils.crypt.AesUtils;
 import com.lihua.utils.date.DateUtils;
+import com.lihua.utils.file.FileUtils;
+import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -49,8 +51,43 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    public String save(MultipartFile file) {
-        return "";
+    public String save(MultipartFile file, String businessCode) {
+        AttachmentStorageStrategy strategy = getStrategy();
+        // 构建系统附件对象
+        SysAttachment sysAttachment = new SysAttachment();
+
+        // 文件上传至服务器
+        try {
+            String fullPath = strategy.uploadFile(file, businessCode);
+            sysAttachment
+                    .setPath(fullPath)
+                    .setUploadStatus("0")
+                    .setStorageName(FileUtils.getFileNameByPath(fullPath))
+                    .setOriginalName(file.getOriginalFilename())
+                    .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
+                    .setType(file.getContentType());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            sysAttachment
+                    .setErrorMsg(e.getMessage())
+                    .setUploadStatus("1");
+        }
+        // 完善附件数据
+        sysAttachment
+                .setBusinessCode(businessCode)
+                .setUploadMode("0")
+                .setStorageLocation(uploadFileModel)
+                .setCreateId(LoginUserContext.getUserId())
+                .setCreateTime(DateUtils.now())
+                .setDelFlag("0");
+        // 保存附件信息
+        save(sysAttachment);
+
+        if ("0".equals(sysAttachment.getUploadStatus())) {
+            return sysAttachment.getPath();
+        } else {
+            throw new FileException(sysAttachment.getErrorMsg());
+        }
     }
 
     @Override
@@ -105,16 +142,17 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     @Override
     public File publicDownload(String path) {
         // 根据路径和公开业务编码进行查询
-        boolean exists = lambdaQuery()
+        SysAttachment sysAttachment = lambdaQuery()
                 .eq(SysAttachment::getPath, path)
                 .in(SysAttachment::getBusinessCode, publicBusinessCodeList)
-                .exists();
-        if (!exists) {
+                .one();
+
+        if (sysAttachment == null) {
             return null;
         }
 
         AttachmentStorageStrategy strategy = getStrategy();
-        return strategy.download(path);
+        return strategy.download(path, sysAttachment.getOriginalName());
 
     }
 

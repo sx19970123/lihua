@@ -3,7 +3,6 @@ package com.lihua.system.strategy;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.InputStream;
 
 /**
  * 不同附件存储方式策略接口
@@ -13,9 +12,10 @@ public interface AttachmentStorageStrategy {
     /**
      * 文件上传
      * @param file 文件
+     * @param businessCode 业务编码
      * @return 文件上传完成后保存到数据库业务表的返回值，一般是存储路径
      */
-    String uploadFile(MultipartFile file);
+    String uploadFile(MultipartFile file, String businessCode);
 
     /**
      * 通过网络链接下载文件
@@ -60,7 +60,8 @@ public interface AttachmentStorageStrategy {
     /**
      * 文件下载（针对永久有效链接，只针对公开文件夹下的文件）
      * @param path 文件路径
+     * @param originalName 原文件名
      * @return 下载的文件流
      */
-    File download(String path);
+    File download(String path, String originalName);
 }

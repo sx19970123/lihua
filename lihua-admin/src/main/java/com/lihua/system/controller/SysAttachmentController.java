@@ -32,9 +32,9 @@ public class SysAttachmentController extends BaseController {
 
     @PostMapping("upload/{businessCode}")
     @Log(description = "附件上传", type = LogTypeEnum.UPLOAD)
-    public String upload(@RequestParam("file") MultipartFile file, @PathVariable("businessCode") String businessCode) {
-        System.out.println(businessCode);
-        return success(sysAttachmentService.save(file));
+    public String upload(@RequestParam("file") MultipartFile file,
+                         @PathVariable("businessCode") String businessCode) {
+        return success(sysAttachmentService.save(file, businessCode));
     }
 
     @DeleteMapping

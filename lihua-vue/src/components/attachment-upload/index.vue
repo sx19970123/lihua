@@ -54,7 +54,6 @@ import {download} from "@/utils/FileDownload.ts";
 import {useRoute} from "vue-router";
 import token from "@/utils/Token.ts";
 const { getToken } = token
-
 const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"]
 const videoExtensions = ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm"];
 const uploadURL = import.meta.env.VITE_APP_BASE_API + "/system/attachment/upload/" + useRoute().name?.toString()
@@ -81,7 +80,7 @@ const {model = 'dragger', uploadType = [], maxCount = 10, maxSize = 500, multipl
   directory?: boolean,
 }>()
 
-const fileList = ref<UploadFile[]>([ {
+const fileList = ref<UploadFile[]>([{
   uid: '-1',
   name: 'xxx.png',
   status: 'done',

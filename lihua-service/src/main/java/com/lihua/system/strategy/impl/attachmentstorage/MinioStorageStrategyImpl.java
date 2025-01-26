@@ -12,7 +12,7 @@ public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
 
 
     @Override
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file, String businessCode) {
         return "";
     }
 
@@ -42,7 +42,7 @@ public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
-    public File download(String path) {
+    public File download(String path, String originalName) {
         return null;
     }
 }
