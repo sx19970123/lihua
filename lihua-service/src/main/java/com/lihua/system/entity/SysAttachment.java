@@ -1,12 +1,14 @@
 package com.lihua.system.entity;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
+@Accessors(chain = true)
 public class SysAttachment implements Serializable {
 
     @Serial
@@ -18,14 +20,9 @@ public class SysAttachment implements Serializable {
     private String id;
 
     /**
-     * 文件MD5值
-     */
-    private String md5;
-
-    /**
      * 文件存储名
      */
-    private String storedName;
+    private String storageName;
 
     /**
      * 文件原名称
@@ -43,14 +40,9 @@ public class SysAttachment implements Serializable {
     private String path;
 
     /**
-     * 业务编码
+     * 业务编码（文件上传时所在的路由名称）
      */
     private String businessCode;
-
-    /**
-     * 业务名称，关联文件所属的业务模块
-     */
-    private String businessName;
 
     /**
      * 文件类型
@@ -58,12 +50,12 @@ public class SysAttachment implements Serializable {
     private String type;
 
     /**
-     * 上传状态 初始化、上传中、上传成功、上传失败
+     * 上传状态 上传成功、上传失败
      */
-    private char uploadStatus;
+    private String uploadStatus;
 
     /**
-     * 上传模式 单文件、分片
+     * 上传模式 单文件 0 、分片 1
      */
     private String uploadMode;
 
@@ -90,5 +82,10 @@ public class SysAttachment implements Serializable {
     /**
      * 删除标识
      */
-    private char delFlag;
+    private String delFlag;
+
+    /**
+     * 上传失败原因
+     */
+    private String errorMsg;
 }

@@ -43,7 +43,7 @@ public class FileUtils {
      * 单文件上传
      */
     public static String upload(MultipartFile file, String businessCode) {
-        String fullFilePath = getFullFilePath(file.getContentType(), businessCode);
+        String fullFilePath = generateFullFilePath(file.getContentType(), businessCode);
         try {
             return upload(file.getInputStream(), fullFilePath);
         } catch (IOException e) {
@@ -73,7 +73,7 @@ public class FileUtils {
         }
 
         //获取文件名
-        String fullFilePath = getFullFilePathByURL(url, businessCode);
+        String fullFilePath = generateFullFilePathByURL(url, businessCode);
 
         // 获取inputStream调用上传方法
         try(InputStream inputStream = new URL(url).openStream()) {
@@ -90,8 +90,8 @@ public class FileUtils {
      * @param contentType 文件类型
      * @return 文件路径+名称
      */
-    public static String getFullFilePath(String contentType) {
-        return getFullFilePath(contentType, null);
+    public static String generateFullFilePath(String contentType) {
+        return generateFullFilePath(contentType, null);
     }
 
     /**
@@ -100,7 +100,7 @@ public class FileUtils {
      * @param businessCode 业务编码
      * @return 文件路径+名称
      */
-    public static String getFullFilePath(String contentType, String businessCode) {
+    public static String generateFullFilePath(String contentType, String businessCode) {
         // 通过随机uuid重新命名数据库中保存的文件名称
         String fileName = UUID.randomUUID().toString().replace("-", "");
 
@@ -218,6 +218,43 @@ public class FileUtils {
     }
 
 
+    /**
+     * 获取文件名称
+     * @param fullPath 文件全路径
+     * @return 文件名称
+     */
+    public static String getFileNameByPath(String fullPath) {
+        if (!StringUtils.hasText(fullPath)) {
+            return null;
+        }
+
+        String[] pathSplit = fullPath.split("\\\\");
+        if (pathSplit.length == 0) {
+            return null;
+        }
+
+        return pathSplit[pathSplit.length - 1];
+    }
+
+    /**
+     * 获取文件后缀名
+     * @param fileName 文件名称
+     * @return 文件后缀名
+     */
+    public static String getExtensionNameByFileName(String fileName) {
+        if (!StringUtils.hasText(fileName)) {
+            return null;
+        }
+
+        String[] pathSplit = fileName.split("\\.");
+        if (pathSplit.length == 0) {
+            return null;
+        }
+
+        return "." + pathSplit[pathSplit.length - 1];
+    }
+
+
     // 文件上传
     private static String upload(InputStream inputStream, String fullFilePath) {
         File file = new File(fullFilePath);
@@ -270,7 +307,7 @@ public class FileUtils {
     }
 
     // 根据url获取文件名称
-    private static String getFullFilePathByURL(String fileUrl, String businessCode) {
+    private static String generateFullFilePathByURL(String fileUrl, String businessCode) {
         String fileNameByURL = getFileNameByURL(fileUrl);
         return generateFilePath(fileNameByURL, businessCode);
     }
