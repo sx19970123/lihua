@@ -19,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +51,17 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     @Override
     public SysAttachment queryById(String id) {
         return null;
+    }
+
+    @Override
+    public List<SysAttachment> queryAttachmentInfoByPathList(List<String> pathList) {
+        List<SysAttachment> sysAttachmentList = lambdaQuery()
+                .select(SysAttachment::getId, SysAttachment::getPath, SysAttachment::getOriginalName)
+                .in(SysAttachment::getPath, pathList)
+                .list();
+        // 获取文件访问路径
+        sysAttachmentList.forEach(sysAttachment -> sysAttachment.setPath(getDownloadURL(sysAttachment.getPath())));
+        return sysAttachmentList;
     }
 
     @Override
@@ -91,6 +105,15 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
+    public String queryOriginFileName(String path) {
+        SysAttachment sysAttachment = lambdaQuery().select(SysAttachment::getOriginalName).eq(SysAttachment::getPath, path).one();
+        if (sysAttachment != null) {
+            return sysAttachment.getOriginalName();
+        }
+        return null;
+    }
+
+    @Override
     public void deleteByIds(List<SysAttachment> sysAttachmentList) {
 
     }
@@ -119,9 +142,10 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         String params;
         try {
             // 解密数据
-            params = AesUtils.decryptToString(key, SysBaseEnum.ATTACHMENT_URL_KEY.getValue());
+            String decode = URLDecoder.decode(URLEncoder.encode(key, StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+            params = AesUtils.decryptToString(decode, SysBaseEnum.ATTACHMENT_URL_KEY.getValue());
         } catch (Exception e) {
-            log.error( e.getMessage(), e);
+            log.error(e.getMessage(), e);
             throw new FileException();
         }
 
@@ -136,6 +160,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
             throw new FileException("当前链接已失效");
         }
 
+        // 获取原文件名
         return new File(splitParams[0]);
     }
 

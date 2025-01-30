@@ -57,6 +57,7 @@ public class SecurityConfig {
                         "/system/publicKey/**", // 获取公钥
                         "/system/sse/connect/**", // 连接sse
                         "/system/file/download/**", // 文件下载
+                        "/system/attachment/download", // 文件下载
                         "system/setting/GrayModelSetting", // 灰色模式设置
                         "system/setting/SignInSetting", // 是否开启用户注册
                         "/system/checkUserName/**", // 检查用户名

@@ -43,7 +43,7 @@ public class FileUtils {
      * 单文件上传
      */
     public static String upload(MultipartFile file, String businessCode) {
-        String fullFilePath = generateFullFilePath(file.getContentType(), businessCode);
+        String fullFilePath = generateFullFilePath(file.getOriginalFilename(), businessCode);
         try {
             return upload(file.getInputStream(), fullFilePath);
         } catch (IOException e) {
@@ -87,28 +87,26 @@ public class FileUtils {
 
     /**
      * 获取文件全路径名称
-     * @param contentType 文件类型
+     * @param originFileName 文件名称
      * @return 文件路径+名称
      */
-    public static String generateFullFilePath(String contentType) {
-        return generateFullFilePath(contentType, null);
+    public static String generateFullFilePath(String originFileName) {
+        return generateFullFilePath(originFileName, null);
     }
 
     /**
      * 获取文件全路径名称
-     * @param contentType 文件类型
+     * @param originFileName 文件名称
      * @param businessCode 业务编码
      * @return 文件路径+名称
      */
-    public static String generateFullFilePath(String contentType, String businessCode) {
+    public static String generateFullFilePath(String originFileName, String businessCode) {
         // 通过随机uuid重新命名数据库中保存的文件名称
         String fileName = UUID.randomUUID().toString().replace("-", "");
 
-        if (StringUtils.hasText(contentType)) {
-            String[] typeSplit = contentType.split("/");
-            if (typeSplit.length > 1 && StringUtils.hasText(typeSplit[1])) {
-                fileName = fileName + "." + typeSplit[1].toLowerCase();
-            }
+        if (StringUtils.hasText(originFileName)) {
+            String extensionNameByFileName = getExtensionNameByFileName(originFileName);
+            fileName = fileName + extensionNameByFileName;
         }
 
         if (!fileName.contains(".")) {
@@ -138,13 +136,13 @@ public class FileUtils {
      * 文件下载
      * @param file 文件
      */
-    public static ResponseEntity<StreamingResponseBody> download(File file) {
+    public static ResponseEntity<StreamingResponseBody> download(File file, String fileName) {
         if (file == null || !file.exists()) {
             throw new FileException(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
         }
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
-            return download(fileInputStream, file.getName());
+            return download(fileInputStream, StringUtils.hasText(fileName) ? fileName : file.getName());
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             throw new FileException(e.getMessage());

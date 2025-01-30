@@ -9,7 +9,10 @@
               :directory="directory"
               :max-count="maxCount"
               :multiple="multiple"
+              :isImageUrl="handleShowThumbImage"
               @preview="handlePreview"
+              @change="handleChange"
+              @remove="handleRemove"
     >
       <!--    按钮上传-->
       <a-button v-if="model === 'button'">
@@ -32,6 +35,8 @@
                       :max-count="maxCount"
                       :multiple="multiple"
                       @preview="handlePreview"
+                      @change="handleChange"
+                      @remove="handleRemove"
     >
       <p class="ant-upload-drag-icon">
         <component :is="icon ? icon : 'inbox-outlined'"></component>
@@ -53,13 +58,16 @@ import {ref} from "vue";
 import {download} from "@/utils/FileDownload.ts";
 import {useRoute} from "vue-router";
 import token from "@/utils/Token.ts";
+import {getDownloadURL, queryAttachmentInfoByPathList} from "@/api/system/attachment/Attachment.ts";
+import {ResponseError} from "@/api/global/Type.ts";
 const { getToken } = token
 const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"]
 const videoExtensions = ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm"];
-const uploadURL = import.meta.env.VITE_APP_BASE_API + "/system/attachment/upload/" + useRoute().name?.toString()
+const baseAPI = import.meta.env.VITE_APP_BASE_API
+const uploadURL = baseAPI + "/system/attachment/upload/" + useRoute().name?.toString()
 const authorization = 'Bearer ' + getToken()
 
-const {model = 'dragger', uploadType = [], maxCount = 10, maxSize = 500, multiple = true, directory = false} = defineProps<{
+const {model = 'picture', icon, text, uploadType = [], description, maxCount = 10, maxSize = 500, multiple = true, directory = false, modelValue} = defineProps<{
   // 模式：按钮/图片/拖拽
   model?: 'button' | 'picture' | 'dragger',
   // 图标
@@ -78,19 +86,54 @@ const {model = 'dragger', uploadType = [], maxCount = 10, maxSize = 500, multipl
   multiple?: boolean,
   // 是否支持文件夹上传
   directory?: boolean,
+  // 双向绑定
+  modelValue: string
 }>()
 
-const fileList = ref<UploadFile[]>([{
-  uid: '-1',
-  name: 'xxx.png',
-  status: 'done',
-  url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-},{
-  uid: '-2',
-  name: '824767432559202304.mp4',
-  status: 'done',
-  url: 'https://www.catarc.ac.cn/member/files/824767432559202304.mp4',
-}])
+const emits = defineEmits(["update:modelValue", "uploadError", "uploadSuccess", "remove"])
+
+const fileList = ref<UploadFile[]>([])
+
+// 初始化双向绑定
+const init = async () => {
+  const pathList = modelValue
+      .split(",")
+      .filter(item => item)
+
+  if (pathList && pathList.length > 0) {
+    try {
+      // 初次加载数据时根据双向绑定内容请求附件信息
+      const resp = await queryAttachmentInfoByPathList(pathList)
+      if (resp.code === 200) {
+        // 组合fileList
+        const data = resp.data.map((item, index) => {
+          const uploadFile: UploadFile = {
+            uid: item.id ? item.id : '',
+            name: item.originalName ? item.originalName : '',
+            status: "done",
+            url: pathList[index],
+            thumbUrl: baseAPI + item.path
+          }
+          return uploadFile;
+        })
+
+        // 数据回显
+        if (data && data.length > 0) {
+          fileList.value = data
+        }
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    }
+  }
+}
+init()
 
 // 初始化文件上传
 const initUpload = () => {
@@ -141,12 +184,63 @@ const initUpload = () => {
     return true;
   }
 
+  // 处理文件上传变化（uploading：上传中 done：上传成功 error：上传失败 removed：已删除）
+  const handleChange = ({file, fileList}: {file: UploadFile, fileList: Array<UploadFile>}) => {
+    // 文件上传失败
+    if (file.status === "error") {
+      emits("uploadError", file)
+    }
+
+    // 文件上传成功
+    if (file.status === "done") {
+      emits("uploadSuccess", {file, fileList});
+    }
+
+    // 文件删除回调
+    if (file.status === "removed") {
+      emits("remove", file)
+    }
+
+    // 通过fileList获取双向绑定值
+    const modelValueList = fileList.filter(item => item.status === "done").map(item => {
+      // 有url的直接返回
+      if (item.url) {
+        return item.url
+      }
+      // 有response数据获取对应的data。code不为200调用上传失败
+      if (item.response) {
+        const resp = item.response
+        if (resp.code === 200) {
+          const url = resp.data
+          // 向fileList赋值URL
+          fileList.forEach(item => {
+            if (item.uid === file.uid) {
+              item.url = url
+            }
+          })
+          return url
+        } else {
+          emits("uploadError", file)
+        }
+      }
+    })
+
+    // 处理双向绑定
+    emits("update:modelValue", modelValueList.join(","))
+  }
+
+  // 处理文件删除
+  const handleRemove = (file: UploadFile) => {
+    console.log("file",file)
+  }
   return {
-    beforeUpload
+    beforeUpload,
+    handleChange,
+    handleRemove
   }
 }
 
-const { beforeUpload } = initUpload()
+const { beforeUpload, handleChange, handleRemove } = initUpload()
 
 // 初始化预览
 const initPreview = () => {
@@ -158,7 +252,7 @@ const initPreview = () => {
   // 预览url
   const previewURL = ref<string>()
   // 处理预览
-  const handlePreview = (file: UploadFile) => {
+  const handlePreview = async (file: UploadFile) => {
     if (file.type || file.name) {
       // 获取文件后缀名
       const extension = file.name.split('.').pop()?.toLowerCase() || ""
@@ -175,16 +269,29 @@ const initPreview = () => {
     } else {
       previewType.value = 'other'
     }
-
+    // 获取url
+    let url = file.thumbUrl
+    if (!url?.startsWith(baseAPI)) {
+      const resp = await getDownloadURL(file.url as string)
+      if (resp.code === 200) {
+        url = baseAPI + resp.data
+        // 为fileList中thumbUrl赋值
+        fileList.value.some(item => {
+          if (item.url === file.url) {
+            item.thumbUrl = ""
+          }
+        })
+      }
+    }
     // 图片视频进行弹窗预览
     if (previewType.value === 'image' || previewType.value === 'video') {
       previewVisible.value = true
       previewTitle.value = file.name
-      previewURL.value = file.url
+      previewURL.value = url
     } else {
       // 其他类型直接下载
-      if (file.url) {
-        download(file.url, file.name)
+      if (url) {
+        download(url, file.name)
       }
     }
   }
@@ -192,17 +299,24 @@ const initPreview = () => {
   const handleCancel = () => {
     previewVisible.value = false
   }
+  // 处理显示缩略图显示
+  const handleShowThumbImage = (file: UploadFile) => {
+    // 获取文件后缀名
+    const extension = file.name.split('.').pop()?.toLowerCase() || ""
+    return imageExtensions.includes(extension);
+  }
   return {
     previewVisible,
     previewTitle,
     previewURL,
     previewType,
     handlePreview,
-    handleCancel
+    handleCancel,
+    handleShowThumbImage
   }
 }
 
-const { previewVisible, previewTitle, previewURL, previewType, handlePreview, handleCancel } = initPreview()
+const { previewVisible, previewTitle, previewURL, previewType, handlePreview, handleCancel, handleShowThumbImage } = initPreview()
 </script>
 
 <style>

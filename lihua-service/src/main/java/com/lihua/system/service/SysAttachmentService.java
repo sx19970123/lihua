@@ -21,10 +21,24 @@ public interface SysAttachmentService {
     SysAttachment queryById(String id);
 
     /**
+     * 根据路径查询文件信息，用于附件组件数据回显
+     * @param pathList 附件存储路径
+     * @return 对应的附件信息
+     */
+    List<SysAttachment> queryAttachmentInfoByPathList(List<String> pathList);
+
+    /**
      * 保存附件信息
      * @return 附件id
      */
     String save(MultipartFile file, String businessCode);
+
+    /**
+     * 根据路径获取原文件名称
+     * @param path 文件路径
+     * @return 原文件名称
+     */
+    String queryOriginFileName(String path);
 
     /**
      * 附件批量删除
@@ -61,5 +75,4 @@ public interface SysAttachmentService {
      * @return 文件
      */
     File localDownload(String key);
-
 }

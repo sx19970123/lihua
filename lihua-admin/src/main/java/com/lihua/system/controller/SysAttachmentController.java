@@ -7,10 +7,13 @@ import com.lihua.system.entity.SysAttachment;
 import com.lihua.system.model.dto.SysAttachmentDTO;
 import com.lihua.system.service.SysAttachmentService;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+
+import java.io.File;
 import java.util.List;
 
 @RestController
@@ -20,7 +23,7 @@ public class SysAttachmentController extends BaseController {
     @Resource
     private SysAttachmentService sysAttachmentService;
 
-    @GetMapping("page")
+    @PostMapping("page")
     public String queryPage(@RequestBody SysAttachmentDTO sysAttachmentDTO) {
         return success(sysAttachmentService.queryPage(sysAttachmentDTO));
     }
@@ -28,6 +31,11 @@ public class SysAttachmentController extends BaseController {
     @GetMapping("{id}")
     public String queryById(@PathVariable("id") String id) {
         return success(sysAttachmentService.queryById(id));
+    }
+
+    @PostMapping("info")
+    public String queryAttachmentInfoByPathList(@RequestBody @NotEmpty(message = "附件路径列表为空") List<String> pathList) {
+        return success(sysAttachmentService.queryAttachmentInfoByPathList(pathList));
     }
 
     @PostMapping("upload/{businessCode}")
@@ -51,15 +59,17 @@ public class SysAttachmentController extends BaseController {
         return success();
     }
 
-    @GetMapping("url/{path}")
-    public String getDownloadURL(@PathVariable("path") String path) {
+    @GetMapping("url")
+    public String getDownloadURL(String path) {
         return success(sysAttachmentService.getDownloadURL(path));
     }
 
-    @GetMapping("download/{key}")
+    @GetMapping("download")
     @Log(description = "附件下载（临时）", type = LogTypeEnum.DOWNLOAD)
-    public ResponseEntity<StreamingResponseBody> download(@PathVariable("key") String key) {
-        return success(sysAttachmentService.localDownload(key));
+    public ResponseEntity<StreamingResponseBody> download(String key) {
+        File file = sysAttachmentService.localDownload(key);
+        String originFileName = sysAttachmentService.queryOriginFileName(file.getAbsolutePath());
+        return success(file, originFileName);
     }
 
     @GetMapping("download/p/{path}")

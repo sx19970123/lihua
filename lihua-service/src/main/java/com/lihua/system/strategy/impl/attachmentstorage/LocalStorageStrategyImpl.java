@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -50,7 +52,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
         // 对链接参数进行加密
         String key = AesUtils.encrypt(params, SysBaseEnum.ATTACHMENT_URL_KEY.getValue());
         // 返回文件url后缀
-        return "/system/attachment/download/" + key;
+        return "/system/attachment/download?key=" + URLEncoder.encode(key, StandardCharsets.UTF_8);
     }
 
     @Override

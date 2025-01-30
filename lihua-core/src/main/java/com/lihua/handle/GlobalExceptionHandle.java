@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -59,7 +60,8 @@ public class GlobalExceptionHandle extends BaseController {
      * 上传文件尺寸超过系统设置
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public String handelMaxUploadSizeExceededException() {
+    public String handelMaxUploadSizeExceededException(Exception e) {
+        log.error(e.getMessage(),e);
         return error(ResultCodeEnum.MAX_UPLOAD_SIZE_EXCEEDED_ERROR);
     }
 
