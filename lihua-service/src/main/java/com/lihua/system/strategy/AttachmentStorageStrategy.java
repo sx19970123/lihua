@@ -20,34 +20,16 @@ public interface AttachmentStorageStrategy {
     /**
      * 通过网络链接下载文件
      * @param url 网络文件链接
+     * @param businessCode 业务编码
      * @return 文件上传完成后保存到数据库业务表的返回值，一般是存储路径
      */
-    String uploadFile(String url);
-
-    /**
-     * 文件分片上传
-     * @param file 单片文件
-     * @param MD5 文件MD5值，用于标记是否为同一文件
-     * @param index 每个分片的索引值
-     * @param total 总分片数量
-     * @return 片段上传完成返回索引
-     */
-    int uploadChunk(MultipartFile file, String MD5, int index, int total);
-
-    /**
-     * 文件合并
-     * @param MD5 文件MD5值
-     * @param total 总分片数量
-     * @return 文件上传完成后保存到数据库业务表的返回值，一般是存储路径
-     */
-    String mergeChunks(String MD5, int total);
+    String uploadFile(String url, String businessCode);
 
     /**
      * 删除文件
      * @param path 文件路径
-     * @return 删除结果
      */
-    boolean delete(String path);
+    void delete(String path);
 
     /**
      * 获取下载地址（针对限时链接）

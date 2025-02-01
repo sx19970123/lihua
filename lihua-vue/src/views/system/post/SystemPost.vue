@@ -67,7 +67,7 @@
                row-key="id"
       >
         <template #title>
-          <a-flex :gap="8" wrap="wrap" >
+          <a-flex :gap="8" wrap="wrap">
             <a-button type="primary" @click="handleModalStatus('新增岗位')">
               <template #icon>
                 <PlusOutlined />

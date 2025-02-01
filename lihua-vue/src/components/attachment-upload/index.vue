@@ -14,6 +14,13 @@
               @change="handleChange"
               @remove="handleRemove"
     >
+      <!--      picture模式下预览图标变化-->
+      <template #previewIcon="data">
+        <a-button class="css-dev-only-do-not-override-2qvcno ant-btn ant-btn-text ant-btn-sm ant-upload-list-item-action ant-btn-icon-only" type="link">
+          <CloudDownloadOutlined class="anticon anticon-eye" v-if="!imageExtensions.includes(data.file.name.toLowerCase().split('.').pop())"/>
+          <EyeOutlined class="anticon anticon-eye" v-else/>
+        </a-button>
+      </template>
       <!--    按钮上传-->
       <a-button v-if="model === 'button'">
         <component :is="icon ? icon : 'upload-outlined'"></component>
@@ -54,20 +61,20 @@
 
 <script setup lang="ts">
 import {message, Upload, type UploadFile} from "ant-design-vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {download} from "@/utils/FileDownload.ts";
 import {useRoute} from "vue-router";
 import token from "@/utils/Token.ts";
-import {getDownloadURL, queryAttachmentInfoByPathList} from "@/api/system/attachment/Attachment.ts";
+import {deleteAttachment, getDownloadURL, queryAttachmentInfoByPathList} from "@/api/system/attachment/Attachment.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 const { getToken } = token
 const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"]
 const videoExtensions = ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm"];
 const baseAPI = import.meta.env.VITE_APP_BASE_API
-const uploadURL = baseAPI + "/system/attachment/upload/" + useRoute().name?.toString()
 const authorization = 'Bearer ' + getToken()
-
-const {model = 'picture', icon, text, uploadType = [], description, maxCount = 10, maxSize = 500, multiple = true, directory = false, modelValue} = defineProps<{
+const router = useRoute()
+// 参数
+const {model = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 500, multiple = true, directory = false, modelValue, businessCode, businessName} = defineProps<{
   // 模式：按钮/图片/拖拽
   model?: 'button' | 'picture' | 'dragger',
   // 图标
@@ -87,11 +94,17 @@ const {model = 'picture', icon, text, uploadType = [], description, maxCount = 1
   // 是否支持文件夹上传
   directory?: boolean,
   // 双向绑定
-  modelValue: string
+  modelValue: string,
+  // 业务编码
+  businessCode?: string,
+  // 业务名称
+  businessName?: string
 }>()
 
+// 方法
 const emits = defineEmits(["update:modelValue", "uploadError", "uploadSuccess", "remove"])
 
+// 附件列表
 const fileList = ref<UploadFile[]>([])
 
 // 初始化双向绑定
@@ -112,7 +125,7 @@ const init = async () => {
             name: item.originalName ? item.originalName : '',
             status: "done",
             url: pathList[index],
-            thumbUrl: baseAPI + item.path
+            thumbUrl: handleThumbUrl(item.path)
           }
           return uploadFile;
         })
@@ -133,10 +146,18 @@ const init = async () => {
     }
   }
 }
-init()
 
 // 初始化文件上传
 const initUpload = () => {
+  // 上传url
+  const uploadURL = ref<string>()
+
+  // 初始化上传url
+  const initUploadUrl = () => {
+    const businessCodeOrRoute = businessCode ?? router.name?.toString();
+    const businessNameOrLabel = businessName ?? router.meta.label;
+    uploadURL.value = `${baseAPI}/system/attachment/upload/${businessCodeOrRoute}/${businessNameOrLabel}`;
+  };
 
   // 文件上传前检验
   const beforeUpload = (file: UploadFile) => {
@@ -220,6 +241,12 @@ const initUpload = () => {
           })
           return url
         } else {
+          // 后端返回非200，标记为上传失败
+          fileList.forEach(item => {
+            if (item.uid === file.uid) {
+              item.status = "error"
+            }
+          })
           emits("uploadError", file)
         }
       }
@@ -230,17 +257,38 @@ const initUpload = () => {
   }
 
   // 处理文件删除
-  const handleRemove = (file: UploadFile) => {
-    console.log("file",file)
+  const handleRemove = async (file: UploadFile) => {
+    if (file && file.url) {
+      try {
+        const resp = await deleteAttachment(file.url)
+        if (resp.code === 200) {
+          message.success(resp.msg)
+        } else {
+          message.error(resp.msg)
+        }
+      } catch (e) {
+        if (e instanceof ResponseError) {
+          message.error(e.msg)
+        } else {
+          console.error(e)
+        }
+      }
+    } else {
+      message.error("文件删除异常")
+    }
   }
+
+  // 组合上传url
+  initUploadUrl()
   return {
+    uploadURL,
     beforeUpload,
     handleChange,
     handleRemove
   }
 }
 
-const { beforeUpload, handleChange, handleRemove } = initUpload()
+const {uploadURL, beforeUpload, handleChange, handleRemove } = initUpload()
 
 // 初始化预览
 const initPreview = () => {
@@ -274,11 +322,11 @@ const initPreview = () => {
     if (!url?.startsWith(baseAPI)) {
       const resp = await getDownloadURL(file.url as string)
       if (resp.code === 200) {
-        url = baseAPI + resp.data
+        url = handleThumbUrl(resp.data)
         // 为fileList中thumbUrl赋值
         fileList.value.some(item => {
           if (item.url === file.url) {
-            item.thumbUrl = ""
+            item.thumbUrl = url
           }
         })
       }
@@ -295,15 +343,30 @@ const initPreview = () => {
       }
     }
   }
+
   // 关闭预览
   const handleCancel = () => {
     previewVisible.value = false
   }
+
   // 处理显示缩略图显示
   const handleShowThumbImage = (file: UploadFile) => {
     // 获取文件后缀名
     const extension = file.name.split('.').pop()?.toLowerCase() || ""
     return imageExtensions.includes(extension);
+  }
+
+  // 处理预览URL
+  const handleThumbUrl = (thumbUrl?: string): string => {
+    if (!thumbUrl) {
+      return "";
+    }
+    // 由http或baseAPI开头直接返回
+    if (thumbUrl.startsWith("http") || thumbUrl?.startsWith(baseAPI)) {
+      return thumbUrl;
+    }
+    // 最后拼接 baseAPI
+    return baseAPI + thumbUrl;
   }
   return {
     previewVisible,
@@ -312,11 +375,16 @@ const initPreview = () => {
     previewType,
     handlePreview,
     handleCancel,
-    handleShowThumbImage
+    handleShowThumbImage,
+    handleThumbUrl
   }
 }
 
-const { previewVisible, previewTitle, previewURL, previewType, handlePreview, handleCancel, handleShowThumbImage } = initPreview()
+const { previewVisible, previewTitle, previewURL, previewType, handlePreview, handleCancel, handleShowThumbImage, handleThumbUrl } = initPreview()
+
+onMounted(() => {
+  init()
+})
 </script>
 
 <style>

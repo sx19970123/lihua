@@ -20,3 +20,14 @@ export const getDownloadURL = (path: string) => {
         }
     })
 }
+
+// 删除附件
+export const deleteAttachment = (path: string) => {
+    return request({
+        url: "system/attachment",
+        method: "delete",
+        params: {
+            path: path
+        }
+    })
+}

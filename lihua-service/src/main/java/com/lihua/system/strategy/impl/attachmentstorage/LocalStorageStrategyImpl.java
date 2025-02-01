@@ -24,23 +24,13 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
-    public String uploadFile(String url) {
-        return "";
+    public String uploadFile(String url, String businessCode) {
+        return FileUtils.upload(url, businessCode);
     }
 
     @Override
-    public int uploadChunk(MultipartFile file, String MD5, int index, int total) {
-        return 0;
-    }
-
-    @Override
-    public String mergeChunks(String MD5, int total) {
-        return "";
-    }
-
-    @Override
-    public boolean delete(String path) {
-        return false;
+    public void delete(String path) {
+        FileUtils.delete(path);
     }
 
     @Override

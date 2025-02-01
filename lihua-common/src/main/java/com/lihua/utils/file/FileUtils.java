@@ -18,6 +18,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -75,13 +77,33 @@ public class FileUtils {
         //获取文件名
         String fullFilePath = generateFullFilePathByURL(url, businessCode);
 
+        // 获取输入流
+        InputStream inputStream = getInputStreamByURL(url);
+
+        if (inputStream != null) {
+            // 上传到服务器
+            return upload(inputStream, fullFilePath);
+        }
+
+        return url;
+    }
+
+    /**
+     * 通过 URL 获取文件流
+     * @param url 文件链接
+     */
+    public static InputStream getInputStreamByURL(String url) {
+        // 判断url是否合法
+        if (!StringUtils.hasText(url)) {
+            throw new FileException("文件URL不存在");
+        }
+
         // 获取inputStream调用上传方法
         try(InputStream inputStream = new URL(url).openStream()) {
-            return upload(inputStream, fullFilePath);
+            return inputStream;
         } catch (Exception e) {
-            log.error("上传网络附件失败，返回原路径");
             log.error(e.getMessage(),e);
-            return url;
+            return null;
         }
     }
 
@@ -252,6 +274,20 @@ public class FileUtils {
         return "." + pathSplit[pathSplit.length - 1];
     }
 
+
+    /**
+     * 删除文件
+     * @param fileFullPath 文件全路径
+     */
+    public static void delete(String fileFullPath) {
+        Path path = Paths.get(fileFullPath);
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            throw new FileException("文件 " + path + " 删除失败");
+        }
+    }
 
     // 文件上传
     private static String upload(InputStream inputStream, String fullFilePath) {

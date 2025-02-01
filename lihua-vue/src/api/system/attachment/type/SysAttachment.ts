@@ -9,16 +9,14 @@ export interface SysAttachment {
     extensionName?: string;
     /** 文件保存路径 */
     path?: string;
-    /** 业务编码（文件上传时所在的路由名称） */
+    /** 业务编码（默认文件上传时所在的路由名称） */
     businessCode?: string;
+    /** 业务名称（默认文件上传时所在的菜单名称） */
+    businessName?: string;
     /** 文件类型 */
     type?: string;
     /** 上传状态 上传成功、上传失败 */
     uploadStatus?: string;
-    /** 上传模式 单文件 0 、分片 1 */
-    uploadMode?: string;
-    /** 分片详情 */
-    chunkDetails?: string;
     /** 文件存储位置 如：本地、云存储等 */
     storageLocation?: string;
     /** 上传人id */

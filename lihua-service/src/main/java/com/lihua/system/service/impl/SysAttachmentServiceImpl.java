@@ -1,9 +1,11 @@
 package com.lihua.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.FileException;
+import com.lihua.exception.ServiceException;
 import com.lihua.system.entity.SysAttachment;
 import com.lihua.system.mapper.SysAttachmentMapper;
 import com.lihua.system.model.dto.SysAttachmentDTO;
@@ -16,6 +18,7 @@ import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -65,7 +68,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    public String save(MultipartFile file, String businessCode) {
+    public String save(MultipartFile file, String businessCode, String businessName) {
         AttachmentStorageStrategy strategy = getStrategy();
         // 构建系统附件对象
         SysAttachment sysAttachment = new SysAttachment();
@@ -89,7 +92,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         // 完善附件数据
         sysAttachment
                 .setBusinessCode(businessCode)
-                .setUploadMode("0")
+                .setBusinessName(businessName)
                 .setStorageLocation(uploadFileModel)
                 .setCreateId(LoginUserContext.getUserId())
                 .setCreateTime(DateUtils.now())
@@ -119,8 +122,16 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
+    @Transactional
     public void deleteByPath(String path) {
+        AttachmentStorageStrategy strategy = getStrategy();
+        // 删除服务器文件
+        strategy.delete(path);
 
+        // 删除数据库数据
+        QueryWrapper<SysAttachment> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysAttachment::getPath, path);
+        remove(queryWrapper);
     }
 
     @Override
@@ -183,6 +194,11 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     // 获取 AttachmentStorageStrategy 对应实现
     private AttachmentStorageStrategy getStrategy() {
-        return attachmentStorageStrategyMap.get(uploadFileModel);
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(uploadFileModel);
+        if (attachmentStorageStrategy == null) {
+            log.error("获取附件实现策略失败，请检查uploadFileModel策略配置，可选参数" + attachmentStorageStrategyMap.keySet());
+            throw new ServiceException("获取附件实现策略失败");
+        }
+        return attachmentStorageStrategy;
     }
 }

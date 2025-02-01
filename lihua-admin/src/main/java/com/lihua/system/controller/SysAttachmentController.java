@@ -38,23 +38,24 @@ public class SysAttachmentController extends BaseController {
         return success(sysAttachmentService.queryAttachmentInfoByPathList(pathList));
     }
 
-    @PostMapping("upload/{businessCode}")
+    @PostMapping("upload/{businessCode}/{businessName}")
     @Log(description = "附件上传", type = LogTypeEnum.UPLOAD)
     public String upload(@RequestParam("file") MultipartFile file,
-                         @PathVariable("businessCode") String businessCode) {
-        return success(sysAttachmentService.save(file, businessCode));
+                         @PathVariable("businessCode") String businessCode,
+                         @PathVariable("businessName") String businessName) {
+        return success(sysAttachmentService.save(file, businessCode, businessName));
     }
 
-    @DeleteMapping
+    @DeleteMapping("multiple")
     @Log(description = "附件删除", type = LogTypeEnum.DELETE)
     public String delete(@RequestBody List<SysAttachment> sysAttachmentList) {
         sysAttachmentService.deleteByIds(sysAttachmentList);
         return success();
     }
 
-    @DeleteMapping("{path}")
+    @DeleteMapping
     @Log(description = "附件删除", type = LogTypeEnum.DELETE)
-    public String delete(@PathVariable("path") String path) {
+    public String delete(String path) {
         sysAttachmentService.deleteByPath(path);
         return success();
     }

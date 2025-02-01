@@ -40,9 +40,14 @@ public class SysAttachment implements Serializable {
     private String path;
 
     /**
-     * 业务编码（文件上传时所在的路由名称）
+     * 业务编码（默认文件上传时所在的路由名称）
      */
     private String businessCode;
+
+    /**
+     * 业务名称（默认文件上传时所在的菜单名称）
+     */
+    private String businessName;
 
     /**
      * 文件类型
@@ -53,16 +58,6 @@ public class SysAttachment implements Serializable {
      * 上传状态 上传成功、上传失败
      */
     private String uploadStatus;
-
-    /**
-     * 上传模式 单文件 0 、分片 1
-     */
-    private String uploadMode;
-
-    /**
-     * 分片详情
-     */
-    private String chunkDetails;
 
     /**
      * 文件存储位置 如：本地、云存储等

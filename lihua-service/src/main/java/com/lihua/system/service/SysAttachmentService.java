@@ -31,7 +31,7 @@ public interface SysAttachmentService {
      * 保存附件信息
      * @return 附件id
      */
-    String save(MultipartFile file, String businessCode);
+    String save(MultipartFile file, String businessCode, String businessName);
 
     /**
      * 根据路径获取原文件名称
