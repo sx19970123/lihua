@@ -46,6 +46,25 @@ public class SysAttachmentController extends BaseController {
         return success(sysAttachmentService.save(file, businessCode, businessName));
     }
 
+    @GetMapping("chunk/uploadedIndex/{md5}")
+    public String chunksUploadedIndex(@PathVariable("md5") String md5) {
+        return success(sysAttachmentService.chunksUploadedIndex(md5));
+    }
+
+    @PostMapping("chunk/save")
+    @Log(description = "附件上传（分片）", type = LogTypeEnum.UPLOAD)
+    public String chunksSave(@RequestBody SysAttachment sysAttachment) {
+        return success(sysAttachmentService.chunksSave(sysAttachment));
+    }
+
+    @PostMapping("chunk/upload/{md5}/{index}")
+    public String chunksUpload(@RequestParam("file") MultipartFile file,
+                               @PathVariable("md5") String md5,
+                               @PathVariable("index") String index) {
+        sysAttachmentService.chunksUpload(file, md5, index);
+        return success();
+    }
+
     @DeleteMapping("multiple")
     @Log(description = "附件删除", type = LogTypeEnum.DELETE)
     public String delete(@RequestBody List<SysAttachment> sysAttachmentList) {

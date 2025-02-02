@@ -50,9 +50,19 @@ public class SysAttachment implements Serializable {
     private String businessName;
 
     /**
+     * 文件大小
+     */
+    private long size;
+
+    /**
      * 文件类型
      */
     private String type;
+
+    /**
+     * 上传方式
+     */
+    private String uploadMode;
 
     /**
      * 上传状态 上传成功、上传失败
@@ -63,6 +73,16 @@ public class SysAttachment implements Serializable {
      * 文件存储位置 如：本地、云存储等
      */
     private String storageLocation;
+
+    /**
+     * md5值，分片上传有此值
+     */
+    private String md5;
+
+    /**
+     * 分片信息
+     */
+    private String chunkInfo;
 
     /**
      * 上传人id

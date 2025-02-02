@@ -25,6 +25,8 @@ import java.io.File;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +36,10 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     // 不同附件存储方法实现策略
     @Resource
     private Map<String, AttachmentStorageStrategy> attachmentStorageStrategyMap;
+
+    // 存储路径
+    @Value("${lihua.uploadFilePath}")
+    private String uploadFilePath;
 
     // 附件存储模式
     @Value("${lihua.uploadFileModel}")
@@ -89,11 +95,14 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
                     .setErrorMsg(e.getMessage())
                     .setUploadStatus("1");
         }
+
         // 完善附件数据
         sysAttachment
+                .setSize(file.getSize())
                 .setBusinessCode(businessCode)
                 .setBusinessName(businessName)
                 .setStorageLocation(uploadFileModel)
+                .setUploadMode("0")
                 .setCreateId(LoginUserContext.getUserId())
                 .setCreateTime(DateUtils.now())
                 .setDelFlag("0");
@@ -105,6 +114,41 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         } else {
             throw new FileException(sysAttachment.getErrorMsg());
         }
+    }
+
+    @Override
+    public String chunksSave(SysAttachment sysAttachment) {
+        // 根据md5值查询数据库
+        SysAttachment dbData = lambdaQuery()
+                .select(SysAttachment::getId)
+                .eq(SysAttachment::getMd5, sysAttachment.getMd5())
+                .one();
+        // dbData不为空，为SysAttachment设置id，否则设置创建人/时间
+        if (dbData != null) {
+            sysAttachment.setId(dbData.getId());
+        } else {
+            sysAttachment.setCreateId(LoginUserContext.getUserId()).setCreateTime(DateUtils.now());
+        }
+        // 完善附件数据
+        sysAttachment.setUploadMode("1")
+                .setStorageLocation(uploadFileModel)
+                .setDelFlag("0");
+        // 调用mp的更新保存方法
+        saveOrUpdate(sysAttachment);
+        return sysAttachment.getId();
+    }
+
+    @Override
+    public List<Integer> chunksUploadedIndex(String md5) {
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(uploadFileModel);
+        List<Integer> tempChunksIndexList = attachmentStorageStrategy.getTempChunksIndex(md5);
+        return tempChunksIndexList == null ? new ArrayList<>() : tempChunksIndexList;
+    }
+
+    @Override
+    public void chunksUpload(MultipartFile file, String md5, String index) {
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(uploadFileModel);
+        attachmentStorageStrategy.uploadTempFile(file, Path.of(uploadFilePath,"temporary", md5, index).toString());
     }
 
     @Override

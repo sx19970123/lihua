@@ -3,6 +3,7 @@ package com.lihua.system.strategy;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * 不同附件存储方式策略接口
@@ -24,6 +25,20 @@ public interface AttachmentStorageStrategy {
      * @return 文件上传完成后保存到数据库业务表的返回值，一般是存储路径
      */
     String uploadFile(String url, String businessCode);
+
+    /**
+     * 上传临时文件（分片上传）
+     * @param file 附件片段
+     * @param fullFilePath 附件临时路径即名称
+     */
+    void uploadTempFile(MultipartFile file, String fullFilePath);
+
+    /**
+     * 通过md5获取临时目录下已上传的文件索引
+     * @param md5 附件md5编码
+     * @return 对应已上传的
+     */
+    List<Integer> getTempChunksIndex(String md5);
 
     /**
      * 删除文件

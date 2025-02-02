@@ -34,6 +34,28 @@ public interface SysAttachmentService {
     String save(MultipartFile file, String businessCode, String businessName);
 
     /**
+     * 保存附件信息（分片上传）
+     * @param sysAttachment 附件信息
+     * @return 附件id
+     */
+    String chunksSave(SysAttachment sysAttachment);
+
+    /**
+     * 通过 md5值获取已上传分片附件的索引值
+     * @param md5 附件md5
+     * @return 已上传的附件索引集合
+     */
+    List<Integer> chunksUploadedIndex(String md5);
+
+    /**
+     * 分片上传
+     * @param file 分片附件
+     * @param md5 完整文件的md5值
+     * @param index 附件索引
+     */
+    void chunksUpload(MultipartFile file, String md5, String index);
+
+    /**
      * 根据路径获取原文件名称
      * @param path 文件路径
      * @return 原文件名称

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.List;
 
 @Component("MINIO")
 public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
@@ -18,6 +19,15 @@ public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
     @Override
     public String uploadFile(String url, String businessCode) {
         return "";
+    }
+
+    @Override
+    public void uploadTempFile(MultipartFile file, String md5) {
+    }
+
+    @Override
+    public List<Integer> getTempChunksIndex(String md5) {
+        return List.of();
     }
 
     @Override

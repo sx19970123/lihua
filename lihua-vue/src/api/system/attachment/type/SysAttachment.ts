@@ -13,12 +13,20 @@ export interface SysAttachment {
     businessCode?: string;
     /** 业务名称（默认文件上传时所在的菜单名称） */
     businessName?: string;
+    /** 文件大小 */
+    size?: number;
     /** 文件类型 */
     type?: string;
+    /** 上传方式 */
+    uploadMode?: string;
     /** 上传状态 上传成功、上传失败 */
     uploadStatus?: string;
     /** 文件存储位置 如：本地、云存储等 */
     storageLocation?: string;
+    /** md5 */
+    md5?: string;
+    /** 分片信息 */
+    chunkInfo?: string;
     /** 上传人id */
     createId?: string;
     /** 上传时间 */

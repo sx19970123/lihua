@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <a-spin v-model:spinning="uploading" :tip="uploadTip">
     <a-upload v-if="model === 'button' || model === 'picture'"
               v-model:file-list="fileList"
               :action="uploadURL"
@@ -56,7 +56,7 @@
       <a-image style="border-radius: 8px" :preview="{maskClassName: 'attachment-upload-preview-mask'}" :src="previewURL" v-if="previewType === 'image'"/>
       <video style="width: 100%;border-radius: 8px" controls :src="previewURL" v-if="previewType === 'video'"/>
     </a-modal>
-  </div>
+  </a-spin>
 </template>
 
 <script setup lang="ts">
@@ -65,7 +65,13 @@ import {onMounted, ref} from "vue";
 import {download} from "@/utils/FileDownload.ts";
 import {useRoute} from "vue-router";
 import token from "@/utils/Token.ts";
-import {deleteAttachment, getDownloadURL, queryAttachmentInfoByPathList} from "@/api/system/attachment/Attachment.ts";
+import {
+  chunksUpload,
+  chunksUploadedIndex,
+  deleteAttachment,
+  getDownloadURL,
+  queryAttachmentInfoByPathList
+} from "@/api/system/attachment/Attachment.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 const { getToken } = token
 const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"]
@@ -74,7 +80,7 @@ const baseAPI = import.meta.env.VITE_APP_BASE_API
 const authorization = 'Bearer ' + getToken()
 const router = useRoute()
 // 参数
-const {model = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 500, multiple = true, directory = false, modelValue, businessCode, businessName} = defineProps<{
+const {model = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 5000000, multiple = true, directory = false, modelValue, businessCode, businessName, chunk = false, chunkSize = 200, chunkUploadCount = 3} = defineProps<{
   // 模式：按钮/图片/拖拽
   model?: 'button' | 'picture' | 'dragger',
   // 图标
@@ -98,7 +104,13 @@ const {model = 'button', icon, text, uploadType = [], description, maxCount = 10
   // 业务编码
   businessCode?: string,
   // 业务名称
-  businessName?: string
+  businessName?: string,
+  // 是否分片上传
+  chunk?: boolean,
+  // 最大分片片段大小
+  chunkSize?: number,
+  // 分片上传同时上传数量
+  chunkUploadCount?: number,
 }>()
 
 // 方法
@@ -151,6 +163,10 @@ const init = async () => {
 const initUpload = () => {
   // 上传url
   const uploadURL = ref<string>()
+  // 上传loading
+  const uploading = ref<boolean>(false)
+  // 分片上传提示
+  const uploadTip = ref<string>()
 
   // 初始化上传url
   const initUploadUrl = () => {
@@ -160,7 +176,7 @@ const initUpload = () => {
   };
 
   // 文件上传前检验
-  const beforeUpload = (file: UploadFile) => {
+  const beforeUpload = (file: File) => {
     // 获取文件数据异常
     if (!file || !file.name || !file.size) {
       message.error("获取文件数据异常")
@@ -170,6 +186,12 @@ const initUpload = () => {
     // 验证文件大小和类型
     if (!checkSize(file.size) || !checkType(file.name)) {
       return Upload.LIST_IGNORE;
+    }
+
+    // 分片上传
+    if (chunk) {
+      handleChunkUpload(file)
+      return false;
     }
 
     return true;
@@ -207,6 +229,10 @@ const initUpload = () => {
 
   // 处理文件上传变化（uploading：上传中 done：上传成功 error：上传失败 removed：已删除）
   const handleChange = ({file, fileList}: {file: UploadFile, fileList: Array<UploadFile>}) => {
+    if (file.status === "uploading") {
+      return
+    }
+
     // 文件上传失败
     if (file.status === "error") {
       emits("uploadError", file)
@@ -256,13 +282,72 @@ const initUpload = () => {
     emits("update:modelValue", modelValueList.join(","))
   }
 
-  // 处理文件删除
-  const handleRemove = async (file: UploadFile) => {
-    if (file && file.url) {
+  // 处理分片上传
+  const handleChunkUpload = async (file: File) => {
+    uploading.value = true
+    // 1. 对附件进行分片
+    const chunks = handleChunk(file);
+    // 2. 获取文件md5值
+    const md5 = await calculateHash(chunks) as string
+    // 3. 构建分片对象
+    const chunkObjects = chunks.map((chunk, index) => ({
+      index,
+      chunk,
+      status: "pending", // 状态：等待中
+    }));
+    // 4. 获取已上传的分片索引
+    const uploadedIndexResp = await chunksUploadedIndex(md5);
+    if (uploadedIndexResp.code !== 200) {
+      message.error(uploadedIndexResp.msg)
+      uploading.value = false
+    }
+
+    // 5. 初始化各种计数器
+    const uploadedIndexList = uploadedIndexResp.data
+    // 获取到需要上传的分片附件
+    const needUploadChunks = chunkObjects.filter(item => !uploadedIndexList.includes(item.index))
+    // 分片上传计数器
+    let uploadedChunkNum = 0
+    // 已上传大小计数器
+    let uploadedChunkSize = uploadedIndexList.length * chunkSize * 1024 * 1024
+
+    // 没有需要上传的情况
+    if (needUploadChunks.length === 0) {
+      // todo 处理上传完成后的逻辑
+      uploadTip.value = `上传完成，正在合并`
+      return
+    }
+
+    // 6. 分片上传主体方法
+    const uploadChunk = async (i: number) => {
+      if (i >= needUploadChunks.length) return;
+      // 状态改为进行中
+      const {chunk, index} = needUploadChunks[i]
+      needUploadChunks[i].status = "in_progress"
       try {
-        const resp = await deleteAttachment(file.url)
+        // 调用分片上传接口
+        const resp = await chunksUpload(chunk, md5, index, (bytes: number) => {
+          // 上传状态显示
+          uploadedChunkSize = bytes + uploadedChunkSize
+          uploadTip.value = `正在上传：${Math.trunc(uploadedChunkSize / 1024 / 1024)}MB / ${Math.trunc(file.size / 1024 / 1024)}MB（${Math.trunc(uploadedChunkSize / file.size * 100)}%）`
+        })
+
         if (resp.code === 200) {
-          message.success(resp.msg)
+          // 修改状态为已上传
+          needUploadChunks[i].status = "completed"
+          // 计数器 + 1
+          uploadedChunkNum++
+          // 所有分片上传完成
+          if (uploadedChunkNum == needUploadChunks.length) {
+            // todo 处理上传完成后的逻辑
+            uploadTip.value = `上传完成，正在合并`
+          } else {
+            // 获取下一个等待中状态的数据进行上传
+            const nextIndex = needUploadChunks.findIndex(item => item.status === "pending")
+            if (nextIndex !== -1) {
+              await uploadChunk(nextIndex)
+            }
+          }
         } else {
           message.error(resp.msg)
         }
@@ -273,22 +358,55 @@ const initUpload = () => {
           console.error(e)
         }
       }
-    } else {
-      message.error("文件删除异常")
     }
+
+    // 7. 初始化chunkUploadCount个上传任务
+    const queue: Promise<any>[] = [];
+    for (let i = 0; i < Math.min(chunkUploadCount, needUploadChunks.length); i++) {
+      queue.push(uploadChunk(i++));
+    }
+    await Promise.all(queue);
+  }
+
+  // 处理大文件分片
+  const handleChunk = (file: File): Blob[] => {
+    uploadTip.value = "正在处理分片"
+    const chunks:Blob[] = []
+    const size = chunkSize * 1024 * 1024
+    for (let i = 0; i < file.size; i = size + i) {
+      chunks.push(file.slice(i, size + i))
+    }
+    return chunks;
+  }
+
+  // 计算文件哈希
+  const calculateHash = (chunks: Blob[]) => {
+    return new Promise(resolve => {
+      uploadTip.value = "正在处理Hash计算"
+      // 通过webWorker后台处理hash计算，防止ui阻塞
+      const worker = new Worker(new URL("./HashWorker.ts", import.meta.url), {type: "module"})
+      // 接收hash计算完成后的结果
+      worker.onmessage = (event) => {
+        resolve(event.data as string)
+        worker.terminate()
+      }
+      worker.postMessage(chunks)
+    })
   }
 
   // 组合上传url
   initUploadUrl()
+
   return {
     uploadURL,
+    uploading,
+    uploadTip,
     beforeUpload,
-    handleChange,
-    handleRemove
+    handleChange
   }
 }
 
-const {uploadURL, beforeUpload, handleChange, handleRemove } = initUpload()
+const {uploadURL, uploading, uploadTip, beforeUpload, handleChange } = initUpload()
 
 // 初始化预览
 const initPreview = () => {
@@ -381,6 +499,28 @@ const initPreview = () => {
 }
 
 const { previewVisible, previewTitle, previewURL, previewType, handlePreview, handleCancel, handleShowThumbImage, handleThumbUrl } = initPreview()
+
+// 处理文件删除
+const handleRemove = async (file: UploadFile) => {
+  if (file && file.url) {
+    try {
+      const resp = await deleteAttachment(file.url)
+      if (resp.code === 200) {
+        message.success(resp.msg)
+      } else {
+        message.error(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    }
+  } else {
+    message.error("文件删除异常")
+  }
+}
 
 onMounted(() => {
   init()

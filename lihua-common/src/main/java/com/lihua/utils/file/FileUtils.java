@@ -89,6 +89,35 @@ public class FileUtils {
     }
 
     /**
+     * 文件上传
+     * @param inputStream 输入流
+     * @param fullFilePath 完整路径
+     * @return 文件路径
+     */
+    public static String upload(InputStream inputStream, String fullFilePath) {
+        File file = new File(fullFilePath);
+
+        File parentDir = file.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            if (!parentDir.mkdirs()) {
+                throw new FileException("创建文件夹失败");
+            }
+        }
+
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            throw new FileException("上传文件失败" + e.getMessage());
+        }
+
+        return file.getAbsolutePath();
+    }
+
+    /**
      * 通过 URL 获取文件流
      * @param url 文件链接
      */
@@ -287,30 +316,6 @@ public class FileUtils {
             log.error(e.getMessage(), e);
             throw new FileException("文件 " + path + " 删除失败");
         }
-    }
-
-    // 文件上传
-    private static String upload(InputStream inputStream, String fullFilePath) {
-        File file = new File(fullFilePath);
-
-        File parentDir = file.getParentFile();
-        if (parentDir != null && !parentDir.exists()) {
-            if (!parentDir.mkdirs()) {
-                throw new FileException("创建文件夹失败");
-            }
-        }
-
-        try (FileOutputStream outputStream = new FileOutputStream(file)) {
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-        } catch (IOException e) {
-            throw new FileException("上传文件失败" + e.getMessage());
-        }
-
-        return file.getAbsolutePath();
     }
 
     /**
