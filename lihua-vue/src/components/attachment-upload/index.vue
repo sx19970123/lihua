@@ -286,26 +286,24 @@ const initUpload = () => {
   const handleChunkUpload = async (file: File) => {
     uploading.value = true
     // 1. 对附件进行分片
-    const chunks = handleChunk(file);
+    const chunks = handleChunk(file, chunkSize);
     // 2. 获取文件md5值
-    const md5 = await calculateHash(chunks) as string
-    // 3. 构建分片对象
-    const chunkObjects = chunks.map((chunk, index) => ({
-      index,
-      chunk,
-      status: "pending", // 状态：等待中
-    }));
-    // 4. 获取已上传的分片索引
+    const md5 = await calculateHash(file) as string
+    // 3. 获取已上传的分片索引
     const uploadedIndexResp = await chunksUploadedIndex(md5);
     if (uploadedIndexResp.code !== 200) {
       message.error(uploadedIndexResp.msg)
       uploading.value = false
     }
 
-    // 5. 初始化各种计数器
     const uploadedIndexList = uploadedIndexResp.data
-    // 获取到需要上传的分片附件
-    const needUploadChunks = chunkObjects.filter(item => !uploadedIndexList.includes(item.index))
+    // 4. 获取到需要上传的分片附件，并构建分片对象
+    const needUploadChunks = chunks.filter((item, index) => !uploadedIndexList.includes(index)).map((chunk, index) => ({
+      index,
+      chunk,
+      status: "pending", // 状态：等待中
+    }))
+    // 5. 创建各种计数器
     // 分片上传计数器
     let uploadedChunkNum = 0
     // 已上传大小计数器
@@ -369,10 +367,10 @@ const initUpload = () => {
   }
 
   // 处理大文件分片
-  const handleChunk = (file: File): Blob[] => {
+  const handleChunk = (file: File, size: number): Blob[] => {
     uploadTip.value = "正在处理分片"
     const chunks:Blob[] = []
-    const size = chunkSize * 1024 * 1024
+     size = size * 1024 * 1024
     for (let i = 0; i < file.size; i = size + i) {
       chunks.push(file.slice(i, size + i))
     }
@@ -380,15 +378,20 @@ const initUpload = () => {
   }
 
   // 计算文件哈希
-  const calculateHash = (chunks: Blob[]) => {
+  const calculateHash = (file: File) => {
+    const chunks = handleChunk(file, 10)
     return new Promise(resolve => {
-      uploadTip.value = "正在处理Hash计算"
       // 通过webWorker后台处理hash计算，防止ui阻塞
       const worker = new Worker(new URL("./HashWorker.ts", import.meta.url), {type: "module"})
       // 接收hash计算完成后的结果
       worker.onmessage = (event) => {
-        resolve(event.data as string)
-        worker.terminate()
+        const resp = event.data
+        if (typeof resp === "string") {
+          resolve(resp)
+          worker.terminate()
+        } else {
+          uploadTip.value = `正在扫描文件（${resp}%）`
+        }
       }
       worker.postMessage(chunks)
     })

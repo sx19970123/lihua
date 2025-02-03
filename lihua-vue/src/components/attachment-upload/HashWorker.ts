@@ -1,30 +1,25 @@
-import SparkMD5 from "spark-md5";
+import { createMD5 } from 'hash-wasm';
 
 /**
  * 创建子线程进行文件 hash 计算
  * @param event
  */
-self.onmessage = (event) => {
+self.onmessage = async (event) => {
     const chunks = event.data
     // 初始化md5计算工具
-    const spark = new SparkMD5()
+    const blake3 = await createMD5();
     // read读取函数
     const read = (i: number) => {
-        // 读取完成后调用end()返回哈希
+        // 读取完成后调用digest()返回哈希
         if (i >= chunks.length) {
-            self.postMessage(spark.end())
+            self.postMessage(blake3.digest("hex"))
             return
         }
-        // 文件读取器读取字节数组通过spark分段计算hash
-        const reader = new FileReader();
-        reader.readAsArrayBuffer(chunks[i])
-        reader.onload = (e) => {
-            const bytes = e.target?.result
-            if (bytes) {
-                spark.append(bytes)
-            }
-            return read(i + 1)
-        }
+        chunks[i].arrayBuffer().then((data: ArrayBuffer) => {
+            self.postMessage(Math.trunc(i * 100 / chunks.length))
+            blake3.update(new Uint8Array(data));
+            read(i + 1)
+        })
     }
     read(0)
 }
