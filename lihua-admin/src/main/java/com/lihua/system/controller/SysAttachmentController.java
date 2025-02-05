@@ -38,12 +38,13 @@ public class SysAttachmentController extends BaseController {
         return success(sysAttachmentService.queryAttachmentInfoByPathList(pathList));
     }
 
-    @PostMapping("upload/{businessCode}/{businessName}")
+    @PostMapping("upload/{md5}/{businessCode}/{businessName}")
     @Log(description = "附件上传", type = LogTypeEnum.UPLOAD)
     public String upload(@RequestParam("file") MultipartFile file,
+                         @PathVariable("md5") String md5,
                          @PathVariable("businessCode") String businessCode,
                          @PathVariable("businessName") String businessName) {
-        return success(sysAttachmentService.save(file, businessCode, businessName));
+        return success(sysAttachmentService.save(file, md5, businessCode, businessName));
     }
 
     @GetMapping("chunk/uploadedIndex/{md5}")
@@ -57,12 +58,30 @@ public class SysAttachmentController extends BaseController {
         return success(sysAttachmentService.chunksSave(sysAttachment));
     }
 
-    @PostMapping("chunk/upload/{md5}/{index}")
+    @PostMapping("chunk/upload/{uploadId}/{index}")
     public String chunksUpload(@RequestParam("file") MultipartFile file,
-                               @PathVariable("md5") String md5,
+                               @PathVariable("uploadId") String uploadId,
                                @PathVariable("index") String index) {
-        sysAttachmentService.chunksUpload(file, md5, index);
+        sysAttachmentService.chunksUpload(file, uploadId, index);
         return success();
+    }
+
+    @PostMapping("chunk/merge/{uploadId}/{total}")
+    public String chunksMerge(@RequestBody SysAttachment sysAttachment,
+                              @PathVariable("uploadId") String uploadId,
+                              @PathVariable("total") Integer total) {
+        return success(sysAttachmentService.chunksMerge(sysAttachment, uploadId, total));
+    }
+
+
+    @GetMapping("exists/{md5}")
+    public String existsAttachmentByMd5(@PathVariable("md5") String md5) {
+        return success(sysAttachmentService.existsAttachmentByMd5(md5));
+    }
+
+    @GetMapping("md5/{md5}")
+    public String queryPathByMd5(@PathVariable("md5") String md5) {
+        return success(sysAttachmentService.queryPathByMd5(md5));
     }
 
     @DeleteMapping("multiple")

@@ -8,20 +8,24 @@ import com.lihua.utils.crypt.AesUtils;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.file.FileUtils;
 import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -32,14 +36,16 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     @Resource
     private LihuaConfig lihuaConfig;
 
+    private final String TEMPORARY_DIR = "temporary";
+
     @Override
-    public String uploadFile(MultipartFile file, String businessCode) {
-        return FileUtils.upload(file, businessCode);
+    public String uploadFile(MultipartFile file) {
+        return FileUtils.upload(file);
     }
 
     @Override
-    public String uploadFile(String url, String businessCode) {
-        return FileUtils.upload(url, businessCode);
+    public String uploadFile(String url) {
+        return FileUtils.upload(url);
     }
 
     @Override
@@ -52,9 +58,8 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
-    public List<Integer> getTempChunksIndex(String md5) {
-        String uploadFilePath = lihuaConfig.getUploadFilePath();
-        try(Stream<Path> paths = Files.walk(Paths.get(uploadFilePath, "temporary", md5))) {
+    public List<Integer> getTempChunksIndex(String uploadId) {
+        try(Stream<Path> paths = Files.walk(Paths.get(lihuaConfig.getUploadFilePath(), TEMPORARY_DIR, uploadId))) {
             return paths.filter(Files::isRegularFile)
                     // 确保保存的文件名为纯索引
                     .map(file -> Integer.valueOf(file.getFileName().toString()))
@@ -64,6 +69,50 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
             return new ArrayList<>();
         } catch (IOException e) {
             throw new FileException("获取分片临时文件出错");
+        }
+    }
+
+    @SneakyThrows
+    @Override
+    public String chunksMerge(String fileName, String md5, String uploadId, Integer total) {
+        // 创建最后输出的文件
+        File file = new File(FileUtils.generateFullFilePath(fileName));
+        // 初始化md5计算器
+        MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+        try (FileOutputStream fos = new FileOutputStream(file, true);
+             FileChannel outputChannel = fos.getChannel()) {
+            for (int i = 0; i < total; i++) {
+                // 循环读取临时文件
+                String temporaryFilePath = Paths.get(lihuaConfig.getUploadFilePath(), TEMPORARY_DIR, uploadId, String.valueOf(i)).toString();
+                File chunkFile = new File(temporaryFilePath);
+                try (FileInputStream fis = new FileInputStream(chunkFile);
+                     FileChannel inputChannel = fis.getChannel()) {
+                    ByteBuffer buffer = ByteBuffer.allocate(64 * 1024);
+                    while (inputChannel.read(buffer) > 0) {
+                        buffer.flip();
+                        buffer.mark();
+                        // 更新MD5
+                        messageDigest.update(buffer);
+                        buffer.reset();
+                        // 写入文件
+                        outputChannel.write(buffer);
+                        buffer.clear();
+                    }
+                }
+                // 删除分片
+                chunkFile.delete();
+            }
+            // 删除对应临时文件夹
+            Files.delete(Paths.get(lihuaConfig.getUploadFilePath(), TEMPORARY_DIR, uploadId));
+
+            if (!bytesToHex(messageDigest.digest()).equals(md5)) {
+                throw new FileException("合并文件所损坏");
+            }
+
+            return file.getAbsolutePath();
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            throw new FileException("文件合并失败");
         }
     }
 
@@ -87,5 +136,19 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     @Override
     public File download(String path, String originalName) {
         return new File(path, originalName);
+    }
+
+    // 将字节数组转换为十六进制字符串
+    private static String bytesToHex(byte[] bytes) {
+        if (bytes == null) {
+            return "";
+        }
+        Formatter formatter = new Formatter();
+        for (byte b : bytes) {
+            formatter.format("%02x", b);
+        }
+        String result = formatter.toString();
+        formatter.close();
+        return result;
     }
 }

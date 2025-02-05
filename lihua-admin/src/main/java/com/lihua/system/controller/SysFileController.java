@@ -77,7 +77,7 @@ public class SysFileController extends BaseController {
     @PostMapping("upload")
     @Log(description = "单文件上传", type = LogTypeEnum.UPLOAD)
     public String upload(@RequestParam("file") MultipartFile file) {
-        return success(FileUtils.upload(file, null));
+        return success(FileUtils.upload(file));
     }
 
     /**
@@ -86,7 +86,7 @@ public class SysFileController extends BaseController {
     @PostMapping("uploads")
     @Log(description = "多文件上传", type = LogTypeEnum.UPLOAD)
     public String uploads(@RequestParam("files") MultipartFile[] files) {
-        return success(FileUtils.upload(files, null));
+        return success(FileUtils.upload(files));
     }
 
     /**
@@ -96,7 +96,7 @@ public class SysFileController extends BaseController {
     @PostMapping("editor/uploadByUrl")
     public String editorUpload(@RequestBody EditorUrlFileModel editorUrlFileModel) {
         String url = editorUrlFileModel.getUrl();
-        String filePath = FileUtils.upload(url, null);
+        String filePath = FileUtils.upload(url);
         editorUrlFileModel.setOriginalURL(url);
         editorUrlFileModel.setUrl(filePath);
         return success(ResultCodeEnum.EDITOR_SUCCESS, editorUrlFileModel);
@@ -108,7 +108,7 @@ public class SysFileController extends BaseController {
     @PostMapping("editor/uploads")
     public String editorUpload(@RequestParam("files") MultipartFile[] files) {
         // 上传文件
-        List<String> upload = FileUtils.upload(files, null);
+        List<String> upload = FileUtils.upload(files);
         // 构建返回
         EditorFileModel editorFileModel = new EditorFileModel();
         Map<String, String> map = new HashMap<>();

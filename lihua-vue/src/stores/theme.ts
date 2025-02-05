@@ -143,7 +143,7 @@ export const useThemeStore = defineStore('theme',{
                         }
                     }
                 }
-                this.$state.isDarkTheme = localStorage.getItem("dataTheme") === 'dark'
+                this.$state.isDarkTheme = localStorage.getItem("data-theme") === 'dark'
             } catch (e) {
                 console.error('初始化主题失败，使用默认主题',e)
                 return;
@@ -175,7 +175,7 @@ export const useThemeStore = defineStore('theme',{
                 this.$state.themeConfig.algorithm = theme.defaultAlgorithm
             }
             this.changeSiderTheme()
-            localStorage.setItem('dataTheme',this.$state.isDarkTheme ? 'dark' : 'light')
+            localStorage.setItem('data-theme',this.$state.isDarkTheme ? 'dark' : 'light')
         },
         // 布局类型
         changeLayoutType() {
@@ -264,7 +264,7 @@ export const useThemeStore = defineStore('theme',{
             this.$state.layoutType = settings.layoutType
             this.$state.componentSize = settings.componentSize
             this.$state.showViewTabs = settings.showViewTabs
-            this.$state.isDarkTheme = localStorage.getItem("dataTheme") === "dark"
+            this.$state.isDarkTheme = localStorage.getItem("data-theme") === "dark"
             this.$state.colorPrimary = settings.themeConfig.token.colorPrimary
             this.$state.siderTheme = settings.siderTheme
             this.$state.groundGlass = settings.groundGlass

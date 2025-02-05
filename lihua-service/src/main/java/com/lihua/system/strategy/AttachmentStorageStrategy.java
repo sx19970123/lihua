@@ -13,18 +13,16 @@ public interface AttachmentStorageStrategy {
     /**
      * 文件上传
      * @param file 文件
-     * @param businessCode 业务编码
      * @return 文件上传完成后保存到数据库业务表的返回值，一般是存储路径
      */
-    String uploadFile(MultipartFile file, String businessCode);
+    String uploadFile(MultipartFile file);
 
     /**
      * 通过网络链接下载文件
      * @param url 网络文件链接
-     * @param businessCode 业务编码
      * @return 文件上传完成后保存到数据库业务表的返回值，一般是存储路径
      */
-    String uploadFile(String url, String businessCode);
+    String uploadFile(String url);
 
     /**
      * 上传临时文件（分片上传）
@@ -34,11 +32,21 @@ public interface AttachmentStorageStrategy {
     void uploadTempFile(MultipartFile file, String fullFilePath);
 
     /**
-     * 通过md5获取临时目录下已上传的文件索引
-     * @param md5 附件md5编码
+     * 通过uploadId获取临时目录下已上传的文件索引
+     * @param uploadId 前端生成uploadId
      * @return 对应已上传的
      */
-    List<Integer> getTempChunksIndex(String md5);
+    List<Integer> getTempChunksIndex(String uploadId);
+
+    /**
+     * 分片文件合并
+     * @param uploadId 前端生成uploadId
+     * @param fileName 文件名称，用于取后缀名
+     * @param md5 文件md5，用于文件校验比对
+     * @param total 总分片数量
+     * @return 合并后的全路径
+     */
+    String chunksMerge(String fileName, String md5, String uploadId, Integer total);
 
     /**
      * 删除文件

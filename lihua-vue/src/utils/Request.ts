@@ -5,6 +5,9 @@ import { useUserStore } from "@/stores/user";
 import router from "@/router";
 const { getToken } = token
 
+// 当前正在进行的请求url集合
+export const currentRequests = new Set<string>([]);
+
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 const service = axios.create({
     baseURL: import.meta.env.VITE_APP_BASE_API,
@@ -18,6 +21,7 @@ service.interceptors.request.use(config => {
     if (getToken()) {
         config.headers['Authorization'] = 'Bearer ' + getToken()
     }
+    currentRequests.add(config.method + ":" + config.url)
     return config;
 }, error => {
     Promise.reject(error).then(r => {})
@@ -26,6 +30,8 @@ service.interceptors.request.use(config => {
 // 响应拦截器
 service.interceptors.response.use((resp) => {
     const data = resp.data
+    const config = resp.config
+    currentRequests.delete(config.method + ":" + config.url)
     // token 失效或解析异常，清空用户信息返回登陆
     if (data.code === 401) {
         // 清空用户信息

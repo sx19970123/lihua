@@ -63,6 +63,24 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
+    public boolean existsAttachmentByMd5(String md5) {
+        return lambdaQuery()
+                .eq(SysAttachment::getMd5, md5)
+                .eq(SysAttachment::getUploadStatus, "0")
+                .exists();
+    }
+
+    @Override
+    public String queryPathByMd5(String md5) {
+        SysAttachment sysAttachment = lambdaQuery()
+                .select(SysAttachment::getPath)
+                .eq(SysAttachment::getMd5, md5)
+                .eq(SysAttachment::getUploadStatus, "0")
+                .one();
+        return sysAttachment == null ? null : sysAttachment.getPath();
+    }
+
+    @Override
     public List<SysAttachment> queryAttachmentInfoByPathList(List<String> pathList) {
         List<SysAttachment> sysAttachmentList = lambdaQuery()
                 .select(SysAttachment::getId, SysAttachment::getPath, SysAttachment::getOriginalName)
@@ -74,14 +92,14 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    public String save(MultipartFile file, String businessCode, String businessName) {
+    public String save(MultipartFile file, String md5, String businessCode, String businessName) {
         AttachmentStorageStrategy strategy = getStrategy();
         // 构建系统附件对象
         SysAttachment sysAttachment = new SysAttachment();
 
         // 文件上传至服务器
         try {
-            String fullPath = strategy.uploadFile(file, businessCode);
+            String fullPath = strategy.uploadFile(file);
             sysAttachment
                     .setPath(fullPath)
                     .setUploadStatus("0")
@@ -99,6 +117,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         // 完善附件数据
         sysAttachment
                 .setSize(file.getSize())
+                .setMd5(md5)
                 .setBusinessCode(businessCode)
                 .setBusinessName(businessName)
                 .setStorageLocation(uploadFileModel)
@@ -146,9 +165,15 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    public void chunksUpload(MultipartFile file, String md5, String index) {
+    public void chunksUpload(MultipartFile file, String uploadId, String index) {
         AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(uploadFileModel);
-        attachmentStorageStrategy.uploadTempFile(file, Path.of(uploadFilePath,"temporary", md5, index).toString());
+        attachmentStorageStrategy.uploadTempFile(file, Path.of(uploadFilePath,"temporary", uploadId, index).toString());
+    }
+
+    @Override
+    public String chunksMerge(SysAttachment sysAttachment, String uploadId, Integer total) {
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(uploadFileModel);
+        return attachmentStorageStrategy.chunksMerge(sysAttachment.getOriginalName(), sysAttachment.getMd5(), uploadId, total);
     }
 
     @Override

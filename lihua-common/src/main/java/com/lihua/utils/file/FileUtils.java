@@ -21,8 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,8 +42,8 @@ public class FileUtils {
     /**
      * 单文件上传
      */
-    public static String upload(MultipartFile file, String businessCode) {
-        String fullFilePath = generateFullFilePath(file.getOriginalFilename(), businessCode);
+    public static String upload(MultipartFile file) {
+        String fullFilePath = generateFullFilePath(file.getOriginalFilename());
         try {
             return upload(file.getInputStream(), fullFilePath);
         } catch (IOException e) {
@@ -56,10 +54,10 @@ public class FileUtils {
     /**
      * 多文件上传
      */
-    public static List<String> upload(MultipartFile[] files, String businessCode) {
+    public static List<String> upload(MultipartFile[] files) {
         List<String> fileFullPathList = new ArrayList<>(files.length);
         for (MultipartFile file : files) {
-            fileFullPathList.add(upload(file, businessCode));
+            fileFullPathList.add(upload(file));
         }
         return fileFullPathList;
     }
@@ -68,14 +66,14 @@ public class FileUtils {
      * url文件上传
      * @param url 文件链接
      */
-    public static String upload(String url, String businessCode) {
+    public static String upload(String url) {
         // 判断url是否合法
         if (!StringUtils.hasText(url)) {
             throw new FileException("文件URL不存在");
         }
 
         //获取文件名
-        String fullFilePath = generateFullFilePathByURL(url, businessCode);
+        String fullFilePath = generateFullFilePathByURL(url);
 
         // 获取输入流
         InputStream inputStream = getInputStreamByURL(url);
@@ -142,16 +140,6 @@ public class FileUtils {
      * @return 文件路径+名称
      */
     public static String generateFullFilePath(String originFileName) {
-        return generateFullFilePath(originFileName, null);
-    }
-
-    /**
-     * 获取文件全路径名称
-     * @param originFileName 文件名称
-     * @param businessCode 业务编码
-     * @return 文件路径+名称
-     */
-    public static String generateFullFilePath(String originFileName, String businessCode) {
         // 通过随机uuid重新命名数据库中保存的文件名称
         String fileName = UUID.randomUUID().toString().replace("-", "");
 
@@ -164,7 +152,7 @@ public class FileUtils {
             log.error("文件【{}】名称获取后缀名异常", fileName);
         }
 
-        return generateFilePath(fileName, businessCode);
+        return generateFilePath(fileName);
     }
 
     /**
@@ -346,23 +334,15 @@ public class FileUtils {
     }
 
     // 根据url获取文件名称
-    private static String generateFullFilePathByURL(String fileUrl, String businessCode) {
+    private static String generateFullFilePathByURL(String fileUrl) {
         String fileNameByURL = getFileNameByURL(fileUrl);
-        return generateFilePath(fileNameByURL, businessCode);
+        return generateFilePath(fileNameByURL);
     }
 
     // 生成文件路径，与文件名拼接
-    private static String generateFilePath(String fileName, String businessCode) {
-
-        String dateFormat = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-
-        // 文件目录通过配置文件指定目录 + 业务编码 + 年月日路径
-        if (StringUtils.hasText(businessCode)) {
-            return Paths.get(lihuaConfig.getUploadFilePath(), businessCode, dateFormat, fileName).toString();
-        }
-
+    private static String generateFilePath(String fileName) {
         // 业务编码为空时直接拼接日期和文件名
-        return Paths.get(lihuaConfig.getUploadFilePath(), dateFormat, fileName).toString();
+        return Paths.get(lihuaConfig.getUploadFilePath(), fileName).toString();
     }
 
 }

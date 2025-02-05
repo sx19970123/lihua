@@ -21,6 +21,17 @@ public interface SysAttachmentService {
     SysAttachment queryById(String id);
 
     /**
+     * 附件是否存在
+     * @return 是否存在
+     */
+    boolean existsAttachmentByMd5(String md5);
+
+    /**
+     * 根据MD5查询附件地址
+     */
+    String queryPathByMd5(String md5);
+
+    /**
      * 根据路径查询文件信息，用于附件组件数据回显
      * @param pathList 附件存储路径
      * @return 对应的附件信息
@@ -31,7 +42,7 @@ public interface SysAttachmentService {
      * 保存附件信息
      * @return 附件id
      */
-    String save(MultipartFile file, String businessCode, String businessName);
+    String save(MultipartFile file, String md5, String businessCode, String businessName);
 
     /**
      * 保存附件信息（分片上传）
@@ -50,10 +61,15 @@ public interface SysAttachmentService {
     /**
      * 分片上传
      * @param file 分片附件
-     * @param md5 完整文件的md5值
+     * @param uploadId 前端生成uploadId
      * @param index 附件索引
      */
-    void chunksUpload(MultipartFile file, String md5, String index);
+    void chunksUpload(MultipartFile file, String uploadId, String index);
+
+    /**
+     * 分片合并
+     */
+    String chunksMerge(SysAttachment sysAttachment, String uploadId, Integer total);
 
     /**
      * 根据路径获取原文件名称

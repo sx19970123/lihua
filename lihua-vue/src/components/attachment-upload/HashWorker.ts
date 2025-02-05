@@ -16,8 +16,8 @@ self.onmessage = async (event) => {
             return
         }
         chunks[i].arrayBuffer().then((data: ArrayBuffer) => {
-            self.postMessage(Math.trunc(i * 100 / chunks.length))
             blake3.update(new Uint8Array(data));
+            self.postMessage(Math.trunc(i * 100 / chunks.length))
             read(i + 1)
         })
     }

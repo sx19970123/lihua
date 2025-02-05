@@ -12,22 +12,27 @@ public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
 
 
     @Override
-    public String uploadFile(MultipartFile file, String businessCode) {
+    public String uploadFile(MultipartFile file) {
         return "";
     }
 
     @Override
-    public String uploadFile(String url, String businessCode) {
+    public String uploadFile(String url) {
         return "";
     }
 
     @Override
-    public void uploadTempFile(MultipartFile file, String md5) {
+    public void uploadTempFile(MultipartFile file, String fullFilePath) {
     }
 
     @Override
-    public List<Integer> getTempChunksIndex(String md5) {
+    public List<Integer> getTempChunksIndex(String uploadId) {
         return List.of();
+    }
+
+    @Override
+    public String chunksMerge(String fileName, String md5, String uploadId, Integer total) {
+        return null;
     }
 
     @Override

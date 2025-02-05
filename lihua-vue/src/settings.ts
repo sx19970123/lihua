@@ -12,7 +12,7 @@ export default {
     /**
      * 暗色模式 true； 亮色模式 false
      */
-    isDarkTheme: localStorage.getItem("dataTheme") === 'dark',
+    isDarkTheme: localStorage.getItem("data-theme") === 'dark',
 
     /**
      * 顶部栏背景颜色
