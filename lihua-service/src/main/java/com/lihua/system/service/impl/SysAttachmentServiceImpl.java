@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, SysAttachment> implements SysAttachmentService {
@@ -65,10 +66,11 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    public boolean existsAttachmentByMd5(String md5) {
+    public boolean existsAttachmentByMd5(String md5, String originFileName) {
         AttachmentStorageStrategy strategy = getStrategy();
-        // 根据md5查询数据库是否存在
-        SysAttachment attachment = queryOneByMd5(md5);
+        // 根据md5和原文件名查询是否存在
+        LambdaQueryChainWrapper<SysAttachment> wrapper = lambdaQuery().eq(SysAttachment::getMd5, md5).eq(SysAttachment::getOriginalName, originFileName);
+        SysAttachment attachment = queryOne(wrapper);
         if (attachment == null || !StringUtils.hasText(attachment.getPath())) {
             return false;
         }
@@ -84,7 +86,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     @Override
     public String fastUpload(SysAttachment sysAttachment) {
-        SysAttachment attachment = queryOneByMd5(sysAttachment.getMd5());
+        SysAttachment attachment = queryOne(lambdaQuery().eq(SysAttachment::getMd5, sysAttachment.getMd5()));
         if (attachment == null) {
             return null;
         }
@@ -100,12 +102,26 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     @Override
     public List<SysAttachment> queryAttachmentInfoByPathList(List<String> pathList) {
-        List<SysAttachment> sysAttachmentList = lambdaQuery()
-                .select(SysAttachment::getId, SysAttachment::getPath, SysAttachment::getOriginalName)
-                .in(SysAttachment::getPath, pathList)
+        // 去重查询path和原文件名
+        List<SysAttachment> sysAttachmentList = query()
+                .select("distinct path", "original_name")
+                .in("path", pathList)
                 .list();
+
+        // 获取未查询出结果的数据集
+        List<String> dbPathList = sysAttachmentList.stream().map(SysAttachment::getPath).toList();
+        pathList.removeAll(dbPathList);
+
         // 获取文件访问路径
         sysAttachmentList.forEach(sysAttachment -> sysAttachment.setPath(getDownloadURL(sysAttachment.getPath())));
+
+        // 未查询出结果的数据集创建对象
+        pathList.forEach(path -> {
+            SysAttachment attachment = new SysAttachment();
+            attachment.setPath(path).setOriginalName(FileUtils.getFileNameByPath(path));
+            sysAttachmentList.add(attachment);
+        });
+
         return sysAttachmentList;
     }
 
@@ -150,7 +166,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     @Override
     public String queryOriginFileName(String path) {
-        SysAttachment sysAttachment = queryOneByPath(path);
+        SysAttachment sysAttachment = queryOne(lambdaQuery().eq(SysAttachment::getPath, path));
         if (sysAttachment != null) {
             return sysAttachment.getOriginalName();
         }
@@ -219,7 +235,10 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     @Override
     public File publicDownload(String path) {
         // 根据路径和公开业务编码进行查询
-        SysAttachment sysAttachment = queryOne(path, null, publicBusinessCodeList);
+        LambdaQueryChainWrapper<SysAttachment> wrapper = lambdaQuery()
+                .eq(SysAttachment::getPath, path)
+                .in(SysAttachment::getBusinessCode, publicBusinessCodeList);
+        SysAttachment sysAttachment = queryOne(wrapper);
 
         if (sysAttachment == null) {
             return null;
@@ -230,33 +249,8 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     }
 
-    // 根据 path 查询单条数据
-    private SysAttachment queryOneByPath(String path) {
-        return queryOne(path, null, null);
-    }
-
-    // 根据 md5 查询单条数据
-    private SysAttachment queryOneByMd5(String md5) {
-        return queryOne(null, md5, null);
-    }
-
     // 根据需要条件查询单条数据
-    private SysAttachment queryOne(String path, String md5, List<String> publicBusinessCodeList) {
-
-        LambdaQueryChainWrapper<SysAttachment> chainWrapper = lambdaQuery();
-
-        if (StringUtils.hasText(path)) {
-            chainWrapper.eq(SysAttachment::getPath, path);
-        }
-
-        if (StringUtils.hasText(md5)) {
-            chainWrapper.eq(SysAttachment::getMd5, md5);
-        }
-
-        if (publicBusinessCodeList != null && !publicBusinessCodeList.isEmpty()) {
-            chainWrapper.in(SysAttachment::getBusinessCode, publicBusinessCodeList);
-        }
-
+    private SysAttachment queryOne(LambdaQueryChainWrapper<SysAttachment> chainWrapper) {
         List<SysAttachment> list = chainWrapper
                 .eq(SysAttachment::getDelFlag, "0")
                 .eq(SysAttachment::getUploadStatus, "0")

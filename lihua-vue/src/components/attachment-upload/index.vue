@@ -53,7 +53,7 @@
       <p class="ant-upload-hint">{{description}}</p>
     </a-upload-dragger>
 <!--    图片/视频预览-->
-    <a-modal :open="previewVisible" :title="previewTitle" :footer="null" @cancel="handleCancel">
+    <a-modal :open="previewVisible" :title="previewTitle" :footer="null" @cancel="handleCancel" destroyOnClose>
       <a-image style="border-radius: 8px" :preview="{maskClassName: 'attachment-upload-preview-mask'}" :src="previewURL" v-if="previewType === 'image'"/>
       <video style="width: 100%;border-radius: 8px" controls preload="auto" :src="previewURL" v-if="previewType === 'video'"/>
     </a-modal>
@@ -69,7 +69,8 @@ import token from "@/utils/Token.ts";
 import {
   chunksMerge,
   chunksUpload,
-  chunksUploadedIndex, chunksUploadSave,
+  chunksUploadedIndex,
+  chunksUploadSave,
   deleteAttachment,
   existsAttachmentByMd5,
   fastUpload,
@@ -144,7 +145,6 @@ const handleSysAttachment = (file: UploadFile, md5: string, uploadMode?: string)
   }
 }
 
-
 // 附件列表
 const fileList = ref<UploadFile[]>([])
 
@@ -164,13 +164,12 @@ const init = async () => {
           const uploadFile: UploadFile = {
             uid: item.id ? item.id : '',
             name: item.originalName ? item.originalName : '',
-            status: "done",
+            status: item.path && pathList.includes(item.path) ? "error" : "done",
             url: pathList[index],
             thumbUrl: handleThumbUrl(item.path)
           }
           return uploadFile;
         })
-
         // 数据回显
         if (data && data.length > 0) {
           fileList.value = data
@@ -312,7 +311,7 @@ const initUpload = () => {
       const md5 = await handleCalculateHash(file) as string
       try {
         // 2. 根据md5向后端查询数据库，判断文件是否需要上传
-        const resp = await existsAttachmentByMd5(md5)
+        const resp = await existsAttachmentByMd5(md5, file.name)
         if (resp.code === 200) {
           if (resp.data) {
             resolve(false)
@@ -339,23 +338,33 @@ const initUpload = () => {
   const handleFastUpload = async (file: UploadFile, md5: string) => {
     // 构建 sysAttachment
     handleSysAttachment(file, md5, "2")
-    const resp = await fastUpload(sysAttachment.value)
-    if (resp.code === 200) {
-      const path = resp.data
-      if (path) {
-        fileList.value.some(item => {
-          if (item.uid === file.uid) {
-            item.url = path
-            item.status = "done"
-          }
-        })
-        // 处理双向绑定
-        handleModelValue(file, fileList.value)
+    try {
+      const resp = await fastUpload(sysAttachment.value)
+      if (resp.code === 200) {
+        const path = resp.data
+        if (path) {
+          fileList.value.some(item => {
+            if (item.uid === file.uid) {
+              item.url = path
+              item.status = "done"
+            }
+          })
+          // 处理双向绑定
+          handleModelValue(file, fileList.value)
+        } else {
+          message.error(resp.msg)
+        }
       } else {
         message.error(resp.msg)
       }
-    } else {
-      message.error(resp.msg)
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      uploading.value = false
     }
   }
 
@@ -390,7 +399,7 @@ const initChunkUpload = () => {
     // 1. 获取文件md5值
     const md5 = await handleCalculateHash(file) as string
     // 2. 判断是否进行文件上传
-    let allow = await allowUpload(md5);
+    let allow = await allowUpload(file, md5);
     // 允许上传文件
     if (allow) {
       // 3. 处理分片上传逻辑
@@ -557,7 +566,7 @@ const initChunkUpload = () => {
   }
 
   // 是否允许上传
-  const allowUpload = async (md5: string): Promise<boolean> => {
+  const allowUpload = async (file: UploadFile, md5: string): Promise<boolean> => {
     return new Promise((resolve, reject) => {
       const record = localStorage.getItem(chunk_upload_prefix + md5)
       let needFetch = false
@@ -577,7 +586,7 @@ const initChunkUpload = () => {
 
       if (needFetch) {
         // 根据md5 查询数据库数据
-        existsAttachmentByMd5(md5).then(resp => {
+        existsAttachmentByMd5(md5, file.name).then(resp => {
           if (resp.code === 200) {
             // 数据存在，返回false
             if (resp.data) {

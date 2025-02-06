@@ -109,7 +109,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
             Files.delete(Paths.get(lihuaConfig.getChunkTempUploadFilePath(), uploadId));
 
             if (!bytesToHex(messageDigest.digest()).equals(md5)) {
-                throw new FileException("合并文件所损坏");
+                throw new FileException("合并文件损坏");
             }
 
             return file.getAbsolutePath();

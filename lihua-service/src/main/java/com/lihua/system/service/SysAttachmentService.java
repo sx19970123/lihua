@@ -21,10 +21,10 @@ public interface SysAttachmentService {
     SysAttachment queryById(String id);
 
     /**
-     * 附件是否存在
+     * 附件是否存在（md5和原文件名均相同）
      * @return 是否存在
      */
-    boolean existsAttachmentByMd5(String md5);
+    boolean existsAttachmentByMd5(String md5, String originFileName);
 
     /**
      * 文件秒传

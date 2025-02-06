@@ -103,9 +103,9 @@ public class SysAttachmentController extends BaseController {
         return success(sysAttachmentService.chunksUploadedIndex(md5));
     }
 
-    @GetMapping("exists/{md5}")
-    public String existsAttachmentByMd5(@PathVariable("md5") String md5) {
-        return success(sysAttachmentService.existsAttachmentByMd5(md5));
+    @GetMapping("exists/{md5}/{originFileName}")
+    public String existsAttachmentByMd5(@PathVariable("md5") String md5, @PathVariable("originFileName") String originFileName) {
+        return success(sysAttachmentService.existsAttachmentByMd5(md5, originFileName));
     }
 
     @DeleteMapping("multiple")
