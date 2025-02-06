@@ -307,6 +307,15 @@ public class FileUtils {
     }
 
     /**
+     * 判断文件是否存在
+     * @param path 文件全路径
+     * @return 文件是否存在
+     */
+    public static boolean isExists(String path) {
+        return Files.exists(Path.of(path));
+    }
+
+    /**
      * 文件打包到zip
      * @param file 单个文件
      * @param zipOutputStream zip输出流
@@ -344,5 +353,4 @@ public class FileUtils {
         // 业务编码为空时直接拼接日期和文件名
         return Paths.get(lihuaConfig.getUploadFilePath(), fileName).toString();
     }
-
 }

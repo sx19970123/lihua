@@ -25,6 +25,13 @@ public interface AttachmentStorageStrategy {
     String uploadFile(String url);
 
     /**
+     * 通过路径判断文件是否存在
+     * @param path 文件全路径
+     * @return 文件是否存在
+     */
+    boolean isExists(String path);
+
+    /**
      * 上传临时文件（分片上传）
      * @param file 附件片段
      * @param fullFilePath 附件临时路径即名称

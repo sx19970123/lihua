@@ -14,6 +14,8 @@ lihua:
   sseExpireTime: 28800000
   # 上传文件路径 mac windows 注意目录切换
   uploadFilePath: ${BASE_FILE_PATH}upload/
+  # 分片上传临时路径
+  chunkTempUploadFilePath: ${BASE_FILE_PATH}temporary/
   # 文件导出路径
   exportFilePath: ${BASE_FILE_PATH}export/
 

@@ -36,8 +36,6 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     @Resource
     private LihuaConfig lihuaConfig;
 
-    private final String TEMPORARY_DIR = "temporary";
-
     @Override
     public String uploadFile(MultipartFile file) {
         return FileUtils.upload(file);
@@ -46,6 +44,11 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     @Override
     public String uploadFile(String url) {
         return FileUtils.upload(url);
+    }
+
+    @Override
+    public boolean isExists(String path) {
+        return FileUtils.isExists(path);
     }
 
     @Override
@@ -59,7 +62,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
 
     @Override
     public List<Integer> getTempChunksIndex(String uploadId) {
-        try(Stream<Path> paths = Files.walk(Paths.get(lihuaConfig.getUploadFilePath(), TEMPORARY_DIR, uploadId))) {
+        try(Stream<Path> paths = Files.walk(Paths.get(lihuaConfig.getChunkTempUploadFilePath(), uploadId))) {
             return paths.filter(Files::isRegularFile)
                     // 确保保存的文件名为纯索引
                     .map(file -> Integer.valueOf(file.getFileName().toString()))
@@ -83,7 +86,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
              FileChannel outputChannel = fos.getChannel()) {
             for (int i = 0; i < total; i++) {
                 // 循环读取临时文件
-                String temporaryFilePath = Paths.get(lihuaConfig.getUploadFilePath(), TEMPORARY_DIR, uploadId, String.valueOf(i)).toString();
+                String temporaryFilePath = Paths.get(lihuaConfig.getChunkTempUploadFilePath(), uploadId, String.valueOf(i)).toString();
                 File chunkFile = new File(temporaryFilePath);
                 try (FileInputStream fis = new FileInputStream(chunkFile);
                      FileChannel inputChannel = fis.getChannel()) {
@@ -103,7 +106,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
                 chunkFile.delete();
             }
             // 删除对应临时文件夹
-            Files.delete(Paths.get(lihuaConfig.getUploadFilePath(), TEMPORARY_DIR, uploadId));
+            Files.delete(Paths.get(lihuaConfig.getChunkTempUploadFilePath(), uploadId));
 
             if (!bytesToHex(messageDigest.digest()).equals(md5)) {
                 throw new FileException("合并文件所损坏");

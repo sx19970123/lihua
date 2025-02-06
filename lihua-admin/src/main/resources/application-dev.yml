@@ -16,8 +16,11 @@ lihua:
   uploadFileModel: LOCAL
   # 上传文件路径 mac windows 注意目录切换
   uploadFilePath: D:/home/lihua/
+  # 分片上传临时路径
+  chunkTempUploadFilePath: D:/home/lihua/temporary/
   # 文件导出路径
   exportFilePath: D:/home/lihua/export/
+
 
 spring:
   # 数据源配置

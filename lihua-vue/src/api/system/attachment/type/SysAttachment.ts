@@ -9,12 +9,14 @@ export interface SysAttachment {
     extensionName?: string;
     /** 文件保存路径 */
     path?: string;
+    /** 分片上传临时路径 */
+    temporaryPath?: string;
     /** 业务编码（默认文件上传时所在的路由名称） */
     businessCode?: string;
     /** 业务名称（默认文件上传时所在的菜单名称） */
     businessName?: string;
     /** 文件大小 */
-    size?: number;
+    size?: string;
     /** 文件类型 */
     type?: string;
     /** 上传方式 */
@@ -25,8 +27,6 @@ export interface SysAttachment {
     storageLocation?: string;
     /** md5 */
     md5?: string;
-    /** 分片信息 */
-    chunkInfo?: string;
     /** 上传人id */
     createId?: string;
     /** 上传时间 */

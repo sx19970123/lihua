@@ -22,6 +22,11 @@ public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
+    public boolean isExists(String path) {
+        return false;
+    }
+
+    @Override
     public void uploadTempFile(MultipartFile file, String fullFilePath) {
     }
 

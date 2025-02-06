@@ -40,6 +40,11 @@ public class SysAttachment implements Serializable {
     private String path;
 
     /**
+     * 分片上传临时路径
+     */
+    private String temporaryPath;
+
+    /**
      * 业务编码（默认文件上传时所在的路由名称）
      */
     private String businessCode;
@@ -52,7 +57,7 @@ public class SysAttachment implements Serializable {
     /**
      * 文件大小
      */
-    private long size;
+    private String size;
 
     /**
      * 文件类型
@@ -60,12 +65,12 @@ public class SysAttachment implements Serializable {
     private String type;
 
     /**
-     * 上传方式
+     * 上传方式 一般上传、分片上传、文件秒传
      */
     private String uploadMode;
 
     /**
-     * 上传状态 上传成功、上传失败
+     * 上传状态 上传成功、上传失败、分片上传中
      */
     private String uploadStatus;
 
@@ -75,14 +80,9 @@ public class SysAttachment implements Serializable {
     private String storageLocation;
 
     /**
-     * md5值，分片上传有此值
+     * md5值
      */
     private String md5;
-
-    /**
-     * 分片信息
-     */
-    private String chunkInfo;
 
     /**
      * 上传人id

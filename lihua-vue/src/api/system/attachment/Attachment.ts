@@ -9,11 +9,21 @@ export const existsAttachmentByMd5 = (md5: string) => {
     })
 }
 
-// 根据md5查询附件路径
-export const queryPathByMd5 = (md5: string) => {
+// 文件秒传
+export const fastUpload = (data: SysAttachment) => {
     return request<string>({
-        url: `system/attachment/md5/${md5}`,
-        method: "get"
+        url: "system/attachment/fast/upload",
+        method: "post",
+        data: data
+    })
+}
+
+// 分片上传前保存附件信息
+export const chunksUploadSave = (data: SysAttachment, uploadId: string) => {
+    return request<string>({
+        url: `system/attachment/chunk/upload/${uploadId}`,
+        method: "post",
+        data: data
     })
 }
 
@@ -66,12 +76,12 @@ export const chunksSave = (data: SysAttachment) => {
 }
 
 // 分片文件上传
-export const chunksUpload = (file: Blob, uploadId: string, index: number, callback: Function) => {
+export const chunksUpload = (file: Blob, uploadId: string, md5: string, index: number, callback: Function) => {
     const formData = new FormData();
     formData.append('file', file)
 
     return request({
-        url: `system/attachment/chunk/upload/${uploadId}/${index}`,
+        url: `system/attachment/chunk/upload/${uploadId}/${index}?lh+attachment_md5=${md5}`,
         method: 'post',
         data: formData,
         headers: {

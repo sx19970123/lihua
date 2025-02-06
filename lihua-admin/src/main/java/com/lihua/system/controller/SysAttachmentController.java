@@ -1,7 +1,9 @@
 package com.lihua.system.controller;
 
 import com.lihua.annotation.Log;
+import com.lihua.config.LihuaConfig;
 import com.lihua.enums.LogTypeEnum;
+import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysAttachment;
 import com.lihua.system.model.dto.SysAttachmentDTO;
@@ -23,6 +25,9 @@ public class SysAttachmentController extends BaseController {
     @Resource
     private SysAttachmentService sysAttachmentService;
 
+    @Resource
+    private LihuaConfig lihuaConfig;
+
     @PostMapping("page")
     public String queryPage(@RequestBody SysAttachmentDTO sysAttachmentDTO) {
         return success(sysAttachmentService.queryPage(sysAttachmentDTO));
@@ -38,24 +43,35 @@ public class SysAttachmentController extends BaseController {
         return success(sysAttachmentService.queryAttachmentInfoByPathList(pathList));
     }
 
-    @PostMapping("upload/{md5}/{businessCode}/{businessName}")
+    @PostMapping("upload")
     @Log(description = "附件上传", type = LogTypeEnum.UPLOAD)
     public String upload(@RequestParam("file") MultipartFile file,
-                         @PathVariable("md5") String md5,
-                         @PathVariable("businessCode") String businessCode,
-                         @PathVariable("businessName") String businessName) {
-        return success(sysAttachmentService.save(file, md5, businessCode, businessName));
+                         @ModelAttribute SysAttachment sysAttachment) {
+        try {
+            String path = sysAttachmentService.upload(file);
+            sysAttachment.setPath(path).setUploadStatus("0");
+            sysAttachmentService.saveAttachment(sysAttachment);
+            return success(path);
+        } catch (Exception e) {
+            sysAttachment.setUploadStatus("1").setErrorMsg(e.getMessage());
+            sysAttachmentService.saveAttachment(sysAttachment);
+            return error(ResultCodeEnum.FILE_ERROR, "附件上传失败");
+        }
     }
 
-    @GetMapping("chunk/uploadedIndex/{md5}")
-    public String chunksUploadedIndex(@PathVariable("md5") String md5) {
-        return success(sysAttachmentService.chunksUploadedIndex(md5));
+    @PostMapping("fast/upload")
+    @Log(description = "附件上传（秒传）", type = LogTypeEnum.UPLOAD)
+    public String fastUpload(@RequestBody SysAttachment sysAttachment) {
+        return success(sysAttachmentService.fastUpload(sysAttachment));
     }
 
-    @PostMapping("chunk/save")
+    @PostMapping("chunk/upload/{uploadId}")
     @Log(description = "附件上传（分片）", type = LogTypeEnum.UPLOAD)
-    public String chunksSave(@RequestBody SysAttachment sysAttachment) {
-        return success(sysAttachmentService.chunksSave(sysAttachment));
+    public String chunkSave(@RequestBody SysAttachment sysAttachment, @PathVariable("uploadId") String uploadId) {
+        sysAttachment
+                .setUploadStatus("2")
+                .setTemporaryPath(lihuaConfig.getChunkTempUploadFilePath() + uploadId);
+        return success(sysAttachmentService.saveAttachment(sysAttachment));
     }
 
     @PostMapping("chunk/upload/{uploadId}/{index}")
@@ -70,18 +86,26 @@ public class SysAttachmentController extends BaseController {
     public String chunksMerge(@RequestBody SysAttachment sysAttachment,
                               @PathVariable("uploadId") String uploadId,
                               @PathVariable("total") Integer total) {
-        return success(sysAttachmentService.chunksMerge(sysAttachment, uploadId, total));
+        try {
+            String path = sysAttachmentService.chunksMerge(sysAttachment, uploadId, total);
+            sysAttachment.setId(sysAttachment.getId()).setPath(path).setUploadStatus("0");
+            sysAttachmentService.saveAttachment(sysAttachment);
+            return success(path);
+        } catch (Exception e) {
+            sysAttachment.setUploadStatus("1").setErrorMsg(e.getMessage());
+            sysAttachmentService.saveAttachment(sysAttachment);
+            return error(ResultCodeEnum.FILE_ERROR, "附件合并失败");
+        }
     }
 
+    @GetMapping("chunk/uploadedIndex/{md5}")
+    public String chunksUploadedIndex(@PathVariable("md5") String md5) {
+        return success(sysAttachmentService.chunksUploadedIndex(md5));
+    }
 
     @GetMapping("exists/{md5}")
     public String existsAttachmentByMd5(@PathVariable("md5") String md5) {
         return success(sysAttachmentService.existsAttachmentByMd5(md5));
-    }
-
-    @GetMapping("md5/{md5}")
-    public String queryPathByMd5(@PathVariable("md5") String md5) {
-        return success(sysAttachmentService.queryPathByMd5(md5));
     }
 
     @DeleteMapping("multiple")

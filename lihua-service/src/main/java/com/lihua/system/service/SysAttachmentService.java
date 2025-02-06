@@ -27,9 +27,9 @@ public interface SysAttachmentService {
     boolean existsAttachmentByMd5(String md5);
 
     /**
-     * 根据MD5查询附件地址
+     * 文件秒传
      */
-    String queryPathByMd5(String md5);
+    String fastUpload(SysAttachment sysAttachment);
 
     /**
      * 根据路径查询文件信息，用于附件组件数据回显
@@ -42,14 +42,14 @@ public interface SysAttachmentService {
      * 保存附件信息
      * @return 附件id
      */
-    String save(MultipartFile file, String md5, String businessCode, String businessName);
+    String saveAttachment(SysAttachment sysAttachment);
 
     /**
-     * 保存附件信息（分片上传）
-     * @param sysAttachment 附件信息
-     * @return 附件id
+     * 附件上传
+     * @param file 附件
+     * @return 附件全路径
      */
-    String chunksSave(SysAttachment sysAttachment);
+    String upload(MultipartFile file);
 
     /**
      * 通过 md5值获取已上传分片附件的索引值

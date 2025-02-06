@@ -2,6 +2,7 @@ package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.FileException;
@@ -19,6 +20,7 @@ import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -64,20 +66,36 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     @Override
     public boolean existsAttachmentByMd5(String md5) {
-        return lambdaQuery()
-                .eq(SysAttachment::getMd5, md5)
-                .eq(SysAttachment::getUploadStatus, "0")
-                .exists();
+        AttachmentStorageStrategy strategy = getStrategy();
+        // 根据md5查询数据库是否存在
+        SysAttachment attachment = queryOneByMd5(md5);
+        if (attachment == null || !StringUtils.hasText(attachment.getPath())) {
+            return false;
+        }
+
+        // 检查服务器文件是否存在
+        boolean exists = strategy.isExists(attachment.getPath());
+
+        if (exists) {
+            return true;
+        }
+        throw new FileException("服务器文件与数据库记录不符，服务器无该文件");
     }
 
     @Override
-    public String queryPathByMd5(String md5) {
-        SysAttachment sysAttachment = lambdaQuery()
-                .select(SysAttachment::getPath)
-                .eq(SysAttachment::getMd5, md5)
-                .eq(SysAttachment::getUploadStatus, "0")
-                .one();
-        return sysAttachment == null ? null : sysAttachment.getPath();
+    public String fastUpload(SysAttachment sysAttachment) {
+        SysAttachment attachment = queryOneByMd5(sysAttachment.getMd5());
+        if (attachment == null) {
+            return null;
+        }
+        // 获取路径
+        String path = attachment.getPath();
+        sysAttachment
+                .setPath(path)
+                .setUploadStatus("0");
+        // 插入新数据
+        saveAttachment(sysAttachment);
+        return path;
     }
 
     @Override
@@ -92,69 +110,23 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    public String save(MultipartFile file, String md5, String businessCode, String businessName) {
-        AttachmentStorageStrategy strategy = getStrategy();
-        // 构建系统附件对象
-        SysAttachment sysAttachment = new SysAttachment();
-
-        // 文件上传至服务器
-        try {
-            String fullPath = strategy.uploadFile(file);
-            sysAttachment
-                    .setPath(fullPath)
-                    .setUploadStatus("0")
-                    .setStorageName(FileUtils.getFileNameByPath(fullPath))
-                    .setOriginalName(file.getOriginalFilename())
-                    .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
-                    .setType(file.getContentType());
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            sysAttachment
-                    .setErrorMsg(e.getMessage())
-                    .setUploadStatus("1");
-        }
-
-        // 完善附件数据
+    public String saveAttachment(SysAttachment sysAttachment) {
         sysAttachment
-                .setSize(file.getSize())
-                .setMd5(md5)
-                .setBusinessCode(businessCode)
-                .setBusinessName(businessName)
+                .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
+                .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
                 .setStorageLocation(uploadFileModel)
-                .setUploadMode("0")
                 .setCreateId(LoginUserContext.getUserId())
                 .setCreateTime(DateUtils.now())
                 .setDelFlag("0");
         // 保存附件信息
-        save(sysAttachment);
-
-        if ("0".equals(sysAttachment.getUploadStatus())) {
-            return sysAttachment.getPath();
-        } else {
-            throw new FileException(sysAttachment.getErrorMsg());
-        }
+        saveOrUpdate(sysAttachment);
+        return sysAttachment.getId();
     }
 
     @Override
-    public String chunksSave(SysAttachment sysAttachment) {
-        // 根据md5值查询数据库
-        SysAttachment dbData = lambdaQuery()
-                .select(SysAttachment::getId)
-                .eq(SysAttachment::getMd5, sysAttachment.getMd5())
-                .one();
-        // dbData不为空，为SysAttachment设置id，否则设置创建人/时间
-        if (dbData != null) {
-            sysAttachment.setId(dbData.getId());
-        } else {
-            sysAttachment.setCreateId(LoginUserContext.getUserId()).setCreateTime(DateUtils.now());
-        }
-        // 完善附件数据
-        sysAttachment.setUploadMode("1")
-                .setStorageLocation(uploadFileModel)
-                .setDelFlag("0");
-        // 调用mp的更新保存方法
-        saveOrUpdate(sysAttachment);
-        return sysAttachment.getId();
+    public String upload(MultipartFile file) {
+        AttachmentStorageStrategy strategy = getStrategy();
+        return strategy.uploadFile(file);
     }
 
     @Override
@@ -178,7 +150,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     @Override
     public String queryOriginFileName(String path) {
-        SysAttachment sysAttachment = lambdaQuery().select(SysAttachment::getOriginalName).eq(SysAttachment::getPath, path).one();
+        SysAttachment sysAttachment = queryOneByPath(path);
         if (sysAttachment != null) {
             return sysAttachment.getOriginalName();
         }
@@ -247,10 +219,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     @Override
     public File publicDownload(String path) {
         // 根据路径和公开业务编码进行查询
-        SysAttachment sysAttachment = lambdaQuery()
-                .eq(SysAttachment::getPath, path)
-                .in(SysAttachment::getBusinessCode, publicBusinessCodeList)
-                .one();
+        SysAttachment sysAttachment = queryOne(path, null, publicBusinessCodeList);
 
         if (sysAttachment == null) {
             return null;
@@ -259,6 +228,45 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         AttachmentStorageStrategy strategy = getStrategy();
         return strategy.download(path, sysAttachment.getOriginalName());
 
+    }
+
+    // 根据 path 查询单条数据
+    private SysAttachment queryOneByPath(String path) {
+        return queryOne(path, null, null);
+    }
+
+    // 根据 md5 查询单条数据
+    private SysAttachment queryOneByMd5(String md5) {
+        return queryOne(null, md5, null);
+    }
+
+    // 根据需要条件查询单条数据
+    private SysAttachment queryOne(String path, String md5, List<String> publicBusinessCodeList) {
+
+        LambdaQueryChainWrapper<SysAttachment> chainWrapper = lambdaQuery();
+
+        if (StringUtils.hasText(path)) {
+            chainWrapper.eq(SysAttachment::getPath, path);
+        }
+
+        if (StringUtils.hasText(md5)) {
+            chainWrapper.eq(SysAttachment::getMd5, md5);
+        }
+
+        if (publicBusinessCodeList != null && !publicBusinessCodeList.isEmpty()) {
+            chainWrapper.in(SysAttachment::getBusinessCode, publicBusinessCodeList);
+        }
+
+        List<SysAttachment> list = chainWrapper
+                .eq(SysAttachment::getDelFlag, "0")
+                .eq(SysAttachment::getUploadStatus, "0")
+                .list();
+
+        if (list.isEmpty()) {
+            return null;
+        }
+
+        return list.get(0);
     }
 
     // 获取 AttachmentStorageStrategy 对应实现
