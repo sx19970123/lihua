@@ -49,7 +49,7 @@ public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
-    public File download(String path, String originalName) {
+    public File download(String path) {
         return null;
     }
 }

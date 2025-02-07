@@ -3,7 +3,9 @@ package com.lihua.system.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.system.entity.SysAttachment;
 import com.lihua.system.model.dto.SysAttachmentDTO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
 import java.util.List;
@@ -28,15 +30,16 @@ public interface SysAttachmentService {
 
     /**
      * 文件秒传
+     * @return 附件id
      */
     String fastUpload(SysAttachment sysAttachment);
 
     /**
      * 根据路径查询文件信息，用于附件组件数据回显
-     * @param pathList 附件存储路径
+     * @param ids 附件id集合
      * @return 对应的附件信息
      */
-    List<SysAttachment> queryAttachmentInfoByPathList(List<String> pathList);
+    List<SysAttachment> queryAttachmentInfoByIds(List<String> ids);
 
     /**
      * 保存附件信息
@@ -81,7 +84,12 @@ public interface SysAttachmentService {
     /**
      * 附件批量删除
      */
-    void deleteByIds(List<SysAttachment> sysAttachmentList);
+    void deleteByIds(List<String> ids);
+
+    /**
+     * 业务删除附件（仅做状态的修改）
+     */
+    void deleteFromBusiness(String id);
 
     /**
      * 根据路径删除
@@ -90,9 +98,10 @@ public interface SysAttachmentService {
 
     /**
      * 获取文件下载链接
+     * @param id 附件id
      * @return 下载链接
      */
-    String getDownloadURL(String path);
+    String getDownloadURL(String id);
 
     /**
      * 获取文件下载链接
@@ -102,10 +111,10 @@ public interface SysAttachmentService {
 
     /**
      * 公开文件下载
-     * @param path 文件路径
+     * @param id 附件id
      * @return 文件
      */
-    File publicDownload(String path);
+    ResponseEntity<StreamingResponseBody> publicDownload(String id);
 
     /**
      * 本地文件下载（仅LOCAL模式下使用，其他存储方式中直接通过文件服务器获取）

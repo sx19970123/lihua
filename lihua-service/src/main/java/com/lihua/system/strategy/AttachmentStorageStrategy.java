@@ -70,10 +70,9 @@ public interface AttachmentStorageStrategy {
     String getDownloadURL(String path, long expiryInMinutes);
 
     /**
-     * 文件下载（针对永久有效链接，只针对公开文件夹下的文件）
+     * 文件下载（针对永久有效链接，只针对公开 businessCode的附件使用）
      * @param path 文件路径
-     * @param originalName 原文件名
      * @return 下载的文件流
      */
-    File download(String path, String originalName);
+    File download(String path);
 }

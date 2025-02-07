@@ -9,7 +9,7 @@
               :before-upload="beforeUpload"
               :directory="directory"
               :max-count="maxCount"
-              :multiple="multiple"
+              :multiple="chunk ? false: multiple"
               :isImageUrl="handleShowThumbImage"
               @preview="handlePreview"
               @change="handleChange"
@@ -71,11 +71,11 @@ import {
   chunksUpload,
   chunksUploadedIndex,
   chunksUploadSave,
-  deleteAttachment,
+  deleteFromBusiness,
   existsAttachmentByMd5,
   fastUpload,
   getDownloadURL,
-  queryAttachmentInfoByPathList
+  queryAttachmentInfoByIds
 } from "@/api/system/attachment/Attachment.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {currentRequests} from "@/utils/Request.ts";
@@ -127,7 +127,7 @@ const {model = 'button', icon, text, uploadType = [], description, maxCount = 10
 }>()
 
 // 方法
-const emits = defineEmits(["update:modelValue", "uploadError", "uploadSuccess", "remove"])
+const emits = defineEmits(["update:modelValue", "uploadError", "uploadSuccess","exceedMaxCount", "remove"])
 
 // 附件对象
 const sysAttachment = ref<SysAttachment>({})
@@ -147,25 +147,24 @@ const handleSysAttachment = (file: UploadFile, md5: string, uploadMode?: string)
 
 // 附件列表
 const fileList = ref<UploadFile[]>([])
-
+// 文件秒传轮询等待变量
+const awaitHandleFile = ref<boolean>(false)
 // 初始化双向绑定
 const init = async () => {
-  const pathList = modelValue
-      .split(",")
-      .filter(item => item)
-
-  if (pathList && pathList.length > 0) {
+  const ids = modelValue.split(",").filter(Boolean)
+  if (ids && ids.length > 0) {
     try {
       // 初次加载数据时根据双向绑定内容请求附件信息
-      const resp = await queryAttachmentInfoByPathList(pathList)
+      const resp = await queryAttachmentInfoByIds(ids)
       if (resp.code === 200) {
         // 组合fileList
-        const data = resp.data.map((item, index) => {
+        const data = resp.data.map(item => {
+          const id = item.id
           const uploadFile: UploadFile = {
-            uid: item.id ? item.id : '',
+            uid: id ? id : '',
             name: item.originalName ? item.originalName : '',
-            status: item.path && pathList.includes(item.path) ? "error" : "done",
-            url: pathList[index],
+            status: item.status === 'error' ? "error" : "done",
+            url: id,
             thumbUrl: handleThumbUrl(item.path)
           }
           return uploadFile;
@@ -190,7 +189,7 @@ const init = async () => {
 // 初始化文件上传
 const initUpload = () => {
   // 文件上传前检验，同时进行不同上传逻辑的区分
-  const beforeUpload = async (file: UploadFile) => {
+  const beforeUpload = async (file: UploadFile, currentFileList: UploadFile[]) => {
     // 获取文件数据异常
     if (!file || !file.name || !file.size) {
       message.error("获取文件数据异常")
@@ -202,9 +201,16 @@ const initUpload = () => {
       return Upload.LIST_IGNORE;
     }
 
+    // 控制文件上传最大数
+    const index = currentFileList.findIndex(item => item === file)
+    if (index >= maxCount - fileList.value.length) {
+      emits("exceedMaxCount", file)
+      return Upload.LIST_IGNORE;
+    }
+
     if (chunk) {
       // 分片上传
-      startChunkUpload(file).then()
+      startChunkUpload(file).then(() => {})
       return false;
     } else {
       // 一般上传
@@ -246,7 +252,7 @@ const initUpload = () => {
   const handleModelValue = (file: UploadFile, fileList: Array<UploadFile>) => {
     // 通过fileList获取双向绑定值
     const modelValueList = fileList.filter(item => item.status === "done").map(item => {
-      // 有url的直接返回
+      // 有url的直接返回（url内容为附件表id）
       if (item.url) {
         return item.url
       }
@@ -280,6 +286,8 @@ const initUpload = () => {
 
   // 处理文件上传变化（uploading：上传中 done：上传成功 error：上传失败 removed：已删除）
   const handleChange = ({file, fileList}: {file: UploadFile, fileList: Array<UploadFile>}) => {
+    // 重置轮询等待状态
+    awaitHandleFile.value = false
 
     if (!file.status || file.status === "uploading") {
       return
@@ -306,76 +314,86 @@ const initUpload = () => {
 
   // 一般文件上传，返回true由a-upload进行上传，返回false执行文件秒传逻辑
   const startUpload = (file: UploadFile) => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       // 1. 获取文件md5
+      uploading.value = true
       const md5 = await handleCalculateHash(file) as string
-      try {
-        // 2. 根据md5向后端查询数据库，判断文件是否需要上传
-        const resp = await existsAttachmentByMd5(md5, file.name)
-        if (resp.code === 200) {
-          if (resp.data) {
-            resolve(false)
-            // 文件存在，无需上传，执行文件秒传逻辑
-            await handleFastUpload(file, md5)
-          } else {
-            // 构建附件对象
-            handleSysAttachment(file, md5)
-            resolve(true)
-          }
+      uploading.value = false
+      // 2. 根据md5向后端查询数据库，判断文件是否需要上传
+      const resp = await existsAttachmentByMd5(md5, file.name)
+      if (resp.code === 200) {
+        if (resp.data) {
+          awaitHandleFile.value = true
+          resolve(false)
+          // 文件存在，无需上传，执行文件秒传逻辑
+          handleFastUpload(file, md5)
         } else {
-          // 服务器返回可控制的错误时，继续上传附件
+          // 构建附件对象
           handleSysAttachment(file, md5)
           resolve(true)
-          console.error(resp.msg, "为业务正常进行，继续上传附件")
         }
-      } catch (e) {
-        reject(e)
+      } else {
+        // 服务器返回可控制的错误时，继续上传附件
+        handleSysAttachment(file, md5)
+        resolve(true)
+        console.error(resp.msg, "为业务正常进行，继续上传附件")
       }
     })
   }
 
   // 处理文件秒传
-  const handleFastUpload = async (file: UploadFile, md5: string) => {
+  const handleFastUpload = (file: UploadFile, md5: string) => {
     // 构建 sysAttachment
     handleSysAttachment(file, md5, "2")
-    try {
-      const resp = await fastUpload(sysAttachment.value)
-      if (resp.code === 200) {
-        const path = resp.data
-        if (path) {
-          fileList.value.some(item => {
-            if (item.uid === file.uid) {
-              item.url = path
-              item.status = "done"
+    fastUpload(sysAttachment.value).then((resp) => {
+      // 轮询等待awaitHandleFile值变化
+      const checkInterval = setInterval(() => {
+        if (!awaitHandleFile.value) {
+          // 清除轮询
+          clearInterval(checkInterval)
+          if (resp.code === 200) {
+            const id = resp.data
+            if (id) {
+              fileList.value.some(item => {
+                if (item.uid === file.uid) {
+                  item.url = id
+                  item.status = "done"
+                }
+              })
+              // 处理双向绑定
+              handleModelValue(file, fileList.value)
+              emits("uploadSuccess", {file, fileList})
+              uploading.value = false
+            } else {
+              handleUploadError(file, resp.msg)
             }
-          })
-          // 处理双向绑定
-          handleModelValue(file, fileList.value)
-        } else {
-          message.error(resp.msg)
+          } else {
+            handleUploadError(file, resp.msg)
+          }
         }
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
-    } finally {
-      uploading.value = false
-    }
+      }, 100)
+    })
   }
 
+  // 处理文件上传失败
+  const handleUploadError = (file: UploadFile, errorMsg: string) => {
+    fileList.value.forEach(item => {
+      if (item.uid === file.uid) {
+        item.status = "error"
+      }
+    })
+    uploading.value = false
+    emits("uploadError", file)
+  }
   return {
     beforeUpload,
     handleChange,
     handleFastUpload,
-    handleModelValue
+    handleModelValue,
+    handleUploadError
   }
 }
-const { beforeUpload, handleChange, handleFastUpload, handleModelValue } = initUpload()
+const { beforeUpload, handleChange, handleFastUpload, handleModelValue, handleUploadError } = initUpload()
 
 // 初始化分片上传
 const initChunkUpload = () => {
@@ -418,12 +436,11 @@ const initChunkUpload = () => {
     const recordObj: UploadRecordType = JSON.parse(record)
 
     // 1. 对附件进行分片
-    const chunks = handleChunk(file, chunkSize);
+    const chunks = handleChunk(file, chunkSize).map((chunk, index) => ({index, chunk}));
     // 2. 获取已上传的分片索引
     const uploadedIndexResp = await chunksUploadedIndex(recordObj.uploadId);
     if (uploadedIndexResp.code !== 200) {
-      message.error(uploadedIndexResp.msg)
-      uploading.value = false
+      handleUploadError(file, uploadedIndexResp.msg)
       return
     }
     recordObj.chunkSize = chunks.length
@@ -434,8 +451,7 @@ const initChunkUpload = () => {
       handleSysAttachment(file, md5, "1")
       const uploadSaveResp = await chunksUploadSave(sysAttachment.value, recordObj.uploadId)
       if (uploadSaveResp.code !== 200) {
-        message.error(uploadSaveResp.msg)
-        uploading.value = false
+        handleUploadError(file, uploadSaveResp.msg)
         return
       }
       // 将数据库主键id保存到浏览器缓存记录中
@@ -444,9 +460,9 @@ const initChunkUpload = () => {
     }
 
     // 4. 获取到需要上传的分片附件，并构建分片对象
-    const needUploadChunks = chunks.filter((item, index) => !uploadedIndexList.includes(index)).map((chunk, index) => ({
-      index,
-      chunk,
+    const needUploadChunks = chunks.filter((item) => !uploadedIndexList.includes(item.index)).map((item) => ({
+      index: item.index,
+      chunk: item.chunk,
       status: "pending", // 状态：等待中
     }))
     // 5. 创建各种计数器
@@ -467,42 +483,34 @@ const initChunkUpload = () => {
       // 状态改为进行中
       const {chunk, index} = needUploadChunks[i]
       needUploadChunks[i].status = "in_progress"
-      try {
-        // 调用分片上传接口
-        const resp = await chunksUpload(chunk, recordObj.uploadId, md5, index, (bytes: number) => {
-          // 上传状态显示，并实时更新上传进度
-          uploadedChunkSize = bytes + uploadedChunkSize
-          recordObj.uploadedChunkSize = Math.trunc(uploadedChunkSize / 1024 / 1024)
-          recordObj.totalSize = Math.trunc(file.size ? file.size / 1024 / 1024 : 0 )
-          localStorage.setItem(chunk_upload_prefix + md5, JSON.stringify(recordObj))
-          uploadTip.value = `正在上传：${recordObj.uploadedChunkSize}MB / ${recordObj.totalSize}MB（${Math.trunc(recordObj.uploadedChunkSize / recordObj.totalSize * 100)}%）`
-        })
+      // 调用分片上传接口
+      const resp = await chunksUpload(chunk, recordObj.uploadId, md5, index, (bytes: number) => {
+        // 上传状态显示，并实时更新上传进度
+        uploadedChunkSize = bytes + uploadedChunkSize
+        recordObj.uploadedChunkSize = Math.trunc(uploadedChunkSize / 1024 / 1024)
+        recordObj.totalSize = Math.trunc(file.size ? file.size / 1024 / 1024 : 0 )
+        localStorage.setItem(chunk_upload_prefix + md5, JSON.stringify(recordObj))
+        uploadTip.value = `正在上传：${recordObj.uploadedChunkSize}MB / ${recordObj.totalSize}MB（${Math.trunc(recordObj.uploadedChunkSize / recordObj.totalSize * 100)}%）`
+      })
 
-        if (resp.code === 200) {
-          // 修改状态为已上传
-          needUploadChunks[i].status = "completed"
-          // 计数器 + 1
-          uploadedChunkNum++
-          // 所有分片上传完成
-          if (uploadedChunkNum == needUploadChunks.length) {
-            // 处理分片合并
-            handleChunksMerge(file, recordObj, md5)
-          } else {
-            // 8. 获取下一个等待中状态的数据进行上传
-            const nextIndex = needUploadChunks.findIndex(item => item.status === "pending")
-            if (nextIndex !== -1) {
-              await uploadChunk(nextIndex)
-            }
+      if (resp.code === 200) {
+        // 修改状态为已上传
+        needUploadChunks[i].status = "completed"
+        // 计数器 + 1
+        uploadedChunkNum++
+        // 所有分片上传完成
+        if (uploadedChunkNum == needUploadChunks.length) {
+          // 处理分片合并
+          handleChunksMerge(file, recordObj, md5)
+        } else {
+          // 8. 获取下一个等待中状态的数据进行上传
+          const nextIndex = needUploadChunks.findIndex(item => item.status === "pending")
+          if (nextIndex !== -1) {
+            await uploadChunk(nextIndex)
           }
-        } else {
-          message.error(resp.msg)
         }
-      } catch (e) {
-        if (e instanceof ResponseError) {
-          message.error(e.msg)
-        } else {
-          console.error(e)
-        }
+      } else {
+        message.error(resp.msg)
       }
     }
 
@@ -511,7 +519,15 @@ const initChunkUpload = () => {
     for (let i = 0; i < Math.min(chunkUploadCount, needUploadChunks.length); i++) {
       queue.push(uploadChunk(i++));
     }
-    await Promise.all(queue);
+
+    await Promise.all(queue).catch((e) => {
+      if (e instanceof ResponseError) {
+        handleUploadError(file, e.msg)
+      } else {
+        handleUploadError(file, "分片上传失败")
+        console.error(e)
+      }
+    })
   }
 
   // 同步分片上传状态
@@ -633,15 +649,21 @@ const initChunkUpload = () => {
         })
         // 处理双向绑定
         handleModelValue(file, fileList.value)
-        message.success(resp.msg)
+        emits("uploadSuccess", {file, fileList})
       } else {
-        message.error(resp.msg)
+        handleUploadError(file, resp.msg)
+      }
+    }).catch((e) => {
+      if (e instanceof ResponseError) {
+        handleUploadError(file, e.msg)
+      } else {
+        handleUploadError(file, "附件合并失败")
+        console.error(e)
       }
     }).finally(() => {
       uploading.value = false
     })
   }
-
   return {
     uploading,
     uploadTip,
@@ -662,6 +684,10 @@ const initPreview = () => {
   const previewURL = ref<string>()
   // 处理预览
   const handlePreview = async (file: UploadFile) => {
+    if (file.status === "error") {
+      message.error("文件异常，无法预览或下载")
+      return
+    }
     if (file.type || file.name) {
       // 获取文件后缀名
       const extension = file.name.split('.').pop()?.toLowerCase() || ""
@@ -746,11 +772,11 @@ const { previewVisible, previewTitle, previewURL, previewType, handlePreview, ha
 const handleRemove = async (file: UploadFile) => {
   if (file && file.url) {
     try {
-      const resp = await deleteAttachment(file.url)
+      const resp = await deleteFromBusiness(file.url)
       if (resp.code === 200) {
-        message.success(resp.msg)
+        emits("remove", {id: file.url, status: "success"})
       } else {
-        message.error(resp.msg)
+        emits("remove", {id: file.url, status: "error"})
       }
     } catch (e) {
       if (e instanceof ResponseError) {
@@ -759,8 +785,6 @@ const handleRemove = async (file: UploadFile) => {
         console.error(e)
       }
     }
-  } else {
-    message.error("文件删除异常")
   }
 }
 

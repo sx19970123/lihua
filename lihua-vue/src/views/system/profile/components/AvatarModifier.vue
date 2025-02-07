@@ -66,7 +66,6 @@ import IconSelect from "@/components/icon-select/index.vue"
 import ImageCropper from "@/components/image-cropper/index.vue"
 import type {CropperDataType} from "@/components/image-cropper/CropperType.ts";
 import SysAvatar from "@/components/user-avatar/index.vue"
-import {upload} from "@/api/system/file/File.ts";
 import {useUserStore} from "@/stores/user";
 import {message, Modal} from 'ant-design-vue';
 import settings from "@/settings";
@@ -74,6 +73,9 @@ import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import { cloneDeep } from 'lodash-es'
 import {useThemeStore} from "@/stores/theme.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+import {upload} from "@/api/system/attachment/Attachment.ts";
+import {v4 as uuidv4} from "uuid";
+
 const themeStore = useThemeStore()
 const userStore = useUserStore()
 // 双向绑定值
@@ -198,7 +200,7 @@ const handleOk = async () => {
           throw new Error('获取 blob 数据失败');
         }
 
-        const resp = await upload(blob);
+        const resp = await upload(new File([blob],uuidv4() + ".png", { type: "image/png" }), "UserAvatar", "用户头像");
         if (resp.code !== 200) {
           throw new Error('头像上传失败');
         }

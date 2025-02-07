@@ -22,7 +22,7 @@ export interface SysAttachment {
     /** 上传方式 */
     uploadMode?: string;
     /** 上传状态 上传成功、上传失败 */
-    uploadStatus?: string;
+    status?: string;
     /** 文件存储位置 如：本地、云存储等 */
     storageLocation?: string;
     /** md5 */

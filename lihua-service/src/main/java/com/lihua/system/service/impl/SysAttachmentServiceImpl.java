@@ -1,12 +1,14 @@
 package com.lihua.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.FileException;
 import com.lihua.exception.ServiceException;
+import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysAttachment;
 import com.lihua.system.mapper.SysAttachmentMapper;
 import com.lihua.system.model.dto.SysAttachmentDTO;
@@ -18,10 +20,12 @@ import com.lihua.utils.file.FileUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
 import java.net.URLDecoder;
@@ -31,7 +35,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, SysAttachment> implements SysAttachmentService {
@@ -39,6 +42,9 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     // 不同附件存储方法实现策略
     @Resource
     private Map<String, AttachmentStorageStrategy> attachmentStorageStrategyMap;
+
+    @Resource
+    private SysAttachmentMapper sysAttachmentMapper;
 
     // 存储路径
     @Value("${lihua.uploadFilePath}")
@@ -53,7 +59,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     private String fileDownloadExpireTime;
 
     // 公开文件的业务编码，publicLocalDownload 中判断包含业务编码的文件才会进行返回
-    private final List<String> publicBusinessCodeList = List.of("");
+    private final List<String> publicBusinessCodeList = List.of("UserAvatar");
 
     @Override
     public IPage<SysAttachment> queryPage(SysAttachmentDTO sysAttachmentDTO) {
@@ -94,31 +100,32 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         String path = attachment.getPath();
         sysAttachment
                 .setPath(path)
-                .setUploadStatus("0");
+                .setStatus("0");
         // 插入新数据
         saveAttachment(sysAttachment);
-        return path;
+        return sysAttachment.getId();
     }
 
     @Override
-    public List<SysAttachment> queryAttachmentInfoByPathList(List<String> pathList) {
+    public List<SysAttachment> queryAttachmentInfoByIds(List<String> ids) {
         // 去重查询path和原文件名
-        List<SysAttachment> sysAttachmentList = query()
-                .select("distinct path", "original_name")
-                .in("path", pathList)
+        List<SysAttachment> sysAttachmentList = lambdaQuery()
+                .select(SysAttachment::getId, SysAttachment::getPath, SysAttachment::getOriginalName)
+                .in(SysAttachment::getId, ids)
+                .eq(SysAttachment::getStatus, "0")
                 .list();
 
         // 获取未查询出结果的数据集
-        List<String> dbPathList = sysAttachmentList.stream().map(SysAttachment::getPath).toList();
-        pathList.removeAll(dbPathList);
+        List<String> dbIds = sysAttachmentList.stream().map(SysAttachment::getId).toList();
+        ids.removeAll(dbIds);
 
         // 获取文件访问路径
-        sysAttachmentList.forEach(sysAttachment -> sysAttachment.setPath(getDownloadURL(sysAttachment.getPath())));
+        sysAttachmentList.forEach(sysAttachment -> sysAttachment.setPath(getDownloadURL(sysAttachment.getId())));
 
         // 未查询出结果的数据集创建对象
-        pathList.forEach(path -> {
+        ids.forEach(id -> {
             SysAttachment attachment = new SysAttachment();
-            attachment.setPath(path).setOriginalName(FileUtils.getFileNameByPath(path));
+            attachment.setId(id).setOriginalName("附件丢失（附件id：" + id + "）").setStatus("error");
             sysAttachmentList.add(attachment);
         });
 
@@ -174,8 +181,28 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    public void deleteByIds(List<SysAttachment> sysAttachmentList) {
+    @Transactional
+    public void deleteByIds(List<String> ids) {
+        AttachmentStorageStrategy strategy = getStrategy();
+        // 根据ids获取可删除文件的路径
+        List<String> deletablePathList = sysAttachmentMapper.queryDeletablePathByIds(ids);
+        // 删除数据库记录
+        removeByIds(ids);
 
+        if (!deletablePathList.isEmpty()) {
+            // 删除服务器文件
+            deletablePathList.forEach(strategy::delete);
+        }
+    }
+
+    @Override
+    public void deleteFromBusiness(String id) {
+        UpdateWrapper<SysAttachment> updateWrapper = new UpdateWrapper<>();
+        updateWrapper
+                .lambda()
+                .set(SysAttachment::getStatus, "3")
+                .eq(SysAttachment::getId, id);
+        update(updateWrapper);
     }
 
     @Override
@@ -192,9 +219,20 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    public String getDownloadURL(String path) {
+    public String getDownloadURL(String id) {
         AttachmentStorageStrategy strategy = getStrategy();
-        return strategy.getDownloadURL(path, Long.parseLong(fileDownloadExpireTime));
+        SysAttachment sysAttachment = lambdaQuery()
+                .select(SysAttachment::getPath)
+                .eq(SysAttachment::getId, id)
+                .eq(SysAttachment::getStatus, "0")
+                .isNotNull(SysAttachment::getPath)
+                .one();
+
+        if (sysAttachment == null) {
+            return null;
+        }
+
+        return strategy.getDownloadURL(sysAttachment.getPath(), Long.parseLong(fileDownloadExpireTime));
     }
 
     @Override
@@ -233,27 +271,30 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    public File publicDownload(String path) {
+    public ResponseEntity<StreamingResponseBody> publicDownload(String id) {
         // 根据路径和公开业务编码进行查询
-        LambdaQueryChainWrapper<SysAttachment> wrapper = lambdaQuery()
-                .eq(SysAttachment::getPath, path)
-                .in(SysAttachment::getBusinessCode, publicBusinessCodeList);
-        SysAttachment sysAttachment = queryOne(wrapper);
+        SysAttachment sysAttachment = lambdaQuery()
+                .select(SysAttachment::getPath, SysAttachment::getOriginalName)
+                .eq(SysAttachment::getId, id)
+                .in(SysAttachment::getBusinessCode, publicBusinessCodeList)
+                .one();
 
         if (sysAttachment == null) {
             return null;
         }
 
         AttachmentStorageStrategy strategy = getStrategy();
-        return strategy.download(path, sysAttachment.getOriginalName());
+        File download = strategy.download(sysAttachment.getPath());
 
+        // 返回下载file和原文件名
+        return BaseController.success(download, sysAttachment.getOriginalName());
     }
 
     // 根据需要条件查询单条数据
     private SysAttachment queryOne(LambdaQueryChainWrapper<SysAttachment> chainWrapper) {
         List<SysAttachment> list = chainWrapper
                 .eq(SysAttachment::getDelFlag, "0")
-                .eq(SysAttachment::getUploadStatus, "0")
+                .eq(SysAttachment::getStatus, "0")
                 .list();
 
         if (list.isEmpty()) {

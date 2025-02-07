@@ -70,9 +70,9 @@ public class SysAttachment implements Serializable {
     private String uploadMode;
 
     /**
-     * 上传状态 上传成功、上传失败、分片上传中
+     * 状态 上传成功、上传失败、分片上传中、业务删除
      */
-    private String uploadStatus;
+    private String status;
 
     /**
      * 文件存储位置 如：本地、云存储等

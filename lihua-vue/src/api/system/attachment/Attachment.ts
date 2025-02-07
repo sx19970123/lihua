@@ -9,15 +9,6 @@ export const existsAttachmentByMd5 = (md5: string, originFileName: string) => {
     })
 }
 
-// 文件秒传
-export const fastUpload = (data: SysAttachment) => {
-    return request<string>({
-        url: "system/attachment/fast/upload",
-        method: "post",
-        data: data
-    })
-}
-
 // 分片上传前保存附件信息
 export const chunksUploadSave = (data: SysAttachment, uploadId: string) => {
     return request<string>({
@@ -28,33 +19,36 @@ export const chunksUploadSave = (data: SysAttachment, uploadId: string) => {
 }
 
 // 根据路径查询文件信息，用于附件组件数据回显
-export const queryAttachmentInfoByPathList = (pathList: Array<string>) => {
+export const queryAttachmentInfoByIds = (ids: Array<string>) => {
     return request<Array<SysAttachment>>({
         url: "system/attachment/info",
         method: "post",
-        data: pathList
+        data: ids
     })
 }
 
 // 获取文件下载链接
-export const getDownloadURL = (path: string) => {
+export const getDownloadURL = (id: string) => {
     return request<string>({
-        url: "system/attachment/url",
-        method: "get",
-        params: {
-            path: path
-        }
+        url: `system/attachment/url/${id}`,
+        method: "get"
     })
 }
 
 // 删除附件
-export const deleteAttachment = (path: string) => {
+export const deleteByIds = (ids: string[]) => {
     return request({
         url: "system/attachment",
         method: "delete",
-        params: {
-            path: path
-        }
+        data: ids
+    })
+}
+
+// 附件业务删除
+export const deleteFromBusiness = (id: string) => {
+    return request({
+        url: `system/attachment/business/${id}`,
+        method: "delete"
     })
 }
 
@@ -66,10 +60,30 @@ export const chunksUploadedIndex = (md5: string) => {
     })
 }
 
-// 保存附件信息（分片上传）
-export const chunksSave = (data: SysAttachment) => {
-    return request({
-        url: "system/attachment/chunk/save",
+//  附件上传
+export const upload = (file: File, businessCode: string, businessName: string) => {
+    const formData = new FormData();
+    formData.append('file', file)
+    formData.append('businessCode', businessCode)
+    formData.append('businessName', businessName)
+    formData.append('originalName', file.name)
+    formData.append('uploadMode', '0')
+    formData.append('size', file.size.toString())
+    formData.append('type', file.type)
+    return request<string>({
+        url: "system/attachment/upload",
+        method: "post",
+        data: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+    })
+}
+
+// 文件秒传
+export const fastUpload = (data: SysAttachment) => {
+    return request<string>({
+        url: "system/attachment/fast/upload",
         method: "post",
         data: data
     })
@@ -99,5 +113,14 @@ export const chunksMerge = (data: SysAttachment,uploadId: string, index: number)
         url: `system/attachment/chunk/merge/${uploadId}/${index}`,
         method: 'post',
         data: data
+    })
+}
+
+// 公开附件下载
+export const publicAttachmentDownload = (id: string) => {
+    return request<Blob>({
+        url: `system/attachment/download/p/${id}`,
+        method: 'get',
+        responseType: 'blob'
     })
 }

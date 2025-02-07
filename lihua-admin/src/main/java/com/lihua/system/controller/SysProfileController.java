@@ -12,12 +12,8 @@ import com.lihua.system.service.SysSettingService;
 import com.lihua.system.service.SysUserDeptService;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-
-import java.io.File;
 
 @RestController
 @RequestMapping("system/profile")
@@ -47,14 +43,6 @@ public class SysProfileController extends BaseController {
     @PostMapping("theme")
     public String saveTheme(@RequestBody @Validated(ProfileValidation.ProfileThemeValidation.class) SysUser sysUser) {
         return success(sysProfileService.saveTheme(sysUser.getTheme()));
-    }
-
-    /**
-     * 获取图片用户头像
-     */
-    @GetMapping("avatar")
-    public ResponseEntity<StreamingResponseBody> getAvatar(@RequestParam("fullAvatarPath") String fullAvatarPath) {
-        return success(new File(fullAvatarPath));
     }
 
     /**

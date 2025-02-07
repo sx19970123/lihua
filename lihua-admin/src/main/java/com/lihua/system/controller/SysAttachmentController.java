@@ -39,8 +39,8 @@ public class SysAttachmentController extends BaseController {
     }
 
     @PostMapping("info")
-    public String queryAttachmentInfoByPathList(@RequestBody @NotEmpty(message = "附件路径列表为空") List<String> pathList) {
-        return success(sysAttachmentService.queryAttachmentInfoByPathList(pathList));
+    public String queryAttachmentInfoByIds(@RequestBody @NotEmpty(message = "附件id为空") List<String> ids) {
+        return success(sysAttachmentService.queryAttachmentInfoByIds(ids));
     }
 
     @PostMapping("upload")
@@ -49,11 +49,10 @@ public class SysAttachmentController extends BaseController {
                          @ModelAttribute SysAttachment sysAttachment) {
         try {
             String path = sysAttachmentService.upload(file);
-            sysAttachment.setPath(path).setUploadStatus("0");
-            sysAttachmentService.saveAttachment(sysAttachment);
-            return success(path);
+            sysAttachment.setPath(path).setStatus("0");
+            return success(sysAttachmentService.saveAttachment(sysAttachment));
         } catch (Exception e) {
-            sysAttachment.setUploadStatus("1").setErrorMsg(e.getMessage());
+            sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
             sysAttachmentService.saveAttachment(sysAttachment);
             return error(ResultCodeEnum.FILE_ERROR, "附件上传失败");
         }
@@ -69,7 +68,7 @@ public class SysAttachmentController extends BaseController {
     @Log(description = "附件上传（分片）", type = LogTypeEnum.UPLOAD)
     public String chunkSave(@RequestBody SysAttachment sysAttachment, @PathVariable("uploadId") String uploadId) {
         sysAttachment
-                .setUploadStatus("2")
+                .setStatus("2")
                 .setTemporaryPath(lihuaConfig.getChunkTempUploadFilePath() + uploadId);
         return success(sysAttachmentService.saveAttachment(sysAttachment));
     }
@@ -88,11 +87,10 @@ public class SysAttachmentController extends BaseController {
                               @PathVariable("total") Integer total) {
         try {
             String path = sysAttachmentService.chunksMerge(sysAttachment, uploadId, total);
-            sysAttachment.setId(sysAttachment.getId()).setPath(path).setUploadStatus("0");
-            sysAttachmentService.saveAttachment(sysAttachment);
-            return success(path);
+            sysAttachment.setId(sysAttachment.getId()).setPath(path).setStatus("0");
+            return success(sysAttachmentService.saveAttachment(sysAttachment));
         } catch (Exception e) {
-            sysAttachment.setUploadStatus("1").setErrorMsg(e.getMessage());
+            sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
             sysAttachmentService.saveAttachment(sysAttachment);
             return error(ResultCodeEnum.FILE_ERROR, "附件合并失败");
         }
@@ -108,23 +106,23 @@ public class SysAttachmentController extends BaseController {
         return success(sysAttachmentService.existsAttachmentByMd5(md5, originFileName));
     }
 
-    @DeleteMapping("multiple")
-    @Log(description = "附件删除", type = LogTypeEnum.DELETE)
-    public String delete(@RequestBody List<SysAttachment> sysAttachmentList) {
-        sysAttachmentService.deleteByIds(sysAttachmentList);
-        return success();
-    }
-
     @DeleteMapping
     @Log(description = "附件删除", type = LogTypeEnum.DELETE)
-    public String delete(String path) {
-        sysAttachmentService.deleteByPath(path);
+    public String delete(@RequestBody @NotEmpty(message = "附件id为空") List<String> ids) {
+        sysAttachmentService.deleteByIds(ids);
         return success();
     }
 
-    @GetMapping("url")
-    public String getDownloadURL(String path) {
-        return success(sysAttachmentService.getDownloadURL(path));
+    @DeleteMapping("business/{id}")
+    @Log(description = "附件删除（业务）", type = LogTypeEnum.DELETE)
+    public String deleteFromBusiness(@PathVariable("id") String id) {
+        sysAttachmentService.deleteFromBusiness(id);
+        return success();
+    }
+
+    @GetMapping("url/{id}")
+    public String getDownloadURL(@PathVariable("id") String id) {
+        return success(sysAttachmentService.getDownloadURL(id));
     }
 
     @GetMapping("download")
@@ -135,9 +133,9 @@ public class SysAttachmentController extends BaseController {
         return success(file, originFileName);
     }
 
-    @GetMapping("download/p/{path}")
+    @GetMapping("download/p/{id}")
     @Log(description = "附件下载（公开）", type = LogTypeEnum.DOWNLOAD)
-    public ResponseEntity<StreamingResponseBody> publicDownload(@PathVariable("path") String path) {
-        return success(sysAttachmentService.publicDownload(path));
+    public ResponseEntity<StreamingResponseBody> publicDownload(@PathVariable("id") String id) {
+        return sysAttachmentService.publicDownload(id);
     }
 }

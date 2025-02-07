@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { login, logout} from "@/api/system/login/Login.ts";
-import {getAvatar, saveTheme, updatePassword} from "@/api/system/profile/Profile.ts";
+import { saveTheme, updatePassword} from "@/api/system/profile/Profile.ts";
 import token from "@/utils/Token.ts";
 import { message } from "ant-design-vue";
 import {queryAuthInfo} from "@/api/system/auth/Auth.ts";
@@ -13,6 +13,7 @@ import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {close} from "@/utils/ServerSentEvents.ts";
 import {rasEncryptPassword} from "@/utils/Crypto.ts";
+import {publicAttachmentDownload} from "@/api/system/attachment/Attachment.ts";
 const { setToken,removeToken } = token
 
 export const useUserStore = defineStore('user', {
@@ -231,7 +232,7 @@ export const useUserStore = defineStore('user', {
             if (avatar.type === 'image') {
                 // 当头像类型为 image 但 image不存在时，赋值默认头像
                 if (avatar.value) {
-                    getAvatar(avatar.value).then((resp: Blob) => {
+                    publicAttachmentDownload(avatar.value).then((resp: Blob) => {
                         avatar.url = URL.createObjectURL(resp)
                     }).catch((e) => {
                         if (e instanceof ResponseError) {
