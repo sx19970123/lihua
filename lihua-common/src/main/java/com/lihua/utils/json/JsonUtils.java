@@ -100,7 +100,17 @@ public class JsonUtils {
      */
     @SneakyThrows
     public static <T> T toObject(String json, Class<T> clazz) {
-        return objectMapper.readValue(json,clazz);
+        return objectMapper.readValue(json, clazz);
+    }
+
+    /**
+     * json转换为集合对象
+     * @param json json字符串
+     * @param clazz 指定对象
+     */
+    @SneakyThrows
+    public static <T> List<T> toArrayObject(String json, Class<T> clazz) {
+       return objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
     }
 
     /**

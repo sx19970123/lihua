@@ -8,16 +8,23 @@ import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysAttachment;
 import com.lihua.system.model.dto.SysAttachmentDTO;
 import com.lihua.system.service.SysAttachmentService;
+import com.lihua.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("system/attachment")
 public class SysAttachmentController extends BaseController {
@@ -55,6 +62,66 @@ public class SysAttachmentController extends BaseController {
             sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
             sysAttachmentService.saveAttachment(sysAttachment);
             return error(ResultCodeEnum.FILE_ERROR, "附件上传失败");
+        }
+    }
+
+    @PostMapping("multiple/upload")
+    @Log(description = "附件上传（批量）", type = LogTypeEnum.UPLOAD)
+    public String upload(@RequestParam("files") MultipartFile[] files,
+                         @RequestParam("sysAttachmentJsonList") String sysAttachmentJsonList) {
+
+        List<SysAttachment> attachmentList = JsonUtils.toArrayObject(sysAttachmentJsonList, SysAttachment.class);
+        // 校验数量是否匹配
+        if (files.length != attachmentList.size()) {
+            return error(ResultCodeEnum.FILE_ERROR, "文件数量与附件信息数量不匹配");
+        }
+
+        // 遍历上传文件
+        for (int i = 0; i < files.length; i++) {
+            MultipartFile file = files[i];
+            SysAttachment sysAttachment = attachmentList.get(i);
+
+            try {
+                // 执行上传，返回路径
+                String path = sysAttachmentService.upload(file);
+                sysAttachment.setPath(path).setStatus("0"); // 设置成功状态
+            } catch (Exception e) {
+                sysAttachment.setStatus("1").setErrorMsg(e.getMessage()); // 记录错误状态
+            }
+        }
+
+        return success(sysAttachmentService.batchSaveAttachment(attachmentList));
+    }
+
+    @PostMapping("url/upload/{businessCode}/{businessName}")
+    @Log(description = "附件上传（URL）", type = LogTypeEnum.UPLOAD)
+    public String urlUpload(@RequestBody SysAttachment sysAttachment,
+                            @PathVariable("businessCode") String businessCode,
+                            @PathVariable("businessName") String businessName) {
+        sysAttachment
+                .setUploadMode("3")
+                .setBusinessCode(businessCode)
+                .setBusinessName(businessName);
+        try {
+            // 通过url上传并返回服务器存储路径
+            String path = sysAttachmentService.urlUpload(sysAttachment.getUrl());
+            Path filePath = Path.of(path);
+            sysAttachment
+                    .setPath(path)
+                    .setStatus("0")
+                    .setOriginalName(filePath.getFileName().toString())
+                    .setSize(String.valueOf(Files.size(filePath)))
+                    .setType(Files.probeContentType(filePath));
+            // 保存附件返回id
+            String id = sysAttachmentService.saveAttachment(sysAttachment);
+            // 返回原路径和id
+            return success(Map.of("originalURL", sysAttachment.getUrl(), "id", id));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
+            sysAttachmentService.saveAttachment(sysAttachment);
+            // 异常情况下返回原url
+            return error(ResultCodeEnum.FILE_ERROR, sysAttachment.getUrl());
         }
     }
 

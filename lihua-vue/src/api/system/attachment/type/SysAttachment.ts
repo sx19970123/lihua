@@ -35,4 +35,6 @@ export interface SysAttachment {
     delFlag?: string;
     /** 上传失败原因 */
     errorMsg?: string;
+    /** 原url（通过url上传有该字段） */
+    url?: string;
 }

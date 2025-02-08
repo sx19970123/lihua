@@ -103,4 +103,9 @@ public class SysAttachment implements Serializable {
      * 上传失败原因
      */
     private String errorMsg;
+
+    /**
+     * 原url（通过url上传有该字段）
+     */
+    private String url;
 }

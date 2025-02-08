@@ -1,7 +1,7 @@
 <template>
     <!--    编辑器-->
   <a-spin :spinning="spinning" tip="编辑器准备中...">
-    <div id="editor" :style="{height:  props.height ? props.height : '400px', width: props.width ? props.width : '100%'}"/>
+    <div id="editor" :style="{height: height, width: width}"/>
   </a-spin>
 </template>
 
@@ -12,6 +12,11 @@ import {onMounted, ref, watch} from "vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import token from "@/utils/Token.ts"
 import {message} from "ant-design-vue";
+import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
+import {useRoute} from "vue-router";
+import type {ResponseType} from "@/api/global/Type.ts";
+const router = useRoute()
+
 // 暗色模式主题
 const themeStore = useThemeStore();
 const isDarkTheme = themeStore.isDarkTheme
@@ -19,15 +24,29 @@ const isDarkTheme = themeStore.isDarkTheme
 const editor = ref()
 // 文件上传 url 前缀
 const baseURL = import.meta.env.VITE_APP_BASE_API
+const origin = window.location.origin
 const spinning = ref<boolean>(true)
 // 定义prop传参
-const props = defineProps<{
+const {modelValue, attachmentURLPrefix = "origin", businessCode, businessName, maxSize = 10 * 1024 * 1024, width = '100%', height = '400px'} = defineProps<{
   modelValue: string | undefined,
+  maxSize?: number,
   height?: string,
-  width?: string
+  width?: string,
+  // 保存附件前缀
+  attachmentURLPrefix?: "baseURL" | "origin"
+  // 业务编码
+  businessCode?: string,
+  // 业务名称
+  businessName?: string,
 }>()
 // 定义抛出emits函数
 const emits = defineEmits(['update:modelValue'])
+// 附件业务编码
+const bCode = businessCode ?? router.name?.toString()
+// 附件业务名称
+const bName = businessName ?? router.meta.label as string
+// 附件上传后保存前缀（/prod-api 或 http://xxx:xx/prod-api）
+const httpAttachmentPrefix = attachmentURLPrefix === "baseURL" ? baseURL : origin + baseURL
 
 // 链接转图片返回数据类型
 type LinkToImgType = {
@@ -52,13 +71,13 @@ type UploadType = {
 }
 
 onMounted(() => {
-  editor.value =  new Vditor('editor', {
-    height: props.height ? props.height : '400px',                          // 高
-    width: props.width ? props.width : '100%',                              // 宽
+  editor.value = new Vditor('editor', {
+    height: height,                                                         // 高
+    width: width,                                                           // 宽
     mode: 'wysiwyg',                                                        // 默认模式：所见即所得
     theme: isDarkTheme ? 'dark' : 'classic',                                // 编辑器主题
     icon: 'ant',                                                            // 图标风格
-    cdn:'/vditor',                                                          // 自定义cdn地址，指向项目中public/vditor 下目录
+    cdn: '/vditor',                                                          // 自定义cdn地址，指向项目中public/vditor 下目录
     preview: {
       theme: {current: isDarkTheme ? 'dark' : 'light'},                     // 内容主题
       hljs: {style: isDarkTheme ? 'solarized-dark256' : 'solarized-light'}, // 代码块主题
@@ -72,12 +91,18 @@ onMounted(() => {
     },
     after() {                                                               // 编辑器初始化后的钩子函数
       spinning.value = false                                                // 关闭加载loading
-      if (props.modelValue) {
-        editor.value.setValue(props.modelValue)                             // v-model 赋值
+      if (modelValue) {
+        editor.value.setValue(modelValue)                             // v-model 赋值
       }
     },
-    input(value) {                                                          // 输入后值后的钩子函数
-      emits('update:modelValue', value)                               // 双向绑定编辑器内容
+    input(value: string) {                                                   // 输入后值后的钩子函数
+      emits('update:modelValue', value)                                // 双向绑定编辑器内容
+    },
+    focus(value: string) {                                                    // 聚焦
+      emits('update:modelValue', value)
+    },
+    blur(value: string) {                                                     // 失焦
+      emits('update:modelValue', value)
     },
     counter: {
       enable: true,                                                         // 启用计数器
@@ -87,52 +112,81 @@ onMounted(() => {
       enable: false,                                                        // 关闭大纲
       position: 'left'                                                      // 大纲位置
     },
-    cache: {                                                                 // 缓存配置
-      enable: false                                                          // 关闭缓存
+    cache: {                                                                // 缓存配置
+      enable: false                                                         // 关闭缓存
     },
     upload: {
-      url: baseURL + '/system/file/editor/uploads',                         // 文件上传接口
+      url: baseURL + '/system/attachment/multiple/upload',                  // 文件上传接口
       headers: {'Authorization': 'Bearer ' + token.getToken()},             // 请求头获取token
       fieldName: 'files',                                                   // 文件上传接口参数名
-      format(files, responseText) {                                         // 处理文件上传接口返回
-        const resp:UploadType = JSON.parse(responseText)
-        return handleUpload(resp);
+      max: maxSize,                                                         // 文件上传最大值
+      extraData: {                                                          // 文件上传额外参数，在file()方法中进行重新赋值
+        sysAttachmentJsonList: ""
       },
-      error() {                                                             // 文件上传失败处理
-          message.error("文件上传异常")
+      file(files: File[]): File[] | Promise<File[]> {                       // 根据file构建上传参数
+        const sysAttachmentList: SysAttachment[] = []
+        files.filter(file => file.size <= maxSize).forEach(file => {
+          sysAttachmentList.push({
+            businessCode: bCode,
+            businessName: bName,
+            originalName: file.name,
+            uploadMode: "0",
+            size: file.size.toString(),
+            type: file.type
+          })
+        })
+        // 对上传参数进行赋值
+        let extraData = editor.value.vditor.options.upload?.extraData
+        if (extraData) {
+          extraData.sysAttachmentJsonList = JSON.stringify(sysAttachmentList)
+        }
+        return files;
       },
-      linkToImgUrl: baseURL + '/system/file/editor/uploadByUrl',            // url图片上传接口
-      linkToImgFormat: (responseText: string) => {                          // 处理url图片上传接口返回
-        const resp:LinkToImgType = JSON.parse(responseText)
-        return handleLinkToImg(resp)
+      format(fileList, responseText) {                                         // 处理文件上传接口返回
+        const resp: ResponseType<string[]> = JSON.parse(responseText)
+        const updateData: UploadType = { code: 0, data: { errFiles: [], succMap: {} }, msg: "" }
+        // 过滤file.size到新集合
+        const targetFiles: File[] = []
+        for (let i = 0; i < fileList.length; i++) {
+          const file = fileList[i]
+          if (file.size <= maxSize) {
+            targetFiles.push(file)
+          } else {
+            if (file.name) {
+              updateData.data.errFiles.push(file.name)
+            }
+          }
+        }
+        // 通过新集合构建succMap对象
+        if (resp.code === 200) {
+          // 构建succMap对象
+          for (let i = 0; i < targetFiles.length; i++) {
+            updateData.data.succMap[targetFiles[i].name] = httpAttachmentPrefix + "/system/attachment/download/p/" + resp.data[i]
+          }
+        } else {
+          message.error(resp.msg)
+        }
+        return JSON.stringify(updateData);
+      },
+      error() {                                                                                                         // 文件上传失败处理
+        message.error("附件上传异常")
+      },
+      linkToImgUrl: baseURL + `/system/attachment/url/upload/${bCode}/${bName}`,                          // url图片上传接口
+      linkToImgFormat: (responseText: string) => {                                                                      // 处理url图片上传接口返回
+        const resp: ResponseType<{originalURL: string, id: string}> = JSON.parse(responseText)
+        const linkToImg: LinkToImgType = { code: 0, data: { originalURL: "", url: "" }, msg: "" }
+        if (resp.code === 200) {
+          linkToImg.data.url = httpAttachmentPrefix + "/system/attachment/download/p/" + resp.data.id
+          linkToImg.data.originalURL = resp.data.originalURL
+        } else {
+          linkToImg.data.url = resp.msg
+          linkToImg.data.originalURL = resp.msg
+        }
+        return JSON.stringify(linkToImg)
       },
     },
   })
 })
-
-// 处理链接转换为图片
-const handleLinkToImg = (resp: LinkToImgType): string => {
-  if (resp.code === 0) {
-    resp.data.url =  baseURL + "/system/file/download/editor?filePath=" + resp.data.url
-  } else {
-    resp.code = 0
-    console.error("图片上传至服务器失败，由原链接显示，错误信息：" + resp.msg)
-  }
-  return JSON.stringify(resp)
-}
-
-// 处理文件上传返回格式
-const handleUpload = (resp: UploadType): string => {
-  if (resp.code === 0) {
-    const succMap = resp.data.succMap
-    for (let key in succMap) {
-      if (succMap[key]) {
-        succMap[key] = baseURL + "/system/file/download/editor?filePath=" + encodeURIComponent(succMap[key])
-      }
-    }
-  }
-  return JSON.stringify(resp)
-}
 
 // 切换亮暗主题
 watch(() => themeStore.isDarkTheme,(value) => {
@@ -147,3 +201,9 @@ watch(() => themeStore.isDarkTheme,(value) => {
   }
 })
 </script>
+
+<style>
+.vditor-img {
+  z-index: 1100;
+}
+</style>

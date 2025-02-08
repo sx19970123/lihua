@@ -1,5 +1,6 @@
 package com.lihua.system.service.impl;
 
+import ch.qos.logback.core.testUtil.MockInitialContext;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -59,7 +60,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     private String fileDownloadExpireTime;
 
     // 公开文件的业务编码，publicLocalDownload 中判断包含业务编码的文件才会进行返回
-    private final List<String> publicBusinessCodeList = List.of("UserAvatar");
+    private final List<String> publicBusinessCodeList = List.of("UserAvatar", "SystemNotice");
 
     @Override
     public IPage<SysAttachment> queryPage(SysAttachmentDTO sysAttachmentDTO) {
@@ -147,9 +148,31 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
+    @Transactional
+    public List<String> batchSaveAttachment(List<SysAttachment> sysAttachmentList) {
+
+        sysAttachmentList.forEach(sysAttachment -> sysAttachment
+                .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
+                .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
+                .setStorageLocation(uploadFileModel)
+                .setCreateId(LoginUserContext.getUserId())
+                .setCreateTime(DateUtils.now())
+                .setDelFlag("0"));
+        saveBatch(sysAttachmentList);
+
+        return sysAttachmentList.stream().map(SysAttachment::getId).toList();
+    }
+
+    @Override
     public String upload(MultipartFile file) {
         AttachmentStorageStrategy strategy = getStrategy();
         return strategy.uploadFile(file);
+    }
+
+    @Override
+    public String urlUpload(String url) {
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(uploadFileModel);
+        return attachmentStorageStrategy.uploadFile(url);
     }
 
     @Override

@@ -67,7 +67,7 @@ export const upload = (file: File, businessCode: string, businessName: string) =
     formData.append('businessCode', businessCode)
     formData.append('businessName', businessName)
     formData.append('originalName', file.name)
-    formData.append('uploadMode', '0')
+    formData.append('uploadMode', "0")
     formData.append('size', file.size.toString())
     formData.append('type', file.type)
     return request<string>({

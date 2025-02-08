@@ -48,11 +48,24 @@ public interface SysAttachmentService {
     String saveAttachment(SysAttachment sysAttachment);
 
     /**
+     * 批量保存附件信息
+     * @return 附件id集合
+     */
+    List<String> batchSaveAttachment(List<SysAttachment> sysAttachmentList);
+
+    /**
      * 附件上传
      * @param file 附件
      * @return 附件全路径
      */
     String upload(MultipartFile file);
+
+    /**
+     * 附件上传（url）
+     * @param url 附件url地址
+     * @return 本地服务器路径
+     */
+    String urlUpload(String url);
 
     /**
      * 通过 md5值获取已上传分片附件的索引值

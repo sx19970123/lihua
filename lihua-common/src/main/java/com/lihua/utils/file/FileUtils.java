@@ -35,6 +35,8 @@ public class FileUtils {
 
     private static final LihuaConfig lihuaConfig;
 
+    private static final List<String> UPLOADED_URL_SUFFIX = List.of("jpg", "jpeg", "png", "gif");
+
     static {
         lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
     }
@@ -71,19 +73,16 @@ public class FileUtils {
         if (!StringUtils.hasText(url)) {
             throw new FileException("文件URL不存在");
         }
-
-        //获取文件名
+        // 获取文件名
         String fullFilePath = generateFullFilePathByURL(url);
 
-        // 获取输入流
-        InputStream inputStream = getInputStreamByURL(url);
+        List<String> list = UPLOADED_URL_SUFFIX.stream().filter(fullFilePath::endsWith).toList();
 
-        if (inputStream != null) {
-            // 上传到服务器
-            return upload(inputStream, fullFilePath);
+        if (!list.isEmpty()) {
+            // 通过url上传
+            return upload(url, fullFilePath);
         }
-
-        return url;
+        throw new FileException("文件格式不在" + UPLOADED_URL_SUFFIX + "中，跳过上传");
     }
 
     /**
@@ -119,7 +118,7 @@ public class FileUtils {
      * 通过 URL 获取文件流
      * @param url 文件链接
      */
-    public static InputStream getInputStreamByURL(String url) {
+    public static String upload(String url, String fullFilePath) {
         // 判断url是否合法
         if (!StringUtils.hasText(url)) {
             throw new FileException("文件URL不存在");
@@ -127,7 +126,7 @@ public class FileUtils {
 
         // 获取inputStream调用上传方法
         try(InputStream inputStream = new URL(url).openStream()) {
-            return inputStream;
+            return upload(inputStream, fullFilePath);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             return null;
