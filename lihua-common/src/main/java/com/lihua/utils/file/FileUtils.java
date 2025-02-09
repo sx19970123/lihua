@@ -174,13 +174,13 @@ public class FileUtils {
      * 文件下载
      * @param file 文件
      */
-    public static ResponseEntity<StreamingResponseBody> download(File file, String fileName) {
+    public static ResponseEntity<StreamingResponseBody> download(File file, String fileName, boolean autoDelete) {
         if (file == null || !file.exists()) {
             throw new FileException(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
         }
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
-            return download(fileInputStream, StringUtils.hasText(fileName) ? fileName : file.getName());
+            return download(fileInputStream, StringUtils.hasText(fileName) ? fileName : file.getName(), autoDelete ? file : null);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             throw new FileException(e.getMessage());
@@ -212,17 +212,21 @@ public class FileUtils {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
             InputStreamResource inputStreamResource = new InputStreamResource(byteArrayInputStream);
 
-            return download(inputStreamResource.getInputStream(), fileList.get(0).getName() + "等" + fileList.size() + "个文件.zip");
+            return download(inputStreamResource.getInputStream(), fileList.get(0).getName() + "等" + fileList.size() + "个文件.zip", null);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new FileException(e.getMessage());
         }
     }
 
+    public static ResponseEntity<StreamingResponseBody> download(InputStream inputStream, String fileName){
+        return download(inputStream, fileName, null);
+    }
+
     /**
      * 文件下载
      */
-    public static ResponseEntity<StreamingResponseBody> download(InputStream inputStream, String fileName) {
+    private static ResponseEntity<StreamingResponseBody> download(InputStream inputStream, String fileName, File deleteFile) {
         if (!StringUtils.hasText(fileName)) {
             throw new FileException("请指定下载文件的名称");
         }
@@ -240,6 +244,10 @@ public class FileUtils {
             } finally {
                 try {
                     inputStream.close();
+                    // 最后传入的file不为null，将在下载完成后删除file
+                    if (deleteFile != null) {
+                        deleteFile.delete();
+                    }
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
                 }

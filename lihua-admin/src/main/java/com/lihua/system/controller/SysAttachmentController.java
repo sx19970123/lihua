@@ -205,4 +205,12 @@ public class SysAttachmentController extends BaseController {
     public ResponseEntity<StreamingResponseBody> publicDownload(@PathVariable("id") String id) {
         return sysAttachmentService.publicDownload(id);
     }
+
+    @GetMapping("download/e")
+    public ResponseEntity<StreamingResponseBody> exportDownload(@NotNull(message = "导出文件路径为空") String path, String fileName) {
+        if (path.contains(lihuaConfig.getExportFilePath())) {
+            return success(new File(path), fileName, true);
+        }
+        return null;
+    }
 }

@@ -36,12 +36,15 @@ public class BaseController {
     }
 
     public static ResponseEntity<StreamingResponseBody> success(File file) {
-        return FileUtils.download(file, null);
+        return FileUtils.download(file, null, false);
     }
 
-
     public static ResponseEntity<StreamingResponseBody> success(File file, String fileName) {
-        return FileUtils.download(file, fileName);
+        return FileUtils.download(file, fileName, false);
+    }
+
+    public static ResponseEntity<StreamingResponseBody> success(File file, String fileName, boolean autoDelete) {
+        return FileUtils.download(file, fileName, autoDelete);
     }
 
     public static ResponseEntity<StreamingResponseBody> success(List<File> fileList) {

@@ -1,6 +1,5 @@
 import { message } from "ant-design-vue";
 import Spin from '@/components/spin';
-import { defaultDownloadURL } from "@/api/system/file/File.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 
 // http正则表达式
@@ -32,7 +31,7 @@ export const handleFunDownload = (fun: Promise<any>, param?: DownloadParam) => {
                 if (httpRegex.test(data)) {
                     download(data, param?.fileName);
                 } else {
-                    downloadByPath(data, param?.split);
+                    downloadByPath(data);
                 }
             } else {
                 message.error(response.msg);
@@ -50,9 +49,9 @@ export const handleFunDownload = (fun: Promise<any>, param?: DownloadParam) => {
 }
 
 // 通过文件路径下载
-export const downloadByPath = (filePath: string, split?: string) => {
-    const downURL = defaultDownloadURL + encodeURIComponent(filePath);
-    download(split ? downURL + "&split=" + split : downURL);
+export const downloadByPath = (filePath: string) => {
+    const downURL = "" + encodeURIComponent(filePath);
+    download(downURL);
 }
 
 // 通过blob下载
