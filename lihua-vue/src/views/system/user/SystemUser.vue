@@ -382,7 +382,6 @@ import type {SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
-import {downloadByPath, handleFunDownload} from "@/utils/FileDownload.ts";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
@@ -390,6 +389,7 @@ import {useSettingStore} from "@/stores/setting.ts";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
 import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+import {download} from "@/utils/AttachmentDownload.ts";
 const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
 const settingStore = useSettingStore()
 const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
@@ -1092,8 +1092,17 @@ const {handleDelete,closePopconfirm,openPopconfirm,openDeletePopconfirm} = intiD
 // 初始化excel导入导出相关操作
 const initExcel = () => {
   // 导出excel
-  const handleExportExcel = () => {
-    handleFunDownload(exportExcel(userQuery.value))
+  const handleExportExcel = async () => {
+    const spinInstance = Spin.service({
+      tip: '努力加载中...'
+    });
+    const resp = await exportExcel(userQuery.value)
+    if (resp.code === 200) {
+      download(resp.data)
+    } else {
+      message.error(resp.msg)
+    }
+    spinInstance.close()
   }
   // 文件上传前校验格式
   const handleBeforeUpdate = (file: File) => {
@@ -1127,7 +1136,7 @@ const initExcel = () => {
             content: `共解析到 ${data.readCount} 条数据，成功导入 ${data.successCount} 条，失败 ${data.errorCount} 条。点击“确定”下载失败数据集。`,
             onOk: () => {
               // 下载导入失败excel
-              downloadByPath(data.errorExcelPath)
+              download(data.errorExcelPath)
             }
           })
         }

@@ -77,7 +77,7 @@ export const getDeptOption = () => {
  * @param data
  */
 export const exportExcel = (data: SysDept) => {
-  return request<String>({
+  return request<string>({
     url: 'system/dept/export',
     method: 'post',
     data: data

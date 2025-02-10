@@ -127,7 +127,7 @@ public interface SysAttachmentService {
      * @param id 附件id
      * @return 文件
      */
-    ResponseEntity<StreamingResponseBody> publicDownload(String id);
+    ResponseEntity<StreamingResponseBody> publicDownload(String id, String fileName);
 
     /**
      * 本地文件下载（仅LOCAL模式下使用，其他存储方式中直接通过文件服务器获取）

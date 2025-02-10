@@ -294,7 +294,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    public ResponseEntity<StreamingResponseBody> publicDownload(String id) {
+    public ResponseEntity<StreamingResponseBody> publicDownload(String id, String fileName) {
         // 根据路径和公开业务编码进行查询
         SysAttachment sysAttachment = lambdaQuery()
                 .select(SysAttachment::getPath, SysAttachment::getOriginalName)
@@ -310,7 +310,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         File download = strategy.download(sysAttachment.getPath());
 
         // 返回下载file和原文件名
-        return BaseController.success(download, sysAttachment.getOriginalName());
+        return BaseController.success(download, StringUtils.hasText(fileName) ? fileName : sysAttachment.getOriginalName());
     }
 
     // 根据需要条件查询单条数据

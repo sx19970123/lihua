@@ -4,6 +4,7 @@ import com.lihua.annotation.Log;
 import com.lihua.config.LihuaConfig;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.exception.FileException;
 import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysAttachment;
 import com.lihua.system.model.dto.SysAttachmentDTO;
@@ -14,6 +15,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -202,15 +204,15 @@ public class SysAttachmentController extends BaseController {
 
     @GetMapping("download/p/{id}")
     @Log(description = "附件下载（公开）", type = LogTypeEnum.DOWNLOAD)
-    public ResponseEntity<StreamingResponseBody> publicDownload(@PathVariable("id") String id) {
-        return sysAttachmentService.publicDownload(id);
+    public ResponseEntity<StreamingResponseBody> publicDownload(@PathVariable("id") String id, String fileName) {
+        return sysAttachmentService.publicDownload(id, fileName);
     }
 
     @GetMapping("download/e")
     public ResponseEntity<StreamingResponseBody> exportDownload(@NotNull(message = "导出文件路径为空") String path, String fileName) {
-        if (path.contains(lihuaConfig.getExportFilePath())) {
+        if (StringUtils.hasText(path) && (path.contains(lihuaConfig.getExportFilePath()) || path.replace("\\", "/").contains(lihuaConfig.getExportFilePath()))) {
             return success(new File(path), fileName, true);
         }
-        return null;
+        throw new FileException("下载失败，路径不匹配");
     }
 }

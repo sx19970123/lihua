@@ -37,7 +37,6 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
             new CacheMonitor(DICT_DATA_REDIS_PREFIX.getValue(), "系统字典"),
             new CacheMonitor(SYSTEM_SETTING_REDIS_PREFIX.getValue(), "系统设置"),
             new CacheMonitor(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue(), "IP黑名单"),
-            new CacheMonitor(TEMPORARY_FILE_REDIS_PREFIX.getValue(), "临时可访问文件"),
             new CacheMonitor(PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX.getValue(), "防重复提交"),
             new CacheMonitor(CAPTCHA_REDIS_PREFIX.getValue(), "验证码"),
             new CacheMonitor(SECONDARY_CAPTCHA_REDIS_PREFIX.getValue(), "验证码二次验证"),
@@ -56,7 +55,6 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
                 .filter(key -> !key.startsWith(DICT_DATA_REDIS_PREFIX.getValue()))
                 .filter(key -> !key.startsWith(SYSTEM_SETTING_REDIS_PREFIX.getValue()))
                 .filter(key -> !key.startsWith(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue()))
-                .filter(key -> !key.startsWith(TEMPORARY_FILE_REDIS_PREFIX.getValue()))
                 .filter(key -> !key.startsWith(PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX.getValue()))
                 .filter(key -> !key.startsWith(CAPTCHA_REDIS_PREFIX.getValue()))
                 .collect(Collectors.toSet());

@@ -274,13 +274,13 @@ import {useRouter} from "vue-router";
 import {flattenTree} from "@/utils/Tree.ts";
 import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
-import {downloadByPath, handleFunDownload} from "@/utils/FileDownload.ts";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import PickUp from "@/components/icon/pick-up/PickUp.vue";
 import Unfold from "@/components/icon/unfold/Unfold.vue";
 import {ResponseError} from "@/api/global/Type.ts";
+import {download} from "@/utils/AttachmentDownload.ts";
 const {sys_status} = initDict("sys_status")
 const router = useRouter()
 // 显示更多按钮
@@ -740,8 +740,13 @@ const {openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm} = initD
 // 初始化excel导入导出相关操作
 const initExcel = () => {
   // 导出excel
-  const handleExportExcel = () => {
-    handleFunDownload(exportExcel(deptQuery.value))
+  const handleExportExcel = async () => {
+    const resp = await exportExcel(deptQuery.value)
+    if (resp.code === 200) {
+      download(resp.data)
+    } else {
+      message.error(resp.msg)
+    }
   }
   // 文件上传前校验格式
   const handleBeforeUpdate = (file: File) => {
@@ -776,7 +781,7 @@ const initExcel = () => {
             content: `共解析到 ${data.readCount} 条数据，成功导入 ${data.successCount} 条，失败 ${data.errorCount} 条。点击“确定”下载失败数据集。`,
             onOk: () => {
               // 下载导入失败excel
-              downloadByPath(data.errorExcelPath)
+              download(data.errorExcelPath)
             }
           })
         }

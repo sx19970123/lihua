@@ -63,7 +63,6 @@
 <script setup lang="ts">
 import {message, Upload, type UploadFile} from "ant-design-vue";
 import {onMounted, ref} from "vue";
-import {download} from "@/utils/FileDownload.ts";
 import {useRoute} from "vue-router";
 import token from "@/utils/Token.ts";
 import {
@@ -81,6 +80,7 @@ import {ResponseError} from "@/api/global/Type.ts";
 import {currentRequests} from "@/utils/Request.ts";
 import {v4 as uuidv4} from "uuid";
 import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
+import {download} from "@/utils/AttachmentDownload.ts";
 const { getToken } = token
 
 const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"]

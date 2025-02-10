@@ -191,8 +191,9 @@ import DictTag from "@/components/dict-tag/index.vue";
 import type {SysLog, SysLogDTO} from "@/api/system/log/type/SysLog.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import dayjs from "dayjs";
-import {handleFunDownload} from "@/utils/FileDownload.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+import {download} from "@/utils/AttachmentDownload.ts";
+import Spin from "@/components/spin";
 
 const {sys_log_status} = initDict("sys_log_status")
 
@@ -487,8 +488,17 @@ const initClear = () => {
 const {openClearPopconfirm, countdown, handleOpenClearPopconfirm, handleCloseClearPopconfirm, handleClear, countdownFinish} = initClear()
 
 // 处理excel 导出
-const handleExportExcel = () => {
-  handleFunDownload(excelLoginExport(logQuery.value))
+const handleExportExcel = async () => {
+  const spinInstance = Spin.service({
+    tip: '努力加载中...'
+  });
+  const resp = await excelLoginExport(logQuery.value)
+  if (resp.code === 200) {
+    download(resp.data)
+  } else {
+    message.error(resp.msg)
+  }
+  spinInstance.close()
 }
 </script>
 
