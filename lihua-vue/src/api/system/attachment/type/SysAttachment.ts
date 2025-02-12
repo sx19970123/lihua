@@ -38,3 +38,22 @@ export interface SysAttachment {
     /** 原url（通过url上传有该字段） */
     url?: string;
 }
+
+export interface SysAttachmentDTO extends SysAttachment {
+
+    /**
+     * 创建时间集合
+     */
+    createTimeList?: Date[];
+
+    /**
+     * 当前页数
+     */
+    pageNum: number;
+
+    /**
+     * 每页记录数
+     */
+    pageSize: number;
+
+}

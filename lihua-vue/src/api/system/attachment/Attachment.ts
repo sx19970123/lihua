@@ -1,5 +1,15 @@
 import request from "@/utils/Request.ts";
-import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
+import type {SysAttachment, SysAttachmentDTO} from "@/api/system/attachment/type/SysAttachment.ts";
+import type {PageResponseType} from "@/api/global/Type.ts";
+
+// 分页查询附件列表
+export const queryPage = (data: SysAttachmentDTO) => {
+    return request<PageResponseType<SysAttachment>>({
+        url: "/system/attachment/page",
+        method: "POST",
+        data: data,
+    })
+}
 
 // 根据md5查询附件是否存在
 export const existsAttachmentByMd5 = (md5: string, originFileName: string) => {

@@ -1,10 +1,10 @@
 package com.lihua.system.service.impl;
 
-import ch.qos.logback.core.testUtil.MockInitialContext;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.FileException;
@@ -33,6 +33,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,29 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     @Override
     public IPage<SysAttachment> queryPage(SysAttachmentDTO sysAttachmentDTO) {
-        return null;
+        IPage<SysAttachment> iPage = new Page<>(sysAttachmentDTO.getPageNum(), sysAttachmentDTO.getPageSize());
+        QueryWrapper<SysAttachment> queryWrapper = new QueryWrapper<>();
+
+        //  原文件名
+        if (StringUtils.hasText(sysAttachmentDTO.getOriginalName())) {
+            queryWrapper.lambda().like(SysAttachment::getOriginalName, sysAttachmentDTO.getOriginalName());
+        }
+        //  状态
+        if (StringUtils.hasText(sysAttachmentDTO.getStatus())) {
+            queryWrapper.lambda().eq(SysAttachment::getStatus, sysAttachmentDTO.getStatus());
+        }
+        //  业务名称
+        if (StringUtils.hasText(sysAttachmentDTO.getBusinessName())) {
+            queryWrapper.lambda().like(SysAttachment::getBusinessName, sysAttachmentDTO.getBusinessName());
+        }
+        //  上传时间
+        List<LocalDateTime> createTimeList = sysAttachmentDTO.getCreateTimeList();
+        if (createTimeList != null && createTimeList.size() == 2) {
+            queryWrapper.lambda().between(SysAttachment::getCreateTime, createTimeList.get(0), createTimeList.get(1));
+        }
+        queryWrapper.lambda().orderByAsc(SysAttachment::getCreateTime);
+        sysAttachmentMapper.selectPage(iPage, queryWrapper);
+        return iPage;
     }
 
     @Override
@@ -303,7 +326,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
                 .one();
 
         if (sysAttachment == null) {
-            return null;
+            throw new FileException("请求资源不存在");
         }
 
         AttachmentStorageStrategy strategy = getStrategy();
