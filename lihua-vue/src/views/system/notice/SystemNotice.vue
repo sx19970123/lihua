@@ -52,6 +52,7 @@
                row-class-name="hover-cursor-pointer"
                :custom-row="handleRowClick"
                :pagination="false"
+               :loading="tableLoad"
                row-key="id"
                :scroll="{x: 1500}"
       >

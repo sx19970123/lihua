@@ -6,7 +6,7 @@ lihua:
   tokenExpireTime: 60
   # 令牌刷新阈值（分钟）距令牌过期15分钟内时，有新请求时对令牌进行刷新
   refreshThreshold: 15
-  # 下载用临时token过期时间（分钟）
+  # 附件下载生成链接过期时间（分钟）
   fileDownloadExpireTime: 30
   # 允许跨域的最长时间
   corsMaxAge: 3600
@@ -14,6 +14,8 @@ lihua:
   sseExpireTime: 28800000
   # 文件上传服务类型：LOCAL（传统本地上传）、MINIO（Minio对象存储）
   uploadFileModel: LOCAL
+  # 公开文件的业务编码，publicLocalDownload 中判断包含业务编码的文件才会进行返回
+  uploadPublicBusinessCode: [UserAvatar, SystemNotice]
   # 上传文件路径 mac windows 注意目录切换
   uploadFilePath: D:/home/lihua/
   # 分片上传临时路径

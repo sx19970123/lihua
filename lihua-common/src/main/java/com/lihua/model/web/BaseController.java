@@ -1,6 +1,7 @@
 package com.lihua.model.web;
 
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.model.attachment.AttachmentFileAndNameModel;
 import com.lihua.utils.file.FileUtils;
 import com.lihua.utils.json.JsonUtils;
 import lombok.SneakyThrows;
@@ -47,11 +48,11 @@ public class BaseController {
         return FileUtils.download(file, fileName, autoDelete);
     }
 
-    public static ResponseEntity<StreamingResponseBody> success(List<File> fileList) {
+    public static ResponseEntity<StreamingResponseBody> success(List<AttachmentFileAndNameModel> fileList) {
         return FileUtils.download(fileList);
     }
 
-    public static ResponseEntity<StreamingResponseBody> success(InputStream inputStream, String fileName) throws UnsupportedEncodingException {
+    public static ResponseEntity<StreamingResponseBody> success(InputStream inputStream, String fileName){
         return FileUtils.download(inputStream, fileName);
     }
 

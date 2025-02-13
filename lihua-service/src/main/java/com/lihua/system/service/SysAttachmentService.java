@@ -3,6 +3,7 @@ package com.lihua.system.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.system.entity.SysAttachment;
 import com.lihua.system.model.dto.SysAttachmentDTO;
+import com.lihua.system.model.vo.SysAttachmentVO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -20,7 +21,7 @@ public interface SysAttachmentService {
     /**
      * 根据主键查询附件详情
      */
-    SysAttachment queryById(String id);
+    SysAttachmentVO queryById(String id);
 
     /**
      * 附件是否存在（md5和原文件名均相同）
@@ -105,22 +106,12 @@ public interface SysAttachmentService {
     void deleteFromBusiness(String id);
 
     /**
-     * 根据路径删除
-     */
-    void deleteByPath(String path);
-
-    /**
      * 获取文件下载链接
      * @param id 附件id
+     * @param expireTime 过期时间，为 null 则取配置文件指定时间
      * @return 下载链接
      */
-    String getDownloadURL(String id);
-
-    /**
-     * 获取文件下载链接
-     * @return 下载链接
-     */
-    List<String> getDownloadURL(List<String> pathList);
+    String getDownloadURL(String id, String expireTime);
 
     /**
      * 公开文件下载

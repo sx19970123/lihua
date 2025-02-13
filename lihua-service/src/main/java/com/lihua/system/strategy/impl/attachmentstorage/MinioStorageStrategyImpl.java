@@ -4,7 +4,7 @@ import com.lihua.system.strategy.AttachmentStorageStrategy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 @Component("MINIO")
@@ -49,7 +49,7 @@ public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
-    public File download(String path) {
+    public InputStream download(String path) {
         return null;
     }
 }

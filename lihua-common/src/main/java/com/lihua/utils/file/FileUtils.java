@@ -3,6 +3,7 @@ package com.lihua.utils.file;
 import com.lihua.config.LihuaConfig;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.FileException;
+import com.lihua.model.attachment.AttachmentFileAndNameModel;
 import com.lihua.utils.spring.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -190,8 +191,8 @@ public class FileUtils {
     /**
      * 文件打包下载
      */
-    public static ResponseEntity<StreamingResponseBody> download(List<File> fileList) {
-        if (fileList == null || fileList.isEmpty()) {
+    public static ResponseEntity<StreamingResponseBody> download(List<AttachmentFileAndNameModel> fileAndNameList) {
+        if (fileAndNameList == null || fileAndNameList.isEmpty()) {
             throw new FileException("文件集合为空");
         }
 
@@ -200,8 +201,8 @@ public class FileUtils {
 
         try {
             // 将文件循环打包到ZIP输入流
-            for (File file : fileList) {
-                addToZipFile(file, zipOutputStream);
+            for (AttachmentFileAndNameModel fileAndName : fileAndNameList) {
+                addToZipFile(fileAndName.getInputStream(), fileAndName.getOriginName(), zipOutputStream);
             }
 
             // 关闭 ZIP 输出流
@@ -212,7 +213,7 @@ public class FileUtils {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
             InputStreamResource inputStreamResource = new InputStreamResource(byteArrayInputStream);
 
-            return download(inputStreamResource.getInputStream(), fileList.get(0).getName() + "等" + fileList.size() + "个文件.zip", null);
+            return download(inputStreamResource.getInputStream(), fileAndNameList.get(0).getOriginName() + "等" + fileAndNameList.size() + "个文件.zip", null);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new FileException(e.getMessage());
@@ -324,29 +325,24 @@ public class FileUtils {
 
     /**
      * 文件打包到zip
-     * @param file 单个文件
+     * @param inputStream 文件流
      * @param zipOutputStream zip输出流
      * @throws IOException io异常
      */
-    private static void addToZipFile(File file, ZipOutputStream zipOutputStream) throws IOException {
-        if (file.exists()) {
-            // 创建 ZIP 文件条目
-            zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+    private static void addToZipFile(InputStream inputStream, String fileOriginName,ZipOutputStream zipOutputStream) throws IOException {
+        // 创建 ZIP 文件条目
+        zipOutputStream.putNextEntry(new ZipEntry(fileOriginName));
 
-            // 将文件内容写入 ZIP 文件条目中
-            FileInputStream fileInputStream = new FileInputStream(file);
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = fileInputStream.read(buffer)) > 0) {
-                zipOutputStream.write(buffer, 0, length);
-            }
-
-            // 关闭当前 ZIP 文件条目
-            zipOutputStream.closeEntry();
-            fileInputStream.close();
-        } else {
-            throw new FileException("文件不存在");
+        // 将文件内容写入 ZIP 文件条目中
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) > 0) {
+            zipOutputStream.write(buffer, 0, length);
         }
+
+        // 关闭当前 ZIP 文件条目
+        zipOutputStream.closeEntry();
+        inputStream.close();
     }
 
     // 根据url获取文件名称

@@ -54,6 +54,7 @@
                :row-selection="attachmentRowSelectionType"
                :custom-row="handleRowClick"
                :columns="attachmentColumn"
+               :loading="tableLoad"
                row-class-name="hover-cursor-pointer"
                row-key="id"
                :scroll="{x: 1500}">
@@ -63,7 +64,7 @@
                           :open="openDeletePopconfirm"
                           ok-text="确 定"
                           cancel-text="取 消"
-                          @confirm="handleDelete"
+                          @confirm="handleDelete(undefined)"
                           @cancel="closePopconfirm"
                           @open-change="(open: boolean) => !open ? closePopconfirm(): ''"
             >
@@ -75,43 +76,52 @@
                 <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
               </a-button>
             </a-popconfirm>
-            <a-button ghost type="primary">
-              <template #icon>
-                <CloudDownloadOutlined />
-              </template>
-              打包下载
-              <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
-            </a-button>
           </a-flex>
         </template>
         <template #bodyCell="{column, record}">
+          <template v-if="column.key === 'originalName'">
+            <a-typography-link @click="(event: MouseEvent) => handleOpenInfoModal(event, record.id)">{{record[column.key]}}</a-typography-link>
+          </template>
+          <template v-if="column.key === 'size'">
+            {{convertFileSize(record[column.key])}}
+          </template>
           <template v-if="column.key === 'createTime'">
             {{dayjs(record[column.key]).format('YYYY-MM-DD HH:mm')}}
           </template>
           <template v-if="column.key === 'status'">
             <dict-tag :dict-data-value="record[column.key]" :dict-data-option="sys_attachment_status"/>
           </template>
+          <template v-if="column.key === 'uploadMode'">
+            <dict-tag :dict-data-value="record[column.key]" :dict-data-option="sys_attachment_upload_mode"/>
+          </template>
           <template v-if="column.key === 'action'">
-            <a-button type="link" size="small">
+            <a-button type="link" size="small" @click="(event: MouseEvent) => handleDownload(event, record.id)">
               <template #icon>
                 <CloudDownloadOutlined />
               </template>
               下载
             </a-button>
             <a-divider type="vertical"/>
-            <a-button type="link" size="small">
+            <a-button type="link" size="small" @click="(event: MouseEvent) => handleShowShareModal(event, record.id, record.originalName)">
               <template #icon>
                 <ShareAltOutlined />
               </template>
               分享
             </a-button>
             <a-divider type="vertical"/>
-            <a-button type="link" size="small" danger>
-              <template #icon>
-                <DeleteOutlined />
-              </template>
-              删除
-            </a-button>
+            <a-popconfirm title="删除后不可恢复，是否删除？"
+                          placement="bottomRight"
+                          ok-text="确 定"
+                          cancel-text="取 消"
+                          @confirm="handleDelete(record.id)"
+            >
+              <a-button type="link" size="small" danger @click="(event:MouseEvent) => event.stopPropagation()">
+                <template #icon>
+                  <DeleteOutlined />
+                </template>
+                删除
+              </a-button>
+            </a-popconfirm>
           </template>
         </template>
         <template #footer>
@@ -126,6 +136,74 @@
         </template>
       </a-table>
     </a-flex>
+<!--    详情模态框-->
+    <a-modal v-model:open="showInfoModal" @cancel="handleCloseInfoModal" width="1000px" :footer="null">
+      <a-descriptions title="附件详情" bordered :label-style="{width: '110px'}">
+        <!-- 文件信息 -->
+        <a-descriptions-item label="附件名称" :span="1">
+          {{attachmentInfo.originalName}}
+        </a-descriptions-item>
+        <a-descriptions-item label="存储路径" :span="2">{{attachmentInfo.path}}</a-descriptions-item>
+        <a-descriptions-item label="附件大小" :span="1">{{convertFileSize(attachmentInfo.size)}}</a-descriptions-item>
+
+        <a-descriptions-item label="附件类型" :span="1">{{attachmentInfo.type}}</a-descriptions-item>
+        <a-descriptions-item label="存储位置" :span="1">{{attachmentInfo.storageLocation}}</a-descriptions-item>
+
+        <!-- 业务信息 -->
+        <a-descriptions-item label="业务编码" :span="1">{{attachmentInfo.businessCode}}</a-descriptions-item>
+        <a-descriptions-item label="业务名称" :span="1">{{attachmentInfo.businessName}}</a-descriptions-item>
+
+        <!-- 上传信息 -->
+        <a-descriptions-item label="上传用户" :span="1">{{attachmentInfo.uploadName}}</a-descriptions-item>
+        <a-descriptions-item label="上传时间" :span="1">{{dayjs(attachmentInfo.createTime).format("YYYY-MM-DD HH:mm:ss")}}</a-descriptions-item>
+        <a-descriptions-item label="上传方式" :span="1">
+          <dict-tag :dict-data-value="attachmentInfo.uploadMode ? attachmentInfo.uploadMode : ''" :dict-data-option="sys_attachment_upload_mode"/>
+        </a-descriptions-item>
+        <!-- 附件状态 -->
+        <a-descriptions-item label="附件状态" :span="1">
+          <dict-tag :dict-data-value="attachmentInfo.status ? attachmentInfo.status : ''" :dict-data-option="sys_attachment_status"/>
+        </a-descriptions-item>
+        <!-- 异常信息 -->
+        <a-descriptions-item label="异常信息" :span="3" v-if="attachmentInfo.status === '1'">{{attachmentInfo.errorMsg}}</a-descriptions-item>
+        <!-- url上传展示原url -->
+        <a-descriptions-item label="原URL" :span="3" v-if="attachmentInfo.url">{{attachmentInfo.url}}</a-descriptions-item>
+        <!-- 其余上传展示MD5 -->
+        <a-descriptions-item label="MD5" :span="3" v-if="attachmentInfo.md5">{{attachmentInfo.md5}}</a-descriptions-item>
+      </a-descriptions>
+    </a-modal>
+<!--    分享模态框-->
+    <a-modal v-model:open="showShareModal" @cancel="handleCloseShareModal">
+      <template #title>
+        <div style="margin-bottom: 24px">
+          <a-typography-title :level="4">{{shareName}}</a-typography-title>
+        </div>
+      </template>
+      <a-form :colon="false">
+        <a-form-item label="有效时间">
+          <a-input-number placeholder="请输入链接有效时间"
+                          addon-after="分钟"
+                          :min="1"
+                          :precision="0"
+                          v-model:value="shareValidTime"
+                          @blur="handleGetShareUrl"
+          />
+        </a-form-item>
+        <a-form-item label="附件链接">
+          <a-textarea :auto-size="{ minRows: 3 }"
+                      v-model:value="shareUrl"
+                      placeholder="有效时间失去焦点以获取分享链接"
+                      readonly/>
+        </a-form-item>
+      </a-form>
+      <template #footer>
+        <a-button type="primary" @click="handleCopyToClipboard">
+          <template #icon>
+            <CopyOutlined />
+          </template>
+          复制链接到剪切板
+        </a-button>
+      </template>
+    </a-modal>
   </div>
 </template>
 
@@ -134,14 +212,17 @@
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {ref} from "vue";
-import type {SysAttachment, SysAttachmentDTO} from "@/api/system/attachment/type/SysAttachment.ts";
+import type {SysAttachment, SysAttachmentDTO, SysAttachmentVO} from "@/api/system/attachment/type/SysAttachment.ts";
 import {message} from "ant-design-vue";
 import {ResponseError} from "@/api/global/Type.ts";
-import {queryPage} from "@/api/system/attachment/Attachment.ts";
+import {deleteData, getDownloadURL, queryById, queryPage} from "@/api/system/attachment/Attachment.ts";
 import dayjs from "dayjs";
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
+import {download} from "@/utils/AttachmentDownload.ts";
 const  {sys_attachment_status, sys_attachment_upload_mode} = initDict("sys_attachment_status","sys_attachment_upload_mode")
+const baseAPI = import.meta.env.VITE_APP_BASE_API
+
 const initSearch = () => {
 // 选中的数据id集合
   const selectedIds = ref<Array<string>>([])
@@ -176,17 +257,20 @@ const initSearch = () => {
     {
       title: '附件名称',
       key: 'originalName',
-      dataIndex: 'originalName'
+      dataIndex: 'originalName',
+      ellipsis: true
     },
     {
-      title: '附件类型',
-      key: 'type',
-      dataIndex: 'type'
+      title: '附件大小',
+      key: 'size',
+      dataIndex: 'size',
+      align: "center"
     },
     {
       title: '存储路径',
       key: 'path',
       dataIndex: 'path',
+      ellipsis: true
     },
     {
       title: '所属模块',
@@ -198,6 +282,12 @@ const initSearch = () => {
       title: '状态',
       key: 'status',
       dataIndex: 'status',
+      align: 'center',
+    },
+    {
+      title: '上传方式',
+      key: 'uploadMode',
+      dataIndex: 'uploadMode',
       align: 'center',
     },
     {
@@ -256,6 +346,23 @@ const initSearch = () => {
       tableLoad.value = false
     }
   }
+  // 转换文件大小
+  const convertFileSize = (size?: string) => {
+    if (!size) {
+      return;
+    }
+    let numSize = Number(size)
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+    let unitIndex = 0;
+    while (numSize >= 1024 && unitIndex < units.length - 1) {
+      numSize /= 1024;
+      unitIndex++;
+    }
+
+    return Math.round(numSize * 100) / 100 + " " + units[unitIndex];
+  }
+
   handleQueryPage()
   return {
     selectedIds,
@@ -265,6 +372,7 @@ const initSearch = () => {
     attachmentList,
     tableLoad,
     attachmentQuery,
+    convertFileSize,
     handleRowClick,
     handleQueryPage,
     initPage,
@@ -272,5 +380,179 @@ const initSearch = () => {
   }
 }
 
-const {selectedIds, attachmentRowSelectionType ,attachmentColumn, attachmentTotal, attachmentList, tableLoad, attachmentQuery, handleRowClick, handleQueryPage, reloadPage, initPage} = initSearch()
+const {selectedIds, attachmentRowSelectionType ,attachmentColumn, attachmentTotal, attachmentList, tableLoad, attachmentQuery, convertFileSize, handleRowClick, handleQueryPage, reloadPage, initPage} = initSearch()
+
+const initDelete = () => {
+  // 显示删除提示
+  const openDeletePopconfirm = ref<boolean>(false);
+  // 打开删除提示框
+  const openPopconfirm = () => {
+    if (selectedIds.value && selectedIds.value.length > 0) {
+      openDeletePopconfirm.value = true
+    } else {
+      message.warning("请勾选数据")
+    }
+  }
+  // 关闭删除提示框
+  const closePopconfirm = () => {
+    openDeletePopconfirm.value = false
+  }
+  // 处理删除逻辑
+  const handleDelete = async (id?:string) => {
+    const deleteIds = id ? [id] : [...selectedIds.value];
+    try {
+      if (deleteIds.length > 0) {
+        const resp = await deleteData(deleteIds)
+        if (resp.code === 200) {
+          message.success(resp.msg);
+          // id 不存在则清空选中数据
+          if (!id) {
+            selectedIds.value = []
+          } else {
+            selectedIds.value = selectedIds.value.filter(item => item !== id)
+          }
+          await initPage()
+        } else {
+          message.error(resp.msg)
+        }
+      } else {
+        message.warning("请勾选数据")
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    } finally {
+      closePopconfirm()
+    }
+
+  }
+  return {
+    openDeletePopconfirm,
+    closePopconfirm,
+    handleDelete,
+    openPopconfirm
+  }
+}
+
+const {openDeletePopconfirm, closePopconfirm, handleDelete, openPopconfirm} = initDelete()
+
+const initShare = () => {
+  const showShareModal = ref<boolean>(false)
+  const shareId = ref<string>()
+  const shareName = ref<string>()
+  const shareValidTime = ref<number>(15)
+  const shareUrl = ref<string>()
+
+  // 处理打开分享model
+  const handleShowShareModal = (event: MouseEvent, id: string, fileName: string) => {
+    event.stopPropagation()
+    showShareModal.value = true
+    shareId.value = id
+    shareName.value = fileName
+    handleGetShareUrl()
+  }
+  // 处理关闭分享model
+  const handleCloseShareModal = () => {
+    showShareModal.value = false
+    shareId.value = undefined
+    shareUrl.value = undefined
+  }
+
+  // 处理获取分享链接
+  const handleGetShareUrl = async () => {
+    if (shareId.value) {
+      const resp = await getDownloadURL(shareId.value, shareValidTime.value.toString())
+      if (resp.code === 200) {
+        const timeoutTime = dayjs(new Date()).add(shareValidTime.value, "minute").format('YYYY-MM-DD HH:mm:ss')
+        shareUrl.value = window.location.origin + baseAPI + resp.data + `&describe=${shareName.value} 有效期至 ${timeoutTime} --来自狸花猫后台管理系统`
+      } else {
+        message.error(resp.msg)
+      }
+    }
+  }
+
+  // 处理复制到剪贴板
+  const handleCopyToClipboard = () => {
+    if (shareUrl.value) {
+      navigator.clipboard.writeText(shareUrl.value).then(() => message.success('复制成功')).catch(() => message.success('复制失败'));
+      handleCloseShareModal()
+    } else {
+      message.error("分享链接获取失败")
+    }
+  }
+  return {
+    showShareModal,
+    shareId,
+    shareName,
+    shareValidTime,
+    shareUrl,
+    handleShowShareModal,
+    handleCloseShareModal,
+    handleGetShareUrl,
+    handleCopyToClipboard
+  }
+}
+
+const {showShareModal, shareName, shareUrl, shareValidTime, handleShowShareModal, handleCloseShareModal,handleGetShareUrl, handleCopyToClipboard} = initShare()
+
+const intiInfo = () => {
+  const showInfoModal = ref<boolean>(false)
+  const attachmentInfo = ref<SysAttachmentVO>({})
+
+  // 处理打开模态框
+  const handleOpenInfoModal = async (event: MouseEvent, id: string) => {
+    event.stopPropagation()
+    try {
+      const resp = await queryById(id)
+      if (resp.code === 200) {
+        showInfoModal.value = true
+        attachmentInfo.value = resp.data
+      } else {
+        message.warning(resp.msg)
+      }
+    } catch (e) {
+      if (e instanceof ResponseError) {
+        message.error(e.msg)
+      } else {
+        console.error(e)
+      }
+    }
+  }
+
+  // 处理关闭模态框
+  const handleCloseInfoModal = () => {
+    showInfoModal.value = false
+    attachmentInfo.value = {}
+  }
+  return {
+    showInfoModal,
+    attachmentInfo,
+    handleOpenInfoModal,
+    handleCloseInfoModal
+  }
+}
+
+const {showInfoModal, attachmentInfo, handleOpenInfoModal, handleCloseInfoModal} = intiInfo()
+
+// 下载
+const handleDownload = async (event: MouseEvent, id: string) => {
+  event.stopPropagation()
+  try {
+    const resp = await getDownloadURL(id)
+    if (resp.code === 200) {
+      download(baseAPI + resp.data)
+    } else {
+      message.error(resp.msg)
+    }
+  } catch (e) {
+    if (e instanceof ResponseError) {
+      message.error(e.msg)
+    } else {
+      console.error(e)
+    }
+  }
+}
 </script>

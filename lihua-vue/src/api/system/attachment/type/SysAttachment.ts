@@ -57,3 +57,10 @@ export interface SysAttachmentDTO extends SysAttachment {
     pageSize: number;
 
 }
+
+export interface SysAttachmentVO extends SysAttachment {
+    /**
+     * 上传用户昵称
+     */
+    uploadName?: string;
+}

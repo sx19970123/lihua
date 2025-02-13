@@ -2,7 +2,7 @@ package com.lihua.system.strategy;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -70,9 +70,9 @@ public interface AttachmentStorageStrategy {
     String getDownloadURL(String path, long expiryInMinutes);
 
     /**
-     * 文件下载（针对永久有效链接，只针对公开 businessCode的附件使用）
+     * 通过路径进行文件下载
      * @param path 文件路径
      * @return 下载的文件流
      */
-    File download(String path);
+    InputStream download(String path);
 }

@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * 全局通用配置类
  */
@@ -30,7 +32,7 @@ public class LihuaConfig {
     /**
      * 下载附件链接过期时间
      */
-    private Integer fileDownloadExpireTime;
+    private String fileDownloadExpireTime;
 
     /**
      * 允许跨域最长时间
@@ -47,6 +49,11 @@ public class LihuaConfig {
      * 文件上传服务类型
      */
     private String uploadFileModel;
+
+    /**
+     * 可公开下载附件的BusinessCode集合
+     */
+    private List<String> uploadPublicBusinessCode;
 
     /**
      * 文件上传路径

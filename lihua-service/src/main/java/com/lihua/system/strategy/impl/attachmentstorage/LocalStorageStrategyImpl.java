@@ -137,8 +137,12 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
-    public File download(String path) {
-        return new File(path);
+    public InputStream download(String path) {
+        try {
+            return Files.newInputStream(Path.of(path));
+        } catch (IOException e) {
+            throw new FileException("获取文件失败");
+        }
     }
 
     // 将字节数组转换为十六进制字符串

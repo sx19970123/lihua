@@ -16,4 +16,33 @@
         GROUP BY path
         HAVING count( 1 ) = 1
     </select>
+
+    <select id="queryById" resultType="com.lihua.system.model.vo.SysAttachmentVO">
+        SELECT
+            sys_attachment.id,
+            sys_attachment.`status`,
+            sys_attachment.create_id,
+            sys_attachment.create_time,
+            storage_name,
+            original_name,
+            extension_name,
+            path,
+            temporary_path,
+            business_code,
+            business_name,
+            size,
+            type,
+            upload_mode,
+            storage_location,
+            md5,
+            error_msg,
+            url,
+            sys_user.nickname as uploadName
+        FROM
+            sys_attachment
+        LEFT JOIN sys_user ON sys_user.id = sys_attachment.create_id
+        WHERE sys_attachment.id = #{id}
+    </select>
+
+
 </mapper>

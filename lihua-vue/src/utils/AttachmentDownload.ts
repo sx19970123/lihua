@@ -8,29 +8,29 @@ const origin = window.location.origin
  */
 export const download = (data: string, fileName?: string) => {
     if (data.startsWith(baseURL) || data.startsWith(origin)) {
-        // 传入的是链接
-        handleDownload(data, fileName)
+        // 传入的是链接（需自行拼接 baseURL或origin）
+        downloadFromUrl(data, fileName)
     } else if (data.includes("\\")) {
         // 传入的是路径
         downloadExport(data, fileName)
     } else {
-        // 传入的是id
+        // 传入的是id（仅公开数据可通过id下载）
         downloadPublic(data, fileName)
     }
 }
 
-// 根据附件id下载
+// 根据附件id下载（仅公开数据可通过id下载）
 export const downloadPublic = (id: string, fileName?: string) =>  {
-    handleDownload(import.meta.env.VITE_APP_BASE_API + `/system/attachment/download/p/${id}?fileName=${fileName?encodeURIComponent(fileName):''}`, fileName)
+    downloadFromUrl(import.meta.env.VITE_APP_BASE_API + `/system/attachment/download/p/${id}?fileName=${fileName?encodeURIComponent(fileName):''}`, fileName)
 }
 
 // 附件导出下载
 export const downloadExport = (path: string, fileName?: string) => {
-    handleDownload(import.meta.env.VITE_APP_BASE_API + `/system/attachment/download/e?path=${encodeURIComponent(path)}&fileName=${fileName?encodeURIComponent(fileName):''}`, fileName);
+    downloadFromUrl(import.meta.env.VITE_APP_BASE_API + `/system/attachment/download/e?path=${encodeURIComponent(path)}&fileName=${fileName?encodeURIComponent(fileName):''}`, fileName);
 }
 
 // 通过url下载
-export const handleDownload = (url: string, fileName?: string) => {
+export const downloadFromUrl = (url: string, fileName?: string) => {
     const linkElement = document.createElement('a');
     linkElement.href = url;
     if (fileName) {

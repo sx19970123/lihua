@@ -190,8 +190,8 @@ public class SysAttachmentController extends BaseController {
     }
 
     @GetMapping("url/{id}")
-    public String getDownloadURL(@PathVariable("id") String id) {
-        return success(sysAttachmentService.getDownloadURL(id));
+    public String getDownloadURL(@PathVariable("id") String id, String expireTime) {
+        return success(sysAttachmentService.getDownloadURL(id, expireTime));
     }
 
     @GetMapping("download")

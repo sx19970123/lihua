@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lihua.config.LihuaConfig;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.FileException;
 import com.lihua.exception.ServiceException;
@@ -13,6 +14,7 @@ import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysAttachment;
 import com.lihua.system.mapper.SysAttachmentMapper;
 import com.lihua.system.model.dto.SysAttachmentDTO;
+import com.lihua.system.model.vo.SysAttachmentVO;
 import com.lihua.system.service.SysAttachmentService;
 import com.lihua.system.strategy.AttachmentStorageStrategy;
 import com.lihua.utils.crypt.AesUtils;
@@ -20,7 +22,6 @@ import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.file.FileUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -48,20 +50,8 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     @Resource
     private SysAttachmentMapper sysAttachmentMapper;
 
-    // 存储路径
-    @Value("${lihua.uploadFilePath}")
-    private String uploadFilePath;
-
-    // 附件存储模式
-    @Value("${lihua.uploadFileModel}")
-    private String uploadFileModel;
-
-    // 文件下载链接有效期
-    @Value("${lihua.fileDownloadExpireTime}")
-    private String fileDownloadExpireTime;
-
-    // 公开文件的业务编码，publicLocalDownload 中判断包含业务编码的文件才会进行返回
-    private final List<String> publicBusinessCodeList = List.of("UserAvatar", "SystemNotice");
+    @Resource
+    private LihuaConfig lihuaConfig;
 
     @Override
     public IPage<SysAttachment> queryPage(SysAttachmentDTO sysAttachmentDTO) {
@@ -85,14 +75,14 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         if (createTimeList != null && createTimeList.size() == 2) {
             queryWrapper.lambda().between(SysAttachment::getCreateTime, createTimeList.get(0), createTimeList.get(1));
         }
-        queryWrapper.lambda().orderByAsc(SysAttachment::getCreateTime);
+        queryWrapper.lambda().orderByDesc(SysAttachment::getCreateTime);
         sysAttachmentMapper.selectPage(iPage, queryWrapper);
         return iPage;
     }
 
     @Override
-    public SysAttachment queryById(String id) {
-        return null;
+    public SysAttachmentVO queryById(String id) {
+        return sysAttachmentMapper.queryById(id);
     }
 
     @Override
@@ -144,7 +134,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         ids.removeAll(dbIds);
 
         // 获取文件访问路径
-        sysAttachmentList.forEach(sysAttachment -> sysAttachment.setPath(getDownloadURL(sysAttachment.getId())));
+        sysAttachmentList.forEach(sysAttachment -> sysAttachment.setPath(getDownloadURL(sysAttachment.getId(), null)));
 
         // 未查询出结果的数据集创建对象
         ids.forEach(id -> {
@@ -161,7 +151,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         sysAttachment
                 .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
                 .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
-                .setStorageLocation(uploadFileModel)
+                .setStorageLocation(lihuaConfig.getUploadFileModel())
                 .setCreateId(LoginUserContext.getUserId())
                 .setCreateTime(DateUtils.now())
                 .setDelFlag("0");
@@ -177,7 +167,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         sysAttachmentList.forEach(sysAttachment -> sysAttachment
                 .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
                 .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
-                .setStorageLocation(uploadFileModel)
+                .setStorageLocation(lihuaConfig.getUploadFileModel())
                 .setCreateId(LoginUserContext.getUserId())
                 .setCreateTime(DateUtils.now())
                 .setDelFlag("0"));
@@ -194,26 +184,26 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     @Override
     public String urlUpload(String url) {
-        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(uploadFileModel);
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(lihuaConfig.getUploadFileModel());
         return attachmentStorageStrategy.uploadFile(url);
     }
 
     @Override
     public List<Integer> chunksUploadedIndex(String md5) {
-        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(uploadFileModel);
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(lihuaConfig.getUploadFileModel());
         List<Integer> tempChunksIndexList = attachmentStorageStrategy.getTempChunksIndex(md5);
         return tempChunksIndexList == null ? new ArrayList<>() : tempChunksIndexList;
     }
 
     @Override
     public void chunksUpload(MultipartFile file, String uploadId, String index) {
-        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(uploadFileModel);
-        attachmentStorageStrategy.uploadTempFile(file, Path.of(uploadFilePath,"temporary", uploadId, index).toString());
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(lihuaConfig.getUploadFileModel());
+        attachmentStorageStrategy.uploadTempFile(file, Path.of(lihuaConfig.getUploadFilePath(),"temporary", uploadId, index).toString());
     }
 
     @Override
     public String chunksMerge(SysAttachment sysAttachment, String uploadId, Integer total) {
-        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(uploadFileModel);
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(lihuaConfig.getUploadFileModel());
         return attachmentStorageStrategy.chunksMerge(sysAttachment.getOriginalName(), sysAttachment.getMd5(), uploadId, total);
     }
 
@@ -230,6 +220,15 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     @Transactional
     public void deleteByIds(List<String> ids) {
         AttachmentStorageStrategy strategy = getStrategy();
+        Long count = lambdaQuery()
+                .or(wrapper -> wrapper.eq(SysAttachment::getStatus, "1").or().eq(SysAttachment::getStatus, "3"))
+                .in(SysAttachment::getId, ids)
+                .count();
+
+        if (count != ids.size()) {
+            throw new ServiceException("上传成功、分片上传中状态附件不允许删除");
+        }
+
         // 根据ids获取可删除文件的路径
         List<String> deletablePathList = sysAttachmentMapper.queryDeletablePathByIds(ids);
         // 删除数据库记录
@@ -252,20 +251,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    @Transactional
-    public void deleteByPath(String path) {
-        AttachmentStorageStrategy strategy = getStrategy();
-        // 删除服务器文件
-        strategy.delete(path);
-
-        // 删除数据库数据
-        QueryWrapper<SysAttachment> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(SysAttachment::getPath, path);
-        remove(queryWrapper);
-    }
-
-    @Override
-    public String getDownloadURL(String id) {
+    public String getDownloadURL(String id, String expireTime) {
         AttachmentStorageStrategy strategy = getStrategy();
         SysAttachment sysAttachment = lambdaQuery()
                 .select(SysAttachment::getPath)
@@ -278,17 +264,12 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
             return null;
         }
 
-        return strategy.getDownloadURL(sysAttachment.getPath(), Long.parseLong(fileDownloadExpireTime));
-    }
-
-    @Override
-    public List<String> getDownloadURL(List<String> pathList) {
-        return List.of();
+        return strategy.getDownloadURL(sysAttachment.getPath(), Long.parseLong(StringUtils.hasText(expireTime) ? expireTime : lihuaConfig.getFileDownloadExpireTime()));
     }
 
     @Override
     public File localDownload(String key) {
-        if (!"LOCAL".equals(uploadFileModel)) {
+        if (!"LOCAL".equals(lihuaConfig.getUploadFileModel())) {
             throw new FileException("存储模式不受支持");
         }
         String params;
@@ -322,7 +303,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         SysAttachment sysAttachment = lambdaQuery()
                 .select(SysAttachment::getPath, SysAttachment::getOriginalName)
                 .eq(SysAttachment::getId, id)
-                .in(SysAttachment::getBusinessCode, publicBusinessCodeList)
+                .in(SysAttachment::getBusinessCode, lihuaConfig.getUploadPublicBusinessCode())
                 .one();
 
         if (sysAttachment == null) {
@@ -330,10 +311,10 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         }
 
         AttachmentStorageStrategy strategy = getStrategy();
-        File download = strategy.download(sysAttachment.getPath());
+        InputStream inputStream = strategy.download(sysAttachment.getPath());
 
         // 返回下载file和原文件名
-        return BaseController.success(download, StringUtils.hasText(fileName) ? fileName : sysAttachment.getOriginalName());
+        return BaseController.success(inputStream, sysAttachment.getOriginalName());
     }
 
     // 根据需要条件查询单条数据
@@ -352,7 +333,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     // 获取 AttachmentStorageStrategy 对应实现
     private AttachmentStorageStrategy getStrategy() {
-        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(uploadFileModel);
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(lihuaConfig.getUploadFileModel());
         if (attachmentStorageStrategy == null) {
             log.error("获取附件实现策略失败，请检查uploadFileModel策略配置，可选参数" + attachmentStorageStrategyMap.keySet());
             throw new ServiceException("获取附件实现策略失败");
