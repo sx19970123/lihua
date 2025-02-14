@@ -62,13 +62,6 @@ public interface SysAttachmentService {
     String upload(MultipartFile file);
 
     /**
-     * 附件上传（url）
-     * @param url 附件url地址
-     * @return 本地服务器路径
-     */
-    String urlUpload(String url);
-
-    /**
      * 通过 md5值获取已上传分片附件的索引值
      * @param md5 附件md5
      * @return 已上传的附件索引集合

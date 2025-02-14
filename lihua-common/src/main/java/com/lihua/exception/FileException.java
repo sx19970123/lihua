@@ -7,7 +7,9 @@ import com.lihua.enums.ResultCodeEnum;
  */
 public class FileException extends RuntimeException {
 
-    public FileException() {}
+    public FileException() {
+        super(ResultCodeEnum.FILE_ERROR.getDefaultMsg());
+    }
 
     public FileException(String message) {
         super(message);

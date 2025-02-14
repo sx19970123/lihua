@@ -153,6 +153,14 @@
             <artifactId>tianai-captcha-springboot-starter</artifactId>
             <version>${tianai-captcha.version}</version>
         </dependency>
+
+        <!-- minio -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.5.17</version>
+        </dependency>
+
     </dependencies>
 
     <modules>

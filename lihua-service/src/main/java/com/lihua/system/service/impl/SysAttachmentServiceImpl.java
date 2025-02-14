@@ -183,12 +183,6 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     }
 
     @Override
-    public String urlUpload(String url) {
-        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(lihuaConfig.getUploadFileModel());
-        return attachmentStorageStrategy.uploadFile(url);
-    }
-
-    @Override
     public List<Integer> chunksUploadedIndex(String md5) {
         AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(lihuaConfig.getUploadFileModel());
         List<Integer> tempChunksIndexList = attachmentStorageStrategy.getTempChunksIndex(md5);

@@ -42,11 +42,6 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
-    public String uploadFile(String url) {
-        return FileUtils.upload(url);
-    }
-
-    @Override
     public boolean isExists(String path) {
         return FileUtils.isExists(path);
     }

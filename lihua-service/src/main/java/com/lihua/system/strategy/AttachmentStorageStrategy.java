@@ -18,13 +18,6 @@ public interface AttachmentStorageStrategy {
     String uploadFile(MultipartFile file);
 
     /**
-     * 通过网络链接下载文件
-     * @param url 网络文件链接
-     * @return 文件上传完成后保存到数据库业务表的返回值，一般是存储路径
-     */
-    String uploadFile(String url);
-
-    /**
      * 通过路径判断文件是否存在
      * @param path 文件全路径
      * @return 文件是否存在

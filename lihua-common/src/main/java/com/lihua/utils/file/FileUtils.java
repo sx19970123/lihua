@@ -15,13 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,8 +34,6 @@ import java.util.zip.ZipOutputStream;
 public class FileUtils {
 
     private static final LihuaConfig lihuaConfig;
-
-    private static final List<String> UPLOADED_URL_SUFFIX = List.of("jpg", "jpeg", "png", "gif");
 
     static {
         lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
@@ -66,80 +63,27 @@ public class FileUtils {
     }
 
     /**
-     * url文件上传
-     * @param url 文件链接
-     */
-    public static String upload(String url) {
-        // 判断url是否合法
-        if (!StringUtils.hasText(url)) {
-            throw new FileException("文件URL不存在");
-        }
-        // 获取文件名
-        String fullFilePath = generateFullFilePathByURL(url);
-
-        List<String> list = UPLOADED_URL_SUFFIX.stream().filter(fullFilePath::endsWith).toList();
-
-        if (!list.isEmpty()) {
-            // 通过url上传
-            return upload(url, fullFilePath);
-        }
-        throw new FileException("文件格式不在" + UPLOADED_URL_SUFFIX + "中，跳过上传");
-    }
-
-    /**
      * 文件上传
      * @param inputStream 输入流
      * @param fullFilePath 完整路径
      * @return 文件路径
      */
     public static String upload(InputStream inputStream, String fullFilePath) {
-        File file = new File(fullFilePath);
-
-        File parentDir = file.getParentFile();
-        if (parentDir != null && !parentDir.exists()) {
-            if (!parentDir.mkdirs()) {
-                throw new FileException("创建文件夹失败");
-            }
-        }
-
-        try (FileOutputStream outputStream = new FileOutputStream(file)) {
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
+        try {
+            Files.copy(inputStream, Path.of(fullFilePath), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new FileException("上传文件失败" + e.getMessage());
+            log.error(e.getMessage(), e);
+            throw new FileException("保存附件失败");
         }
-
-        return file.getAbsolutePath();
+        return fullFilePath;
     }
 
     /**
-     * 通过 URL 获取文件流
-     * @param url 文件链接
+     * 获取UUID文件名
+     * @param originFileName 原文件名称
+     * @return 以uuid命名的新文件名称
      */
-    public static String upload(String url, String fullFilePath) {
-        // 判断url是否合法
-        if (!StringUtils.hasText(url)) {
-            throw new FileException("文件URL不存在");
-        }
-
-        // 获取inputStream调用上传方法
-        try(InputStream inputStream = new URL(url).openStream()) {
-            return upload(inputStream, fullFilePath);
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-            return null;
-        }
-    }
-
-    /**
-     * 获取文件全路径名称
-     * @param originFileName 文件名称
-     * @return 文件路径+名称
-     */
-    public static String generateFullFilePath(String originFileName) {
+    public static String generateUUIDFileName(String originFileName) {
         // 通过随机uuid重新命名数据库中保存的文件名称
         String fileName = UUID.randomUUID().toString().replace("-", "");
 
@@ -152,24 +96,19 @@ public class FileUtils {
             log.error("文件【{}】名称获取后缀名异常", fileName);
         }
 
-        return generateFilePath(fileName);
+        return fileName;
     }
 
     /**
-     * 获取url文件名称
-     * @param fileUrl 文件url
-     * @return 文件名称
+     * 获取文件全路径名称
+     * @param originFileName 文件名称
+     * @return 文件路径+名称
      */
-    public static String getFileNameByURL(String fileUrl) {
-        URL url;
-        try {
-            url = new URL(fileUrl);
-        } catch (MalformedURLException e) {
-            throw new FileException("获取文件名称失败，请检查URL地址是否包含文件名称");
-        }
-
-        return Paths.get(url.getPath()).getFileName().toString();
+    public static String generateFullFilePath(String originFileName) {
+        String fileName = generateUUIDFileName(originFileName);
+        return generateFilePath(fileName);
     }
+
 
     /**
      * 文件下载
@@ -343,12 +282,6 @@ public class FileUtils {
         // 关闭当前 ZIP 文件条目
         zipOutputStream.closeEntry();
         inputStream.close();
-    }
-
-    // 根据url获取文件名称
-    private static String generateFullFilePathByURL(String fileUrl) {
-        String fileNameByURL = getFileNameByURL(fileUrl);
-        return generateFilePath(fileNameByURL);
     }
 
     // 生成文件路径，与文件名拼接

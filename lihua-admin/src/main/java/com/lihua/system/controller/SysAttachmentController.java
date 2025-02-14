@@ -9,20 +9,20 @@ import com.lihua.model.web.BaseController;
 import com.lihua.system.entity.SysAttachment;
 import com.lihua.system.model.dto.SysAttachmentDTO;
 import com.lihua.system.service.SysAttachmentService;
+import com.lihua.utils.file.UrlFileUtils;
 import com.lihua.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +36,8 @@ public class SysAttachmentController extends BaseController {
 
     @Resource
     private LihuaConfig lihuaConfig;
+
+    private static final List<String> UPLOADED_URL_SUFFIX = List.of("jpg", "jpeg", "png", "gif");
 
     @PostMapping("page")
     public String queryPage(@RequestBody SysAttachmentDTO sysAttachmentDTO) {
@@ -104,16 +106,26 @@ public class SysAttachmentController extends BaseController {
                 .setUploadMode("3")
                 .setBusinessCode(businessCode)
                 .setBusinessName(businessName);
+        // url 转为 MultipartFile 对象
+        MultipartFile multipartFile = UrlFileUtils.urlToMultipartFile(sysAttachment.getUrl());
         try {
-            // 通过url上传并返回服务器存储路径
-            String path = sysAttachmentService.urlUpload(sysAttachment.getUrl());
-            Path filePath = Path.of(path);
+
+            // 判断url附件类型是否在UPLOADED_URL_SUFFIX定义的集合中
+            boolean isEmpty = UPLOADED_URL_SUFFIX.stream()
+                    .filter(suffix -> StringUtils.hasText(multipartFile.getOriginalFilename()) && multipartFile.getOriginalFilename().toLowerCase().endsWith(suffix))
+                    .toList().isEmpty();
+            if (isEmpty) {
+                throw new FileException("附件类型不在UPLOADED_URL_SUFFIX定义中，不进行上传");
+            }
+
+            // 附件上传
+            String path = sysAttachmentService.upload(multipartFile);
             sysAttachment
                     .setPath(path)
                     .setStatus("0")
-                    .setOriginalName(filePath.getFileName().toString())
-                    .setSize(String.valueOf(Files.size(filePath)))
-                    .setType(Files.probeContentType(filePath));
+                    .setOriginalName(multipartFile.getOriginalFilename())
+                    .setSize(String.valueOf(multipartFile.getSize()))
+                    .setType(multipartFile.getContentType());
             // 保存附件返回id
             String id = sysAttachmentService.saveAttachment(sysAttachment);
             // 返回原路径和id
@@ -177,6 +189,7 @@ public class SysAttachmentController extends BaseController {
 
     @DeleteMapping
     @Log(description = "附件删除", type = LogTypeEnum.DELETE)
+    @PreAuthorize("hasRole('ROLE_admin')")
     public String delete(@RequestBody @NotEmpty(message = "附件id为空") List<String> ids) {
         sysAttachmentService.deleteByIds(ids);
         return success();

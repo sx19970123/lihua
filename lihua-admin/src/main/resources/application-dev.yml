@@ -91,3 +91,10 @@ xxl-job:
   logPath: D:/home/lihua/job-logs
   # 执行器日志保存天数
   logRetentionDays: 30
+
+# minio 相关配置（若要启用minio需在lihua-uploadFileModel中设置值为MINIO）
+minio:
+  endpoint: http://localhost:9000
+  accessKey: lihua
+  secretKey: 123456789
+  bucketName: lihua-bucket
