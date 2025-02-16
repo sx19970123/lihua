@@ -19,13 +19,13 @@ import java.nio.file.StandardCopyOption;
 public class UrlFileUtils {
 
     /**
-     * url文件上传
-     * @param url 文件链接
+     * url附件上传
+     * @param url 附件链接
      */
     public static String upload(String url) {
         // 判断url是否合法
         if (!StringUtils.hasText(url)) {
-            throw new FileException("文件URL不存在");
+            throw new FileException("附件URL不存在");
         }
         MultipartFile multipartFile = urlToMultipartFile(url);
         return FileUtils.upload(multipartFile);

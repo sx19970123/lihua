@@ -69,7 +69,7 @@ import {
   chunksMerge,
   chunksUpload,
   chunksUploadedIndex,
-  chunksUploadSave,
+  chunksUploadStart,
   deleteFromBusiness,
   existsAttachmentByMd5,
   fastUpload,
@@ -78,7 +78,6 @@ import {
 } from "@/api/system/attachment/Attachment.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {currentRequests} from "@/utils/Request.ts";
-import {v4 as uuidv4} from "uuid";
 import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
 const { getToken } = token
@@ -436,7 +435,7 @@ const initChunkUpload = () => {
     const recordObj: UploadRecordType = JSON.parse(record)
 
     // 1. 对附件进行分片
-    const chunks = handleChunk(file, chunkSize).map((chunk, index) => ({index, chunk}));
+    const chunks = handleChunk(file, chunkSize).map((chunk, index) => ({index: index + 1, chunk}));
     // 2. 获取已上传的分片索引
     const uploadedIndexResp = await chunksUploadedIndex(recordObj.uploadId);
     if (uploadedIndexResp.code !== 200) {
@@ -446,26 +445,13 @@ const initChunkUpload = () => {
     recordObj.chunkSize = chunks.length
     const uploadedIndexList = uploadedIndexResp.data
 
-    // 3. 已上传的分片数为 0，表示不是断点续传，数据库中进行记录
-    if (uploadedIndexList.length === 0) {
-      handleSysAttachment(file, md5, "1")
-      const uploadSaveResp = await chunksUploadSave(sysAttachment.value, recordObj.uploadId)
-      if (uploadSaveResp.code !== 200) {
-        handleUploadError(file, uploadSaveResp.msg)
-        return
-      }
-      // 将数据库主键id保存到浏览器缓存记录中
-      recordObj.attachmentId = uploadSaveResp.data
-      localStorage.setItem(chunk_upload_prefix + md5, JSON.stringify(recordObj))
-    }
-
-    // 4. 获取到需要上传的分片附件，并构建分片对象
+    // 3. 获取到需要上传的分片附件，并构建分片对象
     const needUploadChunks = chunks.filter((item) => !uploadedIndexList.includes(item.index)).map((item) => ({
       index: item.index,
       chunk: item.chunk,
       status: "pending", // 状态：等待中
     }))
-    // 5. 创建各种计数器
+    // 4. 创建各种计数器
     // 分片上传计数器
     let uploadedChunkNum = 0
     // 已上传大小计数器
@@ -477,7 +463,7 @@ const initChunkUpload = () => {
       return
     }
 
-    // 6. 分片上传主体方法
+    // 5. 分片上传主体方法
     const uploadChunk = async (i: number) => {
       if (i >= needUploadChunks.length) return;
       // 状态改为进行中
@@ -503,7 +489,7 @@ const initChunkUpload = () => {
           // 处理分片合并
           handleChunksMerge(file, recordObj, md5)
         } else {
-          // 8. 获取下一个等待中状态的数据进行上传
+          // 7. 获取下一个等待中状态的数据进行上传
           const nextIndex = needUploadChunks.findIndex(item => item.status === "pending")
           if (nextIndex !== -1) {
             await uploadChunk(nextIndex)
@@ -514,7 +500,7 @@ const initChunkUpload = () => {
       }
     }
 
-    // 7. 初始化chunkUploadCount个上传任务
+    // 6. 初始化chunkUploadCount个上传任务
     const queue: Promise<any>[] = [];
     for (let i = 0; i < Math.min(chunkUploadCount, needUploadChunks.length); i++) {
       queue.push(uploadChunk(i++));
@@ -602,17 +588,17 @@ const initChunkUpload = () => {
 
       if (needFetch) {
         // 根据md5 查询数据库数据
-        existsAttachmentByMd5(md5, file.name).then(resp => {
+        existsAttachmentByMd5(md5, file.name).then(async resp => {
           if (resp.code === 200) {
             // 数据存在，返回false
             if (resp.data) {
               resolve(false)
             } else {
-              _initChunkUploadStorage()
+              await _initChunkUploadStorage()
               resolve(true)
             }
           } else {
-            _initChunkUploadStorage()
+            await _initChunkUploadStorage()
             resolve(true)
             console.error(resp.msg, "为业务正常进行，继续上传附件")
           }
@@ -620,14 +606,24 @@ const initChunkUpload = () => {
           reject(e)
         })
         // 新建localStorage缓存数据
-        function _initChunkUploadStorage() {
-          localStorage.setItem(chunk_upload_prefix + md5, JSON.stringify({
-            uploadId: uuidv4(),
-            status: "in_progress",
-            uploadedChunkSize: 0,
-            totalSize: 0,
-            chunkSize: 0
-          }))
+        async function _initChunkUploadStorage() {
+          handleSysAttachment(file, md5, "1")
+          // 从后端获取updateId
+          const resp = await chunksUploadStart(sysAttachment.value)
+          if (resp.code === 200) {
+            const data = resp.data
+            localStorage.setItem(chunk_upload_prefix + md5, JSON.stringify({
+              uploadId: data.uploadId,
+              attachmentId: data.attachmentId,
+              status: "in_progress",
+              uploadedChunkSize: 0,
+              totalSize: 0,
+              chunkSize: 0
+            } as UploadRecordType))
+          } else {
+            message.error(resp.msg)
+            handleUploadError(file, resp.msg)
+          }
         }
       }
     })

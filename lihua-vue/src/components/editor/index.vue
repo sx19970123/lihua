@@ -171,7 +171,7 @@ onMounted(() => {
       error() {                                                                                                         // 文件上传失败处理
         message.error("附件上传异常")
       },
-      linkToImgUrl: baseURL + `/system/attachment/url/upload/${bCode}/${bName}`,                          // url图片上传接口
+      linkToImgUrl: baseURL + `/system/attachment/url/upload/${bCode}/${bName}`,                                        // url图片上传接口
       linkToImgFormat: (responseText: string) => {                                                                      // 处理url图片上传接口返回
         const resp: ResponseType<{originalURL: string, id: string}> = JSON.parse(responseText)
         const linkToImg: LinkToImgType = { code: 0, data: { originalURL: "", url: "" }, msg: "" }

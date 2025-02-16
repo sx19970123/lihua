@@ -1,7 +1,7 @@
 package com.lihua.model.web;
 
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.attachment.AttachmentFileAndNameModel;
+import com.lihua.model.attachment.AttachmentStreamAndInfoModel;
 import com.lihua.utils.file.FileUtils;
 import com.lihua.utils.json.JsonUtils;
 import lombok.SneakyThrows;
@@ -48,8 +48,12 @@ public class BaseController {
         return FileUtils.download(file, fileName, autoDelete);
     }
 
-    public static ResponseEntity<StreamingResponseBody> success(List<AttachmentFileAndNameModel> fileList) {
+    public static ResponseEntity<StreamingResponseBody> success(List<AttachmentStreamAndInfoModel> fileList) {
         return FileUtils.download(fileList);
+    }
+
+    public static ResponseEntity<StreamingResponseBody> success(InputStream inputStream, String fileName, String size){
+        return FileUtils.download(inputStream, fileName, size);
     }
 
     public static ResponseEntity<StreamingResponseBody> success(InputStream inputStream, String fileName){

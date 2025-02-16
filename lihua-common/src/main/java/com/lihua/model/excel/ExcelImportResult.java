@@ -32,7 +32,7 @@ public class ExcelImportResult implements Serializable {
     private int errorCount;
 
     /**
-     * 倒入失败文件地址
+     * 倒入失败附件地址
      */
     private String errorExcelPath;
 }

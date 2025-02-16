@@ -1,7 +1,7 @@
 package com.lihua.interceptor;
 
 import com.lihua.exception.IpIllegalException;
-import com.lihua.system.service.SysSettingService;
+import com.lihua.service.system.setting.SysSettingService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

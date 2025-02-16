@@ -32,7 +32,7 @@ public class LihuaConfig {
     /**
      * 下载附件链接过期时间
      */
-    private String fileDownloadExpireTime;
+    private int fileDownloadExpireTime;
 
     /**
      * 允许跨域最长时间
@@ -46,7 +46,7 @@ public class LihuaConfig {
     private Long sseExpireTime;
 
     /**
-     * 文件上传服务类型
+     * 附件上传服务类型
      */
     private String uploadFileModel;
 
@@ -56,17 +56,12 @@ public class LihuaConfig {
     private List<String> uploadPublicBusinessCode;
 
     /**
-     * 文件上传路径
+     * 附件上传路径
      */
     private String uploadFilePath;
 
     /**
-     * 分片上传临时路径
-     */
-    private String chunkTempUploadFilePath;
-
-    /**
-     * 文件导出路径
+     * 附件导出路径
      */
     private String exportFilePath;
 }

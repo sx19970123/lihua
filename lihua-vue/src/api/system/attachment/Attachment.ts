@@ -36,15 +36,6 @@ export const existsAttachmentByMd5 = (md5: string, originFileName: string) => {
     })
 }
 
-// 分片上传前保存附件信息
-export const chunksUploadSave = (data: SysAttachment, uploadId: string) => {
-    return request<string>({
-        url: `system/attachment/chunk/upload/${uploadId}`,
-        method: "post",
-        data: data
-    })
-}
-
 // 根据路径查询文件信息，用于附件组件数据回显
 export const queryAttachmentInfoByIds = (ids: string[]) => {
     return request<Array<SysAttachment>>({
@@ -73,10 +64,19 @@ export const deleteFromBusiness = (id: string) => {
     })
 }
 
-// 通过 md5值获取已上传分片附件的索引值
-export const chunksUploadedIndex = (md5: string) => {
+// 开始分片上传（返回uploadId）
+export const chunksUploadStart = (data: SysAttachment) => {
+    return request<{uploadId: string, attachmentId: string}>({
+        url: `system/attachment/chunk/start`,
+        method: "post",
+        data: data
+    })
+}
+
+// 通过 uploadId值获取已上传分片附件的索引值
+export const chunksUploadedIndex = (uploadId: string) => {
     return request<number[]>({
-        url: `system/attachment/chunk/uploadedIndex/${md5}`,
+        url: `system/attachment/chunk/uploadedIndex/${uploadId}`,
         method: "get",
     })
 }

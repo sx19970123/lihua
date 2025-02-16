@@ -147,7 +147,7 @@
         <a-descriptions-item label="附件大小" :span="1">{{convertFileSize(attachmentInfo.size)}}</a-descriptions-item>
 
         <a-descriptions-item label="附件类型" :span="1">{{attachmentInfo.type}}</a-descriptions-item>
-        <a-descriptions-item label="存储位置" :span="1">{{attachmentInfo.storageLocation}}</a-descriptions-item>
+        <a-descriptions-item label="服务类型" :span="1">{{attachmentInfo.storageLocation}}</a-descriptions-item>
 
         <!-- 业务信息 -->
         <a-descriptions-item label="业务编码" :span="1">{{attachmentInfo.businessCode}}</a-descriptions-item>
@@ -467,7 +467,7 @@ const initShare = () => {
       const resp = await getDownloadURL(shareId.value, shareValidTime.value.toString())
       if (resp.code === 200) {
         const timeoutTime = dayjs(new Date()).add(shareValidTime.value, "minute").format('YYYY-MM-DD HH:mm:ss')
-        shareUrl.value = window.location.origin + baseAPI + resp.data + `&describe=${shareName.value} 有效期至 ${timeoutTime} --来自狸花猫后台管理系统`
+        shareUrl.value = resp.data.startsWith("/") ? window.location.origin + baseAPI + resp.data : resp.data + `### 附件名称 ${shareName.value} 有效期至 ${timeoutTime} --来自狸花猫后台管理系统`
       } else {
         message.error(resp.msg)
       }
@@ -543,7 +543,7 @@ const handleDownload = async (event: MouseEvent, id: string) => {
   try {
     const resp = await getDownloadURL(id)
     if (resp.code === 200) {
-      download(baseAPI + resp.data)
+      download(resp.data.startsWith("/") ? baseAPI + resp.data : resp.data)
     } else {
       message.error(resp.msg)
     }

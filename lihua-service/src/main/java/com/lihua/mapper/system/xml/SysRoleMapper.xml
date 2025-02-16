@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lihua.mapper.system.SysRoleMapper">
+
+    <resultMap id="queryByIdMap" type="com.lihua.entity.system.SysRole">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="status" property="status"/>
+        <result column="remark" property="remark"/>
+        <collection property="menuIds" ofType="java.lang.String">
+            <result column="menu_Id"/>
+        </collection>
+    </resultMap>
+
+
+    <sql id="selectRoleItem">
+        sys_role.id,
+        sys_role.name,
+        sys_role.code
+    </sql>
+
+    <select id="selectSysRoleByUserId" resultType="com.lihua.model.security.CurrentRole">
+        SELECT
+            <include refid="selectRoleItem"/>
+        FROM
+        sys_role
+        INNER JOIN sys_user_role ON sys_user_role.role_id = sys_role.id
+        WHERE
+        sys_role.status = '0' AND sys_role.del_flag = '0' and sys_user_role.user_id = #{userId}
+    </select>
+
+    <select id="selectRoleMenuCount" resultType="java.lang.Long">
+        SELECT count( 1 ) FROM sys_role_menu WHERE ${key} in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+    </select>
+
+    <select id="selectUserRoleCount" resultType="java.lang.Long">
+        SELECT count( 1 ) FROM sys_user_role WHERE ${key} in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryById" resultMap="queryByIdMap">
+        SELECT id, name, code, status, remark, menu_Id FROM sys_role
+        LEFT JOIN sys_role_menu ON sys_role.id = sys_role_menu.role_id
+        WHERE sys_role.id = #{roleId}
+    </select>
+    <select id="selectCodeByUserId" resultType="java.lang.String">
+        SELECT CODE
+        FROM
+        sys_role
+        LEFT JOIN sys_user_role ON sys_user_role.role_id = sys_role.id
+        WHERE
+        sys_user_role.user_id = #{userId}
+        AND sys_role.status = '0'
+        AND del_flag = '0'
+    </select>
+
+    <select id="selectAllRole" resultType="com.lihua.model.security.CurrentRole">
+        SELECT
+        <include refid="selectRoleItem"/>
+        FROM
+        sys_role
+        WHERE
+        sys_role.status = '0' AND sys_role.del_flag = '0'
+    </select>
+
+    <select id="queryAllRole" resultType="com.lihua.entity.system.SysRole">
+        SELECT
+        <include refid="selectRoleItem"/>
+        FROM
+        sys_role
+        WHERE del_flag = '0'
+    </select>
+
+    <delete id="deleteRoleMenuByRoleId">
+        DELETE FROM sys_role_menu WHERE role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteRoleMenuByMenuIds">
+        DELETE FROM sys_role_menu WHERE menu_id IN
+        <foreach collection="menuIds" item="menuId" open="(" separator="," close=")">
+            #{menuId}
+        </foreach>
+    </delete>
+
+    <insert id="insertRoleMenu">
+        INSERT INTO sys_role_menu (role_id, menu_id) VALUES
+        <foreach collection="menuIds" item="menuId" separator=",">
+            ( #{roleId}, #{menuId} )
+        </foreach>
+    </insert>
+</mapper>

@@ -20,10 +20,10 @@ public enum ResultCodeEnum {
     ACCESS_EXPIRED_ERROR (406,"请求资源权限过期"),
     IP_ILLEGAL_ERROR(407, "暂时无法为该地区提供服务"),
     ERROR (500,"业务异常"),
-    FILE_ERROR (501,"文件处理异常"),
+    FILE_ERROR (501,"附件处理异常"),
     RATE_LIMITER_ERROR (502,"系统繁忙，请稍后再试"),
     DUPLICATE_SUBMIT_ERROR (503,"请勿重复提交"),
-    MAX_UPLOAD_SIZE_EXCEEDED_ERROR (504,"上传的文件超过了允许的最大大小限制"),
+    MAX_UPLOAD_SIZE_EXCEEDED_ERROR (504,"上传的附件超过了允许的最大大小限制"),
     SERVER_UNAVAILABLE (505,"服务器维护中"),
     CAPTCHA_ERROR(506,"验证码错误");
 

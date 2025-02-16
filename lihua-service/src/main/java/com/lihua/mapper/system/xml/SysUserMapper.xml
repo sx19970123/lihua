@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lihua.mapper.system.SysUserMapper">
+
+
+    <resultMap id="queryByIdMap" type="com.lihua.model.system.vo.SysUserVO">
+        <result column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="nickname" property="nickname" />
+        <result column="gender" property="gender" />
+        <result column="status" property="status" />
+        <result column="email" property="email" />
+        <result column="phone_number" property="phoneNumber" />
+        <result column="remark" property="remark" />
+        <collection property="deptIdList" ofType="java.lang.String">
+            <result column="dept_id"/>
+        </collection>
+        <collection property="defaultDeptIdList" ofType="java.lang.String">
+            <result column="default_dept_id"/>
+        </collection>
+        <collection property="postIdList" ofType="java.lang.String">
+            <result column="post_id"/>
+        </collection>
+        <collection property="roleIdList" ofType="java.lang.String">
+            <result column="role_id"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="queryExportDataMap" type="com.lihua.model.system.vo.SysUserVO">
+        <result column="username" property="username" />
+        <result column="nickname" property="nickname" />
+        <result column="gender" property="gender" />
+        <result column="status" property="status" />
+        <result column="email" property="email" />
+        <result column="phone_number" property="phoneNumber" />
+        <result column="remark" property="remark" />
+        <collection property="deptIdList" ofType="java.lang.String">
+            <result column="id"/>
+        </collection>
+        <collection property="deptCodeList" ofType="java.lang.String">
+            <result column="code"/>
+        </collection>
+        <collection property="deptLabelList" ofType="java.lang.String">
+            <result column="deptName"/>
+        </collection>
+        <collection property="roleNameList" ofType="java.lang.String">
+            <result column="roleName"/>
+        </collection>
+    </resultMap>
+
+    <select id="loginSelect" resultType="com.lihua.model.security.CurrentUser">
+        SELECT
+            id,
+            username,
+            password,
+            nickname,
+            avatar,
+            gender,
+            theme,
+            phone_number,
+            email,
+            remark,
+            status,
+            password_update_time,
+            register_type
+        FROM
+            sys_user
+        WHERE
+            del_flag = '0' AND username = #{username}
+    </select>
+
+    <select id="queryPage" resultType="com.lihua.model.system.vo.SysUserVO">
+        SELECT DISTINCT
+            sys_user.id,
+            sys_user.username,
+            sys_user.nickname,
+            sys_user.avatar,
+            sys_user.gender,
+            sys_user.status,
+            sys_user.create_time,
+            sys_user.email,
+            sys_user.phone_number,
+            sys_user.remark,
+            sys_user.register_type
+        FROM
+            sys_user
+        LEFT JOIN sys_user_dept ON sys_user_dept.user_id = sys_user.id
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="queryUserDeptByUserIds" resultType="com.lihua.model.system.dto.SysUserDeptDTO">
+        SELECT
+            sys_user_dept.user_id as userId,
+            sys_dept.name as deptName
+        FROM
+            sys_dept
+        LEFT JOIN sys_user_dept ON sys_dept.id = sys_user_dept.dept_id
+        WHERE
+        sys_user_dept.user_id in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <select id="queryById" resultMap="queryByIdMap">
+        SELECT
+            id,
+            username,
+            nickname,
+            gender,
+            STATUS,
+            email,
+            phone_number,
+            remark,
+            sys_user_dept.dept_id,
+            sys_user_post.post_id,
+            sys_user_role.role_id,
+            CASE sys_user_dept.default_dept WHEN '0'
+            THEN sys_user_dept.dept_id
+            ELSE '' END AS default_dept_id
+        FROM
+        sys_user
+        LEFT JOIN sys_user_dept ON sys_user.id = sys_user_dept.user_id
+        LEFT JOIN sys_user_post ON sys_user.id = sys_user_post.user_id
+        LEFT JOIN sys_user_role ON sys_user.id = sys_user_role.user_id
+        WHERE
+            sys_user.id = #{id}
+    </select>
+
+    <select id="queryExportData" resultMap="queryExportDataMap">
+        SELECT
+            sys_user.username,
+            sys_user.nickname,
+            sys_user.gender,
+            sys_user.status,
+            sys_user.phone_number,
+            sys_user.email,
+            sys_user.remark,
+            sys_dept.id,
+            sys_dept.code,
+            sys_dept.name as deptName,
+            sys_role.name as roleName
+        FROM
+            sys_user
+        LEFT JOIN sys_user_dept ON sys_user_dept.user_id = sys_user.id
+        LEFT JOIN sys_dept ON sys_dept.id = sys_user_dept.dept_id and sys_dept.del_flag = '0' and sys_dept.status = '0'
+        LEFT JOIN sys_user_role ON sys_user.id = sys_user_role.user_id
+        LEFT JOIN sys_role ON sys_role.id = sys_user_role.role_id and sys_role.del_flag = '0' and sys_role.status = '0'
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="queryUsername" resultType="java.lang.String">
+        SELECT username FROM sys_user WHERE username IN
+        <foreach collection="usernameSet" item="username" open="(" separator="," close=")">
+            #{username}
+        </foreach>
+        AND sys_user.del_flag = '0'
+    </select>
+
+    <select id="queryPhoneNumber" resultType="java.lang.String">
+        SELECT phone_number FROM sys_user WHERE phone_number IN
+        <foreach collection="phoneNumberSet" item="phoneNumber" open="(" separator="," close=")">
+            #{phoneNumber}
+        </foreach>
+        AND sys_user.del_flag = '0'
+    </select>
+
+    <select id="queryEmail" resultType="java.lang.String">
+        SELECT email FROM sys_user WHERE email IN
+        <foreach collection="emailSet" item="email" open="(" separator="," close=")">
+            #{email}
+        </foreach>
+        AND sys_user.del_flag = '0'
+    </select>
+
+    <sql id="user-option">
+        SELECT
+        id,
+        username,
+        nickname,
+        avatar
+        FROM sys_user
+    </sql>
+
+    <select id="queryOptionByDeptId" resultType="com.lihua.entity.system.SysUser">
+        <include refid="user-option"/>
+        WHERE
+        id IN (SELECT user_id FROM sys_user_dept WHERE dept_id = #{deptId})
+        AND del_flag = '0'
+        AND status = '0'
+    </select>
+
+    <select id="queryOptionByUserIds" resultType="com.lihua.entity.system.SysUser">
+        <include refid="user-option"/>
+        WHERE
+        id IN
+        <foreach collection="userIdList" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND del_flag = '0'
+        AND status = '0'
+    </select>
+</mapper>

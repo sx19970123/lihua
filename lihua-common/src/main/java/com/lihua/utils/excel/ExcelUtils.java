@@ -25,10 +25,10 @@ public class ExcelUtils {
 
     /**
      * excel 导出
-     * @param exportList 需要导出文件的数据集合
+     * @param exportList 需要导出附件的数据集合
      * @param clazz 对应实体类class
-     * @param fileName 导出文件名称
-     * @return 生成excel文件的绝对路径
+     * @param fileName 导出附件名称
+     * @return 生成excel附件的绝对路径
      */
     public static <T> String excelExport(List<T> exportList, Class<T> clazz, String fileName) {
         // 创建 Workbook
@@ -52,7 +52,7 @@ public class ExcelUtils {
         }
 
         try (excelBuilder) {
-            // 文件导出
+            // 附件导出
             FileExportUtil.export(workbook, file);
         } catch (IOException e) {
             log.error(e.getMessage(),e);
@@ -64,8 +64,8 @@ public class ExcelUtils {
 
     /**
      * excel 导入
-     * @param multipartFile 上传的excel文件
-     * @param clazz 接收文件类型class
+     * @param multipartFile 上传的excel附件
+     * @param clazz 接收附件类型class
      * @param rowNum 从0开始数，对应第一行，1对应第二行，程序中设置未大于 rowNum
      *               即设置为 0 的话，从表格中第二行开始读取
      *               设置为 1 的话，从表格中第三行开始读取
@@ -73,12 +73,12 @@ public class ExcelUtils {
      * @return 导入数据集合
      */
     public static <T> List<T> importExport(MultipartFile multipartFile, Class<T> clazz, int rowNum) {
-        // 判断上传的文件类型
+        // 判断上传的附件类型
         String fileName = multipartFile.getOriginalFilename();
         if (fileName != null) {
             fileName = fileName.toLowerCase();
             if (!fileName.endsWith(".xls") && !fileName.endsWith(".xlsx")) {
-                throw new ServiceException("请上传 .xls 或 .xlsx 类型的文件");
+                throw new ServiceException("请上传 .xls 或 .xlsx 类型的附件");
             }
         }
 
@@ -93,19 +93,19 @@ public class ExcelUtils {
     }
 
 
-    // 处理全文件地址
+    // 处理全附件地址
     private static String handleFullFilePath(String fileName) {
         if (!StringUtils.hasText(fileName)) {
-            throw new ServiceException("导出文件名为空");
+            throw new ServiceException("导出附件名为空");
         }
 
-        // 去除文件名首部/
+        // 去除附件名首部/
         if (fileName.startsWith("/")) {
             fileName = fileName.substring(1);
         }
-        // 文件名后拼接uuid
+        // 附件名后拼接uuid
         fileName = fileName + "_" + UUID.randomUUID().toString().replace("-","");
-        // 未指定文件后缀指定为xlsx
+        // 未指定附件后缀指定为xlsx
         if (!fileName.endsWith(".xls") && !fileName.endsWith(".xlsx")) {
             fileName = fileName + ".xlsx";
         }

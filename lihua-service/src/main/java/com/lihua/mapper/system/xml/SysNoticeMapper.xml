@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lihua.mapper.system.SysNoticeMapper">
+
+    <select id="queryListByUserId" resultType="com.lihua.model.system.vo.SysUserNoticeVO">
+        SELECT
+            sys_notice.id as noticeId,
+            sys_notice.title,
+            sys_notice.type,
+            sys_notice.priority,
+            sys_notice.release_time,
+            sys_user_notice.read_flag,
+            sys_user_notice.star_flag,
+            release_user.nickname AS releaseUser
+        FROM sys_notice
+        LEFT JOIN sys_user_notice ON sys_user_notice.notice_id = sys_notice.id
+        LEFT JOIN sys_user AS release_user ON release_user.id = sys_notice.release_id
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="preview" resultType="com.lihua.model.system.vo.SysNoticeVO">
+        SELECT
+          sys_notice.id,
+          sys_notice.title,
+          sys_notice.type,
+          sys_notice.status,
+          sys_notice.priority,
+          sys_notice.content,
+          sys_notice.release_time,
+          create_user.nickname AS createUser,
+          release_user.nickname AS releaseUser
+        FROM
+          sys_notice
+          LEFT JOIN sys_user AS create_user ON create_user.id = sys_notice.create_id
+          LEFT JOIN sys_user AS release_user ON release_user.id = sys_notice.release_id
+        WHERE
+          sys_notice.id = #{id} AND sys_notice.del_flag = '0'
+    </select>
+</mapper>

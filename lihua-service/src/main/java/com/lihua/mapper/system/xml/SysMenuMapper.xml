@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lihua.mapper.system.SysMenuMapper">
+
+    <resultMap id="selectPermsByUserId" type="com.lihua.model.security.CurrentRouter">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="router_path" property="path"/>
+        <result column="perms" property="perms"/>
+        <result column="query" property="query"/>
+        <result column="component_path" property="component"/>
+        <result column="menu_type" property="type"/>
+        <association property="meta" javaType="com.lihua.model.security.Meta">
+            <result column="label" property="label"/>
+            <result column="title" property="title"/>
+            <result column="icon" property="icon"/>
+            <result column="cache" property="cache"/>
+            <result column="link_path" property="link"/>
+            <result column="view_tab" property="viewTab"/>
+            <result column="menu_type" property="menuType"/>
+            <result column="visible" property="visible"/>
+            <result column="link_open_type" property="linkOpenType"/>
+        </association>
+    </resultMap>
+
+    <sql id="selectMenuItem">
+        sys_menu.id,
+        sys_menu.parent_id,
+        sys_menu.label,
+        sys_menu.title,
+        sys_menu.menu_type,
+        sys_menu.router_path,
+        sys_menu.component_path,
+        sys_menu.perms,
+        sys_menu.icon,
+        sys_menu.link_path,
+        sys_menu.query,
+        sys_menu.menu_type,
+        sys_menu.link_open_type,
+        CASE
+        sys_menu.visible
+        WHEN '0' THEN
+        TRUE
+        WHEN '1' THEN
+        FALSE
+        END AS visible,
+        CASE
+        sys_menu.CACHE
+        WHEN '0' THEN
+        TRUE
+        WHEN '1' THEN
+        FALSE
+        END AS CACHE,
+        CASE
+        sys_menu.view_tab
+        WHEN '0' THEN
+        TRUE
+        WHEN '1' THEN
+        FALSE
+        END AS view_tab
+    </sql>
+
+    <update id="peerMenuSortAddOne">
+        UPDATE sys_menu SET sort = sort + 1 WHERE parent_id = #{parentId} AND sort >= #{sort} AND del_flag = '0'
+    </update>
+
+    <update id="peerMenuSortSubtractOne">
+        UPDATE sys_menu SET sort = sort - 1 WHERE
+        parent_id = #{parentId}
+        AND del_flag = '0'
+
+        <if test="(missingSortList != null and missingSortList.size() > 0) or lastSort != null">
+            AND (
+            <!-- 处理 missingSortList 条件 -->
+            <if test="missingSortList != null and missingSortList.size() > 0">
+                <foreach collection="missingSortList" item="sort" separator=" OR ">
+                    sort = #{sort}
+                </foreach>
+            </if>
+
+            <!-- 如果 missingSortList 存在并且 lastSort 也存在，加一个 "OR" 连接 -->
+            <if test="missingSortList != null and missingSortList.size() > 0 and lastSort != null">
+                OR
+            </if>
+
+            <!-- 处理 lastSort 条件 -->
+            <if test="lastSort != null">
+                sort >= #{lastSort}
+            </if>
+            )
+        </if>
+    </update>
+
+    <select id="selectPermsByUserId" resultMap="selectPermsByUserId">
+        SELECT
+        <include refid="selectMenuItem"/>
+        FROM
+        sys_menu
+        INNER JOIN sys_role_menu ON sys_role_menu.menu_id = sys_menu.id
+        INNER JOIN sys_role ON sys_role.id = sys_role_menu.role_id
+        INNER JOIN sys_user_role ON sys_user_role.role_id = sys_role.id
+        WHERE
+        sys_user_role.user_id = #{userId} AND sys_menu.status = '0' AND sys_menu.del_flag = '0'
+        ORDER BY
+        sys_menu.sort
+    </select>
+
+    <select id="selectAllPerms" resultMap="selectPermsByUserId">
+        SELECT
+        <include refid="selectMenuItem"/>
+        FROM
+        sys_menu
+        WHERE sys_menu.status = '0' AND sys_menu.del_flag = '0'
+        ORDER BY
+        sys_menu.sort
+    </select>
+</mapper>

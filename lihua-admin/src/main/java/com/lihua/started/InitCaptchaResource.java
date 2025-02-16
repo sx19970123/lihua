@@ -27,7 +27,7 @@ public class InitCaptchaResource {
     @SneakyThrows
     @PostConstruct
     public void init() {
-        // 读取 classpath:captcha-images 下文件，注册到验证码 ResourceStore 中
+        // 读取 classpath:captcha-images 下附件，注册到验证码 ResourceStore 中
         org.springframework.core.io.Resource[] resources = resourcePatternResolver.getResources("classpath:captcha-images/*.jpg");
         // 获取验证码类型
         List<String> captchaTypes = CaptchaTypeEnum.allValue();

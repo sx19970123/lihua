@@ -52,9 +52,9 @@ public enum LogTypeEnum {
      */
     DOWNLOAD("DOWNLOAD","附件下载"),
     /**
-     * 文件上传
+     * 附件上传
      */
-    UPLOAD("UPLOAD","文件上传"),
+    UPLOAD("UPLOAD","附件上传"),
     /**
      * 其他
      */

@@ -57,7 +57,7 @@ public class GlobalExceptionHandle extends BaseController {
     }
 
     /**
-     * 上传文件尺寸超过系统设置
+     * 上传附件尺寸超过系统设置
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public String handelMaxUploadSizeExceededException(Exception e) {
