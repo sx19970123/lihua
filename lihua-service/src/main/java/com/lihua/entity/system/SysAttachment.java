@@ -1,5 +1,7 @@
 package com.lihua.entity.system;
 
+import com.lihua.model.system.validation.AttachmentValidation;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -42,6 +44,7 @@ public class SysAttachment implements Serializable {
     /**
      * 分片上传id
      */
+    @NotNull(message = "uploadId为空", groups = { AttachmentValidation.AttachmentChunksMergeUploadValidation.class })
     private String uploadId;
 
     /**
@@ -107,5 +110,6 @@ public class SysAttachment implements Serializable {
     /**
      * 原url（通过url上传有该字段）
      */
+    @NotNull(message = "原URL为空", groups = { AttachmentValidation.AttachmentUrlUploadValidation.class })
     private String url;
 }

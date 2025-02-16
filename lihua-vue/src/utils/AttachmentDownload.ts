@@ -21,12 +21,12 @@ export const download = (data: string, fileName?: string) => {
 
 // 根据附件id下载（仅公开数据可通过id下载）
 export const downloadPublic = (id: string, fileName?: string) =>  {
-    downloadFromUrl(import.meta.env.VITE_APP_BASE_API + `/system/attachment/download/p/${id}?fileName=${fileName?encodeURIComponent(fileName):''}`, fileName)
+    downloadFromUrl(import.meta.env.VITE_APP_BASE_API + `/system/attachment/storage/download/p/${id}?fileName=${fileName?encodeURIComponent(fileName):''}`, fileName)
 }
 
 // 附件导出下载
 export const downloadExport = (path: string, fileName?: string) => {
-    downloadFromUrl(import.meta.env.VITE_APP_BASE_API + `/system/attachment/download/e?path=${encodeURIComponent(path)}&fileName=${fileName?encodeURIComponent(fileName):''}`, fileName);
+    downloadFromUrl(import.meta.env.VITE_APP_BASE_API + `/system/attachment/storage/download/e?path=${encodeURIComponent(path)}&fileName=${fileName?encodeURIComponent(fileName):''}`, fileName);
 }
 
 // 通过url下载

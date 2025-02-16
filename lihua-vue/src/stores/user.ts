@@ -13,7 +13,7 @@ import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {close} from "@/utils/ServerSentEvents.ts";
 import {rasEncryptPassword} from "@/utils/Crypto.ts";
-import {publicAttachmentDownload} from "@/api/system/attachment/Attachment.ts";
+import {publicAttachmentDownload} from "@/api/system/attachment/AttachmentStorage.ts";
 const { setToken,removeToken } = token
 
 export const useUserStore = defineStore('user', {

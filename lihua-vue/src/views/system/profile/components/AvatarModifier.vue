@@ -73,7 +73,7 @@ import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import { cloneDeep } from 'lodash-es'
 import {useThemeStore} from "@/stores/theme.ts";
 import {ResponseError} from "@/api/global/Type.ts";
-import {upload} from "@/api/system/attachment/Attachment.ts";
+import {upload} from "@/api/system/attachment/AttachmentStorage.ts";
 import {v4 as uuidv4} from "uuid";
 
 const themeStore = useThemeStore()

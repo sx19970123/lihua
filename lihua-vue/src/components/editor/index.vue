@@ -116,7 +116,7 @@ onMounted(() => {
       enable: false                                                         // 关闭缓存
     },
     upload: {
-      url: baseURL + '/system/attachment/multiple/upload',                  // 文件上传接口
+      url: baseURL + '/system/attachment/storage/multiple/upload',                  // 文件上传接口
       headers: {'Authorization': 'Bearer ' + token.getToken()},             // 请求头获取token
       fieldName: 'files',                                                   // 文件上传接口参数名
       max: maxSize,                                                         // 文件上传最大值
@@ -161,7 +161,7 @@ onMounted(() => {
         if (resp.code === 200) {
           // 构建succMap对象
           for (let i = 0; i < targetFiles.length; i++) {
-            updateData.data.succMap[targetFiles[i].name] = httpAttachmentPrefix + "/system/attachment/download/p/" + resp.data[i]
+            updateData.data.succMap[targetFiles[i].name] = httpAttachmentPrefix + "/system/attachment/storage/download/p/" + resp.data[i]
           }
         } else {
           message.error(resp.msg)
@@ -171,12 +171,12 @@ onMounted(() => {
       error() {                                                                                                         // 文件上传失败处理
         message.error("附件上传异常")
       },
-      linkToImgUrl: baseURL + `/system/attachment/url/upload/${bCode}/${bName}`,                                        // url图片上传接口
+      linkToImgUrl: baseURL + `/system/attachment/storage/url/upload/${bCode}/${bName}`,                                        // url图片上传接口
       linkToImgFormat: (responseText: string) => {                                                                      // 处理url图片上传接口返回
         const resp: ResponseType<{originalURL: string, id: string}> = JSON.parse(responseText)
         const linkToImg: LinkToImgType = { code: 0, data: { originalURL: "", url: "" }, msg: "" }
         if (resp.code === 200) {
-          linkToImg.data.url = httpAttachmentPrefix + "/system/attachment/download/p/" + resp.data.id
+          linkToImg.data.url = httpAttachmentPrefix + "/system/attachment/storage/download/p/" + resp.data.id
           linkToImg.data.originalURL = resp.data.originalURL
         } else {
           linkToImg.data.url = resp.msg

@@ -1,5 +1,5 @@
 <template>
-  <attachment-upload v-model="modelValue" chunk/>
+  <attachment-upload v-model="modelValue"/>
 </template>
 
 <script setup lang="ts">

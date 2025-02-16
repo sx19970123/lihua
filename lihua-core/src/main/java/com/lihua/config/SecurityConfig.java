@@ -52,17 +52,16 @@ public class SecurityConfig {
                 // 对于异步分发权限放开（涉及附件下载返回 ResponseEntity<StreamingResponseBody> 的情况）
                 .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
                 .requestMatchers(
-                        "/captcha/**", // 验证码
-                        "/system/login", // 登录
-                        "/system/publicKey/**", // 获取公钥
-                        "/system/sse/connect/**", // 连接sse
-                        "/system/file/download/**", // 附件下载
-                        "/system/attachment/download/**", // 附件下载
-                        "system/setting/GrayModelSetting", // 灰色模式设置
-                        "system/setting/SignInSetting", // 是否开启用户注册
-                        "/system/checkUserName/**", // 检查用户名
-                        "/system/register/**", // 注册
-                        "/druid/**" // druid数据库监控
+                        "/captcha/**",                         // 验证码
+                        "/system/login",                                // 登录
+                        "/system/publicKey/**",                         // 获取公钥
+                        "/system/sse/connect/**",                       // 连接sse
+                        "/system/attachment/storage/download/**",       // 附件下载
+                        "system/setting/GrayModelSetting",              // 灰色模式设置
+                        "system/setting/SignInSetting",                 // 是否开启用户注册
+                        "/system/checkUserName/**",                     // 检查用户名
+                        "/system/register/**",                          // 注册
+                        "/druid/**"                                     // druid数据库监控
                 ).permitAll()
                 .anyRequest().authenticated());
 

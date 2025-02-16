@@ -73,9 +73,9 @@ import {
   deleteFromBusiness,
   existsAttachmentByMd5,
   fastUpload,
-  getDownloadURL,
   queryAttachmentInfoByIds
-} from "@/api/system/attachment/Attachment.ts";
+} from "@/api/system/attachment/AttachmentStorage.ts";
+import {getDownloadURL} from "@/api/system/attachment/Attachment.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {currentRequests} from "@/utils/Request.ts";
 import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
@@ -85,7 +85,7 @@ const { getToken } = token
 const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"]
 const videoExtensions = ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm"]
 const baseAPI = import.meta.env.VITE_APP_BASE_API
-const uploadURL = `${baseAPI}/system/attachment/upload`
+const uploadURL = `${baseAPI}/system/attachment/storage/upload`
 const chunk_upload_prefix = "upload-record-"
 const authorization = 'Bearer ' + getToken()
 const router = useRoute()
@@ -632,7 +632,7 @@ const initChunkUpload = () => {
   // 处理文件合并
   const handleChunksMerge = (file: UploadFile, recordObj: UploadRecordType, md5: string) => {
     uploadTip.value = "正在进行数据合并"
-    chunksMerge({id: recordObj.attachmentId, originalName: file.name, md5: md5}, recordObj.uploadId, recordObj.chunkSize).then((resp) => {
+    chunksMerge({id: recordObj.attachmentId, originalName: file.name, md5: md5, uploadId:  recordObj.uploadId}, recordObj.chunkSize).then((resp) => {
       if (resp.code === 200) {
         // 上传成功后删除浏览器缓存记录
         localStorage.removeItem(chunk_upload_prefix + md5)

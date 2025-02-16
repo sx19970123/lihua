@@ -23,7 +23,7 @@ import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import {ref} from "vue";
 import {ResponseError} from "@/api/global/Type.ts";
 import {message} from "ant-design-vue";
-import {publicAttachmentDownload} from "@/api/system/attachment/Attachment.ts";
+import {publicAttachmentDownload} from "@/api/system/attachment/AttachmentStorage.ts";
 const userStore = useUserStore();
 
 const props = defineProps<{

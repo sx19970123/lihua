@@ -131,7 +131,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
         // 对链接参数进行加密
         String key = AesUtils.encrypt(params, SysBaseEnum.ATTACHMENT_URL_KEY.getValue());
         // 返回附件url后缀
-        return "/system/attachment/download?key=" + URLEncoder.encode(key, StandardCharsets.UTF_8) + "&originName=" + URLEncoder.encode(originName, StandardCharsets.UTF_8);
+        return "/system/attachment/storage/download?key=" + URLEncoder.encode(key, StandardCharsets.UTF_8) + "&originName=" + URLEncoder.encode(originName, StandardCharsets.UTF_8);
     }
 
     @Override
