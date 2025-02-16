@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service("sysLoginLogService")
@@ -62,8 +63,9 @@ public class SysLoginLogServiceImpl implements SysLogService {
         }
 
         // 登录时间
-        if (sysLogDTO.getCreateTimeList() != null && !sysLogDTO.getCreateTimeList().isEmpty()) {
-            queryWrapper.lambda().between(SysLogVO::getCreateTime, sysLogDTO.getCreateTimeList().get(0), sysLogDTO.getCreateTimeList().get(1));
+        List<LocalDate> createTimeList = sysLogDTO.getCreateTimeList();
+        if (createTimeList != null && createTimeList.size() == 2) {
+            queryWrapper.lambda().between(SysLogVO::getCreateTime,createTimeList.get(0), createTimeList.get(1).plusDays(1L));
         }
 
         queryWrapper.lambda().orderByDesc(SysLogVO::getId);

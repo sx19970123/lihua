@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -60,7 +60,7 @@ public class SysUserDTO extends BaseDTO {
     private String defaultDeptId;
 
     // 创建开始时间
-    private List<LocalDateTime> createTimeList;
+    private List<LocalDate> createTimeList;
 
     // 密码请求key
     private String passwordRequestKey;

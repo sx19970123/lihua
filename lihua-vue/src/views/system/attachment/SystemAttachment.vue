@@ -16,9 +16,16 @@
               </a-form-item>
             </a-col>
             <a-col>
-              <a-form-item label="状态">
-                <a-select placeholder="请选择状态" v-model:value="attachmentQuery.status" allowClear>
+              <a-form-item label="附件状态">
+                <a-select placeholder="请选择附件状态" v-model:value="attachmentQuery.status" allowClear>
                   <a-select-option v-for="item in sys_attachment_status" :value="item.value">{{item.label}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col>
+              <a-form-item label="上传方式">
+                <a-select placeholder="请选择上传方式" v-model:value="attachmentQuery.uploadMode" allowClear>
+                  <a-select-option v-for="item in sys_attachment_upload_mode" :value="item.value">{{item.label}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -167,7 +174,9 @@
         <a-descriptions-item label="异常信息" :span="3" v-if="attachmentInfo.status === '1'">{{attachmentInfo.errorMsg}}</a-descriptions-item>
         <!-- url上传展示原url -->
         <a-descriptions-item label="原URL" :span="3" v-if="attachmentInfo.url">{{attachmentInfo.url}}</a-descriptions-item>
-        <!-- 其余上传展示MD5 -->
+        <!-- 分片上传Id -->
+        <a-descriptions-item label="分片标识" :span="3" v-if="attachmentInfo.uploadId">{{attachmentInfo.uploadId}}</a-descriptions-item>
+        <!-- MD5 -->
         <a-descriptions-item label="MD5" :span="3" v-if="attachmentInfo.md5">{{attachmentInfo.md5}}</a-descriptions-item>
       </a-descriptions>
     </a-modal>

@@ -6,7 +6,7 @@ import com.lihua.model.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -64,7 +64,7 @@ public class SysLogDTO extends BaseDTO {
     /**
      * 创建时间集合
      */
-    private List<LocalDateTime> createTimeList;
+    private List<LocalDate> createTimeList;
 
     /**
      * 执行耗时

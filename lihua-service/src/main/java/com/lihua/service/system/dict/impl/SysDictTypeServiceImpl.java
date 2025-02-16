@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -54,10 +55,11 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
                     .eq(SysDictType::getStatus,dictTypeDTO.getStatus());
         }
         // 创建时间
-        if (dictTypeDTO.getStartEndTime() != null && !dictTypeDTO.getStartEndTime().isEmpty()) {
+        List<LocalDate> startEndTime = dictTypeDTO.getStartEndTime();
+        if (startEndTime != null && startEndTime.size() == 2) {
             queryWrapper
                     .lambda()
-                    .between(SysDictType::getCreateTime,dictTypeDTO.getStartEndTime().get(0),dictTypeDTO.getStartEndTime().get(1));
+                    .between(SysDictType::getCreateTime,startEndTime.get(0),startEndTime.get(1).plusDays(1L));
         }
         // 创建时间排序
         queryWrapper.lambda().orderByDesc(SysDictType::getCreateTime);

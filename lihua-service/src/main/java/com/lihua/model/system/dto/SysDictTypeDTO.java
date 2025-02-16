@@ -4,7 +4,7 @@ import com.lihua.model.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -13,5 +13,5 @@ public class SysDictTypeDTO extends BaseDTO {
     private String name;
     private String code;
     private String status;
-    private List<LocalDateTime> startEndTime;
+    private List<LocalDate> startEndTime;
 }

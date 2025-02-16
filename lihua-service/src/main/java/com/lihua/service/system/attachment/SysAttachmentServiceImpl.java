@@ -34,7 +34,7 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,14 +68,18 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         if (StringUtils.hasText(sysAttachmentDTO.getStatus())) {
             queryWrapper.lambda().eq(SysAttachment::getStatus, sysAttachmentDTO.getStatus());
         }
+        //  上传方式
+        if (StringUtils.hasText(sysAttachmentDTO.getUploadMode())) {
+            queryWrapper.lambda().eq(SysAttachment::getUploadMode, sysAttachmentDTO.getUploadMode());
+        }
         //  业务名称
         if (StringUtils.hasText(sysAttachmentDTO.getBusinessName())) {
             queryWrapper.lambda().like(SysAttachment::getBusinessName, sysAttachmentDTO.getBusinessName());
         }
         //  上传时间
-        List<LocalDateTime> createTimeList = sysAttachmentDTO.getCreateTimeList();
+        List<LocalDate> createTimeList = sysAttachmentDTO.getCreateTimeList();
         if (createTimeList != null && createTimeList.size() == 2) {
-            queryWrapper.lambda().between(SysAttachment::getCreateTime, createTimeList.get(0), createTimeList.get(1));
+            queryWrapper.lambda().between(SysAttachment::getCreateTime, createTimeList.get(0), createTimeList.get(1).plusDays(1L));
         }
         queryWrapper.lambda().orderByDesc(SysAttachment::getCreateTime);
         sysAttachmentMapper.selectPage(iPage, queryWrapper);

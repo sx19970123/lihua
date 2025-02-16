@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -102,8 +103,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             queryWrapper.eq("status", sysUserDTO.getStatus());
         }
         // 创建时间
-        if (sysUserDTO.getCreateTimeList() != null && !sysUserDTO.getCreateTimeList().isEmpty()) {
-            queryWrapper.between("sys_user.create_time", sysUserDTO.getCreateTimeList().get(0),sysUserDTO.getCreateTimeList().get(1));
+        List<LocalDate> createTimeList = sysUserDTO.getCreateTimeList();
+        if (createTimeList != null && createTimeList.size() == 2) {
+            queryWrapper.between("sys_user.create_time", createTimeList.get(0),createTimeList.get(1).plusDays(1L));
         }
 
         queryWrapper.eq("del_flag","0").orderByDesc("sys_user.create_time");
