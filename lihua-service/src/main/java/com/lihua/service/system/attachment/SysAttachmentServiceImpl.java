@@ -16,7 +16,7 @@ import com.lihua.entity.system.SysAttachment;
 import com.lihua.mapper.system.SysAttachmentMapper;
 import com.lihua.model.system.dto.SysAttachmentDTO;
 import com.lihua.model.system.vo.SysAttachmentVO;
-import com.lihua.strategy.AttachmentStorageStrategy;
+import com.lihua.strategy.system.attachment.AttachmentStorageStrategy;
 import com.lihua.utils.crypt.AesUtils;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.file.FileUtils;

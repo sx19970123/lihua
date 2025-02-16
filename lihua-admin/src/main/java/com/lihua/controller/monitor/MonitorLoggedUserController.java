@@ -3,7 +3,7 @@ package com.lihua.controller.monitor;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.web.BaseController;
-import com.lihua.service.monitor.MonitorLoggedUserService;
+import com.lihua.service.monitor.logged.MonitorLoggedUserService;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

@@ -4,7 +4,7 @@ import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.web.BaseController;
 import com.lihua.model.monitor.CacheMonitor;
-import com.lihua.service.monitor.MonitorCacheService;
+import com.lihua.service.monitor.cache.MonitorCacheService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
