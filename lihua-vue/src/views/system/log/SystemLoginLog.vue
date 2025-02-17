@@ -85,26 +85,18 @@
               </template>
               导出
             </a-button>
-
+<!--            清空-->
             <a-popconfirm title="清空后不可恢复，是否清空？"
                           :open="openClearPopconfirm"
                           @cancel="handleCloseClearPopconfirm"
-                          @open-change="(open: boolean) => !open ? handleCloseClearPopconfirm(): ''"
+                          @open-change="(open: boolean) => startClearCountdown(open, 5)"
             >
               <template #okButton>
-                <a-button size="small" type="primary" :disabled="countdown" @click="handleClear">
-                  <a-statistic-countdown
-                      v-if="countdown"
-                      format="s"
-                      prefix="确 认 "
-                      :value="Date.now() + 1000 * 5"
-                      :value-style="{'font-size': '14px'}"
-                      @finish="countdownFinish"
-                  />
-                  <a-typography-text v-else style="color: #fff">确 认</a-typography-text>
+                <a-button size="small" type="primary" :disabled="countdown !== 0" @click="handleClear">
+                  {{countdown === 0 ? '确 认' : '确 认 ' + countdown}}
                 </a-button>
               </template>
-              <a-button danger type="primary" @click="handleOpenClearPopconfirm">
+              <a-button danger type="primary">
                 <template #icon>
                   <DeleteFilled />
                 </template>
@@ -440,21 +432,35 @@ const initClear = () => {
   // 打开清空确认对话框
   const openClearPopconfirm = ref<boolean>(false)
   // 清空按钮倒计时
-  const countdown = ref<boolean>(true)
-  // 倒计时结束
-  const countdownFinish = () => {
-    countdown.value = false
+  const countdown = ref<number>()
+  const interval = ref()
+
+  // 开始清空数据倒计时
+  const startClearCountdown = (open: boolean, second: number) => {
+    clearInterval(interval.value)
+    if (open) {
+      countdown.value = second
+    }
+
+    interval.value = setInterval(() => {
+      if (second === 0) {
+        clearInterval(interval.value)
+        countdown.value = 0
+      } else {
+        second--
+        countdown.value = second
+      }
+    }, 1000)
+
+    openClearPopconfirm.value = open
   }
-  // 处理打开提示框
-  const handleOpenClearPopconfirm = () => {
-    countdown.value = true
-    openClearPopconfirm.value = true
-  }
-  // 处理关闭提示框
+
+  // 关闭清空提示
   const handleCloseClearPopconfirm = () => {
     openClearPopconfirm.value = false
   }
-  // 处理清空日志
+
+  // 处理清除数据
   const handleClear = async () => {
     try {
       const resp = await clearLoginLog()
@@ -472,21 +478,20 @@ const initClear = () => {
         console.error(e)
       }
     } finally {
-      handleCloseClearPopconfirm()
+      openClearPopconfirm.value = false
     }
   }
 
   return {
     openClearPopconfirm,
     countdown,
-    handleOpenClearPopconfirm,
+    startClearCountdown,
     handleCloseClearPopconfirm,
     handleClear,
-    countdownFinish
   }
 }
 
-const {openClearPopconfirm, countdown, handleOpenClearPopconfirm, handleCloseClearPopconfirm, handleClear, countdownFinish} = initClear()
+const {openClearPopconfirm, countdown, startClearCountdown, handleCloseClearPopconfirm, handleClear} = initClear()
 
 // 处理excel 导出
 const handleExportExcel = async () => {

@@ -140,15 +140,20 @@
                   </a-menu-item>
                   <a-menu-item>
                     <a-popconfirm placement="bottomRight"
-                                  ok-text="确 定"
+                                  :ok-text="countdown"
                                   cancel-text="取 消"
-                                  @confirm="handleForceDelete(record.id)"
+                                  @open-change="(open: boolean) => startForceDeleteCountdown(open, 5)"
                     >
                       <template #icon>
                         <InfoCircleFilled :style="{color: themeStore.isDarkTheme ? '#dc4446' : '#ff4d4f'}"/>
                       </template>
                       <template #title>
                         <div>强制删除 {{record.originalName}}</div>
+                      </template>
+                      <template #okButton>
+                        <a-button size="small" type="primary" :disabled="countdown !== 0" @click="handleForceDelete(record.id)">
+                          {{countdown === 0 ? '确 认' : '确 认 ' + countdown}}
+                        </a-button>
                       </template>
                       <template #description>
                         删除后可能导致业务异常且不可恢复，请确保附件已不再使用。是否删除？
@@ -436,6 +441,12 @@ const {selectedIds, attachmentRowSelectionType ,attachmentColumn, attachmentTota
 const initDelete = () => {
   // 显示删除提示
   const openDeletePopconfirm = ref<boolean>(false);
+
+  // 倒计时
+  const countdown = ref<number>()
+  // 计时器
+  const interval = ref()
+
   // 打开删除提示框
   const openPopconfirm = () => {
     if (selectedIds.value && selectedIds.value.length > 0) {
@@ -480,6 +491,24 @@ const initDelete = () => {
     }
   }
 
+  // 强制删除计时器
+  const startForceDeleteCountdown = (open: boolean, second: number) => {
+    clearInterval(interval.value)
+    if (open) {
+      countdown.value = second
+    }
+
+    interval.value = setInterval(() => {
+      if (second === 0) {
+        clearInterval(interval.value)
+        countdown.value = 0
+      } else {
+        second--
+        countdown.value = second
+      }
+    }, 1000)
+  }
+
   // 处理强制删除
   const handleForceDelete = async (id: string) => {
     const resp = await forceDeleteData(id)
@@ -492,14 +521,16 @@ const initDelete = () => {
   }
   return {
     openDeletePopconfirm,
+    countdown,
     closePopconfirm,
     handleDelete,
     openPopconfirm,
-    handleForceDelete
+    handleForceDelete,
+    startForceDeleteCountdown
   }
 }
 
-const {openDeletePopconfirm, closePopconfirm, handleDelete, openPopconfirm, handleForceDelete} = initDelete()
+const {openDeletePopconfirm, countdown, closePopconfirm, handleDelete, openPopconfirm, handleForceDelete, startForceDeleteCountdown} = initDelete()
 
 const initShare = () => {
   const showShareModal = ref<boolean>(false)
