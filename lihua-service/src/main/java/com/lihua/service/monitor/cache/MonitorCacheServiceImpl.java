@@ -39,6 +39,7 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
             new CacheMonitor(PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX.getValue(), "防重复提交"),
             new CacheMonitor(CAPTCHA_REDIS_PREFIX.getValue(), "验证码"),
             new CacheMonitor(SECONDARY_CAPTCHA_REDIS_PREFIX.getValue(), "验证码二次验证"),
+            new CacheMonitor(CHUNK_UPLOAD_ID_REDIS_PREFIX.getValue(), "分片上传uploadId"),
             new CacheMonitor("OTHER", "其他")
         );
     }

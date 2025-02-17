@@ -102,33 +102,69 @@
             <dict-tag :dict-data-value="record[column.key]" :dict-data-option="sys_attachment_upload_mode"/>
           </template>
           <template v-if="column.key === 'action'">
-            <a-button type="link" size="small" @click="(event: MouseEvent) => handleDownload(event, record.id)">
+            <a-button type="link" size="small" @click="(event: MouseEvent) => handleDownload(event, record.id, record.status)">
               <template #icon>
                 <CloudDownloadOutlined />
               </template>
               下载
             </a-button>
             <a-divider type="vertical"/>
-            <a-button type="link" size="small" @click="(event: MouseEvent) => handleShowShareModal(event, record.id, record.originalName)">
+            <a-button type="link" size="small" @click="(event: MouseEvent) => handleShowShareModal(event, record.id, record.originalName, record.status)">
               <template #icon>
                 <ShareAltOutlined />
               </template>
               分享
             </a-button>
             <a-divider type="vertical"/>
-            <a-popconfirm title="删除后不可恢复，是否删除？"
-                          placement="bottomRight"
-                          ok-text="确 定"
-                          cancel-text="取 消"
-                          @confirm="handleDelete(record.id)"
-            >
-              <a-button type="link" size="small" danger @click="(event:MouseEvent) => event.stopPropagation()">
-                <template #icon>
-                  <DeleteOutlined />
-                </template>
-                删除
-              </a-button>
-            </a-popconfirm>
+            <a-dropdown>
+              <a class="ant-dropdown-link" @click="(event: MouseEvent) => event.stopPropagation()">
+                <DownOutlined />
+                更多
+              </a>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item>
+                    <a-popconfirm title="删除后不可恢复，是否删除？"
+                                  placement="topRight"
+                                  ok-text="确 定"
+                                  cancel-text="取 消"
+                                  @confirm="handleDelete(record.id)"
+                    >
+                      <a-button type="link" size="small" danger @click="(event:MouseEvent) => event.stopPropagation()">
+                        <template #icon>
+                          <DeleteOutlined />
+                        </template>
+                        删除
+                      </a-button>
+                    </a-popconfirm>
+                  </a-menu-item>
+                  <a-menu-item>
+                    <a-popconfirm placement="bottomRight"
+                                  ok-text="确 定"
+                                  cancel-text="取 消"
+                                  @confirm="handleForceDelete(record.id)"
+                    >
+                      <template #icon>
+                        <InfoCircleFilled :style="{color: themeStore.isDarkTheme ? '#dc4446' : '#ff4d4f'}"/>
+                      </template>
+                      <template #title>
+                        <div>强制删除 {{record.originalName}}</div>
+                      </template>
+                      <template #description>
+                        删除后可能导致业务异常且不可恢复，请确保附件已不再使用。是否删除？
+                      </template>
+                      <a-button type="link" size="small" danger @click="(event:MouseEvent) => event.stopPropagation()">
+                        <template #icon>
+                          <DeleteFilled />
+                        </template>
+                        强制删除
+                      </a-button>
+                    </a-popconfirm>
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
+
           </template>
         </template>
         <template #footer>
@@ -148,7 +184,8 @@
       <a-descriptions title="附件详情" bordered :label-style="{width: '110px'}">
         <!-- 文件信息 -->
         <a-descriptions-item label="附件名称" :span="1">
-          {{attachmentInfo.originalName}}
+          <a-typography-link v-if="attachmentInfo.status === '0' && attachmentInfo.type?.startsWith('image')" @click="() => handlePreview(attachmentInfo.id, attachmentInfo.type)">{{attachmentInfo.originalName}}</a-typography-link>
+          <span v-else>{{attachmentInfo.originalName}}</span>
         </a-descriptions-item>
         <a-descriptions-item label="存储路径" :span="2">{{attachmentInfo.path}}</a-descriptions-item>
         <a-descriptions-item label="附件大小" :span="1">{{convertFileSize(attachmentInfo.size)}}</a-descriptions-item>
@@ -179,6 +216,8 @@
         <!-- MD5 -->
         <a-descriptions-item label="MD5" :span="3" v-if="attachmentInfo.md5">{{attachmentInfo.md5}}</a-descriptions-item>
       </a-descriptions>
+      <!--      图片预览-->
+      <a-image :src="attachmentInfo.id ? previewUrlMap.get(attachmentInfo.id) : ''" :style="{ display: 'none' }" :preview="{ visible, onVisibleChange: () => handlePreview(attachmentInfo.id, attachmentInfo.type)}"></a-image>
     </a-modal>
 <!--    分享模态框-->
     <a-modal v-model:open="showShareModal" @cancel="handleCloseShareModal">
@@ -224,13 +263,16 @@ import {ref} from "vue";
 import type {SysAttachment, SysAttachmentDTO, SysAttachmentVO} from "@/api/system/attachment/type/SysAttachment.ts";
 import {message} from "ant-design-vue";
 import {ResponseError} from "@/api/global/Type.ts";
-import {deleteData, getDownloadURL, queryById, queryPage} from "@/api/system/attachment/Attachment.ts";
+import {deleteData, forceDeleteData, getDownloadURL, queryById, queryPage} from "@/api/system/attachment/Attachment.ts";
 import dayjs from "dayjs";
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import {download} from "@/utils/AttachmentDownload.ts";
-const  {sys_attachment_status, sys_attachment_upload_mode} = initDict("sys_attachment_status","sys_attachment_upload_mode")
+import {useThemeStore} from "@/stores/theme.ts";
+
+const {sys_attachment_status, sys_attachment_upload_mode} = initDict("sys_attachment_status","sys_attachment_upload_mode")
 const baseAPI = import.meta.env.VITE_APP_BASE_API
+const themeStore = useThemeStore()
 
 const initSearch = () => {
 // 选中的数据id集合
@@ -436,17 +478,28 @@ const initDelete = () => {
     } finally {
       closePopconfirm()
     }
+  }
 
+  // 处理强制删除
+  const handleForceDelete = async (id: string) => {
+    const resp = await forceDeleteData(id)
+    if (resp.code === 200) {
+      message.success(resp.msg);
+      await initPage()
+    } else {
+      message.error(resp.msg)
+    }
   }
   return {
     openDeletePopconfirm,
     closePopconfirm,
     handleDelete,
-    openPopconfirm
+    openPopconfirm,
+    handleForceDelete
   }
 }
 
-const {openDeletePopconfirm, closePopconfirm, handleDelete, openPopconfirm} = initDelete()
+const {openDeletePopconfirm, closePopconfirm, handleDelete, openPopconfirm, handleForceDelete} = initDelete()
 
 const initShare = () => {
   const showShareModal = ref<boolean>(false)
@@ -456,8 +509,13 @@ const initShare = () => {
   const shareUrl = ref<string>()
 
   // 处理打开分享model
-  const handleShowShareModal = (event: MouseEvent, id: string, fileName: string) => {
+  const handleShowShareModal = (event: MouseEvent, id: string, fileName: string, status: string) => {
     event.stopPropagation()
+    if (status !== '0') {
+      message.error("仅上传完成附件可分享")
+      return;
+    }
+
     showShareModal.value = true
     shareId.value = id
     shareName.value = fileName
@@ -510,6 +568,8 @@ const {showShareModal, shareName, shareUrl, shareValidTime, handleShowShareModal
 const intiInfo = () => {
   const showInfoModal = ref<boolean>(false)
   const attachmentInfo = ref<SysAttachmentVO>({})
+  const previewUrlMap = ref<Map<string, string>>(new Map<string, string>())
+  const visible = ref<boolean>(false)
 
   // 处理打开模态框
   const handleOpenInfoModal = async (event: MouseEvent, id: string) => {
@@ -520,7 +580,7 @@ const intiInfo = () => {
         showInfoModal.value = true
         attachmentInfo.value = resp.data
       } else {
-        message.warning(resp.msg)
+        message.error(resp.msg)
       }
     } catch (e) {
       if (e instanceof ResponseError) {
@@ -536,19 +596,45 @@ const intiInfo = () => {
     showInfoModal.value = false
     attachmentInfo.value = {}
   }
+
+  // 处理详情中的图片预览
+  const handlePreview = async (id?: string, type?: string) => {
+    if (!id || !type) {
+      message.error("附件id或类型不存在")
+      return
+    }
+    const url = previewUrlMap.value.get(id)
+    if (!url) {
+      const resp = await getDownloadURL(id, '10080')
+      if (resp.code === 200) {
+        previewUrlMap.value.set(id, resp.data.startsWith("/") ? baseAPI + resp.data : resp.data)
+      } else {
+        message.error(resp.msg)
+        return
+      }
+    }
+    visible.value = !visible.value;
+  }
   return {
     showInfoModal,
     attachmentInfo,
+    previewUrlMap,
+    visible,
     handleOpenInfoModal,
-    handleCloseInfoModal
+    handleCloseInfoModal,
+    handlePreview
   }
 }
 
-const {showInfoModal, attachmentInfo, handleOpenInfoModal, handleCloseInfoModal} = intiInfo()
+const {showInfoModal, attachmentInfo, previewUrlMap, visible, handleOpenInfoModal, handleCloseInfoModal, handlePreview} = intiInfo()
 
 // 下载
-const handleDownload = async (event: MouseEvent, id: string) => {
+const handleDownload = async (event: MouseEvent, id: string, status: string) => {
   event.stopPropagation()
+  if (status !== '0') {
+    message.error("仅上传完成附件可下载")
+    return;
+  }
   try {
     const resp = await getDownloadURL(id)
     if (resp.code === 200) {

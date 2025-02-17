@@ -52,12 +52,19 @@
     color: rgba(0,0,0,0.25);
 }
 
+.danger-color {
+    color: #ff4d4f;
+}
+
 [data-theme = 'dark'] {
     .icon-default-color {
         color:  rgba(255, 255, 255, 0.85);
     }
     .input-prefix-icon-color {
         color: rgba(255,255,255,0.25);
+    }
+    .danger-color {
+        color: #dc4446;
     }
 }
 

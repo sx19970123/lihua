@@ -76,6 +76,12 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
             throw new ServiceException("上传成功、分片上传中状态附件不允许删除");
         }
 
+        // 调用强制删除
+        forceDelete(ids);
+    }
+
+    @Override
+    public void forceDelete(List<String> ids) {
         // 根据ids获取可删除附件的路径
         List<String> deletablePathList = sysAttachmentMapper.queryDeletablePathByIds(ids);
         // 删除数据库记录

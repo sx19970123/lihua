@@ -12,7 +12,7 @@
             <foreach collection="ids" item="id" open="(" separator="," close=")">
                 #{id}
             </foreach>
-            AND path IS NOT NULL )
+            AND path IS NOT NULL AND status != '2')
         GROUP BY path
         HAVING count( 1 ) = 1
     </select>

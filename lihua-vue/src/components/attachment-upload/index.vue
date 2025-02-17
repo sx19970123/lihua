@@ -90,7 +90,6 @@ const chunk_upload_prefix = "upload-record-"
 const authorization = 'Bearer ' + getToken()
 const router = useRoute()
 
-
 // 参数
 const {model = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 5000000, multiple = true, directory = false, modelValue, businessCode, businessName, chunk = false, chunkSize = 200, chunkUploadCount = 3} = defineProps<{
   // 模式：按钮/图片/拖拽
@@ -382,7 +381,7 @@ const initUpload = () => {
       }
     })
     uploading.value = false
-    emits("uploadError", file)
+    emits("uploadError", file, errorMsg)
   }
   return {
     beforeUpload,
@@ -478,7 +477,6 @@ const initChunkUpload = () => {
         localStorage.setItem(chunk_upload_prefix + md5, JSON.stringify(recordObj))
         uploadTip.value = `正在上传：${recordObj.uploadedChunkSize}MB / ${recordObj.totalSize}MB（${Math.trunc(recordObj.uploadedChunkSize / recordObj.totalSize * 100)}%）`
       })
-
       if (resp.code === 200) {
         // 修改状态为已上传
         needUploadChunks[i].status = "completed"

@@ -103,7 +103,8 @@
                  <a-statistic-countdown
                      v-if="countdown"
                      format="s"
-                     :value="Date.now() + 1000 * 6"
+                     prefix="确 认 "
+                     :value="Date.now() + 1000 * 5"
                      :value-style="{'font-size': '14px'}"
                      @finish="countdownFinish"
                  />

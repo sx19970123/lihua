@@ -14,6 +14,7 @@ import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {close} from "@/utils/ServerSentEvents.ts";
 import {rasEncryptPassword} from "@/utils/Crypto.ts";
 import {publicAttachmentDownload} from "@/api/system/attachment/AttachmentStorage.ts";
+import router from "@/router";
 const { setToken,removeToken } = token
 
 export const useUserStore = defineStore('user', {
@@ -162,6 +163,13 @@ export const useUserStore = defineStore('user', {
             } finally {
                 this.clearUserInfo()
             }
+        },
+        // 认证失效
+        authenticationFailure(msg: string) {
+            this.clearUserInfo()
+            // 路由跳转到登录页
+            router.push({name: 'Login', state: {msg: msg}})
+            throw msg
         },
         /**
          * 清空用户信息

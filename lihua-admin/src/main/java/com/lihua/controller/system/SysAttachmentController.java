@@ -7,10 +7,11 @@ import com.lihua.model.system.dto.SysAttachmentDTO;
 import com.lihua.service.system.attachment.SysAttachmentService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -36,6 +37,14 @@ public class SysAttachmentController extends BaseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     public String delete(@RequestBody @NotEmpty(message = "附件id为空") List<String> ids) {
         sysAttachmentService.deleteByIds(ids);
+        return success();
+    }
+
+    @DeleteMapping("force/{id}")
+    @Log(description = "附件删除（强制）", type = LogTypeEnum.DELETE)
+    @PreAuthorize("hasRole('ROLE_admin')")
+    public String forceDelete(@PathVariable("id") String id) {
+        sysAttachmentService.forceDelete(Collections.singletonList(id));
         return success();
     }
 

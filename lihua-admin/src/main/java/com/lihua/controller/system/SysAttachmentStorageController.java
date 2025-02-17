@@ -1,7 +1,6 @@
 package com.lihua.controller.system;
 
 import com.lihua.annotation.Log;
-import com.lihua.config.LihuaConfig;
 import com.lihua.entity.system.SysAttachment;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
@@ -28,10 +27,6 @@ public class SysAttachmentStorageController extends BaseController {
 
     @Resource
     private SysAttachmentStorageService sysAttachmentStorageService;
-
-    @Resource
-    private LihuaConfig lihuaConfig;
-
 
     @PostMapping("info")
     public String queryAttachmentInfoByIds(@RequestBody @NotEmpty(message = "附件id为空") List<String> ids) {

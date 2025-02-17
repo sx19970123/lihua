@@ -4,7 +4,6 @@ import {type ResponseErrorType, ResponseError, type ResponseType} from "@/api/gl
 import { useUserStore } from "@/stores/user";
 import router from "@/router";
 const { getToken } = token
-
 // 当前正在进行的请求url集合
 export const currentRequests = new Set<string>([]);
 
@@ -34,12 +33,8 @@ service.interceptors.response.use((resp) => {
     currentRequests.delete(config.method + ":" + config.url)
     // token 失效或解析异常，清空用户信息返回登陆
     if (data.code === 401) {
-        // 清空用户信息
         const userStore= useUserStore()
-        userStore.clearUserInfo()
-        // 路由跳转到登录页
-        router.push({name: 'Login', state: {msg: data.msg}})
-        throw data.msg
+        userStore.authenticationFailure(data.msg)
     }
     // 配置的非法ip访问
     if (data.code === 407) {
@@ -77,9 +72,8 @@ service.interceptors.response.use((resp) => {
         }
         return Promise.reject(new ResponseError(status, error.response.statusText));
     } else {
-        const msg = "未知错误"
-        console.error(msg);
-        return Promise.reject(new ResponseError(500, msg));
+        console.error(error);
+        return Promise.reject(new ResponseError(500, error.message));
     }
 })
 

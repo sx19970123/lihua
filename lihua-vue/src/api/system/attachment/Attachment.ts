@@ -20,6 +20,14 @@ export const deleteData = (ids: string[]) => {
     })
 }
 
+// 强制删除数据
+export const forceDeleteData = (id: string) => {
+    return request({
+        url: '/system/attachment/force/' + id,
+        method: 'delete'
+    })
+}
+
 // 根据主键查询
 export const queryById = (id: string) => {
     return request<SysAttachmentVO>({
