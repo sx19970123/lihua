@@ -209,6 +209,7 @@ import dictTag from "@/components/dict-tag/index.vue"
 import type {SysDictDataType, SysDictDataTypeDTO} from "@/api/system/dict/type/SysDictDataType.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {v4 as uuidv4} from "uuid";
+import settings from "@/settings.ts";
 
 const props = defineProps<{
   typeCode: string,
@@ -265,7 +266,8 @@ const initSearch = () => {
       title: '操作',
       align: 'center',
       key: 'action',
-      width: props.type === '1' ? 238 : 148
+      width: props.type === '1' ? 238 : 148,
+      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     },
   ])
   // 定义查询条件对象
