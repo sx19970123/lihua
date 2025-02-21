@@ -1,7 +1,5 @@
 package com.lihua.controller.system;
 
-import com.lihua.annotation.Log;
-import com.lihua.enums.LogTypeEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.web.BaseController;
 import com.lihua.utils.security.LoginUserContext;
