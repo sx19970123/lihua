@@ -140,8 +140,10 @@
                   </a-menu-item>
                   <a-menu-item>
                     <a-popconfirm placement="bottomRight"
-                                  :ok-text="countdown"
+                                  :ok-text="countdown === 0 ? '确 认' : '确 认 ' + countdown"
+                                  :okButtonProps="{disabled: countdown !== 0}"
                                   cancel-text="取 消"
+                                  @confirm="handleForceDelete(record.id)"
                                   @open-change="(open: boolean) => startForceDeleteCountdown(open, 5)"
                     >
                       <template #icon>
@@ -149,11 +151,6 @@
                       </template>
                       <template #title>
                         <div>强制删除 {{record.originalName}}</div>
-                      </template>
-                      <template #okButton>
-                        <a-button size="small" type="primary" :disabled="countdown !== 0" @click="handleForceDelete(record.id)">
-                          {{countdown === 0 ? '确 认' : '确 认 ' + countdown}}
-                        </a-button>
                       </template>
                       <template #description>
                         删除后可能导致业务异常且不可恢复，请确保附件已不再使用。是否删除？
@@ -264,7 +261,7 @@
 
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {ref} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import type {SysAttachment, SysAttachmentDTO, SysAttachmentVO} from "@/api/system/attachment/type/SysAttachment.ts";
 import {message} from "ant-design-vue";
 import {ResponseError} from "@/api/global/Type.ts";
@@ -274,6 +271,7 @@ import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import {download} from "@/utils/AttachmentDownload.ts";
 import {useThemeStore} from "@/stores/theme.ts";
+import settings from "@/settings.ts";
 
 const {sys_attachment_status, sys_attachment_upload_mode} = initDict("sys_attachment_status","sys_attachment_upload_mode")
 const baseAPI = import.meta.env.VITE_APP_BASE_API
@@ -356,7 +354,8 @@ const initSearch = () => {
       title: '操作',
       key: 'action',
       align: 'center',
-      width: '292px'
+      width: '244px',
+      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     }
   ]
 

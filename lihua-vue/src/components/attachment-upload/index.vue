@@ -7,9 +7,9 @@
               :data="sysAttachment"
               :list-type="model === 'picture' ? 'picture-card' : 'text'"
               :before-upload="beforeUpload"
-              :directory="directory"
+              :directory="chunk ? false : directory"
+              :multiple="chunk ? false : multiple"
               :max-count="maxCount"
-              :multiple="chunk ? false: multiple"
               :isImageUrl="handleShowThumbImage"
               @preview="handlePreview"
               @change="handleChange"
@@ -18,7 +18,9 @@
       <!--      picture模式下预览图标变化-->
       <template #previewIcon="data">
         <a-button class="css-dev-only-do-not-override-2qvcno ant-btn ant-btn-text ant-btn-sm ant-upload-list-item-action ant-btn-icon-only" type="link">
-          <CloudDownloadOutlined class="anticon anticon-eye" v-if="!imageExtensions.includes(data.file.name.toLowerCase().split('.').pop())"/>
+          <CloudDownloadOutlined class="anticon anticon-eye"
+                                 v-if="!imageExtensions.includes(data.file.name.toLowerCase().split('.').pop()) &&
+                                  !videoExtensions.includes(data.file.name.toLowerCase().split('.').pop())"/>
           <EyeOutlined class="anticon anticon-eye" v-else/>
         </a-button>
       </template>
@@ -39,9 +41,9 @@
                       :action="uploadURL"
                       :headers="{Authorization: authorization}"
                       :before-upload="beforeUpload"
-                      :directory="directory"
+                      :directory="chunk ? false : directory"
+                      :multiple="chunk ? false : multiple"
                       :max-count="maxCount"
-                      :multiple="multiple"
                       @preview="handlePreview"
                       @change="handleChange"
                       @remove="handleRemove"
@@ -91,14 +93,14 @@ const authorization = 'Bearer ' + getToken()
 const router = useRoute()
 
 // 参数
-const {model = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 5000000, multiple = true, directory = false, modelValue, businessCode, businessName, chunk = false, chunkSize = 200, chunkUploadCount = 3} = defineProps<{
+const {model = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 10, multiple = true, directory = false, modelValue = "", businessCode, businessName, chunk = false, chunkSize = 20, chunkUploadCount = 3} = defineProps<{
   // 模式：按钮/图片/拖拽
   model?: 'button' | 'picture' | 'dragger',
   // 图标
   icon?: string,
   // 文本描述
   text?: string,
-  // 可上传的文件类型
+  // 可上传的附件类型
   uploadType?: string[],
   // 详细说明（仅支持拖拽上传）
   description?: string,
@@ -106,12 +108,12 @@ const {model = 'button', icon, text, uploadType = [], description, maxCount = 10
   maxCount?: number,
   // 最大上传大小（mb）
   maxSize?: number,
-  // 是否支持多文件上传
+  // 是否支持多附件上传
   multiple?: boolean,
-  // 是否支持文件夹上传
+  // 是否支持附件夹上传
   directory?: boolean,
   // 双向绑定
-  modelValue: string,
+  modelValue?: string,
   // 业务编码
   businessCode?: string,
   // 业务名称
@@ -145,7 +147,7 @@ const handleSysAttachment = (file: UploadFile, md5: string, uploadMode?: string)
 
 // 附件列表
 const fileList = ref<UploadFile[]>([])
-// 文件秒传轮询等待变量
+// 附件秒传轮询等待变量
 const awaitHandleFile = ref<boolean>(false)
 // 初始化双向绑定
 const init = async () => {
@@ -184,22 +186,22 @@ const init = async () => {
   }
 }
 
-// 初始化文件上传
+// 初始化附件上传
 const initUpload = () => {
-  // 文件上传前检验，同时进行不同上传逻辑的区分
+  // 附件上传前检验，同时进行不同上传逻辑的区分
   const beforeUpload = async (file: UploadFile, currentFileList: UploadFile[]) => {
-    // 获取文件数据异常
+    // 获取附件数据异常
     if (!file || !file.name || !file.size) {
-      message.error("获取文件数据异常")
+      message.error("获取附件数据异常")
       return Upload.LIST_IGNORE;
     }
 
-    // 验证文件大小和类型
+    // 验证附件大小和类型
     if (!checkSize(file.size) || !checkType(file.name)) {
       return Upload.LIST_IGNORE;
     }
 
-    // 控制文件上传最大数
+    // 控制附件上传最大数
     const index = currentFileList.findIndex(item => item === file)
     if (index >= maxCount - fileList.value.length) {
       emits("exceedMaxCount", file)
@@ -216,31 +218,31 @@ const initUpload = () => {
     }
   };
 
-  // 检查文件大小
+  // 检查附件大小
   const checkSize = (size: number): boolean => {
     const sizeMB = Math.ceil(size / 1024 / 1024)
     const flag = maxSize >= sizeMB
     if (!flag) {
-      message.error("仅允许上传" + maxSize + "MB以内的文件")
+      message.error("仅允许上传" + maxSize + "MB以内的附件")
     }
     return flag;
   }
 
-  // 检查文件类型
+  // 检查附件类型
   const checkType = (fileName: string): boolean => {
     const split = fileName.split(".")
-    // 文件没有后缀
+    // 附件没有后缀
     if (split.length === 0) {
-      message.error("未知的文件类型")
+      message.error("未知的附件类型")
       return false;
     }
-    // 可上传的文件类型为空不进行限制
+    // 可上传的附件类型为空不进行限制
     if (uploadType.length === 0) {
       return true;
     }
-    // 判断文件后缀
+    // 判断附件后缀
     if (!uploadType.includes("." + split[split.length - 1])) {
-      message.error("仅支持上传 " + uploadType.join(" ") + " 文件");
+      message.error("仅支持上传 " + uploadType.join(" ") + " 附件");
       return false;
     }
     return true;
@@ -282,7 +284,7 @@ const initUpload = () => {
     emits("update:modelValue", modelValueList.join(","))
   }
 
-  // 处理文件上传变化（uploading：上传中 done：上传成功 error：上传失败 removed：已删除）
+  // 处理附件上传变化（uploading：上传中 done：上传成功 error：上传失败 removed：已删除）
   const handleChange = ({file, fileList}: {file: UploadFile, fileList: Array<UploadFile>}) => {
     // 重置轮询等待状态
     awaitHandleFile.value = false
@@ -291,17 +293,17 @@ const initUpload = () => {
       return
     }
 
-    // 文件上传失败
+    // 附件上传失败
     if (file.status === "error") {
       emits("uploadError", file)
     }
 
-    // 文件上传成功
+    // 附件上传成功
     if (file.status === "done") {
       emits("uploadSuccess", {file, fileList});
     }
 
-    // 文件删除回调
+    // 附件删除回调
     if (file.status === "removed") {
       emits("remove", file)
     }
@@ -310,20 +312,19 @@ const initUpload = () => {
     handleModelValue(file, fileList)
   }
 
-  // 一般文件上传，返回true由a-upload进行上传，返回false执行文件秒传逻辑
+  // 一般附件上传，返回true由a-upload进行上传，返回false执行附件秒传逻辑
   const startUpload = (file: UploadFile) => {
     return new Promise(async (resolve) => {
-      // 1. 获取文件md5
-      uploading.value = true
+
+      // 1. 获取附件md5
       const md5 = await handleCalculateHash(file) as string
-      uploading.value = false
-      // 2. 根据md5向后端查询数据库，判断文件是否需要上传
+      // 2. 根据md5向后端查询数据库，判断附件是否需要上传
       const resp = await existsAttachmentByMd5(md5, file.name)
       if (resp.code === 200) {
         if (resp.data) {
           awaitHandleFile.value = true
           resolve(false)
-          // 文件存在，无需上传，执行文件秒传逻辑
+          // 附件存在，无需上传，执行附件秒传逻辑
           handleFastUpload(file, md5)
         } else {
           // 构建附件对象
@@ -339,7 +340,7 @@ const initUpload = () => {
     })
   }
 
-  // 处理文件秒传
+  // 处理附件秒传
   const handleFastUpload = (file: UploadFile, md5: string) => {
     // 构建 sysAttachment
     handleSysAttachment(file, md5, "2")
@@ -373,7 +374,7 @@ const initUpload = () => {
     })
   }
 
-  // 处理文件上传失败
+  // 处理附件上传失败
   const handleUploadError = (file: UploadFile, errorMsg: string) => {
     fileList.value.forEach(item => {
       if (item.uid === file.uid) {
@@ -412,16 +413,16 @@ const initChunkUpload = () => {
   // 开始进行分片上传
   const startChunkUpload = async (file: UploadFile) => {
     uploading.value = true
-    // 1. 获取文件md5值
+    // 1. 获取附件md5值
     const md5 = await handleCalculateHash(file) as string
-    // 2. 判断是否进行文件上传
+    // 2. 判断是否进行附件上传
     let allow = await allowUpload(file, md5);
-    // 允许上传文件
+    // 允许上传附件
     if (allow) {
       // 3. 处理分片上传逻辑
       await handleChunkUpload(file, md5)
     } else {
-      // 3 不允许分片上传 包含两种情况：1 同一附件有正在执行的上传任务；2 文件已上传完毕
+      // 3 不允许分片上传 包含两种情况：1 同一附件有正在执行的上传任务；2 附件已上传完毕
       handleSyncChunkUploadStatus(file, md5)
     }
   }
@@ -521,14 +522,14 @@ const initChunkUpload = () => {
       const interval = setInterval(() => {
         const recordObj: UploadRecordType = JSON.parse(record)
         uploadTip.value = `正在上传：${recordObj.uploadedChunkSize}MB / ${recordObj.totalSize}MB（${Math.trunc(recordObj.uploadedChunkSize / recordObj.totalSize * 100)}%）`
-        // 检测到上传状态为completed时，执行文件秒传获取数据
+        // 检测到上传状态为completed时，执行附件秒传获取数据
         if (recordObj.status === "completed") {
           handleFastUpload(file, md5)
           clearInterval(interval);
         }
       }, 1000)
     } else {
-      // 没有本地记录直接调用文件秒传
+      // 没有本地记录直接调用附件秒传
       handleFastUpload(file, md5)
     }
   }
@@ -545,7 +546,7 @@ const initChunkUpload = () => {
     return chunks;
   }
 
-  // 计算文件哈希
+  // 计算附件哈希
   const handleCalculateHash = (file: UploadFile) => {
     const chunks = handleChunk(file, 10)
     return new Promise(resolve => {
@@ -558,7 +559,7 @@ const initChunkUpload = () => {
           resolve(resp)
           worker.terminate()
         } else {
-          uploadTip.value = `正在扫描文件（${resp}%）`
+          uploadTip.value = `正在扫描附件（${resp}%）`
         }
       }
       worker.postMessage(chunks)
@@ -627,7 +628,7 @@ const initChunkUpload = () => {
     })
   }
 
-  // 处理文件合并
+  // 处理附件合并
   const handleChunksMerge = (file: UploadFile, recordObj: UploadRecordType, md5: string) => {
     uploadTip.value = "正在进行数据合并"
     chunksMerge({id: recordObj.attachmentId, originalName: file.name, md5: md5, uploadId:  recordObj.uploadId}, recordObj.chunkSize).then((resp) => {
@@ -679,15 +680,15 @@ const initPreview = () => {
   // 处理预览
   const handlePreview = async (file: UploadFile) => {
     if (file.status === "error") {
-      message.error("文件异常，无法预览或下载")
+      message.error("附件异常，无法预览或下载")
       return
     }
     if (file.type || file.name) {
-      // 获取文件后缀名
+      // 获取附件后缀名
       const extension = file.name.split('.').pop()?.toLowerCase() || ""
-      // 获取组件返回的文件类型
+      // 获取组件返回的附件类型
       const type = file.type?.split("/")[0] || ""
-      // 通过组件返回类型和文件后缀联合判断文件类型
+      // 通过组件返回类型和附件后缀联合判断附件类型
       if (type === "image" || imageExtensions.includes(extension)) {
         previewType.value = "image"
       } else if (type === "video" || videoExtensions.includes(extension)) {
@@ -732,7 +733,7 @@ const initPreview = () => {
 
   // 处理显示缩略图显示
   const handleShowThumbImage = (file: UploadFile) => {
-    // 获取文件后缀名
+    // 获取附件后缀名
     const extension = file.name.split('.').pop()?.toLowerCase() || ""
     return imageExtensions.includes(extension);
   }
@@ -762,7 +763,7 @@ const initPreview = () => {
 }
 const { previewVisible, previewTitle, previewURL, previewType, handlePreview, handleCancel, handleShowThumbImage, handleThumbUrl } = initPreview()
 
-// 处理文件删除
+// 处理附件删除
 const handleRemove = async (file: UploadFile) => {
   if (file && file.url) {
     try {

@@ -205,6 +205,7 @@ import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
 import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRole.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {useThemeStore} from "@/stores/theme.ts";
+import settings from "@/settings.ts";
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
 const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
 const themeStore = useThemeStore();
@@ -284,7 +285,8 @@ const initSearch = () => {
       title: '操作',
       align: 'center',
       key: 'action',
-      width: '190px'
+      width: '182px',
+      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     },
   ]
   // 查询条件

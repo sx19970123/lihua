@@ -268,6 +268,7 @@ import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import Spin from "@/components/spin";
 import {ResponseError} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
+import settings from "@/settings.ts";
 const {sys_status} = initDict("sys_status")
 const route = useRoute();
 
@@ -377,7 +378,8 @@ const initSearch = () => {
       title: '操作',
       key: 'action',
       align: 'center',
-      width: '190px'
+      width: '182px',
+      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     }
   ]
 

@@ -328,6 +328,7 @@ import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
 import PickUp from "@/components/icon/pick-up/PickUp.vue";
 import Unfold from "@/components/icon/unfold/Unfold.vue";
 import {ResponseError} from "@/api/global/Type.ts";
+import settings from "@/settings.ts";
 const themeStore = useThemeStore()
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {
@@ -420,7 +421,8 @@ const initSearch = () => {
       title: '操作',
       align: 'center',
       key: 'action',
-      width: '300px'
+      width: '292px',
+      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     }
   ]
   // 筛选条件

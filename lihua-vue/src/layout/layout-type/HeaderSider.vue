@@ -164,7 +164,7 @@ onUnmounted(() => {
 
 <style scoped>
 .hs-header {
-  z-index: 4;
+  z-index: 5;
   padding: 0;
   height: 48px;
   line-height: 48px;
@@ -175,7 +175,7 @@ onUnmounted(() => {
 .hs-sider {
   position: sticky;
   height: calc(100vh - 48px);
-  z-index: 3;
+  z-index: 4;
   top: 0;
   box-shadow: var(--lihua-layout-light-box-shadow);
 }
@@ -215,7 +215,7 @@ onUnmounted(() => {
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   position: relative;
-  z-index: 1
+  z-index: 3
 }
 </style>
 
@@ -231,7 +231,7 @@ onUnmounted(() => {
   }
   .view-tabs {
     position: sticky;
-    z-index: 2;
+    z-index: 3;
     top: 48px;
   }
 }

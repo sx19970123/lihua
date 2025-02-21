@@ -246,6 +246,7 @@ import {getUserOptionByUserIds} from "@/api/system/user/User.ts";
 import PublishAir from "@/components/icon/publish-air/PublishAir.vue";
 import Cancel from "@/components/icon/cancel/Cancel.vue";
 import {ResponseError} from "@/api/global/Type.ts";
+import settings from "@/settings.ts";
 const {sys_notice_type, sys_notice_status, 	sys_notice_user_scope, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_status", "sys_notice_user_scope", "sys_notice_priority")
 // 查询列表
 const initSearch = () => {
@@ -321,7 +322,8 @@ const initSearch = () => {
       title: '操作',
       key: 'action',
       align: 'center',
-      width: '270px'
+      width: '264px',
+      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     }
   ]
 

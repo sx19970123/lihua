@@ -220,6 +220,7 @@ import { message } from "ant-design-vue";
 import DictData from "./dictData/index.vue"
 import { initDict } from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
+import settings from "@/settings.ts";
 
 const { sys_status,sys_dict_type } = initDict("sys_status","sys_dict_type")
 
@@ -300,7 +301,8 @@ const initSearch = () => {
       title: '操作',
       align: 'center',
       key: 'action',
-      width: '300px'
+      width: '292px',
+      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     },
   ]
   // 查询条件定义

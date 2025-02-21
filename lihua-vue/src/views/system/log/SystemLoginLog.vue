@@ -87,15 +87,11 @@
             </a-button>
 <!--            清空-->
             <a-popconfirm title="清空后不可恢复，是否清空？"
-                          :open="openClearPopconfirm"
-                          @cancel="handleCloseClearPopconfirm"
+                          :ok-text="countdown === 0 ? '确 认' : '确 认 ' + countdown"
+                          :okButtonProps="{disabled: countdown !== 0}"
+                          @confirm="handleClear"
                           @open-change="(open: boolean) => startClearCountdown(open, 5)"
             >
-              <template #okButton>
-                <a-button size="small" type="primary" :disabled="countdown !== 0" @click="handleClear">
-                  {{countdown === 0 ? '确 认' : '确 认 ' + countdown}}
-                </a-button>
-              </template>
               <a-button danger type="primary">
                 <template #icon>
                   <DeleteFilled />
@@ -347,8 +343,6 @@ const initLogInfo = () => {
       const resp = await queryLoginById(id)
       if (resp.code === 200) {
         logInfo.value = resp.data
-        // 关闭删除/清空提示框
-        handleCloseClearPopconfirm()
         closePopconfirm()
         openModal.value = true
       } else {
@@ -429,8 +423,6 @@ const {openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm} = initD
 
 // 初始化清空日志
 const initClear = () => {
-  // 打开清空确认对话框
-  const openClearPopconfirm = ref<boolean>(false)
   // 清空按钮倒计时
   const countdown = ref<number>()
   const interval = ref()
@@ -451,14 +443,8 @@ const initClear = () => {
         countdown.value = second
       }
     }, 1000)
-
-    openClearPopconfirm.value = open
   }
 
-  // 关闭清空提示
-  const handleCloseClearPopconfirm = () => {
-    openClearPopconfirm.value = false
-  }
 
   // 处理清除数据
   const handleClear = async () => {
@@ -477,21 +463,17 @@ const initClear = () => {
       } else {
         console.error(e)
       }
-    } finally {
-      openClearPopconfirm.value = false
     }
   }
 
   return {
-    openClearPopconfirm,
     countdown,
     startClearCountdown,
-    handleCloseClearPopconfirm,
     handleClear,
   }
 }
 
-const {openClearPopconfirm, countdown, startClearCountdown, handleCloseClearPopconfirm, handleClear} = initClear()
+const {countdown, startClearCountdown, handleClear} = initClear()
 
 // 处理excel 导出
 const handleExportExcel = async () => {

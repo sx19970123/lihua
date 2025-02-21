@@ -365,7 +365,7 @@ import {
   resetPassword
 } from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/Dict.ts"
-import {createVNode, onMounted, reactive, ref, useTemplateRef} from "vue";
+import {createVNode, onMounted, reactive, ref, useTemplateRef, watch} from "vue";
 import SelectableCard from "@/components/selectable-card/index.vue"
 import PasswordInput from "@/components/password-input/index.vue"
 import DictTag from "@/components/dict-tag/index.vue"
@@ -390,6 +390,7 @@ import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts
 import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
+import settings from "@/settings.ts";
 const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
 const settingStore = useSettingStore()
 const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
@@ -489,7 +490,8 @@ const initSearch = () => {
       key: 'action',
       dataIndex: 'action',
       align: 'center',
-      width: '292px'
+      width: '292px',
+      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     }
   ]
 
