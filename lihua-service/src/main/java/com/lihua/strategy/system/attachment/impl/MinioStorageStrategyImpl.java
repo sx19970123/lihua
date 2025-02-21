@@ -10,6 +10,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -19,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Component("MINIO")
 @Slf4j
+@ConditionalOnProperty(name = "minio.enable", havingValue = "true")
 public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
 
     @Resource
