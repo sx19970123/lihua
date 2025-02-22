@@ -3,6 +3,7 @@ const activeUpdate = [
     {
         version: '1.1.1',
         record: [
+            '1. 修复生产环境附件导出调用接口错误导致附件无法下载的bug'
         ]
     }
 ]
