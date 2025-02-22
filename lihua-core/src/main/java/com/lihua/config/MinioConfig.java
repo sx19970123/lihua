@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "minio")
-@ConditionalOnProperty(name = "minio.enable", havingValue = "true")
+@ConditionalOnProperty(name = "lihua.uploadFileModel", havingValue = "MINIO")
 public class MinioConfig {
 
     /**

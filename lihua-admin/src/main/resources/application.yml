@@ -3,7 +3,7 @@ server:
 spring:
   profiles:
     # 切换开发/生产环境
-    active: prod
+    active: dev
   threads:
     virtual:
       # 开启虚拟线程

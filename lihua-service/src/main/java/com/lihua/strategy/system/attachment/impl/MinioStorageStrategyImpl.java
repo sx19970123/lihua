@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Component("MINIO")
 @Slf4j
-@ConditionalOnProperty(name = "minio.enable", havingValue = "true")
+@ConditionalOnProperty(name = "lihua.uploadFileModel", havingValue = "MINIO")
 public class MinioStorageStrategyImpl implements AttachmentStorageStrategy {
 
     @Resource
