@@ -10,7 +10,7 @@ export const download = (data: string, fileName?: string) => {
     if (data.startsWith(baseURL) || data.startsWith(origin) || data.startsWith("http")) {
         // 传入的是链接（需自行拼接 baseURL或origin）
         downloadFromUrl(data, fileName)
-    } else if (data.includes("\\")) {
+    } else if (data.includes("\\") || data.includes("/")) {
         // 传入的是路径
         downloadExport(data, fileName)
     } else {
