@@ -13,17 +13,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.*;
 import java.net.URLEncoder;
-import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -78,40 +75,30 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     @SneakyThrows
     @Override
     public void chunksMerge(String fullFilePath, String md5, String uploadId, Integer total) {
-        // 创建最后输出的附件
-        File file = new File(fullFilePath);
-        // 初始化md5计算器
-        MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-        try (FileOutputStream fos = new FileOutputStream(file, true);
-             FileChannel outputChannel = fos.getChannel()) {
-            for (int i = 1; i <= total; i++) {
-                // 循环读取临时附件
-                String temporaryFilePath = Paths.get(TEMPORARY_PATH, uploadId, String.valueOf(i)).toString();
-                File chunkFile = new File(temporaryFilePath);
-                try (FileInputStream fis = new FileInputStream(chunkFile);
-                     FileChannel inputChannel = fis.getChannel()) {
-                    ByteBuffer buffer = ByteBuffer.allocate(64 * 1024);
-                    while (inputChannel.read(buffer) > 0) {
-                        buffer.flip();
-                        buffer.mark();
-                        // 更新MD5
-                        messageDigest.update(buffer);
-                        buffer.reset();
-                        // 写入附件
-                        outputChannel.write(buffer);
-                        buffer.clear();
-                    }
-                }
-                // 删除分片
-                chunkFile.delete();
-            }
-            // 删除对应临时附件夹
-            Files.delete(Paths.get(TEMPORARY_PATH, uploadId));
+        Path temporaryPath = Paths.get(TEMPORARY_PATH, uploadId);
 
-            if (!bytesToHex(messageDigest.digest()).equals(md5)) {
-                throw new FileException("合并附件损坏");
+        // 校验临时文件数量
+        try (Stream<Path> temporaryListStream = Files.list(temporaryPath)) {
+            if (temporaryListStream.count() != total) {
+                throw new FileException("附件合并失败，缺少数据项");
             }
-        } catch (IOException e) {
+        }
+
+        // 数据合并
+        try (FileChannel outPutChannel = new FileOutputStream(fullFilePath).getChannel()) {
+            for (int i = 1; i <= total ; i++) {
+                String temporaryFilePath = Paths.get(TEMPORARY_PATH, uploadId, String.valueOf(i)).toString();
+                File temporaryFile = new File(temporaryFilePath);
+                try(FileChannel inputChannel = new FileInputStream(temporaryFile).getChannel()) {
+                    // 通过transferFrom实现零拷贝合并数据
+                    inputChannel.transferTo(0, temporaryFile.length(), outPutChannel);
+                }
+                // 删除临时文件
+                temporaryFile.delete();
+            }
+            // 删除文件夹
+            Files.delete(temporaryPath);
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new FileException("附件合并失败");
         }
@@ -150,6 +137,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     // 将字节数组转换为十六进制字符串
+    @Deprecated
     private static String bytesToHex(byte[] bytes) {
         if (bytes == null) {
             return "";
