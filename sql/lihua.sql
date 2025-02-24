@@ -11,7 +11,7 @@
  Target Server Version : 90001 (9.0.1)
  File Encoding         : 65001
 
- Date: 21/02/2025 19:30:58
+ Date: 24/02/2025 10:59:38
 */
 
 SET NAMES utf8mb4;
@@ -42,7 +42,7 @@ CREATE TABLE `sys_attachment`  (
   `error_msg` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '上传失败原因',
   `url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '原url（通过url上传有该字段）',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统附件表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统附件表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_attachment
@@ -238,6 +238,7 @@ CREATE TABLE `sys_login_log`  (
 -- Records of sys_login_log
 -- ----------------------------
 INSERT INTO `sys_login_log` VALUES ('1892895477757321217', '用户登录', 'LOGIN', '登录', 'com.lihua.controller.system.SysAuthenticationController', 'login', '0:0:0:0:0:0:0:1', 'admin', 'admin', '1', '2025-02-21 19:13:45', 618, '{\"currentUser\":\"{\\\"username\\\":\\\"admin\\\",\\\"captchaVerification\\\":\\\"SLIDER_90884f8cc8ef42a9b481e0dab2f4d230\\\"}\"}', NULL, NULL, NULL, '/system/login', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0', '0', '0', 'REDIS_CACHE_LOGIN_USER:1:1740136424782:b8b4c2769af04360a2cbe6bcd5344ac3');
+INSERT INTO `sys_login_log` VALUES ('1893852214249369602', '用户登录', 'LOGIN', '登录', 'com.lihua.controller.system.SysAuthenticationController', 'login', '0:0:0:0:0:0:0:1', 'admin', 'admin', '1', '2025-02-24 10:35:29', 113, '{\"currentUser\":\"{\\\"username\\\":\\\"admin\\\",\\\"captchaVerification\\\":\\\"SLIDER_54dcabbc73c24b03989c7c993bc7da47\\\"}\"}', NULL, NULL, NULL, '/system/login', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0', '0', '0', 'REDIS_CACHE_LOGIN_USER:1:1740364528593:29a6254b5687477c8203eb3a32d7c99e');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -535,7 +536,6 @@ CREATE TABLE `sys_setting`  (
 -- ----------------------------
 -- Records of sys_setting
 -- ----------------------------
-INSERT INTO `sys_setting` VALUES ('DefaultPasswordSetting', '默认密码', 0x7B2264656661756C7450617373776F7264223A22723367337263556142766777637248625A67416839413D3D227D);
 INSERT INTO `sys_setting` VALUES ('GrayModelSetting', '灰色模式', 0x7B22656E61626C65223A66616C73657D);
 INSERT INTO `sys_setting` VALUES ('IntervalUpdatePasswordSetting', '定期修改密码', 0x7B22656E61626C65223A66616C73652C22756E6974223A226D6F6E7468227D);
 INSERT INTO `sys_setting` VALUES ('RestrictAccessIpSetting', '限制访问IP', 0x7B22656E61626C65223A66616C73652C2269704C697374223A5B22225D7D);
