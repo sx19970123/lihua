@@ -19,6 +19,7 @@ import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.sse.ServerSentEventsManager;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,9 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executor;
 
+@Slf4j
 @Service
 public class SysNoticeServiceImpl implements SysNoticeService {
 
@@ -39,6 +42,9 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
     @Resource
     private SysUserService sysUserService;
+
+    @Resource(name = "applicationTaskExecutor")
+    private Executor executor;
 
     @Override
     public IPage<SysNotice> queryPage(SysNoticeDTO sysNoticeDTO) {
@@ -158,10 +164,14 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             sysUserNoticeService.resetStatus(id);
         }
 
-        // 获取被推送的用户id
-        List<String> userIds = sysUserNoticeService.queryUserIds(id);
-        // sse 推送数据
-        ServerSentEventsManager.send(userIds, new ServerSentEventsResult<>(ServerSentEventsEnum.SSE_NOTICE, sysNotice));
+        // 新线程发送消息
+        executor.execute(() -> {
+            // 获取被推送的用户id
+            List<String> userIds = sysUserNoticeService.queryUserIds(id);
+            // sse 推送数据
+            ServerSentEventsManager.send(userIds, new ServerSentEventsResult<>(ServerSentEventsEnum.SSE_NOTICE, sysNotice));
+        });
+
         return id;
     }
 
