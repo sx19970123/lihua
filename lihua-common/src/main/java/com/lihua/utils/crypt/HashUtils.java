@@ -10,6 +10,18 @@ import java.security.NoSuchAlgorithmException;
  */
 public class HashUtils {
 
+    // 生成 MD5 哈希值
+    public static String generateMD5(String input) {
+        try {
+            // 获取 MD5 消息摘要实例
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            // 将字节数组转换为十六进制字符串
+            return bytesToHex(digest.digest(input.getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException e) {
+            throw new ServiceException("SHA-256 转换出错，转换字符为：" + input);
+        }
+    }
+
     // 生成 SHA-256 哈希值
     public static String generateSHA256(String input) {
         try {

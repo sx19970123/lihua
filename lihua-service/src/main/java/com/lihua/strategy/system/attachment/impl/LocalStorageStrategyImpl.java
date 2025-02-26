@@ -23,7 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -134,20 +133,5 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     @PostConstruct
     void initTemporaryPath() {
         TEMPORARY_PATH = lihuaConfig.getUploadFilePath() + "temporary/";
-    }
-
-    // 将字节数组转换为十六进制字符串
-    @Deprecated
-    private static String bytesToHex(byte[] bytes) {
-        if (bytes == null) {
-            return "";
-        }
-        Formatter formatter = new Formatter();
-        for (byte b : bytes) {
-            formatter.format("%02x", b);
-        }
-        String result = formatter.toString();
-        formatter.close();
-        return result;
     }
 }

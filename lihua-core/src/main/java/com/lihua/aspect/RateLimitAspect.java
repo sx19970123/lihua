@@ -39,8 +39,8 @@ public class RateLimitAspect {
                 methodSignature.getDeclaringTypeName() + "." + methodSignature.getName() +
                 "(" + Arrays.stream(methodSignature.getParameterTypes()).map(Class::getTypeName).collect(Collectors.joining(", ")) + ")";
 
-        // 使用SHA256 将key压缩
-        rateLimiterName = HashUtils.generateSHA256(rateLimiterName);
+        // 使用MD5 将key压缩
+        rateLimiterName = HashUtils.generateMD5(rateLimiterName);
 
         // 获取限流器，不存在则进行创建
         RateLimiter rateLimiter = RATE_LIMITER_CACHE.get(rateLimiterName,

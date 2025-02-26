@@ -5,6 +5,7 @@ const activeUpdate = [
         record: [
             '1. 修复生产环境附件导出调用接口错误导致附件无法下载的bug',
             '2. 优化分片上传附件合并，使用FileChannel零拷贝方式进行附件合并',
+            '3. 系统限流key压缩切换为MD5实现',
         ]
     }
 ]

@@ -39,8 +39,8 @@ public class PreventDuplicateSubmitAspect {
                 "(" + Arrays.stream(methodSignature.getParameterTypes()).map(Class::getTypeName).collect(Collectors.joining(", ")) + ")";
         // 获取请求 token
         String token = WebUtils.getToken(WebUtils.getCurrentRequest());
-        // 使用SHA256 将key压缩
-        rateLimiterName = HashUtils.generateSHA256(rateLimiterName + token);
+        // 使用MD5 将key压缩
+        rateLimiterName = HashUtils.generateMD5(rateLimiterName + token);
 
         // key 拼接前缀
         String key = SysBaseEnum.PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX.getValue() + rateLimiterName;
