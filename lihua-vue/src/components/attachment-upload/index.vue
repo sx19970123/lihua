@@ -41,6 +41,7 @@
                       :action="uploadURL"
                       :headers="{Authorization: authorization}"
                       :before-upload="beforeUpload"
+                      :data="sysAttachment"
                       :directory="chunk ? false : directory"
                       :multiple="chunk ? false : multiple"
                       :max-count="maxCount"
