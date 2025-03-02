@@ -14,7 +14,6 @@ import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -27,9 +26,6 @@ public class SysDictDataServiceImpl implements SysDictDataService {
 
     @Resource
     private SysDictDataMapper sysDictDataMapper;
-
-    @Resource
-    private SqlSessionFactory sqlSessionFactory;
 
     @Resource
     private RedisCache redisCache;
