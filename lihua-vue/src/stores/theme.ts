@@ -148,6 +148,11 @@ export const useThemeStore = defineStore('theme',{
                 console.error('初始化主题失败，使用默认主题',e)
                 return;
             }
+            // 小窗模式下ViewTabs隐藏，设置导航模式为sider-header
+            if (window.location.href.includes("miniWindow=true")) {
+                this.$state.showViewTabs = false
+                this.$state.layoutType = "sider-header"
+            }
         },
         // 暗色模式
         changeDataDark() {

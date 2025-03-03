@@ -14,6 +14,7 @@
                          :index="index"
                          @route-skip="routeSkip"
                          @cancel-keep-alive="cancelKeepAliveCache"
+                         @close-view-tab="closeTab"
                          @mousedown="(event: MouseEvent) => event.button === 1 && !tab.affix ? closeTab(tab.routerPathKey) : ''"
           />
         </template>

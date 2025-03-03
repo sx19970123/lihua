@@ -18,6 +18,15 @@ interface ImportMeta {
 
 interface Window {
     initTAC: (tacPath: string, config: object, style: object) => Promise<any>;
+
+    documentPictureInPicture: {
+        window: Window
+        requestWindow: (options?: {
+            width: number
+            height: number
+        }) => Promise<Window>
+        onenter: () => void
+    }
 }
 
 declare module 'js-cookie'

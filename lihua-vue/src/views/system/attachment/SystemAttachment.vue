@@ -134,7 +134,7 @@
                         <template #icon>
                           <DeleteOutlined />
                         </template>
-                        删除
+                        删除附件
                       </a-button>
                     </a-popconfirm>
                   </a-menu-item>
