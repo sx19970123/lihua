@@ -190,6 +190,11 @@ const init = () => {
     })
   }
 
+  // 监听键盘触发关闭
+  const keydownClose = (event: KeyboardEvent | MouseEvent) => {
+    handleClose(event, 'keydown')
+  }
+
   // 关闭详情卡片
   const handleClose = (event: KeyboardEvent | MouseEvent, type: string) => {
 
@@ -306,6 +311,7 @@ const init = () => {
     placeholderRef,
     containerRef,
     detailRef,
+    keydownClose,
     handleClose,
     handleClickCard,
     getDetailWidth,
@@ -313,7 +319,7 @@ const init = () => {
     handleExpandComplete
   }
 }
-const {showStatus, showMask, style, placeholderRef, containerRef, detailRef, handleClose, handleClickCard, getDetailWidth, handleExpandComplete} = init()
+const {showStatus, showMask, style, placeholderRef, containerRef, detailRef, keydownClose, handleClose, handleClickCard, getDetailWidth, handleExpandComplete} = init()
 
 
 // 加载鼠标在卡片悬浮相关逻辑
@@ -390,12 +396,12 @@ const innerHeight = ref<number>(window.innerHeight)
 // 监听窗口变化和键盘事件
 onMounted(() => {
   window.addEventListener('resize', windowWidthResize)
-  window.addEventListener("keydown", (event) => handleClose(event, 'keydown'));
+  window.addEventListener("keydown", keydownClose);
 })
 // 卸载组件前删除监听函数
 onUnmounted(() => {
   window.removeEventListener('resize', windowWidthResize)
-  window.removeEventListener("keydown", (event) => handleClose(event, 'keydown'));
+  window.removeEventListener("keydown", keydownClose);
 })
 
 // 窗口变化后重新设置展开卡片布局

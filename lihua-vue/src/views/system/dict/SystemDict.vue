@@ -209,7 +209,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, onUnmounted, reactive, ref, watch} from "vue";
+import {onMounted, onUnmounted, reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
 import {ResponseError, type ResponseType} from "@/api/global/Type.ts"
 import type { ColumnsType } from 'ant-design-vue/es/table/interface';
@@ -659,15 +659,11 @@ const {handleReloadCache, loadCache} = initLoadCache()
 onMounted(() => {
   getDrawerWidth()
 
-  window.addEventListener('resize', () => {
-    getDrawerWidth()
-  })
+  window.addEventListener('resize', getDrawerWidth)
 })
 // 组件销毁后删除监听
 onUnmounted(() => {
-  window.removeEventListener('resize', () => {
-    getDrawerWidth()
-  })
+  window.removeEventListener('resize', getDrawerWidth)
 })
 
 </script>

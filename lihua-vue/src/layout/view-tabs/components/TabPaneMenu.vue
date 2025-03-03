@@ -55,7 +55,6 @@
 
 <script setup lang="ts">
 import { useViewTabsStore } from "@/stores/viewTabs";
-import { useRouter} from "vue-router";
 import { viewTab } from "@/api/system/view-tab/ViewTab.ts";
 import { message } from "ant-design-vue";
 import { StarFilled , StarOutlined ,LockOutlined , UnlockOutlined} from '@ant-design/icons-vue';
@@ -65,8 +64,9 @@ import type { StarViewType } from "@/api/system/view-tab/type/SysViewTab.ts";
 const viewTabsStore = useViewTabsStore()
 const tabPane = defineProps(['tab','index'])
 const emits = defineEmits(['routeSkip','cancelKeepAlive','closeViewTab'])
-const router = useRouter()
 const usableMiniWindow = window.location.origin.startsWith("http://localhost") || window.location.origin.startsWith("https")
+
+// 处理点击菜单
 const handleClickMenuTab = ({ key }:{ key :string }) => {
   const tab = tabPane.tab
   switch (key) {
@@ -75,113 +75,39 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
       break
     }
     case "newPage": {
-       window.open(router.resolve(tab.routerPathKey).href)
+      window.open(tab.routerPathKey)
       break
     }
     case "miniWindow": {
-      createMiniWindow(router.resolve(tab.routerPathKey).href, tab.affix)
+      createMiniWindow(tab.routerPathKey, tab.affix)
       break
     }
     case "close-left": {
-      const actIndex = viewTabsStore.getIndex(viewTabsStore.activeKey)
-      const index = viewTabsStore.getIndex(tab.routerPathKey)
-      const closeKeys = viewTabsStore.closeLeft(tab.routerPathKey)
-      emits('cancelKeepAlive',closeKeys)
-      if (actIndex < index) {
-        emits('routeSkip',tab)
-      }
+      handleCloseLeft(tab)
       break
     }
     case "close-right": {
-      const actIndex = viewTabsStore.getIndex(viewTabsStore.activeKey)
-      const index = viewTabsStore.getIndex(tab.routerPathKey)
-      const closeKeys = viewTabsStore.closeRight(tab.routerPathKey)
-      emits('cancelKeepAlive',closeKeys)
-      if (actIndex > index) {
-        emits('routeSkip',tab)
-      }
+      handleCloseRight(tab)
       break
     }
     case "close-other": {
-      const closeKeys = viewTabsStore.closeOther(tab.routerPathKey)
-      emits('cancelKeepAlive',closeKeys)
-      emits('routeSkip',tab)
+      handleCloseOther(tab)
       break
     }
     case "star": {
-      viewTab(tab.menuId,tab.affix ? '1' : '0','1').then((resp: ResponseType<StarViewType>) => {
-        if (resp.code === 200) {
-          viewTabsStore.replaceByKey(resp.data)
-          message.success({
-            content: () => '添加收藏',
-            icon: () => h( StarFilled ),
-          })
-        } else {
-          message.error(resp.msg)
-        }
-      }).catch(() => {
-        message.error({
-          content: () => '添加收藏失败',
-          icon: () => h( StarFilled ),
-        })
-      })
+      handleStar(tab)
       break
     }
     case "un-star": {
-      viewTab(tab.menuId,tab.affix ? '1' : '0','0').then((resp: ResponseType<StarViewType>) => {
-        if (resp.code === 200) {
-          viewTabsStore.replaceByKey(resp.data)
-          message.success({
-            content: () => '取消收藏',
-            icon: () => h( StarOutlined ),
-          })
-        } else {
-          message.error(resp.msg)
-        }
-      }).catch(() => {
-        message.error({
-          content: () => '取消收藏失败',
-          icon: () => h( StarOutlined ),
-        })
-      })
+      handleUnStar(tab)
       break
     }
     case "affix": {
-      viewTab(tab.menuId,'1',tab.star ? '1' : '0').then((resp: ResponseType<StarViewType>) => {
-        if (resp.code === 200) {
-          viewTabsStore.affix(resp.data)
-          message.success({
-            content: () => '固定页面',
-            icon: () => h( LockOutlined ),
-          })
-        } else {
-          message.error(resp.msg)
-        }
-      }).catch(() => {
-        message.error({
-          content: () => '固定页面失败',
-          icon: () => h( LockOutlined ),
-        })
-      })
+      handleAffix(tab)
       break
     }
     case "un-affix": {
-      viewTab(tab.menuId,'0',tab.star ? '1' : '0').then((resp: ResponseType<StarViewType>) => {
-        if (resp.code === 200) {
-          viewTabsStore.unAffix(resp.data)
-          message.success({
-            content: () => '取消固定',
-            icon: () => h( UnlockOutlined ),
-          })
-        } else {
-          message.error(resp.msg)
-        }
-      }).catch(() => {
-        message.error({
-          content: () => '取消固定失败',
-          icon: () => h( UnlockOutlined ),
-        })
-      })
+      handleUnAffix(tab)
       break
     }
     default: {
@@ -190,30 +116,167 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
   }
 }
 
-// 创建小窗
-// 全局搜索：miniWindow=true 可查看ui小窗判定代码
-const createMiniWindow = async (url: string, affix: boolean) => {
-  try {
-    // 创建小窗
-    const miniWindow = await window.documentPictureInPicture.requestWindow();
-    miniWindow.document.body.innerHTML = `<iframe src="${url.includes("?") ? url + "&miniWindow=true" : url + "?miniWindow=true"}" style="min-height: calc(100vh); width: 100%; min-width: 492px; border: 0;margin: 0;padding: 0"/>`;
-    miniWindow.document.body.style.margin = '0'
-    miniWindow.document.body.style.overflowY = 'hidden'
-    miniWindow.document.body.style.overflowX = 'auto'
-    // 关闭当前窗口
-    if (!affix) emits("closeViewTab", url)
-    // 小窗关闭时恢复viewTab
-    window.documentPictureInPicture.window?.addEventListener("pagehide", () => {
-      if (!affix && viewTabsStore.viewTabs.findIndex(tab => tab.routerPathKey === url) === -1) {
-        const viewTab = viewTabsStore.totalViewTabs.filter(tab => tab.routerPathKey === url)
-        if (viewTab && viewTab.length > 0) {
-          viewTabsStore.addViewTab(viewTab[0])
-        }
-      }
-    })
-  } catch (err) {
-    message.error("当前浏览器不支持小窗模式，请使用Chrome、Edge等现代浏览器升级至最新版本")
-    console.error("miniWindow创建失败", err);
+// 初始化小窗相关，全局搜索：miniWindow=true 可查看ui小窗判定代码
+const initMiniWindow = () => {
+  let currentAffix: boolean = false
+  let currentUrl: string = ''
+  // 创建小窗
+  const createMiniWindow = async (url: string, affix: boolean) => {
+    currentAffix = affix
+    currentUrl = url
+    try {
+      // 创建小窗
+      const miniWindow = await window.documentPictureInPicture.requestWindow({width: 439, height: 661})
+      miniWindow.document.body.innerHTML = `<iframe src="${url.includes("?") ? url + "&miniWindow=true" : url + "?miniWindow=true"}" style="min-height: calc(100vh); width: 100%; min-width: 439px; border: 0;margin: 0;padding: 0"/>`
+      miniWindow.document.body.style.margin = '0'
+      miniWindow.document.body.style.overflowY = 'hidden'
+      miniWindow.document.body.style.overflowX = 'auto'
+      // 关闭当前窗口
+      if (!affix) emits("closeViewTab", url)
+      // 处理监听器
+      handleListener(miniWindow)
+    } catch (err) {
+      message.error("当前浏览器不支持小窗模式，请使用Chrome、Edge等现代浏览器升级至最新版本")
+      console.error("miniWindow创建失败", err)
+    }
   }
+
+  // 监听关闭小窗
+  const handleListener = (miniWindow: Window) => {
+    miniWindow.removeEventListener("pagehide", handleCloseMiniWindow)
+    miniWindow.addEventListener("pagehide", handleCloseMiniWindow)
+  }
+
+  // 处理关闭小窗，当活动的viewTab不存在时，将路由添加到viewTab
+  const handleCloseMiniWindow = () => {
+    if (!currentAffix && viewTabsStore.viewTabs.findIndex(tab => tab.routerPathKey === currentUrl) === -1) {
+      const viewTab = viewTabsStore.totalViewTabs.filter(tab => tab.routerPathKey === currentUrl)
+      if (viewTab && viewTab.length > 0) {
+        viewTabsStore.addViewTab(viewTab[0])
+      }
+    }
+  }
+  return {
+    createMiniWindow
+  }
+}
+
+const { createMiniWindow } = initMiniWindow()
+
+// 处理关闭左侧
+const handleCloseLeft = (tab: StarViewType) => {
+  const actIndex = viewTabsStore.getIndex(viewTabsStore.activeKey)
+  const index = viewTabsStore.getIndex(tab.routerPathKey)
+  const closeKeys = viewTabsStore.closeLeft(tab.routerPathKey)
+  emits('cancelKeepAlive',closeKeys)
+  if (actIndex < index) {
+    emits('routeSkip',tab)
+  }
+}
+
+// 处理关闭右侧
+const handleCloseRight = (tab: StarViewType) => {
+  const actIndex = viewTabsStore.getIndex(viewTabsStore.activeKey)
+  const index = viewTabsStore.getIndex(tab.routerPathKey)
+  const closeKeys = viewTabsStore.closeRight(tab.routerPathKey)
+  emits('cancelKeepAlive',closeKeys)
+  if (actIndex > index) {
+    emits('routeSkip',tab)
+  }
+}
+
+// 处理关闭其他
+const handleCloseOther = (tab: StarViewType) => {
+  const closeKeys = viewTabsStore.closeOther(tab.routerPathKey)
+  emits('cancelKeepAlive',closeKeys)
+  emits('routeSkip',tab)
+}
+
+// 处理star
+const handleStar = (tab: StarViewType) => {
+  if (!tab.menuId) return
+
+  viewTab(tab.menuId,tab.affix ? '1' : '0','1').then((resp: ResponseType<StarViewType>) => {
+    if (resp.code === 200) {
+      viewTabsStore.replaceByKey(resp.data)
+      message.success({
+        content: () => '添加收藏',
+        icon: () => h( StarFilled ),
+      })
+    } else {
+      message.error(resp.msg)
+    }
+  }).catch(() => {
+    message.error({
+      content: () => '添加收藏失败',
+      icon: () => h( StarFilled ),
+    })
+  })
+}
+
+// 处理unstar
+const handleUnStar = (tab: StarViewType) => {
+  if (!tab.menuId) return
+
+  viewTab(tab.menuId,tab.affix ? '1' : '0','0').then((resp: ResponseType<StarViewType>) => {
+    if (resp.code === 200) {
+      viewTabsStore.replaceByKey(resp.data)
+      message.success({
+        content: () => '取消收藏',
+        icon: () => h( StarOutlined ),
+      })
+    } else {
+      message.error(resp.msg)
+    }
+  }).catch(() => {
+    message.error({
+      content: () => '取消收藏失败',
+      icon: () => h( StarOutlined ),
+    })
+  })
+}
+
+// 处理固定
+const handleAffix = (tab: StarViewType) => {
+  if (!tab.menuId) return
+
+  viewTab(tab.menuId,'1',tab.star ? '1' : '0').then((resp: ResponseType<StarViewType>) => {
+    if (resp.code === 200) {
+      viewTabsStore.affix(resp.data)
+      message.success({
+        content: () => '固定页面',
+        icon: () => h( LockOutlined ),
+      })
+    } else {
+      message.error(resp.msg)
+    }
+  }).catch(() => {
+    message.error({
+      content: () => '固定页面失败',
+      icon: () => h( LockOutlined ),
+    })
+  })
+}
+
+// 处理取消固定
+const handleUnAffix = (tab: StarViewType) => {
+  if (!tab.menuId) return
+
+  viewTab(tab.menuId,'0',tab.star ? '1' : '0').then((resp: ResponseType<StarViewType>) => {
+    if (resp.code === 200) {
+      viewTabsStore.unAffix(resp.data)
+      message.success({
+        content: () => '取消固定',
+        icon: () => h( UnlockOutlined ),
+      })
+    } else {
+      message.error(resp.msg)
+    }
+  }).catch(() => {
+    message.error({
+      content: () => '取消固定失败',
+      icon: () => h( UnlockOutlined ),
+    })
+  })
 }
 </script>

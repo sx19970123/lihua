@@ -11,7 +11,7 @@ export let eventSource: EventSource | null
 let reconnectionFrequency = 0
 // 连接到SSE服务
 export const connect = async () => {
-    if (!eventSource) {
+    if (!eventSource && !window.location.href.includes("miniWindow=true")) {
         eventSource = new EventSource(import.meta.env.VITE_APP_BASE_API + "/system/sse/connect/" + await createClientKey())
         await nextTick(() => {
             if (eventSource && eventSource.readyState === 0) {
@@ -25,7 +25,7 @@ export const connect = async () => {
             console.error("Server-Sent Events 连接中断", event)
         }
 
-        eventSource.onopen = (event: Event) => {
+        eventSource.onopen = () => {
             if (reconnectionFrequency === 3) {
                 console.log("Server-Sent Events 超出重连次数")
                 close()

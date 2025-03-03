@@ -113,14 +113,10 @@ const handleChangeInnerWidth = () => {
 
 onMounted(() => {
   handleChangeInnerWidth()
-  window.addEventListener('resize', () => {
-    handleChangeInnerWidth()
-  })
+  window.addEventListener('resize', handleChangeInnerWidth)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('resize', () => {
-    handleChangeInnerWidth()
-  })
+  window.removeEventListener('resize', handleChangeInnerWidth)
 })
 </script>

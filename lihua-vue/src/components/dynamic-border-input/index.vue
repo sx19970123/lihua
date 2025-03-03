@@ -131,9 +131,9 @@ onMounted(() => {
   element.value = document.getElementById("dynamic-border-input-" + uuid)
   if (element.value) {
     // 聚焦
-    element.value.addEventListener("focusin", () => handleFocus())
+    element.value.addEventListener("focusin",handleFocus)
     // 失焦
-    element.value.addEventListener("focusout", (event) => handleBlur(event))
+    element.value.addEventListener("focusout", handleBlur)
   }
 })
 
@@ -141,9 +141,9 @@ onUnmounted(() => {
   // 移除聚焦失焦事件
   if (element.value) {
     // 聚焦
-    element.value.removeEventListener("focusin", () => handleFocus())
+    element.value.removeEventListener("focusin", handleFocus)
     // 失焦
-    element.value.removeEventListener("focusout", (event) => handleBlur(event))
+    element.value.removeEventListener("focusout", handleBlur)
   }
 })
 </script>

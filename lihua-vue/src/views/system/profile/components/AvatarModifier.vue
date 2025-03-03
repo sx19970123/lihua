@@ -278,15 +278,11 @@ const showConfirm = () => {
 
 // 组件创建完成后获取抽屉展开宽度
 onMounted(() => {
-  window.addEventListener('resize', () => {
-    handleWindowWith()
-  })
+  window.addEventListener('resize', handleWindowWith)
 })
 // 组件销毁后删除监听
 onUnmounted(() => {
-  window.removeEventListener('resize', () => {
-    handleWindowWith()
-  })
+  window.removeEventListener('resize', handleWindowWith)
 })
 
 </script>
