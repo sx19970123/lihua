@@ -3,6 +3,7 @@ const activeUpdate = [
     {
         version: '1.1.2',
         record: [
+            '1. 数据库脚本id字段由varchar修改为bigint'
         ]
     }
 ]

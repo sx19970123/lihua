@@ -12,7 +12,6 @@ import com.lihua.entity.system.SysPost;
 import com.lihua.mapper.system.SysDeptMapper;
 import com.lihua.model.system.vo.SysDeptVO;
 import com.lihua.service.system.post.SysPostService;
-import com.lihua.service.system.user.SysUserDeptService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
@@ -38,9 +37,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     @Resource
     private SysPostService sysPostService;
-
-    @Resource
-    private SysUserDeptService sysUserDeptService;
 
     // 校验手机号码
     private final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^1[3-9]\\d{9}$");
