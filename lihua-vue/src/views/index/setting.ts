@@ -1,9 +1,9 @@
 // 当前版本更新记录
 const activeUpdate = [
     {
-        version: '1.1.2',
+        version: '1.1.3',
         record: [
-            '1. 数据库脚本id字段由varchar修改为bigint'
+
         ]
     }
 ]
@@ -18,6 +18,17 @@ export const versionInfo = {
     vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.1.2',
+            updateDate: '2025-03-11',
+            updateContent: [
+                '1. 新增数据脱敏相关注解：@Sensitive标记对应字段应用脱敏规则，实体类属性为对象是使用@DeepSensitive注解可解析对象中属性脱敏，使用@ApplySensitive应用数据脱敏',
+                '2. 开发文档新增数据脱敏相关用法，地址为：http://doc.lihua.xyz/#/document/SERVER?id=数据脱敏',
+                '3. 数据库脚本id字段由varchar修改为bigint',
+                '4. vditor版本升级为3.10.9',
+                '5. 其他细节优化调整',
+            ]
+        },
         {
             version: '1.1.1',
             updateDate: '2025-03-03',

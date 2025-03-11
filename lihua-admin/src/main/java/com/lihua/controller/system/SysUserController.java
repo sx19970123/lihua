@@ -1,5 +1,6 @@
 package com.lihua.controller.system;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;

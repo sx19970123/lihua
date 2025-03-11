@@ -57,6 +57,15 @@ public class GlobalExceptionHandle extends BaseController {
     }
 
     /**
+     * 捕获全局 SensitiveException 异常
+     */
+    @ExceptionHandler(SensitiveException.class)
+    public String handleSensitiveException(Exception e) {
+        log.error(e.getMessage(),e);
+        return error(ResultCodeEnum.SENSITIVE_ERROR, e.getMessage());
+    }
+
+    /**
      * 上传附件尺寸超过系统设置
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)

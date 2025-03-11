@@ -3,6 +3,8 @@ package com.lihua.model.system.vo;
 import com.github.liaochong.myexcel.core.annotation.ExcelColumn;
 import com.github.liaochong.myexcel.core.annotation.ExcelModel;
 import com.github.liaochong.myexcel.core.annotation.MultiColumn;
+import com.lihua.annotation.sensitive.Sensitive;
+import com.lihua.enums.DesensitizedTypeEnum;
 import com.lihua.utils.excel.annotation.ExcelWriteConverterDictTypeCode;
 import com.lihua.model.BaseEntity;
 import com.lihua.utils.excel.converter.SysDictWriteConverter;
@@ -70,6 +72,7 @@ public class SysUserVO extends BaseEntity {
     /**
      * 手机号码
      */
+    @Sensitive(type = DesensitizedTypeEnum.PHONE_NUMBER, ignoreRoleCodes = {})
     @ExcelColumn(order = 4, index = 4, title = "用户信息->手机号码", width = 8)
     private String phoneNumber;
 

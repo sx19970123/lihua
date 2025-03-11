@@ -25,7 +25,8 @@ public enum ResultCodeEnum {
     DUPLICATE_SUBMIT_ERROR (503,"请勿重复提交"),
     MAX_UPLOAD_SIZE_EXCEEDED_ERROR (504,"上传的附件超过了允许的最大大小限制"),
     SERVER_UNAVAILABLE (505,"服务器维护中"),
-    CAPTCHA_ERROR(506,"验证码错误");
+    CAPTCHA_ERROR(506,"验证码错误"),
+    SENSITIVE_ERROR(507,"数据脱敏异常");
 
     /**
      * 状态码

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lihua.annotation.sensitive.ApplySensitive;
 import com.lihua.entity.system.*;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.dict.SysDictDataVO;
@@ -76,6 +77,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     // 校验邮箱
     private final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
 
+    @ApplySensitive
     @Override
     public IPage<SysUserVO> queryPage(SysUserDTO sysUserDTO) {
         IPage<SysUserVO> iPage = new Page<>(sysUserDTO.getPageNum(), sysUserDTO.getPageSize());
