@@ -159,7 +159,7 @@ export const useThemeStore = defineStore('theme',{
                 this.$state.layoutType = "sider-header"
             }
         },
-        // 暗色模式
+        // 切换暗色模式，isSync：App.vue组件中用于同步标签页暗色模式
         changeDataDark(isSync?: boolean) {
             let backgroundColor: string = ''
             // 暗色模式下，顶部颜色为黑色、侧边颜色为黑色，透明度根据磨砂效果控制

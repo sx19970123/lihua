@@ -123,6 +123,9 @@ watch(() => themeStore.followSystemTheme, () => {
 })
 
 onMounted(() => {
+  // 主题跟随系统
+  handleFollowSystemTheme()
+  // 灰色模式
   initGrayModel()
   // 启用监听storage以同步标签页间主题
   window.addEventListener('storage', syncTabTheme)
