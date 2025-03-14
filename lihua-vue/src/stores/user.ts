@@ -217,6 +217,7 @@ export const useUserStore = defineStore('user', {
         saveTheme(themeJson: string) {
             return new Promise((resolve, reject) => {
                 if (themeJson !== this.userInfo.theme) {
+                    localStorage.setItem('theme', themeJson)
                     saveTheme(themeJson).then(resp => {
                         if (resp.code === 200) {
                             this.userInfo.theme = themeJson

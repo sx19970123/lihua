@@ -1,7 +1,7 @@
 <template>
   <a-config-provider :theme="themeStore.themeConfig" :locale="local" :component-size="themeStore.componentSize">
 <!--    浏览器兼容提示-->
-    <a-alert type="warning" closable banner v-if="isOldBrowser">
+    <a-alert type="warning" closable banner v-if="showOldBrowserAlert()">
       <template #message>
         当前浏览器版本过低，部分功能可能无法正常使用，请升级浏览器版本，推荐使用
           <a-typography-link href="https://www.google.com/intl/zh-CN/chrome/" target="_blank">Chrome</a-typography-link>&nbsp;
@@ -18,15 +18,17 @@
 <script setup lang="ts">
 import {getBrowserType, getBrowserMajorVersion} from "@/utils/Browser.ts"
 import { useThemeStore } from "@/stores/theme"
+import { usePermissionStore } from "@/stores/permission.ts";
 import {useSettingStore} from "@/stores/setting.ts";
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
-import {ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
 import type {GrayModel} from "@/api/system/setting/type/GrayModel.ts";
 import {theme} from "ant-design-vue";
 const { token } = theme.useToken()
 const themeStore = useThemeStore()
+const permissionStore = usePermissionStore()
 // 应用html-root主题颜色
 themeStore.changeDocumentElement(token.value.colorPrimary)
 
@@ -61,8 +63,6 @@ const showOldBrowserAlert = () => {
   }
 }
 
-const isOldBrowser = showOldBrowserAlert()
-
 // 加载灰色模式
 const initGrayModel = async () => {
   const grayModel = await settingStore.getSetting<GrayModel>('GrayModelSetting');
@@ -73,22 +73,44 @@ const initGrayModel = async () => {
   }
 }
 
-initGrayModel()
+// 加载主题相关
+const initTheme = () => {
+  // 匹配系统主题
+  const marchSystemTheme = matchMedia('(prefers-color-scheme: dark)')
 
-// 匹配系统主题
-const marchSystemTheme = matchMedia('(prefers-color-scheme: dark)')
-
-// 处理跟随系统主题
-const handleFollowSystemTheme = () => {
-  // 开启跟随系统后暗色模式由App.vue传入
-  if (themeStore.followSystemTheme) {
-    themeStore.isDarkTheme = marchSystemTheme.matches
-    themeStore.changeDataDark()
-    marchSystemTheme.addEventListener('change', handleFollowSystemTheme)
-  } else {
-    marchSystemTheme.removeEventListener('change', handleFollowSystemTheme)
+  // 处理跟随系统主题
+  const handleFollowSystemTheme = () => {
+    // 开启跟随系统后暗色模式由App.vue传入
+    if (themeStore.followSystemTheme) {
+      themeStore.isDarkTheme = marchSystemTheme.matches
+      themeStore.changeDataDark()
+      marchSystemTheme.addEventListener('change', handleFollowSystemTheme)
+    } else {
+      marchSystemTheme.removeEventListener('change', handleFollowSystemTheme)
+    }
   }
+
+  // 将主题同步到其他标签页
+  const syncTabTheme = (event: StorageEvent) => {
+    // 同步亮色/暗色模式
+    if (event.key === 'data-theme') {
+      themeStore.isDarkTheme = event.newValue === 'dark'
+      themeStore.changeDataDark(true)
+    }
+    // 同步其他主题
+    if (event.key === 'theme' && event.newValue) {
+      themeStore.init(event.newValue)
+      permissionStore.reloadMenu()
+    }
+  }
+
+  return {
+    handleFollowSystemTheme,
+    syncTabTheme
+  }
+
 }
+const {handleFollowSystemTheme, syncTabTheme} = initTheme()
 
 // 监听token.value.colorPrimary修改html-root中主题颜色
 watch(() => token.value.colorPrimary, () => {
@@ -99,5 +121,17 @@ watch(() => token.value.colorPrimary, () => {
 watch(() => themeStore.followSystemTheme, () => {
   handleFollowSystemTheme()
 })
+
+onMounted(() => {
+  initGrayModel()
+  // 启用监听storage以同步标签页间主题
+  window.addEventListener('storage', syncTabTheme)
+})
+
+onUnmounted(() => {
+  // 删除storage监听
+  window.removeEventListener('storage', syncTabTheme)
+})
+
 </script>
 

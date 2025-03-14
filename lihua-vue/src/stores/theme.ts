@@ -132,7 +132,6 @@ export const useThemeStore = defineStore('theme',{
             this.changeAffixHead()
             this.changeGroundGlass()
             this.changeShowViewTabs()
-
         },
         // 通过json数据初始化state
         initState(themeJson?: string) {
@@ -161,7 +160,7 @@ export const useThemeStore = defineStore('theme',{
             }
         },
         // 暗色模式
-        changeDataDark() {
+        changeDataDark(isSync?: boolean) {
             let backgroundColor: string = ''
             // 暗色模式下，顶部颜色为黑色、侧边颜色为黑色，透明度根据磨砂效果控制
             if (this.$state.isDarkTheme) {
@@ -186,7 +185,9 @@ export const useThemeStore = defineStore('theme',{
                 this.$state.themeConfig.algorithm = theme.defaultAlgorithm
             }
             this.changeSiderTheme()
-            localStorage.setItem('data-theme',this.$state.isDarkTheme ? 'dark' : 'light')
+            if (isSync !== true) {
+                localStorage.setItem('data-theme',this.$state.isDarkTheme ? 'dark' : 'light')
+            }
         },
         // 布局类型
         changeLayoutType() {
