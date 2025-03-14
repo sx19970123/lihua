@@ -1,19 +1,30 @@
 package com.lihua.utils.tree;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.lihua.exception.ServiceException;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.string.StringUtils;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 通用构建树方法
  */
+@Slf4j
 public class TreeUtils {
     private static final String DEFAULT_ID = "Id";
     private static final String DEFAULT_PARENT_ID = "ParentId";
     private static final String DEFAULT_CHILDREN = "Children";
 
+    // Set方法缓存
+    private static final Cache<Class<?>, Method> SET_METHOD_CACHE = CacheBuilder.newBuilder().maximumSize(600).build();
+    // Get方法缓存
+    private static final Cache<Class<?>, Map<String,Method>> GET_METHOD_CACHE = CacheBuilder.newBuilder().maximumSize(1800).build();
 
     /**
      * 通过lambda表达式构建
@@ -27,7 +38,7 @@ public class TreeUtils {
      * 可通过重载指定属性
      */
     public static <T> List<T> buildTree(List<T> list) {
-        return buildTree(list,DEFAULT_ID,DEFAULT_PARENT_ID,DEFAULT_CHILDREN);
+        return buildTree(list, DEFAULT_ID, DEFAULT_PARENT_ID, DEFAULT_CHILDREN);
     }
 
     public static <T> List<T> buildTree(List<T> list, String propKeyName,String propParentKeyName,String propChildrenName) {
@@ -160,56 +171,80 @@ public class TreeUtils {
     /**
      * 通过反射调用 get 方法，返回对象
      */
-    private static <T,K> K get(T item , String prop) {
-        Class<?> cls = item.getClass();
-        for (Method method : cls.getMethods()) {
-            if (method.getName().equals("get" + prop)) {
-                try {
-                    return (K) method.invoke(item);
-                } catch (Exception e) {
-                    throw new RuntimeException("TreeUtils 通过反射调用get方法发生异常");
-                }
-            }
+    private static <T,K> K get(T item, String prop) {
+        Method method = getGetMethod(item, prop);
+        try {
+            return (K) method.invoke(item);
+        } catch (Exception e) {
+            throw new RuntimeException("TreeUtils 通过反射调用get方法发生异常");
         }
-        return null;
     }
 
     /**
      * 通过反射调用 get 方法，返回集合
      */
-    private static <T,K> List<K> getList(T item , String prop) {
-        Class<?> cls = item.getClass();
-        for (Method method : cls.getMethods()) {
-            if (method.getName().equals("get" + prop)) {
-                Object invoke;
-                try {
-                    invoke = method.invoke(item);
-                    if (invoke != null) {
-                        return (List<K>) invoke;
-                    }
-                    return null;
-                } catch (Exception e) {
-                    throw new RuntimeException("TreeUtils 通过反射调用get方法发生异常");
-                }
+    @SneakyThrows
+    private static <T,K> List<K> getList(T item, String prop) {
+        Method method = getGetMethod(item, prop);
+        Object invoke;
+        try {
+            invoke = method.invoke(item);
+            if (invoke != null) {
+                return (List<K>) invoke;
             }
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException("TreeUtils 通过反射调用get方法发生异常");
         }
-        return null;
     }
 
 
     /**
-     * 通过反射调用set 方法
+     * 通过反射调用set方法
      */
-    private static <T,V> void set(T item , String prop , V value) {
-        Class<?> cls = item.getClass();
-        for (Method method : cls.getMethods()) {
-            if (method.getName().equals("set" + prop)) {
-                try {
-                    method.invoke(item, value);
-                } catch (Exception e) {
-                    throw new RuntimeException("TreeUtils 通过反射调用set方法发生异常");
-                }
-            }
+    private static <T,V> void set(T item, String prop, V value) {
+        Method method = getSetMethod(item, prop);
+        try {
+            method.invoke(item, value);
+        } catch (Exception e) {
+            throw new ServiceException("TreeUtils 通过反射调用set方法发生异常");
         }
+    }
+
+    /**
+     * 从缓存中获取目标set方法
+     */
+    private static <T> Method getSetMethod(T item, String prop) {
+        Class<?> cls = item.getClass();
+        try {
+            return SET_METHOD_CACHE.get(cls, () -> Arrays.stream(cls.getMethods()).filter(mtd -> mtd.getName().equals("set" + prop)).findFirst().get());
+        } catch (ExecutionException e) {
+            log.error(e.getMessage(), e);
+            throw new ServiceException("TreeUtils 通过SET_METHOD_CACHE获取set方法发生异常");
+        }
+    }
+
+    /**
+     * 从缓存中获取目标get方法
+     */
+    private static <T> Method getGetMethod(T item, String prop) {
+        Class<?> cls = item.getClass();
+        Map<String, Method> methodMap;
+        try {
+            methodMap = GET_METHOD_CACHE.get(cls, () -> {
+                Map<String, Method> map = new HashMap<>();
+                map.put(prop, Arrays.stream(cls.getMethods()).filter(mtd -> mtd.getName().equals("get" + prop)).findFirst().get());
+                return map;
+            });
+        } catch (ExecutionException e) {
+            throw new ServiceException("TreeUtils 通过SET_METHOD_CACHE获取get方法发生异常");
+        }
+
+        if (methodMap.get(prop) == null) {
+            methodMap.put(prop, Arrays.stream(cls.getMethods()).filter(mtd -> mtd.getName().equals("get" + prop)).findFirst().get());
+            GET_METHOD_CACHE.put(cls, methodMap);
+        }
+
+        return methodMap.get(prop);
     }
 }
