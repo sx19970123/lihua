@@ -92,16 +92,7 @@ const handlePreview = async () => {
     const resp = await preview(noticeId)
     if (resp.code === 200) {
       notice.value = resp.data
-      // 通知内容回显
-      const dom = document.getElementById('previewDom')
-      if (dom instanceof HTMLDivElement && resp.data.content) {
-        await Vditor.preview(dom, resp.data.content, {
-          mode: themeStore.isDarkTheme ? "dark" : "light",
-          cdn: '/vditor',
-          theme: {current: themeStore.isDarkTheme ? 'dark' : 'light'},                     // 内容主题
-          hljs: {style: themeStore.isDarkTheme ? 'a11y-dark' : 'solarized-light'}, // 代码块主题
-        })
-      }
+      await loadPreview()
       spinning.value = false
 
       // 已读/未读回显
@@ -117,6 +108,21 @@ const handlePreview = async () => {
     } else {
       console.error(e)
     }
+  }
+}
+
+// 加载预览
+const loadPreview = async () => {
+  // 通知内容回显
+  const dom = document.getElementById('previewDom')
+  const content = notice.value.content
+  if (dom instanceof HTMLDivElement && content) {
+    await Vditor.preview(dom, content, {
+      mode: themeStore.isDarkTheme ? "dark" : "light",
+      cdn: '/vditor',
+      theme: {current: themeStore.isDarkTheme ? 'dark' : 'light'},                     // 内容主题
+      hljs: {style: themeStore.isDarkTheme ? 'a11y-dark' : 'solarized-light'}, // 代码块主题
+    })
   }
 }
 
@@ -154,6 +160,10 @@ onMounted(() => {
 
 watch(() => props.noticeId, () => {
   handlePreview()
+})
+
+watch(() => themeStore.isDarkTheme, () => {
+  loadPreview()
 })
 </script>
 
