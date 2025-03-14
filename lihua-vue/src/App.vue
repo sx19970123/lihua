@@ -29,6 +29,7 @@ const { token } = theme.useToken()
 const themeStore = useThemeStore()
 // 应用html-root主题颜色
 themeStore.changeDocumentElement(token.value.colorPrimary)
+
 // 初始化系统配置
 const settingStore = useSettingStore()
 
@@ -71,12 +72,32 @@ const initGrayModel = async () => {
     themeStore.enableGrayModel(grayModel?.enable)
   }
 }
+
 initGrayModel()
 
+// 匹配系统主题
+const marchSystemTheme = matchMedia('(prefers-color-scheme: dark)')
+
+// 处理跟随系统主题
+const handleFollowSystemTheme = () => {
+  // 开启跟随系统后暗色模式由App.vue传入
+  if (themeStore.followSystemTheme) {
+    themeStore.isDarkTheme = marchSystemTheme.matches
+    themeStore.changeDataDark()
+    marchSystemTheme.addEventListener('change', handleFollowSystemTheme)
+  } else {
+    marchSystemTheme.removeEventListener('change', handleFollowSystemTheme)
+  }
+}
+
 // 监听token.value.colorPrimary修改html-root中主题颜色
-watch(() => token.value.colorPrimary, (newValue) => {
-  themeStore.changeDocumentElement(newValue)
+watch(() => token.value.colorPrimary, () => {
+  themeStore.changeDocumentElement(token.value.colorPrimary)
 })
 
+// 监听主题跟随系统
+watch(() => themeStore.followSystemTheme, () => {
+  handleFollowSystemTheme()
+})
 </script>
 

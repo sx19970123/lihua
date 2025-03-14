@@ -10,6 +10,11 @@ export const useThemeStore = defineStore('theme',{
         const isDarkTheme: boolean = settings.isDarkTheme
 
         /**
+         * 跟随系统主题
+         */
+        const followSystemTheme: boolean = settings.followSystemTheme
+
+        /**
          * 顶部栏背景颜色
          */
         const layoutBackgroundColor: string = settings.siderBackgroundColor
@@ -101,6 +106,7 @@ export const useThemeStore = defineStore('theme',{
             componentSize,
             showViewTabs,
             isDarkTheme,
+            followSystemTheme,
             colorPrimary,
             antColorPrimary,
             siderTheme,
@@ -270,6 +276,7 @@ export const useThemeStore = defineStore('theme',{
             this.$state.componentSize = settings.componentSize
             this.$state.showViewTabs = settings.showViewTabs
             this.$state.isDarkTheme = localStorage.getItem("data-theme") === "dark"
+            this.$state.followSystemTheme = settings.followSystemTheme
             this.$state.colorPrimary = settings.themeConfig.token.colorPrimary
             this.$state.siderTheme = settings.siderTheme
             this.$state.groundGlass = settings.groundGlass

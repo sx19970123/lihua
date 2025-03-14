@@ -3,8 +3,11 @@
     <a-form layout="vertical">
       <!-- 主题设置 -->
       <a-typography-title :level="5">主题设置</a-typography-title>
-      <a-form-item>
+      <a-form-item v-if="!themeStore.followSystemTheme">
         <head-theme-switch/>
+      </a-form-item>
+      <a-form-item label="跟随系统">
+        <a-switch v-model:checked="themeStore.followSystemTheme"/>
       </a-form-item>
       <a-form-item label="主题颜色">
         <color-select :dataSource="colorList" v-model:color="themeStore.colorPrimary" @click="themeStore.changeColorPrimary()"/>

@@ -3,7 +3,7 @@ const activeUpdate = [
     {
         version: '1.1.3',
         record: [
-
+            '1. 主题设置新增跟随系统切换暗色/亮色模式'
         ]
     }
 ]

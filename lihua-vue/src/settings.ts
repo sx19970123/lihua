@@ -15,6 +15,11 @@ export default {
     isDarkTheme: localStorage.getItem("data-theme") === 'dark',
 
     /**
+     * 跟随系统
+     */
+    followSystemTheme: true,
+
+    /**
      * 顶部栏背景颜色
      */
     layoutBackgroundColor: 'rgba(255,255,255,1)',
