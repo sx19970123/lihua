@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -46,13 +45,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         queryWrapper.lambda().orderByAsc(SysMenu::getSort);
 
         List<SysMenu> sysMenus = sysMenuMapper.selectList(queryWrapper);
-        LocalDateTime start = LocalDateTime.now();
-        System.out.println("开始时间：" + DateUtils.timeStamp(start));
-        List<SysMenu> menus = TreeUtils.buildTree(sysMenus);
-        LocalDateTime end = LocalDateTime.now();
-        System.out.println("结束时间：" + DateUtils.timeStamp(end));
-        System.out.println("耗费时间：" + (DateUtils.timeStamp(end) - DateUtils.timeStamp(start)));
-        return menus;
+        return TreeUtils.buildTree(sysMenus);
     }
 
     @Override
