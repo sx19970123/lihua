@@ -1,7 +1,7 @@
  # 系统配置
 lihua:
   # 系统版本
-  version: 1.1.2
+  version: 1.1.3
   # 令牌过期时间（分钟）
   tokenExpireTime: 60
   # 令牌刷新阈值（分钟）距令牌过期15分钟内时，有新请求时对令牌进行刷新
@@ -26,24 +26,46 @@ server:
   tomcat:
     basedir: ${BASE_FILE_PATH}temp
 
+# 数据源配置
 spring:
-  # 数据源配置
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/lihua
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    hikari:
-      # 最大连接数默认 10
-      maximum-pool-size: 30
-      # 最小空闲连接 默认10
-      minimum-idle: 30
-      # 等待连接池连接最大时长（毫秒）
-      connection-timeout: 5000
-      # 空闲连接最大时长（毫秒）
-      idle-timeout: 0
-      # 连接生命时长（毫秒）
-      max-lifetime: 25800
+    dynamic:
+      primary: master
+      strict: false
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://${DB_HOST}:${DB_PORT}/lihua
+          username: ${DB_USERNAME}
+          password: ${DB_PASSWORD}
+          hikari:
+            # 最大连接数默认 10
+            maximum-pool-size: 20
+            # 最小空闲连接 默认10
+            minimum-idle: 5
+            # 等待连接池连接最大时长（毫秒）
+            connection-timeout: 5000
+            # 空闲连接最大时长（毫秒）
+            idle-timeout: 120000
+            # 连接生命时长（毫秒）
+            max-lifetime: 1800000
+# 多数据源配置，使用dynamic-datasource实现，具体文档请参考：https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611
+#        slave_1:
+#          driver-class-name: com.mysql.cj.jdbc.Driver
+#          url: jdbc:mysql://localhost:3306/dynamic
+#          username: root
+#          password: 123456
+#          hikari:
+#            # 最大连接数默认 10
+#            maximum-pool-size: 30
+#            # 最小空闲连接 默认10
+#            minimum-idle: 30
+#            # 等待连接池连接最大时长（毫秒）
+#            connection-timeout: 5000
+#            # 空闲连接最大时长（毫秒）
+#            idle-timeout: 0
+#            # 连接生命时长（毫秒）
+#            max-lifetime: 25800
 
   # redis配置
   data:

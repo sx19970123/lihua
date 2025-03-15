@@ -1,13 +1,8 @@
 // 当前版本更新记录
 const activeUpdate = [
     {
-        version: '1.1.3',
-        record: [
-            '1. 主题设置新增跟随系统切换暗色/亮色模式',
-            '2. 通知公告预览页面支持实时暗色/亮色切换',
-            '3. 主题新增支持同步到小窗/其他标签页。亮色/暗色模式立即同步，其他主题在触发保存后同步',
-            '4. TreeUtils工具类中增加反射缓存，减少递归中反射的调用',
-        ]
+        version: '1.1.4',
+        record: []
     }
 ]
 
@@ -17,10 +12,22 @@ const activeUpdate = [
  * 项目开发可以将 views/index 中内容删除，在 router 中重新配置首页即可
  */
 export const versionInfo = {
-    springBootVersion: ' 3.4.1',
+    springBootVersion: ' 3.4.3',
     vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.1.3',
+            updateDate: '2025-03-15',
+            updateContent: [
+                '1. 主题设置新增跟随系统切换暗色/亮色模式',
+                '2. 通知公告预览页面支持实时暗色/亮色切换',
+                '3. 主题新增支持同步到小窗/其他标签页。亮色/暗色模式立即同步，其他主题在触发保存后同步',
+                '4. TreeUtils工具类中增加反射缓存，减少递归中反射的调用',
+                '5. 新增多数据源配置，使用dynamic-datasource实现，具体文档请参考：https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611',
+                '6. SpringBoot 版本升级至3.4.3，修复框架漏洞',
+            ]
+        },
         {
             version: '1.1.2',
             updateDate: '2025-03-11',

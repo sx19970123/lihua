@@ -6,13 +6,13 @@
 
     <groupId>com.lihua</groupId>
     <artifactId>lihua</artifactId>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.1</version>
+        <version>3.4.3</version>
         <relativePath/>
     </parent>
 
@@ -20,7 +20,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
 
-        <lihua.version>1.1.2</lihua.version>
+        <lihua.version>1.1.3</lihua.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,6 +32,7 @@
         <guava.version>33.3.1-jre</guava.version>
         <xxl-job.version>2.4.2</xxl-job.version>
         <tianai-captcha.version>1.5.1</tianai-captcha.version>
+        <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
     </properties>
 
 <!--    统一进行版本管理-->
@@ -97,6 +98,12 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-jsqlparser</artifactId>
+        </dependency>
+        <!--        dynamic-datasource多数据源-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+            <version>${dynamic-datasource.version}</version>
         </dependency>
         <!--        lombok-->
         <dependency>
