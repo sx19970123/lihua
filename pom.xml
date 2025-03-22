@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.3</version>
+        <version>3.3.7</version>
         <relativePath/>
     </parent>
 
@@ -31,7 +31,9 @@
         <oshi.version>6.6.4</oshi.version>
         <guava.version>33.3.1-jre</guava.version>
         <xxl-job.version>2.4.2</xxl-job.version>
-        <tianai-captcha.version>1.5.1</tianai-captcha.version>
+        <tianai-captcha.version>1.5.2</tianai-captcha.version>
+        <minio.version>8.5.17</minio.version>
+        <knife4j.version>4.5.0</knife4j.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
     </properties>
 
@@ -168,9 +170,15 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.5.17</version>
+            <version>${minio.version}</version>
         </dependency>
 
+        <!-- knife4j 增强版 Swagger UI -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <version>${knife4j.version}</version>
+        </dependency>
     </dependencies>
 
     <modules>
@@ -216,6 +224,7 @@
                     <include>META-INF/services/*</include>
                     <include>META-INF/spring/*</include>
                     <include>captcha-images/**</include>
+                    <include>captcha-font/**</include>
                 </includes>
             </resource>
             <resource>

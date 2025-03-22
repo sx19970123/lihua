@@ -52,9 +52,10 @@ captcha:
   local-cache-wait-time: 5000
   # 缓存检查间隔
   local-cache-period: 2000
-  # 配置字体包，供文字点选验证码使用,可以配置多个，不配置使用默认的字体
-#  font-path:
-#    - classpath:font/SimHei.ttf
+  # 配置字体包，供文字点选验证码使用,可以配置多个
+  font-path:
+    - classpath:captcha-font/荆南波波黑-Bold.ttf # 免费可商用，来源：https://ziyouziti.com/mianfeiziti-444.html
+    - classpath:captcha-font/也字工厂小石头.ttf # 免费可商用，来源：https://ziyouziti.com/mianfeiziti-457.html
   secondary:
     # 开启二次验证
     enabled: true

@@ -61,7 +61,10 @@ public class SecurityConfig {
                         "system/setting/SignInSetting",                 // 是否开启用户注册
                         "/system/checkUserName/**",                     // 检查用户名
                         "/system/register/**",                          // 注册
-                        "/druid/**"                                     // druid数据库监控
+                        "/druid/**",                                    // druid数据库监控
+                        "/doc.html",                                    // knife4文档
+                        "/webjars/**",                                  // knife4文档
+                        "/v3/api-docs/**"                               // knife4文档
                 ).permitAll()
                 .anyRequest().authenticated());
 

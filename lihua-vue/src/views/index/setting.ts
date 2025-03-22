@@ -2,7 +2,12 @@
 const activeUpdate = [
     {
         version: '1.1.4',
-        record: []
+        record: [
+            "1. 修复主题在不跟随系统的设置下，刷新页面依然与系统同步的bug",
+            "2. 新增在样式布局页面下，调整完主题后刷新页面触发保存",
+            "3. tianai-captcha后端版本更新为1.5.2，点选验证码使用自定义字体",
+            "4. tianai-captcha前端SDK更新为1.4版本",
+        ]
     }
 ]
 

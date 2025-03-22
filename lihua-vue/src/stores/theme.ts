@@ -101,6 +101,13 @@ export const useThemeStore = defineStore('theme',{
          */
         const themeConfig = settings.themeConfig
 
+        /**
+         * 是否从服务端加载完毕
+         * 系统主题默认从settings中读取默认值，用户登录后会从服务器获取用户定义的主题信息
+         * 当获取到服务器主题后会将此属性设置为 true
+         */
+        const isServerLoad = false
+
         return {
             layoutType,
             componentSize,
@@ -120,7 +127,8 @@ export const useThemeStore = defineStore('theme',{
             originSiderWith,
             routeTransition,
             grayModel,
-            themeConfig
+            themeConfig,
+            isServerLoad
         }
     },
     actions: {
@@ -132,6 +140,7 @@ export const useThemeStore = defineStore('theme',{
             this.changeAffixHead()
             this.changeGroundGlass()
             this.changeShowViewTabs()
+            this.$state.isServerLoad = true
         },
         // 通过json数据初始化state
         initState(themeJson?: string) {

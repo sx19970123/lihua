@@ -1,6 +1,5 @@
 package com.lihua.controller.system;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
@@ -11,6 +10,8 @@ import com.lihua.model.system.dto.SysUserDTO;
 import com.lihua.model.system.vo.SysUserVO;
 import com.lihua.service.system.user.SysUserService;
 import com.lihua.utils.excel.ExcelUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.SneakyThrows;
@@ -25,11 +26,13 @@ import java.util.List;
 @RestController
 @RequestMapping("system/user")
 @Validated
+@Tag(name = "用户controller")
 public class SysUserController extends BaseController {
 
     @Resource
     private SysUserService sysUserService;
 
+    @Operation(summary = "登录接口")
     @PostMapping("page")
     public String queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysUserDTO sysUserDTO) {
         return success(sysUserService.queryPage(sysUserDTO));

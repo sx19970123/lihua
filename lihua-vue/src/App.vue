@@ -80,8 +80,8 @@ const initTheme = () => {
 
   // 处理跟随系统主题
   const handleFollowSystemTheme = () => {
-    // 开启跟随系统后暗色模式由App.vue传入
-    if (themeStore.followSystemTheme) {
+    // 开启跟随系统后暗色模式由App.vue控制
+    if (themeStore.$state.isServerLoad && themeStore.followSystemTheme) {
       themeStore.isDarkTheme = marchSystemTheme.matches
       themeStore.changeDataDark()
       marchSystemTheme.addEventListener('change', handleFollowSystemTheme)

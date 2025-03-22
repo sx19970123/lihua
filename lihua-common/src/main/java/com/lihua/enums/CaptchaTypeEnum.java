@@ -13,7 +13,7 @@ public enum CaptchaTypeEnum {
     // 旋转和拼接不适合以人/动物等为背景的图片验证，替换为风景或其他图片时，可解除注释
     SLIDER( "滑块", CaptchaTypeConstant.SLIDER),
 //    CONCAT("旋转", CaptchaTypeConstant.ROTATE),
-//    ROTATE("拼接", CaptchaTypeConstant.CONCAT),
+//    ROTATE("拼接", CaptchaTypeConstant.CONCAT);
     WORD_IMAGE_CLICK("点选", CaptchaTypeConstant.WORD_IMAGE_CLICK);
 
     // 类型名称

@@ -116,3 +116,17 @@ minio:
   accessKey: lihua
   secretKey: 123456789
   bucketName: lihua-bucket
+
+ # springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+ # knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn

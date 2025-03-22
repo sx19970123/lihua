@@ -187,6 +187,12 @@ const replaceLoadingElement = () => {
 #tianai-captcha .content .tianai-captcha-tips.tianai-captcha-tips-success {
   background-color: #52c41a !important;
 }
+
+/* 点选样式 */
+.click-confirm-btn {
+  margin-top: 5px !important;
+}
+
 /* 验证码切换过渡动画 */
 #tianai-captcha-loading {
   width: 120px;

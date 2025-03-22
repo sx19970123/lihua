@@ -2,7 +2,7 @@
   <div style="padding-right: 16px;">
     <a-config-provider :wave="{ disabled: true }">
       <a-switch v-model:checked="themeStore.isDarkTheme"
-                @change="handleSwitch"
+                @change="handleChangeTheme"
                 :style="{'background': themeStore.isDarkTheme ? '#00008B' : '#2196F3'}">
         <template #checkedChildren>
           <XiaoHeiMoon/>
@@ -27,13 +27,6 @@ type TransitionFunction = {
 // 由于 startViewTransition 较新，Document下无法识别到 startViewTransition，所以进行自定义 interface
 interface ViewTransitionDocument extends Document {
   startViewTransition: (callback: () => void) => TransitionFunction
-}
-
-// 切换主题前添加延时，等待switch开关变化完成后再进行主题切换
-const handleSwitch = (checked: boolean, event: PointerEvent) => {
-  setTimeout(() => {
-    handleChangeTheme(checked, event)
-  }, 200)
 }
 
 // 切换主题

@@ -115,4 +115,7 @@ const handleChangeLayoutType = (key: string) => {
     handleChangeSiderGroup()
   }
 }
+
+// 刷新页面时触发保存主题
+window.addEventListener("beforeunload", handleSaveTheme);
 </script>
