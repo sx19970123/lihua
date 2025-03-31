@@ -3,7 +3,7 @@ package com.lihua.controller.system;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.validation.MaxPageSizeLimit;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.model.system.dto.SysLogDTO;
 import com.lihua.service.system.log.SysLogService;
 import jakarta.annotation.Resource;
@@ -17,7 +17,7 @@ import java.util.*;
 @RequestMapping("system/log")
 @RestController
 @Validated
-public class SysLogController extends BaseController {
+public class SysLogController extends ResponseController {
 
     // 操作日志service
     @Resource(name = "sysOperateLogService")

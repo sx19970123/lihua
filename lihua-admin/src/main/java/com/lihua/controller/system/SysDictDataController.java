@@ -3,7 +3,7 @@ package com.lihua.controller.system;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.entity.system.SysDictData;
 import com.lihua.model.system.dto.SysDictDataDTO;
 import com.lihua.service.system.dict.SysDictDataService;
@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("system/dictData")
 @Validated
-public class SysDictDataController extends BaseController {
+public class SysDictDataController extends ResponseController {
 
     @Resource
     private SysDictDataService sysDictDataService;

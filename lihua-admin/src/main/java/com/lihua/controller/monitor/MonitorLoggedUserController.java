@@ -2,7 +2,7 @@ package com.lihua.controller.monitor;
 
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.service.monitor.logged.MonitorLoggedUserService;
 import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("monitor/loggedUser")
-public class MonitorLoggedUserController extends BaseController {
+public class MonitorLoggedUserController extends ResponseController {
 
     @Resource
     private MonitorLoggedUserService monitorLoggedUserService;

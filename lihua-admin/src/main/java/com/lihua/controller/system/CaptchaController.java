@@ -6,7 +6,7 @@ import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import com.lihua.enums.CaptchaTypeEnum;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.service.system.setting.SysSettingService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 @RequestMapping("captcha")
-public class CaptchaController extends BaseController {
+public class CaptchaController extends ResponseController {
 
     @Resource
     private ImageCaptchaApplication imageCaptchaApplication;

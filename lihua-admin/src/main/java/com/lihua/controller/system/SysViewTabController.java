@@ -2,7 +2,7 @@ package com.lihua.controller.system;
 
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.entity.system.SysViewTab;
 import com.lihua.service.system.viewtab.SysViewTabService;
 import jakarta.annotation.Resource;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("system/viewTab")
-public class SysViewTabController extends BaseController {
+public class SysViewTabController extends ResponseController {
 
     @Resource
     private SysViewTabService sysViewTabService;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.entity.system.SysMenu;
 import com.lihua.model.system.validation.MenuValidation;
 import com.lihua.service.system.menu.SysMenuService;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping("system/menu")
 @Slf4j
 @Validated
-public class SysMenuController extends BaseController {
+public class SysMenuController extends ResponseController {
 
     @Resource
     private SysMenuService sysMenuService;

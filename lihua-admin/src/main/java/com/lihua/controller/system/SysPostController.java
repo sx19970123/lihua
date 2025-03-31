@@ -3,7 +3,7 @@ package com.lihua.controller.system;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.validation.MaxPageSizeLimit;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.entity.system.SysPost;
 import com.lihua.model.system.dto.SysPostDTO;
 import com.lihua.model.system.vo.SysPostVO;
@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("system/post")
 @Validated
-public class SysPostController extends BaseController {
+public class SysPostController extends ResponseController {
 
     @Resource
     private SysPostService sysPostService;

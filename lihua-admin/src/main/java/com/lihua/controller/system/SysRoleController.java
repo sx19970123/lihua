@@ -3,7 +3,7 @@ package com.lihua.controller.system;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.validation.MaxPageSizeLimit;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.entity.system.SysRole;
 import com.lihua.model.system.dto.SysRoleDTO;
 import com.lihua.service.system.menu.SysMenuService;
@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("system/role")
 @Validated
-public class SysRoleController extends BaseController {
+public class SysRoleController extends ResponseController {
 
     @Resource
     private SysRoleService sysRoleService;

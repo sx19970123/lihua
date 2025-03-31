@@ -3,7 +3,7 @@ package com.lihua.controller.system;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.validation.MaxPageSizeLimit;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.entity.system.SysDictType;
 import com.lihua.model.system.dto.SysDictTypeDTO;
 import com.lihua.service.system.dict.SysDictTypeService;
@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("system/dictType")
 @Validated
-public class SysDictTypeController extends BaseController {
+public class SysDictTypeController extends ResponseController {
 
     @Resource
     private SysDictTypeService sysDictTypeService;

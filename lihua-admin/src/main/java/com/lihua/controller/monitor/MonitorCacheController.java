@@ -2,7 +2,7 @@ package com.lihua.controller.monitor;
 
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.model.monitor.CacheMonitor;
 import com.lihua.service.monitor.cache.MonitorCacheService;
 import jakarta.annotation.Resource;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("monitor/cache")
-public class MonitorCacheController extends BaseController {
+public class MonitorCacheController extends ResponseController {
 
     @Resource
     private MonitorCacheService monitorCacheService;

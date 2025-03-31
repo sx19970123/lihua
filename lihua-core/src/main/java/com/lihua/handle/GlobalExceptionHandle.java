@@ -2,7 +2,7 @@ package com.lihua.handle;
 
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.*;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -12,13 +12,9 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
-import org.springframework.web.multipart.MultipartException;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -27,7 +23,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @Configuration
 @Slf4j
-public class GlobalExceptionHandle extends BaseController {
+public class GlobalExceptionHandle extends ResponseController {
 
     /**
      * 捕获全局 RuntimeException 异常

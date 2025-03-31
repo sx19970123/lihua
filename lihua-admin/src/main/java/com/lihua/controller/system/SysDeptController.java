@@ -2,7 +2,7 @@ package com.lihua.controller.system;
 
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.entity.system.SysDept;
 import com.lihua.model.system.vo.SysDeptVO;
 import com.lihua.service.system.dept.SysDeptService;
@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("system/dept")
 @Validated
-public class SysDeptController extends BaseController {
+public class SysDeptController extends ResponseController {
 
     @Resource
     private SysDeptService sysDeptService;

@@ -1,10 +1,14 @@
 package com.lihua.controller.system;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.annotation.Log;
+import com.lihua.entity.system.SysUser;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.validation.MaxPageSizeLimit;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ApiResponse;
+import com.lihua.model.web.ApiResponseController;
 import com.lihua.model.system.dto.ResetPasswordDTO;
 import com.lihua.model.system.dto.SysUserDTO;
 import com.lihua.model.system.vo.SysUserVO;
@@ -26,78 +30,86 @@ import java.util.List;
 @RestController
 @RequestMapping("system/user")
 @Validated
-@Tag(name = "用户controller")
-public class SysUserController extends BaseController {
+@Tag(name = "用户管理")
+public class SysUserController extends ApiResponseController {
 
     @Resource
     private SysUserService sysUserService;
 
-    @Operation(summary = "登录接口")
+    @Operation(summary = "分页查询用户")
     @PostMapping("page")
-    public String queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysUserDTO sysUserDTO) {
+    public ApiResponse<IPage<SysUserVO>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysUserDTO sysUserDTO) {
         return success(sysUserService.queryPage(sysUserDTO));
     }
 
+    @Operation(summary = "根据id查询用户")
     @GetMapping("{id}")
-    public String queryById(@PathVariable("id") String id) {
+    public ApiResponse<SysUserVO> queryById(@PathVariable("id") String id) {
         return success(sysUserService.queryById(id));
     }
 
+    @Operation(summary = "保存用户数据")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     @Log(description = "保存用户数据", type = LogTypeEnum.SAVE, excludeParams = {"password","passwordRequestKey"})
-    public String save(@RequestBody @Validated SysUserDTO sysUserDTO) {
+    public ApiResponse<String> save(@RequestBody @Validated SysUserDTO sysUserDTO) {
         if (!StringUtils.hasText(sysUserDTO.getId()) && !StringUtils.hasText(sysUserDTO.getPassword())) {
             return error(ResultCodeEnum.PARAMS_MISSING, "请输入密码");
         }
         return success(sysUserService.save(sysUserDTO));
     }
 
+    @Operation(summary = "更新用户状态")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
     @Log(description = "更新用户状态", type = LogTypeEnum.UPDATE_STATUS)
-    public String updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
+    public ApiResponse<String> updateStatus(@PathVariable("id") String id,@PathVariable("currentStatus") String currentStatus) {
         return success(sysUserService.updateStatus(id, currentStatus));
     }
 
+    @Operation(summary = "删除用户数据")
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除用户数据", type = LogTypeEnum.DELETE)
-    public String deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
+    public ApiResponse<String> deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysUserService.deleteByIds(ids);
         return success();
     }
 
+    @Operation(summary = "重置密码")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("resetPassword")
     @Log(description = "重置密码", type = LogTypeEnum.SAVE, excludeParams = {"password", "passwordRequestKey"})
-    public String resetPassword(@RequestBody @Validated ResetPasswordDTO resetPasswordDTO) {
+    public ApiResponse<String> resetPassword(@RequestBody @Validated ResetPasswordDTO resetPasswordDTO) {
         return success(sysUserService.resetPassword(resetPasswordDTO));
     }
 
+    @Operation(summary = "批量导出用户信息")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("export")
     @Log(description = "批量导出用户信息", type = LogTypeEnum.EXPORT)
-    public String exportExcel(@RequestBody SysUserDTO sysUserDTO) {
-        String path = sysUserService.exportExcel(sysUserDTO);
-        return success(path);
+    public ApiResponse<String> exportExcel(@RequestBody SysUserDTO sysUserDTO) {
+        return success(sysUserService.exportExcel(sysUserDTO));
     }
 
+    @Operation(summary = "系统用户选项（根据部门选择）")
     @GetMapping("option/{deptId}")
-    public String userOption(@PathVariable("deptId") String deptId) {
+    public ApiResponse<List<SysUser>> userOption(@PathVariable("deptId") String deptId) {
         return success(sysUserService.userOption(deptId));
     }
 
+    @Operation(summary = "系统用户选项（根据用户id集合）")
     @PostMapping("option")
-    public String userOption(@RequestBody @NotEmpty(message = "集合不能为空") List<String> userIds) {
+    public ApiResponse<List<SysUser>> userOption(@RequestBody @NotEmpty(message = "集合不能为空") List<String> userIds) {
         return success(sysUserService.userOption(userIds));
     }
 
     @SneakyThrows
+    @Operation(summary = "批量导入用户信息")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
     @Log(description = "批量导入用户信息", type = LogTypeEnum.IMPORT)
-    public String importExcel(@RequestParam("file") MultipartFile file) {
+    public ApiResponse<ExcelImportResult> importExcel(@RequestParam("file") MultipartFile file) {
         List<SysUserVO> sysUserVOS = ExcelUtils.importExport(file, SysUserVO.class, 1);
         return success(sysUserService.importExcel(sysUserVOS));
     }

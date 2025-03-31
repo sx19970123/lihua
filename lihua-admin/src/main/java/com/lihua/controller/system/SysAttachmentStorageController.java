@@ -5,7 +5,7 @@ import com.lihua.entity.system.SysAttachment;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.system.validation.AttachmentValidation;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.service.system.attachment.SysAttachmentStorageService;
 import com.lihua.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("system/attachment/storage")
-public class SysAttachmentStorageController extends BaseController {
+public class SysAttachmentStorageController extends ResponseController {
 
     @Resource
     private SysAttachmentStorageService sysAttachmentStorageService;

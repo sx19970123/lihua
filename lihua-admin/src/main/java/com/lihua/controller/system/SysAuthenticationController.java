@@ -10,7 +10,7 @@ import com.lihua.model.security.AuthInfo;
 import com.lihua.model.security.CurrentDept;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.model.system.dto.SysRegisterDTO;
 import com.lihua.service.system.authentication.SysAuthenticationService;
 import com.lihua.service.system.setting.SysSettingService;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("system")
-public class SysAuthenticationController extends BaseController {
+public class SysAuthenticationController extends ResponseController {
 
     @Resource
     private SysAuthenticationService sysAuthenticationService;

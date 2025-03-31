@@ -2,12 +2,11 @@ package com.lihua.controller.system;
 
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.model.system.dto.SysAttachmentDTO;
 import com.lihua.service.system.attachment.SysAttachmentService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("system/attachment")
-public class SysAttachmentController extends BaseController {
+public class SysAttachmentController extends ResponseController {
 
     @Resource
     private SysAttachmentService sysAttachmentService;

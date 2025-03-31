@@ -12,7 +12,7 @@ import com.lihua.exception.ServiceException;
 import com.lihua.mapper.system.SysAttachmentMapper;
 import com.lihua.model.system.vo.SysAttachmentChunkVO;
 import com.lihua.model.system.vo.SysAttachmentUrlVO;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.service.system.attachment.SysAttachmentStorageService;
 import com.lihua.strategy.system.attachment.AttachmentStorageStrategy;
 import com.lihua.utils.crypt.AesUtils;
@@ -277,7 +277,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         AttachmentStorageStrategy strategy = getStrategy();
         InputStream inputStream = strategy.download(sysAttachment.getPath());
         // 返回下载file和原附件名
-        return BaseController.success(inputStream, sysAttachment.getOriginalName(), sysAttachment.getSize());
+        return ResponseController.success(inputStream, sysAttachment.getOriginalName(), sysAttachment.getSize());
     }
 
     @Override
@@ -307,13 +307,13 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         }
 
         // 获取原附件名
-        return BaseController.success(new File(splitParams[0]), originName);
+        return ResponseController.success(new File(splitParams[0]), originName);
     }
 
     @Override
     public ResponseEntity<StreamingResponseBody> exportDownload(String path, String fileName) {
         if (StringUtils.hasText(path) && (path.contains(lihuaConfig.getExportFilePath()) || path.replace("\\", "/").contains(lihuaConfig.getExportFilePath()))) {
-            return BaseController.success(new File(path), fileName, true);
+            return ResponseController.success(new File(path), fileName, true);
         }
         throw new FileException("下载失败，路径不匹配");
     }

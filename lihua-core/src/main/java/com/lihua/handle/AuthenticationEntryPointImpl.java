@@ -1,7 +1,7 @@
 package com.lihua.handle;
 
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  */
 @Component
 @Slf4j
-public class AuthenticationEntryPointImpl extends BaseController implements AuthenticationEntryPoint {
+public class AuthenticationEntryPointImpl extends ResponseController implements AuthenticationEntryPoint {
 
     @Resource
     private RequestMappingHandlerMapping requestMappingHandlerMapping;

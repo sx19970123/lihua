@@ -1,7 +1,7 @@
 package com.lihua.controller.system;
 
 import com.lihua.exception.ServiceException;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.sse.ServerSentEventsManager;
 import com.lihua.utils.web.WebUtils;
@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Slf4j
 @RestController
 @RequestMapping("system/sse")
-public class ServerSentEventsController extends BaseController {
+public class ServerSentEventsController extends ResponseController {
 
     /**
      * 启动 sse 连接

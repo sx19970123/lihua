@@ -2,7 +2,7 @@ package com.lihua.controller.system;
 
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.entity.system.SysSetting;
 import com.lihua.service.system.setting.SysSettingService;
 import jakarta.annotation.Resource;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("system/setting")
-public class SysSettingController extends BaseController {
+public class SysSettingController extends ResponseController {
 
     @Resource
     private SysSettingService sysSettingService;

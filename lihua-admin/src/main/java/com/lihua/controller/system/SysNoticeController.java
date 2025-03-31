@@ -3,7 +3,7 @@ package com.lihua.controller.system;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.validation.MaxPageSizeLimit;
-import com.lihua.model.web.BaseController;
+import com.lihua.model.web.ResponseController;
 import com.lihua.model.system.dto.SysNoticeDTO;
 import com.lihua.service.system.notice.SysNoticeService;
 import com.lihua.service.system.user.SysUserNoticeService;
@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("system/notice")
 @Validated
-public class SysNoticeController extends BaseController {
+public class SysNoticeController extends ResponseController {
 
     @Resource
     private SysNoticeService sysNoticeService;
