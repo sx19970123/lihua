@@ -118,7 +118,7 @@ watch(() => token.value.colorPrimary, () => {
 })
 
 // 监听主题跟随系统
-watch(() => themeStore.followSystemTheme, () => {
+watch(() => themeStore.followSystemTheme && themeStore.$state.isServerLoad, () => {
   handleFollowSystemTheme()
 })
 
