@@ -65,7 +65,7 @@
 
 <script setup lang="ts">
 import {message, Upload, type UploadFile} from "ant-design-vue";
-import {onMounted, ref} from "vue";
+import {ref, watch} from "vue";
 import {useRoute} from "vue-router";
 import token from "@/utils/Token.ts";
 import {
@@ -152,6 +152,9 @@ const fileList = ref<UploadFile[]>([])
 const awaitHandleFile = ref<boolean>(false)
 // 初始化双向绑定
 const init = async () => {
+  if (fileList.value.length !== 0) {
+    return;
+  }
   const ids = modelValue.split(",").filter(Boolean)
   if (ids && ids.length > 0) {
     try {
@@ -784,7 +787,8 @@ const handleRemove = async (file: UploadFile) => {
   }
 }
 
-onMounted(() => {
+// 监听双向绑定
+watch(() => modelValue, () => {
   init()
 })
 </script>
