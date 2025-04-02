@@ -92,6 +92,7 @@ const uploadURL = `${baseAPI}/system/attachment/storage/upload`
 const chunk_upload_prefix = "upload-record-"
 const authorization = 'Bearer ' + getToken()
 const router = useRoute()
+let vModelComplete = false
 
 // 参数
 const {model = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 10, multiple = true, directory = false, modelValue = "", businessCode, businessName, chunk = false, chunkSize = 20, chunkUploadCount = 3} = defineProps<{
@@ -151,10 +152,7 @@ const fileList = ref<UploadFile[]>([])
 // 附件秒传轮询等待变量
 const awaitHandleFile = ref<boolean>(false)
 // 初始化双向绑定
-const init = async () => {
-  if (fileList.value.length !== 0) {
-    return;
-  }
+const initVModel = async (newVal: string, oldValue?: string) => {
   const ids = modelValue.split(",").filter(Boolean)
   if (ids && ids.length > 0) {
     try {
@@ -175,7 +173,11 @@ const init = async () => {
         })
         // 数据回显
         if (data && data.length > 0) {
-          fileList.value = data
+          fileList.value.unshift(...data)
+        }
+        // 在双向绑定加载前又上传了数据的情况，将新加载的newVal拼接到oldValue之前，再次更新双向绑定
+        if (oldValue) {
+          emits("update:modelValue", newVal + "," + oldValue)
         }
       } else {
         message.error(resp.msg)
@@ -186,6 +188,8 @@ const init = async () => {
       } else {
         console.error(e)
       }
+    } finally {
+      vModelComplete = true
     }
   }
 }
@@ -788,8 +792,21 @@ const handleRemove = async (file: UploadFile) => {
 }
 
 // 监听双向绑定
-watch(() => modelValue, () => {
-  init()
+watch(() => modelValue, (newVal, oldValue) => {
+  // 已执行过双向绑定回显直接返回
+  if (vModelComplete) {
+    return;
+  }
+
+  // 1. 求newVal, oldValue集合间的交集，交集为空，表示为双向绑定触发的watch，执行initVModel()
+  const intersection = newVal?.split(",").filter(nv => oldValue.split(",")?.includes(nv))
+  // 2. 双向绑定数据加载前上传的集合
+  const newUpload = fileList.value.filter(fl => fl.url && newVal.includes(fl.url))
+
+  // 符合 1、2 条件并 newVal 存在，即为双向绑定加载的数据，执行initVModel
+  if (intersection.length === 0 && newUpload.length === 0 && newVal) {
+    initVModel(newVal, oldValue)
+  }
 })
 </script>
 
