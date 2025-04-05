@@ -1,7 +1,7 @@
 package com.lihua.handle;
 
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.web.ResponseController;
+import com.lihua.model.web.basecontroller.StrResponseController;
 import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * 请在 GlobalExceptionHandle.handleRuntimeException 进行配置
  */
 @Component
-public class AccessDeniedHandlerImpl extends ResponseController implements AccessDeniedHandler {
+public class AccessDeniedHandlerImpl extends StrResponseController implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) {
         WebUtils.renderJson(response,error(ResultCodeEnum.ACCESS_ERROR));

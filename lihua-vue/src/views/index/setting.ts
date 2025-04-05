@@ -1,13 +1,17 @@
 // 当前版本更新记录
 const activeUpdate = [
     {
-        version: '1.1.4',
+        version: '1.2.0',
         record: [
-            "1. 修复主题在不跟随系统的设置下，刷新页面依然与系统同步的bug",
-            "2. 新增在样式布局页面下，调整完主题后刷新页面触发保存",
-            "3. tianai-captcha后端版本更新为1.5.2，点选验证码使用自定义字体",
-            "4. tianai-captcha前端SDK更新为1.4版本",
-            "5. 修复附件组件先加载组件时无法正确回显的bug"
+            '1. 新增集成【knife4j】接口文档',
+            '2. 新增controller统一返回ApiResponse、ApiResponseController（兼容knife4j返回值），StrResponseController、StrResponse（knife4j返回值为string）',
+            '3. 系统controller统一返回替换为ApiResponse、ApiResponseController',
+            "4. 修复主题在不跟随系统的设置下，刷新页面依然与系统同步的bug",
+            "5. 新增在样式布局页面下，调整完主题后刷新页面触发保存",
+            "6. tianai-captcha后端版本更新为1.5.2，点选验证码使用自定义字体",
+            "7. tianai-captcha前端SDK更新为1.4版本",
+            "8. 修复附件组件先加载组件时无法正确回显的bug",
+            "9. 为兼容【knife4j】spring boot 版本调整为3.3.10",
         ]
     }
 ]
@@ -18,7 +22,7 @@ const activeUpdate = [
  * 项目开发可以将 views/index 中内容删除，在 router 中重新配置首页即可
  */
 export const versionInfo = {
-    springBootVersion: ' 3.4.3',
+    springBootVersion: ' 3.3.10',
     vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
@@ -31,7 +35,7 @@ export const versionInfo = {
                 '3. 主题新增支持同步到小窗/其他标签页。亮色/暗色模式立即同步，其他主题在触发保存后同步',
                 '4. TreeUtils工具类中增加反射缓存，减少递归中反射的调用',
                 '5. 新增多数据源配置，使用dynamic-datasource实现，具体文档请参考：https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611',
-                '6. SpringBoot 版本升级至3.4.3，修复框架漏洞',
+                '6. spring boot 版本升级至3.4.3，修复框架漏洞',
             ]
         },
         {

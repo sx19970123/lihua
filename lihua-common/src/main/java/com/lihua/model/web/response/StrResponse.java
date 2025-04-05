@@ -1,18 +1,19 @@
-package com.lihua.model.web;
+package com.lihua.model.web.response;
 
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.model.web.basecontroller.BaseResponseController;
 import com.lihua.utils.json.JsonUtils;
 import lombok.SneakyThrows;
 import org.springframework.util.StringUtils;
 
 import static com.lihua.enums.ResultCodeEnum.SUCCESS;
+
 /**
  * 统一返回 Json
  * 不需要 swagger 接口显示详细返回信息时使用
  * 使用时controller中直接返回String即可
  */
-public class ResponseController extends BaseResponseController {
-
+public class StrResponse extends BaseResponseController {
     public static String success() {
         return success(SUCCESS.getDefaultMsg(), null);
     }

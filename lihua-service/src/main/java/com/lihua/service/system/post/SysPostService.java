@@ -18,7 +18,7 @@ public interface SysPostService {
     IPage<SysPostVO> queryPage(SysPostDTO dto);
 
     /**
-     * 根据id 查询
+     * 根据id查询
      */
     SysPost queryById(String id);
 

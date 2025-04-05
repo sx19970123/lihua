@@ -1,7 +1,8 @@
-package com.lihua.model.web;
+package com.lihua.model.web.basecontroller;
 
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.attachment.AttachmentStreamAndInfoModel;
+import com.lihua.model.web.ApiResponseModel;
 import com.lihua.utils.file.FileUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -15,8 +16,8 @@ import java.util.List;
  */
 public class BaseResponseController {
 
-    protected static <T> ApiResponse<T> response(ResultCodeEnum resultCodeEnum, String msg, T data) {
-        return ApiResponse.<T>builder().code(resultCodeEnum.getCode()).msg(msg).data(data).build();
+    protected static <T> ApiResponseModel<T> response(ResultCodeEnum resultCodeEnum, String msg, T data) {
+        return ApiResponseModel.<T>builder().code(resultCodeEnum.getCode()).msg(msg).data(data).build();
     }
 
     public static ResponseEntity<StreamingResponseBody> success(File file) {

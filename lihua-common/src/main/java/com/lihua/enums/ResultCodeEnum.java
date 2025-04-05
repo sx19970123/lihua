@@ -11,7 +11,6 @@ import lombok.Getter;
 public enum ResultCodeEnum {
 
     SUCCESS (200,"成功"),
-    EDITOR_SUCCESS(0,"成功"),
     AUTHENTICATION_EXPIRED(401,"身份验证过期，请重新登陆"),
     PARAMS_MISSING(402,"参数缺失或不完整"),
     ACCESS_ERROR (403,"用户权限不足"),

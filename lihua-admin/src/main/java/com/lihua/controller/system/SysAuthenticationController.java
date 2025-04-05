@@ -10,23 +10,29 @@ import com.lihua.model.security.AuthInfo;
 import com.lihua.model.security.CurrentDept;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
-import com.lihua.model.web.ResponseController;
+import com.lihua.model.web.ApiResponseModel;
+import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.model.system.dto.SysRegisterDTO;
 import com.lihua.service.system.authentication.SysAuthenticationService;
 import com.lihua.service.system.setting.SysSettingService;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.SecurityUtils;
 import com.lihua.utils.tree.TreeUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 用户身份验证/授权/登录数据获取/注册
  */
+@Tag(name = "登录、注册、元数据获取")
 @RestController
 @RequestMapping("system")
-public class SysAuthenticationController extends ResponseController {
+public class SysAuthenticationController extends ApiResponseController {
 
     @Resource
     private SysAuthenticationService sysAuthenticationService;
@@ -40,10 +46,11 @@ public class SysAuthenticationController extends ResponseController {
     /**
      * 用户登录
      */
+    @Operation(summary = "用户登录")
     @PostMapping("login")
     @RateLimiter
     @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password", "requestKey"}, recordResult = false)
-    public String login(@RequestBody @Valid CurrentUser currentUser) {
+    public ApiResponseModel<String> login(@RequestBody @Valid CurrentUser currentUser) {
         // 校验验证码
         boolean checked = checkCaptcha(currentUser.getCaptchaVerification());
         if (!checked) {
@@ -65,24 +72,27 @@ public class SysAuthenticationController extends ResponseController {
     /**
      * 获取登录公钥
      */
+    @Operation(summary = "获取登录公钥")
     @GetMapping("publicKey/{requestKey}")
-    public String getPublicKey(@PathVariable("requestKey") String requestKey) {
+    public ApiResponseModel<String> getPublicKey(@PathVariable("requestKey") String requestKey) {
         return success(SecurityUtils.getPasswordPublicKey(requestKey));
     }
 
     /**
      * 检查登录配置
      */
+    @Operation(summary = "检查登录配置")
     @GetMapping("checkLoginSetting")
-    public String checkLoginSetting() {
+    public ApiResponseModel<List<String>> checkLoginSetting() {
         return success(sysAuthenticationService.checkLoginSetting(LoginUserContext.getLoginUser()));
     }
 
     /**
      * 从 SecurityContextHolder 中获取用户信息返回
      */
+    @Operation(summary = "从 SecurityContextHolder 中获取用户信息返回")
     @GetMapping("info")
-    public String getUserInfo() {
+    public ApiResponseModel<AuthInfo> getUserInfo() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
         // 前端 store 用户数据
         AuthInfo authInfo = new AuthInfo();
@@ -100,9 +110,10 @@ public class SysAuthenticationController extends ResponseController {
     /**
      * 数据更新
      */
+    @Operation(summary = "数据更新")
     @PostMapping("reloadData")
     @RateLimiter
-    public String reloadData() {
+    public ApiResponseModel<String> reloadData() {
         sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser());
         return success();
     }
@@ -110,18 +121,20 @@ public class SysAuthenticationController extends ResponseController {
     /**
      * 检查用户名是否重复
      */
+    @Operation(summary = "检查用户名是否重复")
     @PostMapping("checkUserName/{username}")
-    public String checkUserName(@PathVariable("username") String username) {
+    public ApiResponseModel<Boolean> checkUserName(@PathVariable("username") String username) {
         return success(sysAuthenticationService.checkUserName(username));
     }
 
     /**
      * 用户注册
      */
+    @Operation(summary = "用户注册")
     @PostMapping("register")
     @RateLimiter
     @Log(description = "用户注册", type = LogTypeEnum.REGISTER, excludeParams = {"password", "confirmPassword"}, recordResult = false)
-    public String register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO) {
+    public ApiResponseModel<String> register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO) {
         // 校验验证码
         boolean checked = checkCaptcha(sysRegisterDTO.getCaptchaVerification());
         if (!checked) {

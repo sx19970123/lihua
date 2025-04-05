@@ -102,18 +102,18 @@ public interface SysAttachmentStorageService {
     String getAttachmentURL(String path,String originalName, Integer expireTime);
 
     /**
-     * 公开附件下载
-     * @param id 附件id
-     * @return 附件
-     */
-    ResponseEntity<StreamingResponseBody> publicDownload(String id, String fileName);
-
-    /**
      * 本地附件下载（仅LOCAL模式下使用，其他存储方式中直接通过附件服务器获取）
      * @param key 附件路径及过期时间密文
      * @return 附件
      */
     ResponseEntity<StreamingResponseBody> localDownload(String key, String originName);
+
+    /**
+     * 公开附件下载
+     * @param id 附件id
+     * @return 附件
+     */
+    ResponseEntity<StreamingResponseBody> publicDownload(String id, String fileName);
 
     /**
      * 附件导出下载

@@ -26,8 +26,8 @@
         </a-typography-link>
       </a-card-grid>
       <a-card-grid >
-        <a-typography-link ellipsis src="https://gitee.com/mirrors/MyExcel" target="_blank">
-          <img src="https://user-images.githubusercontent.com/8674986/154786667-599f1a18-707f-4a08-857f-de97924401ea.png"  style="width: 16px;height: 16px;margin-right: 4px"/>
+        <a-typography-link ellipsis href="https://gitee.com/mirrors/MyExcel" target="_blank">
+          <img src="https://user-images.githubusercontent.com/8674986/154786667-599f1a18-707f-4a08-857f-de97924401ea.png" style="width: 16px;height: 16px;margin-right: 4px"/>
           MyExcel
         </a-typography-link>
       </a-card-grid>
@@ -47,6 +47,12 @@
         <a-typography-link ellipsis href="https://projectlombok.org/#:~:text=Project%20Lombok%20is%20a%20java%20library%20that%20automatically%20plugs" target="_blank">
           <img src="https://th.bing.com/th?id=ODLS.673180fa-16fc-4868-8d90-fda8df611f7d&w=32&h=32&qlt=90&pcl=fffffa&o=6&cb=13&pid=1.2" style="width: 16px;height: 16px;margin-right: 4px"/>
           Lombok
+        </a-typography-link>
+      </a-card-grid>
+      <a-card-grid >
+        <a-typography-link ellipsis href="https://doc.xiaominfo.com/docs/quick-start" target="_blank">
+          <img src="https://doc.xiaominfo.com/img/favicon.ico" style="width: 16px;height: 16px;margin-right: 4px"/>
+          knife4j
         </a-typography-link>
       </a-card-grid>
     </a-card>
