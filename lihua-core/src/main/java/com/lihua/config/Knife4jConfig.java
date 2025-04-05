@@ -25,7 +25,7 @@ public class Knife4jConfig {
         return new OpenAPI().info(new Info()
                 .title("狸花猫后台管理系统接口文档")
                 .description("接口分组配置com.lihua.config.Knife4jConfig，可自定义接口描述及接口分组")
-                .contact(new Contact().name("Yukino").url("https://gitee.com/yukino_git"))
+                .contact(new Contact().name("Yukino"))
                 .version(lihuaConfig.getVersion()));
     }
 

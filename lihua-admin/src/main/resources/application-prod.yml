@@ -123,3 +123,19 @@ minio:
   accessKey: ${MINIO_ACCESS_KEY}
   secretKey: ${MINIO_SECRET_KEY}
   bucketName: ${MINIO_BUCKET_NAME}
+
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+# 生产模式打开，防止接口泄漏
+  production: true
+  setting:
+    language: zh_cn
