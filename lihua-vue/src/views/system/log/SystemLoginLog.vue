@@ -99,7 +99,9 @@
                 清 空
               </a-button>
             </a-popconfirm>
+            <table-setting v-model="logColumn"/>
           </a-flex>
+
         </template>
         <template #bodyCell="{column,record,text}">
           <template v-if="column.key === 'description'">
@@ -177,6 +179,7 @@ import {
 } from "@/api/system/log/Log.ts";
 import {message} from "ant-design-vue";
 import DictTag from "@/components/dict-tag/index.vue";
+import TableSetting from "@/components/table-setting/index.vue";
 import type {SysLog, SysLogDTO} from "@/api/system/log/type/SysLog.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import dayjs from "dayjs";
