@@ -83,6 +83,8 @@
                 <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
               </a-button>
             </a-popconfirm>
+            <!--            表格设置-->
+            <table-setting v-model="attachmentColumn"/>
           </a-flex>
         </template>
         <template #bodyCell="{column, record}">
@@ -272,6 +274,7 @@ import DictTag from "@/components/dict-tag/index.vue"
 import {download} from "@/utils/AttachmentDownload.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import settings from "@/settings.ts";
+import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_attachment_status, sys_attachment_upload_mode} = initDict("sys_attachment_status","sys_attachment_upload_mode")
 const baseAPI = import.meta.env.VITE_APP_BASE_API
@@ -307,7 +310,7 @@ const initSearch = () => {
     }
   }
 
-  const attachmentColumn: ColumnsType = [
+  const attachmentColumn = ref<ColumnsType>([
     {
       title: '附件名称',
       key: 'originalName',
@@ -357,7 +360,7 @@ const initSearch = () => {
       width: '244px',
       fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     }
-  ]
+  ])
 
   const reloadPage = async () => {
     attachmentQuery.value = {

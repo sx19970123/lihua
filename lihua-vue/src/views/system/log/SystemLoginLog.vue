@@ -99,6 +99,7 @@
                 清 空
               </a-button>
             </a-popconfirm>
+<!--            表格设置-->
             <table-setting v-model="logColumn"/>
           </a-flex>
 
@@ -220,7 +221,7 @@ const initSearch = () => {
     }
   }
 
-  const logColumn: ColumnsType = [
+  const logColumn = ref<ColumnsType>([
     {
       title: '日志描述',
       key: 'description',
@@ -270,7 +271,7 @@ const initSearch = () => {
       dataIndex: 'executeTime',
       align: 'center'
     }
-  ]
+  ])
 
   const reloadPage = async () => {
     logQuery.value = {

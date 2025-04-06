@@ -106,6 +106,8 @@
                清 空
              </a-button>
            </a-popconfirm>
+           <!--            表格设置-->
+           <table-setting v-model="logColumn"/>
          </a-flex>
        </template>
       <template #bodyCell="{column,record,text}">
@@ -191,6 +193,7 @@ import dayjs from "dayjs";
 import {ResponseError} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
 import Spin from "@/components/spin";
+import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_log_status} = initDict("sys_log_status")
 
@@ -245,7 +248,7 @@ const initSearch = () => {
     }
   }
 
-  const logColumn: ColumnsType = [
+  const logColumn = ref<ColumnsType>([
     {
       title: '日志描述',
       key: 'description',
@@ -286,7 +289,7 @@ const initSearch = () => {
       dataIndex: 'executeTime',
       align: 'center'
     }
-  ]
+  ])
 
   const reloadPage = async () => {
     logQuery.value = {

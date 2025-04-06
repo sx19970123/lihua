@@ -79,6 +79,9 @@
                   <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
                 </a-button>
               </a-popconfirm>
+
+              <!--            表格设置-->
+              <table-setting v-model="roleColumn"/>
             </a-flex>
           </template>
 
@@ -206,6 +209,7 @@ import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRol
 import {ResponseError} from "@/api/global/Type.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import settings from "@/settings.ts";
+import TableSetting from "@/components/table-setting/index.vue";
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
 const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
 const themeStore = useThemeStore();
@@ -250,7 +254,7 @@ const initSearch = () => {
   }
 
   // 列表列定义
-  const roleColumn: ColumnsType = [
+  const roleColumn = ref<ColumnsType>([
     {
       title: '角色名称',
       dataIndex: 'name',
@@ -288,7 +292,7 @@ const initSearch = () => {
       width: '182px',
       fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     },
-  ]
+  ])
   // 查询条件
   const roleQuery = ref<SysRoleDTO> ({
     name: '',

@@ -127,6 +127,9 @@
                <DoubleRightOutlined v-else />
              </template>
            </a-button>
+
+           <!--            表格设置-->
+           <table-setting v-model="deptColumn"/>
          </a-flex>
        </template>
        <template #bodyCell="{column,record,text}">
@@ -282,6 +285,7 @@ import Unfold from "@/components/icon/unfold/Unfold.vue";
 import {ResponseError} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
 import settings from "@/settings.ts";
+import TableSetting from "@/components/table-setting/index.vue";
 const {sys_status} = initDict("sys_status")
 const router = useRouter()
 // 显示更多按钮
@@ -318,7 +322,7 @@ const initSearch = () => {
     }
   }
   // 列表信息
-  const deptColumn: ColumnsType = [
+  const deptColumn = ref<ColumnsType>([
     {
       title: '部门名称',
       key: 'name',
@@ -362,7 +366,7 @@ const initSearch = () => {
       width: '292px',
       fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     }
-  ]
+  ])
 
   // 查询条件
   const deptQuery = ref<SysDept>({})

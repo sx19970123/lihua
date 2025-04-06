@@ -139,6 +139,9 @@
                 <DoubleRightOutlined v-else />
               </template>
             </a-button>
+
+            <!--            表格设置-->
+            <table-setting v-model="userColumn"/>
           </a-flex>
         </template>
         <template #bodyCell="{column,record,text}">
@@ -370,6 +373,7 @@ import SelectableCard from "@/components/selectable-card/index.vue"
 import PasswordInput from "@/components/password-input/index.vue"
 import DictTag from "@/components/dict-tag/index.vue"
 import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
+import TableSetting from "@/components/table-setting/index.vue";
 import dayjs from "dayjs";
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
@@ -437,7 +441,7 @@ const initSearch = () => {
     }
   }
 
-  const userColumn: ColumnsType = [
+  const userColumn = ref<ColumnsType>([
     {
       title: '用户名',
       key: 'username',
@@ -493,7 +497,7 @@ const initSearch = () => {
       width: '292px',
       fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     }
-  ]
+  ])
 
   const userQuery = ref<SysUserDTO>({
     deptIdList: [],

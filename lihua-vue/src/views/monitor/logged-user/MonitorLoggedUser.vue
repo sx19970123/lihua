@@ -47,22 +47,26 @@
       :scroll="{x: 1500}"
     >
       <template #title>
-        <a-popconfirm title="是否强退选中用户？"
-                      :open="openLogoutPopconfirm"
-                      ok-text="确 定"
-                      cancel-text="取 消"
-                      @cancel="openLogoutPopconfirm = false"
-                      @confirm="handleConfirm(undefined)"
-                      @open-change="(open: boolean) => !open ? openLogoutPopconfirm = false: ''"
-        >
-          <a-button danger @click="handleOpenPopconfirm">
-            <template #icon>
-              <DeleteOutlined />
-            </template>
-            强 退
-            <span v-if="logoutCacheKeys && logoutCacheKeys.length > 0" style="margin-left: 4px"> {{logoutCacheKeys.length}} 项</span>
-          </a-button>
-        </a-popconfirm>
+        <a-flex :gap="8">
+          <a-popconfirm title="是否强退选中用户？"
+                        :open="openLogoutPopconfirm"
+                        ok-text="确 定"
+                        cancel-text="取 消"
+                        @cancel="openLogoutPopconfirm = false"
+                        @confirm="handleConfirm(undefined)"
+                        @open-change="(open: boolean) => !open ? openLogoutPopconfirm = false: ''"
+          >
+            <a-button danger @click="handleOpenPopconfirm">
+              <template #icon>
+                <DeleteOutlined />
+              </template>
+              强 退
+              <span v-if="logoutCacheKeys && logoutCacheKeys.length > 0" style="margin-left: 4px"> {{logoutCacheKeys.length}} 项</span>
+            </a-button>
+          </a-popconfirm>
+          <!--            表格设置-->
+          <table-setting v-model="userColumn" :max-width="500"/>
+        </a-flex>
       </template>
       <template #bodyCell="{column,record,text}">
         <template v-if="column.key === 'cacheKey'">
@@ -142,6 +146,7 @@ import dayjs from "dayjs";
 import type {SysLog} from "@/api/system/log/type/SysLog.ts";
 import {queryLoginByCacheKey} from "@/api/system/log/Log.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+import TableSetting from "@/components/table-setting/index.vue";
 const initSearch = () => {
   // 选中的数据id集合
   const logoutCacheKeys = ref<Array<string>>([])
@@ -173,13 +178,13 @@ const initSearch = () => {
     }
   }
 
-  const userColumn: ColumnsType = [
+  const userColumn = ref<ColumnsType>([
     {
       title: '缓存键值',
       key: 'cacheKey',
       dataIndex: 'cacheKey',
       ellipsis: true,
-      width: 700
+      width: 500
     },
     {
       title: '用户名',
@@ -209,7 +214,7 @@ const initSearch = () => {
       align: 'center',
       width: '100px'
     }
-  ]
+  ])
 
   // 检索条件
   const queryParam = ref<{

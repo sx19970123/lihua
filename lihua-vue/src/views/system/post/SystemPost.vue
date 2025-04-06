@@ -128,6 +128,9 @@
                 <DoubleRightOutlined v-else />
               </template>
             </a-button>
+
+            <!--            表格设置-->
+            <table-setting v-model="postColumn"/>
           </a-flex>
         </template>
 
@@ -269,6 +272,7 @@ import Spin from "@/components/spin";
 import {ResponseError} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
 import settings from "@/settings.ts";
+import TableSetting from "@/components/table-setting/index.vue";
 const {sys_status} = initDict("sys_status")
 const route = useRoute();
 
@@ -340,7 +344,7 @@ const initSearch = () => {
       }
     }
   }
-  const postColumn: ColumnsType = [
+  const postColumn = ref<ColumnsType>([
     {
       title: '岗位名称',
       key: 'name',
@@ -381,7 +385,7 @@ const initSearch = () => {
       width: '182px',
       fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     }
-  ]
+  ])
 
   const postQuery = ref<SysPostDTO>({
     deptId: route.query.deptId as string | undefined,

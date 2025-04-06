@@ -24,7 +24,7 @@
                 <!--              拖动图标-->
                 <HolderOutlined class="drag"/>
                 <!--              是否显示-->
-                <a-checkbox v-model:checked="tableSetting.display">
+                <a-checkbox v-model:checked="tableSetting.display" @change="updateAllCheckedStatus">
                   <a-typography-text v-model:content="tableSetting.label" ellipsis/>
                 </a-checkbox>
                 <a-flex class="right-content" :gap="8">
@@ -64,7 +64,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {onMounted, reactive, ref, watch} from "vue";
+import {nextTick, onMounted, reactive, ref, watch} from "vue";
 import type {ColumnsType, ColumnType} from "ant-design-vue/es/table/interface";
 import {type DraggableEvent, VueDraggable} from 'vue-draggable-plus'
 import {useThemeStore} from "@/stores/theme.ts";
@@ -105,6 +105,8 @@ type TableSettingType = {
   width: number,
   // 默认宽度
   defaultWidth: number,
+  // 设置了默认宽度
+  setDefaultWidth: boolean,
   // 左固定 0 1
   leftFixed: number,
   // 右固定 0 1
@@ -131,12 +133,14 @@ const init = () => {
   const initFromVModel = () => {
     tableSettings.value = []
     defaultSettings.forEach((setting: ColumnType, index: number) => {
+      const width = typeof setting.width === "string" ? Number.parseInt(setting.width.replace("px", "")) : setting.width
       const tableSetting = {
         label: typeof setting.title === 'string' ? setting.title : "无法识别的title",
         display: true,
         sort: index,
-        width: 0,
-        defaultWidth: 0,
+        width: width ? width : 0,
+        defaultWidth: width ? width : 0,
+        setDefaultWidth: !!width,
         leftFixed: setting.fixed === true || setting.fixed === 'left' ? 1 : 0,
         rightFixed: setting.fixed === 'right' ? 1 : 0,
         key: typeof setting.key === 'string' ? setting.key : "",
@@ -183,6 +187,8 @@ const initCheckbox = () => {
   const checkAllChange = () => {
     checkboxState.indeterminate = false
     tableSettings.value.forEach(setting => setting.display = checkboxState.allChecked)
+    // 重新计算宽度
+    nextTick(() => debounceWidth())
   }
 
   // 更新全选状态
@@ -201,8 +207,8 @@ const initCheckbox = () => {
       checkboxState.indeterminate = false
       checkboxState.allChecked = true
     }
-    // 浏览器绘制一帧后重新计算列宽度
-    requestAnimationFrame(() =>  debounceWidth())
+    // 重新计算宽度
+    nextTick(() => debounceWidth())
   }
   return {
     checkboxState,
@@ -340,12 +346,12 @@ const initChangeFixedDrag = () => {
       // 右固定第一个元素index
       const rightFixedFirstIndex = findTargetIndex(ts => ts.rightFixed === 1, false);
       // 元素落在左固定元素中
-      if (leftFixedLastIndex > newIndex) {
+      if (leftFixedLastIndex != -1 && leftFixedLastIndex > newIndex) {
         moveTableSettingItemToAfter(newIndex, leftFixedLastIndex - 1)
         message.warn("无法移动至固定元素左边")
       }
       // 元素落在右固定元素中
-      if (newIndex > rightFixedFirstIndex) {
+      if (rightFixedFirstIndex != -1 && newIndex > rightFixedFirstIndex) {
         moveTableSettingItemToBefore(newIndex, rightFixedFirstIndex + 1)
         message.warn("无法移动至固定元素右边")
       }
@@ -426,21 +432,14 @@ const initColumnWidth = () => {
   // columnWidthList
   if (enableWidthSetting.value) {
     for (let i = 0; i < columnWidthList.length; i++) {
-      const ds = defaultSettings[i]     // 最原始的table配置
       const cw = columnWidthList[i]     // 列宽-label集合
       const ts = targetTableSettings[i] // 操作的主要配置
       // 同一索引判断名称是否相同
       if (cw.text === ts.label) {
         // 首次加载或未调整过宽度，在窗口大小变化时，为width、defaultWidth赋初值
-        if ((ts.width === 0 && ts.defaultWidth === 0) || ts.width === ts.defaultWidth) {
-          ts.width = cw.width
-          // 默认赋初值的情况下将初值赋值给tableSettings对应属性
-          if (ds.width) {
-            const width = typeof ds.width === "string" ? Number.parseInt(ds.width.replace("px", "")) : ds.width
-            ts.width = width
-            ts.defaultWidth = width
-          } else {
-            // 没有赋初值时触发表格宽度自动计算时修改tableSettings默认值
+        if (!ts.setDefaultWidth){
+          if ((ts.width === 0 && ts.defaultWidth === 0) || ts.width === ts.defaultWidth) {
+            ts.width = cw.width
             ts.defaultWidth = cw.width
           }
         }
@@ -452,6 +451,9 @@ const initColumnWidth = () => {
     }
   }
 }
+
+// 处理防抖
+const debounceWidth = debounce(initColumnWidth)
 
 // visible显示时才进行加载，关闭时销毁监听
 const changePopover = (visible: boolean) => {
@@ -472,8 +474,6 @@ const changeSlide = () => {
   debounceWidth()
 }
 
-// 处理防抖
-const debounceWidth = debounce(initColumnWidth)
 
 // 组件加载完成后先从localStorage读取表头数据
 onMounted(() => {
@@ -482,8 +482,6 @@ onMounted(() => {
 
 // 监听tableSettings的变化
 watch(() => tableSettings.value, () => {
-  // 更新全选状态
-  updateAllCheckedStatus()
   // 执行双向绑定
   updateModelValue()
 },{deep: true})

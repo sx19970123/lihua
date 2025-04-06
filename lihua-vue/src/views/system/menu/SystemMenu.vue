@@ -93,6 +93,9 @@
                 </template>
                 {{!expandedRowKeys.length ? '展 开' : '折 叠'}}
               </a-button>
+
+              <!--            表格设置-->
+              <table-setting v-model="menuColumn"/>
             </a-flex>
           </template>
           <template #bodyCell = "{column,text,record}">
@@ -329,6 +332,7 @@ import PickUp from "@/components/icon/pick-up/PickUp.vue";
 import Unfold from "@/components/icon/unfold/Unfold.vue";
 import {ResponseError} from "@/api/global/Type.ts";
 import settings from "@/settings.ts";
+import TableSetting from "@/components/table-setting/index.vue";
 const themeStore = useThemeStore()
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {
@@ -364,7 +368,7 @@ const initSearch = () => {
   }
 
   // 列表列集合
-  const menuColumn:ColumnsType = [
+  const menuColumn = ref<ColumnsType>([
     {
       title: '菜单名称',
       key: 'label',
@@ -424,7 +428,7 @@ const initSearch = () => {
       width: '292px',
       fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     }
-  ]
+  ])
   // 筛选条件
   const menuQuery = ref<SysMenu>({})
   // 列表元素
