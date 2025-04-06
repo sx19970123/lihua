@@ -89,6 +89,7 @@
               </template>
               刷新缓存
             </a-button>
+            <table-setting v-model="dictTypeColumn"/>
           </a-flex>
         </template>
         <template #bodyCell="{column,record,text}">
@@ -221,6 +222,7 @@ import DictData from "./dictData/index.vue"
 import { initDict } from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import settings from "@/settings.ts";
+import TableSetting from "@/components/table-setting/index.vue";
 
 const { sys_status,sys_dict_type } = initDict("sys_status","sys_dict_type")
 
@@ -256,7 +258,7 @@ const initSearch = () => {
     }
   }
   // 列表列定义
-  const dictTypeColumn:ColumnsType = [
+  const dictTypeColumn = ref<ColumnsType>([
     {
       title: '名称',
       dataIndex: 'name',
@@ -304,7 +306,7 @@ const initSearch = () => {
       width: '292px',
       fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
     },
-  ]
+  ])
   // 查询条件定义
   const dictTypeQuery = ref<SysDictTypeDTO>({
     name: '',
