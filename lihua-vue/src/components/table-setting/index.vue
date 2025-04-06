@@ -15,7 +15,10 @@
         <!--         content-->
         <a-flex vertical :gap="8" class="scrollbar unselectable content" :style="{width: enableWidthSetting? '300px': '200px', maxHeight: '300px'}">
           <!--           拖拽组件-->
-          <VueDraggable v-model="tableSettings" :animation="150" handle=".drag" fallbackClass="drag" ghostClass="drag" dragClass="drag" chosenClass="drag">
+          <VueDraggable v-model="tableSettings"
+                        :animation="150"
+                        handle=".drag"
+                        @end="dragEnd">
             <div v-for="(tableSetting, index) in tableSettings">
               <a-flex align="center" :gap="8" :key="index">
                 <!--              拖动图标-->
@@ -28,20 +31,20 @@
                   <!--              宽度控制-->
                   <a-slider class="slider"
                             v-model:value="tableSetting.width"
-                            :marks="{[tableSetting.defaultWidth]: {label: tableSetting.defaultWidth + 'px',style:{fontSize: '12px'}}}"
-                            :min="tableSetting.defaultWidth - 100"
-                            :max="tableSetting.defaultWidth + 200"
+                            :min="minWidth"
+                            :max="maxWidth"
+                            v-show="tableSetting.display"
                             v-if="enableWidthSetting"
                             @change="changeSlide"
                   />
                   <!--              左固定-->
-                  <a-rate :count="1" v-model:value="tableSetting.leftFixed" :style="{color: themeStore.getColorPrimary()}">
+                  <a-rate :count="1" v-model:value="tableSetting.leftFixed" @change="(value: number) => changeLeftFixed(value, index)" :style="{color: themeStore.getColorPrimary()}">
                     <template #character>
                       <PushpinOutlined />
                     </template>
                   </a-rate>
                   <!--              右固定-->
-                  <a-rate :count="1" v-model:value="tableSetting.rightFixed" :style="{color: themeStore.getColorPrimary()}">
+                  <a-rate :count="1" v-model:value="tableSetting.rightFixed"  @change="(value: number) => changeRightFixed(value, index)" :style="{color: themeStore.getColorPrimary()}">
                     <template #character>
                       <PushpinOutlined class="right-rate-icon"/>
                     </template>
@@ -61,9 +64,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import {onMounted, onUnmounted, reactive, ref, toRef, watch} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import type {ColumnsType, ColumnType} from "ant-design-vue/es/table/interface";
-import {VueDraggable} from 'vue-draggable-plus'
+import {type DraggableEvent, VueDraggable} from 'vue-draggable-plus'
 import {useThemeStore} from "@/stores/theme.ts";
 import {useRouter} from "vue-router";
 import {debounce} from "@/utils/Debounce.ts";
@@ -74,7 +77,12 @@ const router = useRouter();
 // 控制弹出卡片是否显示
 const visiblePopover = ref<Boolean>(false)
 // 组件参数
-const {modelValue} = defineProps<{
+const {modelValue, minWidth = 80, maxWidth = 400} = defineProps<{
+  // 原有长度的减少量
+  minWidth?: number,
+  // 原有长度的增加量
+  maxWidth?: number,
+  // 双向绑定
   modelValue: ColumnsType | ColumnType[]
 }>()
 const emit = defineEmits(['update:modelValue']);
@@ -85,34 +93,42 @@ const tableSettingKey = "table-setting-" + componentName
 // 开启宽度控制
 const enableWidthSetting = ref<boolean>(false)
 
+// 创建TableSetting
+type TableSettingType = {
+  // 标签
+  label: string,
+  // 是否显示
+  display: boolean,
+  // 排序
+  sort: number,
+  // 宽度
+  width: number,
+  // 默认宽度
+  defaultWidth: number,
+  // 左固定 0 1
+  leftFixed: number,
+  // 右固定 0 1
+  rightFixed: number,
+  // key值
+  key: string
+}
 
 // 初始化组件
 const init = () => {
   // 拿到modelValue，克隆一份原版，获得默认配置
   const defaultSettings: ColumnType[] = cloneDeep(modelValue)
-  // 创建TableSetting
-  type TableSettingType = {
-    // 标签
-    label: string,
-    // 是否显示
-    display: boolean,
-    // 排序
-    sort: number,
-    // 宽度
-    width: number,
-    // 默认宽度
-    defaultWidth: number,
-    // 左固定 0 1
-    leftFixed: number,
-    // 右固定 0 1
-    rightFixed: number,
-    // key值
-    key: string
-  }
   const tableSettings = ref<TableSettingType[]>([])
 
-  // 初始化赋值，不包含列表宽度
   const initTableSettings = () => {
+    // 从 localStorage 中获取数据，无数据再通过VModel获取
+    const initComplete = initFromLocal()
+    if (!initComplete) {
+      initFromVModel()
+    }
+  }
+
+  // 根据VModel初始化赋值，不包含列表宽度
+  const initFromVModel = () => {
     tableSettings.value = []
     defaultSettings.forEach((setting: ColumnType, index: number) => {
       const tableSetting = {
@@ -133,14 +149,25 @@ const init = () => {
     })
   }
 
+  // 从localStorage中取出列表设置值
+  const initFromLocal = (): boolean => {
+    const localStorageSetting = localStorage.getItem(tableSettingKey)
+    if (localStorageSetting) {
+      tableSettings.value = JSON.parse(localStorageSetting)
+      return true;
+    }
+    return false;
+  }
 
   return {
     defaultSettings,
     tableSettings,
-    initTableSettings
+    initTableSettings,
+    initFromVModel,
+    initFromLocal
   }
 }
-const {defaultSettings, tableSettings, initTableSettings} = init()
+const {defaultSettings, tableSettings, initTableSettings, initFromVModel, initFromLocal} = init()
 
 // 初始化checkbox相关操作
 const initCheckbox = () => {
@@ -174,8 +201,9 @@ const initCheckbox = () => {
       checkboxState.indeterminate = false
       checkboxState.allChecked = true
     }
+    // 浏览器绘制一帧后重新计算列宽度
+    requestAnimationFrame(() =>  debounceWidth())
   }
-
   return {
     checkboxState,
     checkAllChange,
@@ -187,12 +215,10 @@ const {checkboxState, checkAllChange, updateAllCheckedStatus} = initCheckbox()
 // 重置列表
 const reset = () => {
   emit("update:modelValue", defaultSettings)
-  initTableSettings()
-  // 浏览器绘制一帧后重新计算列宽度
-  requestAnimationFrame(() =>  initColumnWidth())
+  localStorage.removeItem(tableSettingKey)
   visiblePopover.value = false
+  enableWidthSetting.value = false
   message.success("重置完成")
-
 }
 
 // 处理双向绑定
@@ -207,9 +233,158 @@ const updateModelValue = () => {
       }
     })
   })
-
+  // 保存到localStorage
+  localStorage.setItem(tableSettingKey, JSON.stringify(tableSettings.value))
   emit("update:modelValue", vModelColumn)
 }
+
+// 初始化处理左右固定和固定时调整顺序相关函数
+const initChangeFixedDrag = () => {
+  // 查找符合条件的目标索引
+  const findTargetIndex = (filterFn: (ts: TableSettingType) => boolean, last: boolean) => {
+    const tss = tableSettings.value
+    const targetSettings = tss.filter(filterFn)
+    if (targetSettings.length > 0) {
+      const targetItem = last ? targetSettings[targetSettings.length - 1] : targetSettings[0]
+      return tss.findIndex(item => item === targetItem)
+    }
+    return -1
+  }
+
+  // 处理左固定，点击左固定判断前一个元素是否为左固定，不是的话移动到最近的左固定元素后
+  const changeLeftFixed = (value: number, index: number) => {
+    const tss = tableSettings.value
+    const tableSetting = tss[index]
+
+    if (value === 1) {
+      // 左固定，取消右固定
+      tableSetting.rightFixed = 0
+      const prevItem = tss[index - 1]
+
+      if (prevItem && prevItem.leftFixed !== value) {
+        const targetIndex = findTargetIndex(ts => ts.leftFixed === value && ts !== tableSetting, true)
+        moveTableSettingItemToAfter(index, targetIndex)
+      }
+    } else {
+      // 取消左固定
+      const nextItem = tss[index + 1]
+
+      if (nextItem && nextItem.leftFixed !== value) {
+        const targetIndex = findTargetIndex(ts => ts.leftFixed === value && ts !== tableSetting, false)
+        moveTableSettingItemToBefore(index, targetIndex !== -1 ? targetIndex : tss.length)
+      }
+    }
+  }
+
+  // 处理右固定，点击右固定判断后一个元素是否为右固定，不是的话移动到最近的右固定元素前
+  const changeRightFixed = (value: number, index: number) => {
+    const tss = tableSettings.value
+    const tableSetting = tss[index]
+
+    if (value === 1) {
+      // 右固定，取消左固定
+      tableSetting.leftFixed = 0
+      const nextItem = tss[index + 1]
+
+      if (nextItem && nextItem.rightFixed !== value) {
+        const targetIndex = findTargetIndex(ts => ts.rightFixed === value && ts !== tableSetting, false)
+        moveTableSettingItemToBefore(index, targetIndex !== -1 ? targetIndex : tss.length)
+      }
+    } else {
+      // 取消右固定
+      const prevItem = tss[index - 1]
+
+      if (prevItem && prevItem.rightFixed !== value) {
+        const targetIndex = findTargetIndex(ts => ts.rightFixed === value && ts !== tableSetting, true)
+        moveTableSettingItemToAfter(index, targetIndex)
+      }
+    }
+  }
+
+  // 将fromIndex位置的元素移动到toIndex的后面
+  const moveTableSettingItemToAfter = (fromIndex: number, toIndex: number) => {
+    const arr = tableSettings.value
+    // 边界检查
+    if (fromIndex < -1 || toIndex < -1 || fromIndex >= arr.length || toIndex >= arr.length) return;
+
+    // 移动元素
+    const [movedItem] = arr.splice(fromIndex, 1);
+    arr.splice(toIndex + 1, 0, movedItem);
+  }
+  // 将fromIndex位置的元素移动到toIndex的前面
+  const moveTableSettingItemToBefore = (fromIndex: number, toIndex: number) => {
+    const arr = tableSettings.value
+    // 边界检查
+    if (fromIndex < 0 || toIndex < 0 || fromIndex >= arr.length + 1 || toIndex >= arr.length + 1) return;
+
+    // 移动元素
+    const [movedItem] = arr.splice(fromIndex, 1);
+    arr.splice(toIndex -1, 0, movedItem);
+  }
+
+  // 拖拽排序结束后进行位置判断
+  const dragEnd = (event: DraggableEvent & {newIndex: number, oldIndex: number}) => {
+    const tss = tableSettings.value
+    // 移动后的坐标
+    const newIndex = event.newIndex
+    // 被移动的元素
+    const dragItem = tss[newIndex]
+    // 被移动元素的左右固定
+    const leftFixed = dragItem.leftFixed
+    const rightFixed = dragItem.rightFixed
+
+    // 元素没有被固定
+    if (leftFixed === 0 && rightFixed === 0) {
+      // 左固定最后一个元素index
+      const leftFixedLastIndex = findTargetIndex(ts => ts.leftFixed === 1, true);
+      // 右固定第一个元素index
+      const rightFixedFirstIndex = findTargetIndex(ts => ts.rightFixed === 1, false);
+      // 元素落在左固定元素中
+      if (leftFixedLastIndex > newIndex) {
+        moveTableSettingItemToAfter(newIndex, leftFixedLastIndex - 1)
+        message.warn("无法移动至固定元素左边")
+      }
+      // 元素落在右固定元素中
+      if (newIndex > rightFixedFirstIndex) {
+        moveTableSettingItemToBefore(newIndex, rightFixedFirstIndex + 1)
+        message.warn("无法移动至固定元素右边")
+      }
+    }
+
+    // 左固定元素跑外面的情况
+    if (leftFixed === 1) {
+      const leftFixedLastIndex = findTargetIndex(ts => ts.leftFixed === 1 && ts !== dragItem, true);
+      if (newIndex - 1 > leftFixedLastIndex) {
+        moveTableSettingItemToAfter(newIndex, leftFixedLastIndex)
+        message.warn("左固定元素无法移动至右边")
+      }
+    }
+
+    // 元素被右固定
+    if (rightFixed === 1) {
+      const rightFixedFirstIndex = findTargetIndex(ts => ts.rightFixed === 1 && ts !== dragItem, false);
+      // 只有自己被右固定的情况
+      if (rightFixedFirstIndex === -1) {
+        moveTableSettingItemToBefore(newIndex, tss.length)
+        message.warn("右固定元素无法移动至左边")
+      }
+      // 右固定元素跑外面的情况
+      if (rightFixedFirstIndex - 1 > newIndex) {
+        moveTableSettingItemToBefore(newIndex, rightFixedFirstIndex)
+        message.warn("右固定元素无法移动至左边")
+      }
+    }
+  }
+
+  return {
+    changeLeftFixed,
+    changeRightFixed,
+    dragEnd
+  }
+}
+
+const {changeLeftFixed, changeRightFixed, dragEnd} = initChangeFixedDrag()
+
 
 type ColumnWidthType = {
   // 表格标题
@@ -245,15 +420,15 @@ const initColumnWidth = () => {
       }
     }
   }
-
   // 当dom元素中的列数量与tableSettings长度相同时，允许控制列宽度
-  enableWidthSetting.value = tableSettings.value.length === columnWidthList.length
+  const targetTableSettings = tableSettings.value.filter(item => item.display)
+  enableWidthSetting.value = targetTableSettings.length === columnWidthList.length
   // columnWidthList
   if (enableWidthSetting.value) {
     for (let i = 0; i < columnWidthList.length; i++) {
       const ds = defaultSettings[i]     // 最原始的table配置
       const cw = columnWidthList[i]     // 列宽-label集合
-      const ts = tableSettings.value[i] // 操作的主要配置
+      const ts = targetTableSettings[i] // 操作的主要配置
       // 同一索引判断名称是否相同
       if (cw.text === ts.label) {
         // 首次加载或未调整过宽度，在窗口大小变化时，为width、defaultWidth赋初值
@@ -283,9 +458,9 @@ const changePopover = (visible: boolean) => {
   // enableWidthSetting 为false时加载一次初始化宽度
   if (!enableWidthSetting.value) {
     initTableSettings()
-    initColumnWidth()
   }
   if (visible) {
+    debounceWidth()
     window.addEventListener("resize", debounceWidth)
   } else {
     window.removeEventListener("resize", debounceWidth)
@@ -298,7 +473,12 @@ const changeSlide = () => {
 }
 
 // 处理防抖
-const debounceWidth = debounce(initColumnWidth, 100)
+const debounceWidth = debounce(initColumnWidth)
+
+// 组件加载完成后先从localStorage读取表头数据
+onMounted(() => {
+  initFromLocal()
+})
 
 // 监听tableSettings的变化
 watch(() => tableSettings.value, () => {
