@@ -35,7 +35,7 @@
                             :max="maxWidth"
                             v-show="tableSetting.display"
                             v-if="enableWidthSetting"
-                            @change="changeSlide"
+                            @change="changeSlide(index)"
                   />
                   <!--              左固定-->
                   <a-rate :count="1" v-model:value="tableSetting.leftFixed" @change="(value: number) => changeLeftFixed(value, index)" :style="{color: themeStore.getColorPrimary()}">
@@ -107,6 +107,8 @@ type TableSettingType = {
   defaultWidth: number,
   // 设置了默认宽度
   setDefaultWidth: boolean,
+  // 宽度是否发生了变化
+  widthChanged: boolean,
   // 左固定 0 1
   leftFixed: number,
   // 右固定 0 1
@@ -141,6 +143,7 @@ const init = () => {
         width: width ? width : 0,
         defaultWidth: width ? width : 0,
         setDefaultWidth: !!width,
+        widthChanged: false,
         leftFixed: setting.fixed === true || setting.fixed === 'left' ? 1 : 0,
         rightFixed: setting.fixed === 'right' ? 1 : 0,
         key: typeof setting.key === 'string' ? setting.key : "",
@@ -437,11 +440,9 @@ const initColumnWidth = () => {
       // 同一索引判断名称是否相同
       if (cw.text === ts.label) {
         // 首次加载或未调整过宽度，在窗口大小变化时，为width、defaultWidth赋初值
-        if (!ts.setDefaultWidth){
-          if ((ts.width === 0 && ts.defaultWidth === 0) || ts.width === ts.defaultWidth) {
-            ts.width = cw.width
-            ts.defaultWidth = cw.width
-          }
+        if (!ts.setDefaultWidth && !ts.widthChanged){
+          ts.width = cw.width
+          ts.defaultWidth = cw.width
         }
       } else {
         console.error("dom中获取名称与prop中不同")
@@ -470,10 +471,13 @@ const changePopover = (visible: boolean) => {
 }
 
 // 拖动宽度条
-const changeSlide = () => {
+const changeSlide = (index: number) => {
+  // 拖动宽度条标记宽度已改变
+  if (!tableSettings.value[index].widthChanged) {
+    tableSettings.value[index].widthChanged = true
+  }
   debounceWidth()
 }
-
 
 // 组件加载完成后先从localStorage读取表头数据
 onMounted(() => {
