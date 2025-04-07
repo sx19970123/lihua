@@ -170,11 +170,10 @@ const init = () => {
     defaultSettings,
     tableSettings,
     initTableSettings,
-    initFromVModel,
     initFromLocal
   }
 }
-const {defaultSettings, tableSettings, initTableSettings, initFromVModel, initFromLocal} = init()
+const {defaultSettings, tableSettings, initTableSettings, initFromLocal} = init()
 
 // 初始化checkbox相关操作
 const initCheckbox = () => {
@@ -473,8 +472,9 @@ const changePopover = (visible: boolean) => {
 // 拖动宽度条
 const changeSlide = (index: number) => {
   // 拖动宽度条标记宽度已改变
-  if (!tableSettings.value[index].widthChanged) {
-    tableSettings.value[index].widthChanged = true
+  const target = tableSettings.value[index]
+  if (!target.widthChanged && target.width != maxWidth) {
+    target.widthChanged = true
   }
   debounceWidth()
 }
