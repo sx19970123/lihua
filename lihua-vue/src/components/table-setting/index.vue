@@ -462,7 +462,7 @@ const changePopover = (visible: boolean) => {
     initTableSettings()
   }
   if (visible) {
-    debounceWidth()
+    initColumnWidth()
     window.addEventListener("resize", debounceWidth)
   } else {
     window.removeEventListener("resize", debounceWidth)

@@ -44,11 +44,11 @@ public class SysProfileServiceImpl implements SysProfileService {
             updateWrapper.lambda().set(SysUser::getNickname,sysUser.getNickname());
         }
         // 手机号码
-        if (StringUtils.hasText(sysUser.getPhoneNumber())) {
+        if (sysUser.getPhoneNumber() != null) {
             updateWrapper.lambda().set(SysUser::getPhoneNumber,sysUser.getPhoneNumber());
         }
         // 邮箱
-        if (StringUtils.hasText(sysUser.getEmail())) {
+        if (sysUser.getEmail() != null) {
             updateWrapper.lambda().set(SysUser::getEmail,sysUser.getEmail());
         }
         // 性别
@@ -75,11 +75,11 @@ public class SysProfileServiceImpl implements SysProfileService {
                 currentUser.setNickname(sysUser.getNickname());
             }
             // 手机号码
-            if (StringUtils.hasText(sysUser.getPhoneNumber())) {
+            if (sysUser.getPhoneNumber() != null) {
                 currentUser.setPhoneNumber(sysUser.getPhoneNumber());
             }
             // 邮箱
-            if (StringUtils.hasText(sysUser.getEmail())) {
+            if (sysUser.getEmail() != null) {
                 currentUser.setEmail(sysUser.getEmail());
             }
             // 性别

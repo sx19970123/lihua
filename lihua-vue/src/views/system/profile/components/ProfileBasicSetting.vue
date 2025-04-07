@@ -16,7 +16,7 @@
             <avatar-modifier v-model="profileInfo.avatar" @change="(value: string) => handleFinish({avatar: value})"/>
           </a-form-item>
           <a-form-item label="用户昵称" name="nickname">
-            <dynamic-border-input ref="dynamicInputRef"
+            <dynamic-border-input ref="nicknameInputRef"
                                   required
                                   v-model="profileInfo.nickname"
                                   @reset="handleClearValidate"
@@ -24,19 +24,19 @@
             />
           </a-form-item>
           <a-form-item label="手机号码" name="phoneNumber">
-            <dynamic-border-input ref="dynamicInputRef"
+            <dynamic-border-input ref="phoneNumberInputRef"
                                   v-model="profileInfo.phoneNumber"
                                   @reset="handleClearValidate"
                                   @submit="(value: string) => handleFinish({phoneNumber : value})"/>
           </a-form-item>
           <a-form-item label="电子邮箱" name="email">
-            <dynamic-border-input ref="dynamicInputRef"
+            <dynamic-border-input ref="emailInputRef"
                                   v-model="profileInfo.email"
                                   @reset="handleClearValidate"
                                   @submit="(value: string) => handleFinish({email : value})"/>
           </a-form-item>
           <a-form-item label="用户性别">
-            <dynamic-border-select ref="dynamicInputRef"
+            <dynamic-border-select ref="genderInputRef"
                                    v-model="profileInfo.gender"
                                    :options="user_gender" @submit="(value: string) => handleFinish({gender : value})"/>
           </a-form-item>
@@ -108,7 +108,12 @@ const {user_gender} = initDict('user_gender')
 const themeStore = useThemeStore()
 
 const formRef = useTemplateRef<FormInstance>("formRef")
-const dynamicInputRef = useTemplateRef<InstanceType<typeof DynamicBorderInput>>("dynamicInputRef")
+
+// 动态边框输入框组件ref
+const nicknameInputRef = useTemplateRef<InstanceType<typeof DynamicBorderInput>>("nicknameInputRef")
+const phoneNumberInputRef = useTemplateRef<InstanceType<typeof DynamicBorderInput>>("phoneNumberInputRef")
+const emailInputRef = useTemplateRef<InstanceType<typeof DynamicBorderInput>>("emailInputRef")
+const genderInputRef = useTemplateRef<InstanceType<typeof DynamicBorderSelect>>("genderInputRef")
 
 // 初始化数据
 const init = () => {
@@ -153,12 +158,12 @@ const handleFinish = async (values: {avatar?: string,nickname?: string, gender?:
   try {
     const resp = await saveBasics(values)
     if (resp.code === 200){
-      dynamicInputRef.value?.success()
+      dynamicBorderSuccess()
       message.success(resp.msg)
       // 重新获取用户信息
       await userStore.initUserInfo()
     } else {
-      dynamicInputRef.value?.error()
+      dynamicBorderError()
       message.error(resp.msg)
     }
   } catch(e) {
@@ -167,9 +172,26 @@ const handleFinish = async (values: {avatar?: string,nickname?: string, gender?:
     } else {
       console.error(e)
     }
-    dynamicInputRef.value?.error()
+    dynamicBorderError()
   }
 }
+
+// 动态边框输入框同一执行成功方法调用
+const dynamicBorderSuccess = () => {
+  nicknameInputRef.value?.success()
+  genderInputRef.value?.success()
+  emailInputRef.value?.success()
+  phoneNumberInputRef.value?.success()
+}
+
+// 动态边框输入框同一执行失败方法调用
+const dynamicBorderError = () => {
+  nicknameInputRef.value?.error()
+  genderInputRef.value?.error()
+  emailInputRef.value?.error()
+  phoneNumberInputRef.value?.error()
+}
+
 
 // 清除验证提示
 const handleClearValidate = () => {

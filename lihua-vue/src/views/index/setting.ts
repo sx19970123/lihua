@@ -1,21 +1,10 @@
 // 当前版本更新记录
 const activeUpdate = [
     {
-        version: '1.2.0',
-        record: [
-            '1. 新增集成【knife4j】接口文档',
-            '2. 新增controller统一返回ApiResponse、ApiResponseController（兼容knife4j返回值），StrResponseController、StrResponse（knife4j返回值为string）',
-            '3. 系统controller统一返回替换为ApiResponse、ApiResponseController',
-            "4. 修复主题在不跟随系统的设置下，刷新页面依然与系统同步的bug",
-            "5. 新增在样式布局页面下，调整完主题后刷新页面触发保存",
-            "6. tianai-captcha后端版本更新为1.5.2，点选验证码使用自定义字体",
-            "7. tianai-captcha前端SDK更新为1.4版本",
-            "8. 修复附件组件先加载组件时无法正确回显的bug",
-            "9. 为兼容【knife4j】spring boot 版本调整为3.3.10",
-        ]
+        version: '1.2.1',
+        record: []
     }
 ]
-
 
 /**
  * 首页展示版本日志
@@ -26,6 +15,24 @@ export const versionInfo = {
     vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.2.0',
+            updateDate: '2025-04-07',
+            title: "1.2.0 版本支持knife4j接口文档，controller同一返回适配knife4j做出调整。前端新增【table-setting】组件，可自定义表格显示、顺序、宽度、固定。",
+            updateContent: [
+                '1. 新增集成【knife4j】接口文档',
+                '2. 新增controller统一返回ApiResponse、ApiResponseController（兼容knife4j返回值），StrResponseController、StrResponse（knife4j返回值为string）',
+                '3. 系统controller统一返回替换为ApiResponse、ApiResponseController',
+                '4. 新增【table-setting】组件，可自定义表格显示、顺序、宽度、固定',
+                '5. 新增在样式布局页面下，调整完主题后刷新页面触发保存',
+                '6. 修复主题在不跟随系统的设置下，刷新页面依然与系统同步的bug',
+                '7. tianai-captcha后端版本更新为1.5.2，点选验证码使用自定义字体',
+                '8. tianai-captcha前端SDK更新为1.4版本',
+                '9. 修复附件组件先加载组件时无法正确回显的bug',
+                '10. 修复个人中心修改个人信息概率性输入框一直处于加载中状态的bug',
+                '11. 为兼容【knife4j】spring boot 版本调整为3.3.10',
+            ]
+        },
         {
             version: '1.1.3',
             updateDate: '2025-03-15',
