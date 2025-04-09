@@ -46,7 +46,7 @@ public class SysUserDTO extends BaseDTO {
     private String gender;
 
     // 手机号码
-    @Pattern(regexp = "^1[3-9]\\d{9}$",
+    @Pattern(regexp = "^(|1[3-9]\\d{9})$",
             message = "请输入正确的手机号码")
     private String phoneNumber;
 
@@ -54,7 +54,7 @@ public class SysUserDTO extends BaseDTO {
     private String status;
 
     // 电子邮箱
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+    @Pattern(regexp = "^(|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})$",
             message = "请输入正确的邮箱地址")
     private String email;
 

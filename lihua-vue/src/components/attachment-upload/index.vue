@@ -65,7 +65,7 @@
 
 <script setup lang="ts">
 import {message, Upload, type UploadFile} from "ant-design-vue";
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useRoute} from "vue-router";
 import token from "@/utils/Token.ts";
 import {
@@ -806,6 +806,12 @@ watch(() => modelValue, (newVal, oldValue) => {
   // 符合 1、2 条件并 newVal 存在，即为双向绑定加载的数据，执行initVModel
   if (intersection.length === 0 && newUpload.length === 0 && newVal) {
     initVModel(newVal, oldValue)
+  }
+})
+
+onMounted(() => {
+  if (modelValue) {
+    initVModel(modelValue)
   }
 })
 </script>

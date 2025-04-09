@@ -69,7 +69,7 @@ public class SysDept extends BaseEntity {
      * 联系电话
      */
     @ExcelColumn(order = 5, index = 5, title = "联系电话", width = 8)
-    @Pattern(regexp = "^1[3-9]\\d{9}$",
+    @Pattern(regexp = "^(|1[3-9]\\d{9})$",
             message = "请输入正确的手机号码")
     private String phoneNumber;
 
@@ -77,7 +77,7 @@ public class SysDept extends BaseEntity {
      * 邮箱
      */
     @ExcelColumn(order = 6, index = 6, title = "邮箱", width = 10)
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+    @Pattern(regexp = "^(|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})$",
             message = "请输入正确的邮箱地址")
     private String email;
 

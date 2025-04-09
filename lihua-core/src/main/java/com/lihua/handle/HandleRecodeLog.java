@@ -1,10 +1,12 @@
 package com.lihua.handle;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lihua.annotation.Log;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
 import com.lihua.model.system.vo.SysLogVO;
+import com.lihua.model.web.ApiResponseModel;
 import com.lihua.service.system.log.SysLogService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.json.JsonUtils;
@@ -89,9 +91,9 @@ public class HandleRecodeLog {
                 .setDelFlag("0")
                 .setExecuteStatus("0");
 
-        String result = (resultObject instanceof String) ?
-                (String) resultObject :
-                (resultObject != null) ? resultObject.getClass().getName() : null;
+        // 处理返回值
+        String result = handleResult(resultObject);
+
         // 返回值
         if (logAnnotation.recordResult()) {
             sysLogVO.setResult(result);
@@ -192,4 +194,26 @@ public class HandleRecodeLog {
         return JsonUtils.toJsonOrCanonicalName(resultParamMap);
     }
 
+    /**
+     * 处理返回值
+     */
+    private String handleResult(Object resultObject) {
+        if (resultObject == null) {
+            return null;
+        }
+
+        if (resultObject instanceof String stringResult) {
+            return stringResult;
+        }
+
+        if (resultObject instanceof ApiResponseModel<?> apiResponse) {
+            try {
+                return JsonUtils.toJsonIgnoreNulls(apiResponse);
+            } catch (JsonProcessingException e) {
+                return null;
+            }
+        }
+
+        return resultObject.getClass().getName();
+    }
 }
