@@ -5,7 +5,10 @@ const activeUpdate = [
         record: [
             '1. 修复日志如法正确处理ApiResponseModel的bug',
             '2. 修复附件组件无法正确回显的bug',
-            '3. 修复岗位管理、部门管理去除手机号后保存报错的bug'
+            '3. 修复岗位管理、部门管理去除手机号后保存报错的bug',
+            '4. 优化table-setting组件',
+            '5. 新增table-setting组件演示',
+            '6. 新增table-setting组件文档',
         ]
     }
 ]
@@ -19,6 +22,18 @@ export const versionInfo = {
     vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.2.1',
+            updateDate: '2025-04-12',
+            updateContent: [
+                '1. 修复日志如法正确处理ApiResponseModel的bug',
+                '2. 修复附件组件无法正确回显的bug',
+                '3. 修复岗位管理、部门管理去除手机号后保存报错的bug',
+                '4. 优化table-setting组件',
+                '5. 新增table-setting组件演示',
+                '6. 新增table-setting组件文档',
+            ]
+        },
         {
             version: '1.2.0',
             updateDate: '2025-04-07',

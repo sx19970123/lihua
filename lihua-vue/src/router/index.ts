@@ -97,7 +97,7 @@ const routers = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import("@/views/login/index.vue")
+    component: () => import("@/views/login/Login.vue")
   },
   // 407
   {
