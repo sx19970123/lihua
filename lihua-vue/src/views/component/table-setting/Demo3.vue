@@ -1,84 +1,44 @@
 <template>
-  <a-table :columns="columns" :data-source="data" @change="onChange" >
-    <template #title>
-      <a-flex>
-        <table-setting v-model="columns"/>
-      </a-flex>
-    </template>
-  </a-table>
+  <!--            表格设置-->
+  <a-typography-title :level="4">table-setting组件放置a-table组件外，无法使用宽度调整</a-typography-title>
+  <table-setting v-model="columns" settingKey="3"/>
+  <a-table :dataSource="dataSource" :columns="columns" />
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
 import TableSetting from "@/components/table-setting/index.vue";
 import {ref} from "vue";
+import type { ColumnsType } from 'ant-design-vue/es/table/interface';
 
-const columns = ref([
+const columns = ref<ColumnsType>([
   {
-    title: 'Name',
+    title: '姓名',
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: 'Chinese Score',
-    dataIndex: 'chinese',
-    key: 'chinese',
-    sorter: {
-      compare: (a, b) => a.chinese - b.chinese,
-      multiple: 3,
-    },
+    title: '年龄',
+    dataIndex: 'age',
+    key: 'age',
   },
   {
-    title: 'Math Score',
-    dataIndex: 'math',
-    key: 'math',
-    sorter: {
-      compare: (a, b) => a.math - b.math,
-      multiple: 2,
-    },
+    title: '住址',
+    dataIndex: 'address',
+    key: 'address',
   },
-  {
-    title: 'English Score',
-    dataIndex: 'english',
-    key: 'english',
-    sorter: {
-      compare: (a, b) => a.english - b.english,
-      multiple: 1,
-    },
-  },
-]);
+])
 
-const data = [
+const dataSource = [
   {
     key: '1',
-    name: 'John Brown',
-    chinese: 98,
-    math: 60,
-    english: 70,
+    name: '胡彦斌',
+    age: 32,
+    address: '西湖区湖底公园1号',
   },
   {
     key: '2',
-    name: 'Jim Green',
-    chinese: 98,
-    math: 66,
-    english: 89,
+    name: '胡彦祖',
+    age: 42,
+    address: '西湖区湖底公园1号',
   },
-  {
-    key: '3',
-    name: 'Joe Black',
-    chinese: 98,
-    math: 90,
-    english: 70,
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    chinese: 88,
-    math: 99,
-    english: 89,
-  },
-];
-
-function onChange(pagination, filters, sorter, extra) {
-  console.log('params', pagination, filters, sorter, extra);
-}
+]
 </script>
-

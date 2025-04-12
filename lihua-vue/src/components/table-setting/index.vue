@@ -25,7 +25,11 @@
                 <HolderOutlined class="drag"/>
                 <!--              是否显示-->
                 <a-checkbox v-model:checked="tableSetting.display" @change="updateAllCheckedStatus">
-                  <a-typography-text v-model:content="tableSetting.label" ellipsis/>
+                  <div style="width: 60px">
+                    <a-tooltip :title="tableSetting.label">
+                      <a-typography-text v-model:content="tableSetting.label" ellipsis/>
+                    </a-tooltip>
+                  </div>
                 </a-checkbox>
                 <a-flex class="right-content" :gap="8">
                   <!--              宽度控制-->
@@ -65,7 +69,7 @@
 </template>
 <script setup lang="ts">
 import {nextTick, onMounted, reactive, ref, watch} from "vue";
-import type {ColumnsType, ColumnType} from "ant-design-vue/es/table/interface";
+import type {ColumnGroupType, ColumnsType, ColumnType} from "ant-design-vue/es/table/interface";
 import {type DraggableEvent, VueDraggable} from 'vue-draggable-plus'
 import {useThemeStore} from "@/stores/theme.ts";
 import {useRouter} from "vue-router";
@@ -77,19 +81,21 @@ const router = useRouter();
 // 控制弹出卡片是否显示
 const visiblePopover = ref<Boolean>(false)
 // 组件参数
-const {modelValue, minWidth = 80, maxWidth = 400} = defineProps<{
-  // 原有长度的减少量
+const {modelValue, minWidth = 80, maxWidth = 400, settingKey = ""} = defineProps<{
+  // 宽度调节最小值
   minWidth?: number,
-  // 原有长度的增加量
+  // 宽度调节最大值
   maxWidth?: number,
   // 双向绑定
-  modelValue: ColumnsType | ColumnType[]
+  modelValue: ColumnsType | ColumnType[],
+  // 组件唯一标识，同一vue组件中有多个table时区分使用
+  settingKey?: string
 }>()
 const emit = defineEmits(['update:modelValue']);
 // 组件名称
 const componentName = router.currentRoute.value.name as string
 // 表格设置key
-const tableSettingKey = "table-setting-" + componentName
+const tableSettingKey = `table-setting-${componentName}-${settingKey}`
 // 开启宽度控制
 const enableWidthSetting = ref<boolean>(false)
 
@@ -114,7 +120,9 @@ type TableSettingType = {
   // 右固定 0 1
   rightFixed: number,
   // key值
-  key: string
+  key: string,
+  // 存在子节点（多级表头）
+  hasChildren: boolean,
 }
 
 // 初始化组件
@@ -134,7 +142,7 @@ const init = () => {
   // 根据VModel初始化赋值，不包含列表宽度
   const initFromVModel = () => {
     tableSettings.value = []
-    defaultSettings.forEach((setting: ColumnType, index: number) => {
+    defaultSettings.forEach((setting, index: number) => {
       const width = typeof setting.width === "string" ? Number.parseInt(setting.width.replace("px", "")) : setting.width
       const tableSetting = {
         label: typeof setting.title === 'string' ? setting.title : "无法识别的title",
@@ -147,6 +155,7 @@ const init = () => {
         leftFixed: setting.fixed === true || setting.fixed === 'left' ? 1 : 0,
         rightFixed: setting.fixed === 'right' ? 1 : 0,
         key: typeof setting.key === 'string' ? setting.key : "",
+        hasChildren: (setting as ColumnGroupType<any>).children && (setting as ColumnGroupType<any>).children.length > 0
       }
       tableSettings.value.push(tableSetting)
 
@@ -161,6 +170,8 @@ const init = () => {
     const localStorageSetting = localStorage.getItem(tableSettingKey)
     if (localStorageSetting) {
       tableSettings.value = JSON.parse(localStorageSetting)
+      // 处理双向绑定
+      updateModelValue()
       return true;
     }
     return false;
@@ -403,6 +414,10 @@ type ColumnWidthType = {
 
 // 初始化列宽度集合，通过dom节点获取表格对应宽度
 const initColumnWidth = () => {
+  // 不可调节宽度情况下直接返回
+  if (tableSettings.value.filter(ts => ts.hasChildren).length > 0) {
+    return;
+  }
   // 列表宽度集合
   const columnWidthList: ColumnWidthType[] = []
   // 通过id获取当前组件元素
@@ -485,9 +500,11 @@ onMounted(() => {
 })
 
 // 监听tableSettings的变化
-watch(() => tableSettings.value, () => {
-  // 执行双向绑定
-  updateModelValue()
+watch(() => tableSettings.value, (newVal, oldValue) => {
+  // oldValue值变化时才会触发双向绑定改变表格配置
+  if (oldValue.length > 0) {
+    updateModelValue()
+  }
 },{deep: true})
 </script>
 

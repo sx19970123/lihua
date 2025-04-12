@@ -1,43 +1,69 @@
 <template>
-  <!--            表格设置-->
-  <table-setting v-model="columns"/>
-  <a-table :dataSource="dataSource" :columns="columns" />
+  <a-typography-title :level="4">基础用法</a-typography-title>
+  <a-table :columns="columns" :data-source="data">
+    <template #title>
+      <a-flex>
+        <table-setting v-model="columns" settingKey="1"/>
+      </a-flex>
+    </template>
+  </a-table>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import TableSetting from "@/components/table-setting/index.vue";
 import {ref} from "vue";
-import type { ColumnsType } from 'ant-design-vue/es/table/interface';
 
-const columns = ref<ColumnsType>([
+const columns = ref([
   {
-    title: '姓名',
+    title: 'Name',
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: '年龄',
-    dataIndex: 'age',
-    key: 'age',
+    title: 'Chinese Score',
+    dataIndex: 'chinese',
+    key: 'chinese',
   },
   {
-    title: '住址',
-    dataIndex: 'address',
-    key: 'address',
+    title: 'Math Score',
+    dataIndex: 'math',
+    key: 'math',
   },
-])
+  {
+    title: 'English Score',
+    dataIndex: 'english',
+    key: 'english',
+  },
+]);
 
-const dataSource = [
+const data = [
   {
     key: '1',
-    name: '胡彦斌',
-    age: 32,
-    address: '西湖区湖底公园1号',
+    name: 'John Brown',
+    chinese: 98,
+    math: 60,
+    english: 70,
   },
   {
     key: '2',
-    name: '胡彦祖',
-    age: 42,
-    address: '西湖区湖底公园1号',
+    name: 'Jim Green',
+    chinese: 98,
+    math: 66,
+    english: 89,
   },
-]
+  {
+    key: '3',
+    name: 'Joe Black',
+    chinese: 98,
+    math: 90,
+    english: 70,
+  },
+  {
+    key: '4',
+    name: 'Jim Red',
+    chinese: 88,
+    math: 99,
+    english: 89,
+  },
+];
 </script>
+

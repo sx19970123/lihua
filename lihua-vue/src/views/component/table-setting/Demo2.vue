@@ -1,4 +1,5 @@
 <template>
+  <a-typography-title :level="4">多级表头无法使用宽度调整，并仅支持调整最上层位置</a-typography-title>
   <a-table
       :columns="columns"
       :data-source="data"
@@ -8,7 +9,7 @@
   >
     <template #title>
       <a-flex>
-        <table-setting v-model="columns"/>
+        <table-setting v-model="columns" settingKey="2"/>
       </a-flex>
     </template>
   </a-table>
