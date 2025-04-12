@@ -45,8 +45,7 @@ const columns = ref<TableColumnsType> ([
         text: 'John',
         value: 'John',
       },
-    ],
-    onFilter: (value: string, record: TableDataType) => record.name.indexOf(value) === 0,
+    ]
   },
   {
     title: 'Other',
