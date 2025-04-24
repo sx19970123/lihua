@@ -3,12 +3,7 @@ const activeUpdate = [
     {
         version: '1.2.1',
         record: [
-            '1. 修复日志如法正确处理ApiResponseModel的bug',
-            '2. 修复附件组件无法正确回显的bug',
-            '3. 修复岗位管理、部门管理去除手机号后保存报错的bug',
-            '4. 优化table-setting组件',
-            '5. 新增table-setting组件演示',
-            '6. 新增table-setting组件文档',
+            '1. 修复在线监控强退用户后计数器不变化的bug'
         ]
     }
 ]

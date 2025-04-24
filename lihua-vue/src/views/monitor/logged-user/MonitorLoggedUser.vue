@@ -330,6 +330,11 @@ const handleConfirm = async (cacheKey?: string) => {
     const resp = await forceLogout(targetLogoutCacheKeys);
     if (resp.code === 200) {
       await initList()
+      if (!cacheKey) {
+        logoutCacheKeys.value = []
+      } else {
+        logoutCacheKeys.value = logoutCacheKeys.value.filter(item => item !== cacheKey)
+      }
       message.success(resp.msg)
     } else {
       message.error(resp.msg)
