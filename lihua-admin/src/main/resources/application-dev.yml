@@ -17,9 +17,9 @@ lihua:
   # 公开文件的业务编码，publicLocalDownload 中判断包含业务编码的文件才会进行返回
   uploadPublicBusinessCode: [UserAvatar, SystemNotice]
   # 上传文件路径 mac windows 注意目录切换
-  uploadFilePath: D:/home/lihua/
+  uploadFilePath: /Users/yukino/my-project/data/lihua/
   # 文件导出路径
-  exportFilePath: D:/home/lihua/export/
+  exportFilePath: /Users/yukino/my-project/data/lihua/export/
 
 spring:
   # 数据源配置
@@ -85,7 +85,7 @@ spring:
 # 日志配置
 logging:
   file:
-    name: D:/home/lihua/logs/lihua.log
+    name: /Users/yukino/my-project/data/lihua/logs/lihua.log
   level:
     com.lihua: debug
     org.springframework: info
