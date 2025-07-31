@@ -14,6 +14,9 @@
 
 [开发文档](http://doc.lihua.xyz)
 
+#### deepwiki AI文档
+[AI文档](https://deepwiki.com/sx19970123/lihua)
+
 #### 功能介绍
 [介绍视频](https://www.bilibili.com/video/BV14Z1oY8EKh/?spm_id_from=333.1007.0.0&vd_source=3635d5214bc4b48c5071c18a6643fec8)
 
