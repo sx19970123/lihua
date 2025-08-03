@@ -30,7 +30,7 @@ Java 17+（推荐 Java 21，21以下建议删除虚拟线程配置，并自行�
 
 MySQL 8+
 
-node 20+（或兼容 vue3 版本）
+node 22
 
 Redis 
 
