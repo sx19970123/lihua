@@ -9,6 +9,7 @@ const activeUpdate = [
             '4. 更新axios版本到1.11.0',
             '5. 更新vite版本到6.3.4',
             '6. 移除jsx、vitest',
+            '7. 更新ts版本到^5.9.2'
         ]
     }
 ]
@@ -32,6 +33,7 @@ export const versionInfo = {
                 '4. 更新axios版本到1.11.0',
                 '5. 更新vite版本到6.3.4',
                 '6. 移除jsx、vitest',
+                '7. 更新ts版本到^5.9.2'
             ]
         },
         {

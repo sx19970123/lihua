@@ -19,22 +19,13 @@ import { useThemeStore } from "@/stores/theme";
 import XiaoHeiMoon from "@/components/icon/xiaoheizi/XiaoHeiMoon.vue";
 import XiaoMiaoSun from "@/components/icon/xiaomiaozi/XiaoMiaoSun.vue";
 const themeStore = useThemeStore()
-// 定义 startViewTransition 函数返回对象 ready 为 Promise
-type TransitionFunction = {
-  ready: Promise<any>
-}
-
-// 由于 startViewTransition 较新，Document下无法识别到 startViewTransition，所以进行自定义 interface
-interface ViewTransitionDocument extends Document {
-  startViewTransition: (callback: () => void) => TransitionFunction
-}
 
 // 切换主题
 const handleChangeTheme = (checked: boolean, event: PointerEvent) => {
   // 调用Document下的startViewTransition API，执行切换主题操作，通过设置返回值进行动画配置
   let transition
   try {
-    transition = (document as ViewTransitionDocument).startViewTransition(() => {
+    transition = document.startViewTransition(() => {
       themeStore.changeDataDark()
     })
   } catch (e) {
