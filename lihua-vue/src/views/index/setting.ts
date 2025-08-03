@@ -1,13 +1,13 @@
 // 当前版本更新记录
 const activeUpdate = [
     {
-        version: '1.2.1',
+        version: '1.2.2',
         record: [
-            '1. 修复在线监控强退用户后计数器不变化的bug',
-            '2. 修复简单树形选择组件设置默认全选后标签不回显的bug',
-            '3. 修改sql脚本附件表type字段长度',
-            '4. 更新axios版本到1.8.2',
-            '5. 更新vite版本到6.2.6',
+            '1. 后端新增允许跨域配置',
+            '2. 后端新增允许跨域配置',
+            '4. 更新axios版本到1.11.0',
+            '5. 更新vite版本到6.3.4',
+            '6. 移除jsx、vitest',
         ]
     }
 ]
@@ -21,6 +21,17 @@ export const versionInfo = {
     vueVersion: ' 3.5.13',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.2.2',
+            updateDate: '2025-08-03',
+            updateContent: [
+                '1. 后端新增允许跨域配置',
+                '2. 后端新增允许跨域配置',
+                '4. 更新axios版本到1.11.0',
+                '5. 更新vite版本到6.3.4（建议node版本为22）',
+                '6. 移除jsx、vitest',
+            ]
+        },
         {
             version: '1.2.1',
             updateDate: '2025-04-12',

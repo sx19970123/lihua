@@ -2,17 +2,13 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // 获取请求前缀
   const env = loadEnv(mode, process.cwd());
   const baseApi = env.VITE_APP_BASE_API
   return {
-    plugins: [
-      vue(),
-      vueJsx(),
-    ],
+    plugins: [vue()],
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))
