@@ -1,7 +1,7 @@
  # 系统配置
 lihua:
   # 系统版本
-  version: 1.2.1
+  version: 1.2.2
   # 令牌过期时间（分钟）
   tokenExpireTime: 60
   # 令牌刷新阈值（分钟）距令牌过期15分钟内时，有新请求时对令牌进行刷新
@@ -17,9 +17,9 @@ lihua:
   # 公开文件的业务编码，publicLocalDownload 中判断包含业务编码的文件才会进行返回
   uploadPublicBusinessCode: [UserAvatar, SystemNotice]
   # 上传文件路径 mac windows 注意目录切换
-  uploadFilePath: D:/home/lihua/
+  uploadFilePath: /Users/yukino/my-project/data/lihua/
   # 文件导出路径
-  exportFilePath: D:/home/lihua/export/
+  exportFilePath: /Users/yukino/my-project/data/lihua/export/
 
 spring:
   # 数据源配置
@@ -85,7 +85,7 @@ spring:
 # 日志配置
 logging:
   file:
-    name: D:/home/lihua/logs/lihua.log
+    name: /Users/yukino/my-project/data/lihua/logs/lihua.log
   level:
     com.lihua: debug
     org.springframework: info

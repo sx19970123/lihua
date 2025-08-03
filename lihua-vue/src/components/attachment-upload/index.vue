@@ -55,7 +55,7 @@
       <p class="ant-upload-text">{{text ? text : '点击或拖拽上传'}}</p>
       <p class="ant-upload-hint">{{description}}</p>
     </a-upload-dragger>
-<!--    图片/视频预览-->
+    <!--    图片/视频预览-->
     <a-modal :open="previewVisible" :title="previewTitle" :footer="null" @cancel="handleCancel" destroyOnClose>
       <a-image style="border-radius: 8px" :preview="{maskClassName: 'attachment-upload-preview-mask'}" :src="previewURL" v-if="previewType === 'image'"/>
       <video style="width: 100%;border-radius: 8px" controls preload="auto" :src="previewURL" v-if="previewType === 'video'"/>
@@ -95,7 +95,7 @@ const router = useRoute()
 let vModelComplete = false
 
 // 参数
-const {model = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 10, multiple = true, directory = false, modelValue = "", businessCode, businessName, chunk = false, chunkSize = 20, chunkUploadCount = 3} = defineProps<{
+const {model = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 10, multiple = true, directory = false, modelValue = "", businessCode, businessName, chunk = false, chunkSize = 20, chunkUploadCount = 3, fileName} = defineProps<{
   // 模式：按钮/图片/拖拽
   model?: 'button' | 'picture' | 'dragger',
   // 图标
@@ -126,7 +126,13 @@ const {model = 'button', icon, text, uploadType = [], description, maxCount = 10
   chunkSize?: number,
   // 分片上传同时上传数量
   chunkUploadCount?: number,
+  // 附件名称
+  fileName?: string,
 }>()
+
+if (modelValue === null || modelValue === undefined) {
+  throw new Error("请检查附件双向绑定对象是否为 null 或 undefined，如无初值请赋值为 ''");
+}
 
 // 方法
 const emits = defineEmits(["update:modelValue", "uploadError", "uploadSuccess","exceedMaxCount", "remove"])
@@ -140,11 +146,22 @@ const handleSysAttachment = (file: UploadFile, md5: string, uploadMode?: string)
     businessCode: businessCode ?? router.name?.toString(),
     businessName: businessName ?? router.meta.label as string,
     uploadMode: uploadMode ?? "0",
-    originalName: file.name,
+    // 组件中是否指定了附件名称，指定的情况下使用指定名称 + 原附件类型
+    originalName: fileName ? fileName + getAttachmentExpandedName(file) : file.name,
     size: file.size? file.size.toString() : "",
     type: file.type,
     md5: md5
   }
+}
+
+// 获取附件扩展名
+const getAttachmentExpandedName = (file: UploadFile) => {
+  const split = file.name.split(".")
+  let expandedName = ""
+  if (split.length !== 1) {
+    expandedName = '.' + split[split.length - 1]
+  }
+  return expandedName;
 }
 
 // 附件列表
@@ -287,7 +304,6 @@ const initUpload = () => {
         }
       }
     })
-
     // 处理双向绑定
     emits("update:modelValue", modelValueList.join(","))
   }
@@ -797,21 +813,21 @@ watch(() => modelValue, (newVal, oldValue) => {
   if (vModelComplete) {
     return;
   }
-
   // 1. 求newVal, oldValue集合间的交集，交集为空，表示为双向绑定触发的watch，执行initVModel()
   const intersection = newVal?.split(",").filter(nv => oldValue.split(",")?.includes(nv))
   // 2. 双向绑定数据加载前上传的集合
   const newUpload = fileList.value.filter(fl => fl.url && newVal.includes(fl.url))
 
   // 符合 1、2 条件并 newVal 存在，即为双向绑定加载的数据，执行initVModel
-  if (intersection.length === 0 && newUpload.length === 0 && newVal) {
+  if (intersection && intersection.length === 0 && newUpload && newUpload.length === 0 && newVal) {
     initVModel(newVal, oldValue)
   }
 })
 
+// 组件加载完成后先初始化一次modelValue
 onMounted(() => {
   if (modelValue) {
-    initVModel(modelValue)
+    initVModel(modelValue, undefined)
   }
 })
 </script>

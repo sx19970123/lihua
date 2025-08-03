@@ -286,7 +286,10 @@ const handleAllKeys = () => {
       }
     }
   }, fieldNames.children)
-
+  // 默认全选回显
+  if (defaultExpandAll) {
+    treeSetting.value.expand = true
+  }
   // 处理全选回显
   handleAllChecked()
 }

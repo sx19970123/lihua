@@ -69,10 +69,8 @@ public class SecurityConfig {
                 ).permitAll()
                 .anyRequest().authenticated());
 
-        // 关闭csrf 关闭跨域拦截
-        http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(AbstractHttpConfigurer::disable);
+        // 关闭csrf拦截
+        http.csrf(AbstractHttpConfigurer::disable);
 
         // 允许通过iframe访问
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
