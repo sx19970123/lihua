@@ -4,6 +4,11 @@
 
 850464676
 
+#### 仓库地址
+
+[gitee](https://gitee.com/yukino_git/lihua)
+[github](https://github.com/sx19970123/lihua)
+[gitcode](https://gitcode.com/weixin_44118742/lihua)
 
 #### 线上体验地址
 > 为完整体验项目功能，请自行注册账号体验
