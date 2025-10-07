@@ -228,6 +228,12 @@ export const useViewTabsStore = defineStore('viewTabs',{
             viewTabs.splice(index,1)
             viewTabs.splice(viewTabs.length,0,tab)
         },
+        // 移动元素
+        move(fromIndex: number, toIndex: number) {
+            const viewTabs = this.$state.viewTabs
+            const item = viewTabs.splice(fromIndex, 1)[0] // 取出元素
+            viewTabs.splice(toIndex, 0, item)            // 插入到目标位置
+        },
         // 设置缓存viewCache key
         setViewCacheKey(username:string): void {
             this.$state.tabCacheKey = 'recent-tabs-' + username

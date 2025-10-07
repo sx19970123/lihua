@@ -34,16 +34,13 @@ export default defineConfig(({ mode }) => {
       }
     },
     build: {
-      outDir: 'dist', // 输出目录
-      target: 'esnext', // js格式
-      terserOptions: {
-        compress: {
-          drop_console: true, // 生产环境去掉 console
-          drop_debugger: true, // 生产环境去掉 debugger
-          dead_code: true // 删除无法访问的代码
-        },
+      outDir: 'dist',
+      target: 'esnext',
+      minify: 'esbuild',
+      esbuild: {
+        drop: ['console', 'debugger'],
       },
-      chunkSizeWarningLimit: 2000 // 代码块超过2000 bytes时vite发出警告
-    }
+      chunkSizeWarningLimit: 2000,
+    },
   }
 })

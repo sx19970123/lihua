@@ -12,8 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-<!--        因knife4j兼容性问题，暂不建议springboot版本升级到3.4.x以上 -->
-        <version>3.3.10</version>
+        <version>3.5.6</version>
         <relativePath/>
     </parent>
 
@@ -24,12 +23,12 @@
         <lihua.version>1.2.2</lihua.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mysql.version>8.2.0</mysql.version>
-        <mybatis-plus.version>3.5.9</mybatis-plus.version>
+        <mybatis-plus.version>3.5.14</mybatis-plus.version>
         <jwt.version>3.10.3</jwt.version>
         <myexcel.version>4.5.6</myexcel.version>
         <oshi.version>6.6.4</oshi.version>
         <guava.version>33.3.1-jre</guava.version>
-        <xxl-job.version>2.4.2</xxl-job.version>
+        <xxl-job.version>3.2.0</xxl-job.version>
         <tianai-captcha.version>1.5.2</tianai-captcha.version>
         <minio.version>8.5.17</minio.version>
         <knife4j.version>4.5.0</knife4j.version>
