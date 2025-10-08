@@ -21,7 +21,7 @@
       </a-card-grid>
       <a-card-grid >
         <a-typography-link ellipsis href="https://antdv.com/components/overview-cn" target="_blank">
-          <img src="https://next.antdv.com/assets/logo.1ef800a8.svg" style="width: 15px;height: 15px">
+          <img src="https://antdv.com/assets/logo.1ef800a8.svg" style="width: 15px;height: 15px">
           Ant Design Vue
         </a-typography-link>
       </a-card-grid>

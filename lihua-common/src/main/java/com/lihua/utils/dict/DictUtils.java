@@ -5,9 +5,13 @@ import com.lihua.enums.SysBaseEnum;
 import com.lihua.mapper.CommonMapper;
 import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.utils.spring.SpringUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 字典工具类
@@ -78,13 +82,38 @@ public class DictUtils {
      * 重新缓存字典
      */
     public static int resetCacheDict(String dictTypeCode) {
-        // 删除缓存
-        removeDictCache(dictTypeCode);
-        // 查询数据添加缓存
-        List<SysDictDataVO> sysDictDataVOList = commonMapper.queryByDictTypeCode(dictTypeCode);
-        if (!sysDictDataVOList.isEmpty()) {
-            DictUtils.setDictCache(dictTypeCode,sysDictDataVOList);
+        if (!StringUtils.hasText(dictTypeCode)) {
+            return 0;
         }
+        return resetCacheDict(Collections.singletonList(dictTypeCode));
+    }
+
+    /**
+     * 重新缓存字典
+     */
+    public static int resetCacheDict(List<String> dictTypeCodeList) {
+
+        if (dictTypeCodeList == null || dictTypeCodeList.isEmpty()) {
+            return 0;
+        }
+
+        // 查询数据添加缓存
+        List<SysDictDataVO> sysDictDataVOList = commonMapper.queryByDictTypeCode(dictTypeCodeList);
+
+        // 删除缓存
+        dictTypeCodeList.forEach(DictUtils::removeDictCache);
+
+        // 根据编码分组
+        Map<String, List<SysDictDataVO>> groupByCode = sysDictDataVOList.stream().collect(Collectors.groupingBy(SysDictDataVO::getDictTypeCode));
+
+        groupByCode.forEach((dictTypeCode, dictDataVOList) -> {
+            // 设置缓存
+            if (!dictDataVOList.isEmpty()) {
+                DictUtils.setDictCache(dictTypeCode, dictDataVOList);
+            }
+        });
+
+        // 查询到的总数
         return sysDictDataVOList.size();
     }
 

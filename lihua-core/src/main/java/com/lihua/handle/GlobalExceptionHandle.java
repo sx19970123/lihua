@@ -3,6 +3,7 @@ package com.lihua.handle;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.*;
 import com.lihua.model.web.basecontroller.StrResponseController;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @Configuration
 @Slf4j
+@Hidden
 public class GlobalExceptionHandle extends StrResponseController {
 
     /**

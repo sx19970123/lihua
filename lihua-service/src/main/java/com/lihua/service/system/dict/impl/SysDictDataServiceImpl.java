@@ -2,7 +2,6 @@ package com.lihua.service.system.dict.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.lihua.cache.RedisCache;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.entity.system.SysDictData;
@@ -26,9 +25,6 @@ public class SysDictDataServiceImpl implements SysDictDataService {
 
     @Resource
     private SysDictDataMapper sysDictDataMapper;
-
-    @Resource
-    private RedisCache redisCache;
 
     @Override
     public List<SysDictData> queryList(SysDictDataDTO dictDataDTO) {
