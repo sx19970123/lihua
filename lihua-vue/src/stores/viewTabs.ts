@@ -133,6 +133,18 @@ export const useViewTabsStore = defineStore('viewTabs',{
             // 缓存数据
             handleAddTabCache(tab);
         },
+        // 根据routerPathKey重置viewTabs
+        resetViewTabsByPathKeys(routerPathKeyList: Array<string>) {
+            if (routerPathKeyList && routerPathKeyList.length > 0) {
+                this.$state.viewTabs = []
+                routerPathKeyList.forEach(key => {
+                    const target = this.totalViewTabs.filter(tab => tab.routerPathKey === key)
+                    if (target && target.length > 0) {
+                        this.addViewTab(target[0])
+                    }
+                })
+            }
+        },
         mergeTabQuery(originQuery?: string, tempQuery?: string): string {
             if (!tempQuery) return originQuery || '';
 

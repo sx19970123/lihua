@@ -43,15 +43,19 @@ import {
   useTemplateRef,
   watch
 } from "vue";
-import { useRoute,useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import {useViewTabsStore} from "@/stores/viewTabs";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
-import {type DraggableEvent} from 'vue-draggable-plus'
-import { useDraggable } from 'vue-draggable-plus'
+import {type DraggableEvent, useDraggable} from 'vue-draggable-plus';
+import {isEqual} from "lodash-es"
+import { notification, Button } from 'ant-design-vue';
+import { h } from 'vue';
+
 const viewTabRef = useTemplateRef<ComponentPublicInstance>('viewTabRef')
 const viewTabsStore = useViewTabsStore()
 const route = useRoute()
 const router = useRouter()
+
 /**
  * 初始化数据及变量
  */
@@ -178,8 +182,53 @@ const initDrag = () => {
 
 const {tabsRenderKey, startDrag} = initDrag()
 
+
+const initViewTabsCache = () => {
+  // 缓存key
+  const catchKey = "cacheViewTabs"
+
+  // 设置缓存
+  const setCache = () => {
+    localStorage.setItem(catchKey, JSON.stringify(viewTabsStore.viewTabs.map(tab => tab.routerPathKey)))
+  }
+
+  // 执行检查
+  const checkCache = () => {
+    // 获取缓存中的标签页key集合
+    const cacheRouterPathKeyJson = localStorage.getItem(catchKey)
+    if (cacheRouterPathKeyJson) {
+      const cacheRouterPathKeyList = JSON.parse(cacheRouterPathKeyJson)
+      // 获取当前标签页key集合
+      const routerPathKeyList = viewTabsStore.viewTabs.map(tab => tab.routerPathKey)
+      // 比较不同则提示用户是否恢复
+      if (!isEqual(routerPathKeyList, cacheRouterPathKeyList)) {
+        notification.open({
+          message: `检测到多任务栏发生变化，是否恢复？`,
+          placement: 'topRight',
+          key: catchKey,
+          btn: () => h(Button, { type: 'primary', onClick: () => {
+            viewTabsStore.resetViewTabsByPathKeys(cacheRouterPathKeyList)
+            notification.close(catchKey)
+          }}, { default: () => '恢 复' }),
+          onClose: () => setCache()
+        });
+      }
+    }
+  }
+
+  return {
+    setCache, checkCache
+  }
+
+}
+
+const {setCache, checkCache} = initViewTabsCache()
+
 onMounted(() => {
+  // 加载拖拽
   startDrag()
+  // 检查缓存的标签页
+  checkCache()
 })
 
 /**
@@ -193,6 +242,13 @@ watch(() => route.path,(value) => {
   // 添加keepalive缓存
   addKeepAliveCache()
 })
+
+/**
+ * 监听viewTabs变化
+ */
+watch(() => viewTabsStore.viewTabs, () => {
+  setCache()
+}, {deep: true})
 
 </script>
 <style>

@@ -4,14 +4,15 @@ const activeUpdate = [
         version: '1.2.3',
         record: [
             '1. view-tabs支持拖拽排序',
-            '2. 更新axios版本到1.12.0',
-            '3. 更新vite版本到7.1.5',
-            '4. 更新vue版本到3.5.22',
-            '5. 更新spring boot版本到3.5.6',
-            '6. 更新mybatis-plus版本到3.5.14',
-            '7. 更新xxl-job版本到3.2.0',
-            '8. redis工具类使用scan替换keys *',
-            '9. 优化刷新字典缓存实现方式',
+            '2. view-tabs在刷新/登陆时支持恢复到变化前的状态',
+            '3. 更新axios版本到1.12.0',
+            '4. 更新vite版本到7.1.5',
+            '5. 更新vue版本到3.5.22',
+            '6. 更新spring boot版本到3.5.6',
+            '7. 更新mybatis-plus版本到3.5.14',
+            '8. 更新xxl-job版本到3.2.0',
+            '9. redis工具类使用scan替换keys *',
+            '10. 优化刷新字典缓存实现方式',
         ]
     }
 ]
@@ -21,10 +22,26 @@ const activeUpdate = [
  * 项目开发可以将 views/index 中内容删除，在 router 中重新配置首页即可
  */
 export const versionInfo = {
-    springBootVersion: ' 3.3.10',
-    vueVersion: ' 3.5.13',
+    springBootVersion: ' 3.5.6',
+    vueVersion: ' 3.5.22',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.2.3',
+            updateDate: '2025-10-08',
+            updateContent: [
+                '1. view-tabs支持拖拽排序',
+                '2. view-tabs在刷新/登陆时支持恢复到变化前的状态',
+                '3. 更新axios版本到1.12.0',
+                '4. 更新vite版本到7.1.5',
+                '5. 更新vue版本到3.5.22',
+                '6. 更新spring boot版本到3.5.6',
+                '7. 更新mybatis-plus版本到3.5.14',
+                '8. 更新xxl-job版本到3.2.0',
+                '9. redis工具类使用scan替换keys *',
+                '10. 优化刷新字典缓存实现方式',
+            ]
+        },
         {
             version: '1.2.2',
             updateDate: '2025-08-03',
