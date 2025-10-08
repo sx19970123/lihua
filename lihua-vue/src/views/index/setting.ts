@@ -10,6 +10,8 @@ const activeUpdate = [
             '5. 更新spring boot版本到3.5.6',
             '6. 更新mybatis-plus版本到3.5.14',
             '7. 更新xxl-job版本到3.2.0',
+            '8. redis工具类使用scan替换keys *',
+            '9. 优化刷新字典缓存实现方式',
         ]
     }
 ]
