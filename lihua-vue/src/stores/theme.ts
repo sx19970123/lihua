@@ -284,7 +284,7 @@ export const useThemeStore = defineStore('theme',{
         resetState() {
             this.$state.layoutType = settings.layoutType
             this.$state.componentSize = settings.componentSize
-            this.$state.showViewTabs = settings.showViewTabs
+            this.$state.showViewTabs = false
             this.$state.isDarkTheme = localStorage.getItem("data-theme") === "dark"
             this.$state.followSystemTheme = settings.followSystemTheme
             this.$state.colorPrimary = settings.themeConfig.token.colorPrimary

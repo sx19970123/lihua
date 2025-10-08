@@ -32,7 +32,12 @@ export const useSettingStore = defineStore('setting', {
             try {
                 const resp = await querySysSettingByComponentName(componentName)
                 if (resp.code === 200) {
-                    return JSON.parse(resp.data.settingJson) as T
+                    // 判断返回的settingJson是否存在
+                    const data = resp.data?.settingJson
+                    if (data) {
+                        return JSON.parse(resp.data.settingJson) as T
+                    }
+                    return undefined;
                 } else {
                     message.error(resp.msg)
                     return undefined

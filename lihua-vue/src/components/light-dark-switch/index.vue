@@ -53,7 +53,7 @@ const handleChangeTheme = (checked: boolean, event: PointerEvent) => {
             clipPath: checked ? [...clipPath].reverse() : clipPath,
           },
           {
-            duration: 380,
+            duration: 400,
             easing: "ease-in",
             pseudoElement: checked
                 ? "::view-transition-old(root)"

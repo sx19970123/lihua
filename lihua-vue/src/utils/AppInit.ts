@@ -39,7 +39,7 @@ export const init = () => {
 
         // 清空组件keep-alive
         viewTabsStore.clearComponentsKeepAlive()
-
+        console.log("初始化执行完成")
         resolve(resp)
       } catch (e) {
         // 此处产生了异常应该由then中各个方法处理，这里只进行打印即可

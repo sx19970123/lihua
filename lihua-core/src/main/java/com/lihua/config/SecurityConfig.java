@@ -64,8 +64,7 @@ public class SecurityConfig {
                         "/druid/**",                                    // druid数据库监控
                         "/doc.html",                                    // knife4文档
                         "/webjars/**",                                  // knife4文档
-                        "/v3/api-docs/**" ,                              // knife4文档
-                        "/system/user/page"                               // knife4文档
+                        "/v3/api-docs/**"                               // knife4文档
                 ).permitAll()
                 .anyRequest().authenticated());
 

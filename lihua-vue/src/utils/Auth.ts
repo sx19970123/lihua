@@ -1,5 +1,4 @@
 import { useUserStore } from "@/stores/user.ts";
-import { useThemeStore } from "@/stores/theme.ts";
 
 let userStore: ReturnType<typeof useUserStore> | null = null;
 

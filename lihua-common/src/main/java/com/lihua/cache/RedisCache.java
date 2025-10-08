@@ -1,18 +1,22 @@
 package com.lihua.cache;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lihua.exception.ServiceException;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class RedisCache {
 
@@ -167,14 +171,37 @@ public class RedisCache {
      * @param prefix redisKey前缀
      */
     public Set<String> keys(String prefix) {
-        return redisTemplate.keys(prefix + "*");
+        return scanKeys(prefix + "*");
     }
 
     /**
      * 获取redis中所有key
      */
     public Set<String> keys() {
-       return redisTemplate.keys("*");
+        return scanKeys("*");
+    }
+
+    public Set<String> scanKeys(String pattern) {
+        Set<String> keys = new HashSet<>();
+
+        redisTemplate.execute((RedisCallback<Void>) connection -> {
+            ScanOptions options = ScanOptions.scanOptions()
+                    .match(pattern)
+                    .count(1000)  // 每次扫描条数，可调整
+                    .build();
+
+            try (Cursor<byte[]> cursor = connection.scan(options)) {
+                while (cursor.hasNext()) {
+                    keys.add(new String(cursor.next(), StandardCharsets.UTF_8));
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                throw new ServiceException(e.getMessage());
+            }
+            return null;
+        });
+
+        return keys;
     }
 
     /**

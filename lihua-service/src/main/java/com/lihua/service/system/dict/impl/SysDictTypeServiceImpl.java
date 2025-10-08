@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.exception.ServiceException;
 import com.lihua.entity.system.SysDictType;
 import com.lihua.mapper.system.SysDictTypeMapper;
+import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.system.dto.SysDictTypeDTO;
 import com.lihua.service.system.dict.SysDictDataService;
 import com.lihua.service.system.dict.SysDictTypeService;
@@ -14,6 +15,7 @@ import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -145,10 +147,13 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
 
     @Override
     public void reloadCache() {
+        // 获取全部编码
         QueryWrapper<SysDictType> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().select(SysDictType::getCode);
         List<SysDictType> sysDictTypes = sysDictTypeMapper.selectList(queryWrapper);
-        sysDictTypes.forEach(dictType -> DictUtils.resetCacheDict(dictType.getCode()));
+        List<String> allDictCodeList = sysDictTypes.stream().map(SysDictType::getCode).toList();
+        // 重新缓存
+        DictUtils.resetCacheDict(allDictCodeList);
     }
 
     private void checkDictData(List<String> ids) {

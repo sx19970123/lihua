@@ -133,6 +133,18 @@ export const useViewTabsStore = defineStore('viewTabs',{
             // 缓存数据
             handleAddTabCache(tab);
         },
+        // 根据routerPathKey重置viewTabs
+        resetViewTabsByPathKeys(routerPathKeyList: Array<string>) {
+            if (routerPathKeyList && routerPathKeyList.length > 0) {
+                this.$state.viewTabs = []
+                routerPathKeyList.forEach(key => {
+                    const target = this.totalViewTabs.filter(tab => tab.routerPathKey === key)
+                    if (target && target.length > 0) {
+                        this.addViewTab(target[0])
+                    }
+                })
+            }
+        },
         mergeTabQuery(originQuery?: string, tempQuery?: string): string {
             if (!tempQuery) return originQuery || '';
 
@@ -227,6 +239,12 @@ export const useViewTabsStore = defineStore('viewTabs',{
             const index = viewTabs.findIndex(t => t.routerPathKey === tab.routerPathKey)
             viewTabs.splice(index,1)
             viewTabs.splice(viewTabs.length,0,tab)
+        },
+        // 移动元素
+        move(fromIndex: number, toIndex: number) {
+            const viewTabs = this.$state.viewTabs
+            const item = viewTabs.splice(fromIndex, 1)[0] // 取出元素
+            viewTabs.splice(toIndex, 0, item)            // 插入到目标位置
         },
         // 设置缓存viewCache key
         setViewCacheKey(username:string): void {
