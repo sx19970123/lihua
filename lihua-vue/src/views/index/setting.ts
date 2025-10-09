@@ -1,18 +1,10 @@
 // 当前版本更新记录
 const activeUpdate = [
     {
-        version: '1.2.3',
+        version: '1.2.4',
         record: [
-            '1. view-tabs支持拖拽排序',
-            '2. view-tabs在刷新/登陆时支持恢复到变化前的状态',
-            '3. 更新axios版本到1.12.0',
-            '4. 更新vite版本到7.1.5',
-            '5. 更新vue版本到3.5.22',
-            '6. 更新spring boot版本到3.5.6',
-            '7. 更新mybatis-plus版本到3.5.14',
-            '8. 更新xxl-job版本到3.2.0',
-            '9. redis工具类使用scan替换keys *',
-            '10. 优化刷新字典缓存实现方式',
+            '1.view-tabs 恢复方式变化',
+
         ]
     }
 ]

@@ -1,9 +1,19 @@
 <template>
   <div style="padding-right: 8px">
+    <!--  恢复view-tabs缓存标签  -->
+    <Transition name="down" mode="out-in">
+      <button class="ant-tabs-nav-more" v-if="reversible" @click="reverse">
+        <a-tooltip title="恢复缓存的标签页" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+          <RollbackOutlined />
+        </a-tooltip>
+      </button>
+    </Transition>
+    <!--  是否显示layout  -->
     <button class="ant-tabs-nav-more" @click="showHideLayout">
       <ExpandOutlined v-if="viewTabsStore.showLayout" />
       <CompressOutlined v-else />
     </button>
+    <!--  更多操作  -->
     <a-dropdown :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
       <button class="ant-tabs-nav-more">
         <MoreOutlined />
@@ -75,11 +85,14 @@
 </template>
 <script setup lang="ts">
 import { useViewTabsStore } from "@/stores/viewTabs";
-import {ref, watch} from "vue";
+import { ref, watch, defineExpose} from "vue";
 import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {handleTime} from "@/utils/HandleDate.ts";
+import {isEqual} from "lodash-es";
+
 const viewTabsStore = useViewTabsStore()
 const emits = defineEmits(['routeSkip','cancelKeepAlive'])
+
 /**
  * 处理点击菜单后执行功能
  * @param key
@@ -152,6 +165,7 @@ handleRecentList(viewTabsStore.viewTabs)
  */
 // 鉴定收藏夹变化
 const starData = ref()
+
 watch(()=> viewTabsStore.totalViewTabs,(value)=> {
   handleStarList(value)
 },{deep: true})
@@ -177,6 +191,59 @@ const showHideLayout = () => {
   viewTabsStore.setShowLayoutAttribute()
 }
 
+/**
+ * 初始化viewTabs缓存
+ */
+const initViewTabsCache = () => {
+  // 缓存key
+  const catchKey = "cacheViewTabs"
+  // 可退回的pathKey集合
+  let reversibleData: Array<string> = []
+  // 是否可应用缓存的view
+  const reversible = ref<boolean>(false)
+
+  const reverse = () => {
+    viewTabsStore.resetViewTabsByPathKeys(reversibleData)
+    reversible.value = false
+  }
+
+  // 设置缓存
+  const setCache = () => {
+    localStorage.setItem(catchKey, JSON.stringify(viewTabsStore.viewTabs.map(tab => tab.routerPathKey)))
+    reversible.value = false
+  }
+
+  // 执行检查，首次加载viewTabs时由父组件调用
+  const checkCache = () => {
+    // 获取缓存中的标签页key集合
+    const cacheRouterPathKeyJson = localStorage.getItem(catchKey)
+    if (cacheRouterPathKeyJson) {
+      const cacheRouterPathKeyList = JSON.parse(cacheRouterPathKeyJson)
+      // 获取当前标签页key集合
+      const routerPathKeyList = viewTabsStore.viewTabs.map(tab => tab.routerPathKey)
+      // 比较不同则提示用户是否恢复
+      if (!isEqual(routerPathKeyList, cacheRouterPathKeyList)) {
+        reversible.value = true
+        reversibleData = cacheRouterPathKeyList
+      }
+    }
+  }
+
+  return {
+    reversible, setCache, checkCache, reverse
+  }
+
+}
+
+const {reversible, setCache, checkCache, reverse} = initViewTabsCache()
+
+/**
+ * 向父组件暴露方法
+ */
+defineExpose({
+  checkCache,
+  setCache
+})
 </script>
 <style>
 .ant-tabs-nav-more {
