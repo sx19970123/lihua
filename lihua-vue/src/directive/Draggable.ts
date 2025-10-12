@@ -1,10 +1,14 @@
 import {type App, type DirectiveBinding, ref, watch, watchEffect} from 'vue'
 import { useDraggable } from '@vueuse/core';
+import {isMobile} from 'is-mobile'
 
 export default (app: App<Element>) => {
     app.directive('draggable', {
         mounted(el: HTMLElement, binding: DirectiveBinding) {
-
+            // 移动端不加载拖拽
+            if (isMobile()) {
+                return
+            }
             // 绑定的css
             let targetClass = binding.value
             if (!targetClass) {

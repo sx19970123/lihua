@@ -47,6 +47,7 @@ import { useRoute, useRouter } from "vue-router";
 import {useViewTabsStore} from "@/stores/viewTabs";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {type DraggableEvent, useDraggable} from 'vue-draggable-plus';
+import {isMobile} from 'is-mobile'
 
 const viewTabRef = useTemplateRef<ComponentPublicInstance>('viewTabRef')
 const tabRightMenuRef = useTemplateRef<typeof TabRightMenu>('tabRightMenuRef')
@@ -152,6 +153,10 @@ const initDrag = () => {
   const tabsRenderKey = ref(0)
   // 开始排序
   const startDrag = () => {
+    // 移动端不加载拖拽
+    if (isMobile()) {
+      return
+    }
     const navList = viewTabRef.value?.$el.querySelector('.ant-tabs-nav-list') as HTMLElement | null
     const option = ref({
       animation: 200,
