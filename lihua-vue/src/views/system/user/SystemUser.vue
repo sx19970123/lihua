@@ -398,7 +398,6 @@ import settings from "@/settings.ts";
 const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
 const settingStore = useSettingStore()
 const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
-const modalRef = useTemplateRef('modalRef')
 // 显示更多按钮
 const showMore = ref<boolean>(false)
 // 默认密码
