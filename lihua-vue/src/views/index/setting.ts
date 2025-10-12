@@ -1,9 +1,8 @@
-// 当前版本更新记录
-const activeUpdate = [
+// 下一版本更新记录
+const nextUpdate = [
     {
-        version: '1.2.4',
+        version: '1.2.5',
         record: [
-            '1.view-tabs 恢复方式变化',
 
         ]
     }
@@ -18,6 +17,15 @@ export const versionInfo = {
     vueVersion: ' 3.5.22',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.2.4',
+            updateDate: '2025-10-12',
+            updateContent: [
+                '1.view-tabs恢复到变化前状态方式由通知提示修改为view-tabs右侧按钮提示',
+                '2.取消亮暗色模式切换扩散动画',
+                '3.新增拖拽指令 v-draggable，详见：http://doc.lihua.xyz/#/document/CLIENT?id=%e4%bd%bf%e7%94%a8%e8%87%aa%e5%ae%9a%e4%b9%89%e6%8c%87%e4%bb%a4'
+            ]
+        },
         {
             version: '1.2.3',
             updateDate: '2025-10-08',

@@ -226,7 +226,7 @@
 <!--    分享模态框-->
     <a-modal v-model:open="showShareModal" @cancel="handleCloseShareModal">
       <template #title>
-        <div style="margin-bottom: 24px">
+        <div style="margin-bottom: 24px" v-draggable>
           <a-typography-title :level="4">{{shareName}}</a-typography-title>
         </div>
       </template>
