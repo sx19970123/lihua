@@ -3,7 +3,7 @@ const nextUpdate = [
     {
         version: '1.2.5',
         record: [
-
+            '1.easy-tree-select组件新增 defaultExpandAll:boolean, checkStrictly:boolean属性，指定默认展开全部、默认父子关联'
         ]
     }
 ]
