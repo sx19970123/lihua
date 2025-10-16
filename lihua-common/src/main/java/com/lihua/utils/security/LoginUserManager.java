@@ -72,7 +72,8 @@ public class LoginUserManager {
     public static String setLoginUserCache(LoginUser loginUser) {
         // 记录过期时间
         loginUser.setExpirationTime(DateUtils.now().plusMinutes(lihuaConfig().getTokenExpireTime()));
-
+        // 隐藏用户密码
+        loginUser.getUser().setPassword(null);
         // 当 loginUser 的 cacheKey 不存在，即为新登录用户，重新生成cacheKey，其余情况均为刷新缓存
         String cacheKey = loginUser.getCacheKey();
         if (!StringUtils.hasText(cacheKey)) {

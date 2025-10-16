@@ -19,9 +19,11 @@ public interface SysAuthenticationService {
 
     /**
      * 缓存用户信息
+     * @param loginUser 登录用户缓存数据
+     * @param isReload 是否刷新数据
      * @return redis缓存key
      */
-    String cacheLoginUserInfo(LoginUser loginUser);
+    String cacheLoginUserInfo(LoginUser loginUser, boolean isReload);
 
     /**
      * 缓存用户信息并返回token
