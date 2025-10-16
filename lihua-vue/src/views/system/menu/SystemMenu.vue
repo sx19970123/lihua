@@ -168,7 +168,7 @@
              @ok="saveMenu"
     >
       <template #title>
-        <div style="margin-bottom: 24px">
+        <div style="margin-bottom: 24px" v-draggable>
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
         </div>
       </template>

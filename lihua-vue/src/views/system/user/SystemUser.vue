@@ -214,7 +214,7 @@
 
     <a-modal v-model:open="modalActive.open">
       <template #title>
-        <div style="margin-bottom: 24px">
+        <div style="margin-bottom: 24px" v-draggable>
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
         </div>
       </template>
@@ -330,7 +330,7 @@
 <!--    重置密码-->
      <a-modal v-model:open="showResetPassword" width="400px">
        <template #title>
-         <div style="margin-bottom: 24px">
+         <div style="margin-bottom: 24px" v-draggable>
            <a-typography-title :level="4">重置{{targetUserInfo.nickname ? targetUserInfo.nickname + '的' : ''}}密码</a-typography-title>
          </div>
        </template>

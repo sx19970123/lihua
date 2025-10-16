@@ -2,7 +2,7 @@
   <div style="padding-right: 16px;">
     <a-config-provider :wave="{ disabled: true }">
       <a-switch v-model:checked="themeStore.isDarkTheme"
-                @change="handleChangeTheme"
+                @change="() => themeStore.changeDataDark()"
                 :style="{'background': themeStore.isDarkTheme ? '#00008B' : '#2196F3'}">
         <template #checkedChildren>
           <XiaoHeiMoon/>

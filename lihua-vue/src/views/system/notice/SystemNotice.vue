@@ -162,7 +162,7 @@
 <!--    保存修改模态框-->
     <a-modal v-model:open="modalActive.open" :width="960" @ok="saveNotice" destroy-on-close>
       <template #title>
-        <div style="margin-bottom: 24px">
+        <div style="margin-bottom: 24px" v-draggable>
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
         </div>
       </template>

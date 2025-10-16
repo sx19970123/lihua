@@ -57,15 +57,21 @@ const treeRef = useTemplateRef<InstanceType<typeof ATree>>("treeRef")
 // 接收的参数：
 // treeData 树形结构数据；
 // fieldNames 树形结构字段对应别名
+// defaultExpandAll 是否默认展开全部
+// checkStrictly 是否父子关联
 // multiple 是否支持多选
-// toolbar 是否显示工具栏
+// showToolbar 是否显示工具栏
+// showSearch 显示搜索框
+// searchPlaceholder 搜索框提示词
 // bodyStyle 卡片body样式
+// maxHeight 最大高度
+// bordered 展示边框
 // modelValue v-model双向绑定
 const {treeData, fieldNames = {
   children: 'children',
   title: 'label',
   key: 'id'
-}, defaultExpandAll = false, multiple = true, showToolbar = true, showSearch = true, searchPlaceholder = "请输入关键词", bodyStyle = {padding: '8px',borderRadius: '8px'}, maxHeight, bordered = true, modelValue} = defineProps<{
+}, defaultExpandAll = false, checkStrictly = false, multiple = true, showToolbar = true, showSearch = true, searchPlaceholder = "请输入关键词", bodyStyle = {padding: '8px',borderRadius: '8px'}, maxHeight, bordered = true, modelValue} = defineProps<{
   // 树形结构数据
   treeData: Array<any>,
   // 树形结构别名
@@ -76,6 +82,8 @@ const {treeData, fieldNames = {
   },
   // 是否默认展开全部
   defaultExpandAll?: boolean,
+  // 是否父子关联
+  checkStrictly?: boolean,
   // 是否支持多选
   multiple?: boolean,
   // 显示工具栏
@@ -98,6 +106,7 @@ const {treeData, fieldNames = {
 // change 双向绑定值发生变化时触发
 const emits = defineEmits(['update:modelValue', 'change'])
 
+// 重置
 defineExpose({
   reset: () => handleReset()
 })
@@ -112,7 +121,7 @@ type TreeSettingType = {
   checked: boolean,
 }
 // 树形结构控制属性
-const treeSetting = ref<TreeSettingType>({expand: false, checkStrictly: false, checked: false});
+const treeSetting = ref<TreeSettingType>({expand: defaultExpandAll, checkStrictly: checkStrictly, checked: false});
 // 展开的节点
 const expandKeys = ref<any[]>([])
 // 选中的节点
@@ -175,9 +184,10 @@ const handleCheckStrictly = () => {
 
 // 处理重置组件：全部取消选中、取消展开、关闭父子关联，清空keyword关键字，双向绑定数据清空
 const handleReset = () => {
-  treeSetting.value.expand = false
+  treeSetting.value.expand = defaultExpandAll
+  treeSetting.value.checkStrictly = checkStrictly
   treeSetting.value.checked = false
-  treeSetting.value.checkStrictly = false
+
   keyword.value = ''
   handleChangeKeyWord()
   handleExpandAll()
@@ -212,7 +222,7 @@ const handleChangeKeyWord = () => {
     treeSetting.value.expand = true
   } else {
     // 折叠全部树形结构
-    treeSetting.value.expand = false
+    treeSetting.value.expand = defaultExpandAll
     deepCloneTreeData.value = treeData
   }
   handleExpandAll()
@@ -280,16 +290,10 @@ const handleAllKeys = () => {
       if (item[fieldNames.children] && item[fieldNames.children].length >= 0) {
         allParentKeys.value.push(item[fieldNames.key])
       }
-      // 默认全部展开key
-      if (defaultExpandAll) {
-        expandKeys.value.push(item[fieldNames.key])
-      }
     }
   }, fieldNames.children)
   // 默认全选回显
-  if (defaultExpandAll) {
-    treeSetting.value.expand = true
-  }
+  handleExpandAll()
   // 处理全选回显
   handleAllChecked()
 }
