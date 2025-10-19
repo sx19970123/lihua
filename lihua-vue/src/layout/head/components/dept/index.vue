@@ -1,14 +1,10 @@
 <template>
   <a-dropdown v-model:open="open" trigger="click" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
-    <a-tooltip title="默认部门" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
-      <span class="header-right-item header-right" style="max-width: 130px">
-        <a-typography-text ellipsis
-                           class="text-default-color"
-                           :type="userStore.defaultDeptName ? '' : 'secondary'"
-                           :content="userStore.defaultDeptName ? userStore.defaultDeptName : '设置默认部门'"
-                           style="vertical-align: middle"/>
-      </span>
-    </a-tooltip>
+    <a-button type="text" class="header-right-item" style="max-width: 130px">
+      <a-tooltip title="默认部门" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+        <a-typography-text ellipsis class="text-default-color" :type="userStore.defaultDeptName ? '' : 'secondary'" :content="userStore.defaultDeptName ? userStore.defaultDeptName : '设置默认部门'"/>
+      </a-tooltip>
+    </a-button>
     <template #overlay>
       <div class="default-dept-card">
         <default-dept @dept-select="handleDeptSelect"/>

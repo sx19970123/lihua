@@ -1,6 +1,6 @@
 <template>
   <a-spin :spinning="loading">
-    <a-flex :gap="props.gap" :wrap="props.vertical ? '' : 'wrap'" :vertical="props.vertical" class="scrollbar" :style="{'max-height': props.vertical ? props.maxHeight + 'px' : 'none'}">
+    <a-flex :gap="props.gap" :wrap="props.vertical ? '' : 'wrap'" :vertical="props.vertical" class="scrollbar" :style="{'max-height': props.vertical ? props.maxHeight + 'px' : 'none', ...props.cardStyle}">
       <div :style="props.itemStyle" v-if="props.dataSource && props.dataSource.length > 0" v-for="(item,index) in props.dataSource">
         <div class="select-card"
              @click.stop="handleClickCard(item)"
@@ -42,6 +42,12 @@ const props = defineProps({
     type: Number,
     default: 16,
   },
+  // 样式
+  cardStyle: {
+    type: Object,
+    default: {}
+  },
+  // 元素样式
   itemStyle: {
     type: Object,
     default: {}

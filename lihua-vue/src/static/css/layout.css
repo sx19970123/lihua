@@ -20,9 +20,7 @@
 
 /*顶栏右侧元素样式*/
 .header-right-item {
-    padding: 0 8px 0 8px;
-    border-radius: 4px;
-    cursor: pointer;
+    padding: 0 4px 0 4px;
 }
 
 

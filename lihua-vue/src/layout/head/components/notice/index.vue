@@ -86,14 +86,16 @@
         </div>
       </template>
 <!--                      通知公告主体-->
-      <div class="header-right-item header-right" @click="() => open = true">
-        <a-tooltip title="通知公告" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
-          <a-badge :count="unReadCount" :offset="[-4,4]" style="color: #FFFFFF">
-            <a-avatar :size="32" style="background-color: rgba(0,0,0,0)">
-              <BellOutlined class="icon-default-color"/>
-            </a-avatar>
+      <div class="header-right-item" @click="() => open = true">
+          <a-badge :count="unReadCount" :offset="[-5,5]" style="color: #FFFFFF">
+            <a-button type="text">
+              <template #icon>
+                <a-tooltip title="通知公告" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
+                  <BellOutlined class="icon-default-color"/>
+                </a-tooltip>
+              </template>
+            </a-button>
           </a-badge>
-        </a-tooltip>
       </div>
     </a-dropdown>
 <!--                      详情dialog-->
