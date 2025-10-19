@@ -18,8 +18,6 @@ public class CacheUserStrategyImpl implements CacheLoginUserStrategy {
         CurrentUser user = loginUser.getUser();
         // 重新查询user
         user = sysUserMapper.loginSelect(user.getUsername());
-        // 缓存中隐藏密码
-        user.setPassword(null);
         // 重新设置user
         loginUser.setUser(user);
     }

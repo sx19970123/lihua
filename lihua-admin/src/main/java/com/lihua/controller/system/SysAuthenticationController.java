@@ -114,7 +114,7 @@ public class SysAuthenticationController extends ApiResponseController {
     @PostMapping("reloadData")
     @RateLimiter
     public ApiResponseModel<String> reloadData() {
-        sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser());
+        sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser(), true);
         return success();
     }
 
