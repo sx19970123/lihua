@@ -66,6 +66,32 @@ export const traverse = <T> (tree: Array<T>, callback: (item: T) => void, childr
   })
 }
 
+/**
+ * 遍历树结构并回调每个节点，callback 返回值将被收集成数组。
+ * @param tree 树形数组
+ * @param callback 每个节点调用的回调函数，参数为 (path: T[])，包含从根到当前节点的完整路径
+ * @param children 子节点字段名，默认 'children'
+ */
+export const traverseWithPath = <T> (tree: T[], callback: (path: T[]) => any, children: string = DEFAULT_CHILDREN) => {
+  const result: any[] = [];
+
+  const dfs = (nodes: T[], path: T[]) => {
+    for (const node of nodes) {
+      const newPath = [...path, node];
+      // 收集 callback 返回值
+      result.push(callback(newPath));
+
+      const childList = (node as any)[children];
+      if (Array.isArray(childList) && childList.length > 0) {
+        dfs(childList, newPath);
+      }
+    }
+  };
+
+  dfs(tree, []);
+  return result;
+}
+
 // 处理将树形结构进行扁平化
 const handleFlatten = <T> (tree:Array<T>, resultList:Array<T> , children: string = DEFAULT_CHILDREN)=> {
   tree.forEach((item:any) => {

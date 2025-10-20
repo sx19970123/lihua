@@ -163,7 +163,7 @@ handleRecentList(viewTabsStore.viewTabs)
 /**
  * 处理收藏夹
  */
-// 鉴定收藏夹变化
+// 监听收藏夹变化
 const starData = ref()
 
 watch(()=> viewTabsStore.totalViewTabs,(value)=> {
