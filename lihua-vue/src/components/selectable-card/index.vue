@@ -1,6 +1,6 @@
 <template>
   <a-spin :spinning="loading">
-    <a-flex :gap="props.gap" :wrap="props.vertical ? '' : 'wrap'" :vertical="props.vertical" class="scrollbar" :style="{'max-height': props.vertical ? props.maxHeight + 'px' : 'none', ...props.cardStyle}">
+    <a-flex :gap="props.gap" :wrap="props.vertical ? 'nowrap' : 'wrap'" :vertical="props.vertical" class="scrollbar" ref="selectableRef" :style="{'max-height': props.vertical ? props.maxHeight + 'px' : 'none', ...props.cardStyle}">
       <div :style="props.itemStyle" v-if="props.dataSource && props.dataSource.length > 0" v-for="(item,index) in props.dataSource">
         <div class="select-card"
              @click.stop="handleClickCard(item)"
@@ -30,7 +30,8 @@
 
 <script setup lang="ts">
 // 接受父组件传递参数
-import {reactive, ref, watch, defineProps} from "vue";
+import {reactive, ref, watch, defineProps, useTemplateRef, onMounted} from "vue";
+import AFlex from "ant-design-vue/es/flex"
 import { cloneDeep } from 'lodash-es'
 import {theme} from "ant-design-vue";
 const {token} = theme.useToken()
@@ -81,6 +82,11 @@ const props = defineProps({
   emptyDescription: {
     type: String
   },
+  // 需要显示的元素索引
+  scrollViewIndex: {
+    type: Number,
+    default: 0
+  },
   // 加载中
   loading: {
     type: Boolean,
@@ -96,6 +102,9 @@ const emit = defineEmits(['update:modelValue','click','change'])
 
 // 选中的元素集合
 const activeCardValueList = reactive<Array<any>>([])
+
+// 组件ref
+const selectableRef = useTemplateRef<InstanceType<typeof AFlex>>('selectableRef')
 
 // 处理点击选中
 const handleClickCard = (item: any): void => {
@@ -168,6 +177,39 @@ const handleVmodel = () => {
 }
 // 第一次调用
 handleVmodel()
+
+/**
+ * 设置滚动条位置
+ * 保证目标元素在可见范围
+ * @param index 元素索引
+ */
+const scrollIntoView = (index: number) => {
+  const el = selectableRef.value?.$el
+  if (!el) return
+
+  if (index === -1) {
+    el.scrollTop = 0
+    return;
+  }
+
+  const target = el.children[index]
+  const containerRect = el.getBoundingClientRect()
+  const targetRect = target.getBoundingClientRect()
+
+  const isAbove = targetRect.top < containerRect.top
+  const isBelow = targetRect.bottom > containerRect.bottom
+
+  if (isAbove) {
+    el.scrollTop -= (containerRect.top - targetRect.top)
+  } else if (isBelow) {
+    el.scrollTop += (targetRect.bottom - containerRect.bottom)
+  }
+}
+
+
+watch(() => props.scrollViewIndex, (value) => {
+  scrollIntoView(value)
+})
 
 // 选中的卡片样式
 const bodyStyle = ref<{

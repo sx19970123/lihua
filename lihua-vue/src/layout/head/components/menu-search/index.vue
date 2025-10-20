@@ -11,13 +11,14 @@
         </template>
       </a-input>
     </div>
+
 <!--    菜单搜索dialog-->
-    <a-modal v-model:open="open" :closable="false">
+    <a-modal v-model:open="open" :closable="false" :z-index="99999">
 <!--      我的收藏-->
       <a-typography-text strong v-if="starDataList.length > 0">我的收藏</a-typography-text>
       <a-flex :gap="8" wrap="wrap" class="menu-group">
         <div v-for="(starData, index) in starDataList" v-show="starMenuUnfoldStatus ? index <= starDataList.length : index < 3">
-          <a-button size="small">
+          <a-button size="small" @click="skipMenu(starData.routerPathKey)">
             <template #icon>
               <component :is="starData.icon"/>
             </template>
@@ -32,7 +33,7 @@
       <a-typography-text strong v-if="recentDataList.length > 0">最近使用</a-typography-text>
       <a-flex :gap="8" wrap="wrap" class="menu-group">
         <div v-for="(recentData, index) in recentDataList" v-show="recentMenuUnfoldStatus ? index <= recentDataList.length : index < 3">
-          <a-button size="small">
+          <a-button size="small"  @click="skipMenu(recentData.path)">
             <template #icon>
               <component :is="recentData.icon"/>
             </template>
@@ -50,11 +51,24 @@
           class="menu-content"
           v-model="pathKey"
           :gap="4"
-          :data-source="[]"
-          item-key="index"
-          vertical>
-        <template #content="{item}">
-          {{item.index}}
+          :data-source="menuList"
+          :scroll-view-index="selectedIndex"
+          item-key="key"
+          vertical
+          ref="allMenuCardRef"
+          @click="handleClickMenu"
+      >
+        <template #content="{item, isSelected, color}">
+          <a-flex justify="space-between">
+            <a-space size="middle">
+              <component :is="item.icon" style="font-size: 18px" :style="{color: isSelected ? color : ''}"/>
+              <a-flex vertical>
+                <a-typography-text :style="{color: isSelected ? color : ''}">{{item.label}}</a-typography-text>
+                <a-typography-text type="secondary" :style="{color: isSelected ? color : ''}">{{item.key}}</a-typography-text>
+              </a-flex>
+            </a-space>
+            <EnterOutlined v-show="isSelected" :style="{ color }"/>
+          </a-flex>
         </template>
       </selectable-card>
       <!--      头部搜索栏-->
@@ -87,21 +101,31 @@
 import {nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watchEffect} from "vue";
 import {useViewTabsStore} from "@/stores/viewTabs.ts";
 import {usePermissionStore} from "@/stores/permission.ts";
+import {useRouter} from "vue-router";
 import {osType} from "@/utils/OS"
 import SelectableCard from "@/components/selectable-card/index.vue";
 import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {traverseWithPath} from "@/utils/Tree.ts";
+import {cloneDeep} from "lodash-es"
 import type {ItemType} from "ant-design-vue";
-import type {RouteRecordRaw} from "vue-router";
 
 const viewTabsStore = useViewTabsStore();
 const permissionStore = usePermissionStore();
+const router = useRouter();
+
+// 菜单类型
+type MenuItem = ItemType & {children: ItemType[], label: string, key: string}
+
 // modal开关
 const open = ref<boolean>(false)
 // 菜单path
-const pathKey = ref<number>(1)
+const pathKey = ref<string>()
+// 滚动条位置
+const selectedIndex = ref<number>(0)
 // 搜索框ref
 const menuSearchInputRef = useTemplateRef<HTMLInputElement>('menuSearchInputRef')
+// 全部按钮ref
+const allMenuCardRef = useTemplateRef<InstanceType<typeof SelectableCard>>('allMenuCardRef')
 
 // 监听键盘按下事件
 const handleKeydown = (e: KeyboardEvent) => {
@@ -112,21 +136,54 @@ const handleKeydown = (e: KeyboardEvent) => {
     open.value = !open.value
   }
 
-  // 上按键，选择菜单
+  // 下按键，选择菜单
   if (open.value && e.key === 'ArrowDown') {
     e.preventDefault()
-    pathKey.value++
+    if (pathKey.value) {
+      let index = menuList.value.findIndex(item => item && item.key === pathKey.value)
+      if (index !== menuList.value.length - 1) {
+        index++
+      }
+      pathKey.value = menuList.value[index]?.key as string
+      selectedIndex.value = index
+    }
   }
 
-  // 下按键，选择菜单
+  // 上按键，选择菜单
   if (open.value && e.key === 'ArrowUp') {
     e.preventDefault()
-    pathKey.value--
+    if (pathKey.value) {
+      let index = menuList.value.findIndex(item => item && item.key === pathKey.value)
+      if (index !== 0) {
+        index--
+      }
+      selectedIndex.value = index
+      pathKey.value = menuList.value[index]?.key as string
+    }
   }
 
   // 回车键，进入菜单
-  if (open.value && e.key === 'Enter') {
+  if (open.value && pathKey.value && e.key === 'Enter') {
+    skipMenu(pathKey.value)
+  }
+}
 
+/**
+ * 点击切换页面
+ * @param item 点击元素
+ */
+const handleClickMenu = ({item}: {item: MenuItem}) => {
+  skipMenu(item.key)
+}
+
+/**
+ * 跳转菜单
+ * @param key 菜单路径
+ */
+const skipMenu = (key?: string | null) => {
+  if (key) {
+    router.push(key)
+    open.value = false
   }
 }
 
@@ -135,40 +192,56 @@ const handleKeydown = (e: KeyboardEvent) => {
  * 初始化全部菜单
  */
 const initAllMenu = () => {
+  const menuList = ref<ItemType[]>([])
 
-  // 获取全部菜单
-  const getMenu = () => {
-    const menuRouters = permissionStore.menuRouters
+  // 加载全部菜单
+  const loadAllMenu = () => {
+    menuList.value = []
+    const menuRouters = cloneDeep(permissionStore.menuRouters)
     // 递归所有菜单
     traverseWithPath(menuRouters, (menuItems) => {
+      // 单层
       if (menuItems.length === 1) {
-        const firstItem: any = menuItems[0]
+        const firstItem = menuItems[0] as MenuItem
         // children 不存在，认为是页面
-        if (firstItem.children === undefined || firstItem.children === null) {
-
+        if (firstItem && firstItem.children === undefined) {
+          menuList.value.push(firstItem)
         }
-      } else {
-
       }
-      console.log("menuItem===", menuItems)
+      // 多层，合并label
+      else {
+        const lastItem = menuItems[menuItems.length - 1] as MenuItem
+        if (lastItem && lastItem.children === undefined) {
+          lastItem.label = menuItems.map((item) => {
+            const menuItem = item as MenuItem
+            return menuItem.label;
+          }).join("/")
+          menuList.value.push(lastItem)
+        }
+      }
     })
-
   }
 
   return {
-    getMenu
+    menuList,
+    loadAllMenu
   }
 }
 
-const { getMenu } = initAllMenu()
-
+const { menuList, loadAllMenu } = initAllMenu()
 
 /**
  * 重置modal
  */
 const reset = () => {
+  pathKey.value = menuList.value[0]?.key as string
   starMenuUnfoldStatus.value = false
   recentMenuUnfoldStatus.value = false
+  // 滚动条还原
+  selectedIndex.value = -1
+  nextTick(() => {
+    selectedIndex.value = 0
+  })
 }
 
 /**
@@ -226,7 +299,7 @@ watchEffect(() => {
       menuSearchInputRef.value?.focus()
     })
     // 获取全部菜单
-    getMenu()
+    loadAllMenu()
     // 加载收藏菜单
     loadStarMenu()
     // 加载最近打开菜单
@@ -247,7 +320,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .title-search-input {
-  width: 130px;
+  width: 135px;
   margin-right: 8px;
 }
 .title-search-input:hover {
