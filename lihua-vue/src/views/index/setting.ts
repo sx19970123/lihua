@@ -1,15 +1,9 @@
 // 下一版本更新记录
 const nextUpdate = [
     {
-        version: '1.2.5',
+        version: '1.2.6',
         record: [
-            '1.新增菜单搜索功能',
-            '2.优化head布局',
-            '3.easy-tree-select组件新增 defaultExpandAll:boolean, checkStrictly:boolean属性，指定默认展开全部、默认父子关联',
-            '4.selectable-card组件新增cardStyle:Object属性',
-            '5.selectable-card组件新增scrollViewIndex熟悉，保证传入索引值的元素始终在滚动条可视区域',
-            '6.修复角色禁用后，拥有该角色的用户登录后还能获取到对应的菜单权限的bug',
-            '7.修复取消用户菜单权限时，用户在失去权限的页面下点击数据更新后页面卡死的bug'
+
         ]
     }
 ]
@@ -23,6 +17,20 @@ export const versionInfo = {
     vueVersion: ' 3.5.22',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.2.5',
+            updateDate: '2025-10-21',
+            updateContent: [
+                '1.新增菜单搜索功能',
+                '2.优化head布局',
+                '3.easy-tree-select组件新增 defaultExpandAll:boolean, checkStrictly:boolean属性，指定默认展开全部、默认父子关联',
+                '4.selectable-card组件新增cardStyle:Object属性',
+                '5.selectable-card组件新增scrollViewIndex熟悉，保证传入索引值的元素始终在滚动条可视区域',
+                '6.修复角色禁用后，拥有该角色的用户登录后还能获取到对应的菜单权限的bug',
+                '7.修复取消用户菜单权限时，用户在失去权限的页面下点击数据更新后页面卡死的bug',
+                '8.去除debounce工具类，推荐使用lodash'
+            ]
+        },
         {
             version: '1.2.4',
             updateDate: '2025-10-12',

@@ -139,7 +139,7 @@ import {osType} from "@/utils/OS"
 import SelectableCard from "@/components/selectable-card/index.vue";
 import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {traverseWithPath} from "@/utils/Tree.ts";
-import {cloneDeep} from "lodash-es"
+import {cloneDeep, throttle} from "lodash-es"
 import type {ItemType} from "ant-design-vue";
 import settings from "@/settings.ts";
 
@@ -213,6 +213,9 @@ const handleKeydown = (e: KeyboardEvent) => {
     skipMenu(pathKey.value)
   }
 }
+
+// 函数节流
+const throttleHandleKeydown = throttle(handleKeydown, 70)
 
 /**
  * 点击切换页面
@@ -403,12 +406,12 @@ watch(() => open.value, () => {
 
 onMounted(() => {
   window.addEventListener('resize', windowWidthResize)
-  window.addEventListener('keydown', handleKeydown)
+  window.addEventListener('keydown', throttleHandleKeydown)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', windowWidthResize)
-  window.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('keydown', throttleHandleKeydown)
 })
 </script>
 

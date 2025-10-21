@@ -73,8 +73,7 @@ import type {ColumnGroupType, ColumnsType, ColumnType} from "ant-design-vue/es/t
 import {type DraggableEvent, VueDraggable} from 'vue-draggable-plus'
 import {useThemeStore} from "@/stores/theme.ts";
 import {useRouter} from "vue-router";
-import {debounce} from "@/utils/Debounce.ts";
-import {cloneDeep} from "lodash-es"
+import {cloneDeep, debounce} from "lodash-es"
 import {message} from "ant-design-vue";
 const themeStore = useThemeStore();
 const router = useRouter();
@@ -468,7 +467,7 @@ const initColumnWidth = () => {
 }
 
 // 处理防抖
-const debounceWidth = debounce(initColumnWidth)
+const debounceWidth = debounce(initColumnWidth, 300)
 
 // visible显示时才进行加载，关闭时销毁监听
 const changePopover = (visible: boolean) => {
