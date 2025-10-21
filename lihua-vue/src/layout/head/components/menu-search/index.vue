@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="header-right-item" @click="open = true" v-show="!open">
-      <a-input placeholder="搜索" readonly class="title-search-input">
+      <a-input placeholder="搜索" readonly class="title-search-input" v-if="windowWidth > settings.menuToggleWidth">
         <template #prefix>
           <SearchOutlined />
         </template>
@@ -10,6 +10,13 @@
           <a-tag style="margin-right: 0">k</a-tag>
         </template>
       </a-input>
+      <a-button type="text" v-else>
+        <template #icon>
+          <a-tooltip title="菜单搜索" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
+            <SearchOutlined class="icon-default-color"/>
+          </a-tooltip>
+        </template>
+      </a-button>
     </div>
 
 <!--    菜单搜索dialog-->
@@ -45,7 +52,7 @@
         </a-button>
       </a-flex>
 <!--      所有菜单-->
-      <a-typography-text strong>所有菜单</a-typography-text>
+      <a-typography-text strong>全部菜单</a-typography-text>
       <selectable-card
           :card-style="{marginTop: '4px', marginBottom: '4px'}"
           class="menu-content"
@@ -56,24 +63,50 @@
           item-key="key"
           vertical
           ref="allMenuCardRef"
+          empty-description="没有匹配菜单"
           @click="handleClickMenu"
       >
         <template #content="{item, isSelected, color}">
-          <a-flex justify="space-between">
+<!--          被选中的元素-->
+          <a-flex justify="space-between" v-show="isSelected">
             <a-space size="middle">
-              <component :is="item.icon" style="font-size: 18px" :style="{color: isSelected ? color : ''}"/>
+              <component :is="item.icon" class="menu-icon" :style="{color}"/>
               <a-flex vertical>
-                <a-typography-text :style="{color: isSelected ? color : ''}">{{item.label}}</a-typography-text>
-                <a-typography-text type="secondary" :style="{color: isSelected ? color : ''}">{{item.key}}</a-typography-text>
+                <a-typography-text :style="{color}">{{item.label}}</a-typography-text>
+                <a-typography-text :style="{color}">{{item.key}}</a-typography-text>
               </a-flex>
             </a-space>
             <EnterOutlined v-show="isSelected" :style="{ color }"/>
           </a-flex>
+<!--          未被选中的元素，关键词检索时需要高亮显示命中的关键词-->
+          <a-space size="middle" v-show="!isSelected">
+            <component :is="item.icon" class="menu-icon"/>
+            <a-flex vertical>
+<!--              标签匹配-->
+              <div v-if="keyword && item.label.includes(keyword)">
+                <a-typography-text>{{item.label.substring(0, item.label.indexOf(keyword))}}</a-typography-text>
+                <a-typography-text :style="{color}">{{keyword}}</a-typography-text>
+                <a-typography-text>{{item.label.substring(item.label.indexOf(keyword) + keyword?.length)}}</a-typography-text>
+              </div>
+              <div v-else>
+                <a-typography-text>{{item.label}}</a-typography-text>
+              </div>
+<!--              key匹配-->
+              <div v-if="keyword && item.key.includes(keyword)">
+                <a-typography-text type="secondary">{{item.key.substring(0, item.key.indexOf(keyword))}}</a-typography-text>
+                <a-typography-text :style="{color}">{{keyword}}</a-typography-text>
+                <a-typography-text type="secondary">{{item.key.substring(item.key.indexOf(keyword) + keyword?.length)}}</a-typography-text>
+              </div>
+              <div v-else>
+                <a-typography-text type="secondary">{{item.key}}</a-typography-text>
+              </div>
+            </a-flex>
+          </a-space>
         </template>
       </selectable-card>
       <!--      头部搜索栏-->
       <template #title>
-        <a-input placeholder="搜索菜单" size="large" allow-clear ref="menuSearchInputRef">
+        <a-input placeholder="搜索菜单，匹配名称和路径" v-model:value="keyword" @change="handleFilter" size="large" allow-clear ref="menuSearchInputRef">
           <template #prefix>
             <SearchOutlined />
           </template>
@@ -98,7 +131,7 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watchEffect} from "vue";
+import {nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from "vue";
 import {useViewTabsStore} from "@/stores/viewTabs.ts";
 import {usePermissionStore} from "@/stores/permission.ts";
 import {useRouter} from "vue-router";
@@ -108,6 +141,7 @@ import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewT
 import {traverseWithPath} from "@/utils/Tree.ts";
 import {cloneDeep} from "lodash-es"
 import type {ItemType} from "ant-design-vue";
+import settings from "@/settings.ts";
 
 const viewTabsStore = useViewTabsStore();
 const permissionStore = usePermissionStore();
@@ -115,13 +149,14 @@ const router = useRouter();
 
 // 菜单类型
 type MenuItem = ItemType & {children: ItemType[], label: string, key: string}
-
 // modal开关
 const open = ref<boolean>(false)
 // 菜单path
 const pathKey = ref<string>()
 // 滚动条位置
 const selectedIndex = ref<number>(0)
+// 窗口宽度
+const windowWidth = ref<number>(window.innerWidth)
 // 搜索框ref
 const menuSearchInputRef = useTemplateRef<HTMLInputElement>('menuSearchInputRef')
 // 全部按钮ref
@@ -143,9 +178,14 @@ const handleKeydown = (e: KeyboardEvent) => {
       let index = menuList.value.findIndex(item => item && item.key === pathKey.value)
       if (index !== menuList.value.length - 1) {
         index++
+      } else {
+        index = 0
       }
       pathKey.value = menuList.value[index]?.key as string
       selectedIndex.value = index
+    } else {
+      pathKey.value = menuList.value[0]?.key
+      selectedIndex.value = 0
     }
   }
 
@@ -156,9 +196,15 @@ const handleKeydown = (e: KeyboardEvent) => {
       let index = menuList.value.findIndex(item => item && item.key === pathKey.value)
       if (index !== 0) {
         index--
+      } else {
+        index = menuList.value.length - 1
       }
       selectedIndex.value = index
       pathKey.value = menuList.value[index]?.key as string
+    } else {
+      const index = menuList.value.length - 1
+      pathKey.value = menuList.value[index]?.key
+      selectedIndex.value = index
     }
   }
 
@@ -187,16 +233,66 @@ const skipMenu = (key?: string | null) => {
   }
 }
 
+/**
+ * 重置modal
+ */
+const reset = () => {
+  pathKey.value = undefined
+  starMenuUnfoldStatus.value = false
+  recentMenuUnfoldStatus.value = false
+  keyword.value = undefined
+  allMenuList.length = 0
+  // 滚动条还原
+  selectedIndex.value = -1
+  nextTick(() => {
+    selectedIndex.value = 0
+  })
+}
+
+/**
+ * 关键词检索
+ */
+const initKeywordSearch = () => {
+  // 关键词
+  const keyword = ref<string>()
+
+  // 处理根据关键词过滤
+  const handleFilter = () => {
+    // 重置选中的选项
+    const value = keyword.value
+    menuList.value = allMenuList
+    if (value) {
+      menuList.value = menuList.value.filter((item: MenuItem) => item && (item.label.includes(value) || item.key.includes(value)))
+      // 过滤的内容中没有当前选中的菜单，pathKey设置为空
+      const someKey = menuList.value.some((item: MenuItem) => item.key === pathKey.value)
+      if (!someKey) {
+        pathKey.value = undefined
+      }
+    }
+  }
+
+  return {
+    keyword,
+    handleFilter
+  }
+}
+
+const { keyword, handleFilter } = initKeywordSearch()
+
 
 /**
  * 初始化全部菜单
  */
 const initAllMenu = () => {
-  const menuList = ref<ItemType[]>([])
+  // 双向绑定的菜单集合
+  const menuList = ref<MenuItem[]>([])
+  // 全部菜单
+  const allMenuList: MenuItem[] = []
 
   // 加载全部菜单
   const loadAllMenu = () => {
     menuList.value = []
+    // 菜单中路由
     const menuRouters = cloneDeep(permissionStore.menuRouters)
     // 递归所有菜单
     traverseWithPath(menuRouters, (menuItems) => {
@@ -206,6 +302,7 @@ const initAllMenu = () => {
         // children 不存在，认为是页面
         if (firstItem && firstItem.children === undefined) {
           menuList.value.push(firstItem)
+          allMenuList.push(firstItem)
         }
       }
       // 多层，合并label
@@ -217,6 +314,7 @@ const initAllMenu = () => {
             return menuItem.label;
           }).join("/")
           menuList.value.push(lastItem)
+          allMenuList.push(lastItem)
         }
       }
     })
@@ -224,25 +322,12 @@ const initAllMenu = () => {
 
   return {
     menuList,
+    allMenuList,
     loadAllMenu
   }
 }
 
-const { menuList, loadAllMenu } = initAllMenu()
-
-/**
- * 重置modal
- */
-const reset = () => {
-  pathKey.value = menuList.value[0]?.key as string
-  starMenuUnfoldStatus.value = false
-  recentMenuUnfoldStatus.value = false
-  // 滚动条还原
-  selectedIndex.value = -1
-  nextTick(() => {
-    selectedIndex.value = 0
-  })
-}
+const { menuList, allMenuList, loadAllMenu } = initAllMenu()
 
 /**
  * 初始化收藏菜单
@@ -291,29 +376,38 @@ const initRecentMenu = () => {
 
 const {recentMenuUnfoldStatus, recentDataList, loadRecentMenu} = initRecentMenu()
 
-watchEffect(() => {
+/**
+ * 窗口宽度发生变化
+ */
+const windowWidthResize = () => {
+  windowWidth.value = window.innerWidth
+}
+
+watch(() => open.value, () => {
   // 打开modal时进行操作
   if (open.value) {
-    // 输入框聚焦
-    nextTick(() => {
-      menuSearchInputRef.value?.focus()
-    })
+    // 重置modal
+    reset()
     // 获取全部菜单
     loadAllMenu()
     // 加载收藏菜单
     loadStarMenu()
     // 加载最近打开菜单
     loadRecentMenu()
-    // 重置modal
-    reset()
+    // 输入框聚焦
+    nextTick(() => {
+      menuSearchInputRef.value?.focus()
+    })
   }
 })
 
 onMounted(() => {
+  window.addEventListener('resize', windowWidthResize)
   window.addEventListener('keydown', handleKeydown)
 })
 
 onBeforeUnmount(() => {
+  window.removeEventListener('resize', windowWidthResize)
   window.removeEventListener('keydown', handleKeydown)
 })
 </script>
@@ -332,6 +426,9 @@ onBeforeUnmount(() => {
 .menu-group {
   margin-top: 8px;
   margin-bottom: 8px;
+}
+.menu-icon {
+  font-size: 18px
 }
 :deep(.title-search-input input) {
   cursor: pointer;

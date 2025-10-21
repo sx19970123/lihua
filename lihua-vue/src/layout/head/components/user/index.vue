@@ -62,11 +62,9 @@ import {message} from "ant-design-vue";
 import {reloadData} from "@/api/system/auth/Auth.ts";
 import { init } from "@/utils/AppInit.ts";
 import {useViewTabsStore} from "@/stores/viewTabs.ts";
-import {useThemeStore} from "@/stores/theme.ts";
 import {ref} from "vue";
 import {ResponseError} from "@/api/global/Type.ts";
 const viewTabsStore = useViewTabsStore()
-const themeStore = useThemeStore()
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
@@ -93,10 +91,17 @@ const handleClickMenu = async ({key}: {key: string}) => {
         const resp = await reloadData()
         if (resp.code === 200) {
           init().then(() => {
-                // 重新加载ViewTag
-                viewTabsStore.init(route)
                 // 重新生成key
                 viewTabsStore.regenerateComponentKey()
+                // 校验当前菜单是否拥有权限
+                const match = viewTabsStore.$state.totalViewTabs.some(tab => tab.routerPathKey === route.fullPath)
+                if (match) {
+                  // 重新加载ViewTab
+                  viewTabsStore.init(route)
+                } else {
+                  // 跳转到首页
+                  router.push('/')
+                }
                 message.success(resp.msg)
               })
         } else {
