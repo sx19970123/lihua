@@ -106,7 +106,7 @@
       </selectable-card>
       <!--      头部搜索栏-->
       <template #title>
-        <a-input placeholder="搜索菜单，匹配名称和路径" v-model:value="keyword" @change="handleFilter" size="large" allow-clear ref="menuSearchInputRef">
+        <a-input placeholder="搜索菜单，匹配名称和路径" v-model:value="keyword" @change="debounceFilter" size="large" allow-clear ref="menuSearchInputRef">
           <template #prefix>
             <SearchOutlined />
           </template>
@@ -139,7 +139,7 @@ import {osType} from "@/utils/OS"
 import SelectableCard from "@/components/selectable-card/index.vue";
 import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {traverseWithPath} from "@/utils/Tree.ts";
-import {cloneDeep, throttle} from "lodash-es"
+import {cloneDeep, throttle, debounce} from "lodash-es"
 import type {ItemType} from "ant-design-vue";
 import settings from "@/settings.ts";
 
@@ -282,6 +282,8 @@ const initKeywordSearch = () => {
 
 const { keyword, handleFilter } = initKeywordSearch()
 
+// 函数防抖
+const debounceFilter = debounce(handleFilter, 300)
 
 /**
  * 初始化全部菜单
