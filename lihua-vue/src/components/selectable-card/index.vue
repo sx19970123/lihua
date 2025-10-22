@@ -1,8 +1,8 @@
 <template>
   <a-spin :spinning="loading">
     <a-flex :gap="props.gap" :wrap="props.vertical ? 'nowrap' : 'wrap'" :vertical="props.vertical" class="scrollbar" ref="selectableRef" :style="{'max-height': props.vertical ? props.maxHeight + 'px' : 'none', ...props.cardStyle}">
-      <div :style="props.itemStyle" v-if="props.dataSource && props.dataSource.length > 0" v-for="(item,index) in props.dataSource">
-        <div class="select-card"
+      <div class="menu-card-item" :style="props.itemStyle" v-if="props.dataSource && props.dataSource.length > 0" v-for="(item,index) in props.dataSource">
+        <div class="select-card select-card-border"
              @click.stop="handleClickCard(item)"
              :style="item[props.itemKey] && activeCardValueList.includes(item[props.itemKey]) ? bodyStyle : ''">
           <!--      具名插槽 content-->
@@ -86,6 +86,11 @@ const props = defineProps({
   scrollViewIndex: {
     type: Number,
     default: 0
+  },
+  // 显示鼠标悬浮边框样式
+  showHoverStyle: {
+    type: Boolean,
+    default: true
   },
   // 加载中
   loading: {
@@ -307,5 +312,8 @@ watch(() => props.dataSource, () => {
 }
 .select-card:hover {
   cursor: pointer;
+}
+.select-card-border:hover {
+  border-color: var(--colorPrimary);
 }
 </style>
