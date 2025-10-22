@@ -59,12 +59,8 @@ import UserAvatar from "@/components/user-avatar/index.vue"
 import { useUserStore } from "@/stores/user";
 import { useRouter,useRoute } from "vue-router";
 import {message} from "ant-design-vue";
-import {reloadData} from "@/api/system/auth/Auth.ts";
-import { init } from "@/utils/AppInit.ts";
-import {useViewTabsStore} from "@/stores/viewTabs.ts";
+import {refreshUserData} from "@/utils/AppInit.ts";
 import {ref} from "vue";
-import {ResponseError} from "@/api/global/Type.ts";
-const viewTabsStore = useViewTabsStore()
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
@@ -87,33 +83,8 @@ const handleClickMenu = async ({key}: {key: string}) => {
       break
     }
     case 'user-data-update': {
-      try {
-        const resp = await reloadData()
-        if (resp.code === 200) {
-          init().then(() => {
-                // 重新生成key
-                viewTabsStore.regenerateComponentKey()
-                // 校验当前菜单是否拥有权限
-                const match = viewTabsStore.$state.totalViewTabs.some(tab => tab.routerPathKey === route.fullPath)
-                if (match) {
-                  // 重新加载ViewTab
-                  viewTabsStore.init(route)
-                } else {
-                  // 跳转到首页
-                  router.push('/')
-                }
-                message.success(resp.msg)
-              })
-        } else {
-          message.error(resp.msg)
-        }
-      } catch (e) {
-        if (e instanceof ResponseError) {
-          message.error(e.msg)
-        } else {
-          console.error(e)
-        }
-      }
+      await refreshUserData(route)
+      message.success("刷新完成")
       break
     }
     case 'logout': {

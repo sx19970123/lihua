@@ -395,8 +395,14 @@ import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
 import settings from "@/settings.ts";
+import {useUserStore} from "@/stores/user.ts";
+import {refreshUserData} from "@/utils/AppInit.ts";
+import { useRoute } from "vue-router";
+
 const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
 const settingStore = useSettingStore()
+const userStore = useUserStore()
+const route = useRoute()
 const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
 // 显示更多按钮
 const showMore = ref<boolean>(false)
@@ -715,9 +721,14 @@ const initSave = () => {
       // 调用保存接口
       const resp = await save(userDTO)
       if (resp.code === 200) {
-        message.success(resp.msg)
         modalActive.open = false
-        await initPage()
+        // 保存的用户如果为当前用户，则触发刷新数据，否则重新查询页面
+        if (userId === userStore.userId) {
+          await refreshUserData(route)
+        } else {
+          await initPage()
+        }
+        message.success(resp.msg)
       } else {
         message.error(resp.msg)
       }
@@ -775,16 +786,20 @@ const initSave = () => {
       if (resp.code === 200) {
         handleModelStatus("编辑用户")
         // 表单数据赋值
-        sysUserDTO.value = resp.data
+        sysUserDTO.value = cloneDeep(resp.data)
         // 默认部门 / 岗位 回显
         const deptIds = sysUserDTO.value.deptIdList
         const postIds = sysUserDTO.value.postIdList
+        // 加载部门
         if (deptIds) {
           await initPostByDeptIds(deptIds)
         }
+        // 岗位标签回显
         if (postIds) {
           initPostTag(postIds)
         }
+        // 默认部门回显
+        sysUserDTO.value.defaultDeptId = resp.data.defaultDeptId
       } else {
         message.error(resp.msg)
       }
