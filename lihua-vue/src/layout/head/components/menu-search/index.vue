@@ -244,7 +244,6 @@ const reset = () => {
   starMenuUnfoldStatus.value = false
   recentMenuUnfoldStatus.value = false
   keyword.value = undefined
-  allMenuList.length = 0
   // 滚动条还原
   selectedIndex.value = -1
   nextTick(() => {
@@ -263,7 +262,9 @@ const initKeywordSearch = () => {
   const handleFilter = () => {
     // 重置选中的选项
     const value = keyword.value
-    menuList.value = allMenuList
+    // 重置菜单
+    loadMenu()
+
     if (value) {
       menuList.value = menuList.value.filter((item: MenuItem) => item && (item.label.includes(value) || item.key.includes(value)))
       // 过滤的内容中没有当前选中的菜单，pathKey设置为空
@@ -293,9 +294,8 @@ const initAllMenu = () => {
   const menuList = ref<MenuItem[]>([])
   // 全部菜单
   const allMenuList: MenuItem[] = []
-
   // 加载全部菜单
-  const loadAllMenu = () => {
+  const loadBaseMenu = () => {
     menuList.value = []
     // 菜单中路由
     const menuRouters = cloneDeep(permissionStore.menuRouters)
@@ -306,7 +306,6 @@ const initAllMenu = () => {
         const firstItem = menuItems[0] as MenuItem
         // children 不存在，认为是页面
         if (firstItem && firstItem.children === undefined) {
-          menuList.value.push(firstItem)
           allMenuList.push(firstItem)
         }
       }
@@ -318,21 +317,25 @@ const initAllMenu = () => {
             const menuItem = item as MenuItem
             return menuItem.label;
           }).join("/")
-          menuList.value.push(lastItem)
           allMenuList.push(lastItem)
         }
       }
     })
   }
 
+  // 加载菜单
+  const loadMenu = () => {
+    menuList.value = allMenuList
+  }
+
   return {
     menuList,
-    allMenuList,
-    loadAllMenu
+    loadBaseMenu,
+    loadMenu
   }
 }
 
-const { menuList, allMenuList, loadAllMenu } = initAllMenu()
+const { menuList, loadBaseMenu, loadMenu } = initAllMenu()
 
 /**
  * 初始化收藏菜单
@@ -393,8 +396,8 @@ watch(() => open.value, () => {
   if (open.value) {
     // 重置modal
     reset()
-    // 获取全部菜单
-    loadAllMenu()
+    // 加载菜单
+    loadMenu()
     // 加载收藏菜单
     loadStarMenu()
     // 加载最近打开菜单
@@ -407,6 +410,8 @@ watch(() => open.value, () => {
 })
 
 onMounted(() => {
+  // 加载全部菜单基础数据
+  loadBaseMenu()
   window.addEventListener('resize', windowWidthResize)
   window.addEventListener('keydown', throttleHandleKeydown)
 })
