@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class SysMenuServiceImpl implements SysMenuService {
@@ -69,8 +67,6 @@ public class SysMenuServiceImpl implements SysMenuService {
         sysMenu.setCreateId(LoginUserContext.getUserId());
         sysMenu.setCreateTime(DateUtils.now());
         sysMenu.setDelFlag("0");
-        // 同级菜单sort + 1 TODO 未达到预期效果，后续再进行完善
-        // sysMenuMapper.peerMenuSortAddOne(sysMenu.getParentId(), sysMenu.getSort());
         sysMenuMapper.insert(sysMenu);
         return sysMenu.getId();
     }
@@ -87,14 +83,10 @@ public class SysMenuServiceImpl implements SysMenuService {
     public void deleteByIds(List<String> ids) {
         checkStatus(ids);
         checkChildren(ids);
-        // 删除前查询菜单的parentId和sort
-        //List<SysMenu> sysMenus = queryDeleteMenuSortInfo(ids);
         // 删除菜单
         sysMenuMapper.deleteByIds(ids);
         // 删除角色关联表数据
         deleteRoleMenu(ids);
-        // 处理删除后同级重新排序 TODO 未达到预期效果，后续再进行完善
-        // peerMenuReSort(sysMenus);
     }
 
     @Override
@@ -116,42 +108,6 @@ public class SysMenuServiceImpl implements SysMenuService {
                 .in(SysMenu::getId, ids);
         sysMenuMapper.update(null, updateWrapper);
         return status;
-    }
-
-
-    private List<SysMenu> queryDeleteMenuSortInfo(List<String> ids) {
-        QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda()
-                .in(SysMenu::getId, ids)
-                .select(SysMenu::getParentId, SysMenu::getSort);
-        return sysMenuMapper.selectList(queryWrapper);
-    }
-
-    /**
-     * 处理同级菜单重新排序
-     */
-    private void peerMenuReSort(List<SysMenu> sysMenus) {
-       if (sysMenus.isEmpty()) {
-           return;
-       }
-
-        Map<String, List<SysMenu>> groupByParentId = sysMenus.stream().collect(Collectors.groupingBy(SysMenu::getParentId));
-
-        groupByParentId.forEach((parentId, pIdSortList) -> {
-            if (pIdSortList.isEmpty()) {
-                return;
-            }
-            List<Integer> sortList = pIdSortList.stream().map(SysMenu::getSort).sorted().toList();
-
-            // 获取到中间不连续的sort
-            List<Integer> missingSortList = IntStream
-                    .rangeClosed(sortList.get(0), sortList.get(sortList.size() - 1))
-                    .filter(n -> !sortList.contains(n))
-                    .boxed()
-                    .toList();
-            // 对目标sort的菜单数据sort - 1
-            sysMenuMapper.peerMenuSortSubtractOne(parentId, sortList.get(sortList.size() - 1), missingSortList);
-        });
     }
 
     /**

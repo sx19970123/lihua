@@ -6,6 +6,7 @@ const nextUpdate = [
             '1. 修复用户编辑时默认部门丢失的bug',
             '2. 修改用户中，当用户修改自己时，保存数据会立即触发数据更新',
             '3. selectable-card组件新增悬浮样式，可通过showHoverStyle属性开关',
+            '4. view-tabs拖动时幽灵标签添加背景颜色，更容易定位到目标位置'
         ]
     }
 ]
