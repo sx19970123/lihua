@@ -426,6 +426,7 @@ onBeforeUnmount(() => {
 .title-search-input {
   width: 135px;
   margin-right: 8px;
+  background-color: rgba(0,0,0,0) !important;
 }
 .title-search-input:hover {
   cursor: pointer !important;
@@ -442,5 +443,6 @@ onBeforeUnmount(() => {
 }
 :deep(.title-search-input input) {
   cursor: pointer;
+  background-color: rgba(0,0,0,0) !important;
 }
 </style>
