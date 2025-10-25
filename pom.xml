@@ -6,7 +6,7 @@
 
     <groupId>com.lihua</groupId>
     <artifactId>lihua</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -20,7 +20,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
 
-        <lihua.version>1.2.5</lihua.version>
+        <lihua.version>1.2.6</lihua.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mysql.version>8.2.0</mysql.version>
         <mybatis-plus.version>3.5.14</mybatis-plus.version>
@@ -32,6 +32,7 @@
         <tianai-captcha.version>1.5.2</tianai-captcha.version>
         <minio.version>8.5.17</minio.version>
         <knife4j.version>4.5.0</knife4j.version>
+        <ipaddress.version>5.5.1</ipaddress.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
     </properties>
 
@@ -177,6 +178,14 @@
             <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
             <version>${knife4j.version}</version>
         </dependency>
+
+        <!--        ip 解析工具-->
+        <dependency>
+            <groupId>com.github.seancfoley</groupId>
+            <artifactId>ipaddress</artifactId>
+            <version>${ipaddress.version}</version>
+        </dependency>
+
     </dependencies>
 
     <modules>

@@ -123,10 +123,14 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     @Override
     public InputStream download(String fullFilePath) {
         try {
-            return Files.newInputStream(Path.of(fullFilePath));
+            // 路径检查
+            if (FileUtils.checkPath(fullFilePath, lihuaConfig.getUploadFilePath())) {
+                return Files.newInputStream(Path.of(fullFilePath));
+            }
         } catch (IOException e) {
-            throw new FileException("获取附件失败");
+            log.error(e.getMessage(), e);
         }
+        throw new FileException("获取附件失败");
     }
 
     // 项目启动时将TEMPORARY_PATH初始化

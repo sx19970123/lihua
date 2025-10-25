@@ -306,13 +306,19 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             throw new FileException("当前链接已失效");
         }
 
-        // 获取原附件名
-        return ApiResponse.success(new File(splitParams[0]), originName);
+        String filePath = splitParams[0];
+
+        // 校验路径
+        if (FileUtils.checkPath(filePath, lihuaConfig.getUploadFilePath())) {
+            return ApiResponse.success(new File(filePath), originName);
+        }
+
+        throw new FileException("下载失败，路径不匹配");
     }
 
     @Override
     public ResponseEntity<StreamingResponseBody> exportDownload(String path, String fileName) {
-        if (StringUtils.hasText(path) && (path.contains(lihuaConfig.getExportFilePath()) || path.replace("\\", "/").contains(lihuaConfig.getExportFilePath()))) {
+        if (FileUtils.checkPath(path, lihuaConfig.getExportFilePath())) {
             return ApiResponse.success(new File(path), fileName, true);
         }
         throw new FileException("下载失败，路径不匹配");
@@ -346,7 +352,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
     // 批量保存附件
     @Transactional
-    private List<String> batchSaveAttachment(List<SysAttachment> sysAttachmentList) {
+    protected List<String> batchSaveAttachment(List<SysAttachment> sysAttachmentList) {
         sysAttachmentList.forEach(sysAttachment -> sysAttachment
                 .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
                 .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))

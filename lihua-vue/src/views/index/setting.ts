@@ -1,13 +1,9 @@
 // 下一版本更新记录
 const nextUpdate = [
     {
-        version: '1.2.6',
+        version: '1.2.7',
         record: [
-            '1. 修复用户编辑时默认部门丢失的bug',
-            '2. 修改用户中，当用户修改自己时，保存数据会立即触发数据更新',
-            '3. selectable-card组件新增悬浮样式，可通过showHoverStyle属性开关',
-            '4. view-tabs拖动时幽灵标签添加背景颜色，更容易定位到目标位置',
-            '5. 优化菜单搜索在高级材质下的展示效果'
+
         ]
     }
 ]
@@ -21,6 +17,19 @@ export const versionInfo = {
     vueVersion: ' 3.5.22',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.2.6',
+            updateDate: '2025-10-25',
+            updateContent: [
+                '1.附件上传新增SSRF安全校验',
+                '2.附件下载新增目录穿越安全校验',
+                '3.修复用户编辑时默认部门丢失的bug',
+                '4.修改用户中，当用户修改自己时，保存数据会立即触发数据更新',
+                '5.selectable-card组件新增悬浮样式，可通过showHoverStyle属性开关',
+                '6.view-tabs拖动时幽灵标签添加背景颜色，更容易定位到目标位置',
+                '7.优化菜单搜索在高级材质下的展示效果'
+            ]
+        },
         {
             version: '1.2.5',
             updateDate: '2025-10-21',

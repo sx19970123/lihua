@@ -5,6 +5,7 @@ import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.FileException;
 import com.lihua.model.attachment.AttachmentStreamAndInfoModel;
 import com.lihua.utils.spring.SpringUtils;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -15,15 +16,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -34,6 +35,8 @@ import java.util.zip.ZipOutputStream;
 public class FileUtils {
 
     private static final LihuaConfig lihuaConfig;
+
+    private static final Map<String, Path> map = new ConcurrentHashMap<>();
 
     static {
         lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
@@ -289,6 +292,45 @@ public class FileUtils {
      */
     public static boolean isExists(String path) {
         return Files.exists(Path.of(path));
+    }
+
+    /**
+     * 检查路径是否合法
+     * @param path 请求下载的路径
+     * @param configPath 配置文件中记录的文件目录前缀
+     * @return 路径是否合法
+     */
+    @SneakyThrows
+    public static boolean checkPath(String path, String configPath) {
+        if (path == null || path.isBlank()) {
+            return false;
+        }
+
+        // URL 解码，防止 %2e%2e
+        String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8);
+
+        // 拒绝包含空字节、回车或反斜杠
+        if (decoded.contains("\0") || decoded.contains("\r") || decoded.contains("\n")) {
+            return false;
+        }
+
+        // 配置文件指定的路径
+        Path config = map.putIfAbsent(configPath, Paths.get(configPath).normalize().toRealPath(LinkOption.NOFOLLOW_LINKS));
+        if (config == null) {
+            config = map.get(configPath);
+        }
+
+        // 请求下载路径
+        Path realPath = Paths.get(decoded).normalize();
+
+        if (!Files.exists(realPath)) {
+            return false;
+        }
+
+        realPath = realPath.toRealPath(LinkOption.NOFOLLOW_LINKS);
+
+        // 需要下载的附件是否和配置文件中匹配
+        return realPath.startsWith(config);
     }
 
     /**
