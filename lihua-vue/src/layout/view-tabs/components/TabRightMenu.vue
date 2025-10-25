@@ -85,12 +85,14 @@
 </template>
 <script setup lang="ts">
 import { useViewTabsStore } from "@/stores/viewTabs";
+import {useUserStore} from "@/stores/user.ts";
 import { ref, watch, defineExpose} from "vue";
 import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {handleTime} from "@/utils/HandleDate.ts";
 import {isEqual} from "lodash-es";
 
 const viewTabsStore = useViewTabsStore()
+const userStore = useUserStore()
 const emits = defineEmits(['routeSkip','cancelKeepAlive'])
 
 /**
@@ -196,7 +198,7 @@ const showHideLayout = () => {
  */
 const initViewTabsCache = () => {
   // 缓存key
-  const catchKey = "cacheViewTabs"
+  const catchKey = "cacheViewTabs-" + userStore.username
   // 可退回的pathKey集合
   let reversibleData: Array<string> = []
   // 是否可应用缓存的view
