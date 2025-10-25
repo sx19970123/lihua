@@ -145,7 +145,7 @@
    </a-flex>
 <!--   日志详情模态框-->
    <a-modal cancelText="关 闭" v-model:open="openModal" width="1000px" :footer="null">
-     <a-descriptions title="日志详情" bordered :label-style="{width: '110px'}" v-draggable>
+     <a-descriptions title="日志详情" bordered :label-style="{width: '110px'}">
         <a-descriptions-item label="业务描述" :span="2">
           <a-badge status="success" v-if="logInfo.executeStatus === '0'"/>
           <a-badge status="error" v-else/>
