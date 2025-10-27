@@ -29,7 +29,7 @@
         <oshi.version>6.6.4</oshi.version>
         <guava.version>33.3.1-jre</guava.version>
         <xxl-job.version>3.2.0</xxl-job.version>
-        <tianai-captcha.version>1.5.2</tianai-captcha.version>
+        <tianai-captcha.version>1.5.3</tianai-captcha.version>
         <minio.version>8.5.17</minio.version>
         <knife4j.version>4.5.0</knife4j.version>
         <ipaddress.version>5.5.1</ipaddress.version>

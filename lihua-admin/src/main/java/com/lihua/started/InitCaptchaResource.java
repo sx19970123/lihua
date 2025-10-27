@@ -1,6 +1,6 @@
 package com.lihua.started;
 
-import cloud.tianai.captcha.resource.ResourceStore;
+import cloud.tianai.captcha.resource.CrudResourceStore;
 import cloud.tianai.captcha.resource.common.model.dto.Resource;
 import com.lihua.enums.CaptchaTypeEnum;
 import jakarta.annotation.PostConstruct;
@@ -22,7 +22,8 @@ public class InitCaptchaResource {
     @jakarta.annotation.Resource
     private ResourcePatternResolver resourcePatternResolver;
 
-    private final ResourceStore resourceStore;
+    @jakarta.annotation.Resource
+    private final CrudResourceStore crudResourceStore;
 
     @SneakyThrows
     @PostConstruct
@@ -34,7 +35,7 @@ public class InitCaptchaResource {
         // 所有图片均注册四种类型验证方式
         for (org.springframework.core.io.Resource resource : resources) {
             String filename = resource.getFilename();
-            captchaTypes.forEach(type -> resourceStore.addResource(type, new Resource("classpath", "captcha-images/" + filename)));
+            captchaTypes.forEach(type -> crudResourceStore.addResource(type, new Resource("classpath", "captcha-images/" + filename)));
         }
     }
 }

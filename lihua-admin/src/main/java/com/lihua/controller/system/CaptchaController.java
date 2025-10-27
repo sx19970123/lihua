@@ -1,7 +1,6 @@
 package com.lihua.controller.system;
 
 import cloud.tianai.captcha.application.ImageCaptchaApplication;
-import cloud.tianai.captcha.application.vo.CaptchaResponse;
 import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
@@ -37,7 +36,7 @@ public class CaptchaController extends ApiResponseController {
 
     @Operation(summary = "获取验证码")
     @PostMapping("get")
-    public CaptchaResponse<ImageCaptchaVO> getCaptcha() {
+    public ApiResponse<ImageCaptchaVO> getCaptcha() {
         List<String> captchaTypes = CaptchaTypeEnum.allValue();
         // 获取随机验证码类型
         String type = captchaTypes.get(ThreadLocalRandom.current().nextInt(captchaTypes.size()));

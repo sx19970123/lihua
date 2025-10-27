@@ -3,7 +3,8 @@ const nextUpdate = [
     {
         version: '1.2.7',
         record: [
-
+            '1.修复顶部导航深色模式下搜索功能样式不适配的问题',
+            '2.更新tianai验证码到1.5.3版本'
         ]
     }
 ]
