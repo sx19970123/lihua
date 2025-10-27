@@ -3,11 +3,11 @@
     <div class="header-right-item" @click="open = true" v-show="!open">
       <a-input placeholder="搜索" readonly class="title-search-input" v-if="windowWidth > settings.menuToggleWidth">
         <template #prefix>
-          <SearchOutlined />
+          <SearchOutlined class="icon-default-color"/>
         </template>
         <template #suffix>
-          <a-tag style="margin-right: 4px">{{osType() === 'MacOS' ? '⌘' : 'ctrl'}}</a-tag>
-          <a-tag style="margin-right: 0">k</a-tag>
+          <a-tag class="title-search-tag" style="margin-right: 4px">{{osType() === 'MacOS' ? '⌘' : 'ctrl'}}</a-tag>
+          <a-tag class="title-search-tag" style="margin-right: 0">k</a-tag>
         </template>
       </a-input>
       <a-button type="text" v-else>
@@ -445,4 +445,25 @@ onBeforeUnmount(() => {
   cursor: pointer;
   background-color: rgba(0,0,0,0) !important;
 }
+
+</style>
+<style>
+[sider-dark='dark'][layout-type='header-content'][data-theme='light'] {
+  /* placeholder 颜色 */
+  .title-search-input input::placeholder {
+    color: rgba(255, 255, 255, 0.45) !important;
+  }
+
+  /* 输入框边框颜色 */
+  .title-search-input {
+    border-color: rgba(255, 255, 255, 0.65) !important;
+  }
+
+  /* 标签样式 */
+  .title-search-tag {
+    border-color: rgba(255, 255, 255, 0.65) !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+  }
+}
+
 </style>
