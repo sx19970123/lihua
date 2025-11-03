@@ -1,7 +1,7 @@
 <template>
-<!--  小屏状态切换至header-sider布局-->
-  <header-sider v-if="isMiniWindow" :show-layout="props.showLayout"/>
-<!--  大屏状态使用header-content布局-->
+<!--  小屏状态切换至side-navigation布局-->
+  <side-navigation v-if="isMiniWindow" :show-layout="props.showLayout"/>
+<!--  大屏状态使用top-navigation布局-->
   <a-layout v-else>
     <div class="hc-header">
       <transition :name="themeStore.routeTransition" mode="out-in">
@@ -20,7 +20,7 @@
         </a-layout-header>
       </transition>
       <!--多标签-->
-      <view-tabs v-if="themeStore.showViewTabs" :style="{background: themeStore.layoutBackgroundColor}" style="padding-top: 6px"/>
+      <view-tabs v-if="themeStore.showViewTabs" :style="{background: themeStore.layoutBackgroundColor}"/>
     </div>
     <a-layout-content>
       <!--内容-->
@@ -35,7 +35,7 @@ import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
-import HeaderSider from "@/layout/layout-type/HeaderSider.vue";
+import SideNavigation from "@/layout/layout-type/SideNavigation.vue";
 import {useThemeStore} from "@/stores/theme";
 import {computed, onMounted, onUnmounted, ref} from "vue";
 import settings from "@/settings.ts";
@@ -50,12 +50,12 @@ const isMiniWindow = computed(() => bodyWidth.value < menuToggleWidth)
 const handleResize = () => {
   bodyWidth.value = document.body.offsetWidth;
 
-  // 处于小屏状态时，设置layout-type为header-sider，导航类型为inline。脱离小屏状态时还原
+  // 处于小屏状态时，设置layout-type为mix-navigation，导航类型为inline。脱离小屏状态时还原
   if (isMiniWindow.value) {
-    document.documentElement.setAttribute("layout-type", "header-sider")
+    document.documentElement.setAttribute("layout-type", "mix-navigation")
     themeStore.changeSiderMode('inline')
   } else {
-    document.documentElement.setAttribute("layout-type", "header-content")
+    document.documentElement.setAttribute("layout-type", "top-navigation")
     themeStore.changeSiderMode('horizontal')
   }
   showOverflowY()

@@ -67,8 +67,8 @@
         color: #dc4446;
     }
 }
-
-[sider-dark = 'dark'][layout-type = 'header-content'] {
+[sider-dark = 'dark'][layout-type = 'top-navigation'],
+[sider-dark = 'dark'][layout-type = 'mix-navigation'] {
     .icon-default-color {
         color: rgba(255, 255, 255, 0.65);
     }
@@ -86,8 +86,8 @@
 /**
     顶部导航模式下，使用该css可使内容居中
  */
-[layout-type='header-content'] {
-    .header-content-center {
+[layout-type='top-navigation'] {
+    .top-navigation-center {
         max-width: 1400px;
         margin: auto
     }

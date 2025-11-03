@@ -1,13 +1,11 @@
 <template>
   <a-menu
       class="menu"
-      :theme="themeStore.siderTheme"
-      :mode="themeStore.siderMode"
+      :items="menu ? menu : defaultMenu"
+      :theme="siderTheme ? siderTheme : themeStore.siderTheme"
+      :mode="siderMode ? siderMode : themeStore.siderMode"
       v-model:selected-keys="state.selectedKeys"
       v-model:open-keys="state.openKeys"
-      :style="themeStore.layoutType === 'header' ? { width: themeStore.siderWith + 'px'} : ''"
-      style="border-inline-end: none"
-      :items="menu"
       @select="handleClickMenuItem"
   />
 </template>
@@ -18,6 +16,7 @@ import {useThemeStore} from "@/stores/theme";
 import {useViewTabsStore} from "@/stores/viewTabs.ts";
 import {useRoute,useRouter} from "vue-router";
 import {computed, nextTick, onMounted, reactive, watch} from "vue";
+import type {ItemType} from "ant-design-vue";
 const themeStore = useThemeStore()
 const route = useRoute()
 const router = useRouter()
@@ -25,11 +24,28 @@ const router = useRouter()
 const permission = usePermissionStore()
 const viewTabsStore = useViewTabsStore()
 // 抛出函数，当路由发生变化时，抛出函数
-const emits = defineEmits(['routeChange'])
-const menu = computed(() => permission.menuRouters)
+const emits = defineEmits(['routeChange', 'menuClick'])
+// 外部传入属性
+const {siderMode, menu, selectedKeys, openKeys, siderTheme, isMixTop} = defineProps<{
+  // 导航类型
+  siderMode?: 'inline' | 'horizontal',
+  // 菜单
+  menu?: ItemType[],
+  // 选中菜单key
+  selectedKeys?: string[],
+  // 展开菜单key
+  openKeys?: string[],
+  // 菜单颜色
+  siderTheme?: string,
+  // 是否未混合布局的顶栏
+  isMixTop?: boolean,
+}>()
+
+const defaultMenu = computed(() => permission.menuRouters)
+
 const state = reactive<{
   selectedKeys: string[],
-  openKeys: string[]
+  openKeys: string[],
 }>({
   selectedKeys: route.matched.map(r => r.path),
   openKeys: []
@@ -37,6 +53,9 @@ const state = reactive<{
 
 // 点击菜单跳转路由
 const handleClickMenuItem = ({ key }: {key: string}) => {
+  // 菜单点击
+  emits('menuClick', key)
+  // 判断viewTabs中是否存在key
   let routeInfo = viewTabsStore.getViewTabsByKey(key)
   if (!routeInfo) {
     routeInfo = viewTabsStore.getTotalTabByKey(key)
@@ -76,16 +95,31 @@ onMounted(() => {
 
 // 监听路由变化
 watch(()=> route.matched,()=> {
-  emits('routeChange')
   state.selectedKeys = route.matched.map(r => r.path)
+  emits('routeChange', state.selectedKeys)
   setOpenKeys()
 })
+
 // 收起/展开
 watch(() => permission.collapsed,(value) => {
+  if (isMixTop) {
+    return
+  }
   value? themeStore.foldSiderWidth(): themeStore.unfoldSiderWidth()
   setOpenKeys()
 })
+
+// 选中菜单变化
+watch(() => selectedKeys, () => {
+  state.selectedKeys = selectedKeys || []
+})
+
+// 打开菜单变化
+watch(() => openKeys, () => {
+  state.openKeys = openKeys || []
+})
 </script>
+
 <style scoped>
 .menu {
   border: none;

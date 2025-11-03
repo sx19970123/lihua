@@ -1,6 +1,6 @@
 <template>
   <div class="logo unselectable" @click="goHome">
-    <a-flex gap="middle" align="center" justify="center" v-if="showTitle && (themeStore.layoutType === 'header-sider' || themeStore.layoutType === 'header-content' || !permissionStore.collapsed)">
+    <a-flex gap="middle" align="center" justify="center" v-if="showTitle && (themeStore.layoutType === 'mix-navigation' || themeStore.layoutType === 'top-navigation' || !permissionStore.collapsed)">
       <div>
         <!--    导航LOGO-->
         <a-avatar :style="{ backgroundColor: themeStore.getColorPrimary()}">
@@ -11,7 +11,7 @@
       </div>
       <!--    导航名称-->
       <a-typography-title class="title"
-                          :class="themeStore.layoutType !== 'header-sider' && themeStore.siderTheme === 'dark' ? 'main-name': ''"
+                          :class="themeStore.siderTheme === 'dark' ? 'main-name': ''"
                           :level="4"
                           ellipsis
                           content="Lihua Admin"

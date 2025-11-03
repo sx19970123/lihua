@@ -20,7 +20,7 @@ export const useThemeStore = defineStore('theme',{
         const layoutBackgroundColor: string = settings.siderBackgroundColor
 
         /**
-         * 布局类型 sider-header / header-sider / header-content
+         * 布局类型 side-navigation / mix-navigation / top-navigation
          */
         const layoutType: string = settings.layoutType
 
@@ -162,10 +162,10 @@ export const useThemeStore = defineStore('theme',{
                 console.error('初始化主题失败，使用默认主题',e)
                 return;
             }
-            // 小窗模式下ViewTabs隐藏，设置导航模式为sider-header
+            // 小窗模式下ViewTabs隐藏，设置导航模式为side-navigation
             if (window.location.href.includes("miniWindow=true")) {
                 this.$state.showViewTabs = false
-                this.$state.layoutType = "sider-header"
+                this.$state.layoutType = "side-navigation"
             }
         },
         // 切换暗色模式，isSync：App.vue组件中用于同步标签页暗色模式
@@ -200,7 +200,7 @@ export const useThemeStore = defineStore('theme',{
         },
         // 布局类型
         changeLayoutType() {
-            if (this.$state.layoutType === 'header-content') {
+            if (this.$state.layoutType === 'top-navigation') {
                 this.changeSiderMode('horizontal')
             } else {
                 this.changeSiderMode('inline')

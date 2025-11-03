@@ -2,23 +2,33 @@
   <div>
     <a-layout>
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="hs-header" v-show="props.showLayout" :style="{'background': themeStore.layoutBackgroundColor}">
+        <a-layout-header class="hs-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''">
           <div ref="headerRef">
             <a-flex align="center" justify="space-between">
               <Logo class="logo" :show-title="siderClass !== 'min-hs-sider'"/>
+              <!-- 开启分栏-->
+              <Side class="sider"
+                    is-mix-top
+                    :siderTheme="themeStore.siderTheme"
+                    :menu="cloneDeep(permission.menuRouters).map((item: MenuItemGroupType) => { delete item.children; return item})"
+                    sider-mode="horizontal"
+                    @route-change="(keys: string[]) => loadSideMenu(keys[0], false)"
+                    @menu-click="(key) => loadSideMenu(key, true)"
+                    v-if="siderClass !== 'min-hs-sider'"
+              />
               <!--页头-->
-              <Head class="head"></Head>
+              <Head class="head"/>
             </a-flex>
           </div>
         </a-layout-header>
       </transition>
 
       <a-layout>
-        <transition :name="themeStore.routeTransition" mode="out-in">
+        <transition :name="themeStore.routeTransition" mode="out-in" v-if="siderClass === 'min-hs-sider' || subMenu.length > 0">
           <a-layout-sider :class="siderClass"
                           v-show="props.showLayout"
                           :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
-                          :theme="themeStore.siderTheme"
+                          theme="light"
                           :width="themeStore.siderWith"
                           v-model:collapsed="permissionStore.collapsed"
                           :collapsedWidth="collapsedWidth"
@@ -30,11 +40,13 @@
             <!-- 窗口缩小到阈值后特殊侧边栏logo-->
             <div class="sider-logo" :style="{width: showMask ? themeStore.siderWith + 'px' : '0px'}">
               <a-flex align="center" justify="center" v-if="showMask">
-                <Logo style="margin: 0"/>
+                <Logo style="margin: 0; padding-right: 8px"/>
               </a-flex>
             </div>
             <!-- 侧边栏-->
             <Side class="sider-content sider-scrollbar"
+                  :sider-theme="siderClass !== 'min-hs-sider'? 'light': undefined"
+                  :menu="siderClass === 'min-hs-sider' ? undefined : subMenu"
                   :class="{'min-sider-content': siderClass === 'min-hs-sider' ,'header-invisible-sider-content': !headerVisible}"
                   @route-change="handleRouteChange"
             />
@@ -64,6 +76,13 @@ import {useThemeStore} from "@/stores/theme";
 import {onMounted, onUnmounted, ref, useTemplateRef} from "vue";
 import Mask from "@/components/mask/index.vue";
 import settings from "@/settings.ts";
+import { cloneDeep } from 'lodash-es'
+import type {MenuItemGroupType} from "ant-design-vue/es/menu/src/hooks/useItems";
+import type {ItemType} from "ant-design-vue";
+import {useRouter} from "vue-router";
+
+const router = useRouter()
+const permission = usePermissionStore()
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()
 const menuToggleWidth = settings.menuToggleWidth
@@ -147,6 +166,38 @@ const cleanupObserver = () => {
   }
 };
 
+// 初始化分割菜单相关
+const initSplitMenu = () => {
+  // 分割后的左侧菜单
+  const subMenu = ref<Array<ItemType>>([])
+
+  // 处理点击菜单（顶部）
+  const loadSideMenu = (key: string, autoClick: boolean) => {
+    // 加载侧边菜单
+    const targetMenu = permission.menuRouters.filter((item: ItemType) => item && item.key === key)
+
+    if (targetMenu && targetMenu.length > 0) {
+      const menu = targetMenu[0] as MenuItemGroupType;
+      subMenu.value = menu.children || []
+      // 存在子菜单并设置了自动选中，则默认跳转到第一个
+      if (menu.children && autoClick) {
+        router.push(menu.children[0].key as string)
+      }
+    } else {
+      subMenu.value = []
+    }
+
+  }
+
+  return {
+    subMenu,
+    loadSideMenu
+  }
+}
+
+const {subMenu, loadSideMenu} = initSplitMenu()
+
+
 // dom渲染完毕后添加窗口监听
 onMounted(() => {
   window.addEventListener("resize", handleResize)
@@ -200,7 +251,7 @@ onUnmounted(() => {
   margin-right: 32px;
 }
 .logo {
-  padding: 0 8px 0 8px;
+  padding: 0 0 0 8px;
   margin-left: 32px;
 }
 .sider-logo {
@@ -216,6 +267,11 @@ onUnmounted(() => {
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   position: relative;
   z-index: 3
+}
+.sider {
+  flex: 1 1 0;
+  min-width: 0;
+  margin-left: 32px;
 }
 </style>
 

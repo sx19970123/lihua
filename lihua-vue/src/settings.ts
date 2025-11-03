@@ -25,9 +25,9 @@ export default {
     layoutBackgroundColor: 'rgba(255,255,255,1)',
 
     /**
-     * 布局类型 sider-header / header-sider / header-content
+     * 布局类型 side-navigation / mix-navigation / top-navigation
      */
-    layoutType: 'sider-header',
+    layoutType: 'side-navigation',
 
     /**
      * 组件大小 small / default / large
