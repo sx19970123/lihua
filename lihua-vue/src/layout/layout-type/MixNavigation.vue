@@ -2,10 +2,10 @@
   <div>
     <a-layout>
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="hs-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''">
+        <a-layout-header class="hs-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' || !isSplitMenu ? { background: themeStore.layoutBackgroundColor } : ''">
           <div ref="headerRef">
             <a-flex align="center" justify="space-between">
-              <Logo class="logo" :show-title="siderClass !== 'min-hs-sider'"/>
+              <Logo class="logo" :show-title="!isMinWindow"/>
               <!-- 开启分栏-->
               <Side class="sider"
                     is-mix-top
@@ -13,8 +13,9 @@
                     :menu="cloneDeep(permission.menuRouters).map((item: MenuItemGroupType) => { delete item.children; return item})"
                     sider-mode="horizontal"
                     @route-change="(keys: string[]) => loadSideMenu(keys[0], false)"
+                    @mounted="(keys: string[]) => loadSideMenu(keys[0], false)"
                     @menu-click="(key) => loadSideMenu(key, true)"
-                    v-if="siderClass !== 'min-hs-sider'"
+                    v-if="isSplitMenu && !isMinWindow"
               />
               <!--页头-->
               <Head class="head"/>
@@ -24,11 +25,11 @@
       </transition>
 
       <a-layout>
-        <transition :name="themeStore.routeTransition" mode="out-in" v-if="siderClass === 'min-hs-sider' || subMenu.length > 0">
+        <transition :name="themeStore.routeTransition" mode="out-in" v-if="!isSplitMenu || isMinWindow || subMenu.length > 0">
           <a-layout-sider :class="siderClass"
                           v-show="props.showLayout"
                           :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
-                          theme="light"
+                          :theme="isMinWindow || !isSplitMenu ? themeStore.siderTheme : 'light'"
                           :width="themeStore.siderWith"
                           v-model:collapsed="permissionStore.collapsed"
                           :collapsedWidth="collapsedWidth"
@@ -45,9 +46,9 @@
             </div>
             <!-- 侧边栏-->
             <Side class="sider-content sider-scrollbar"
-                  :sider-theme="siderClass !== 'min-hs-sider'? 'light': undefined"
-                  :menu="siderClass === 'min-hs-sider' ? undefined : subMenu"
-                  :class="{'min-sider-content': siderClass === 'min-hs-sider' ,'header-invisible-sider-content': !headerVisible}"
+                  :sider-theme="isMinWindow || !isSplitMenu ? undefined: 'light'"
+                  :menu="isMinWindow || !isSplitMenu ? undefined : subMenu"
+                  :class="{'min-sider-content': isMinWindow ,'header-invisible-sider-content': !headerVisible}"
                   @route-change="handleRouteChange"
             />
           </a-layout-sider>
@@ -73,7 +74,7 @@ import Content from "@/layout/content/index.vue"
 import { usePermissionStore } from "@/stores/permission";
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/theme";
-import {onMounted, onUnmounted, ref, useTemplateRef} from "vue";
+import {computed, onMounted, onUnmounted, ref, useTemplateRef} from "vue";
 import Mask from "@/components/mask/index.vue";
 import settings from "@/settings.ts";
 import { cloneDeep } from 'lodash-es'
@@ -97,6 +98,10 @@ const props = defineProps<{ showLayout: boolean }>()
 const collapsedWidth = ref<0|80>( bodyWidth.value < menuToggleWidth ? 0 : 80)
 // 菜单样式class，分为正常和小屏下抽屉样式
 const siderClass = ref<'hs-sider' | 'min-hs-sider'>(bodyWidth.value < menuToggleWidth ? 'min-hs-sider' :'hs-sider')
+// 是否为分割菜单
+const isSplitMenu = computed(() => themeStore.mixSplitMenu)
+// 是否为小窗口
+const isMinWindow = computed(() => siderClass.value === 'min-hs-sider')
 // 小屏下抽屉样式遮罩
 const showMask = ref<boolean>(false)
 // 处理视口变化操作

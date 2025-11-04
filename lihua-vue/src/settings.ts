@@ -25,6 +25,11 @@ export default {
     layoutBackgroundColor: 'rgba(255,255,255,1)',
 
     /**
+     * 混合布局分隔菜单
+     */
+    mixSplitMenu: false,
+
+    /**
      * 布局类型 side-navigation / mix-navigation / top-navigation
      */
     layoutType: 'side-navigation',

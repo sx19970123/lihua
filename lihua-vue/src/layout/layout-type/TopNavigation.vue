@@ -1,6 +1,6 @@
 <template>
-<!--  小屏状态切换至side-navigation布局-->
-  <side-navigation v-if="isMiniWindow" :show-layout="props.showLayout"/>
+<!--  小屏状态切换至mix-navigation布局-->
+  <mix-navigation v-if="isMiniWindow" :show-layout="props.showLayout"/>
 <!--  大屏状态使用top-navigation布局-->
   <a-layout v-else>
     <div class="hc-header">
@@ -35,7 +35,7 @@ import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
-import SideNavigation from "@/layout/layout-type/SideNavigation.vue";
+import MixNavigation from "@/layout/layout-type/MixNavigation.vue";
 import {useThemeStore} from "@/stores/theme";
 import {computed, onMounted, onUnmounted, ref} from "vue";
 import settings from "@/settings.ts";

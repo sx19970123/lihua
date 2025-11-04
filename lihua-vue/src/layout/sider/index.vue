@@ -24,7 +24,7 @@ const router = useRouter()
 const permission = usePermissionStore()
 const viewTabsStore = useViewTabsStore()
 // 抛出函数，当路由发生变化时，抛出函数
-const emits = defineEmits(['routeChange', 'menuClick'])
+const emits = defineEmits(['routeChange', 'menuClick', 'mounted'])
 // 外部传入属性
 const {siderMode, menu, selectedKeys, openKeys, siderTheme, isMixTop} = defineProps<{
   // 导航类型
@@ -88,8 +88,9 @@ const setOpenKeys = () => {
 
 }
 
-// 赋值展开节点
 onMounted(() => {
+  emits('mounted', state.selectedKeys)
+  // 赋值展开节点
   setOpenKeys()
 })
 

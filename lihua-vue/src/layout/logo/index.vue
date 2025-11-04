@@ -3,7 +3,7 @@
     <a-flex gap="middle" align="center" justify="center" v-if="showTitle && (themeStore.layoutType === 'mix-navigation' || themeStore.layoutType === 'top-navigation' || !permissionStore.collapsed)">
       <div>
         <!--    导航LOGO-->
-        <a-avatar :style="{ backgroundColor: themeStore.getColorPrimary()}">
+        <a-avatar :style="{backgroundColor: themeStore.getColorPrimary()}">
           <template #icon>
             <XiaoMiaoCool/>
           </template>
@@ -11,7 +11,7 @@
       </div>
       <!--    导航名称-->
       <a-typography-title class="title"
-                          :class="themeStore.siderTheme === 'dark' ? 'main-name': ''"
+                          :class="themeStore.siderTheme === 'dark' && themeStore.mixSplitMenu ? 'main-name': ''"
                           :level="4"
                           ellipsis
                           content="Lihua Admin"

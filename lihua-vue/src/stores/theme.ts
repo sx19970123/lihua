@@ -25,6 +25,11 @@ export const useThemeStore = defineStore('theme',{
         const layoutType: string = settings.layoutType
 
         /**
+         * 混合布局是否分割菜单
+         */
+        const mixSplitMenu: boolean = settings.mixSplitMenu
+
+        /**
          * 组件大小 small/ middle / large
          */
         const componentSize: string = settings.componentSize
@@ -119,6 +124,7 @@ export const useThemeStore = defineStore('theme',{
             siderTheme,
             groundGlass,
             affixHead,
+            mixSplitMenu,
             layoutBackgroundColor,
             siderBackgroundColor,
             siderMode,
@@ -290,6 +296,7 @@ export const useThemeStore = defineStore('theme',{
             this.$state.colorPrimary = settings.themeConfig.token.colorPrimary
             this.$state.siderTheme = settings.siderTheme
             this.$state.groundGlass = settings.groundGlass
+            this.$state.mixSplitMenu = settings.mixSplitMenu
             this.$state.affixHead = settings.affixHead
             this.$state.layoutBackgroundColor = settings.layoutBackgroundColor
             this.$state.siderBackgroundColor = settings.siderBackgroundColor
@@ -316,6 +323,10 @@ export const useThemeStore = defineStore('theme',{
         enableGrayModel(enable?: boolean) {
             this.$state.grayModel = enable ? 'active' : 'none'
             document.documentElement.setAttribute("enable-gray-model",this.$state.grayModel)
+        },
+        // 开启混合模式下菜单分割
+        enableMixSplitMenu(enable: boolean) {
+            document.documentElement.setAttribute("enable-mix-split-menu", enable ? 'active' : 'none')
         }
     },
 })

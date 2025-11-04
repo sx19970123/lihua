@@ -450,7 +450,7 @@ onBeforeUnmount(() => {
 
 <style>
 [sider-dark='dark'][layout-type='top-navigation'][data-theme='light'],
-[sider-dark='dark'][layout-type='mix-navigation'][data-theme='light'] {
+[sider-dark='dark'][layout-type='mix-navigation'][data-theme='light'][enable-mix-split-menu='active'] {
   /* placeholder 颜色 */
   .title-search-input input::placeholder {
     color: rgba(255, 255, 255, 0.45) !important;

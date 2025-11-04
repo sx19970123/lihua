@@ -22,6 +22,9 @@
       <a-form-item label="导航类型">
         <nav-select v-model="themeStore.layoutType" @click="themeStore.changeLayoutType" @change="handleChangeLayoutType"/>
       </a-form-item>
+      <a-form-item label="分割菜单" v-if="themeStore.$state.layoutType === 'mix-navigation'">
+        <a-switch v-model:checked="themeStore.mixSplitMenu" @change="handleChangeSplitMenu"/>
+      </a-form-item>
       <a-form-item label="导航宽度" v-if="themeStore.layoutType !== 'top-navigation'">
         <a-slider v-model:value="themeStore.siderWith" @change="themeStore.changeSiderWidth" dots :max="400" :min="80" :step="20" style="width: 230px"></a-slider>
       </a-form-item>
@@ -32,7 +35,7 @@
           <a-radio value="large">更大</a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item label="分组导航" v-if="themeStore.layoutType !== 'top-navigation'">
+      <a-form-item label="分组导航" v-if="themeStore.layoutType !== 'top-navigation' && !themeStore.mixSplitMenu">
         <a-switch v-model:checked="themeStore.siderGroup" @change="handleChangeSiderGroup"/>
       </a-form-item>
       <a-form-item label="固定头部">
@@ -105,8 +108,20 @@ const handleSaveTheme = async () => {
   }
 }
 
+// 修改分割菜单
+const handleChangeSplitMenu = (value: boolean) => {
+  if (themeStore.$state.siderGroup) {
+    themeStore.$state.siderGroup = false
+    permissionStore.reloadMenu()
+  }
+  themeStore.enableMixSplitMenu(value)
+}
+
 // 处理修改菜单分组模式
-const handleChangeSiderGroup = () => {
+const handleChangeSiderGroup = (value?: boolean) => {
+  if (value) {
+    themeStore.$state.mixSplitMenu = false
+  }
   permissionStore.reloadMenu()
 }
 
