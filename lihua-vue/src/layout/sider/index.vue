@@ -1,6 +1,7 @@
 <template>
   <a-menu
       class="menu"
+      style="border-inline-end: none"
       :items="menu ? menu : defaultMenu"
       :theme="siderTheme ? siderTheme : themeStore.siderTheme"
       :mode="siderMode ? siderMode : themeStore.siderMode"

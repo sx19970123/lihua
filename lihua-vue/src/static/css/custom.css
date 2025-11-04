@@ -2,7 +2,7 @@
 .scrollbar, .sider-scrollbar {
     overflow: auto;
     scrollbar-width: thin !important;
-    scrollbar-color: rgb(227,227,227) transparent; /* 滑块颜色和轨道颜色 */
+    scrollbar-color: rgb(227,227,227) transparent;
 }
 
 [data-theme = 'dark'] {

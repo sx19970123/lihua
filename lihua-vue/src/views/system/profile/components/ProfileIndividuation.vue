@@ -53,6 +53,7 @@
       </a-form-item>
       <a-form-item label="切换动画">
         <a-select style="width: 200px" v-model:value="themeStore.routeTransition">
+          <a-select-option value="none">无</a-select-option>
           <a-select-option value="zoom">变焦</a-select-option>
           <a-select-option value="fade">淡入淡出</a-select-option>
           <a-select-option value="breathe">呼吸</a-select-option>
