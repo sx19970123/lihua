@@ -146,6 +146,7 @@ export const useThemeStore = defineStore('theme',{
             this.changeAffixHead()
             this.changeGroundGlass()
             this.changeShowViewTabs()
+            this.enableMixSplitMenu(this.$state.mixSplitMenu)
             this.$state.isServerLoad = true
         },
         // 通过json数据初始化state

@@ -78,6 +78,7 @@ const handleResize = () => {
   bodyWidth.value = document.body.offsetWidth
   if (document.body.offsetWidth < menuToggleWidth) {
     permissionStore.collapsed = true
+    showMask.value = false
     collapsedWidth.value = 0
     siderClass.value = 'min-sh-sider'
   } else {

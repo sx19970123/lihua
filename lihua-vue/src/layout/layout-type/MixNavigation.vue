@@ -39,8 +39,8 @@
                           collapsible
           >
             <!-- 窗口缩小到阈值后特殊侧边栏logo-->
-            <div class="sider-logo" :style="{width: showMask ? themeStore.siderWith + 'px' : '0px'}">
-              <a-flex align="center" justify="center" v-if="showMask">
+            <div class="sider-logo" :style="{width: !permissionStore.collapsed ? themeStore.siderWith + 'px' : '0px'}">
+              <a-flex align="center" justify="center" v-if="!permissionStore.collapsed">
                 <Logo style="margin: 0; padding-right: 8px"/>
               </a-flex>
             </div>
@@ -109,6 +109,7 @@ const handleResize = () => {
   bodyWidth.value = document.body.offsetWidth
   if (bodyWidth.value < menuToggleWidth) {
     permissionStore.collapsed = true
+    showMask.value = false
     collapsedWidth.value = 0
     siderClass.value = 'min-hs-sider'
   } else {
@@ -181,7 +182,6 @@ const initSplitMenu = () => {
   const loadSideMenu = (key: string, autoClick: boolean) => {
     // 加载侧边菜单
     const targetMenu = permission.menuRouters.filter((item: ItemType) => item && item.key === key)
-
     if (targetMenu && targetMenu.length > 0) {
       const menu = targetMenu[0] as MenuItemGroupType;
       subMenu.value = menu.children || []
