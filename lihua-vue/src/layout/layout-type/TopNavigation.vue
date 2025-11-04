@@ -1,11 +1,11 @@
 <template>
 <!--  小屏状态切换至mix-navigation布局-->
-  <mix-navigation v-if="isMiniWindow" :show-layout="props.showLayout"/>
+  <mix-navigation v-if="themeStore.isSmallWindow" :show-layout="props.showLayout"/>
 <!--  大屏状态使用top-navigation布局-->
   <a-layout v-else>
-    <div class="hc-header">
+    <div class="tn-header">
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="hc-layout-header"
+        <a-layout-header class="tn-layout-header"
                          v-show="props.showLayout"
                          :style="themeStore.siderTheme === 'light' ?
                           { background: themeStore.layoutBackgroundColor } : ''">
@@ -37,49 +37,20 @@ import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
 import MixNavigation from "@/layout/layout-type/MixNavigation.vue";
 import {useThemeStore} from "@/stores/theme";
-import {computed, onMounted, onUnmounted, ref} from "vue";
-import settings from "@/settings.ts";
-import {showOverflowY} from "@/utils/Scrollbar.ts";
+
 const themeStore = useThemeStore()
 const props = defineProps<{showLayout: boolean }>()
-const bodyWidth = ref<number>(document.body.offsetWidth)
-const menuToggleWidth = settings.menuToggleWidth
-const isMiniWindow = computed(() => bodyWidth.value < menuToggleWidth)
-
-// 处理视口尺寸变化
-const handleResize = () => {
-  bodyWidth.value = document.body.offsetWidth;
-
-  // 处于小屏状态时，设置layout-type为mix-navigation，导航类型为inline。脱离小屏状态时还原
-  if (isMiniWindow.value) {
-    document.documentElement.setAttribute("layout-type", "mix-navigation")
-    themeStore.changeSiderMode('inline')
-  } else {
-    document.documentElement.setAttribute("layout-type", "top-navigation")
-    themeStore.changeSiderMode('horizontal')
-  }
-  showOverflowY()
-}
-
-onMounted(() => {
-  window.addEventListener("resize", handleResize)
-  handleResize()
-})
-
-onUnmounted(() => {
-  window.removeEventListener("resize", handleResize)
-})
 
 </script>
 
 <style scoped>
-.hc-header {
+.tn-header {
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   position: relative;
   z-index: 10;
 }
-.hc-layout-header {
+.tn-layout-header {
   padding: 0;
   height: 48px;
   line-height: 48px;
@@ -99,13 +70,13 @@ onUnmounted(() => {
 
 <style>
 [data-head-affix = affix] {
-  .hc-header {
+  .tn-header {
     position: sticky;
     top: 0;
   }
 }
 [data-theme = dark] {
-  .hc-layout-header {
+  .tn-layout-header {
     box-shadow: var(--lihua-layout-dark-box-shadow);
   }
 }

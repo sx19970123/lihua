@@ -14,22 +14,22 @@
                         breakpoint="xl"
                         :collapsedWidth="collapsedWidth"
         >
-          <Logo :class="siderClass === 'min-sh-sider' ? 'sider-logo' : ''" style="padding: 16px"/>
+          <Logo :class="isSmallWindow ? 'sider-logo' : ''" style="padding: 16px"/>
           <!-- 侧边栏-->
-          <Side @route-change="handleRouteChange" :class="siderClass === 'min-sh-sider' ? 'min-sider-content' : ''"/>
+          <Side @route-change="handleRouteChange" :class="isSmallWindow ? 'small-sider-content' : ''"/>
         </a-layout-sider>
       </transition>
       <a-layout>
-        <a-layout-header class="sh-header"
+        <a-layout-header class="sn-header"
                          :style="{'background': themeStore.layoutBackgroundColor}">
           <transition :name="themeStore.routeTransition" mode="out-in">
             <!--    菜单收缩-->
-            <a-flex class="sh-head" justify="space-between" v-show="props.showLayout">
+            <a-flex class="sn-head" justify="space-between" v-show="props.showLayout">
               <a-flex align="center" :gap="16">
                 <!--菜单开关-->
                 <HeadCollapsed @collapsed-change="handleChangeCollapse"/>
                 <!--面包屑 宽度不足时隐藏-->
-                <Breadcrumb v-if="siderClass !== 'min-sh-sider'"/>
+                <Breadcrumb v-if="!isSmallWindow"/>
               </a-flex>
               <!-- 右侧头部-->
               <Head/>
@@ -55,42 +55,41 @@ import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
 import Mask from "@/components/mask/index.vue";
-
 import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
-import {onMounted, onUnmounted, ref} from "vue";
-import settings from "@/settings.ts";
+import {nextTick, onMounted, onUnmounted, ref, watch} from "vue";
 import HeadCollapsed from "@/layout/head/components/collapsed/index.vue";
 import Breadcrumb from "@/layout/head/components/breadcrumb/index.vue";
+
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()
 const props = defineProps<{showLayout: boolean}>()
-const menuToggleWidth = settings.menuToggleWidth
-const bodyWidth = ref<number>(document.body.offsetWidth)
+const isSmallWindow = ref<boolean>(themeStore.isSmallWindow)
+
 // 小屏下抽屉样式遮罩
 const showMask = ref<boolean>(false)
 // 菜单收起宽度，根据当前视口大小变化
-const siderClass = ref<'sh-sider' | 'min-sh-sider'>(bodyWidth.value < menuToggleWidth ? 'min-sh-sider' :'sh-sider')
+const siderClass = ref<'sn-sider'|'small-sn-sider'>(isSmallWindow.value ? 'small-sn-sider' :'sn-sider')
 // 菜单样式class，分为正常和小屏下抽屉样式
-const collapsedWidth = ref<0|80>(document.body.offsetWidth < menuToggleWidth ? 0 : 80)
+const collapsedWidth = ref<0|80>(isSmallWindow.value ? 0 : 80)
 // 处理视口变化操作
 const handleResize = () => {
-  bodyWidth.value = document.body.offsetWidth
-  if (document.body.offsetWidth < menuToggleWidth) {
+  if (isSmallWindow.value) {
     permissionStore.collapsed = true
     showMask.value = false
     collapsedWidth.value = 0
-    siderClass.value = 'min-sh-sider'
+    siderClass.value = 'small-sn-sider'
   } else {
-    collapsedWidth.value = 80
-    siderClass.value = 'sh-sider'
     showMask.value = false
+    collapsedWidth.value = 80
+    siderClass.value = 'sn-sider'
   }
+  nextTick(() => permissionStore.reloadMenu())
 }
 
 // 处理展开折叠操作
 const handleChangeCollapse = (collapsed: boolean) => {
-  if (bodyWidth.value < menuToggleWidth && !collapsed) {
+  if (isSmallWindow.value && !collapsed) {
     showMask.value = true
   }
 }
@@ -115,23 +114,25 @@ const handleKeyUp = (event: KeyboardEvent) => {
   }
 }
 
+// 监听窗口变化
+watch(() => themeStore.isSmallWindow, (value) => {
+  isSmallWindow.value = value
+  handleResize()
+})
 
 // dom渲染完毕后添加窗口监听
 onMounted(() => {
-  window.addEventListener("resize", handleResize)
   window.addEventListener("keyup", handleKeyUp)
 });
 
 // 组件销毁后删除监听
 onUnmounted(() => {
-  window.removeEventListener("resize", handleResize)
   window.removeEventListener("keyup", handleKeyUp)
-
 });
 </script>
 
 <style scoped>
-.sh-header {
+.sn-header {
   z-index: 3;
   height: auto;
   padding: 0;
@@ -139,25 +140,25 @@ onUnmounted(() => {
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   line-height: 48px;
 }
-.sh-head {
+.sn-head {
   box-shadow: var(--lihua-layout-light-box-shadow);
   padding-right: 32px;
 }
-.sh-sider {
+.sn-sider {
   position: sticky;
   height: 100vh;
   top: 0;
   z-index: 4;
   box-shadow: var(--lihua-layout-light-box-shadow);
 }
-.min-sh-sider {
+.small-sn-sider {
   z-index: 101;
   position: fixed;
   top: 0;
   box-shadow: var(--lihua-layout-light-box-shadow);
   background-color: #fff !important;
 }
-.min-sider-content {
+.small-sider-content {
   height: calc(100vh - 32px - 32px);
 }
 .sider-logo {
@@ -167,27 +168,27 @@ onUnmounted(() => {
 
 <style lang="scss">
 [data-head-affix = affix] {
-  .sh-header {
+  .sn-header {
     position: sticky;
     top: 0;
   }
 }
 [data-theme = dark] {
-  .sh-sider {
+  .sn-sider {
     box-shadow: var(--lihua-layout-dark-box-shadow);
   }
-  .sh-head {
+  .sn-head {
     box-shadow: var(--lihua-layout-dark-box-shadow);
   }
   .sider-logo {
     background-color: #141414;
   }
-  .min-sh-sider {
+  .small-sn-sider {
     background-color: #141414 !important;
   }
 }
 [sider-dark = dark] {
-  .min-sh-sider {
+  .small-sn-sider {
     background-color: rgba(0,21,41) !important;
   }
   .sider-logo {

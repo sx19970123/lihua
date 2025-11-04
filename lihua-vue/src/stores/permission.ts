@@ -19,7 +19,7 @@ const modules = import.meta.glob("../views/**/*.vue")
 export const usePermissionStore = defineStore('permission',{
     state: ()=> {
         const menuRouters: Array<ItemType> = []
-        const collapsed: boolean = true
+        const collapsed: boolean = false
         return {
             menuRouters,
             collapsed
@@ -225,13 +225,19 @@ const handleReloadMenu = (menuRouters: any[], isInner: boolean = false) => {
 
 // 是否为分组菜单
 const isSiderGroup = (isInner: boolean): 'group' | undefined => {
+    console.log("调用链")
     if (!themeStore) themeStore = useThemeStore();
 
-    const { layoutType, mixSplitMenu, siderGroup } = themeStore;
+    const { layoutType, mixSplitMenu, siderGroup, isSmallWindow } = themeStore;
 
     // 混合布局
-    if (layoutType === 'mix-navigation' && (isInner || !mixSplitMenu)) {
-        return siderGroup ? 'group' : undefined;
+    if (layoutType === 'mix-navigation') {
+        if (isSmallWindow) {
+            return siderGroup ? 'group' : undefined;
+        }
+        if (isInner || !mixSplitMenu) {
+            return siderGroup ? 'group' : undefined;
+        }
     }
 
     // 侧边布局

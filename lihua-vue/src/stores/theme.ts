@@ -87,6 +87,11 @@ export const useThemeStore = defineStore('theme',{
         const siderWith: number = settings.siderWith
 
         /**
+         * 是否为小尺寸窗口
+         */
+        const isSmallWindow: boolean = false
+
+        /**
          * 原侧边宽度，用于调整侧边栏时保存临时变量
          */
         const originSiderWith: number = settings.originSiderWith
@@ -125,6 +130,7 @@ export const useThemeStore = defineStore('theme',{
             groundGlass,
             affixHead,
             mixSplitMenu,
+            isSmallWindow,
             layoutBackgroundColor,
             siderBackgroundColor,
             siderMode,

@@ -2,10 +2,10 @@
   <div>
     <a-layout>
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="hs-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' || !isSplitMenu ? { background: themeStore.layoutBackgroundColor } : ''">
+        <a-layout-header class="mn-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' || !isSplitMenu ? { background: themeStore.layoutBackgroundColor } : ''">
           <div ref="headerRef">
             <a-flex align="center" justify="space-between">
-              <Logo class="logo" :show-title="!isMinWindow"/>
+              <Logo class="logo" :show-title="!isSmallWindow"/>
               <!-- 开启分栏-->
               <Side class="sider"
                     is-mix-top
@@ -15,7 +15,7 @@
                     @route-change="(keys: string[]) => loadSideMenu(keys[0], false)"
                     @mounted="(keys: string[]) => loadSideMenu(keys[0], false)"
                     @menu-click="(key) => loadSideMenu(key, true)"
-                    v-if="isSplitMenu && !isMinWindow"
+                    v-if="isSplitMenu && !isSmallWindow"
               />
               <!--页头-->
               <Head class="head"/>
@@ -25,11 +25,11 @@
       </transition>
 
       <a-layout>
-        <transition :name="themeStore.routeTransition" mode="out-in" v-if="!isSplitMenu || isMinWindow || subMenu.length > 0">
+        <transition :name="themeStore.routeTransition" mode="out-in" v-if="!isSplitMenu || isSmallWindow || subMenu.length > 0">
           <a-layout-sider :class="siderClass"
                           v-show="props.showLayout"
                           :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
-                          :theme="isMinWindow || !isSplitMenu ? themeStore.siderTheme : 'light'"
+                          :theme="isSmallWindow || !isSplitMenu ? themeStore.siderTheme : 'light'"
                           :width="themeStore.siderWith"
                           v-model:collapsed="permissionStore.collapsed"
                           :collapsedWidth="collapsedWidth"
@@ -39,16 +39,16 @@
                           collapsible
           >
             <!-- 窗口缩小到阈值后特殊侧边栏logo-->
-            <div class="sider-logo" :style="{width: !permissionStore.collapsed ? themeStore.siderWith + 'px' : '0px'}">
-              <a-flex align="center" justify="center" v-if="!permissionStore.collapsed">
+            <div class="sider-logo" :style="{width: !permissionStore.collapsed && isSmallWindow ? themeStore.siderWith + 'px' : '0px'}">
+              <a-flex align="center" justify="center" v-if="!permissionStore.collapsed && isSmallWindow">
                 <Logo style="margin: 0; padding-right: 8px"/>
               </a-flex>
             </div>
             <!-- 侧边栏-->
             <Side class="sider-content sider-scrollbar"
-                  :sider-theme="isMinWindow || !isSplitMenu ? undefined: 'light'"
-                  :menu="isMinWindow || !isSplitMenu ? undefined : subMenu"
-                  :class="{'min-sider-content': isMinWindow ,'header-invisible-sider-content': !headerVisible}"
+                  :sider-theme="isSmallWindow || !isSplitMenu ? undefined: 'light'"
+                  :menu="isSmallWindow || !isSplitMenu ? undefined : subMenu"
+                  :class="{'small-sider-content': isSmallWindow ,'header-invisible-sider-content': !headerVisible}"
                   @route-change="handleRouteChange"
             />
           </a-layout-sider>
@@ -74,9 +74,8 @@ import Content from "@/layout/content/index.vue"
 import { usePermissionStore } from "@/stores/permission";
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/theme";
-import {computed, onMounted, onUnmounted, ref, useTemplateRef} from "vue";
+import {computed, onMounted, onUnmounted, ref, useTemplateRef, watch} from "vue";
 import Mask from "@/components/mask/index.vue";
-import settings from "@/settings.ts";
 import { cloneDeep } from 'lodash-es'
 import type {MenuItemGroupType} from "ant-design-vue/es/menu/src/hooks/useItems";
 import type {ItemType} from "ant-design-vue";
@@ -86,42 +85,44 @@ const router = useRouter()
 const permission = usePermissionStore()
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()
-const menuToggleWidth = settings.menuToggleWidth
-const bodyWidth = ref<number>(document.body.offsetWidth)
 // header dom
 const headerRef = useTemplateRef<HTMLDivElement>("headerRef")
 // header是否可见，用于在不固定header时动态调整sider高度
 const headerVisible = ref<boolean>(true)
 // 是否显示layout
 const props = defineProps<{ showLayout: boolean }>()
+// 是否为小窗
+const isSmallWindow = ref<boolean>(themeStore.isSmallWindow)
 // 菜单收起宽度，根据当前视口大小变化
-const collapsedWidth = ref<0|80>( bodyWidth.value < menuToggleWidth ? 0 : 80)
+const collapsedWidth = ref<0|80>( isSmallWindow.value ? 0 : 80)
 // 菜单样式class，分为正常和小屏下抽屉样式
-const siderClass = ref<'hs-sider' | 'min-hs-sider'>(bodyWidth.value < menuToggleWidth ? 'min-hs-sider' :'hs-sider')
+const siderClass = ref<'mn-sider' | 'small-mn-sider'>(isSmallWindow.value ? 'small-mn-sider' :'mn-sider')
 // 是否为分割菜单
 const isSplitMenu = computed(() => themeStore.mixSplitMenu)
-// 是否为小窗口
-const isMinWindow = computed(() => siderClass.value === 'min-hs-sider')
 // 小屏下抽屉样式遮罩
 const showMask = ref<boolean>(false)
 // 处理视口变化操作
 const handleResize = () => {
-  bodyWidth.value = document.body.offsetWidth
-  if (bodyWidth.value < menuToggleWidth) {
+  if (isSmallWindow.value) {
     permissionStore.collapsed = true
     showMask.value = false
     collapsedWidth.value = 0
-    siderClass.value = 'min-hs-sider'
+    siderClass.value = 'small-mn-sider'
   } else {
-    collapsedWidth.value = 80
-    siderClass.value = 'hs-sider'
     showMask.value = false
+    collapsedWidth.value = 80
+    siderClass.value = 'mn-sider'
   }
+  // 同时满足菜单分割和菜单分组时，窗口变化重新加载菜单
+  if (themeStore.mixSplitMenu && themeStore.siderGroup) {
+    permissionStore.reloadMenu()
+  }
+
 }
 
 // 展开时打开遮罩
 const handleChangeCollapse = (collapsed: boolean) => {
-  if (bodyWidth.value < menuToggleWidth && !collapsed) {
+  if (isSmallWindow.value && !collapsed) {
     showMask.value = true
   }
 }
@@ -192,7 +193,6 @@ const initSplitMenu = () => {
     } else {
       subMenu.value = []
     }
-
   }
 
   return {
@@ -204,23 +204,27 @@ const initSplitMenu = () => {
 const {subMenu, loadSideMenu} = initSplitMenu()
 
 
+// 监听窗口变化
+watch(() => themeStore.isSmallWindow, (value) => {
+  isSmallWindow.value = value
+  handleResize()
+})
+
 // dom渲染完毕后添加窗口监听
 onMounted(() => {
-  window.addEventListener("resize", handleResize)
   window.addEventListener("keyup", handleKeyUp)
   createObserver()
 });
 
 // 组件销毁后删除监听
 onUnmounted(() => {
-  window.removeEventListener("resize", handleResize)
   window.removeEventListener("keyup", handleKeyUp)
   cleanupObserver()
 });
 </script>
 
 <style scoped>
-.hs-header {
+.mn-header {
   z-index: 5;
   padding: 0;
   height: 48px;
@@ -229,14 +233,14 @@ onUnmounted(() => {
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   box-shadow: var(--lihua-layout-light-box-shadow);
 }
-.hs-sider {
+.mn-sider {
   position: sticky;
   height: calc(100vh - 48px);
   z-index: 4;
   top: 0;
   box-shadow: var(--lihua-layout-light-box-shadow);
 }
-.min-hs-sider {
+.small-mn-sider {
   z-index: 101;
   height: 100vh;
   position: fixed;
@@ -249,7 +253,7 @@ onUnmounted(() => {
 .header-invisible-sider-content {
   height: calc(100vh - 48px);
 }
-.min-sider-content {
+.small-sider-content {
   height: calc(100vh - 48px);
   background-color: #fff;
 }
@@ -283,11 +287,11 @@ onUnmounted(() => {
 
 <style lang="scss">
 [data-head-affix = affix] {
-  .hs-header {
+  .mn-header {
     position: sticky;
     top: 0;
   }
-  .hs-sider {
+  .mn-sider {
     position: sticky;
     top:48px;
   }
@@ -298,24 +302,24 @@ onUnmounted(() => {
   }
 }
 [data-theme = dark] {
-  .hs-header {
+  .mn-header {
     box-shadow: var(--lihua-layout-dark-box-shadow);
   }
-  .hs-sider {
+  .mn-sider {
     box-shadow: var(--lihua-layout-dark-box-shadow);
   }
-  .min-hs-sider {
+  .small-mn-sider {
     box-shadow: var(--lihua-layout-dark-box-shadow);
   }
   .sider-logo {
     background-color: #141414;
   }
-  .min-sider-content {
+  .small-sider-content {
     background-color: #141414;
   }
 }
 [sider-dark = dark] {
-  .min-sider-content {
+  .small-sider-content {
     background-color: rgba(0,21,41);
   }
   .sider-logo {
