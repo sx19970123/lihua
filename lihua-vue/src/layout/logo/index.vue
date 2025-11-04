@@ -11,7 +11,7 @@
       </div>
       <!--    导航名称-->
       <a-typography-title class="title"
-                          :class="themeStore.siderTheme === 'dark' && themeStore.mixSplitMenu ? 'main-name': ''"
+                          :class="(themeStore.siderTheme === 'dark' && themeStore.layoutType !== 'mix-navigation') || (themeStore.siderTheme === 'dark' && themeStore.mixSplitMenu) ? 'main-name': ''"
                           :level="4"
                           ellipsis
                           content="Lihua Admin"

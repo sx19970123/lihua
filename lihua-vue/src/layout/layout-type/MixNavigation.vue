@@ -108,6 +108,7 @@ const showMask = ref<boolean>(false)
 const handleResize = () => {
   bodyWidth.value = document.body.offsetWidth
   if (bodyWidth.value < menuToggleWidth) {
+    permissionStore.collapsed = true
     collapsedWidth.value = 0
     siderClass.value = 'min-hs-sider'
   } else {
