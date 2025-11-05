@@ -2,7 +2,7 @@
   <div>
     <a-layout style="min-height: 100vh">
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-sider class="sider-scrollbar"
+        <a-layout-sider
                         :class="siderClass"
                         v-show="props.showLayout"
                         :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
@@ -14,9 +14,11 @@
                         breakpoint="xl"
                         :collapsedWidth="collapsedWidth"
         >
-          <Logo :class="isSmallWindow ? 'sider-logo' : ''" style="padding: 16px"/>
+          <Logo class="logo" :class="isSmallWindow ? 'sider-logo' : ''"/>
           <!-- 侧边栏-->
-          <Side @route-change="handleRouteChange" :class="isSmallWindow ? 'small-sider-content' : ''"/>
+          <div class="sider sider-scrollbar">
+            <Side @route-change="handleRouteChange" :class="isSmallWindow ? 'small-sider-content' : ''"/>
+          </div>
         </a-layout-sider>
       </transition>
       <a-layout>
@@ -143,6 +145,12 @@ onUnmounted(() => {
 .sn-head {
   box-shadow: var(--lihua-layout-light-box-shadow);
   padding-right: 32px;
+}
+.sider {
+  height: calc(100vh - 48px);
+}
+.logo {
+  padding: 8px 16px 8px 16px
 }
 .sn-sider {
   position: sticky;

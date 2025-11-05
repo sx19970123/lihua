@@ -54,8 +54,8 @@
 <!--      所有菜单-->
       <a-typography-text strong>全部菜单</a-typography-text>
       <selectable-card
+          v-if="open"
           :card-style="{marginTop: '4px', marginBottom: '4px'}"
-          class="menu-content"
           v-model="pathKey"
           :gap="4"
           :data-source="menuList"
