@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import svgLoader from 'vite-svg-loader'
-import replaceAttrFill from "./plugins/svgo-conf.ts"
+import replaceAttrFill from "./plugins/SvgoPlugin.ts"
 
 export default defineConfig(({ mode }) => {
   // 获取请求前缀
