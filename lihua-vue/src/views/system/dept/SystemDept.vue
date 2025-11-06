@@ -82,8 +82,8 @@
 
            <a-button type="primary" ghost @click="handleExpanded">
              <template #icon>
-               <Unfold v-if="expandedRowKeys.length === 0"/>
-               <PickUp v-else/>
+               <ColumnHeightOutlined v-if="expandedRowKeys.length === 0"/>
+               <VerticalAlignMiddleOutlined v-else/>
              </template>
              {{!expandedRowKeys.length ? '展 开' : '折 叠'}}
            </a-button>
@@ -280,8 +280,6 @@ import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
-import PickUp from "@/components/icon/pick-up/PickUp.vue";
-import Unfold from "@/components/icon/unfold/Unfold.vue";
 import {ResponseError} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
 import settings from "@/settings.ts";

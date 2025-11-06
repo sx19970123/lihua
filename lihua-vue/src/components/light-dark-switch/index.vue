@@ -16,8 +16,6 @@
 </template>
 <script setup lang="ts">
 import { useThemeStore } from "@/stores/theme";
-import XiaoHeiMoon from "@/components/icon/xiaoheizi/XiaoHeiMoon.vue";
-import XiaoMiaoSun from "@/components/icon/xiaomiaozi/XiaoMiaoSun.vue";
 const themeStore = useThemeStore()
 
 // 切换主题

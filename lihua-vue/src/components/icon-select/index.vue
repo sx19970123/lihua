@@ -119,7 +119,7 @@ import {cloneDeep} from "lodash-es";
 import {useThemeStore} from "@/stores/theme.ts";
 const themeStore = useThemeStore();
 // 读取icon目录下图标(../icon/目录名/组件名.vue)
-const modules = import.meta.glob("../icon/*/*.vue")
+const modules = import.meta.glob("../../assets/icons/**/*.svg")
 
 const icons: Record<string, Component> = Icons
 // 三种图标类型集合
@@ -200,7 +200,7 @@ for (let iconKey in icons) {
 
 // 初始化自定义图标集合
 for (let path in modules) {
-  const match = path.match(/\/([^/]+)\.vue$/)
+  const match = path.match(/\/([^/]+)\.svg$/)
   if (match) {
     customIconLIst.value.push(match[1])
     finalCustomIconLIst.push(match[1])

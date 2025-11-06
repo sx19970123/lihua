@@ -121,13 +121,13 @@
             <a-divider type="vertical"/>
             <a-button type="link" size="small" v-if="record.status === '1'" @click="(event:MouseEvent) => handleRevoke(event, record.id)">
               <template #icon>
-                <Cancel />
+                <RollbackOutlined />
               </template>
               撤销
             </a-button>
             <a-button type="link" size="small" v-else @click="(event:MouseEvent) => handleRelease(event, record.id)">
               <template #icon>
-                <PublishAir />
+                <SendOutlined />
               </template>
               发布
             </a-button>
@@ -245,8 +245,6 @@ import NoticePreview from "@/components/notice-preview/index.vue"
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {getUserOptionByUserIds} from "@/api/system/user/User.ts";
-import PublishAir from "@/components/icon/publish-air/PublishAir.vue";
-import Cancel from "@/components/icon/cancel/Cancel.vue";
 import {ResponseError} from "@/api/global/Type.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";

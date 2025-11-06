@@ -88,8 +88,8 @@
 
               <a-button type="primary" ghost @click="handleExpanded">
                 <template #icon>
-                  <Unfold v-if="expandedRowKeys.length === 0"/>
-                  <PickUp v-else/>
+                  <ColumnHeightOutlined v-if="expandedRowKeys.length === 0"/>
+                  <VerticalAlignMiddleOutlined v-else/>
                 </template>
                 {{!expandedRowKeys.length ? '展 开' : '折 叠'}}
               </a-button>
@@ -328,8 +328,6 @@ import {type FormInstance, message} from "ant-design-vue";
 import { cloneDeep } from 'lodash-es';
 import { useThemeStore } from "@/stores/theme";
 import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
-import PickUp from "@/components/icon/pick-up/PickUp.vue";
-import Unfold from "@/components/icon/unfold/Unfold.vue";
 import {ResponseError} from "@/api/global/Type.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";

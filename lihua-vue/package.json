@@ -1,6 +1,6 @@
 {
   "name": "lihua-vue",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "private": true,
   "type": "module",
   "web-types": "./web-types.json",
@@ -29,6 +29,7 @@
     "lodash-es": "^4.17.21",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
+    "svgo": "^4.0.0",
     "uuid": "^10.0.0",
     "vditor": "^3.11.2",
     "vue": "^3.5.22",

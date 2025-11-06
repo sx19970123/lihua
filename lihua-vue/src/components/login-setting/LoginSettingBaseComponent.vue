@@ -7,7 +7,7 @@
     </a-button>
     <a-flex justify="center" align="center" vertical="vertical" :gap="16">
 <!--        图标-->
-      <setting-icon class="login-setting-icon" :icon="icon" :style="{color: themeStore.getColorPrimary()}"/>
+      <component class="login-setting-icon" :is="icon" :style="{color: themeStore.getColorPrimary()}"/>
       <div class="login-setting-text">
 <!--        标题-->
         <a-typography-title :level="2">{{title}}</a-typography-title>
@@ -43,7 +43,6 @@
 </template>
 
 <script setup lang="ts">
-import SettingIcon from "@/components/icon/index.vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {ref} from "vue";
 const themeStore = useThemeStore();

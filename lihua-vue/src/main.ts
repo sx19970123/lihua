@@ -14,8 +14,6 @@ import 'ant-design-vue/dist/reset.css';
 import * as Icons from "@ant-design/icons-vue";
 import "@/static/css/index.css"
 
-import Icon from "@/components/icon/index.vue"
-
 
 const app = createApp(App)
 
@@ -31,12 +29,12 @@ for (const i in icons) {
 }
 
 // 导入自定义图标
-const modules = import.meta.glob("./components/icon/**/*.vue")
+const modules = import.meta.glob("./assets/icons/**/*.svg")
 for (let path in modules) {
     modules[path]().then((module:any) => {
         if (module && module.default) {
             // 组件名
-            const match = path.match(/\/([^/]+)\.vue$/)
+            const match = path.match(/\/([^/]+)\.svg$/)
             if (match) {
                 // 注册组件
                 app.component(match[1], defineComponent(module.default));
@@ -59,8 +57,5 @@ for (const path in loginSettingComponents) {
         }
     })
 }
-
-// 是用全局自定义icon组件
-app.component('icon', Icon)
 
 app.mount('#app')

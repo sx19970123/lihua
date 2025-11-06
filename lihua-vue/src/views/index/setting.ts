@@ -1,13 +1,9 @@
 // 下一版本更新记录
 const nextUpdate = [
     {
-        version: '1.2.7',
+        version: '1.2.8',
         record: [
-            '1.侧边导航样式2更新为混合导航，支持菜单分割',
-            '2.侧边导航Logo固定，不再跟随菜单滚动',
-            '3.修复顶部导航深色模式下搜索功能样式不适配的问题',
-            '4.修复菜单搜索关闭时遮罩闪烁bug',
-            '5.更新tianai验证码到1.5.3版本',
+
         ]
     }
 ]
@@ -21,6 +17,18 @@ export const versionInfo = {
     vueVersion: ' 3.5.22',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.2.7',
+            updateDate: '2025-11-06',
+            updateContent: [
+                '1.侧边导航样式2更新为混合导航，支持菜单分割',
+                '2.重构引入第三方图标方式，直接在src/assets/icons下引入svg图标即可，src/assets/icons/fixed-color目录下图标颜色不受css控制，保持彩色图标，其余目录下图标受css控制，可根据主题、点选变换主题色',
+                '3.侧边导航Logo固定，不再跟随菜单滚动',
+                '4.修复顶部导航深色模式下搜索功能样式不适配的问题',
+                '5.修复菜单搜索关闭时遮罩闪烁bug',
+                '6.更新tianai验证码到1.5.3版本',
+            ]
+        },
         {
             version: '1.2.6',
             updateDate: '2025-10-25',
