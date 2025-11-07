@@ -3,7 +3,7 @@
     <a-flex gap="middle" align="center" justify="center" v-if="showTitle && (themeStore.layoutType === 'mix-navigation' || themeStore.layoutType === 'top-navigation' || !permissionStore.collapsed)">
       <div>
         <!--    导航LOGO-->
-        <a-avatar class="logo-avatar" :style="{backgroundColor: themeStore.getColorPrimary()}">
+        <a-avatar :style="{backgroundColor: themeStore.getColorPrimary()}">
           <template #icon>
             <XiaoMiaoCool/>
           </template>
@@ -20,9 +20,9 @@
     <a-flex align="center" justify="center" v-else>
       <div>
         <!--    侧边导航折叠时展示的LOGO-->
-        <a-avatar class="logo-avatar" :style="{ backgroundColor: themeStore.getColorPrimary()}">
+        <a-avatar :style="{ backgroundColor: themeStore.getColorPrimary()}">
           <template #icon>
-            <XiaoMiaoCool/>
+            <XiaoMiaoCool />
           </template>
         </a-avatar>
       </div>
@@ -53,9 +53,6 @@ const goHome = async () => {
     margin: 0;
     overflow: hidden;
   }
-}
-.logo-avatar {
-  padding-top: 2px
 }
 .main-name {
   color: rgba(255, 255, 255, 0.85);
