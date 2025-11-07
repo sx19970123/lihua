@@ -97,7 +97,7 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
             sysSettingService.initSetting();
         }
 
-        if ( keyPrefix.startsWith(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue())) {
+        if (keyPrefix.startsWith(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue())) {
             sysSettingService.cacheIpBlackList();
         }
     }

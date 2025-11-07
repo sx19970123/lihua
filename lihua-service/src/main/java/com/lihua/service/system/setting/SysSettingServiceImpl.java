@@ -41,6 +41,8 @@ public class SysSettingServiceImpl implements SysSettingService {
         sysSettingMapper.insert(sysSetting);
         // redis缓存
         cacheSettingItem(sysSetting);
+        // 缓存登录黑名单
+        cacheIpBlackList();
         return sysSetting.getSettingComponentName();
     }
 
