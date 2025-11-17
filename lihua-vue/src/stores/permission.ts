@@ -225,7 +225,6 @@ const handleReloadMenu = (menuRouters: any[], isInner: boolean = false) => {
 
 // 是否为分组菜单
 const isSiderGroup = (isInner: boolean): 'group' | undefined => {
-    console.log("调用链")
     if (!themeStore) themeStore = useThemeStore();
 
     const { layoutType, mixSplitMenu, siderGroup, isSmallWindow } = themeStore;
