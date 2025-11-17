@@ -524,6 +524,7 @@ const initDelete = () => {
   return {
     openDeletePopconfirm,
     countdown,
+    interval,
     closePopconfirm,
     handleDelete,
     openPopconfirm,
@@ -532,7 +533,7 @@ const initDelete = () => {
   }
 }
 
-const {openDeletePopconfirm, countdown, closePopconfirm, handleDelete, openPopconfirm, handleForceDelete, startForceDeleteCountdown} = initDelete()
+const {openDeletePopconfirm, countdown, interval, closePopconfirm, handleDelete, openPopconfirm, handleForceDelete, startForceDeleteCountdown} = initDelete()
 
 const initShare = () => {
   const showShareModal = ref<boolean>(false)
@@ -683,4 +684,9 @@ const handleDownload = async (event: MouseEvent, id: string, status: string) => 
     }
   }
 }
+
+onUnmounted(() => {
+  clearInterval(interval.value)
+  previewUrlMap.value.clear()
+})
 </script>
