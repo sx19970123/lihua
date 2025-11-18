@@ -3,6 +3,7 @@ package com.lihua.service.system.setting;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.cache.RedisCache;
 import com.lihua.entity.system.SysSetting;
+import com.lihua.exception.ServiceException;
 import com.lihua.mapper.system.SysSettingMapper;
 import com.lihua.model.system.dto.SysSettingDTO;
 import com.lihua.utils.json.JsonUtils;
@@ -93,6 +94,18 @@ public class SysSettingServiceImpl implements SysSettingService {
         }
 
         return true;
+    }
+
+    @Override
+    public SysSettingDTO.SignInSetting getSignInSetting() {
+        SysSetting setting = getSysSettingByComponentName("SignInSetting");
+
+        if (setting == null) {
+            return null;
+        }
+
+        // 自助注册配置
+        return JsonUtils.toObject(setting.getSettingJson(), SysSettingDTO.SignInSetting.class);
     }
 
     @Override

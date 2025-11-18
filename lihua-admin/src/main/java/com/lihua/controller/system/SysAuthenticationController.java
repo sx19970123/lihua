@@ -10,6 +10,7 @@ import com.lihua.model.security.AuthInfo;
 import com.lihua.model.security.CurrentDept;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
+import com.lihua.model.system.dto.SysSettingDTO;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.model.system.dto.SysRegisterDTO;
@@ -116,6 +117,19 @@ public class SysAuthenticationController extends ApiResponseController {
     public ApiResponseModel<String> reloadData() {
         sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser(), true);
         return success();
+    }
+
+    /**
+     * 是否开启用户注册功能
+     */
+    @Operation(summary = "是否开启用户注册功能")
+    @GetMapping("enableRegister")
+    public ApiResponseModel<Boolean> enableRegister() {
+        SysSettingDTO.SignInSetting signInSetting = sysSettingService.getSignInSetting();
+        if (signInSetting == null) {
+            return success(false);
+        }
+        return success(signInSetting.isEnable());
     }
 
     /**

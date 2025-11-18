@@ -124,17 +124,17 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Override
     @Transactional
     public String register(String username, String password) {
-        SysSetting setting = sysSettingService.getSysSettingByComponentName("SignInSetting");
 
-        if (setting == null) {
-            throw new ServiceException("注册配置不存在");
+        SysSettingDTO.SignInSetting signInSetting = sysSettingService.getSignInSetting();
+
+        if (signInSetting == null || !signInSetting.isEnable()) {
+            throw new ServiceException("用户注册未开放");
         }
 
-        // 自助注册配置
-        SysSettingDTO.SignInSetting signInSetting = JsonUtils.toObject(setting.getSettingJson(), SysSettingDTO.SignInSetting.class);
-
-        if (!signInSetting.isEnable()) {
-            throw new ServiceException("用户注册未开放");
+        // 校验用户名
+        boolean checked = checkUserName(username);
+        if (!checked) {
+            throw new ServiceException("该用户名已存在");
         }
 
         LocalDateTime now = DateUtils.now();

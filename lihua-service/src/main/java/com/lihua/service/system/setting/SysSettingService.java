@@ -1,6 +1,7 @@
 package com.lihua.service.system.setting;
 
 import com.lihua.entity.system.SysSetting;
+import com.lihua.model.system.dto.SysSettingDTO;
 
 import java.util.List;
 
@@ -25,6 +26,10 @@ public interface SysSettingService {
      * 是否启用验证码
      */
     boolean enableCaptcha();
+    /**
+     * 获取自助注册配置
+     */
+    SysSettingDTO.SignInSetting getSignInSetting();
 
     /**
      * 获取ip黑名单

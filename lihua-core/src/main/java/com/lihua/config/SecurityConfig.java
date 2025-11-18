@@ -57,8 +57,8 @@ public class SecurityConfig {
                         "/system/publicKey/**",                         // 获取公钥
                         "/system/sse/connect/**",                       // 连接sse
                         "/system/attachment/storage/download/**",       // 附件下载
-                        "system/setting/GrayModelSetting",              // 灰色模式设置
-                        "system/setting/SignInSetting",                 // 是否开启用户注册
+                        "/system/setting/GrayModelSetting",              // 灰色模式设置
+                        "/system/enableRegister",                        // 是否开启用户注册
                         "/system/checkUserName/**",                     // 检查用户名
                         "/system/register/**",                          // 注册
                         "/druid/**",                                    // druid数据库监控
