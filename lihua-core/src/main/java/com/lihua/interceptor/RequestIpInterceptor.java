@@ -32,10 +32,16 @@ public class RequestIpInterceptor implements HandlerInterceptor {
     // ip 匹配
     private void ipMatch(String currentIp) {
         List<String> prohibitIpList = sysSettingService.getIpBlackList();
-        // 使用正则匹配ip地址
         if (!prohibitIpList.isEmpty()) {
             prohibitIpList.forEach(ip -> {
-                String regex = ip.replace("?", ".").replace("*", ".*");
+
+                String regex = ip
+                        .replace(".", "\\.")
+                        .replace("*", ".*")
+                        .replace("?", ".");
+
+                regex = "^" + regex + "$";
+
                 Pattern compiledPattern = Pattern.compile(regex);
                 Matcher matcher = compiledPattern.matcher(currentIp);
 
@@ -46,4 +52,5 @@ public class RequestIpInterceptor implements HandlerInterceptor {
             });
         }
     }
+
 }
