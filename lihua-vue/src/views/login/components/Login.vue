@@ -77,7 +77,6 @@ import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import {useRouter} from 'vue-router'
 import {useSettingStore} from "@/stores/setting.ts";
-import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
 
 const {enableCaptcha, errorMessage=""} = defineProps<{
   // 是否启用验证码
