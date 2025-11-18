@@ -5,7 +5,7 @@
       <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
       <!--                    根据配置显示注册-->
       <div v-if="isRegistrationEnable">
-        <a-typography-text>没有账户？</a-typography-text>
+        <a-typography-text>没有账号？</a-typography-text>
         <a-typography-link @click="handleChangeComponent('register')">快速注册
           <RightOutlined/>
         </a-typography-link>

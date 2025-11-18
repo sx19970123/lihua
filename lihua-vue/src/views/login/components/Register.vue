@@ -2,7 +2,7 @@
   <div>
     <div class="register-title">
       <a-typography-title :level="2">欢迎注册狸花猫</a-typography-title>
-      <a-typography-text>已有账户？</a-typography-text>
+      <a-typography-text>已有账号？</a-typography-text>
       <a-typography-link @click="handleChangeComponent('login')">前往登录
         <RightOutlined/>
       </a-typography-link>
