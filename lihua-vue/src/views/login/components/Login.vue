@@ -4,7 +4,7 @@
       <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
       <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
       <!--                    根据配置显示注册-->
-      <div v-if="enableRegister">
+      <div v-if="isRegistrationEnable">
         <a-typography-text>没有账户？</a-typography-text>
         <a-typography-link @click="handleChangeComponent('register')">快速注册
           <RightOutlined/>
@@ -72,7 +72,7 @@ import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
 import {inject, onMounted, reactive, type Ref, ref, useTemplateRef} from "vue";
 import token from "@/utils/Token.ts"
 import {init} from "@/utils/AppInit.ts";
-import {getLoginSetting} from "@/api/system/login/Login.ts";
+import {enableRegister, getLoginSetting} from "@/api/system/login/Login.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import {useRouter} from 'vue-router'
@@ -203,12 +203,17 @@ const showVerify = () => {
 }
 
 // 是否开启自处注册
-const enableRegister = ref<boolean>(false)
+const isRegistrationEnable = ref<boolean>(false)
 const initRegisterSetting = () => {
-  settingStore.getSetting<SignIn>('SignInSetting').then(resp => {
-    if (resp) {
-      enableRegister.value = resp.enable || false
+  enableRegister().then(resp => {
+    if (resp.code === 200) {
+      isRegistrationEnable.value = resp.data
+    } else {
+      isRegistrationEnable.value = false
     }
+  }).catch(e => {
+    console.error(e)
+    isRegistrationEnable.value = false
   })
 }
 
