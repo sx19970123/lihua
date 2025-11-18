@@ -4,17 +4,22 @@ import {createBrowserId} from "@/utils/BrowserId.ts";
 import {getPublicKey} from "@/api/system/auth/Auth.ts";
 import { v4 as uuidv4 } from 'uuid';
 import {ResponseError} from "@/api/global/Type.ts";
-// token 和 默认密码加密的密钥。后端需保持一致
-const TOKEN_KEY:string = await createBrowserId()
 const DEFAULT_PASSWORD_KEY = 'lihuaLIHUALIhuam';
-// token数据加密
-export const encrypt = (data: string):string => {
-  return CryptoJS.AES.encrypt(data, TOKEN_KEY,{mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7}).toString()
+// 16 字节的 Key
+const KEY = CryptoJS.enc.Utf8.parse("A1B2C3D4E5F6G7H8")
+// 16 字节的 IV
+const IV = CryptoJS.enc.Utf8.parse("H8G7F6E5D4C3B2A1")
+
+// 加密
+export const encrypt = (data: string): string => {
+  const encrypted = CryptoJS.AES.encrypt(data, KEY, { iv: IV, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 })
+  return encrypted.toString()
 }
 
-// token数据解密
-export const decrypt = (data: string):string => {
-  return CryptoJS.AES.decrypt(data,TOKEN_KEY,{mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7}).toString(CryptoJS.enc.Utf8)
+// 解密
+export const decrypt = (data: string): string => {
+  const decrypted = CryptoJS.AES.decrypt(data, KEY, { iv: IV, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 })
+  return decrypted.toString(CryptoJS.enc.Utf8)
 }
 
 // 默认密码数据加密
