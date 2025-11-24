@@ -32,14 +32,15 @@ const {value, placeholder, size = 90, height, prefixIcon = false, showProgress =
   showProgress?: boolean
 }>()
 
+const weakRegex = /^.{6,}$/;
+const mediumRegex = /^(?=.*\p{L})(?=.*\d).{8,}$/u;
+const strongRegex = /^(?=.*\p{L})(?=.*\d)(?=.*[^\p{L}\d]).{10,}$/u;
+
 const password = ref<string | undefined>(value)
 const emits = defineEmits(['update:value'])
 const passwordLevel = ref<number>(0)
 
 const handleChangePassword = () => {
-  const weakRegex = /^(?=.*[a-zA-Z])[\w!@#$%^&*]{6,}$/;
-  const mediumRegex = /^(?=.*\d)(?=.*[a-zA-Z])[\w!@#$%^&*]{8,}$/;
-  const strongRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?=.*[\w!@#$%^&*]).{10,}$/;
   const passwordValue = password.value
   if (passwordValue) {
     if (strongRegex.test(passwordValue) ){
