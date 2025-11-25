@@ -50,20 +50,26 @@ export const buildTree = <T> (originList: Array<T>,
   return tree;
 }
 
+
 /**
  * 树形结构遍历
  * @param tree 树形结构数组
- * @param callback 树形结构遍历回调函数，回调参数为节点元素
+ * @param callback 树形结构遍历回调函数，回调参数为节点元素，return true可终止递归
  * @param children 子集节点容器名称 默认 children
  */
-export const traverse = <T> (tree: Array<T>, callback: (item: T) => void, children: string = DEFAULT_CHILDREN) => {
-  tree.forEach((item) => {
-    callback(item)
-    const itemChildren = (item as any)[children]
-    if (itemChildren && itemChildren.length > 0) {
-      traverse(itemChildren, callback, children);
+export const traverse = <T> (tree: Array<T>, callback: (item: T) => void | boolean, children: string = DEFAULT_CHILDREN) => {
+    for(const item of tree) {
+        if (callback(item) === true) {
+            return true
+        }
+        const itemChildren = (item as any)[children]
+        if (itemChildren && itemChildren.length > 0) {
+            if (traverse(itemChildren, callback, children)) {
+                return true
+            }
+        }
     }
-  })
+    return false
 }
 
 /**

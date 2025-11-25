@@ -241,6 +241,7 @@ const initPostData = () => {
             value: dept.id,
             label: dept.name
           })
+          return true
         }
       })
     })

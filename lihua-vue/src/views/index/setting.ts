@@ -3,7 +3,9 @@ const nextUpdate = [
     {
         version: '1.2.8',
         record: [
-
+            '1. Tree工具类 traverse 方法回调函数返回 true 终止递归',
+            '2. password-input 组件密码强度规则更新',
+            '3. 记住账号加密方式更新',
         ]
     }
 ]
