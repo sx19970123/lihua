@@ -101,6 +101,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     @Override
     public String uploadAttachment(MultipartFile file, SysAttachment sysAttachment) {
         try {
+            fillParameters(file, sysAttachment);
             String path = upload(file);
             sysAttachment.setPath(path).setStatus("0");
             return saveAttachment(sysAttachment);
@@ -112,6 +113,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     }
 
     @Override
+    @Transactional
     public List<String> batchUploadAttachment(MultipartFile[] files, List<SysAttachment> attachmentList) {
         // 遍历上传附件
         for (int i = 0; i < files.length; i++) {
@@ -119,6 +121,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             SysAttachment sysAttachment = attachmentList.get(i);
 
             try {
+                fillParameters(file, sysAttachment);
                 // 执行上传，返回路径
                 String path = upload(file);
                 // 设置成功状态
@@ -411,5 +414,17 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             throw new ServiceException("获取附件实现策略失败");
         }
         return attachmentStorageStrategy;
+    }
+    // SysAttachment 参数填充
+    private void fillParameters(MultipartFile file, SysAttachment sysAttachment) {
+        if (!StringUtils.hasText(sysAttachment.getType())) {
+            sysAttachment.setType(file.getContentType());
+        }
+        if (!StringUtils.hasText(sysAttachment.getSize())) {
+            sysAttachment.setSize(String.valueOf(file.getSize()));
+        }
+        if (!StringUtils.hasText(sysAttachment.getOriginalName())) {
+            sysAttachment.setOriginalName(file.getOriginalFilename());
+        }
     }
 }
