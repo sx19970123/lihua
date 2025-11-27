@@ -1,8 +1,6 @@
 package com.lihua.config;
 
 import com.lihua.filter.JwtAuthenticationTokenFilter;
-import com.lihua.handle.AccessDeniedHandlerImpl;
-import com.lihua.handle.AuthenticationEntryPointImpl;
 import com.lihua.handle.LogoutSuccessHandlerImpl;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
@@ -36,13 +34,7 @@ public class SecurityConfig {
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     @Resource
-    private AccessDeniedHandlerImpl accessDeniedHandler;
-
-    @Resource
     private LogoutSuccessHandlerImpl logoutSuccessHandler;
-
-    @Resource
-    private AuthenticationEntryPointImpl authenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -64,7 +56,8 @@ public class SecurityConfig {
                         "/druid/**",                                    // druid数据库监控
                         "/doc.html",                                    // knife4文档
                         "/webjars/**",                                  // knife4文档
-                        "/v3/api-docs/**"                               // knife4文档
+                        "/v3/api-docs/**",                               // knife4文档
+                        "/error"                                        // 当出现404等异常时spring内部会转发到/error，需要将其放过，否则会响应401
                 ).permitAll()
                 .anyRequest().authenticated());
 
@@ -84,14 +77,6 @@ public class SecurityConfig {
         http.logout(logoutCustomizer -> logoutCustomizer
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(logoutSuccessHandler));
-
-        http.exceptionHandling(exceptionHandlingCustomizer -> exceptionHandlingCustomizer
-                // 未认证用户访问资源/认证信息过期失效处理器
-                .authenticationEntryPoint(authenticationEntryPoint)
-                // 权限不足处理器
-                .accessDeniedHandler(accessDeniedHandler)
-
-        );
 
         return http.build();
     }

@@ -1,6 +1,8 @@
 package com.lihua.filter;
 
+import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.security.LoginUser;
+import com.lihua.model.web.basecontroller.BaseResponseController;
 import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.FilterChain;
@@ -27,7 +29,7 @@ import java.io.IOException;
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(@Nullable HttpServletRequest request,@Nullable  HttpServletResponse response,@Nullable  FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@Nullable HttpServletRequest request,@Nullable  HttpServletResponse response, @Nullable FilterChain filterChain) throws ServletException, IOException {
         // 获取token
         String token = WebUtils.getToken(request);
 
@@ -44,7 +46,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 // 判断过期时间进行重新缓存
                 LoginUserManager.verifyLoginUserCache();
             } else {
-                throw new ServletException("认证信息过期失效");
+                // token不存在直接写入响应返回401
+                if (response != null) {
+                    log.error(ResultCodeEnum.AUTHENTICATION_EXPIRED.getDefaultMsg());
+                    BaseResponseController.error(response, ResultCodeEnum.AUTHENTICATION_EXPIRED);
+                }
+                return;
             }
         }
 

@@ -4,16 +4,19 @@ import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.*;
 import com.lihua.model.web.basecontroller.StrResponseController;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -67,9 +70,9 @@ public class GlobalExceptionHandle extends StrResponseController {
      * 上传附件尺寸超过系统设置
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public String handelMaxUploadSizeExceededException(Exception e) {
+    public void handelMaxUploadSizeExceededException(MaxUploadSizeExceededException e, HttpServletResponse response) {
         log.error(e.getMessage(),e);
-        return error(ResultCodeEnum.MAX_UPLOAD_SIZE_EXCEEDED_ERROR);
+        error(response, ResultCodeEnum.MAX_UPLOAD_SIZE_EXCEEDED_ERROR);
     }
 
     /**
@@ -135,10 +138,29 @@ public class GlobalExceptionHandle extends StrResponseController {
     }
 
     /**
+     * 处理404异常
+     */
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public void handleNoHandlerFoundException(NoHandlerFoundException e, HttpServletResponse response) {
+        log.error(e.getMessage(),e);
+        error(response, ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
+    }
+
+    /**
+     * 处理405请求方法异常
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public void handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletResponse response) {
+        log.error(e.getMessage(),e);
+        error(response, ResultCodeEnum.REQUEST_METHOD_ERROR);
+    }
+
+    /**
      * 权限不足全局处理
      */
     @ExceptionHandler(AuthorizationDeniedException.class)
-    public String handleAuthorizationDeniedException() {
+    public String handleAuthorizationDeniedException(AuthorizationDeniedException e) {
+        log.error(e.getMessage(),e);
         return error(ResultCodeEnum.ACCESS_ERROR);
     }
 }

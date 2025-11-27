@@ -4,6 +4,9 @@ import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.attachment.AttachmentStreamAndInfoModel;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.utils.file.FileUtils;
+import com.lihua.utils.json.JsonUtils;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
@@ -16,8 +19,10 @@ import java.util.List;
  */
 public class BaseResponseController {
 
-    protected static <T> ApiResponseModel<T> response(ResultCodeEnum resultCodeEnum, String msg, T data) {
-        return ApiResponseModel.<T>builder().code(resultCodeEnum.getCode()).msg(msg).data(data).build();
+    @SneakyThrows
+    public static void error(HttpServletResponse response, ResultCodeEnum resultCodeEnum) {
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(responseToJson(resultCodeEnum, resultCodeEnum.getDefaultMsg(),null));
     }
 
     public static ResponseEntity<StreamingResponseBody> success(File file) {
@@ -42,5 +47,14 @@ public class BaseResponseController {
 
     public static ResponseEntity<StreamingResponseBody> success(InputStream inputStream, String fileName){
         return FileUtils.download(inputStream, fileName);
+    }
+
+    @SneakyThrows
+    protected static <T> String responseToJson(ResultCodeEnum resultCodeEnum, String msg, T data) {
+        return JsonUtils.toJson(response(resultCodeEnum, msg, data));
+    }
+
+    protected static <T> ApiResponseModel<T> response(ResultCodeEnum resultCodeEnum, String msg, T data) {
+        return ApiResponseModel.<T>builder().code(resultCodeEnum.getCode()).msg(msg).data(data).build();
     }
 }

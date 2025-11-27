@@ -6,6 +6,7 @@ const nextUpdate = [
             '1. Tree工具类 traverse 方法回调函数返回 true 终止递归',
             '2. password-input 组件密码强度规则更新',
             '3. 记住账号加密方式更新',
+            '4. 完善统一异常处理，可单独处理404｜405异常',
         ]
     }
 ]

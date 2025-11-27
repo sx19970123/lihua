@@ -19,7 +19,10 @@ spring:
   banner:
     location: classpath:banner.txt
     charset: UTF-8
-
+  # 配置后可正常拦截404异常
+  web:
+    resources:
+      add-mappings: false
 mybatis-plus:
   global-config:
     db-config:
