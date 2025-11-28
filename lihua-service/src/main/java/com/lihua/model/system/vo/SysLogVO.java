@@ -123,15 +123,22 @@ public class SysLogVO implements Serializable {
     private String userAgent;
 
     /**
+     * 操作客户端
+     */
+    @ExcelColumn(order = 14, index = 14, title = "操作客户端", width = 20, writeConverter = SysDictWriteConverter.class)
+    @ExcelWriteConverterDictTypeCode("sys_client_type")
+    private String clientType;
+
+    /**
      * 异常描述
      */
-    @ExcelColumn(order = 14, index = 15, title = "异常信息", width = 20)
+    @ExcelColumn(order = 15, index = 15, title = "异常信息", width = 20)
     private String errorMsg;
 
     /**
      * 异常堆栈信息
      */
-    @ExcelColumn(order = 15, index = 15, title = "异常堆栈", width = 20)
+    @ExcelColumn(order = 16, index = 16, title = "异常堆栈", width = 20)
     private String errorStack;
 
 

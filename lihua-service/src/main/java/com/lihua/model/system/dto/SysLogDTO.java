@@ -105,4 +105,9 @@ public class SysLogDTO extends BaseDTO {
      * 日志执行状态
      */
     private String executeStatus;
+
+    /**
+     * 客户端类型
+     */
+    private String clientType;
 }

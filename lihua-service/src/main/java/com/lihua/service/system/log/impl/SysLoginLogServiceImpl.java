@@ -45,7 +45,8 @@ public class SysLoginLogServiceImpl implements SysLogService {
                 SysLoginLog::getCreateTime,
                 SysLoginLog::getExecuteTime,
                 SysLoginLog::getUsername,
-                SysLoginLog::getErrorMsg);
+                SysLoginLog::getErrorMsg,
+                SysLoginLog::getClientType);
 
         // 用户名
         if (StringUtils.hasText(sysLogDTO.getUsername())) {
@@ -60,6 +61,11 @@ public class SysLoginLogServiceImpl implements SysLogService {
         // 登录状态
         if (StringUtils.hasText(sysLogDTO.getExecuteStatus())) {
             queryWrapper.lambda().eq(SysLogVO::getExecuteStatus, sysLogDTO.getExecuteStatus());
+        }
+
+        // 客户端类型
+        if (StringUtils.hasText(sysLogDTO.getClientType())) {
+            queryWrapper.lambda().eq(SysLogVO::getClientType, sysLogDTO.getClientType());
         }
 
         // 登录时间

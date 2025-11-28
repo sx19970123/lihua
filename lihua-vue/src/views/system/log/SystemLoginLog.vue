@@ -23,6 +23,13 @@
               </a-form-item>
             </a-col>
             <a-col>
+              <a-form-item label="客户端类型">
+                <a-select v-model:value="logQuery.clientType" placeholder="请选择" style="width: 120px" allow-clear>
+                  <a-select-option :value="item.value" v-for="item in sys_client_type">{{item.label}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col>
               <a-form-item label="登录时间">
                 <a-range-picker allowClear v-model:value="logQuery.createTimeList" />
               </a-form-item>
@@ -118,6 +125,9 @@
           <template v-if="column.key === 'executeStatus' && text">
             <dict-tag :dict-data-option="sys_log_status" :dict-data-value="text"></dict-tag>
           </template>
+          <template v-if="column.key === 'clientType' && text">
+            <dict-tag :dict-data-option="sys_client_type" :dict-data-value="text"></dict-tag>
+          </template>
           <template v-if="column.key === 'createTime'">
             {{dayjs(text).format('YYYY-MM-DD HH:mm:ss')}}
           </template>
@@ -188,7 +198,7 @@ import {ResponseError} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
 import Spin from "@/components/spin";
 
-const {sys_log_status} = initDict("sys_log_status")
+const {sys_log_status, sys_client_type} = initDict("sys_log_status", "sys_client_type")
 
 
 const initSearch = () => {
@@ -226,7 +236,8 @@ const initSearch = () => {
       title: '日志描述',
       key: 'description',
       dataIndex: 'description',
-      align: 'center'
+      align: 'center',
+      width: 120
     },
     {
       title: '用户名',
@@ -247,10 +258,18 @@ const initSearch = () => {
       align: 'center'
     },
     {
-      title: '登陆结果',
+      title: '登录结果',
       key: 'executeStatus',
       dataIndex: 'executeStatus',
-      align: 'center'
+      align: 'center',
+      width: 100
+    },
+    {
+      title: '客户端类型',
+      key: 'clientType',
+      dataIndex: 'clientType',
+      align: 'center',
+      width: 120
     },
     {
       title: '失败原因',

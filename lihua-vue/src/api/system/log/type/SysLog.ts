@@ -103,6 +103,11 @@ export interface SysLog {
      * 缓存key
      */
     cacheKey?: string;
+
+    /**
+     * 客户端类型
+     */
+    clientType?: string;
 }
 
 export interface SysLogDTO extends SysLog {

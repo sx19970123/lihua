@@ -54,6 +54,10 @@ public class HandleRecodeLog {
      * @param logAnnotation log 注解，获取定义信息
      * @param time 业务执行时间
      * @param resultObject 业务返回值
+     * @param requestURI 请求URL
+     * @param userAgent 用户环境
+     * @param ip 请求IP
+     * @param clientType 客户端类型
      * @param exception 执行失败抛出异常
      */
     @Async
@@ -64,6 +68,7 @@ public class HandleRecodeLog {
                                 String requestURI,
                                 String userAgent,
                                 String ip,
+                                String clientType,
                                 Throwable exception) {
         String description = logAnnotation.description();
         LogTypeEnum type = logAnnotation.type();
@@ -87,6 +92,7 @@ public class HandleRecodeLog {
                 .setCreateTime(DateUtils.now())
                 .setUrl(requestURI)
                 .setUserAgent(userAgent)
+                .setClientType(clientType)
                 .setExecuteTime(time)
                 .setDelFlag("0")
                 .setExecuteStatus("0");

@@ -9,6 +9,7 @@ const { getToken } = token
 export const currentRequests = new Set<string>([]);
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
+axios.defaults.headers['Client-Type'] = 'web'
 const service = axios.create({
     baseURL: import.meta.env.VITE_APP_BASE_API,
     timeout: 50000

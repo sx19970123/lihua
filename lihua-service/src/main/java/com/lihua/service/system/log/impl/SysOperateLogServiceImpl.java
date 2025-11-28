@@ -43,7 +43,8 @@ public class SysOperateLogServiceImpl implements SysLogService {
                 SysOperateLog::getIpAddress,
                 SysOperateLog::getExecuteStatus,
                 SysOperateLog::getCreateTime,
-                SysOperateLog::getExecuteTime);
+                SysOperateLog::getExecuteTime,
+                SysOperateLog::getClientType);
 
         // 类型
         if (StringUtils.hasText(sysLogDTO.getTypeCode())) {
@@ -58,6 +59,11 @@ public class SysOperateLogServiceImpl implements SysLogService {
         // 执行状态
         if (StringUtils.hasText(sysLogDTO.getExecuteStatus())) {
             queryWrapper.lambda().eq(SysLogVO::getExecuteStatus, sysLogDTO.getExecuteStatus());
+        }
+
+        // 客户端类型
+        if (StringUtils.hasText(sysLogDTO.getClientType())) {
+            queryWrapper.lambda().eq(SysLogVO::getClientType, sysLogDTO.getClientType());
         }
 
         // 描述
