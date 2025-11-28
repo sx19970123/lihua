@@ -7,5 +7,14 @@ export interface LoggedUserType {
 
     ip: string;
 
-    loginTime: Date
+    loginTime: Date;
+
+    clientType: string;
+}
+
+
+export interface LoggedUserQueryParams {
+    username?: string
+    nickname?: string
+    clientType?: string
 }

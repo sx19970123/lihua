@@ -7,6 +7,7 @@ import com.lihua.exception.ServiceException;
 import com.lihua.model.security.LoginUser;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.spring.SpringUtils;
+import com.lihua.utils.web.WebUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -74,6 +75,9 @@ public class LoginUserManager {
         loginUser.setExpirationTime(DateUtils.now().plusMinutes(lihuaConfig().getTokenExpireTime()));
         // 隐藏用户密码
         loginUser.getUser().setPassword(null);
+        // 登录客户端类型
+        loginUser.setClientType(WebUtils.getCurrentRequest().getHeader("Client-Type"));
+
         // 当 loginUser 的 cacheKey 不存在，即为新登录用户，重新生成cacheKey，其余情况均为刷新缓存
         String cacheKey = loginUser.getCacheKey();
         if (!StringUtils.hasText(cacheKey)) {

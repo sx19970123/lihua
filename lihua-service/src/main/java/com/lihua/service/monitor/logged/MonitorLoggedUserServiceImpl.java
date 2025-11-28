@@ -21,7 +21,7 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
     private RedisCache redisCache;
 
     @Override
-    public List<LoggedUser> queryList(String username, String nickName) {
+    public List<LoggedUser> queryList(String username, String nickName, String clientType) {
 
         // 获取登录中用户所有key
         Set<String> keys = redisCache.keys(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue());
@@ -34,12 +34,23 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
 
         // 根据用户名过滤
         if (StringUtils.hasText(username)) {
-            loginUsers = loginUsers.stream().filter(user -> user.getUsername().contains(username)).toList();
+            loginUsers = loginUsers.stream()
+                    .filter(user -> StringUtils.hasText(user.getUsername()) && user.getUsername().contains(username))
+                    .toList();
         }
 
         // 根据用户nickname过滤
         if (StringUtils.hasText(nickName)) {
-            loginUsers = loginUsers.stream().filter(user -> user.getUser().getNickname().contains(nickName)).toList();
+            loginUsers = loginUsers.stream()
+                    .filter(user -> StringUtils.hasText(user.getUser().getNickname()) && user.getUser().getNickname().contains(nickName))
+                    .toList();
+        }
+
+        // 根据用户登录客户端过滤
+        if (StringUtils.hasText(clientType)) {
+            loginUsers = loginUsers.stream()
+                    .filter(user -> StringUtils.hasText(user.getClientType()) && user.getClientType().contains(clientType))
+                    .toList();
         }
 
         // 转为 LoggedUser 对象返回
@@ -52,6 +63,7 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
             loggedUser.setIp(user.getIpAddress());
             loggedUser.setCacheKey(cacheKey);
             loggedUser.setLoginTime(LoginUserManager.getLoginTimeByCacheKey(cacheKey));
+            loggedUser.setClientType(user.getClientType());
             return loggedUser;
         }).toList();
     }

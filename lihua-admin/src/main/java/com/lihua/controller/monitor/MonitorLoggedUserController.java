@@ -24,8 +24,8 @@ public class MonitorLoggedUserController extends ApiResponseController {
 
     @Operation(summary = "查询登录用户列表")
     @GetMapping
-    public ApiResponseModel<List<LoggedUser>> queryList(String username, String nickname) {
-        return success(monitorLoggedUserService.queryList(username, nickname));
+    public ApiResponseModel<List<LoggedUser>> queryList(String username, String nickname, String clientType) {
+        return success(monitorLoggedUserService.queryList(username, nickname, clientType));
     }
 
     @Operation(summary = "强退用户")

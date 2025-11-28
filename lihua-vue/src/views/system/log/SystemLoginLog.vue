@@ -155,7 +155,12 @@
           <a-badge status="error" v-else/>
           {{logInfo.description}}
         </a-descriptions-item>
-        <a-descriptions-item label="业务类型" :span="1">{{logInfo.typeMsg}}</a-descriptions-item>
+        <a-descriptions-item label="业务类型" :span="1">
+          <a-flex :gap="8">
+            {{logInfo.typeMsg}}
+            <dict-tag v-if="logInfo.clientType" :dict-data-option="sys_client_type" :dict-data-value="logInfo.clientType" />
+          </a-flex>
+        </a-descriptions-item>
         <a-descriptions-item label="用户名" :span="1">{{logInfo.username}}</a-descriptions-item>
         <a-descriptions-item label="类名" :span="2">{{logInfo.className}}</a-descriptions-item>
         <a-descriptions-item label="方法名" :span="1">{{logInfo.methodName}}</a-descriptions-item>

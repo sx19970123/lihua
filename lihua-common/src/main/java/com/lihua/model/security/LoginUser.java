@@ -76,6 +76,11 @@ public class LoginUser implements UserDetails {
      */
     private String ipAddress;
 
+    /**
+     * 登录客户端类型
+     */
+    private String clientType;
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {

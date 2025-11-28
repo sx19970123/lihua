@@ -33,4 +33,9 @@ public class LoggedUser implements Serializable {
      */
     private LocalDateTime loginTime;
 
+    /**
+     * 登录客户端类型
+     */
+    private String clientType;
+
 }

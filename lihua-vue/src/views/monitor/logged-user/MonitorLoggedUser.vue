@@ -14,6 +14,13 @@
             </a-form-item>
           </a-col>
           <a-col>
+            <a-form-item label="客户端类型">
+              <a-select v-model:value="queryParam.clientType" placeholder="请选择" style="width: 120px" allow-clear>
+                <a-select-option :value="item.value" v-for="item in sys_client_type">{{item.label}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col>
             <a-form-item>
               <a-space size="small">
                 <a-button type="primary" @click="handleQueryList" :loading="queryLoading">
@@ -77,6 +84,9 @@
         <template v-if="column.key === 'loginTime'">
           {{dayjs(text).format('YYYY-MM-DD HH:mm')}}
         </template>
+        <template v-if="column.key === 'clientType' && text">
+          <dict-tag :dict-data-option="sys_client_type" :dict-data-value="text"></dict-tag>
+        </template>
         <template v-if="column.key === 'action'">
           <a-popconfirm title="是否强退该用户？"
                         placement="bottomRight"
@@ -107,13 +117,18 @@
 
     <!--   日志详情模态框-->
     <a-modal cancelText="关 闭" v-model:open="openModal" width="1000px" :footer="null">
-      <a-descriptions title="登录日志" bordered :label-style="{width: '110px'}" v-draggable>
+      <a-descriptions title="登录日志" bordered :label-style="{width: '110px'}">
         <a-descriptions-item label="业务描述" :span="1">
           <a-badge status="success" v-if="logInfo.executeStatus === '0'"/>
           <a-badge status="error" v-else/>
           {{logInfo.description}}
         </a-descriptions-item>
-        <a-descriptions-item label="业务类型" :span="1">{{logInfo.typeMsg}}</a-descriptions-item>
+        <a-descriptions-item label="业务类型" :span="1">
+          <a-flex :gap="8">
+            {{logInfo.typeMsg}}
+            <dict-tag v-if="logInfo.clientType" :dict-data-option="sys_client_type" :dict-data-value="logInfo.clientType" />
+          </a-flex>
+        </a-descriptions-item>
         <a-descriptions-item label="用户名" :span="1">{{logInfo.username}}</a-descriptions-item>
         <a-descriptions-item label="类名" :span="2">{{logInfo.className}}</a-descriptions-item>
         <a-descriptions-item label="方法名" :span="1">{{logInfo.methodName}}</a-descriptions-item>
@@ -139,7 +154,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import type {LoggedUserType} from "@/api/monitor/logged-user/type/LoggedUserType.ts";
+import type {LoggedUserQueryParams, LoggedUserType} from "@/api/monitor/logged-user/type/LoggedUserType.ts";
 import {forceLogout, queryList} from "@/api/monitor/logged-user/LoggedUser.ts";
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
@@ -147,7 +162,9 @@ import type {SysLog} from "@/api/system/log/type/SysLog.ts";
 import {queryLoginByCacheKey} from "@/api/system/log/Log.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import TableSetting from "@/components/table-setting/index.vue";
-
+import DictTag from "@/components/dict-tag/index.vue";
+import {initDict} from "@/utils/Dict.ts";
+const {sys_client_type} = initDict( "sys_client_type")
 const initSearch = () => {
   // 选中的数据id集合
   const logoutCacheKeys = ref<Array<string>>([])
@@ -208,6 +225,11 @@ const initSearch = () => {
       key: 'loginTime',
       dataIndex: 'loginTime',
       align: 'center'
+    },{
+      title: '客户端类型',
+      key: 'clientType',
+      dataIndex: 'clientType',
+      align: 'center'
     },
     {
       title: '操作',
@@ -218,10 +240,7 @@ const initSearch = () => {
   ])
 
   // 检索条件
-  const queryParam = ref<{
-    username?: string,
-    nickname?: string
-  }>({})
+  const queryParam = ref<LoggedUserQueryParams>({})
   const queryLoading = ref<boolean>(false)
   // 全部数据
   const allDataList = ref<LoggedUserType[]>([])
@@ -242,7 +261,7 @@ const initSearch = () => {
   const initList = async () => {
     queryLoading.value = true
     try {
-      const resp = await queryList(queryParam.value.username, queryParam.value.nickname)
+      const resp = await queryList(queryParam.value)
       if (resp.code === 200) {
         allDataList.value = resp.data
         pagination.value.total = resp.data.length
