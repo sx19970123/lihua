@@ -8,5 +8,6 @@
 <script setup lang="ts">
 import Mask from "@/components/mask/index.vue"
 import {ref} from "vue";
+
 const showMask = ref<boolean>(false)
 </script>

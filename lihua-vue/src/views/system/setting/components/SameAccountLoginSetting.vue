@@ -39,6 +39,7 @@ import {useThemeStore} from "@/stores/theme.ts";
 import {message} from "ant-design-vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {isAdmin} from "@/utils/Auth.ts";
+
 const themeStore = useThemeStore()
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name

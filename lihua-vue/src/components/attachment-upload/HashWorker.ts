@@ -1,4 +1,4 @@
-import { createMD5 } from 'hash-wasm';
+import {createMD5} from 'hash-wasm';
 
 /**
  * 创建子线程进行文件 hash 计算

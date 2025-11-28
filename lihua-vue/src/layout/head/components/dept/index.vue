@@ -20,6 +20,7 @@ import {ref} from "vue";
 import {message} from "ant-design-vue";
 import type {ResponseType} from "@/api/global/Type.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+
 const userStore = useUserStore();
 const open = ref<boolean>(false)
 

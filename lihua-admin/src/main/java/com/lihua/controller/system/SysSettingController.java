@@ -1,10 +1,10 @@
 package com.lihua.controller.system;
 
 import com.lihua.annotation.Log;
+import com.lihua.entity.system.SysSetting;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
-import com.lihua.entity.system.SysSetting;
 import com.lihua.service.system.setting.SysSettingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

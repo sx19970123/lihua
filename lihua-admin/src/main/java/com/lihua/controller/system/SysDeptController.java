@@ -1,12 +1,12 @@
 package com.lihua.controller.system;
 
 import com.lihua.annotation.Log;
+import com.lihua.entity.system.SysDept;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.model.excel.ExcelImportResult;
+import com.lihua.model.system.vo.SysDeptVO;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
-import com.lihua.entity.system.SysDept;
-import com.lihua.model.system.vo.SysDeptVO;
 import com.lihua.service.system.dept.SysDeptService;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.tree.TreeUtils;

@@ -1,6 +1,6 @@
-import {defineComponent, createApp, h, type CSSProperties} from "vue";
-import type { SpinConfig, SpinInstance } from "./Type.ts";
-import { Spin } from "ant-design-vue";
+import {createApp, type CSSProperties, defineComponent, h} from "vue";
+import type {SpinConfig, SpinInstance} from "./Type.ts";
+import {Spin} from "ant-design-vue";
 import {useThemeStore} from "@/stores/theme.ts";
 
 /** @name 单例 **/

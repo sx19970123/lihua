@@ -17,6 +17,7 @@
 </template>
 <script setup lang="ts">
 import ExpandableCard from "@/components/expandable-card/index.vue";
+
 const handleClick = (show:boolean) => {
   window.open(import.meta.env.VITE_APP_DOC_API + "/document/SERVER","_blank");
 }

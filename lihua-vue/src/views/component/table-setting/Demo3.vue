@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import TableSetting from "@/components/table-setting/index.vue";
 import {ref} from "vue";
-import type { ColumnsType } from 'ant-design-vue/es/table/interface';
+import type {ColumnsType} from 'ant-design-vue/es/table/interface';
 
 const columns = ref<ColumnsType>([
   {

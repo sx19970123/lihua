@@ -15,6 +15,7 @@
 <script setup lang="ts">
 import {useRoute} from "vue-router";
 import {onMounted, onUnmounted, ref} from "vue";
+
 const route = useRoute()
 const props = defineProps<{
   src?: string,

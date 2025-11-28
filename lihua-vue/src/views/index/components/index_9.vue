@@ -22,6 +22,7 @@
 <script setup lang="ts">
 import ExpandableCard from "@/components/expandable-card/index.vue";
 import {useThemeStore} from "@/stores/theme.ts";
+
 const themeStore = useThemeStore();
 const handleClick = () => {
   window.open('https://gitee.com/yukino_git/lihua')

@@ -1,15 +1,16 @@
 import router from "./router/index";
 import NProgress from "nprogress"
 import 'nprogress/nprogress.css'
-import { useUserStore } from "@/stores/user"
-import { useThemeStore } from "@/stores/theme";
+import {useUserStore} from "@/stores/user"
+import {useThemeStore} from "@/stores/theme";
 import token from "@/utils/Token.ts"
-import { init } from "@/utils/AppInit.ts";
+import Token from "@/utils/Token.ts"
+import {init} from "@/utils/AppInit.ts";
 import {hasRouteRole} from "@/utils/Auth.ts";
 import {close, connect} from "@/utils/ServerSentEvents.ts";
 import {message} from "ant-design-vue";
-import Token from "@/utils/Token.ts";
 import {getLoginSetting} from "@/api/system/login/Login.ts";
+
 const { getToken } = token
 
 // 路由前置守卫

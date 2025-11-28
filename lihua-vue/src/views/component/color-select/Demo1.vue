@@ -8,6 +8,7 @@
 <script setup lang="ts">
 import ColorSelect from "@/components/color-select/index.vue"
 import {ref} from "vue";
+
 const colorSource = [
   {
     name: '拂晓蓝',

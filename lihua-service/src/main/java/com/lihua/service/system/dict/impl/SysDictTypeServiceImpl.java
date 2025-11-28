@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lihua.exception.ServiceException;
 import com.lihua.entity.system.SysDictType;
+import com.lihua.exception.ServiceException;
 import com.lihua.mapper.system.SysDictTypeMapper;
-import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.system.dto.SysDictTypeDTO;
 import com.lihua.service.system.dict.SysDictDataService;
 import com.lihua.service.system.dict.SysDictTypeService;
@@ -15,13 +14,12 @@ import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.security.LoginUserContext;
 import jakarta.annotation.Resource;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
 
 @Service
 public class SysDictTypeServiceImpl implements SysDictTypeService {

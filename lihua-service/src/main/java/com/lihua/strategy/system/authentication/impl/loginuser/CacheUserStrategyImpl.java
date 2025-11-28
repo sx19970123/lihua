@@ -1,8 +1,8 @@
 package com.lihua.strategy.system.authentication.impl.loginuser;
 
+import com.lihua.mapper.system.SysUserMapper;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
-import com.lihua.mapper.system.SysUserMapper;
 import com.lihua.strategy.system.authentication.CacheLoginUserStrategy;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;

@@ -38,14 +38,13 @@
 
 <script setup lang="ts">
 import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
-import {type Ref, useTemplateRef} from "vue";
-
-import {reactive} from "vue";
+import {reactive, type Ref, useTemplateRef} from "vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {useUserStore} from "@/stores/user.ts";
 import {type FormInstance, message} from "ant-design-vue";
 import PasswordInput from "@/components/password-input/index.vue";
 import {ResponseError} from "@/api/global/Type.ts";
+
 const resetPasswordRef = useTemplateRef<FormInstance>("resetPasswordRef")
 const userStore = useUserStore()
 // 向外抛出函数

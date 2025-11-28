@@ -1,4 +1,4 @@
-package com.lihua.controller.system;
+package com.lihua.controller.common;
 
 import cloud.tianai.captcha.application.ImageCaptchaApplication;
 import cloud.tianai.captcha.application.vo.ImageCaptchaVO;

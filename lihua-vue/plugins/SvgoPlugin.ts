@@ -1,4 +1,4 @@
-import {XastNode, XastRoot, PluginInfo} from 'svgo';
+import {PluginInfo, XastNode, XastRoot} from 'svgo';
 
 /**
  * 递归遍历 SVG 节点，并为设置了 'fill' 属性的元素设置为 'currentColor'。

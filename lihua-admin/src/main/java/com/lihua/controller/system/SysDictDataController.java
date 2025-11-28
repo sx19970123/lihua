@@ -1,13 +1,13 @@
 package com.lihua.controller.system;
 
 import com.lihua.annotation.Log;
+import com.lihua.entity.system.SysDictData;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.dict.SysDictDataVO;
+import com.lihua.model.system.dto.SysDictDataDTO;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
-import com.lihua.entity.system.SysDictData;
-import com.lihua.model.system.dto.SysDictDataDTO;
 import com.lihua.service.system.dict.SysDictDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "字段数据")
+@Tag(name = "字典数据")
 @RestController
 @RequestMapping("system/dictData")
 @Validated

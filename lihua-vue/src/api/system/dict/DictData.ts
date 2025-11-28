@@ -1,6 +1,7 @@
 import request from "@/utils/Request.ts";
 import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType.ts";
 import type {MapResponseType} from "@/api/global/Type.ts";
+
 /**
  * 列表查询
  */

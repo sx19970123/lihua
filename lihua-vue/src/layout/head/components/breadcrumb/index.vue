@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import {type RouteRecordRaw, useRoute} from "vue-router";
 import {ref, watch} from "vue";
+
 const route = useRoute()
 const pageRoute = ref<RouteRecordRaw[]>();
 if (route.fullPath !== '/index') {

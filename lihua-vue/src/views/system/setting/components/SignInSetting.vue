@@ -85,13 +85,13 @@
 <script setup lang="ts">
 import {useThemeStore} from "@/stores/theme.ts";
 import {useSettingStore} from "@/stores/setting.ts";
-import {getCurrentInstance, onMounted, ref, watch} from "vue";
+import {getCurrentInstance, onMounted, ref} from "vue";
 import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
 import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
-import { cloneDeep } from 'lodash-es';
+import {cloneDeep} from 'lodash-es';
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {traverse} from "@/utils/Tree.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
@@ -101,6 +101,7 @@ import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
 import {message} from "ant-design-vue";
 import {isAdmin} from "@/utils/Auth.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
 const themeStore = useThemeStore();

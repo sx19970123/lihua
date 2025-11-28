@@ -1,7 +1,7 @@
 package com.lihua.service.system.dept;
 
-import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.entity.system.SysDept;
+import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.system.vo.SysDeptVO;
 
 import java.util.List;

@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
-import { theme } from "ant-design-vue";
+import {defineStore} from "pinia";
+import {theme} from "ant-design-vue";
 import settings from "@/settings";
 
 export const useThemeStore = defineStore('theme',{

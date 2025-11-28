@@ -56,11 +56,12 @@
 
 <script setup lang="ts">
 import UserAvatar from "@/components/user-avatar/index.vue"
-import { useUserStore } from "@/stores/user";
-import { useRouter,useRoute } from "vue-router";
+import {useUserStore} from "@/stores/user";
+import {useRoute, useRouter} from "vue-router";
 import {message} from "ant-design-vue";
 import {refreshUserData} from "@/utils/AppInit.ts";
 import {ref} from "vue";
+
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()

@@ -178,12 +178,12 @@
 import {initDict} from "@/utils/Dict"
 import {ref} from "vue";
 import {
-  queryOperatePage,
-  getLogTypeOption,
-  deleteOperateByIds,
   clearOperateLog,
+  deleteOperateByIds,
+  excelOperateExport,
+  getLogTypeOption,
   queryOperateById,
-  excelOperateExport, clearLoginLog
+  queryOperatePage
 } from "@/api/system/log/Log.ts";
 import {message} from "ant-design-vue";
 import DictTag from "@/components/dict-tag/index.vue";

@@ -2,27 +2,41 @@ package com.lihua.service.system.profile;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.lihua.cache.RedisCache;
+import com.lihua.entity.system.SysUser;
 import com.lihua.exception.ServiceException;
+import com.lihua.mapper.system.SysUserMapper;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
-import com.lihua.entity.system.SysUser;
-import com.lihua.mapper.system.SysUserMapper;
+import com.lihua.model.system.dto.SysCheckPasswordDTO;
+import com.lihua.service.system.user.SysUserService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.lihua.enums.SysBaseEnum.CHECK_PASSWORD_REDIS_PREFIX;
 
 @Service
 public class SysProfileServiceImpl implements SysProfileService {
 
     @Resource
     private SysUserMapper sysUserMapper;
+
+    @Resource
+    private SysUserService sysUserService;
+
+    @Resource
+    private RedisCache redisCache;
 
     @Override
     public String saveBasics(SysUser sysUser) {
@@ -119,6 +133,36 @@ public class SysProfileServiceImpl implements SysProfileService {
     @Override
     public String getPassword() {
         return sysUserMapper.selectById(LoginUserContext.getUserId()).getPassword();
+    }
+
+    @Override
+    @Transactional
+    public void accountDeactivate() {
+        String cache = redisCache.getCacheObject(CHECK_PASSWORD_REDIS_PREFIX.getValue() + LoginUserContext.getUserId(), String.class);
+
+        if (!StringUtils.hasText(cache)) {
+            throw new ServiceException("等待超时，请重新进行身份验证");
+        }
+
+        if (LoginUserContext.isAdmin()) {
+            throw new ServiceException("超级管理员无法注销");
+        }
+
+        String userId = LoginUserContext.getUserId();
+        sysUserService.updateStatus(userId, "0");
+        sysUserService.deleteByIds(Collections.singletonList(userId));
+    }
+
+    @Override
+    public Boolean checkPassword(SysCheckPasswordDTO sysCheckPasswordDTO) {
+        String password = SecurityUtils.decryptGetPassword(sysCheckPasswordDTO.getPassword(), sysCheckPasswordDTO.getPasswordRequestKey());
+        boolean checked = SecurityUtils.matchesPassword(password, getPassword());
+
+        if (checked) {
+            // 验证成功后向redis记录1分钟缓存
+            redisCache.setCacheObject(CHECK_PASSWORD_REDIS_PREFIX.getValue() + LoginUserContext.getUserId(), "1", 1L, TimeUnit.MINUTES);
+        }
+        return checked;
     }
 
     @Override

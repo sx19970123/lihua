@@ -83,6 +83,7 @@ import {ResponseError} from "@/api/global/Type.ts";
 import {currentRequests} from "@/utils/Request.ts";
 import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
+
 const { getToken } = token
 
 const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"]

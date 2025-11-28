@@ -1,4 +1,4 @@
-import { useUserStore } from "@/stores/user.ts";
+import {useUserStore} from "@/stores/user.ts";
 
 let userStore: ReturnType<typeof useUserStore> | null = null;
 

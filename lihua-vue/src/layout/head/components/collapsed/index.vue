@@ -10,7 +10,8 @@
 </template>
 <script setup lang="ts">
 import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons-vue";
-import { usePermissionStore } from "@/stores/permission";
+import {usePermissionStore} from "@/stores/permission";
+
 const permissionStore = usePermissionStore()
 const emits = defineEmits(["collapsedChange"])
 // 处理打开菜单

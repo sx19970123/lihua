@@ -1,4 +1,5 @@
-import { cloneDeep } from 'lodash-es';
+import {cloneDeep} from 'lodash-es';
+
 const DEFAULT_ID = "id";
 const DEFAULT_PARENT_ID = "parentId";
 const DEFAULT_CHILDREN = "children";

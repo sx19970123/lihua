@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import { useThemeStore } from "@/stores/theme";
-import { useViewTabsStore} from "@/stores/viewTabs";
+import {useThemeStore} from "@/stores/theme";
+import {useViewTabsStore} from "@/stores/viewTabs";
 
 const themeStore = useThemeStore()
 const viewTabsStore = useViewTabsStore()

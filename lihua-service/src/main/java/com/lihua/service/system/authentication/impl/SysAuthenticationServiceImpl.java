@@ -8,11 +8,12 @@ import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.mapper.system.SysRoleMapper;
 import com.lihua.mapper.system.SysUserMapper;
-import com.lihua.model.security.*;
+import com.lihua.model.security.CurrentUser;
+import com.lihua.model.security.LoginUser;
+import com.lihua.model.system.dto.SysSettingDTO;
 import com.lihua.service.system.authentication.SysAuthenticationService;
 import com.lihua.service.system.profile.SysProfileService;
 import com.lihua.service.system.setting.SysSettingService;
-import com.lihua.model.system.dto.SysSettingDTO;
 import com.lihua.strategy.system.authentication.CacheLoginUserStrategy;
 import com.lihua.strategy.system.authentication.CheckLoginSettingStrategy;
 import com.lihua.strategy.system.authentication.SaveRegisterUserAssociatedStrategy;
@@ -32,7 +33,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service

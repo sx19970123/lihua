@@ -97,9 +97,9 @@ lihua-vue                 // 前端工程
 </template>
 <script setup lang="ts">
 import ExpandableCard from "@/components/expandable-card/index.vue";
-import {ref} from "vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {versionInfo} from "@/views/index/setting.ts";
+
 const themeStore = useThemeStore();
 </script>
 <style scoped>

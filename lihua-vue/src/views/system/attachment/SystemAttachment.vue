@@ -263,7 +263,7 @@
 
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {onMounted, onUnmounted, ref, watch} from "vue";
+import {onUnmounted, ref} from "vue";
 import type {SysAttachment, SysAttachmentDTO, SysAttachmentVO} from "@/api/system/attachment/type/SysAttachment.ts";
 import {message} from "ant-design-vue";
 import {ResponseError} from "@/api/global/Type.ts";

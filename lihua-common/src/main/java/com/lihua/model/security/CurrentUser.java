@@ -2,6 +2,7 @@ package com.lihua.model.security;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

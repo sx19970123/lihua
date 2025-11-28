@@ -1,8 +1,8 @@
 package com.lihua.mapper.system;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.lihua.model.security.CurrentRouter;
 import com.lihua.entity.system.SysMenu;
+import com.lihua.model.security.CurrentRouter;
 
 import java.util.List;
 

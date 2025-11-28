@@ -1,4 +1,4 @@
-import { theme } from "ant-design-vue";
+import {theme} from "ant-design-vue";
 
 /**
  * 系统信息配置

@@ -2,10 +2,11 @@ package com.lihua.model;
 
 import com.lihua.model.validation.MaxPageSizeLimit;
 import jakarta.validation.constraints.Max;
+import lombok.Data;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Optional;
-import lombok.Data;
 
 @Data
 public class BaseDTO implements Serializable {

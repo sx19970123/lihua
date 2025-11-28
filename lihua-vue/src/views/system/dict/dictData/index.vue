@@ -200,10 +200,10 @@
 // 接收父组件传入的typeId
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {deleteData, queryList, save} from "@/api/system/dict/DictData.ts";
+import type {UnwrapRef} from 'vue';
 import {nextTick, reactive, ref} from "vue";
-import type { UnwrapRef } from 'vue';
 import {message} from "ant-design-vue";
-import { cloneDeep } from 'lodash-es';
+import {cloneDeep} from 'lodash-es';
 import {initDict, reLoadDict} from "@/utils/Dict.ts";
 import dictTag from "@/components/dict-tag/index.vue"
 import type {SysDictDataType, SysDictDataTypeDTO} from "@/api/system/dict/type/SysDictDataType.ts";

@@ -8,7 +8,8 @@
 <script setup lang="ts">
 import Spin from '@/components/spin';
 import {LoadingOutlined} from "@ant-design/icons-vue";
-import { h } from 'vue';
+import {h} from 'vue';
+
 const indicator = h(LoadingOutlined, {
   style: {
     fontSize: '24px',

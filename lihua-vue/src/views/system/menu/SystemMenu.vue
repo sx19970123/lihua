@@ -316,7 +316,7 @@
 <script setup lang="ts">
 
 // 列表查询相关
-import type { ColumnsType } from 'ant-design-vue/es/table/interface';
+import type {ColumnsType} from 'ant-design-vue/es/table/interface';
 import {deleteData, queryById, queryList, queryMenuTreeOption, save, updateStatus} from "@/api/system/menu/Menu.ts";
 import {reactive, ref, useTemplateRef} from "vue";
 import {initDict} from "@/utils/Dict.ts";
@@ -325,12 +325,13 @@ import IconSelect from "@/components/icon-select/index.vue"
 import {flattenTree} from "@/utils/Tree.ts"
 import type {Rule} from "ant-design-vue/es/form";
 import {type FormInstance, message} from "ant-design-vue";
-import { cloneDeep } from 'lodash-es';
-import { useThemeStore } from "@/stores/theme";
+import {cloneDeep} from 'lodash-es';
+import {useThemeStore} from "@/stores/theme";
 import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
+
 const themeStore = useThemeStore()
 const  {sys_menu_type,sys_status,sys_link_menu_open_type,sys_whether} = initDict("sys_menu_type","sys_status","sys_link_menu_open_type","sys_whether")
 const initSearch = () => {

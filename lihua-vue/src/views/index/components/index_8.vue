@@ -79,6 +79,7 @@ import ExpandableCard from "@/components/expandable-card/index.vue";
 import {ref} from "vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {versionInfo} from "@/views/index/setting.ts";
+
 const latestVersion = versionInfo.lihuaUpdateLog[0]
 const themeStore = useThemeStore();
 const showIndex = ref<number>(4)

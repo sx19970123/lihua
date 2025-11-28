@@ -1,4 +1,4 @@
-import { type App } from 'vue'
+import {type App} from 'vue'
 
 // 导出全部指令
 const modules = import.meta.glob('../directive/**/**.ts')

@@ -34,16 +34,8 @@
 <script lang="ts" setup>
 import TabPaneMenu from "@/layout/view-tabs/components/TabPaneMenu.vue";
 import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
-import {
-  type ComponentPublicInstance,
-  computed, nextTick,
-  onMounted,
-  type Ref,
-  ref,
-  useTemplateRef,
-  watch
-} from "vue";
-import { useRoute, useRouter } from "vue-router";
+import {type ComponentPublicInstance, computed, nextTick, onMounted, type Ref, ref, useTemplateRef, watch} from "vue";
+import {useRoute, useRouter} from "vue-router";
 import {useViewTabsStore} from "@/stores/viewTabs";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {type DraggableEvent, useDraggable} from 'vue-draggable-plus';

@@ -2,8 +2,8 @@ package com.lihua.service.system.menu;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.lihua.exception.ServiceException;
 import com.lihua.entity.system.SysMenu;
+import com.lihua.exception.ServiceException;
 import com.lihua.mapper.system.SysMenuMapper;
 import com.lihua.mapper.system.SysRoleMapper;
 import com.lihua.utils.date.DateUtils;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.List;
 
 @Service
 public class SysMenuServiceImpl implements SysMenuService {

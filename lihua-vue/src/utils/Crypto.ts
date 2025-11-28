@@ -2,8 +2,9 @@ import CryptoJS from 'crypto-js';
 import {JSEncrypt} from "jsencrypt";
 import {createBrowserId} from "@/utils/BrowserId.ts";
 import {getPublicKey} from "@/api/system/auth/Auth.ts";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {ResponseError} from "@/api/global/Type.ts";
+
 const DEFAULT_PASSWORD_KEY = 'lihuaLIHUALIhuam';
 // 16 字节的 Key
 const KEY = CryptoJS.enc.Utf8.parse("A1B2C3D4E5F6G7H8")

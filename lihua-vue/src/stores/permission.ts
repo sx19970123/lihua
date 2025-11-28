@@ -1,16 +1,17 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import type {RouteRecordRaw} from "vue-router";
 import router from "@/router";
 import Layout from "@/layout/index.vue";
 import IFrame from "@/components/iframe/index.vue";
 import MiddleView from "@/components/middle-view/index.vue";
 import type {RouterType} from "@/api/system/auth/type/AuthInfoType.ts";
-import { h } from "vue";
+import {h} from "vue";
 import Icon from "@/components/icon/index.vue";
 import type {ItemType} from "ant-design-vue";
 import {hasRouteRole} from "@/utils/Auth.ts"
 import {isEqual} from "lodash-es"
 import {useThemeStore} from "@/stores/theme.ts";
+
 let themeStore: ReturnType<typeof useThemeStore> | null = null;
 
 // 获取 views 下的所有 vue 组件

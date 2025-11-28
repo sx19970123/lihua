@@ -21,6 +21,7 @@ import UserShow from "@/components/user-show/index.vue"
 import {queryPage} from "@/api/system/user/User.ts";
 import {onMounted, ref} from "vue";
 import type {SysUserVO} from "@/api/system/user/type/SysUser.ts";
+
 const userList = ref<SysUserVO[]>([])
 onMounted(async () => {
   const resp = await queryPage({pageNum: 1, pageSize: 20})

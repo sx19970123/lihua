@@ -22,6 +22,7 @@
 <script setup lang="ts">
 import SelectableCard from "@/components/selectable-card/index.vue"
 import {ref} from "vue";
+
 const dataSource = [{
   key: '1',
   label: '选项1'

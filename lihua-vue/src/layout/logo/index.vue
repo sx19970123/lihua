@@ -31,9 +31,10 @@
 </template>
 
 <script setup lang="ts">
-import { usePermissionStore } from "@/stores/permission";
-import { useThemeStore } from "@/stores/theme";
+import {usePermissionStore} from "@/stores/permission";
+import {useThemeStore} from "@/stores/theme";
 import {useRouter} from 'vue-router'
+
 const router = useRouter()
 const permissionStore = usePermissionStore()
 const themeStore = useThemeStore()

@@ -41,12 +41,13 @@
 import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
 import {type FormInstance, message} from 'ant-design-vue';
 import {initDict} from "@/utils/Dict.ts";
-import {reactive, useTemplateRef, type Ref, ref} from "vue";
+import {reactive, type Ref, ref, useTemplateRef} from "vue";
 import type {ProfileInfo} from "@/api/system/profile/type/SysProfile.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {saveBasics} from "@/api/system/profile/Profile.ts";
 import {useUserStore} from "@/stores/user.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+
 const userStore = useUserStore()
 const {user_gender} = initDict("user_gender")
 // 向外抛出函数

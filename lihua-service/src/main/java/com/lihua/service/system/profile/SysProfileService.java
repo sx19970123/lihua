@@ -1,6 +1,7 @@
 package com.lihua.service.system.profile;
 
 import com.lihua.entity.system.SysUser;
+import com.lihua.model.system.dto.SysCheckPasswordDTO;
 
 public interface SysProfileService {
 
@@ -23,4 +24,14 @@ public interface SysProfileService {
      * 获取用户密码
      */
     String getPassword();
+
+    /**
+     * 用户注销
+     */
+    void accountDeactivate();
+
+    /**
+     * 校验密码
+     */
+    Boolean checkPassword(SysCheckPasswordDTO sysCheckPasswordDTO);
 }

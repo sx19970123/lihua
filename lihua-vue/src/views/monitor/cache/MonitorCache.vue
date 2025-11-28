@@ -124,13 +124,7 @@
 
 <script setup lang="ts">
 import SelectableCard from "@/components/selectable-card/index.vue"
-import {
-  cacheInfo,
-  cacheKeyGroups,
-  cacheKeys,
-  memoryInfo,
-  remove
-} from "@/api/monitor/cache/Cache.ts";
+import {cacheInfo, cacheKeyGroups, cacheKeys, memoryInfo, remove} from "@/api/monitor/cache/Cache.ts";
 import {onMounted, ref} from "vue";
 import {message} from "ant-design-vue";
 import type {CacheMonitor} from "@/api/monitor/cache/type/CacheMonitor.ts";

@@ -1,4 +1,4 @@
-import type{ Dayjs } from "dayjs";
+import type {Dayjs} from "dayjs";
 
 /**
  * 表示一个 SysDictType 实体。

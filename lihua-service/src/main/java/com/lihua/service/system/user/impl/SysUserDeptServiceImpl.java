@@ -2,21 +2,21 @@ package com.lihua.service.system.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lihua.exception.ServiceException;
-import com.lihua.model.security.CurrentDept;
-import com.lihua.model.security.LoginUser;
 import com.lihua.entity.system.SysUserDept;
+import com.lihua.exception.ServiceException;
 import com.lihua.mapper.system.SysDeptMapper;
 import com.lihua.mapper.system.SysUserDeptMapper;
+import com.lihua.model.security.CurrentDept;
+import com.lihua.model.security.LoginUser;
 import com.lihua.service.system.user.SysUserDeptService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserManager;
 import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import org.springframework.stereotype.Service;
 
 @Service
 public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUserDept> implements SysUserDeptService {

@@ -66,6 +66,7 @@ import {message} from "ant-design-vue";
 import {rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
+
 const registerLoading = ref<boolean>()
 const {enableCaptcha} = defineProps<{
   enableCaptcha: boolean

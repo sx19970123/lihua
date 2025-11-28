@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
-import {queryReadInfo, preview} from "@/api/system/noice/Notice.ts";
+import {preview, queryReadInfo} from "@/api/system/noice/Notice.ts";
 import Vditor from "vditor";
 import 'vditor/dist/index.css';
 import UserShow from "@/components/user-show/index.vue"
@@ -68,6 +68,7 @@ import dayjs from "dayjs";
 import {message} from "ant-design-vue";
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import {ResponseError} from "@/api/global/Type.ts";
+
 const themeStore = useThemeStore();
 const props = defineProps<{
   noticeId: string,

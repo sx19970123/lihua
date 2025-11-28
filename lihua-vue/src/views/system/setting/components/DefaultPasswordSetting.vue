@@ -27,10 +27,11 @@ import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
 import PasswordInput from "@/components/password-input/index.vue";
-const settingStore = useSettingStore();
-const componentName = getCurrentInstance()?.type.__name
 import {cloneDeep} from 'lodash-es'
 import {defaultPasswordDecrypt, defaultPasswordEncrypt} from "@/utils/Crypto.ts";
+
+const settingStore = useSettingStore();
+const componentName = getCurrentInstance()?.type.__name
 const submitLoading = ref<boolean>(false);
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {

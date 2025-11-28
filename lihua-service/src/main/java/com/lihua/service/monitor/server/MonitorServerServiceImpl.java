@@ -1,8 +1,9 @@
 package com.lihua.service.monitor.server;
+
 import com.lihua.model.monitor.*;
 import lombok.SneakyThrows;
-import oshi.SystemInfo;
 import org.springframework.stereotype.Service;
+import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;

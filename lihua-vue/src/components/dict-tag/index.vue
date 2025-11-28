@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
+import {defineProps} from "vue";
 import dictTag from "@/components/dict-tag/index.vue"
 import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType.ts";
 // 从父组件接收参数

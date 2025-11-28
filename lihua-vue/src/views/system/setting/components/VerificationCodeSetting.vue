@@ -23,6 +23,7 @@ import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
 import type {VerificationCode} from "@/api/system/setting/type/VerificationCode.ts";
 import {message} from "ant-design-vue";
 import {isAdmin} from "@/utils/Auth.ts";
+
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建

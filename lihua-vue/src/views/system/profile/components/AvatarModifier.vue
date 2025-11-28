@@ -73,7 +73,7 @@ import {useUserStore} from "@/stores/user";
 import {message, Modal} from 'ant-design-vue';
 import settings from "@/settings";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
-import { cloneDeep } from 'lodash-es'
+import {cloneDeep} from 'lodash-es'
 import {useThemeStore} from "@/stores/theme.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {upload} from "@/api/system/attachment/AttachmentStorage.ts";

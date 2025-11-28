@@ -15,5 +15,6 @@
 import Demo1 from './Demo1.vue'
 import Demo2 from './Demo2.vue'
 import Demo3 from './Demo3.vue'
+
 const baseDocApi = import.meta.env.VITE_APP_DOC_API
 </script>

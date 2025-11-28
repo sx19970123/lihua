@@ -1,8 +1,8 @@
 package com.lihua.mapper.system;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.lihua.model.security.CurrentRole;
 import com.lihua.entity.system.SysRole;
+import com.lihua.model.security.CurrentRole;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

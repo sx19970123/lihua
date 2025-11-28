@@ -1,5 +1,7 @@
 package com.lihua.model.security;
+
 import lombok.Data;
+
 import java.io.Serializable;
 
 @Data

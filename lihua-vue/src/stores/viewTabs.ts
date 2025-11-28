@@ -1,14 +1,14 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import Layout from "@/layout/index.vue";
 import MiddleView from "@/components/middle-view/index.vue";
 import Iframe from "@/components/iframe/index.vue";
-import type { StarViewType,RecentType } from "@/api/system/view-tab/type/SysViewTab.ts"
+import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts"
 import dayjs from "dayjs";
 import type {RouteLocationNormalizedLoaded} from "vue-router";
 import {hasRouteRole} from "@/utils/Auth.ts"
-import {isEqual} from "lodash-es"
+import {cloneDeep, isEqual} from "lodash-es"
 import {v4 as uuidv4} from "uuid";
-import {cloneDeep} from "lodash-es";
+
 export const useViewTabsStore = defineStore('viewTabs',{
     state: () => {
         // viewTab 标签页数组

@@ -1,5 +1,5 @@
-import type { SpinProps } from 'ant-design-vue';
-import { createSpinComponent } from './index';
+import type {SpinProps} from 'ant-design-vue';
+import {createSpinComponent} from './index';
 
 /** @name 通过交叉类型(&)扩展已有的类型声明 **/
 export type SpinConfig = SpinProps & {

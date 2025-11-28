@@ -5,6 +5,7 @@ import {createBrowserId} from "@/utils/BrowserId.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {message} from "ant-design-vue";
 import {nextTick} from "vue";
+
 const { getToken } = token
 export let eventSource: EventSource | null
 // 重连次数

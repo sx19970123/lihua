@@ -41,7 +41,6 @@
 </template>
 <script setup lang="ts">
 import ExpandableCard from "@/components/expandable-card/index.vue";
-import { ref} from "vue";
 </script>
 <style scoped>
 .child {

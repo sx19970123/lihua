@@ -7,5 +7,6 @@
 <script setup lang="ts">
 import DictTag from "@/components/dict-tag/index.vue"
 import {initDict} from "@/utils/Dict.ts"
+
 const {sys_status} = initDict("sys_status")
 </script>

@@ -43,11 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import {ref, useTemplateRef, watch, useSlots, nextTick, onMounted} from "vue";
+import {nextTick, onMounted, ref, useSlots, useTemplateRef, watch} from "vue";
 import ATree from "ant-design-vue/es/tree/Tree"
-import { traverse } from "@/utils/Tree.ts";
-import { cloneDeep } from 'lodash-es'
-import { useThemeStore } from "@/stores/theme.ts";
+import {traverse} from "@/utils/Tree.ts";
+import {cloneDeep} from 'lodash-es'
+import {useThemeStore} from "@/stores/theme.ts";
+
 const themeStore = useThemeStore();
 // 是否使用具名插槽title
 const slots = useSlots();

@@ -7,8 +7,8 @@
 
 <script setup lang="ts">
 import Mask from '@/components/mask/index.vue'
-import { useThemeStore } from '@/stores/theme';
-import { ref } from "vue";
+import {useThemeStore} from '@/stores/theme';
+import {ref} from "vue";
 
 // 请求url前缀
 const baseURL = import.meta.env.VITE_APP_BASE_API

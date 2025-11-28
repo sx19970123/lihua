@@ -1,14 +1,14 @@
 package com.lihua.controller.system;
 
 import com.lihua.annotation.Log;
+import com.lihua.entity.system.SysUser;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.security.CurrentDept;
-import com.lihua.model.web.ApiResponseModel;
-import com.lihua.model.web.basecontroller.ApiResponseController;
-import com.lihua.entity.system.SysUser;
 import com.lihua.model.system.dto.SysUpdatePasswordDTO;
 import com.lihua.model.system.validation.ProfileValidation;
+import com.lihua.model.web.ApiResponseModel;
+import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.system.profile.SysProfileService;
 import com.lihua.service.system.setting.SysSettingService;
 import com.lihua.service.system.user.SysUserDeptService;

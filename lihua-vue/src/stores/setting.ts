@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
-import {querySysSettingByComponentName, insert} from "@/api/system/setting/Setting.ts";
+import {insert, querySysSettingByComponentName} from "@/api/system/setting/Setting.ts";
 import {message} from "ant-design-vue";
 import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 

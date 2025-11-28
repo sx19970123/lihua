@@ -5,7 +5,6 @@ import com.lihua.model.attachment.AttachmentStreamAndInfoModel;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.utils.file.FileUtils;
 import com.lihua.utils.json.JsonUtils;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;

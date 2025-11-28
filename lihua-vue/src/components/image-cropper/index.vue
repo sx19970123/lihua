@@ -74,6 +74,7 @@ import {defineProps, ref, useTemplateRef} from 'vue';
 import type {CropperDataType} from "@/components/image-cropper/CropperType.ts";
 import {message} from "ant-design-vue";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
+
 const cropperRef = useTemplateRef<InstanceType<typeof VueCropper>>("cropperRef")
 
 const props = defineProps({

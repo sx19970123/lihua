@@ -1,7 +1,7 @@
 package com.lihua.service.system.dict;
 
-import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.entity.system.SysDictData;
+import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.system.dto.SysDictDataDTO;
 
 import java.util.List;

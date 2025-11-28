@@ -1,8 +1,8 @@
 package com.lihua.service.system.viewtab;
 
+import com.lihua.entity.system.SysViewTab;
 import com.lihua.model.security.CurrentRouter;
 import com.lihua.model.security.CurrentViewTab;
-import com.lihua.entity.system.SysViewTab;
 
 import java.util.List;
 

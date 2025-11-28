@@ -16,7 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
+import {defineProps} from "vue";
+
 type ColorSelectItem = { name: string, color: string, key?: string }
 // 接收全部颜色 items 和 双向绑定的颜色值 modelValue
 const data = defineProps<{

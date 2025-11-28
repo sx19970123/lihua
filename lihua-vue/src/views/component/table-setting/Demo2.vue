@@ -15,9 +15,10 @@
   </a-table>
 </template>
 <script lang="ts" setup>
-import type { TableColumnsType } from 'ant-design-vue';
+import type {TableColumnsType} from 'ant-design-vue';
 import {ref} from "vue";
 import TableSetting from "@/components/table-setting/index.vue";
+
 type TableDataType = {
   key: number;
   name: string;

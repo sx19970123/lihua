@@ -6,5 +6,6 @@
 <script setup lang="ts">
 import UserShow from "@/components/user-show/index.vue"
 import {useUserStore} from "@/stores/user.ts";
+
 const userStore = useUserStore();
 </script>

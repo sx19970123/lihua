@@ -248,6 +248,7 @@ import {getUserOptionByUserIds} from "@/api/system/user/User.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
+
 const {sys_notice_type, sys_notice_status, 	sys_notice_user_scope, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_status", "sys_notice_user_scope", "sys_notice_priority")
 // 查询列表
 const initSearch = () => {

@@ -23,8 +23,9 @@
 import Basic from './components/ProfileBasicSetting.vue'
 import Individuation from './components/ProfileIndividuation.vue'
 import Security from './components/ProfileSecurity.vue'
-import {ref, markRaw, onMounted, onUnmounted} from "vue";
-import { useThemeStore } from "@/stores/theme";
+import {markRaw, onMounted, onUnmounted, ref} from "vue";
+import {useThemeStore} from "@/stores/theme";
+
 const collapsed = ref<boolean>(false)
 const themeStore = useThemeStore()
 // 注册子组件

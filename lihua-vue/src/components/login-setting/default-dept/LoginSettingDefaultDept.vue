@@ -20,6 +20,7 @@ import DefaultDept from "@/components/default-dept-select/index.vue"
 import type {Ref} from "vue";
 import {message} from "ant-design-vue";
 import {useUserStore} from "@/stores/user.ts";
+
 const userStore = useUserStore();
 // 向外抛出函数
 const emits = defineEmits(['back', 'skip', 'next'])

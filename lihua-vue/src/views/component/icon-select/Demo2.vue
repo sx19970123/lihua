@@ -7,5 +7,6 @@
 <script setup lang="ts">
 import IconSelect from "@/components/icon-select/index.vue"
 import {ref} from "vue";
+
 const value = ref<string>()
 </script>

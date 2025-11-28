@@ -5,6 +5,7 @@ import com.lihua.utils.tree.functionalInterface.EntityGetterChildrenMethod;
 import com.lihua.utils.tree.functionalInterface.EntityGetterStringMethod;
 import com.lihua.utils.tree.functionalInterface.EntitySetterChildrenMethod;
 import org.springframework.util.StringUtils;
+
 import java.util.*;
 
 public class LambdaTreeUtils {

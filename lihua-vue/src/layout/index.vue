@@ -11,8 +11,8 @@
 import MixNavigation from "@/layout/layout-type/MixNavigation.vue";
 import SideNavigation from "@/layout/layout-type/SideNavigation.vue";
 import TopNavigation from "@/layout/layout-type/TopNavigation.vue"
-import { useThemeStore } from "@/stores/theme";
-import { useViewTabsStore } from "@/stores/viewTabs.ts";
+import {useThemeStore} from "@/stores/theme";
+import {useViewTabsStore} from "@/stores/viewTabs.ts";
 import {onMounted, onUnmounted, ref} from "vue";
 import {debounce} from "lodash-es"
 import settings from "@/settings.ts";

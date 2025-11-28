@@ -1,5 +1,5 @@
 import {type App, type DirectiveBinding, ref, watch, watchEffect} from 'vue'
-import { useDraggable } from '@vueuse/core';
+import {useDraggable} from '@vueuse/core';
 import {isMobile} from 'is-mobile'
 
 export default (app: App<Element>) => {

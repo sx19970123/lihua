@@ -1,7 +1,7 @@
 package com.lihua.strategy.system.authentication.impl.loginsetting;
 
-import com.lihua.model.security.LoginUser;
 import com.lihua.entity.system.SysSetting;
+import com.lihua.model.security.LoginUser;
 import com.lihua.model.system.dto.SysSettingDTO;
 import com.lihua.service.system.setting.SysSettingService;
 import com.lihua.strategy.system.authentication.CheckLoginSettingStrategy;

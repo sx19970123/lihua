@@ -358,17 +358,17 @@
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {
-  queryPage,
-  queryById,
-  save,
   deleteByIds,
-  updateStatus,
   exportExcel,
   importExcel,
-  resetPassword
+  queryById,
+  queryPage,
+  resetPassword,
+  save,
+  updateStatus
 } from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/Dict.ts"
-import {createVNode, onMounted, reactive, ref, useTemplateRef, watch} from "vue";
+import {createVNode, onMounted, reactive, ref, useTemplateRef} from "vue";
 import SelectableCard from "@/components/selectable-card/index.vue"
 import PasswordInput from "@/components/password-input/index.vue"
 import DictTag from "@/components/dict-tag/index.vue"
@@ -378,8 +378,8 @@ import dayjs from "dayjs";
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
-import {message, Modal, type FormInstance} from "ant-design-vue";
-import { cloneDeep } from 'lodash-es';
+import {type FormInstance, message, Modal} from "ant-design-vue";
+import {cloneDeep} from 'lodash-es';
 import {traverse} from "@/utils/Tree.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import type {SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
@@ -397,7 +397,7 @@ import {download} from "@/utils/AttachmentDownload.ts";
 import settings from "@/settings.ts";
 import {useUserStore} from "@/stores/user.ts";
 import {refreshUserData} from "@/utils/AppInit.ts";
-import { useRoute } from "vue-router";
+import {useRoute} from "vue-router";
 
 const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
 const settingStore = useSettingStore()

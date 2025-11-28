@@ -1,6 +1,6 @@
+import type {Component} from 'vue'
 import {createApp, defineComponent} from 'vue'
-import type { Component } from 'vue'
-import { createPinia } from 'pinia'
+import {createPinia} from 'pinia'
 
 import App from './App.vue'
 import router from './router'

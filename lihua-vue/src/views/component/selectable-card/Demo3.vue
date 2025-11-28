@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import SelectableCard from "@/components/selectable-card/index.vue"
 import {ref} from "vue";
+
 const dataSource = ref<any[]>([])
 const dataLoading = ref<boolean>(false)
 const value = ref<string[]>([])

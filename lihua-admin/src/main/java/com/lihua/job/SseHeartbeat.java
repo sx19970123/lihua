@@ -4,7 +4,6 @@ import com.lihua.enums.ServerSentEventsEnum;
 import com.lihua.model.sse.ServerSentEventsResult;
 import com.lihua.utils.sse.ServerSentEventsManager;
 import com.xxl.job.core.handler.annotation.XxlJob;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

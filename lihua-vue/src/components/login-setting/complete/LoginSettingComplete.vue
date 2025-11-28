@@ -12,5 +12,6 @@
 
 <script setup lang="ts">
 import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
+
 const emits = defineEmits(['complete'])
 </script>

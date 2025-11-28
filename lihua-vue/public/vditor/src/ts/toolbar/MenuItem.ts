@@ -1,8 +1,7 @@
 import {Constants} from "../constants";
 import {processToolbar} from "../ir/process";
 import {processToolbar as processToolbarSV} from "../sv/process";
-import {getEventName} from "../util/compatibility";
-import {updateHotkeyTip} from "../util/compatibility";
+import {getEventName, updateHotkeyTip} from "../util/compatibility";
 import {toolbarEvent} from "../wysiwyg/toolbarEvent";
 
 export class MenuItem {

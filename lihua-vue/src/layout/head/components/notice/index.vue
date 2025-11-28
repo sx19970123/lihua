@@ -121,7 +121,7 @@ import {MessageOutlined, NotificationOutlined} from "@ant-design/icons-vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {useUserStore} from "@/stores/user.ts";
 import {getDictLabel, initDict} from "@/utils/Dict.ts";
-import {queryListByUserId, read, star, queryUnReadCount} from "@/api/system/noice/Notice.ts";
+import {queryListByUserId, queryUnReadCount, read, star} from "@/api/system/noice/Notice.ts";
 import type {SysUserNoticeVO} from "@/api/system/noice/type/SysUserNotice.ts";
 import {handleTime} from "@/utils/HandleDate.ts";
 import dayjs from "dayjs";

@@ -140,13 +140,14 @@
 import {ref} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import type {LoggedUserType} from "@/api/monitor/logged-user/type/LoggedUserType.ts";
-import {queryList, forceLogout} from "@/api/monitor/logged-user/LoggedUser.ts";
+import {forceLogout, queryList} from "@/api/monitor/logged-user/LoggedUser.ts";
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysLog} from "@/api/system/log/type/SysLog.ts";
 import {queryLoginByCacheKey} from "@/api/system/log/Log.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import TableSetting from "@/components/table-setting/index.vue";
+
 const initSearch = () => {
   // 选中的数据id集合
   const logoutCacheKeys = ref<Array<string>>([])

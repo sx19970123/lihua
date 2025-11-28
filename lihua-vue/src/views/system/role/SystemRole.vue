@@ -195,7 +195,7 @@
 
 <script setup lang="ts">
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {reactive, ref, useTemplateRef, watch} from "vue";
+import {reactive, ref, useTemplateRef} from "vue";
 import {deleteData, queryById, queryPage, save, updateStatus} from "@/api/system/role/Role.ts";
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
@@ -210,6 +210,7 @@ import {ResponseError} from "@/api/global/Type.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
+
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
 const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
 const themeStore = useThemeStore();

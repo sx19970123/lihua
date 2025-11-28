@@ -1,7 +1,7 @@
 package com.lihua.service.system.authentication;
 
-import com.lihua.model.security.LoginUser;
 import com.lihua.model.security.CurrentUser;
+import com.lihua.model.security.LoginUser;
 
 import java.util.List;
 

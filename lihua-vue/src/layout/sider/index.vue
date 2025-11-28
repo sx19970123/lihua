@@ -15,9 +15,10 @@
 import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
 import {useViewTabsStore} from "@/stores/viewTabs.ts";
-import {useRoute,useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {computed, nextTick, onMounted, reactive, watch} from "vue";
 import type {ItemType} from "ant-design-vue";
+
 const themeStore = useThemeStore()
 const route = useRoute()
 const router = useRouter()

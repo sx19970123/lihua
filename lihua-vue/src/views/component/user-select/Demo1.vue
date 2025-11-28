@@ -11,6 +11,7 @@
 <script setup lang="ts">
 import UserSelect from "@/components/user-select/index.vue"
 import {ref} from "vue";
+
 const value = ref<string[]>([])
 const nickname = ref<string[]>([])
 const username = ref<string[]>([])

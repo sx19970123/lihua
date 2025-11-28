@@ -3,7 +3,6 @@ package com.lihua.service.system.setting;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.cache.RedisCache;
 import com.lihua.entity.system.SysSetting;
-import com.lihua.exception.ServiceException;
 import com.lihua.mapper.system.SysSettingMapper;
 import com.lihua.model.system.dto.SysSettingDTO;
 import com.lihua.utils.json.JsonUtils;

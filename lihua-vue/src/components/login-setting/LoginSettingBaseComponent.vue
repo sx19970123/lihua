@@ -45,6 +45,7 @@
 <script setup lang="ts">
 import {useThemeStore} from "@/stores/theme.ts";
 import {ref} from "vue";
+
 const themeStore = useThemeStore();
 // 父组件传值配置
 const { icon, title, description, skip = true, skipMsg, back = true, mainBtnTitle = '下一步', showMainBtnIcon = true , showGoLoginBtn = false} = defineProps<{

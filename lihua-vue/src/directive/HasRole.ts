@@ -1,6 +1,7 @@
-import { type App } from 'vue'
-import { useUserStore } from "@/stores/user.ts";
-import { cloneDeep } from 'lodash-es';
+import {type App} from 'vue'
+import {useUserStore} from "@/stores/user.ts";
+import {cloneDeep} from 'lodash-es';
+
 const userStore = useUserStore()
 
 export default function setupHasRoleDirective(app: App<Element>): void {

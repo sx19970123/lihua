@@ -11,5 +11,6 @@
 
 <script setup lang="ts">
 import Demo1 from './Demo1.vue'
+
 const baseDocApi = import.meta.env.VITE_APP_DOC_API
 </script>

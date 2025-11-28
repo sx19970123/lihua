@@ -213,13 +213,13 @@
 import {onMounted, onUnmounted, reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
 import {ResponseError, type ResponseType} from "@/api/global/Type.ts"
-import type { ColumnsType } from 'ant-design-vue/es/table/interface';
+import type {ColumnsType} from 'ant-design-vue/es/table/interface';
 import {deleteData, queryById, queryPage, reloadCache, save, updateStatus} from "@/api/system/dict/DictType.ts";
 import dayjs from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
-import { message } from "ant-design-vue";
+import {message} from "ant-design-vue";
 import DictData from "./dictData/index.vue"
-import { initDict } from "@/utils/Dict.ts";
+import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";

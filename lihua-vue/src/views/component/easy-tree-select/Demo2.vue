@@ -11,6 +11,7 @@
 import EasyTreeSelect from '@/components/easy-tree-select/index.vue'
 import {initDict} from "@/utils/Dict.ts"
 import {ref} from "vue";
+
 const {test_tree} = initDict("test_tree")
 const value = ref<string>()
 </script>

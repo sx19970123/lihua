@@ -1,12 +1,12 @@
-import { defineStore } from "pinia";
-import { login, logout} from "@/api/system/login/Login.ts";
-import { saveTheme, updatePassword} from "@/api/system/profile/Profile.ts";
+import {defineStore} from "pinia";
+import {login, logout} from "@/api/system/login/Login.ts";
+import {saveTheme, updatePassword} from "@/api/system/profile/Profile.ts";
 import token from "@/utils/Token.ts";
-import { message } from "ant-design-vue";
+import {message} from "ant-design-vue";
 import {queryAuthInfo} from "@/api/system/auth/Auth.ts";
 import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
-import type { AuthInfoType, UserInfoType} from "@/api/system/auth/type/AuthInfoType.ts";
+import type {AuthInfoType, UserInfoType} from "@/api/system/auth/type/AuthInfoType.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
@@ -15,6 +15,7 @@ import {close} from "@/utils/ServerSentEvents.ts";
 import {rasEncryptPassword} from "@/utils/Crypto.ts";
 import {publicAttachmentDownload} from "@/api/system/attachment/AttachmentStorage.ts";
 import router from "@/router";
+
 const { setToken,removeToken } = token
 
 export const useUserStore = defineStore('user', {

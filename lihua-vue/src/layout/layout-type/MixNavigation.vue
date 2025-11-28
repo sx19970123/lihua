@@ -71,12 +71,12 @@ import Head from "@/layout/head/index.vue"
 import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
-import { usePermissionStore } from "@/stores/permission";
+import {usePermissionStore} from "@/stores/permission";
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/theme";
 import {computed, onMounted, onUnmounted, ref, useTemplateRef, watch} from "vue";
 import Mask from "@/components/mask/index.vue";
-import { cloneDeep } from 'lodash-es'
+import {cloneDeep} from 'lodash-es'
 import type {MenuItemGroupType} from "ant-design-vue/es/menu/src/hooks/useItems";
 import type {ItemType} from "ant-design-vue";
 import {useRouter} from "vue-router";

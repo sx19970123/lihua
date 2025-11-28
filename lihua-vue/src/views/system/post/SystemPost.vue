@@ -259,7 +259,15 @@ import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {createVNode, reactive, ref, useTemplateRef, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {initDict} from "@/utils/Dict.ts";
-import {deleteData, exportExcel, queryById, queryPage, importExcel, save, updateStatus} from "@/api/system/post/Post.ts";
+import {
+  deleteData,
+  exportExcel,
+  importExcel,
+  queryById,
+  queryPage,
+  save,
+  updateStatus
+} from "@/api/system/post/Post.ts";
 import {useRoute} from "vue-router";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTree} from "@/utils/Tree.ts";
@@ -273,6 +281,7 @@ import {ResponseError} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
+
 const {sys_status} = initDict("sys_status")
 const route = useRoute();
 

@@ -1,8 +1,9 @@
 import axios, {type AxiosRequestConfig, type AxiosResponse} from 'axios';
 import token from "@/utils/Token.ts"
-import {type ResponseErrorType, ResponseError, type ResponseType} from "@/api/global/Type.ts"
-import { useUserStore } from "@/stores/user";
+import {ResponseError, type ResponseErrorType, type ResponseType} from "@/api/global/Type.ts"
+import {useUserStore} from "@/stores/user";
 import router from "@/router";
+
 const { getToken } = token
 // 当前正在进行的请求url集合
 export const currentRequests = new Set<string>([]);

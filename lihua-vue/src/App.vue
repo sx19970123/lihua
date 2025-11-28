@@ -16,9 +16,9 @@
 </template>
 
 <script setup lang="ts">
-import {getBrowserType, getBrowserMajorVersion} from "@/utils/Browser.ts"
-import { useThemeStore } from "@/stores/theme"
-import { usePermissionStore } from "@/stores/permission.ts";
+import {getBrowserMajorVersion, getBrowserType} from "@/utils/Browser.ts"
+import {useThemeStore} from "@/stores/theme"
+import {usePermissionStore} from "@/stores/permission.ts";
 import {useSettingStore} from "@/stores/setting.ts";
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import {onMounted, onUnmounted, ref, watch} from "vue";
@@ -26,6 +26,7 @@ import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
 import type {GrayModel} from "@/api/system/setting/type/GrayModel.ts";
 import {theme} from "ant-design-vue";
+
 const { token } = theme.useToken()
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()
