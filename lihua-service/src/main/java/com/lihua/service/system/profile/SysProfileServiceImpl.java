@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.lihua.enums.SysBaseEnum.CHECK_PASSWORD_REDIS_PREFIX;
+import static com.lihua.enums.RedisKeyPrefixEnum.CHECK_PASSWORD_REDIS_PREFIX;
 
 @Service
 public class SysProfileServiceImpl implements SysProfileService {

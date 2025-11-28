@@ -1,7 +1,7 @@
 package com.lihua.utils.security;
 
 import com.lihua.cache.RedisCache;
-import com.lihua.enums.SysBaseEnum;
+import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.model.security.*;
 import com.lihua.utils.spring.SpringUtils;
 import com.lihua.utils.tree.TreeUtils;
@@ -163,7 +163,7 @@ public class LoginUserContext implements Serializable {
         }
 
         // 根据redisKey规则，通过前缀+userId+: 获取用户登录key
-        Set<String> keys = redisCache.keys(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId + ":");
+        Set<String> keys = redisCache.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId + ":");
 
         return !keys.isEmpty();
     }

@@ -1,7 +1,7 @@
 package com.lihua.service.monitor.logged;
 
 import com.lihua.cache.RedisCache;
-import com.lihua.enums.SysBaseEnum;
+import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.model.monitor.LoggedUser;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
@@ -24,7 +24,7 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
     public List<LoggedUser> queryList(String username, String nickName, String clientType) {
 
         // 获取登录中用户所有key
-        Set<String> keys = redisCache.keys(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue());
+        Set<String> keys = redisCache.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue());
 
         // 取出所有登录用户信息
         List<LoginUser> loginUsers = new ArrayList<>();

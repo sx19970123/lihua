@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.lihua.enums.SysBaseEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
-import static com.lihua.enums.SysBaseEnum.SYSTEM_SETTING_REDIS_PREFIX;
+import static com.lihua.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
+import static com.lihua.enums.RedisKeyPrefixEnum.SYSTEM_SETTING_REDIS_PREFIX;
 
 @Service
 @Slf4j

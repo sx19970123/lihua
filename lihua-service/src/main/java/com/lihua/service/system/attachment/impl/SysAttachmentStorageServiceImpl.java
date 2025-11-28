@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
 import com.lihua.entity.system.SysAttachment;
+import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.enums.SysBaseEnum;
 import com.lihua.exception.FileException;
 import com.lihua.exception.ServiceException;
@@ -234,7 +235,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             throw new FileException("附件合并失败");
         } finally {
             // 删除redis缓存
-            redisCache.delete(SysBaseEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId);
+            redisCache.delete(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId);
         }
     }
 
@@ -370,14 +371,14 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     // 分片上传中通过uploadId获取fullFilePath
     private String getChunksFullPathByUploadId(String uploadId) {
         // 通过uploadId获取fullFilePath
-        String fullFilePath = redisCache.getCacheObject(SysBaseEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, String.class);
+        String fullFilePath = redisCache.getCacheObject(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, String.class);
         if (!StringUtils.hasText(fullFilePath)) {
             List<SysAttachment> list = lambdaQuery().select(SysAttachment::getPath).eq(SysAttachment::getUploadId, uploadId).list();
             if (list.isEmpty()) {
                 throw new FileException("获取分片路径失败");
             }
             fullFilePath = list.get(0).getPath();
-            redisCache.setCacheObject(SysBaseEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, fullFilePath);
+            redisCache.setCacheObject(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, fullFilePath);
         }
 
         return fullFilePath;
@@ -388,7 +389,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         AttachmentStorageStrategy attachmentStorageStrategy = getStrategy();
         String uploadId = attachmentStorageStrategy.getUploadId(fullFilePath);
         // uploadId和fullFilePath保存到redis
-        redisCache.setCacheObject(SysBaseEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, fullFilePath);
+        redisCache.setCacheObject(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, fullFilePath);
         return uploadId;
     }
 

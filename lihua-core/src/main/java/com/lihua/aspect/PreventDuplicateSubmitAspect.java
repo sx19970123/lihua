@@ -2,7 +2,7 @@ package com.lihua.aspect;
 
 import com.lihua.annotation.PreventDuplicateSubmit;
 import com.lihua.cache.RedisCache;
-import com.lihua.enums.SysBaseEnum;
+import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.exception.DuplicateSubmitException;
 import com.lihua.utils.crypt.HashUtils;
 import com.lihua.utils.web.WebUtils;
@@ -43,7 +43,7 @@ public class PreventDuplicateSubmitAspect {
         rateLimiterName = HashUtils.generateMD5(rateLimiterName + token);
 
         // key 拼接前缀
-        String key = SysBaseEnum.PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX.getValue() + rateLimiterName;
+        String key = RedisKeyPrefixEnum.PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX.getValue() + rateLimiterName;
         // redis 中key存在则抛出重复提交异常
         if (redisCache.hasKey(key)) {
             throw new DuplicateSubmitException();

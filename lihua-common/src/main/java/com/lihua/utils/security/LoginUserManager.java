@@ -2,7 +2,7 @@ package com.lihua.utils.security;
 
 import com.lihua.cache.RedisCache;
 import com.lihua.config.LihuaConfig;
-import com.lihua.enums.SysBaseEnum;
+import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.security.LoginUser;
 import com.lihua.utils.date.DateUtils;
@@ -107,7 +107,7 @@ public class LoginUserManager {
      * 用户key由四部分组成 1.固定前缀 2.用户id 3.当前时间戳 4.uuid随机数，中间由:连接
      */
     private static String getLoginUserKey(String userId) {
-        return SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue()
+        return RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue()
                 + userId + ":"
                 + System.currentTimeMillis() + ":"
                 + UUID.randomUUID().toString().replace("-", "");

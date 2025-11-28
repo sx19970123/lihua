@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.cache.RedisCache;
 import com.lihua.entity.system.SysSetting;
 import com.lihua.entity.system.SysUser;
-import com.lihua.enums.SysBaseEnum;
+import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.mapper.system.SysRoleMapper;
 import com.lihua.mapper.system.SysUserMapper;
@@ -185,7 +185,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         }
 
         // 获取所有用户登录 key
-        Set<String> keys = redisCache.keys(SysBaseEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId);
+        Set<String> keys = redisCache.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId);
 
         int count = keys.size() - limitSize;
         if (count < 0) {

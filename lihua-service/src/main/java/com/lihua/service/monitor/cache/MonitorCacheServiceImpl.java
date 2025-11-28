@@ -1,6 +1,7 @@
 package com.lihua.service.monitor.cache;
 
 import com.lihua.cache.RedisCache;
+import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.model.monitor.CacheMonitor;
 import com.lihua.service.system.setting.SysSettingService;
 import com.lihua.utils.json.JsonUtils;
@@ -12,7 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.lihua.enums.SysBaseEnum.*;
+import static com.lihua.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
+import static com.lihua.enums.RedisKeyPrefixEnum.SYSTEM_SETTING_REDIS_PREFIX;
 
 @Service
 public class MonitorCacheServiceImpl implements MonitorCacheService {
@@ -31,17 +33,8 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
 
     @Override
     public List<CacheMonitor> cacheKeyGroups() {
-        return List.of(
-            new CacheMonitor(LOGIN_USER_REDIS_PREFIX.getValue(), "登录用户"),
-            new CacheMonitor(DICT_DATA_REDIS_PREFIX.getValue(), "系统字典"),
-            new CacheMonitor(SYSTEM_SETTING_REDIS_PREFIX.getValue(), "系统设置"),
-            new CacheMonitor(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue(), "IP黑名单"),
-            new CacheMonitor(PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX.getValue(), "防重复提交"),
-            new CacheMonitor(CAPTCHA_REDIS_PREFIX.getValue(), "验证码"),
-            new CacheMonitor(SECONDARY_CAPTCHA_REDIS_PREFIX.getValue(), "验证码二次验证"),
-            new CacheMonitor(CHUNK_UPLOAD_ID_REDIS_PREFIX.getValue(), "分片上传uploadId"),
-            new CacheMonitor("OTHER", "其他")
-        );
+        List<RedisKeyPrefixEnum> redisKeyPrefix = RedisKeyPrefixEnum.getRedisKeyPrefix();
+        return redisKeyPrefix.stream().map(keyPrefix -> new CacheMonitor(keyPrefix.getValue(), keyPrefix.getLabel())).toList();
     }
 
     @Override
@@ -49,14 +42,19 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
         if (!"OTHER".equals(keyPrefix)) {
             return redisCache.keys(keyPrefix);
         }
+
         Set<String> keys = redisCache.keys();
-        return keys.stream()
-                .filter(key -> !key.startsWith(LOGIN_USER_REDIS_PREFIX.getValue()))
-                .filter(key -> !key.startsWith(DICT_DATA_REDIS_PREFIX.getValue()))
-                .filter(key -> !key.startsWith(SYSTEM_SETTING_REDIS_PREFIX.getValue()))
-                .filter(key -> !key.startsWith(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue()))
-                .filter(key -> !key.startsWith(PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX.getValue()))
-                .filter(key -> !key.startsWith(CAPTCHA_REDIS_PREFIX.getValue()))
+        // 拿到非other的Key
+        List<RedisKeyPrefixEnum> redisKeyPrefix = RedisKeyPrefixEnum.getRedisKeyPrefix();
+        List<String> notOtherKeys = redisKeyPrefix.stream().map(RedisKeyPrefixEnum::getValue).filter(key -> !"OTHER".equals(key)).toList();
+        // 从keys中减去非other的Key，拿到other的key
+        return keys
+                .stream()
+                .filter(k -> {
+                    for (String prefix : notOtherKeys)
+                        if (k.startsWith(prefix)) return false;
+                    return true;
+                })
                 .collect(Collectors.toSet());
     }
 
