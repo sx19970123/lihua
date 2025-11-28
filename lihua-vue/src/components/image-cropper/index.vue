@@ -159,7 +159,7 @@ const props = defineProps({
   // 是否输出原图比例的截图
   full: {
     type: Boolean,
-    default: true
+    default: false
   },
   // 图片根据截图框输出比例倍数
   enlarge: {

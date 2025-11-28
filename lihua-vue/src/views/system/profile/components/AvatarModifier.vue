@@ -203,6 +203,10 @@ const handleOk = async () => {
           throw new Error('获取 blob 数据失败');
         }
 
+        if (blob.size / 1024 / 1024 > 2) {
+          throw new Error('头像不能超过 2MB');
+        }
+
         const resp = await upload(new File([blob],uuidv4() + ".png", { type: "image/png" }), "UserAvatar", "用户头像");
         if (resp.code !== 200) {
           throw new Error('头像上传失败');
