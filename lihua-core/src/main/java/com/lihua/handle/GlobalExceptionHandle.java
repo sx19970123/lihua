@@ -3,6 +3,7 @@ package com.lihua.handle;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.*;
 import com.lihua.model.web.basecontroller.StrResponseController;
+import com.lihua.utils.web.WebUtils;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
@@ -72,7 +73,7 @@ public class GlobalExceptionHandle extends StrResponseController {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public void handelMaxUploadSizeExceededException(MaxUploadSizeExceededException e, HttpServletResponse response) {
         log.error(e.getMessage(),e);
-        error(response, ResultCodeEnum.MAX_UPLOAD_SIZE_EXCEEDED_ERROR);
+        WebUtils.renderJson(response, error(ResultCodeEnum.MAX_UPLOAD_SIZE_EXCEEDED_ERROR));
     }
 
     /**
@@ -143,7 +144,7 @@ public class GlobalExceptionHandle extends StrResponseController {
     @ExceptionHandler(NoHandlerFoundException.class)
     public void handleNoHandlerFoundException(NoHandlerFoundException e, HttpServletResponse response) {
         log.error(e.getMessage(),e);
-        error(response, ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
+        WebUtils.renderJson(response, error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR));
     }
 
     /**
@@ -152,7 +153,7 @@ public class GlobalExceptionHandle extends StrResponseController {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public void handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletResponse response) {
         log.error(e.getMessage(),e);
-        error(response, ResultCodeEnum.REQUEST_METHOD_ERROR);
+        WebUtils.renderJson(response, error(ResultCodeEnum.REQUEST_METHOD_ERROR));
     }
 
     /**

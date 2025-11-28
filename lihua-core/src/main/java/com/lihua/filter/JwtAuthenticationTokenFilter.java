@@ -2,7 +2,6 @@ package com.lihua.filter;
 
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.model.security.LoginUser;
-import com.lihua.model.web.basecontroller.BaseResponseController;
 import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.FilterChain;
@@ -19,6 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+
+import static com.lihua.model.web.response.StrResponse.error;
 
 
 /**
@@ -49,7 +50,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 // token不存在直接写入响应返回401
                 if (response != null) {
                     log.error(ResultCodeEnum.AUTHENTICATION_EXPIRED.getDefaultMsg());
-                    BaseResponseController.error(response, ResultCodeEnum.AUTHENTICATION_EXPIRED);
+                    WebUtils.renderJson(response, error(ResultCodeEnum.AUTHENTICATION_EXPIRED));
                 }
                 return;
             }

@@ -19,12 +19,6 @@ import java.util.List;
  */
 public class BaseResponseController {
 
-    @SneakyThrows
-    public static void error(HttpServletResponse response, ResultCodeEnum resultCodeEnum) {
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(responseToJson(resultCodeEnum, resultCodeEnum.getDefaultMsg(),null));
-    }
-
     public static ResponseEntity<StreamingResponseBody> success(File file) {
         return FileUtils.download(file, null, false);
     }
