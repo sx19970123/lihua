@@ -40,10 +40,10 @@ public class SysAttachmentStorageController extends ApiResponseController {
         return success(sysAttachmentStorageService.queryAttachmentInfoByIds(ids));
     }
 
-    @Operation(summary = "附件是否存在（md5和原附件名均相同）")
-    @GetMapping("exists/{md5}/{originFileName}")
-    public ApiResponseModel<Boolean> existsAttachmentByMd5(@PathVariable("md5") String md5, @PathVariable("originFileName") String originFileName) {
-        return success(sysAttachmentStorageService.existsAttachmentByMd5(md5, originFileName));
+    @Operation(summary = "附件是否存在（md5值，原文件名可选）")
+    @PostMapping("exists")
+    public ApiResponseModel<Boolean> existsAttachmentByMd5(@RequestBody @Validated(AttachmentValidation.AttachmentCheckMd5Validation.class) SysAttachment sysAttachment) {
+        return success(sysAttachmentStorageService.existsAttachmentByMd5(sysAttachment.getMd5(), sysAttachment.getOriginalName()));
     }
 
     @Operation(summary = "上传附件")

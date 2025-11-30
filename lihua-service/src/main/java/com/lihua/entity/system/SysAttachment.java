@@ -85,6 +85,7 @@ public class SysAttachment implements Serializable {
     /**
      * md5值
      */
+    @NotNull(message = "md5值不能为空", groups = { AttachmentValidation.AttachmentCheckMd5Validation.class })
     private String md5;
 
     /**

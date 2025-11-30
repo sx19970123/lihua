@@ -57,16 +57,20 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     @Override
     public boolean existsAttachmentByMd5(String md5, String originFileName) {
         AttachmentStorageStrategy strategy = getStrategy();
-        // 根据md5和原附件名查询是否存在
-        LambdaQueryChainWrapper<SysAttachment> wrapper = lambdaQuery().eq(SysAttachment::getMd5, md5).eq(SysAttachment::getOriginalName, originFileName);
+        // 根据md5查询附件是否存在
+        LambdaQueryChainWrapper<SysAttachment> wrapper =
+                lambdaQuery()
+                .eq(SysAttachment::getMd5, md5);
+        // 根据附件原名查询是否存在
+        if (StringUtils.hasText(originFileName)) {
+            wrapper.eq(SysAttachment::getOriginalName, originFileName);
+        }
         SysAttachment attachment = queryOne(wrapper);
         if (attachment == null || !StringUtils.hasText(attachment.getPath())) {
             return false;
         }
-
         // 检查服务器附件是否存在
         boolean exists = strategy.isExists(attachment.getPath());
-
         if (exists) {
             return true;
         }
@@ -77,7 +81,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     public List<SysAttachment> queryAttachmentInfoByIds(List<String> ids) {
         // 去重查询path和原附件名
         List<SysAttachment> sysAttachmentList = lambdaQuery()
-                .select(SysAttachment::getId, SysAttachment::getPath, SysAttachment::getOriginalName)
+                .select(SysAttachment::getId, SysAttachment::getPath, SysAttachment::getOriginalName, SysAttachment::getType)
                 .in(SysAttachment::getId, ids)
                 .eq(SysAttachment::getStatus, "0")
                 .list();
@@ -92,7 +96,8 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         // 未查询出结果的数据集创建对象
         ids.forEach(id -> {
             SysAttachment attachment = new SysAttachment();
-            attachment.setId(id).setOriginalName("附件丢失（附件id：" + id + "）").setStatus("error");
+            String errMsg = "附件丢失（附件id：" + id + "）";
+            attachment.setId(id).setOriginalName(errMsg).setStatus("error").setErrorMsg(errMsg);
             sysAttachmentList.add(attachment);
         });
 
@@ -176,10 +181,11 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         if (attachment == null) {
             return null;
         }
-        // 获取路径
+        // 完善其他字段
         String path = attachment.getPath();
         sysAttachment
                 .setPath(path)
+                .setType(attachment.getType())
                 .setStatus("0");
         // 插入新数据
         saveAttachment(sysAttachment);
