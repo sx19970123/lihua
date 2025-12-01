@@ -16,7 +16,7 @@ export const queryPage = (data: SysPostDTO) => {
 }
 
 /**
- * 保村岗位信息
+ * 保存岗位信息
  * @param data
  */
 export const save = (data: SysPost) => {
