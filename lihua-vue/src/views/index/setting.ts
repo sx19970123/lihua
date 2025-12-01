@@ -12,6 +12,9 @@ const nextUpdate = [
             '7. app端用户注销功能',
             '8. 新增日志记录客户端类型',
             '9. 附件组件新增是否自动删除配置',
+            '10. 更新springboot版本到3.5.8',
+            '11. 更新xxl-job版本到3.3.0',
+            '12. 更新minio版本到8.6.0',
         ]
     }
 ]
@@ -21,7 +24,7 @@ const nextUpdate = [
  * 项目开发可以将 views/index 中内容删除，在 router 中重新配置首页即可
  */
 export const versionInfo = {
-    springBootVersion: ' 3.5.6',
+    springBootVersion: ' 3.5.8',
     vueVersion: ' 3.5.22',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
