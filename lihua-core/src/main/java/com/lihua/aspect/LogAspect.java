@@ -50,7 +50,7 @@ public class LogAspect {
                 httpServletRequest.getRequestURI(),
                 httpServletRequest.getHeader("User-Agent"),
                 WebUtils.getIpAddress(),
-                httpServletRequest.getHeader("Client-Type"),
+                WebUtils.getClientType(),
                 null);
 
         return proceed;
@@ -70,7 +70,7 @@ public class LogAspect {
                 httpServletRequest.getRequestURI(),
                 httpServletRequest.getHeader("User-Agent"),
                 WebUtils.getIpAddress(),
-                httpServletRequest.getHeader("Client-Type"),
+                WebUtils.getClientType(),
                 exception);
     }
 }

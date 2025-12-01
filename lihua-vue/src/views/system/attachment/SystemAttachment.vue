@@ -30,6 +30,13 @@
               </a-form-item>
             </a-col>
             <a-col>
+              <a-form-item label="客户端类型">
+                <a-select v-model:value="attachmentQuery.clientType" placeholder="请选择" style="width: 120px" allow-clear>
+                  <a-select-option :value="item.value" v-for="item in sys_client_type">{{item.label}}</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col>
               <a-form-item label="上传日期">
                 <a-range-picker v-model:value="attachmentQuery.createTimeList" allowClear></a-range-picker>
               </a-form-item>
@@ -102,6 +109,9 @@
           </template>
           <template v-if="column.key === 'uploadMode'">
             <dict-tag :dict-data-value="record[column.key]" :dict-data-option="sys_attachment_upload_mode"/>
+          </template>
+          <template v-if="column.key === 'clientType'">
+            <dict-tag :dict-data-option="sys_client_type" :dict-data-value="record[column.key]"></dict-tag>
           </template>
           <template v-if="column.key === 'action'">
             <a-button type="link" size="small" @click="(event: MouseEvent) => handleDownload(event, record.id, record.status)">
@@ -199,7 +209,12 @@
 
         <!-- 业务信息 -->
         <a-descriptions-item label="业务编码" :span="1">{{attachmentInfo.businessCode}}</a-descriptions-item>
-        <a-descriptions-item label="业务名称" :span="1">{{attachmentInfo.businessName}}</a-descriptions-item>
+        <a-descriptions-item label="业务名称" :span="1">
+          <a-space>
+            {{attachmentInfo.businessName}}
+            <dict-tag :dict-data-option="sys_client_type" :dict-data-value="attachmentInfo.clientType" v-if="attachmentInfo.clientType"></dict-tag>
+          </a-space>
+        </a-descriptions-item>
 
         <!-- 上传信息 -->
         <a-descriptions-item label="上传用户" :span="1">{{attachmentInfo.uploadName}}</a-descriptions-item>
@@ -276,7 +291,7 @@ import {useThemeStore} from "@/stores/theme.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
-const {sys_attachment_status, sys_attachment_upload_mode} = initDict("sys_attachment_status","sys_attachment_upload_mode")
+const {sys_attachment_status, sys_attachment_upload_mode, sys_client_type} = initDict("sys_attachment_status", "sys_attachment_upload_mode", "sys_client_type")
 const baseAPI = import.meta.env.VITE_APP_BASE_API
 const themeStore = useThemeStore()
 
@@ -330,9 +345,15 @@ const initSearch = () => {
       ellipsis: true
     },
     {
-      title: '所属模块',
+      title: '业务名称',
       key: 'businessName',
       dataIndex: 'businessName',
+      align: 'center',
+    },
+    {
+      title: '客户端类型',
+      key: 'clientType',
+      dataIndex: 'clientType',
       align: 'center',
     },
     {
@@ -352,6 +373,7 @@ const initSearch = () => {
       key: 'createTime',
       dataIndex: 'createTime',
       align: 'center',
+      width: 200
     },
     {
       title: '操作',

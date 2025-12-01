@@ -37,6 +37,8 @@ export interface SysAttachment {
     errorMsg?: string;
     /** 原url（通过url上传有该字段） */
     url?: string;
+    /** 客户端类型 */
+    clientType?: string;
 }
 
 export interface SysAttachmentDTO extends SysAttachment {

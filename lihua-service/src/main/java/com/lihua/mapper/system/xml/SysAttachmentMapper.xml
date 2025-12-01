@@ -37,7 +37,8 @@
             md5,
             error_msg,
             url,
-            sys_user.nickname as uploadName
+            sys_user.nickname as uploadName,
+            client_type
         FROM
             sys_attachment
         LEFT JOIN sys_user ON sys_user.id = sys_attachment.create_id

@@ -357,6 +357,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setStorageLocation(lihuaConfig.getUploadFileModel())
                 .setCreateId(LoginUserContext.getUserId())
                 .setCreateTime(DateUtils.now())
+                .setClientType(LoginUserContext.getClientType())
                 .setDelFlag("0");
         // 保存附件信息
         saveOrUpdate(sysAttachment);
@@ -366,12 +367,17 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     // 批量保存附件
     @Transactional
     protected List<String> batchSaveAttachment(List<SysAttachment> sysAttachmentList) {
+        String clientType = LoginUserContext.getClientType();
+        String userId = LoginUserContext.getUserId();
+        String uploadFileModel = lihuaConfig.getUploadFileModel();
+
         sysAttachmentList.forEach(sysAttachment -> sysAttachment
                 .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
                 .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
-                .setStorageLocation(lihuaConfig.getUploadFileModel())
-                .setCreateId(LoginUserContext.getUserId())
+                .setStorageLocation(uploadFileModel)
+                .setCreateId(userId)
                 .setCreateTime(DateUtils.now())
+                .setClientType(clientType)
                 .setDelFlag("0"));
         saveBatch(sysAttachmentList);
         return sysAttachmentList.stream().map(SysAttachment::getId).toList();

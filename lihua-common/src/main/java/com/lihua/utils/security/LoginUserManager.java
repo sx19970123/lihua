@@ -76,7 +76,7 @@ public class LoginUserManager {
         // 隐藏用户密码
         loginUser.getUser().setPassword(null);
         // 登录客户端类型
-        loginUser.setClientType(WebUtils.getCurrentRequest().getHeader("Client-Type"));
+        loginUser.setClientType(WebUtils.getClientType());
 
         // 当 loginUser 的 cacheKey 不存在，即为新登录用户，重新生成cacheKey，其余情况均为刷新缓存
         String cacheKey = loginUser.getCacheKey();

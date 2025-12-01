@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 28/11/2025 15:29:10
+ Date: 01/12/2025 20:50:48
 */
 
 SET NAMES utf8mb4;
@@ -31,7 +31,7 @@ CREATE TABLE `sys_attachment` (
   `business_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '业务编码',
   `business_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '业务名称',
   `size` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '文件大小',
-  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '文件类型',
+  `type` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '文件类型',
   `upload_mode` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '上传方式（一般上传、分片上传、文件秒传）',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '上传状态（成功、失败、分片上传中、业务删除）',
   `storage_location` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '文件存储位置',
@@ -41,6 +41,7 @@ CREATE TABLE `sys_attachment` (
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '删除标识',
   `error_msg` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '上传失败原因',
   `url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '原url（通过url上传有该字段）',
+  `client_type` varchar(20) DEFAULT NULL COMMENT '客户端类型',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='系统附件表';
 
@@ -168,6 +169,9 @@ INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `valu
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (1892896966877847554, 0, 'sys_attachment_status', '上传失败', '1', 2, NULL, '0', 1, '2025-02-21 19:19:40', NULL, NULL, '0', 'error');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (1892896969004359681, 0, 'sys_attachment_status', '分片上传中', '2', 3, NULL, '0', 1, '2025-02-21 19:19:40', NULL, NULL, '0', 'processing');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (1892896971588050945, 0, 'sys_attachment_status', '业务删除', '3', 4, NULL, '0', 1, '2025-02-21 19:19:41', NULL, NULL, '0', 'warning');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (1995424806233780225, 0, 'sys_client_type', 'WEB', 'web', 1, NULL, '0', 1, '2025-12-01 17:28:42', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (1995424807697592322, 0, 'sys_client_type', 'APP', 'app', 2, NULL, '0', 1, '2025-12-01 17:28:42', NULL, NULL, '0', 'processing');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (1995424809337565185, 0, 'sys_client_type', '微信小程序', 'wechat_mp', 3, NULL, '0', 1, '2025-12-01 17:28:42', NULL, NULL, '0', 'success');
 COMMIT;
 
 -- ----------------------------
@@ -210,6 +214,7 @@ INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `remark`, `create_id`
 INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES (1869716543582638081, '树形字典测试', 'test_tree', '1', '测试用，可删除', 1, '2024-12-19 20:08:56', 1, '2025-02-21 19:19:57', '0', '0');
 INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES (1892895886177673218, '附件状态', 'sys_attachment_status', '0', '系统附件上传状态', 1, '2025-02-21 19:15:22', NULL, NULL, '0', '0');
 INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES (1892896049893941249, '上传方式', 'sys_attachment_upload_mode', '0', '系统附件上传方式', 1, '2025-02-21 19:16:01', NULL, NULL, '0', '0');
+INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES (1995424677359595521, '客户端类型', 'sys_client_type', '0', '用于区分web｜app｜小程序', 1, '2025-12-01 17:28:11', NULL, NULL, '0', '0');
 COMMIT;
 
 -- ----------------------------

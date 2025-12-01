@@ -5,6 +5,7 @@ import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.model.security.*;
 import com.lihua.utils.spring.SpringUtils;
 import com.lihua.utils.tree.TreeUtils;
+import com.lihua.utils.web.WebUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -166,6 +167,20 @@ public class LoginUserContext implements Serializable {
         Set<String> keys = redisCache.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId + ":");
 
         return !keys.isEmpty();
+    }
+
+    /**
+     * 获取当前请求客户端类型
+     */
+    public static String getClientType() {
+        return WebUtils.getClientType();
+    }
+
+    /**
+     * 获取当前请求ip
+     */
+    public static String getIpAddress() {
+        return WebUtils.getIpAddress();
     }
 
     /**

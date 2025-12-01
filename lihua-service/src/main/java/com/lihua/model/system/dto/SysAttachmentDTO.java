@@ -20,4 +20,6 @@ public class SysAttachmentDTO extends BaseDTO {
     private String status;
     // 上传方式
     private String uploadMode;
+    // 客户端类型
+    private String clientType;
 }

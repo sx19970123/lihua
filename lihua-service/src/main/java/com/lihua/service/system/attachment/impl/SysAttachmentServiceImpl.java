@@ -49,6 +49,10 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         if (StringUtils.hasText(sysAttachmentDTO.getBusinessName())) {
             queryWrapper.lambda().like(SysAttachment::getBusinessName, sysAttachmentDTO.getBusinessName());
         }
+        //  客户端类型
+        if (StringUtils.hasText(sysAttachmentDTO.getClientType())) {
+            queryWrapper.lambda().eq(SysAttachment::getClientType, sysAttachmentDTO.getClientType());
+        }
         //  上传时间
         List<LocalDate> createTimeList = sysAttachmentDTO.getCreateTimeList();
         if (createTimeList != null && createTimeList.size() == 2) {

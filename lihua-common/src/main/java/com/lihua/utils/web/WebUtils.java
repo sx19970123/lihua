@@ -66,4 +66,13 @@ public class WebUtils {
         return ip;
     }
 
+    /**
+     * 获取客户端类型
+     * @return web ｜ app ｜ wechat_mp ｜ null
+     */
+    public static String getClientType() {
+        HttpServletRequest request = getCurrentRequest();
+        return request.getHeader("Client-Type");
+    }
+
 }

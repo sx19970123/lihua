@@ -113,4 +113,9 @@ public class SysAttachment implements Serializable {
      */
     @NotNull(message = "原URL为空", groups = { AttachmentValidation.AttachmentUrlUploadValidation.class })
     private String url;
+
+    /**
+     * 上传客户端类型
+     */
+    private String clientType;
 }
