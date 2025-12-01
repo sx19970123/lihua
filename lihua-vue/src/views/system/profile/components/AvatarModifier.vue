@@ -8,7 +8,7 @@
                   :background-color="props.modelValue.backgroundColor"
                   :url="props.modelValue.url"
                   v-if="!open"
-                  @click="open = !open"
+                  @click="openModal"
       />
     </a-row>
     <a-modal v-model:open="open" width="1000px" @cancel="close">
@@ -76,7 +76,7 @@ import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import {cloneDeep} from 'lodash-es'
 import {useThemeStore} from "@/stores/theme.ts";
 import {ResponseError} from "@/api/global/Type.ts";
-import {upload} from "@/api/system/attachment/AttachmentStorage.ts";
+import {deleteFromBusiness, upload} from "@/api/system/attachment/AttachmentStorage.ts";
 import {v4 as uuidv4} from "uuid";
 
 const themeStore = useThemeStore()
@@ -97,6 +97,8 @@ const init = () => {
   const iconSize = ref<'small' | 'large' | 'default'>('large')
   // 图片裁剪宽度
   const imageCropperWight = ref<number>(0)
+  // 首次加载时的图片头像id
+  let lastImageId: string | undefined = undefined
 
   // 图片地址
   const avatarUrl = ref<string>(modelValue.url)
@@ -142,7 +144,26 @@ const init = () => {
     } else {
       imageCropperWight.value = 954
     }
+  }
 
+  // 打开头像模态框
+  const openModal = () => {
+    open.value = true
+    initLastImageId()
+  }
+
+  // 初始化上一个图片头像的id
+  const initLastImageId = () => {
+    if (avatarType.value === 'image') {
+      lastImageId = cloneDeep(modelValue.value)
+    }
+  }
+
+  // 删除上一个图片头像
+  const removeLastImage = () => {
+    if (lastImageId) {
+      deleteFromBusiness([lastImageId])
+    }
   }
 
   handleWindowWith()
@@ -158,7 +179,9 @@ const init = () => {
     avatarUrl,
     iconSize,
     imageCropperWight,
-    handleWindowWith
+    handleWindowWith,
+    removeLastImage,
+    openModal
   }
 }
 const {
@@ -172,7 +195,9 @@ const {
   avatarUrl,
   iconSize,
   imageCropperWight,
-  handleWindowWith
+  handleWindowWith,
+  removeLastImage,
+  openModal
 } = init()
 
 // 头像选择ref
@@ -240,6 +265,7 @@ const handleOk = async () => {
       delete cloneData.url;
       // 触发change事件
       emits('change', JSON.stringify(cloneData));
+      removeLastImage()
       open.value = false;
     } else {
       if (avatarType.value === 'image') {
