@@ -1,7 +1,7 @@
 // 下一版本更新记录
 const nextUpdate = [
     {
-        version: '1.2.8',
+        version: '1.3.0',
         record: [
             '1. Tree工具类 traverse 方法回调函数返回 true 终止递归',
             '2. password-input 组件密码强度规则更新',
@@ -10,7 +10,8 @@ const nextUpdate = [
             '5. 照片头像最大限制2M，并默认开启非全图裁剪',
             '6. app对应controller模块拆分',
             '7. app端用户注销功能',
-            '8. 新增日志记录客户端类型'
+            '8. 新增日志记录客户端类型',
+            '9. 附件组件新增是否自动删除配置',
         ]
     }
 ]

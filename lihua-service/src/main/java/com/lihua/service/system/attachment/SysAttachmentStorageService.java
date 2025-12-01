@@ -84,7 +84,7 @@ public interface SysAttachmentStorageService {
     /**
      * 业务删除附件（仅做状态的修改）
      */
-    void deleteFromBusiness(String id);
+    void deleteFromBusiness(List<String> ids);
 
     /**
      * 根据路径删除附件

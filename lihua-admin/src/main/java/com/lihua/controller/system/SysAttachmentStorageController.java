@@ -116,10 +116,10 @@ public class SysAttachmentStorageController extends ApiResponseController {
     }
 
     @Operation(summary = "附件删除（业务）")
-    @DeleteMapping("business/{id}")
+    @DeleteMapping("business")
     @Log(description = "附件删除（业务）", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> deleteFromBusiness(@PathVariable("id") String id) {
-        sysAttachmentStorageService.deleteFromBusiness(id);
+    public ApiResponseModel<String> deleteFromBusiness(@RequestBody @NotEmpty(message = "附件id不存在") List<String> ids) {
+        sysAttachmentStorageService.deleteFromBusiness(ids);
         return success();
     }
 

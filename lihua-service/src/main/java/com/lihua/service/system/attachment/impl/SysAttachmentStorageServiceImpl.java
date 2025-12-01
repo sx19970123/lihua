@@ -246,12 +246,15 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     }
 
     @Override
-    public void deleteFromBusiness(String id) {
+    public void deleteFromBusiness(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
         UpdateWrapper<SysAttachment> updateWrapper = new UpdateWrapper<>();
         updateWrapper
                 .lambda()
                 .set(SysAttachment::getStatus, "3")
-                .eq(SysAttachment::getId, id);
+                .in(SysAttachment::getId, ids);
         update(updateWrapper);
     }
 

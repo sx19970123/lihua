@@ -35,10 +35,11 @@ export const getDownloadURL = (id: string, expireTime?: string) => {
 }
 
 // 附件业务删除
-export const deleteFromBusiness = (id: string) => {
+export const deleteFromBusiness = (ids: string[]) => {
     return request({
-        url: `system/attachment/storage/business/${id}`,
-        method: "delete"
+        url: `system/attachment/storage/business`,
+        method: "delete",
+        data: ids
     })
 }
 

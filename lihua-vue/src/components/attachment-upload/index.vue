@@ -1,11 +1,11 @@
 <template>
   <a-spin v-model:spinning="uploading" :tip="uploadTip">
-    <a-upload v-if="model === 'button' || model === 'picture'"
+    <a-upload v-if="mode === 'button' || mode === 'picture'"
               v-model:file-list="fileList"
               :action="uploadURL"
               :headers="{Authorization: authorization}"
               :data="sysAttachment"
-              :list-type="model === 'picture' ? 'picture-card' : 'text'"
+              :list-type="mode === 'picture' ? 'picture-card' : 'text'"
               :before-upload="beforeUpload"
               :directory="chunk ? false : directory"
               :multiple="chunk ? false : multiple"
@@ -25,12 +25,12 @@
         </a-button>
       </template>
       <!--    按钮上传-->
-      <a-button v-if="model === 'button'">
+      <a-button v-if="mode === 'button'">
         <component :is="icon ? icon : 'upload-outlined'"></component>
         {{text ? text : '点击上传'}}
       </a-button>
       <!--    图片上传-->
-      <div v-if="model === 'picture'">
+      <div v-if="mode === 'picture'">
         <component :is="icon ? icon : 'plus-outlined'"></component>
         <div style="margin-top: 8px">{{text ? text : '点击上传'}}</div>
       </div>
@@ -65,7 +65,8 @@
 
 <script setup lang="ts">
 import {message, Upload, type UploadFile} from "ant-design-vue";
-import {onMounted, ref, watch} from "vue";
+import { Modal } from 'ant-design-vue';
+import {onMounted, ref, watch, createVNode} from "vue";
 import {useRoute} from "vue-router";
 import token from "@/utils/Token.ts";
 import {
@@ -83,6 +84,7 @@ import {ResponseError} from "@/api/global/Type.ts";
 import {currentRequests} from "@/utils/Request.ts";
 import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 
 const { getToken } = token
 
@@ -96,9 +98,9 @@ const router = useRoute()
 let vModelComplete = false
 
 // 参数
-const {model = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 10, multiple = true, directory = false, modelValue = "", businessCode, businessName, chunk = false, chunkSize = 20, chunkUploadCount = 3, fileName} = defineProps<{
+const {mode = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 10, multiple = true, directory = false, modelValue = "", businessCode, businessName, chunk = false, chunkSize = 20, chunkUploadCount = 3, fileName, autoRemove = true} = defineProps<{
   // 模式：按钮/图片/拖拽
-  model?: 'button' | 'picture' | 'dragger',
+  mode?: 'button' | 'picture' | 'dragger',
   // 图标
   icon?: string,
   // 文本描述
@@ -129,6 +131,8 @@ const {model = 'button', icon, text, uploadType = [], description, maxCount = 10
   chunkUploadCount?: number,
   // 附件名称
   fileName?: string,
+  // 自动删除（点击删除按钮是否自动进行业务删除）
+  autoRemove?: boolean,
 }>()
 
 if (modelValue === null || modelValue === undefined) {
@@ -788,25 +792,79 @@ const initPreview = () => {
 }
 const { previewVisible, previewTitle, previewURL, previewType, handlePreview, handleCancel, handleShowThumbImage, handleThumbUrl } = initPreview()
 
-// 处理附件删除
-const handleRemove = async (file: UploadFile) => {
-  if (file && file.url) {
-    try {
-      const resp = await deleteFromBusiness(file.url)
-      if (resp.code === 200) {
-        emits("remove", {id: file.url, status: "success"})
+const initRemove = () => {
+  const removeIds: string[] = []
+  // 处理附件删除
+  const handleRemove = async (file: UploadFile) => {
+    return new Promise( (resolve, reject) => {
+      if (file && file.url) {
+        const id = file.url
+        if (autoRemove) {
+          Modal.confirm({
+            title: '附件删除',
+            icon: createVNode(ExclamationCircleOutlined),
+            content: '删除后无法恢复，是否删除？',
+            // 确认删除
+            onOk: async () => {
+              try {
+                const resp = await deleteFromBusiness([id])
+                if (resp.code === 200) {
+                  emits("remove", {id: id, status: "success"})
+                  resolve({})
+                } else {
+                  reject()
+                  emits("remove", {id: id, status: "error"})
+                }
+              } catch (e) {
+                reject()
+                if (e instanceof ResponseError) {
+                  message.error(e.msg)
+                } else {
+                  console.error(e)
+                }
+              }
+            },
+            // 取消删除
+            onCancel: () => {
+              reject()
+            }
+          })
+        } else {
+          removeIds.push(id)
+          resolve({})
+        }
       } else {
-        emits("remove", {id: file.url, status: "error"})
+        message.error("附件id不存在")
+        reject()
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
+    })
+  }
+
+  // 处理业务删除
+  const businessRemove = async () => {
+    return new Promise((resolve, reject) => {
+      if (removeIds.length === 0) {
+        reject({msg: '附件id不存在'})
+        return
       }
-    }
+      deleteFromBusiness(removeIds)
+          .then(resp => {
+            if (resp.code === 200) {
+              removeIds.length = 0
+            }
+            resolve(resp)
+          })
+          .catch(err => reject(err))
+    })
+  }
+
+  return {
+    handleRemove,
+    businessRemove
   }
 }
+
+const {handleRemove, businessRemove} = initRemove()
 
 // 监听双向绑定
 watch(() => modelValue, (newVal, oldValue) => {
@@ -830,6 +888,11 @@ onMounted(() => {
   if (modelValue) {
     initVModel(modelValue, undefined)
   }
+})
+
+// 抛出函数
+defineExpose({
+  businessRemove
 })
 </script>
 
