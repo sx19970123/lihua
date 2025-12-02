@@ -44,7 +44,7 @@ public class BaseResponseController {
 
     @SneakyThrows
     protected static <T> String responseToJson(ResultCodeEnum resultCodeEnum, String msg, T data) {
-        return JsonUtils.toJson(response(resultCodeEnum, msg, data));
+        return JsonUtils.toJsonIgnoreNulls(response(resultCodeEnum, msg, data));
     }
 
     protected static <T> ApiResponseModel<T> response(ResultCodeEnum resultCodeEnum, String msg, T data) {

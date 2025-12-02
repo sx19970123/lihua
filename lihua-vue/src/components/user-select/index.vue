@@ -214,12 +214,12 @@ const initDeptTree = () => {
 
     const filterNode = (node: SysDept): SysDept | null => {
       if (node.children) {
-        node.children = node.children.map(filterNode).filter((child): child is SysDept => child !== null);
+        node.children = node.children.map(filterNode).filter((child): child is SysDept => child !== undefined && child !== null);
       }
       return node.name?.includes(keyword) || (node.children && node.children.length > 0) ? node : null;
     };
 
-    return cloneTree.map(filterNode).filter((node: SysDept) => node !== null);
+    return cloneTree.map(filterNode).filter((node: SysDept) => node !== undefined && node !== null);
   };
   // 关键词变化时进行过滤
   const handleChangeKeyword = () => {

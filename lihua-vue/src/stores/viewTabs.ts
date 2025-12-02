@@ -320,7 +320,7 @@ const handleAddTabCache = (tab: StarViewType) => {
     const viewTabStore =  useViewTabsStore()
     const recentTabs = localStorage.getItem(viewTabStore.$state.tabCacheKey)
     // 第一次新建缓存集合
-    if (recentTabs === null) {
+    if (recentTabs === null || recentTabs === undefined) {
         localStorage.setItem(viewTabStore.$state.tabCacheKey ,JSON.stringify([
             {
                 openTime: dayjs().format('YYYY-MM-DD HH:mm'),
