@@ -27,7 +27,9 @@ public enum ResultCodeEnum {
     SERVER_UNAVAILABLE (505,"服务器维护中"),
     CAPTCHA_ERROR(506,"验证码错误"),
     SENSITIVE_ERROR(507,"数据脱敏异常"),
-    DUPLICATE_SUBMIT_ERROR (508,"请勿重复提交"),;
+    DUPLICATE_SUBMIT_ERROR (508,"请勿重复提交"),
+    WEBSOCKET_SEND_MSG_ERROR (509,"websocket发送消息异常"),
+    ;
 
     /**
      * 状态码

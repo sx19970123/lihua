@@ -8,7 +8,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
-@EnableAsync
+@EnableAsync(proxyTargetClass = true)
 @EnableAspectJAutoProxy(exposeProxy = true)
 @MapperScan({"com.lihua.**.mapper"})
 @ComponentScan({"com.lihua.**"})
