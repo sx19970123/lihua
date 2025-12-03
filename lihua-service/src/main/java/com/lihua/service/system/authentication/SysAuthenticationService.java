@@ -1,5 +1,6 @@
 package com.lihua.service.system.authentication;
 
+import com.lihua.model.attachment.AttachmentStreamAndInfoModel;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
 
@@ -46,4 +47,10 @@ public interface SysAuthenticationService {
      * 检查是否配置了同账号最大同时登录数，超出数量后首先登录的用户会被踢下线
      */
     void checkSameAccount(String token);
+
+    /**
+     * 获取一次性令牌，用完后需要在各自业务中进行删除
+     * 自动删除时间1分钟
+     */
+    String getOnceToken();
 }

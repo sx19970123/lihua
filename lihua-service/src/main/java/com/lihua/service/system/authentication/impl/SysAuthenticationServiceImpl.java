@@ -21,6 +21,7 @@ import com.lihua.strategy.system.authentication.impl.loginuser.CacheUserStrategy
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.JwtUtils;
+import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserManager;
 import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
@@ -33,10 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -197,6 +196,13 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             .sorted(Comparator.comparingLong(LoginUserManager::getLoginTimestampByCacheKey))
             .limit(count)
             .forEach(key -> redisCache.delete(key));
+    }
+
+    @Override
+    public String getOnceToken() {
+        String uuid = UUID.randomUUID().toString();
+        redisCache.setCacheObject(RedisKeyPrefixEnum.ONCE_TOKEN_REDIS_PREFIX.getValue() + uuid, LoginUserContext.getUserId(), 1L, TimeUnit.MINUTES);
+        return uuid;
     }
 
     /**

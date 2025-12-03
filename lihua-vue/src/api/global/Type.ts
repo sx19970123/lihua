@@ -26,6 +26,15 @@ export interface MapResponseType<String,V> {
 }
 
 /**
+ * WebSocket 收发类型
+ */
+export interface WebSocketMessage {
+    type: string;
+    data: string | number;
+    timestamp: number;
+}
+
+/**
  *  请求异常时返回值
  *  catch中无法对 error 进行有效的类型判断，
  *  定义 ResponseError 类可直接使用 instanceof 进行错误类型判断

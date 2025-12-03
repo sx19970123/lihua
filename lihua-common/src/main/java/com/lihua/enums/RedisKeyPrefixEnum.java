@@ -34,6 +34,8 @@ public enum RedisKeyPrefixEnum {
 
     CHECK_PASSWORD_REDIS_PREFIX("REDIS_CACHE_CHECK_PASSWORD:", "检测密码"),
 
+    ONCE_TOKEN_REDIS_PREFIX("REDIS_CACHE_ONCE_TOKEN:", "一次性令牌"),
+
     // 业务需要，非真实 redis key
     OTHER("OTHER", "其他");
 

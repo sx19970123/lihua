@@ -22,3 +22,11 @@ export const getPublicKey = (requestKey: string) => {
         method: 'get'
     })
 }
+
+// 获取一次性令牌
+export const getOnceToken = () => {
+    return request<string>({
+        url: '/system/onceToken',
+        method: 'get'
+    })
+}

@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
   // 获取请求前缀
   const env = loadEnv(mode, process.cwd());
   const baseApi = env.VITE_APP_BASE_API
+  const wsBaseApi = env.VITE_APP_WS_API
   return {
     resolve: {
       alias: {
@@ -23,6 +24,11 @@ export default defineConfig(({ mode }) => {
           target: 'http://localhost:8080',
           changeOrigin: true,
           rewrite: (p:string) => p.replace(baseApi, '')
+        },
+        [wsBaseApi]: {
+          target: 'ws://localhost:8080',
+          changeOrigin: true,
+          ws: true
         }
       }
     },

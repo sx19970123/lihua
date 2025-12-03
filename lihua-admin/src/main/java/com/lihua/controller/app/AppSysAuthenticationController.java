@@ -163,6 +163,13 @@ public class AppSysAuthenticationController extends ApiResponseController {
         return success(sysAuthenticationService.register(sysRegisterDTO.getUsername(), password));
     }
 
+    @Operation(summary = "获取一次性令牌")
+    @GetMapping("onceToken")
+    @Log(description = "获取一次性令牌", type = LogTypeEnum.OTHER, recordResult = false)
+    public ApiResponseModel<String> getOnceToken() {
+        return success(sysAuthenticationService.getOnceToken());
+    }
+
     // 校验验证码
     private boolean checkCaptcha(String captchaVerification) {
         if (!sysSettingService.enableCaptcha()) {
