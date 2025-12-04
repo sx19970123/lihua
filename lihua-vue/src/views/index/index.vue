@@ -1,6 +1,5 @@
 <template>
   <a-flex :gap="16" vertical>
-    <a-button @click="connect"> 连接</a-button>
     <a-row>
       <a-col :span="24">
         <a-badge-ribbon text="now time">
@@ -70,5 +69,4 @@ import index_9 from './components/index_9.vue';
 import index_10 from './components/index_10.vue';
 import index_11 from './components/index_11.vue';
 import index_12 from './components/index_12.vue';
-import {connect} from '@/utils/WebSocket.ts'
 </script>

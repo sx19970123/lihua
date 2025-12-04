@@ -51,7 +51,7 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
         attributes.put("clientId", params.getFirst("clientId"));
         attributes.put("clientType", params.getFirst("clientType"));
 
-        log.info("webSocket握手完成");
+        log.info("WebSocket握手完成");
         return true;
     }
 

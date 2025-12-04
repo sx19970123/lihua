@@ -32,7 +32,7 @@ public class WebSocketManager extends TextWebSocketHandler {
     public <T> void send(List<String> userIdList, WebSocketResult<T> result) {
         String json = toJson(result);
         userIdList.forEach(userId -> send(userId, json));
-        log.info("向指定用户消息发送完成");
+        log.info("WebSocket 向指定用户消息发送完成");
     }
 
     /**
@@ -59,7 +59,7 @@ public class WebSocketManager extends TextWebSocketHandler {
                     try {
                         session.sendMessage(new TextMessage(json));
                     } catch (IOException e) {
-                        log.error("websocket消息发送失败: sessionKey={}，异常信息 {}", getSessionKey(session.getAttributes()), e.getMessage(), e);
+                        log.error("WebSocket消息发送失败: sessionKey={}，异常信息 {}", getSessionKey(session.getAttributes()), e.getMessage(), e);
                     }
                 });
     }
@@ -71,7 +71,7 @@ public class WebSocketManager extends TextWebSocketHandler {
      */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        log.info("收到消息: {}", message.getPayload());
+        log.info("WebSocket收到消息: {}", message.getPayload());
     }
 
     /**
@@ -93,7 +93,7 @@ public class WebSocketManager extends TextWebSocketHandler {
                 try {
                     oldSession.close();
                 } catch (IOException e) {
-                    log.error("websocket旧session关闭异常 {}" ,e.getMessage(), e);
+                    log.error("WebSocket旧session关闭异常 {}" ,e.getMessage(), e);
                 }
             }
             return map;
@@ -140,7 +140,7 @@ public class WebSocketManager extends TextWebSocketHandler {
                         webSocketSession.sendMessage(new TextMessage(msg));
                     }
                 } catch (IOException e) {
-                    log.error("websocket消息发送失败: userId={}, sessionKey={}，异常信息 {}", userId, getSessionKey(webSocketSession.getAttributes()), e.getMessage(), e);
+                    log.error("WebSocket消息发送失败: userId={}, sessionKey={}，异常信息 {}", userId, getSessionKey(webSocketSession.getAttributes()), e.getMessage(), e);
                 }
             });
         }
@@ -164,7 +164,7 @@ public class WebSocketManager extends TextWebSocketHandler {
         try {
             return JsonUtils.toJson(result);
         } catch (JsonProcessingException e) {
-            log.error("websocket数据转换失败: {}", e.getMessage(), e);
+            log.error("WebSocket数据转换失败: {}", e.getMessage(), e);
             throw new ServiceException(ResultCodeEnum.WEBSOCKET_SEND_MSG_ERROR);
         }
     }

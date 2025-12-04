@@ -48,8 +48,6 @@ router.beforeEach(async (to, from, next) => {
                     next("/403")
                 }
             } else {
-                // 连接到websocket
-                await connect()
                 if (hasRouteRole(to?.meta?.role as string[])) {
                     next();
                 } else {
