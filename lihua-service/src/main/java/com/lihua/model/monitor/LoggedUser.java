@@ -29,6 +29,11 @@ public class LoggedUser implements Serializable {
     private String ip;
 
     /**
+     * 地区
+     */
+    private String region;
+
+    /**
      * 登录时间
      */
     private LocalDateTime loginTime;

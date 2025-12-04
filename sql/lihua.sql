@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 01/12/2025 20:50:48
+ Date: 04/12/2025 11:25:55
 */
 
 SET NAMES utf8mb4;
@@ -244,6 +244,7 @@ CREATE TABLE `sys_login_log` (
   `execute_status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '日志执行状态',
   `cache_key` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户缓存key',
   `client_type` varchar(20) DEFAULT NULL COMMENT '客户端类型',
+  `region` varchar(50) DEFAULT NULL COMMENT 'ip归属地',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `cache_key` (`cache_key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='系统登录日志';
@@ -390,6 +391,7 @@ CREATE TABLE `sys_operate_log` (
   `execute_status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '日志执行状态',
   `cache_key` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户缓存key',
   `client_type` varchar(20) DEFAULT NULL COMMENT '客户端类型',
+  `region` varchar(50) DEFAULT NULL COMMENT 'ip归属地',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='系统登录日志';
 

@@ -3,6 +3,7 @@ package com.lihua.service.system.log.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lihua.entity.system.SysLoginLog;
 import com.lihua.entity.system.SysOperateLog;
 import com.lihua.mapper.system.SysOperateLogMapper;
 import com.lihua.model.system.dto.SysLogDTO;
@@ -41,6 +42,7 @@ public class SysOperateLogServiceImpl implements SysLogService {
                 SysOperateLog::getTypeMsg,
                 SysOperateLog::getCreateName,
                 SysOperateLog::getIpAddress,
+                SysOperateLog::getRegion,
                 SysOperateLog::getExecuteStatus,
                 SysOperateLog::getCreateTime,
                 SysOperateLog::getExecuteTime,

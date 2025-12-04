@@ -41,6 +41,7 @@ public class SysLoginLogServiceImpl implements SysLogService {
                 SysLoginLog::getTypeMsg,
                 SysLoginLog::getCreateName,
                 SysLoginLog::getIpAddress,
+                SysLoginLog::getRegion,
                 SysLoginLog::getExecuteStatus,
                 SysLoginLog::getCreateTime,
                 SysLoginLog::getExecuteTime,

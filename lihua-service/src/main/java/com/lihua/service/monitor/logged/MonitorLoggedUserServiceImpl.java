@@ -6,6 +6,7 @@ import com.lihua.model.monitor.LoggedUser;
 import com.lihua.model.security.CurrentUser;
 import com.lihua.model.security.LoginUser;
 import com.lihua.utils.security.LoginUserManager;
+import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -61,6 +62,7 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
             loggedUser.setUsername(currentUser.getUsername());
             loggedUser.setNickname(currentUser.getNickname());
             loggedUser.setIp(user.getIpAddress());
+            loggedUser.setRegion(WebUtils.getRegion(user.getIpAddress()));
             loggedUser.setCacheKey(cacheKey);
             loggedUser.setLoginTime(LoginUserManager.getLoginTimeByCacheKey(cacheKey));
             loggedUser.setClientType(user.getClientType());

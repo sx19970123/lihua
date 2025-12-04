@@ -34,6 +34,7 @@
         <okhttp3.version>5.1.0</okhttp3.version>
         <knife4j.version>4.5.0</knife4j.version>
         <ipaddress.version>5.5.1</ipaddress.version>
+        <ip2region.version>3.2.0</ip2region.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
     </properties>
 
@@ -169,6 +170,7 @@
                     <include>META-INF/spring/*</include>
                     <include>captcha-images/**</include>
                     <include>captcha-font/**</include>
+                    <include>ip2region/**</include>
                 </includes>
             </resource>
             <resource>

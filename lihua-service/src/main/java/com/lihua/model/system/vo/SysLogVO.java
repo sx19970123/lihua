@@ -117,15 +117,21 @@ public class SysLogVO implements Serializable {
     private String ipAddress;
 
     /**
+     * 归属地
+     */
+    @ExcelColumn(order = 13, index = 13, title = "归属地", width = 8)
+    private String region;
+
+    /**
      * 用户代理字符串
      */
-    @ExcelColumn(order = 13, index = 13, title = "操作环境", width = 20)
+    @ExcelColumn(order = 14, index = 14, title = "操作环境", width = 20)
     private String userAgent;
 
     /**
      * 操作客户端
      */
-    @ExcelColumn(order = 14, index = 14, title = "操作客户端", width = 20, writeConverter = SysDictWriteConverter.class)
+    @ExcelColumn(order = 15, index = 15, title = "操作客户端", width = 20, writeConverter = SysDictWriteConverter.class)
     @ExcelWriteConverterDictTypeCode("sys_client_type")
     private String clientType;
 

@@ -108,6 +108,11 @@ export interface SysLog {
      * 客户端类型
      */
     clientType?: string;
+
+    /**
+     * 所属地区
+     */
+    region?: string;
 }
 
 export interface SysLogDTO extends SysLog {

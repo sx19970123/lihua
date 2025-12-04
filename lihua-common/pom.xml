@@ -45,6 +45,12 @@
             <artifactId>ipaddress</artifactId>
             <version>${ipaddress.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.lionsoul/ip2region -->
+        <dependency>
+            <groupId>org.lionsoul</groupId>
+            <artifactId>ip2region</artifactId>
+            <version>${ip2region.version}</version>
+        </dependency>
         <!--        excel导入导出-->
         <dependency>
             <groupId>com.github.liaochong</groupId>

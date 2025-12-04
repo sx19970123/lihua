@@ -136,8 +136,9 @@
         <a-descriptions-item label="操作人" :span="1">{{logInfo.createName}}</a-descriptions-item>
         <a-descriptions-item label="操作时间" :span="1">{{dayjs(logInfo.createTime).format("YYYY-MM-DD HH:mm:ss")}}</a-descriptions-item>
         <a-descriptions-item label="执行时长" :span="1">{{logInfo.executeTime ? logInfo.executeTime + ' 毫秒' : ''}}</a-descriptions-item>
-        <a-descriptions-item label="请求地址" :span="2">{{logInfo.url}}</a-descriptions-item>
-        <a-descriptions-item label="用户 ip" :span="1">{{logInfo.ipAddress}}</a-descriptions-item>
+        <a-descriptions-item label="请求地址" :span="1">{{logInfo.url}}</a-descriptions-item>
+        <a-descriptions-item label="用户ip" :span="1">{{logInfo.ipAddress}}</a-descriptions-item>
+        <a-descriptions-item label="所属地区" :span="1">{{logInfo.region}}</a-descriptions-item>
         <a-descriptions-item label="缓存key" :span="3">
           {{logInfo.cacheKey}}
         </a-descriptions-item>
@@ -218,6 +219,11 @@ const initSearch = () => {
       title: '登录ip',
       key: 'ip',
       dataIndex: 'ip',
+      align: 'center'
+    },{
+      title: '所属地区',
+      key: 'region',
+      dataIndex: 'region',
       align: 'center'
     },
     {

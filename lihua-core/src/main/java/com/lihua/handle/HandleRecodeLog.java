@@ -12,6 +12,7 @@ import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.json.JsonUtils;
 import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.security.LoginUserManager;
+import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -88,6 +89,7 @@ public class HandleRecodeLog {
                 .setClassName(declaringTypeName)
                 .setMethodName(name)
                 .setIpAddress(ip)
+                .setRegion(WebUtils.getRegion(ip))
                 .setParams(params)
                 .setCreateTime(DateUtils.now())
                 .setUrl(requestURI)

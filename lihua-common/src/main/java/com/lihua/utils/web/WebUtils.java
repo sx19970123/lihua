@@ -1,9 +1,11 @@
 package com.lihua.utils.web;
 
 import com.lihua.enums.ConstantEnum;
+import com.lihua.utils.spring.SpringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+import org.lionsoul.ip2region.xdb.Searcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -64,6 +66,26 @@ public class WebUtils {
             ip = request.getRemoteAddr();
         }
         return ip;
+    }
+
+    /**
+     * 根据ip地址查询归属地
+     * @param ip 地址
+     * @return ip所属地区
+     */
+    public static String getRegion(String ip) {
+        Searcher searcher = SpringUtils.getBean(Searcher.class);
+        try {
+            String search = searcher.search(ip);
+            if (search.contains("内网")) {
+                return "内网IP";
+            }
+            // 解析字符串，返回：国家 省份 城市
+            String[] searchers = search.split("\\|");
+            return (searchers[0] + " " + searchers[1] + " " + searchers[2]).replaceAll("\\b0\\b", "").replaceAll("\\s+", " ").trim();
+        } catch (Exception e) {
+            return "未知IP";
+        }
     }
 
     /**

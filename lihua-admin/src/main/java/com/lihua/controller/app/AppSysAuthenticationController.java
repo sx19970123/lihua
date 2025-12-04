@@ -165,7 +165,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
 
     @Operation(summary = "获取一次性令牌")
     @GetMapping("onceToken")
-    @Log(description = "获取一次性令牌", type = LogTypeEnum.OTHER, recordResult = false)
     public ApiResponseModel<String> getOnceToken() {
         return success(sysAuthenticationService.getOnceToken());
     }
