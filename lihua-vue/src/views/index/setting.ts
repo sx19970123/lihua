@@ -17,6 +17,7 @@ const nextUpdate = [
             '12. 更新xxl-job版本到3.3.0',
             '13. 更新minio版本到8.6.0',
             '14. 后端接口返回忽略null值',
+            '15. 实时消息推送切换至websocket'
         ]
     }
 ]
