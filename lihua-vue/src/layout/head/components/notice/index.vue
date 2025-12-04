@@ -111,12 +111,12 @@
 </template>
 
 <script setup lang="ts">
-import {handleSseMessage, type SSEResponseType} from "@/utils/ServerSentEvents.ts";
+import {addEventListener, removeEventListener} from "@/utils/WebSocket.ts";
 import NoticePreview from "@/components/notice-preview/index.vue"
 import DictTag from "@/components/dict-tag/index.vue"
 import type {SysNotice, SysNoticeDTO} from "@/api/system/noice/type/SysNotice.ts";
 import {Button, message, notification} from "ant-design-vue";
-import {h, ref} from "vue";
+import {h, onMounted, onUnmounted, ref} from "vue";
 import {MessageOutlined, NotificationOutlined} from "@ant-design/icons-vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {useUserStore} from "@/stores/user.ts";
@@ -152,15 +152,9 @@ const handleUnReadCount = async () => {
     }
   }
 }
-handleUnReadCount()
 
-// 处理消息通知
-handleSseMessage((response: SSEResponseType<SysNotice>) => {
-  // 通知类型为 SSE_NOTICE 进行后续处理
-  if (response.type !== 'SSE_NOTICE') {
-    return
-  }
-  const {id, title, type} = response.data
+const handleWebsocketMessage = (data: SysNotice) => {
+  const {id, title, type} = data
   // 新未读消息计数 + 1
   handleUnReadCount()
   // 弹出消息通知
@@ -186,7 +180,7 @@ handleSseMessage((response: SSEResponseType<SysNotice>) => {
     icon: () => h("0" === type ? MessageOutlined : NotificationOutlined, { style: 'color: ' + themeStore.getColorPrimary()}),
     key: id
   })
-})
+}
 
 // 初始化列表查询
 const initList = () => {
@@ -353,6 +347,14 @@ const handleRead = (id: string) => {
   })
 }
 
+onMounted(() => {
+  handleUnReadCount()
+  addEventListener("WS_NOTICE", handleWebsocketMessage)
+})
+
+onUnmounted(() => {
+  removeEventListener("WS_NOTICE")
+})
 </script>
 <style scoped>
 .notice-card {

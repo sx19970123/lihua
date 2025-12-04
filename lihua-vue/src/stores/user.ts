@@ -11,7 +11,7 @@ import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
-import {close} from "@/utils/ServerSentEvents.ts";
+import {closeConnect} from "@/utils/WebSocket.ts";
 import {rasEncryptPassword} from "@/utils/Crypto.ts";
 import {publicAttachmentDownload} from "@/api/system/attachment/AttachmentStorage.ts";
 import router from "@/router";
@@ -151,9 +151,9 @@ export const useUserStore = defineStore('user', {
         },
         // 退出登陆
         async handleLogout() {
-            // 关闭 sse 连接
+            // 关闭 websocket 连接
             try {
-                await close()
+                closeConnect()
                 await logout()
             } catch (e) {
                 if (e instanceof ResponseError) {

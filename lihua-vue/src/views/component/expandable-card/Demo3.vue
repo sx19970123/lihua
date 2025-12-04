@@ -56,7 +56,7 @@
               </a-typography-title>
               <a-typography-text>
                 <p style="text-indent: 2em">
-                  通知公告集成了 Vditor 富文本解析器，并使用 SSE 实现了消息的实时发送与接收。
+                  通知公告集成了 Vditor 富文本解析器，并使用 WebSocket 实现了消息的实时发送与接收。
                 </p>
               </a-typography-text>
               <a-typography-title :level="5">

@@ -7,7 +7,7 @@ import token from "@/utils/Token.ts"
 import Token from "@/utils/Token.ts"
 import {init} from "@/utils/AppInit.ts";
 import {hasRouteRole} from "@/utils/Auth.ts";
-import {close, connect} from "@/utils/ServerSentEvents.ts";
+import {closeConnect, connect} from "@/utils/WebSocket.ts";
 import {message} from "ant-design-vue";
 import {getLoginSetting} from "@/api/system/login/Login.ts";
 
@@ -25,7 +25,7 @@ router.beforeEach(async (to, from, next) => {
             if (!userStore.userInfo.id) {
                 // 拉取登录用户数据，并初始化 store
                 await init();
-                // 连接到sse
+                // 连接到websocket
                 await connect()
                 // 检查登录设置
                 if (to.fullPath === '/login' || !Token.getLoginSettingResult()) {
@@ -48,7 +48,7 @@ router.beforeEach(async (to, from, next) => {
                     next("/403")
                 }
             } else {
-                // 连接到sse
+                // 连接到websocket
                 await connect()
                 if (hasRouteRole(to?.meta?.role as string[])) {
                     next();
@@ -58,8 +58,8 @@ router.beforeEach(async (to, from, next) => {
             }
         } catch (error) {
             console.error(error)
-            // 关闭sse连接
-            await close()
+            // 关闭websocket连接
+            closeConnect()
             // 清空用户信息
             userStore.clearUserInfo()
             // 重定向到登录页面
@@ -68,8 +68,8 @@ router.beforeEach(async (to, from, next) => {
     } else {
         // 重置主题
         themeStore.resetState();
-        // 关闭sse连接
-        await close()
+        // 关闭websocket连接
+        closeConnect()
         if (to.meta && to.meta.allowAnonymous) {
             next()
         } else {

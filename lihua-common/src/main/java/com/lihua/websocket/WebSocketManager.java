@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-public class WebSocketHandler extends TextWebSocketHandler {
+public class WebSocketManager extends TextWebSocketHandler {
 
     // 连接实例集合，外层key为userId，内层key为user_clientId_clientType
     private final Map<String, Map<String, WebSocketSession>> sessionMap = new ConcurrentHashMap<>();
@@ -32,6 +32,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public <T> void send(List<String> userIdList, WebSocketResult<T> result) {
         String json = toJson(result);
         userIdList.forEach(userId -> send(userId, json));
+        log.info("向指定用户消息发送完成");
     }
 
     /**

@@ -6,18 +6,18 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.entity.system.SysNotice;
 import com.lihua.entity.system.SysUserNotice;
-import com.lihua.enums.ServerSentEventsEnum;
+import com.lihua.enums.WebSocketMsgTypeEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.mapper.system.SysNoticeMapper;
-import com.lihua.model.sse.ServerSentEventsResult;
 import com.lihua.model.system.dto.SysNoticeDTO;
 import com.lihua.model.system.vo.SysNoticeVO;
 import com.lihua.model.system.vo.SysUserNoticeVO;
+import com.lihua.model.websocket.WebSocketResult;
 import com.lihua.service.system.user.SysUserNoticeService;
 import com.lihua.service.system.user.SysUserService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.sse.ServerSentEventsManager;
+import com.lihua.websocket.WebSocketManager;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -28,7 +28,6 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 @Slf4j
 @Service
@@ -43,8 +42,9 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     @Resource
     private SysUserService sysUserService;
 
-    @Resource(name = "applicationTaskExecutor")
-    private Executor executor;
+    @Resource
+    private WebSocketManager webSocketManager;
+
 
     @Override
     public IPage<SysNotice> queryPage(SysNoticeDTO sysNoticeDTO) {
@@ -159,18 +159,15 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             // 发送范围为全部用户时，删除所有关联关系批量插入
             sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
             saveUserNotice(id, sysUserService.queryAllUserIds());
+            // 向全部用户发送通知
+            webSocketManager.send(new WebSocketResult<>(WebSocketMsgTypeEnum.WS_NOTICE, sysNotice));
         } else {
             // 发送范围为指定用户时，重置star和read状态
             sysUserNoticeService.resetStatus(id);
-        }
-
-        // 新线程发送消息
-        executor.execute(() -> {
-            // 获取被推送的用户id
+            // 向指定用户发送消息
             List<String> userIds = sysUserNoticeService.queryUserIds(id);
-            // sse 推送数据
-            ServerSentEventsManager.send(userIds, new ServerSentEventsResult<>(ServerSentEventsEnum.SSE_NOTICE, sysNotice));
-        });
+            webSocketManager.send(userIds, new WebSocketResult<>(WebSocketMsgTypeEnum.WS_NOTICE, sysNotice));
+        }
 
         return id;
     }

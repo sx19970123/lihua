@@ -1,10 +1,9 @@
-import type {WebSocketMessage} from "@/api/global/Type.ts";
 import {getOnceToken} from "@/api/system/auth/Auth.ts";
 import {createBrowserId} from "@/utils/BrowserId.ts";
 
 // 连接
-export const connect = () => {
-    manager.connect()
+export const connect = async () => {
+    await manager.connect()
 }
 
 // 关闭
@@ -13,7 +12,7 @@ export const closeConnect = () => {
 }
 
 // 添加监听订阅
-export const addEventListener = (type: string, callback: (data: WebSocketMessage) => void) => {
+export const addEventListener = (type: string, callback: (data: any) => void) => {
     manager.addListener(type, callback)
 }
 
@@ -35,7 +34,7 @@ class WebSocketManager {
     // websocket 实例
     private webSocket?: WebSocket;
     // 事件监听器
-    private listeners?: Map<string, (data: WebSocketMessage) => void>
+    private listeners?: Map<string, (data: any) => void>
     // 心跳
     private heartbeat?: any
     // 重试次数
@@ -84,6 +83,7 @@ class WebSocketManager {
                 this.webSocket.onclose = (event) => {
                     console.info('连接关闭:', event);
                     this.closeHeartbeat()
+                    this.webSocket = undefined
                     // 连接关闭状态码不为1000为异常关闭，执行重试逻辑
                     if (event.code !== 1000 && this.enableRetry) {
                         this.reconnect()
@@ -97,6 +97,8 @@ class WebSocketManager {
             } catch (e) {
                 console.error("websocket连接失败",e)
             }
+        } else {
+            console.log("当前websocket实例已存在")
         }
     }
 
@@ -123,7 +125,7 @@ class WebSocketManager {
                 // 从注册的事件中拿到对象
                 const listener = this.listeners?.get(webSocketMessage.type)
                 if (listener) {
-                    listener(webSocketMessage)
+                    listener(webSocketMessage.data)
                 }
             } catch (error) {
                 console.error("WebSocket消息处理失败，无法处理的消息格式", error);
@@ -159,7 +161,7 @@ class WebSocketManager {
     }
 
     // 注册事件
-    public addListener = (type: string, callback: (data: WebSocketMessage) => void) => {
+    public addListener = (type: string, callback: (data: any) => void) => {
         if (!this.listeners) {
             this.listeners = new Map()
         }
@@ -178,7 +180,7 @@ class WebSocketManager {
             return false
         }
         try {
-            const json = JSON.stringify({type, data, timestamp: new Date().getDate()})
+            const json = JSON.stringify({type, data, timestamp: new Date().getTime()})
             this.webSocket?.send(json)
             return true
         } catch (error) {
@@ -195,5 +197,15 @@ class WebSocketManager {
         this.listeners = undefined
     }
 }
+
+/**
+ * WebSocket 接收消息类型
+ */
+interface WebSocketMessage {
+    type: string;
+    data: string;
+    timestamp: number;
+}
+
 
 const manager = new WebSocketManager()

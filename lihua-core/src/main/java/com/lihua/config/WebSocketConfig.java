@@ -1,7 +1,7 @@
 package com.lihua.config;
 
 import com.lihua.interceptor.WebSocketInterceptor;
-import com.lihua.websocket.WebSocketHandler;
+import com.lihua.websocket.WebSocketManager;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -13,14 +13,14 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
 
     @Resource
-    private WebSocketHandler webSocketHandler;
+    private WebSocketManager webSocketManager;
 
     @Resource
     private WebSocketInterceptor webSocketInterceptor;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler, "/ws-connect")
+        registry.addHandler(webSocketManager, "/ws-connect")
                 .addInterceptors(webSocketInterceptor)
                 .setAllowedOriginPatterns("*");
     }

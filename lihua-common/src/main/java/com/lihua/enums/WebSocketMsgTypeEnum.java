@@ -15,5 +15,10 @@ public enum WebSocketMsgTypeEnum implements Serializable {
     /**
      * 通知
      */
-    SSE_NOTICE,
+    WS_NOTICE,
+
+    /**
+     * 心跳，客户端向服务器发送
+     */
+    WS_HEARTBEAT
 }
