@@ -194,7 +194,7 @@ class WebSocketManager {
         this.enableRetry = false
         this.webSocket?.close(1000)
         this.webSocket = undefined
-        this.listeners = undefined
+        this.listeners?.clear()
     }
 }
 
