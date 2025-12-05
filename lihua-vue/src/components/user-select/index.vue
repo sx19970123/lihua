@@ -373,7 +373,7 @@ watch(() => selectedIds.value, (value, oldValue) => {
     const addUser = userList.value.filter(user => value.includes(user.id ? user.id : ''))
     if (addUser) {
       addUser.forEach(user => {
-        if (!selectUsers.value.includes(user)) {
+        if (!selectUsers.value.map(item => item.id).includes(user.id)) {
           selectUsers.value.push(user)
         }
       })
