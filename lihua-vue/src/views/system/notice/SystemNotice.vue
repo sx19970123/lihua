@@ -232,9 +232,9 @@
 <script setup lang="ts">
 import {initDict} from "@/utils/Dict.ts";
 import {reactive, ref, useTemplateRef} from "vue";
-import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/noice/type/SysNotice.ts";
+import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/notice/type/SysNotice.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deleteByIds, queryById, queryPage, release, revoke, save} from "@/api/system/noice/Notice.ts";
+import {deleteByIds, queryById, queryPage, release, revoke, save} from "@/api/system/notice/Notice.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import {type FormInstance, message} from "ant-design-vue";
 import dayjs from "dayjs";
