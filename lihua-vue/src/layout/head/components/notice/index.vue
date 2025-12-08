@@ -62,12 +62,11 @@
                       <dict-tag :dict-data-option="sys_notice_priority" :dict-data-value="item.priority"/>
                     </a-flex>
                   </template>
-                  <!--                      头像-->
+                  <!--                      图标-->
                   <template #avatar>
                     <a-badge :dot="item.readFlag === '0'">
                       <a-avatar :style="{'background-color': themeStore.getColorPrimary()}">
-                        <MessageOutlined v-if="item.type === '0'"/>
-                        <NotificationOutlined v-else/>
+                        <component :is="item.icon"/>
                       </a-avatar>
                     </a-badge>
                   </template>

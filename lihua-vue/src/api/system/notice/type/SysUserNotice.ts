@@ -12,6 +12,10 @@ export interface SysUserNoticeVO {
      */
     type?: string;
     /**
+     * 图标
+     */
+    icon?: string;
+    /**
      * 发布用户
      */
     releaseUser?: string;

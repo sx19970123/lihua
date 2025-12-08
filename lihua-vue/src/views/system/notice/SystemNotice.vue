@@ -475,7 +475,15 @@ const initSave = () => {
   const saveNotice = async () => {
     await formRef.value?.validate()
 
+    // 通知公告类型不同，显示不同的图标
+    if (sysNoticeVO.value.type === '0') {
+      sysNoticeVO.value.icon = 'MessageOutlined'
+    } else {
+      sysNoticeVO.value.icon = 'NotificationOutlined'
+    }
+
     try {
+
       const resp = await save(sysNoticeVO.value);
       if (resp.code === 200) {
         message.success(resp.msg)

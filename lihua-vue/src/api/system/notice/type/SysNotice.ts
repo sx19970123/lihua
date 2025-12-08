@@ -57,7 +57,12 @@ export interface SysNotice {
     /**
      * 创建人id
      */
-    createId?:string
+    createId?:string;
+
+    /**
+     * 图标
+     */
+    icon?: string;
 }
 
 export interface SysNoticeVO extends SysNotice {

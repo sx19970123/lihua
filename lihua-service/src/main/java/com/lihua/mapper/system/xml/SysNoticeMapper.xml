@@ -9,6 +9,7 @@
             sys_notice.type,
             sys_notice.priority,
             sys_notice.release_time,
+            sys_notice.icon,
             sys_user_notice.read_flag,
             sys_user_notice.star_flag,
             release_user.nickname AS releaseUser

@@ -69,4 +69,9 @@ public class SysNoticeDTO extends BaseDTO {
      * star 数据
      */
     private String star;
+
+    /**
+     * 图标
+     */
+    private String icon;
 }

@@ -46,4 +46,9 @@ public class SysUserNoticeVO implements Serializable {
      * 标星标记
      */
     private String starFlag;
+
+    /**
+     * 图标
+     */
+    private String icon;
 }
