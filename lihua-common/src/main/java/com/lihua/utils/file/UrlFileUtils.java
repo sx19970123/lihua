@@ -73,8 +73,14 @@ public class UrlFileUtils {
         // 建立连接，获取contentType
         String contentType;
         URLConnection connection;
+
         try {
             connection = uri.openConnection();
+            // 模拟浏览器，防止某些网站进行检查
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+            connection.setRequestProperty("Accept", "*/*");
+            connection.setRequestProperty("Connection", "keep-alive");
+            // 获取ContentType
             contentType = connection.getContentType();
         } catch (IOException e) {
             log.error(e.getMessage(), e);
