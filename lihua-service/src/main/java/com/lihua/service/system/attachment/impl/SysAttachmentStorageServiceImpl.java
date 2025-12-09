@@ -157,6 +157,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             // 附件上传
             String path = upload(multipartFile);
             sysAttachment
+                    .setUploadMode("3")
                     .setPath(path)
                     .setStatus("0")
                     .setOriginalName(multipartFile.getOriginalFilename())

@@ -70,12 +70,9 @@ public class SysAttachmentStorageController extends ApiResponseController {
     }
 
     @Operation(summary = "附件上传（URL）")
-    @PostMapping("url/upload/{businessCode}/{businessName}")
+    @PostMapping("url/upload")
     @Log(description = "附件上传（URL）", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<SysAttachmentUrlVO> urlUpload(@RequestBody @Validated(AttachmentValidation.AttachmentUrlUploadValidation.class) SysAttachment sysAttachment,
-                                                          @PathVariable("businessCode") String businessCode,
-                                                          @PathVariable("businessName") String businessName) {
-        sysAttachment.setUploadMode("3").setBusinessCode(businessCode).setBusinessName(businessName);
+    public ApiResponseModel<SysAttachmentUrlVO> urlUpload(@RequestBody @Validated(AttachmentValidation.AttachmentUrlUploadValidation.class) SysAttachment sysAttachment) {
         return success(sysAttachmentStorageService.urlUploadAttachment(sysAttachment));
     }
 

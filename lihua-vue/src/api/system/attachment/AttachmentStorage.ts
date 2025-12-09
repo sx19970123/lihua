@@ -1,5 +1,6 @@
 import request from "@/utils/Request.ts";
 import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
+import type {SysAttachmentUrl} from "@/api/system/attachment/type/SysAttachmentUrl.ts";
 
 
 // 根据md5查询附件是否存在
@@ -86,6 +87,15 @@ export const fastUpload = (data: SysAttachment) => {
         url: "system/attachment/storage/fast/upload",
         method: "post",
         data: data
+    })
+}
+
+// 上传url附件
+export const urlUpload = (url: string, businessCode: string, businessName: string) => {
+    return request<SysAttachmentUrl>({
+        url: `system/attachment/storage/url/upload`,
+        method: "post",
+        data: {url, businessCode, businessName},
     })
 }
 

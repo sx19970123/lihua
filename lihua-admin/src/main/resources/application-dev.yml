@@ -15,7 +15,7 @@ lihua:
   # 文件上传服务类型：LOCAL（传统本地上传）、MINIO（Minio对象存储）
   uploadFileModel: LOCAL
   # 公开文件的业务编码，publicLocalDownload 中判断包含业务编码的文件才会进行返回
-  uploadPublicBusinessCode: [UserAvatar, SystemNotice]
+  uploadPublicBusinessCode: [UserAvatar, SystemNotice, EditorIndex]
   # 上传文件路径 mac windows 注意目录切换
   uploadFilePath: /Users/yukino/my-project/data/lihua/
   # 文件导出路径

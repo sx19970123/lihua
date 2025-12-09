@@ -9,12 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -68,19 +67,37 @@ public class UrlFileUtils {
             log.error(e.getMessage(), e);
             throw new FileException("读取URL失败");
         }
+        // 检查 url 是否正确
         checkUrlSafely(uri);
+
+        // 建立连接，获取contentType
         String contentType;
-        int size;
-        // 通过读取InputStream获取附件size和contentType
-        try (InputStream inputStream = uri.openStream()) {
-            contentType = uri.openConnection().getContentType();
-            size = inputStream.available();
+        URLConnection connection;
+        try {
+            connection = uri.openConnection();
+            contentType = connection.getContentType();
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            throw new FileException("读取URL失败");
+        }
+
+        // 获取缓存字节
+        byte[] cachedBytes;
+        try (InputStream inputStream = connection.getInputStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[4096];
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                baos.write(buffer, 0, len);
+            }
+            cachedBytes = baos.toByteArray();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new FileException("读取URL失败");
         }
 
         final URL finalUrl = uri;
+        final String finalContentType = contentType;
 
         // 创建 MultipartFile 对象
         return new MultipartFile() {
@@ -97,37 +114,35 @@ public class UrlFileUtils {
 
             @Override
             public String getContentType() {
-                return contentType;
+                return finalContentType;
             }
 
             @Override
             public boolean isEmpty() {
-                return size == 0;
+                return cachedBytes.length == 0;
             }
 
             @Override
             public long getSize() {
-                return size;
+                return cachedBytes.length;
             }
 
             @NotNull
             @Override
             public byte[] getBytes() throws IOException {
-                try (InputStream inputStream = finalUrl.openStream()) {
-                    return inputStream.readAllBytes();
-                }
+                return cachedBytes;
             }
 
             @NotNull
             @Override
             public InputStream getInputStream() throws IOException {
-                return finalUrl.openStream();
+                return new ByteArrayInputStream(cachedBytes);
             }
 
             @Override
             public void transferTo(@NotNull File dest) throws IOException, IllegalStateException {
-                try (InputStream inputStream = finalUrl.openStream()) {
-                    Files.copy(inputStream, dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                try (OutputStream out = new FileOutputStream(dest)) {
+                    out.write(cachedBytes);
                 }
             }
         };

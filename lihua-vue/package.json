@@ -15,6 +15,7 @@
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
     "@fingerprintjs/fingerprintjs": "^4.4.3",
+    "@tinymce/tinymce-vue": "^6.3.0",
     "@types/spark-md5": "^3.0.5",
     "@vueuse/core": "^13.9.0",
     "ant-design-vue": "^4.2.6",
@@ -30,6 +31,7 @@
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
     "svgo": "^4.0.0",
+    "tinymce": "^8.2.2",
     "uuid": "^10.0.0",
     "vditor": "^3.11.2",
     "vue": "^3.5.22",
