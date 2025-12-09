@@ -1,11 +1,13 @@
 <template>
-  <Editor :content="content"
-          :init="editorConfig"
-          :key="editKey"
-          v-model="content"
-          licenseKey='gpl'
-          tinymceScriptSrc="/tinymce/tinymce.min.js"
-  />
+  <div>
+    <Editor :content="content"
+            :init="editorConfig"
+            :key="editKey"
+            v-model="content"
+            licenseKey='gpl'
+            tinymceScriptSrc="/tinymce/tinymce.min.js"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -18,12 +20,12 @@ import {upload, urlUpload} from "@/api/system/attachment/AttachmentStorage.ts";
 import type {SysAttachmentUrl} from "@/api/system/attachment/type/SysAttachmentUrl.ts";
 import {message} from "ant-design-vue";
 import {ResponseError} from "@/api/global/Type.ts";
-
 const themeStore = useThemeStore();
 const router = useRoute()
 // 上传默认大小
 const defaultSize = 1024 * 1024 * 2
-const {attachmentURLPrefix = "origin", businessCode, businessName, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
+const {modelValue, attachmentURLPrefix = "origin", businessCode, businessName, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
+  modelValue?: string
   // 保存附件前缀
   attachmentURLPrefix?: "baseURL" | "origin",
   // 业务编码
@@ -40,6 +42,8 @@ const {attachmentURLPrefix = "origin", businessCode, businessName, imageType = [
   fileType?: string[],
   fileMaxSize?: number
 }>()
+
+const emits = defineEmits(['update:modelValue'])
 
 // 附件业务编码
 const bCode = businessCode ?? router.name?.toString()
@@ -59,28 +63,24 @@ type FilePickerMeta = { filetype: 'file' | 'image' | 'media' }
 const editorConfig = computed(() => ({
   // 语言设置（需从官网下载语言包，下载完成后复制到public/tinymce/langs/下）
   language: 'zh_CN',
+  // 隐藏顶部菜单
+  menubar: false,
   // 隐藏默认logo
   branding: false,
   promotion: false,
   // 亮色｜暗色模式切换
-  skin: themeStore.isDarkTheme ? 'oxide-dark' : 'oxide',
+  // 主题可在：https://skin.tiny.cloud/t5/ 进行编辑，之后复制到public/tinymce/skins/ui/
+  skin: themeStore.isDarkTheme ? 'custom-dark' : 'custom',
   content_css: themeStore.isDarkTheme ? 'dark' : 'default',
+  // 自定义编辑区背景颜色
+  content_style: themeStore.isDarkTheme ? "body {background-color: #1f1f1f !important;}" : 'body {background-color: #fff !important;}',
   // 免费插件
-  plugins: 'link image media table lists code emoticons fullscreen preview searchreplace wordcount',
+  plugins: 'link image media table lists code emoticons fullscreen preview searchreplace',
   // 工具栏配置
   toolbar: [
-    'undo redo | bold italic underline strikethrough | forecolor backcolor |',
-    'fontfamily fontsize |',
-    'alignleft aligncenter alignright alignjustify |',
-    'bullist numlist outdent indent |',
-    'link image media emoticons |',
-    'table |',
-    'blockquote code |',
-    'removeformat',
-    'fullscreen',
-    'preview',
-    'searchreplace'
-  ].join(' '),
+    'undo redo | bold italic underline strikethrough | forecolor backcolor fontfamily fontsize | alignleft aligncenter alignright alignjustify',
+    'bullist numlist outdent indent | link image media emoticons table | blockquote code | removeformat fullscreen preview searchreplace'
+  ],
   // 附件上传类型，file-链接 image-图片 media-视频
   file_picker_types: 'file image media',
   /**
@@ -144,7 +144,7 @@ const editorConfig = computed(() => ({
 }))
 
 // 双向绑定
-const content = ref<string>('')
+const content = ref<string | undefined>(modelValue)
 
 /**
  * 处理链接图片上传
@@ -250,9 +250,21 @@ const handleUpload = async (files: FileList | null, type: "file" | "image" | "me
 watch(() => themeStore.isDarkTheme, () => {
   editKey.value = uuidv4()
 })
+
+// 双向绑定
+watch(() => content.value, () => {
+  emits("update:modelValue", content.value)
+})
 </script>
 <style>
-:deep(.ant-message) {
-  z-index: 999999 !important;
+/* 覆盖dialog遮罩颜色*/
+.tox .tox-dialog-wrap__backdrop {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+/* 覆盖dialog阴影*/
+.tox .tox-dialog {
+  box-shadow:
+      0 4px 10px -4px rgba(255, 255, 255, 0.04),
+      0 0 20px 0 rgba(255, 255, 255, 0.03) !important;
 }
 </style>

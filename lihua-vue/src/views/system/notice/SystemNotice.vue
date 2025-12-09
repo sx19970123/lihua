@@ -238,7 +238,8 @@ import {deleteByIds, queryById, queryPage, release, revoke, save} from "@/api/sy
 import DictTag from "@/components/dict-tag/index.vue"
 import {type FormInstance, message} from "ant-design-vue";
 import dayjs from "dayjs";
-import Editor from "@/components/editor/index.vue"
+// import Editor from "@/components/editor/index.vue"
+import Editor from "@/components/tinymce-editor/index.vue"
 import ColorSelect from "@/components/color-select/index.vue"
 import UserSelect from "@/components/user-select/index.vue"
 import NoticePreview from "@/components/notice-preview/index.vue"

@@ -19,6 +19,7 @@ const nextUpdate = [
             '14. 后端接口返回忽略null值',
             '15. 实时消息推送切换至websocket',
             '16. 修复用户选择组件中，全选时用户重复的bug',
+            '17. 移除vditor替换为tinymce（谁家后台管理系统通知公告用markdown啊）',
         ]
     }
 ]

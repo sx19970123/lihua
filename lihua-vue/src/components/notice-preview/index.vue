@@ -50,7 +50,7 @@
           </a-space>
         </a-flex>
         <!--    文章内容-->
-        <div id="previewDom"/>
+        <div v-html="notice.content"/>
       </a-flex>
     </div>
   </a-spin>
@@ -59,17 +59,13 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 import {preview, queryReadInfo} from "@/api/system/notice/Notice.ts";
-import Vditor from "vditor";
-import 'vditor/dist/index.css';
 import UserShow from "@/components/user-show/index.vue"
-import {useThemeStore} from "@/stores/theme.ts";
 import type {SysNoticeVO} from "@/api/system/notice/type/SysNotice.ts";
 import dayjs from "dayjs";
 import {message} from "ant-design-vue";
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 
-const themeStore = useThemeStore();
 const props = defineProps<{
   noticeId: string,
   showReadUser?: boolean
@@ -93,9 +89,7 @@ const handlePreview = async () => {
     const resp = await preview(noticeId)
     if (resp.code === 200) {
       notice.value = resp.data
-      await loadPreview()
       spinning.value = false
-
       // 已读/未读回显
       if (props.showReadUser) {
         await handleReadInfo(noticeId)
@@ -109,21 +103,6 @@ const handlePreview = async () => {
     } else {
       console.error(e)
     }
-  }
-}
-
-// 加载预览
-const loadPreview = async () => {
-  // 通知内容回显
-  const dom = document.getElementById('previewDom')
-  const content = notice.value.content
-  if (dom instanceof HTMLDivElement && content) {
-    await Vditor.preview(dom, content, {
-      mode: themeStore.isDarkTheme ? "dark" : "light",
-      cdn: '/vditor',
-      theme: {current: themeStore.isDarkTheme ? 'dark' : 'light'},                     // 内容主题
-      hljs: {style: themeStore.isDarkTheme ? 'a11y-dark' : 'solarized-light'}, // 代码块主题
-    })
   }
 }
 
@@ -161,10 +140,6 @@ onMounted(() => {
 
 watch(() => props.noticeId, () => {
   handlePreview()
-})
-
-watch(() => themeStore.isDarkTheme, () => {
-  loadPreview()
 })
 </script>
 
