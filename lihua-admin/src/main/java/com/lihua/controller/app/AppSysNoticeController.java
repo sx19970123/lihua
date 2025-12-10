@@ -34,9 +34,9 @@ public class AppSysNoticeController extends ApiResponseController {
 
 
     @Operation(summary = "用户查询消息通知")
-    @PostMapping("list/{userId}")
-    public ApiResponseModel<IPage<SysUserNoticeVO>> queryListByUserId(@PathVariable("userId") String userId, @RequestBody SysNoticeDTO sysNoticeDTO) {
-        return success(sysNoticeService.queryListByUserId(userId, sysNoticeDTO));
+    @PostMapping("list")
+    public ApiResponseModel<IPage<SysUserNoticeVO>> userMessageList(@RequestBody SysNoticeDTO sysNoticeDTO) {
+        return success(sysNoticeService.userMessageList(sysNoticeDTO));
     }
 
     @Operation(summary = "用户添加star")

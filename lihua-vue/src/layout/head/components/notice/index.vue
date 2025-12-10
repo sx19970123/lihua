@@ -118,16 +118,14 @@ import {Button, message, notification} from "ant-design-vue";
 import {h, onMounted, onUnmounted, ref} from "vue";
 import {MessageOutlined, NotificationOutlined} from "@ant-design/icons-vue";
 import {useThemeStore} from "@/stores/theme.ts";
-import {useUserStore} from "@/stores/user.ts";
 import {getDictLabel, initDict} from "@/utils/Dict.ts";
-import {queryListByUserId, queryUnReadCount, read, star} from "@/api/system/notice/Notice.ts";
+import {userMessageList, queryUnReadCount, read, star} from "@/api/system/notice/Notice.ts";
 import type {SysUserNoticeVO} from "@/api/system/notice/type/SysUserNotice.ts";
 import {handleTime} from "@/utils/HandleDate.ts";
 import dayjs from "dayjs";
 import {ResponseError} from "@/api/global/Type.ts";
 
 const themeStore = useThemeStore();
-const userStore = useUserStore()
 
 const previewModelOpen = ref<boolean>(false)
 const {sys_notice_type, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_priority")
@@ -247,7 +245,7 @@ const initList = () => {
   const initNoticeList = async () => {
     loading.value = true
     try {
-      const resp = await queryListByUserId(userStore.userId,query.value)
+      const resp = await userMessageList(query.value)
       if (resp.code === 200) {
         total.value = resp.data.total
         resp.data.records.forEach(item => {

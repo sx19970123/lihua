@@ -210,10 +210,10 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     }
 
     @Override
-    public IPage<SysUserNoticeVO> queryListByUserId(String userId, SysNoticeDTO sysNoticeDTO) {
+    public IPage<SysUserNoticeVO> userMessageList(SysNoticeDTO sysNoticeDTO) {
         IPage<SysUserNoticeVO> iPage = new Page<>(sysNoticeDTO.getPageNum(), sysNoticeDTO.getPageSize());
         QueryWrapper<SysUserNoticeVO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("sys_user_notice.user_id", userId)
+        queryWrapper.eq("sys_user_notice.user_id", LoginUserContext.getUserId())
                         .eq("sys_notice.status", "1")
                         .eq("sys_notice.del_flag", "0")
                         .orderByDesc("sys_notice.release_time");

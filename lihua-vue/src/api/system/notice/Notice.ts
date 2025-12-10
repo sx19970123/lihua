@@ -94,12 +94,11 @@ export const deleteByIds = (ids: string[]) => {
 
 /**
  * 用户查询消息通知
- * @param userId
  * @param data
  */
-export const queryListByUserId = (userId: string, data: SysNoticeDTO) => {
+export const userMessageList = (data: SysNoticeDTO) => {
     return request<PageResponseType<SysUserNoticeVO>>({
-        url: 'system/notice/list/' + userId,
+        url: 'system/notice/list',
         method: 'post',
         data: data
     })

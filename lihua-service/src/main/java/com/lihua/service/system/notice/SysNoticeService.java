@@ -48,5 +48,5 @@ public interface SysNoticeService {
     /**
      * 用户查询消息通知
      */
-    IPage<SysUserNoticeVO> queryListByUserId(String userId, SysNoticeDTO sysNoticeDTO);
+    IPage<SysUserNoticeVO> userMessageList(SysNoticeDTO sysNoticeDTO);
 }
