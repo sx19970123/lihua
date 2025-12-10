@@ -23,8 +23,13 @@ const themeStore = useThemeStore();
 const router = useRoute()
 // 上传默认大小
 const defaultSize = 1024 * 1024 * 2
-const {modelValue, attachmentURLPrefix = "origin", businessCode, businessName, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
-  modelValue?: string
+const {modelValue, autoDownloadPasteImg = false, height = '50vh',attachmentURLPrefix = "origin", businessCode, businessName, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
+  // 双向绑定
+  modelValue?: string,
+  // 编辑器高度
+  height?: string | number,
+  // 自动下载剪贴板中的图片
+  autoDownloadPasteImg?: boolean,
   // 保存附件前缀
   attachmentURLPrefix?: "baseURL" | "origin",
   // 业务编码
@@ -62,6 +67,8 @@ type FilePickerMeta = { filetype: 'file' | 'image' | 'media' }
 const editorConfig = computed(() => ({
   // 语言设置（需从官网下载语言包，下载完成后复制到public/tinymce/langs/下）
   language: 'zh_CN',
+  // 编辑器高度
+  height: height,
   // 隐藏顶部菜单
   menubar: false,
   // 隐藏默认logo
@@ -80,6 +87,10 @@ const editorConfig = computed(() => ({
     'undo redo | bold italic underline strikethrough | forecolor backcolor fontfamily fontsize | alignleft aligncenter alignright alignjustify',
     'bullist numlist outdent indent | link image media emoticons table | blockquote code | removeformat fullscreen preview searchreplace'
   ],
+  // 禁止编辑器给我处理路径
+  convert_urls: false,
+  relative_urls: false,
+  remove_script_host: false,
   // 附件上传类型，file-链接 image-图片 media-视频
   file_picker_types: 'file image media',
   /**
@@ -113,33 +124,79 @@ const editorConfig = computed(() => ({
    * 处理粘贴的文本
    * 过滤img标签拿到url将图片保存到服务器
    */
-  paste_postprocess: async (editor: any, args: {node: HTMLElement}) => {
-    // 处理提示
+  // paste_postprocess: async (editor: any, args: {node: HTMLElement}) => {
+  //   if (!autoDownloadPasteImg) {
+  //     return
+  //   }
+  //   // 处理提示
+  //   const notif = editor.notificationManager.open({
+  //     text: '正在处理粘贴内容...',
+  //     type: 'info',
+  //     timeout: 0
+  //   })
+  //   // 拿到所有img标签
+  //   const imgs = args.node.querySelectorAll("img")
+  //   let innerHTML = args.node.innerHTML
+  //   let flag = false
+  //   // 遍历标签后进行上传，替换
+  //   for (const img of imgs) {
+  //     const resp = await handleLinkImageUpload(img.src)
+  //     if (resp) {
+  //       // 对 innerHTML 进行替换
+  //       innerHTML = innerHTML.replace(resp.originalURL, resp.url)
+  //       flag = true
+  //     }
+  //   }
+  //   // 拿到替换后的innerHTML为editor进行赋值
+  //   if (flag) {
+  //     editor.setContent(content.value + innerHTML);
+  //   }
+  //   // 关闭提示
+  //   notif.close();
+  // }
+
+  paste_postprocess: async (editor: any, args: { node: HTMLElement }) => {
+    if (!autoDownloadPasteImg) return;
+
     const notif = editor.notificationManager.open({
       text: '正在处理粘贴内容...',
       type: 'info',
       timeout: 0
-    })
-    // 拿到所有img标签
-    const imgs = args.node.querySelectorAll("img")
-    let innerHTML = args.node.innerHTML
-    let flag = false
-    // 遍历标签后进行上传，替换
-    for (const img of imgs) {
-      const resp = await handleLinkImageUpload(img.src)
-      if (resp) {
-        // 对 innerHTML 进行替换
-        innerHTML = innerHTML.replace(resp.originalURL, resp.url)
-        flag = true
+    });
+
+    try {
+      // 拿到全部img标签
+      const pastedImgs = Array.from(args.node.querySelectorAll('img'));
+      if (!pastedImgs.length) return;
+
+      // 事务包裹，保证一次 undo
+      editor.undoManager.transact(async () => {
+        for (const img of pastedImgs) {
+          // 拿到src后上传图片
+          const resp = await handleLinkImageUpload(img.getAttribute('src') || undefined);
+          if (resp) {
+            // 在编辑器文档中查找所有匹配 originalSrc 的 img 并替换 src
+            const editorImgs = editor.dom.select('img');
+            for (const eImg of editorImgs) {
+              // 注意比较时要按原始字符串比较，避免部分匹配误替换
+              if (eImg.getAttribute('src') === resp.originalURL) {
+                editor.dom.setAttrib(eImg, 'src', resp.url);
+              }
+            }
+          }
+        }
+      });
+    } catch (error) {
+      if (error instanceof ResponseError) {
+        message.error(error.msg)
+      } else {
+        console.error(error)
       }
+    } finally {
+      notif.close();
     }
-    // 拿到替换后的innerHTML为editor进行赋值
-    if (flag) {
-      editor.setContent(innerHTML)
-    }
-    // 关闭提示
-    notif.close();
   }
+
 }))
 
 // 双向绑定
@@ -258,7 +315,7 @@ watch(() => modelValue, () => {
   content.value = modelValue
 })
 </script>
-<style>
+<style lang="scss">
 /* 覆盖dialog遮罩颜色*/
 .tox .tox-dialog-wrap__backdrop {
   background-color: rgba(0, 0, 0, 0.3) !important;
@@ -268,5 +325,12 @@ watch(() => modelValue, () => {
   box-shadow:
       0 4px 10px -4px rgba(255, 255, 255, 0.04),
       0 0 20px 0 rgba(255, 255, 255, 0.03) !important;
+}
+/* 覆盖源码预览，高度撑满容器*/
+.tox .tox-textarea-wrap {
+  height: 100% !important;
+  textarea {
+    height: 100% !important;
+  }
 }
 </style>

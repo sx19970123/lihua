@@ -8,5 +8,5 @@
 import Editor from "@/components/tinymce-editor/index.vue"
 import {ref} from "vue";
 
-const value = ref<string>()
+const value = ref<string>('')
 </script>

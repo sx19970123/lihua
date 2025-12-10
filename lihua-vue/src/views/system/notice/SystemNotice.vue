@@ -219,7 +219,7 @@
           </a-flex>
         </a-form-item>
         <a-form-item label="内容">
-          <editor height="300px" v-model="sysNoticeVO.content"/>
+          <editor height="300px" v-model="sysNoticeVO.content" auto-download-paste-img/>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -454,10 +454,6 @@ const initSave = () => {
     modalActive.open = !modalActive.open
     if(modalActive.open && priorityOption.value.length === 0) {
       handlePriorityOption()
-      setTimeout(() => {
-        sysNoticeVO.value.content = "222222"
-        message.info("比阿海了")
-      }, 3000)
     }
     if (title) {
       modalActive.title = title
