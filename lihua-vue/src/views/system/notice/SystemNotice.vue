@@ -238,7 +238,6 @@ import {deleteByIds, queryById, queryPage, release, revoke, save} from "@/api/sy
 import DictTag from "@/components/dict-tag/index.vue"
 import {type FormInstance, message} from "ant-design-vue";
 import dayjs from "dayjs";
-// import Editor from "@/components/editor/index.vue"
 import Editor from "@/components/tinymce-editor/index.vue"
 import ColorSelect from "@/components/color-select/index.vue"
 import UserSelect from "@/components/user-select/index.vue"
@@ -455,6 +454,10 @@ const initSave = () => {
     modalActive.open = !modalActive.open
     if(modalActive.open && priorityOption.value.length === 0) {
       handlePriorityOption()
+      setTimeout(() => {
+        sysNoticeVO.value.content = "222222"
+        message.info("比阿海了")
+      }, 3000)
     }
     if (title) {
       modalActive.title = title

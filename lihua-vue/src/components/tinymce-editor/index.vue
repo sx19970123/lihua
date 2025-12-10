@@ -1,7 +1,6 @@
 <template>
   <div>
-    <Editor :content="content"
-            :init="editorConfig"
+    <Editor :init="editorConfig"
             :key="editKey"
             v-model="content"
             licenseKey='gpl'
@@ -250,10 +249,13 @@ const handleUpload = async (files: FileList | null, type: "file" | "image" | "me
 watch(() => themeStore.isDarkTheme, () => {
   editKey.value = uuidv4()
 })
-
 // 双向绑定
 watch(() => content.value, () => {
   emits("update:modelValue", content.value)
+})
+// 监听外部组件变化
+watch(() => modelValue, () => {
+  content.value = modelValue
 })
 </script>
 <style>
