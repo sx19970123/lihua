@@ -10,36 +10,93 @@
     >
       <template #overview>
         <a-card class="card-background" :body-style="{height: '100px'}">
-          <a-typography-title :level="4" ellipsis>免费开源</a-typography-title>
+          <a-typography-title :level="4" ellipsis>APP&小程序</a-typography-title>
           <a-typography-text ellipsis type="secondary">
             <a-typography-text type="secondary">基于</a-typography-text>
-            <a-typography-text :style="{color:themeStore.getColorPrimary()}">MIT</a-typography-text>
-            <a-typography-text type="secondary">开源协议</a-typography-text>
+            <a-typography-text :style="{color:themeStore.getColorPrimary()}">uni-app</a-typography-text>
+            <a-typography-text type="secondary">开发</a-typography-text>
           </a-typography-text>
         </a-card>
       </template>
       <template #middle>
         <a-card class="card-background child" :body-style="{height: '100px'}">
-          <a-typography-title :level="4" ellipsis>免费开源</a-typography-title>
+          <a-typography-title :level="4" ellipsis>APP&小程序</a-typography-title>
           <a-typography-text ellipsis type="secondary">
             <a-typography-text type="secondary">基于</a-typography-text>
-            <a-typography-text :style="{color:themeStore.getColorPrimary()}">MIT</a-typography-text>
-            <a-typography-text type="secondary">开源协议</a-typography-text>
+            <a-typography-text :style="{color:themeStore.getColorPrimary()}">uni-app</a-typography-text>
+            <a-typography-text type="secondary">开发</a-typography-text>
           </a-typography-text>
         </a-card>
       </template>
       <template #detail>
         <a-card class="scrollbar card-background" id="test">
-          <a-typography-title :level="4" ellipsis>免费开源</a-typography-title>
+          <a-typography-title :level="4" ellipsis>APP&小程序</a-typography-title>
           <a-typography-text ellipsis type="secondary">
             <a-typography-text type="secondary">基于</a-typography-text>
-            <a-typography-text :style="{color:themeStore.getColorPrimary()}">MIT</a-typography-text>
-            <a-typography-text type="secondary">开源协议</a-typography-text>
+            <a-typography-text :style="{color:themeStore.getColorPrimary()}">uni-app</a-typography-text>
+            <a-typography-text type="secondary">开发</a-typography-text>
           </a-typography-text>
           <br/>
           <div class="scrollbar dark-overlay" style="height: 484px;margin-top: 16px">
-            <a-typography-text type="secondary">免费全开源且可商用，无版权问题</a-typography-text>
-            <img src="../static/bq.png" style="width: 100%;border-radius: 8px;margin-top: 8px" alt=""/>
+            <a-typography-title :level="5">
+              技术概览
+            </a-typography-title>
+            <a-typography-text>
+              <p style="text-indent: 2em">
+                基于「狸花猫后台管理系统」的业务扩展方案，uni-app 开发，适配 App 与微信小程序，与 Web 端能力保持一致。
+                基础框架为Vue 3 + TypeScript，内置pinia，支持请求路由拦截，与web端开发体验一致。
+                <a href="https://gitee.com/yukino_git/lihua-app" target="_blank">项目仓库</a>
+              </p>
+              <p style="text-indent: 2em">
+                下面是系统基础目录结构
+              </p>
+            </a-typography-text>
+            <a-typography-text>
+
+          <pre>
+├── .env.development                # 开发环境配置文件
+├── .env.production                 # 生产环境配置文件
+├── .gitignore                      # Git 忽略文件配置
+├── LICENSE                         # 项目许可证
+├── index.html                      # 入口 HTML 文件
+├── package.json                    # 项目依赖和脚本配置
+├── plugins/buildIcons.ts           # 图标构建脚本
+├── shims-uni.d.ts                  # Uni-app 类型声明文件
+├── src/                            # 源代码目录
+│   ├── App.vue                     # 根 Vue 组件
+│   ├── AppRoot.vue                 # 应用根组件
+│   ├── api/                        # API 接口定义
+│   ├── components/                 # 公共组件
+│   ├── env.d.ts                    # 环境变量类型定义
+│   ├── main.ts                     # 应用入口文件
+│   ├── manifest.json               # 应用清单文件
+│   ├── pages.json                  # 页面配置文件
+│   ├── pages/                      # 页面组件
+│   ├── router/                     # 路由配置
+│   ├── shime-uni.d.ts              # Uni-app 类型声明文件
+│   ├── static/                     # 静态资源
+│   ├── stores/                     # 状态管理
+│   ├── subpackages/                # 子包模块
+│   ├── theme.json                  # 主题配置文件
+│   ├── uni.scss                    # 全局样式文件
+│   ├── utils/                      # 工具函数
+│   └── vite.config.ts              # Vite 配置文件</pre>
+            </a-typography-text>
+            <a-typography-title :level="5">
+              项目依赖
+            </a-typography-title>
+            <a-descriptions bordered :column="1">
+              <a-descriptions-item label="前端框架">vue</a-descriptions-item>
+              <a-descriptions-item label="路由">sard-uniapp</a-descriptions-item>
+              <a-descriptions-item label="状态管理工具">pinia</a-descriptions-item>
+              <a-descriptions-item label="全局根节点工具">uni ku root</a-descriptions-item>
+              <a-descriptions-item label="ui框架">sard-uniapp</a-descriptions-item>
+              <a-descriptions-item label="异步请求">sard-uniapp</a-descriptions-item>
+              <a-descriptions-item label="数据加密">crypto-js & wxmp-rsa</a-descriptions-item>
+              <a-descriptions-item label="日期工具类">dayjs</a-descriptions-item>
+              <a-descriptions-item label="工具库">lodash</a-descriptions-item>
+              <a-descriptions-item label="图片裁剪工具">sard-uniapp</a-descriptions-item>
+            </a-descriptions>
           </div>
         </a-card>
       </template>
@@ -59,7 +116,7 @@ const handleClick = (show:boolean) => {
 </script>
 <style scoped>
 .card-background {
-  background-image: url("../static/狸花猫-小黑子-期待.svg");
+  background-image: url("../static/uni.png");
   background-position-y: 10px; /* 增加10像素间距 */
   background-position-x: calc(100% - 10px); /* 保持右对齐 */
   background-repeat: no-repeat;
@@ -71,7 +128,7 @@ const handleClick = (show:boolean) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("../static/狸花猫-小黑子-期待.svg");
+  background-image: url("../static/uni.png");
   background-position-y: 10px; /* 增加10像素间距 */
   background-position-x: calc(100% - 10px); /* 保持右对齐 */
   background-repeat: no-repeat;

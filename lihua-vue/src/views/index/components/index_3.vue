@@ -40,11 +40,9 @@
               后端采用了 Spring Boot 3.x 框架进行开发，Java 版本为 21，
               使用 Spring Security 进行权限管理。
               持久层框架采用 MyBatis-Plus，理论上支持 MP 所支持的所有数据库类型，当前使用的是 MySQL 数据库。
-              <span >
-              <p style="text-indent: 2em">
-                  下面是系统基础目录结构
-              </p>
-            </span>
+            </p>
+            <p style="text-indent: 2em">
+              下面是系统基础目录结构
             </p>
           </a-typography-text>
           <a-typography-text>

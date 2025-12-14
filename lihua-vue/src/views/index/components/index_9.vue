@@ -14,7 +14,7 @@
           <img src="https://gitee.com/static/images/logo-black.svg?t=158106664" alt="" style="height: 40px" v-else>
           码云主页
         </a-typography-title>
-        <a-typography-text type="secondary" ellipsis>Yukino/狸花猫</a-typography-text>
+        <a-typography-text type="secondary" ellipsis>Yukino/lihua & lihua-app</a-typography-text>
       </a-card>
     </template>
   </expandable-card>
@@ -25,7 +25,7 @@ import {useThemeStore} from "@/stores/theme.ts";
 
 const themeStore = useThemeStore();
 const handleClick = () => {
-  window.open('https://gitee.com/yukino_git/lihua')
+  window.open('https://gitee.com/yukino_git')
 }
 </script>
 <style scoped>

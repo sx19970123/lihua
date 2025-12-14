@@ -1,25 +1,9 @@
 // 下一版本更新记录
 const nextUpdate = [
     {
-        version: '1.3.0',
+        version: '1.3.1',
         record: [
-            '1. Tree工具类 traverse 方法回调函数返回 true 终止递归',
-            '2. app端用户注销代码',
-            '3. 附件组件新增是否自动删除配置',
-            '4. 保存头像时当保存前的头像为照片时，将上一照片删除',
-            '5. 新增日志、附件记录客户端类型',
-            '6. password-input 组件密码强度规则更新',
-            '7. 照片头像最大限制2M，并默认开启非全图裁剪',
-            '8. 记住账号加密方式更新',
-            '9. app对应controller模块拆分',
-            '10. 完善统一异常处理，可单独处理404｜405异常',
-            '11. 更新springboot版本到3.5.8',
-            '12. 更新xxl-job版本到3.3.0',
-            '13. 更新minio版本到8.6.0',
-            '14. 后端接口返回忽略null值',
-            '15. 实时消息推送切换至websocket',
-            '16. 修复用户选择组件中，全选时用户重复的bug',
-            '17. 移除vditor替换为tinymce（谁家后台管理系统通知公告用markdown啊）',
+
         ]
     }
 ]
@@ -33,6 +17,31 @@ export const versionInfo = {
     vueVersion: ' 3.5.22',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.3.0',
+            updateDate: '2025-12-14',
+            title: "🎉🎉1.3.0 版本新增对移动APP的支持，由uni-app开发，基于vue3 + ts，移植了常用web端组件，与web端开发体验保持一致。",
+            updateContent: [
+                '1. Tree工具类 traverse 方法回调函数返回 true 终止递归',
+                '2. app端用户注销代码',
+                '3. 附件组件新增是否自动删除配置',
+                '4. 保存头像时当保存前的头像为照片时，将上一照片删除',
+                '5. 新增日志、附件记录客户端类型',
+                '6. password-input 组件密码强度规则更新',
+                '7. 照片头像最大限制2M，并默认开启非全图裁剪',
+                '8. 记住账号加密方式更新',
+                '9. app对应controller模块拆分',
+                '10. 完善统一异常处理，可单独处理404｜405异常',
+                '11. 更新springboot版本到3.5.8',
+                '12. 更新xxl-job版本到3.3.0',
+                '13. 更新minio版本到8.6.0',
+                '14. 后端接口返回忽略null值',
+                '15. 实时消息推送切换至websocket',
+                '16. 修复用户选择组件中，全选时用户重复的bug',
+                '17. 移除vditor替换为tinymce（谁家后台管理系统通知公告用markdown啊）',
+                '18. 其余细节改动',
+            ]
+        },
         {
             version: '1.2.7',
             updateDate: '2025-11-06',
@@ -125,7 +134,7 @@ export const versionInfo = {
         {
             version: '1.2.0',
             updateDate: '2025-04-07',
-            title: "1.2.0 版本支持knife4j接口文档，controller同一返回适配knife4j做出调整。前端新增【table-setting】组件，可自定义表格显示、顺序、宽度、固定。",
+            title: "🎉🎉1.2.0 版本支持knife4j接口文档，controller同一返回适配knife4j做出调整。前端新增【table-setting】组件，可自定义表格显示、顺序、宽度、固定。",
             updateContent: [
                 '1. 新增集成【knife4j】接口文档',
                 '2. 新增controller统一返回ApiResponse、ApiResponseController（兼容knife4j返回值），StrResponseController、StrResponse（knife4j返回值为string）',

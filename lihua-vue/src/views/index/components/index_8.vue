@@ -45,7 +45,7 @@
           <a-typography-text :style="{color:themeStore.getColorPrimary()}">{{latestVersion.version}}</a-typography-text>
         </a-typography-text>
         <div class="scrollbar" id="lihua-index-8-content" style="height: 484px;margin-top: 16px">
-          <a-timeline>
+          <a-timeline style="margin-top: 16px">
             <div v-for="(item, index) in versionInfo.lihuaUpdateLog">
               <a-timeline-item v-if="index <= showIndex">
                 <a-typography-title :level="5">

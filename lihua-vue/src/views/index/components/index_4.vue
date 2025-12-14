@@ -38,11 +38,9 @@
             <p style="text-indent: 2em">
               前端采用 Vue 3.x 框架进行开发，使用 TypeScript 语言，集成了 Pinia 进行状态管理、VueRouter 进行路由管理，
               前端组件库为 Ant Design Vue 4.x。项目中提供了多种集成组件：选择卡片、小组件展示卡片、字典标签、图标选择器、颜色选择器、用户选择器等。
-              <span >
-              <p style="text-indent: 2em">
-                  下面是系统基础目录结构
-              </p>
-            </span>
+            </p>
+            <p style="text-indent: 2em">
+              下面是系统基础目录结构
             </p>
           </a-typography-text>
           <a-typography-text>
@@ -86,7 +84,7 @@ lihua-vue                 // 前端工程
             <a-descriptions-item label="cookie工具">js-cookie</a-descriptions-item>
             <a-descriptions-item label="工具库">lodash</a-descriptions-item>
             <a-descriptions-item label="路由切换进度条">nprogress</a-descriptions-item>
-            <a-descriptions-item label="富文本工具">vditor</a-descriptions-item>
+            <a-descriptions-item label="富文本工具">tinymce</a-descriptions-item>
             <a-descriptions-item label="图片裁剪工具">vue-cropper</a-descriptions-item>
           </a-descriptions>
         </div>

@@ -47,7 +47,6 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/system/login",                                // 登录
                         "/system/publicKey/**",                         // 获取公钥
-                        "/system/sse/connect/**",                       // 连接sse
                         "/system/attachment/storage/download/**",       // 附件下载
                         "/system/setting/GrayModelSetting",             // 灰色模式设置
                         "/system/enableRegister",                       // 是否开启用户注册
