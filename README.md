@@ -9,7 +9,7 @@
 - [gitee](https://gitee.com/yukino_git/lihua)
 - [github](https://github.com/sx19970123/lihua)
 - [gitcode](https://gitcode.com/weixin_44118742/lihua)
-- 
+
 #### 移动端仓库（lihua-app）
 
 - [gitee](https://gitee.com/yukino_git/lihua-app)
