@@ -64,7 +64,7 @@ public class SecurityConfig {
                 ).permitAll()
                 // 系统其他接口配置
                 .requestMatchers(
-                        "/ws-connect/**",                                       // websocket建立连接
+                        "/ws-connect/**",                               // websocket建立连接
                         "/captcha/**",                                  // 验证码
                         "/druid/**",                                    // druid数据库监控
                         "/doc.html",                                    // knife4文档

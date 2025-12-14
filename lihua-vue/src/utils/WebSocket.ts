@@ -141,7 +141,7 @@ class WebSocketManager {
         this.closeHeartbeat()
         this.heartbeat = setInterval(() => {
             if (this.isReady()) {
-                this.sendMessage("heartbeat", "ping")
+                this.sendMessage("WS_HEARTBEAT", "ping")
             }
         }, 1000 * 30)
     }
