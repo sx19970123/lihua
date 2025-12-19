@@ -14,7 +14,7 @@
       <CompressOutlined v-else />
     </button>
     <!--  更多操作  -->
-    <a-dropdown :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+    <a-dropdown >
       <button class="ant-tabs-nav-more">
         <MoreOutlined />
       </button>

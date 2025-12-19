@@ -1,15 +1,22 @@
 <template>
-  <a-dropdown :trigger="['contextmenu']">
-    <span>
-      <component :is="tabPane.tab.icon"/>
+  <a-dropdown :trigger="['contextmenu']" class="view-tab-dropdown">
+    <a-space>
+      <component :is="tabPane.tab.icon" style="margin: 0"/>
       {{ tabPane.tab.label }}
-    </span>
+      <Transition name="fadein" mode="out-in">
+        <SyncOutlined v-if="tabPane.tab.routerPathKey === viewTabsStore.$state.activeKey"
+                      class="view-tab-icon"
+                      @click="handleReload"
+                      :spin="reloading"
+        />
+      </Transition>
+      <CloseOutlined v-if="!tabPane.tab.affix"
+                     class="view-tab-icon"
+                     @click="() => emits('closeViewTab', tabPane.tab.routerPathKey)"
+      />
+    </a-space>
     <template #overlay>
       <a-menu @click="handleClickMenuTab" v-rollDisable="true">
-        <a-menu-item key="reload" v-if="tabPane.tab.routerPathKey === viewTabsStore.$state.activeKey">
-          <RedoOutlined />
-          刷新页面
-        </a-menu-item>
         <a-menu-item key="newPage">
           <ImportOutlined style="transform: rotate(180deg)"/>
           新页打开
@@ -58,7 +65,7 @@ import {useViewTabsStore} from "@/stores/viewTabs";
 import {viewTab} from "@/api/system/view-tab/ViewTab.ts";
 import {message} from "ant-design-vue";
 import {LockOutlined, StarFilled, StarOutlined, UnlockOutlined} from '@ant-design/icons-vue';
-import {h} from "vue";
+import {h, ref} from "vue";
 import type {ResponseType} from "@/api/global/Type.ts";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 
@@ -66,15 +73,11 @@ const viewTabsStore = useViewTabsStore()
 const tabPane = defineProps(['tab','index'])
 const emits = defineEmits(['routeSkip','cancelKeepAlive','closeViewTab'])
 const usableMiniWindow = window.location.origin.startsWith("http://localhost") || window.location.origin.startsWith("https")
-
+const reloading = ref<boolean>(false);
 // 处理点击菜单
 const handleClickMenuTab = ({ key }:{ key :string }) => {
   const tab = tabPane.tab
   switch (key) {
-    case "reload": {
-      viewTabsStore.regenerateComponentKey()
-      break
-    }
     case "newPage": {
       window.open(tab.routerPathKey)
       break
@@ -115,6 +118,13 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
       console.error("错误的菜单类型")
     }
   }
+}
+
+// 处理刷新
+const handleReload = () => {
+  viewTabsStore.regenerateComponentKey()
+  reloading.value = true
+  setTimeout(()=>{reloading.value = false}, 500)
 }
 
 // 初始化小窗相关，全局搜索：miniWindow=true 可查看ui小窗判定代码
@@ -281,3 +291,24 @@ const handleUnAffix = (tab: StarViewType) => {
   })
 }
 </script>
+<style lang="scss">
+/* 下拉菜单触发面积增大 */
+.view-tab-dropdown {
+  padding: 6px 16px 6px 16px;
+}
+
+/* tabs图标 */
+.view-tab-icon {
+  margin: 0 !important;
+  font-size: 12px
+}
+
+/* 刷新图标淡入 */
+.fadein-enter-active {
+  transition: all .28s ease-in-out;
+}
+.fadein-enter-from {
+  transform: scale(0.75);
+  opacity: 0;
+}
+</style>

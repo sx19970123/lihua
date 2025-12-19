@@ -83,17 +83,6 @@ services:
     volumes:
       - xxl-job-resource:/app/
 
-  # 开发文档
-  doc:
-    container_name: lihua-web-document              # 启动容器名
-    build:                                          # 通过./document中的dockerfile构建镜像
-      context: ./document
-      dockerfile: dockerfile
-    ports:                                          # 端口映射，将容器80端口映射到主机81端口
-      - "81:80"
-    volumes:
-      - doc-dist-resource:/usr/share/nginx/html/
-
 # 容器间共享网络
 networks:
   network:
@@ -107,4 +96,3 @@ volumes:
   jar-resource:
   dist-resource:
   xxl-job-resource:
-  doc-dist-resource:

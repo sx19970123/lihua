@@ -57,11 +57,6 @@ export const useThemeStore = defineStore('theme',{
         const antColorPrimary: string = settings.themeConfig.token.colorPrimary
 
         /**
-         * 侧边栏背景颜色
-         */
-        const siderBackgroundColor: string = settings.layoutBackgroundColor
-
-        /**
          * 磨砂玻璃效果
          */
         const groundGlass: boolean = settings.groundGlass
@@ -132,7 +127,7 @@ export const useThemeStore = defineStore('theme',{
             mixSplitMenu,
             isSmallWindow,
             layoutBackgroundColor,
-            siderBackgroundColor,
+            // siderBackgroundColor,
             siderMode,
             siderGroup,
             siderWith,
@@ -193,7 +188,6 @@ export const useThemeStore = defineStore('theme',{
                     backgroundColor = 'rgba(20,20,20,1)'
                 }
                 this.changeLayoutBackgroundColor(backgroundColor)
-                this.$state.siderBackgroundColor = this.$state.layoutBackgroundColor
                 this.$state.themeConfig.algorithm = theme.darkAlgorithm
             }
             // 亮色模式下，顶部颜色为白色、侧边颜色为白色
@@ -245,10 +239,8 @@ export const useThemeStore = defineStore('theme',{
         // 修改侧边栏颜色
         changeSiderTheme() {
             if (this.$state.siderTheme === 'dark') {
-                this.siderBackgroundColor = 'rgba(20,20,20,1)'
                 document.documentElement.setAttribute("sider-dark", "dark")
             } else {
-                this.siderBackgroundColor = 'rgba(255,255,255,1)'
                 document.documentElement.setAttribute("sider-dark", "light")
             }
         },
@@ -306,7 +298,6 @@ export const useThemeStore = defineStore('theme',{
             this.$state.mixSplitMenu = settings.mixSplitMenu
             this.$state.affixHead = settings.affixHead
             this.$state.layoutBackgroundColor = settings.layoutBackgroundColor
-            this.$state.siderBackgroundColor = settings.siderBackgroundColor
             this.$state.siderMode = settings.siderMode
             this.$state.siderWith = settings.siderWith
             this.$state.originSiderWith = settings.originSiderWith

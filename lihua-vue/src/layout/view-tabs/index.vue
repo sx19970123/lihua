@@ -1,6 +1,6 @@
 <template>
     <a-tabs :activeKey="activeKey"
-            class="unselectable"
+            class="unselectable tab-none-padding"
             style="padding: 8px 0 0 8px;"
             type="editable-card"
             size="small"
@@ -10,7 +10,7 @@
             @change="handleSwitchTab"
             :key="tabsRenderKey"
     >
-      <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" :closable="!tab.affix" style="padding: 0">
+      <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" :closable="false" style="padding: 0">
         <!--每个tab的下拉菜单-->
         <template #tab>
           <tab-pane-menu :tab="tab"
@@ -232,5 +232,12 @@ watch(() => route.path,(value) => {
   opacity: 0.2;
   border-radius: 5px 5px 0 0;
   background-color: var(--colorPrimary);
+}
+
+.tab-none-padding {
+  .ant-tabs-tab {
+    padding: 0 !important;
+  }
+
 }
 </style>

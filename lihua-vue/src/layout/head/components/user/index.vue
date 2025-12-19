@@ -1,5 +1,5 @@
 <template>
-  <a-dropdown trigger="click" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+  <a-dropdown :trigger="['contextmenu', 'click']" >
     <a-button class="header-right-item" type="text" size="large" style="margin-left: 8px;padding-bottom: 38px">
       <template #icon>
         <a-tooltip title="个人中心" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
@@ -8,7 +8,7 @@
       </template>
     </a-button>
     <template #overlay>
-      <a-menu class="user-card" @click="handleClickMenu">
+      <a-menu class="user-card" @click="handleClickMenu"  v-rollDisable="true">
         <a-menu-item key="user-overview">
           <a-flex align="center" :gap="12">
             <user-avatar :size="48" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
