@@ -20,7 +20,7 @@
 
 #### 开发文档地址
 
-[开发文档](https://sx19970123.github.io/lihua-document/)
+[开发文档](https://doc.lihua.xyz/)
 
 #### deepwiki AI文档
 [AI文档](https://deepwiki.com/sx19970123/lihua)
