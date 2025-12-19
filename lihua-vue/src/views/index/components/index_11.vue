@@ -10,7 +10,7 @@
     <template #overview>
       <a-card :body-style="{height: '124px'}">
         <a-typography-title :level="4" ellipsis>开发文档</a-typography-title>
-        <a-typography-text type="secondary" ellipsis>前后端项目结构、重要的全局功能、各层开发实例、工具类用法...</a-typography-text>
+        <a-typography-text type="secondary" ellipsis>前端 后端 移动端</a-typography-text>
       </a-card>
     </template>
   </expandable-card>

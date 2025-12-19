@@ -7,7 +7,7 @@
   >
     <template #overview>
       <a-card :body-style="{height: '100px'}" class="card-background">
-        <a-typography-title :level="4" ellipsis>前端框架</a-typography-title>
+        <a-typography-title :level="4" ellipsis>前端</a-typography-title>
         <a-typography-text ellipsis type="secondary">
           <a-typography-text type="secondary">当前Vue版本为 </a-typography-text>
           <a-typography-text :style="{color:themeStore.getColorPrimary()}">{{versionInfo.vueVersion}}</a-typography-text>
@@ -16,7 +16,7 @@
     </template>
     <template #middle>
       <a-card :body-style="{height: '100px'}" class="card-background child">
-        <a-typography-title :level="4" ellipsis>前端框架</a-typography-title>
+        <a-typography-title :level="4" ellipsis>前端</a-typography-title>
         <a-typography-text ellipsis type="secondary">
           <a-typography-text type="secondary">当前Vue版本为 </a-typography-text>
           <a-typography-text :style="{color:themeStore.getColorPrimary()}">{{versionInfo.vueVersion}}</a-typography-text>
@@ -25,7 +25,7 @@
     </template>
     <template #detail>
       <a-card class="scrollbar card-background" id="test">
-        <a-typography-title :level="4" ellipsis>前端框架</a-typography-title>
+        <a-typography-title :level="4" ellipsis>前端</a-typography-title>
         <a-typography-text ellipsis type="secondary">
           <a-typography-text type="secondary">当前Vue版本为 </a-typography-text>
           <a-typography-text :style="{color:themeStore.getColorPrimary()}">{{versionInfo.vueVersion}}</a-typography-text>

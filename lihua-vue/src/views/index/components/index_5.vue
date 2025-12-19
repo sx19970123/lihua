@@ -10,7 +10,7 @@
     >
       <template #overview>
         <a-card class="card-background" :body-style="{height: '100px'}">
-          <a-typography-title :level="4" ellipsis>APP&小程序</a-typography-title>
+          <a-typography-title :level="4" ellipsis>移动端</a-typography-title>
           <a-typography-text ellipsis type="secondary">
             <a-typography-text type="secondary">基于</a-typography-text>
             <a-typography-text :style="{color:themeStore.getColorPrimary()}">uni-app</a-typography-text>
@@ -20,7 +20,7 @@
       </template>
       <template #middle>
         <a-card class="card-background child" :body-style="{height: '100px'}">
-          <a-typography-title :level="4" ellipsis>APP&小程序</a-typography-title>
+          <a-typography-title :level="4" ellipsis>移动端</a-typography-title>
           <a-typography-text ellipsis type="secondary">
             <a-typography-text type="secondary">基于</a-typography-text>
             <a-typography-text :style="{color:themeStore.getColorPrimary()}">uni-app</a-typography-text>
@@ -30,7 +30,7 @@
       </template>
       <template #detail>
         <a-card class="scrollbar card-background" id="test">
-          <a-typography-title :level="4" ellipsis>APP&小程序</a-typography-title>
+          <a-typography-title :level="4" ellipsis>移动端</a-typography-title>
           <a-typography-text ellipsis type="secondary">
             <a-typography-text type="secondary">基于</a-typography-text>
             <a-typography-text :style="{color:themeStore.getColorPrimary()}">uni-app</a-typography-text>

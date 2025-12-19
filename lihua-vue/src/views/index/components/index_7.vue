@@ -38,9 +38,9 @@
         </a-typography-link>
       </a-card-grid>
       <a-card-grid >
-        <a-typography-link ellipsis href="https://ld246.com/article/1549638745630" target="_blank">
-          <img src="https://b3log.org/images/brand/vditor-128.png" style="width: 15px;height: 15px">
-          Vditor
+        <a-typography-link ellipsis href="https://www.tiny.cloud/tinymce/" target="_blank">
+          <img src="https://ts1.tc.mm.bing.net/th/id/ODF.IeBbbwXbgEJ8DVeCETQDGw" style="width: 15px;height: 15px">
+          tinymce
         </a-typography-link>
       </a-card-grid>
       <a-card-grid >

@@ -58,7 +58,6 @@ const handleClick = (show:boolean) => {
 </script>
 <style scoped>
 .card-background {
-  background-image: url("../static/狸花猫-小黑子-期待.svg");
   background-position-y: 10px; /* 增加10像素间距 */
   background-position-x: calc(100% - 10px); /* 保持右对齐 */
   background-repeat: no-repeat;
@@ -70,7 +69,6 @@ const handleClick = (show:boolean) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("../static/狸花猫-小黑子-期待.svg");
   background-position-y: 10px; /* 增加10像素间距 */
   background-position-x: calc(100% - 10px); /* 保持右对齐 */
   background-repeat: no-repeat;

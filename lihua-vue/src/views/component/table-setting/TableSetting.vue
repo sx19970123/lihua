@@ -1,7 +1,7 @@
 <template>
   <a-card>
     <template #title>
-      <a-typography-link :href="baseDocApi + '/document/component/TABLE-SETTING'" target="_blank">组件文档</a-typography-link>
+      <a-typography-link :href="baseDocApi + '/doc-web/components/table-setting'" target="_blank">组件文档</a-typography-link>
     </template>
     <a-flex vertical :gap="16" style="margin-top: 16px">
       <Demo1/>
