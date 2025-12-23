@@ -34,7 +34,7 @@ const handleDeptSelect = (resp: ResponseType<SysDept>) => {
 <style scoped>
 .default-dept-card {
   max-height: 500px;
-  box-shadow: var(--lihua-light-box-shadow);
+  box-shadow: var(--lihua-box-shadow);
   border-radius: 8px;
 }
 </style>

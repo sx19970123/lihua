@@ -17,7 +17,7 @@
           <Logo class="logo" :class="isSmallWindow ? 'sider-logo' : ''"/>
           <!-- 侧边栏-->
           <div class="sider sider-scrollbar">
-            <Side @route-change="handleRouteChange" :class="isSmallWindow ? 'small-sider-content' : ''"/>
+            <Side @route-change="handleRouteChange"/>
           </div>
         </a-layout-sider>
       </transition>
@@ -39,9 +39,9 @@
           </transition>
           <view-tabs v-if="themeStore.showViewTabs"/>
         </a-layout-header>
-        <a-layout-content class="layout-content">
+        <a-layout-content>
           <!--内容-->
-          <Content/>
+          <Content class="layout-content"/>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -138,16 +138,16 @@ onUnmounted(() => {
   z-index: 3;
   height: auto;
   padding: 0;
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  line-height: 48px;
+  backdrop-filter: var(--lihua-backdrop-filter-lg);
+  -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
+  line-height: var(--lihua-layout-height);
 }
 .sn-head {
-  box-shadow: var(--lihua-layout-light-box-shadow);
-  padding-right: 32px;
+  box-shadow: var(--lihua-layout-box-shadow);
+  padding-right: var(--lihua-layout-head-space);
 }
 .sider {
-  height: calc(100vh - 48px);
+  height: calc(100vh - var(--lihua-layout-height));
 }
 .logo {
   padding: 8px 16px 8px 16px
@@ -157,20 +157,18 @@ onUnmounted(() => {
   height: 100vh;
   top: 0;
   z-index: 4;
-  box-shadow: var(--lihua-layout-light-box-shadow);
+  box-shadow: var(--lihua-layout-box-shadow);
 }
 .small-sn-sider {
   z-index: 101;
   position: fixed;
   top: 0;
-  box-shadow: var(--lihua-layout-light-box-shadow);
-  background-color: #fff !important;
+  box-shadow: var(--lihua-layout-box-shadow);
+  background-color: var(--lihua-background-color-level-2) !important;
 }
-.small-sider-content {
-  height: calc(100vh - 32px - 32px);
-}
+
 .sider-logo {
-  background-color: #fff;
+  background-color: var(--lihua-background-color-level-2);
 }
 </style>
 
@@ -181,29 +179,16 @@ onUnmounted(() => {
     top: 0;
   }
 }
-[data-theme = dark] {
-  .sn-sider {
-    box-shadow: var(--lihua-layout-dark-box-shadow);
-  }
-  .sn-head {
-    box-shadow: var(--lihua-layout-dark-box-shadow);
-  }
-  .sider-logo {
-    background-color: #141414;
-  }
-  .small-sn-sider {
-    background-color: #141414 !important;
-  }
-}
+
 [sider-dark = dark] {
   .small-sn-sider {
-    background-color: rgba(0,21,41) !important;
+    background-color: var(--lihua-sider-dark-color) !important;
   }
   .sider-logo {
     span {
       color: rgba(255, 255, 255, 0.85);
     }
-    background-color: rgba(0,21,41);
+    background-color: var(--lihua-sider-dark-color)
   }
 }
 </style>

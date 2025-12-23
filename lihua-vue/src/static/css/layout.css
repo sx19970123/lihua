@@ -1,15 +1,15 @@
 /** 开启view-tabs / 显示show-layout / 导航类型为顶部导航 */
 [view-tabs=show][show-hide-layout=show][layout-type='top-navigation'] .layout-content {
-    min-height: calc(100vh - (48px + 52px));
+    min-height: calc(100vh - (var(--lihua-layout-height) + 54px));
 }
 
 /** 隐藏view-tabs / 显示show-layout / 导航类型为顶部导航 */
 [view-tabs=hide][show-hide-layout=show][layout-type='top-navigation'] .layout-content {
-    min-height: calc(100vh - 48px);
+    min-height: calc(100vh - var(--lihua-layout-height));
 }
 
 [view-tabs=show][show-hide-layout=hide] .layout-content {
-    min-height: calc(100vh - (54px));
+    min-height: calc(100vh - 54px);
 }
 
 /* content 留出上左右 16像素空隙，下方14像素空袭，兼容iframe全屏不出现滚动条*/

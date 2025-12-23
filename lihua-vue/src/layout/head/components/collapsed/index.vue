@@ -1,5 +1,5 @@
 <template>
-  <div class="menu-fold">
+  <div class="menu-fold anticon">
     <menu-unfold-outlined
         v-if="permissionStore.collapsed"
         class="menu-fold-icon"
@@ -29,8 +29,6 @@ const handleCloseCollapsed = () => {
 <style scoped>
 .menu-fold {
   margin-left: 16px;
-  margin-top: 3px;
-  height: 45px;
 }
 .menu-fold-icon {
   font-size: 20px

@@ -5,14 +5,14 @@
     /* 抽屉背景虚化 */
     .ant-drawer-mask {
         will-change: backdrop-filter;
-        backdrop-filter: saturate(180%) blur(6px) !important;
-        -webkit-backdrop-filter: saturate(180%) blur(6px) !important;
+        backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
+        -webkit-backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
     }
     /* 模态框背景虚化 */
     .ant-modal-wrap {
         will-change: backdrop-filter;
-        backdrop-filter: saturate(180%) blur(6px) !important;
-        -webkit-backdrop-filter: saturate(180%) blur(6px) !important;
+        backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
+        -webkit-backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
     }
     /* 选项卡选中项目虚化 */
     .ant-tabs-tab-active {
@@ -21,7 +21,7 @@
     }
     /* 下拉菜单虚化 */
     .ant-dropdown {
-        backdrop-filter: saturate(180%) blur(6px) !important;
+        backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
         border-radius: 8px;
         .ant-dropdown-menu {
             background-color: rgba(0, 0, 0, 0) !important;
@@ -29,7 +29,7 @@
     }
 
     .ant-dropdown-menu-submenu {
-        backdrop-filter: saturate(180%) blur(6px) !important;
+        backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
     }
 }
 

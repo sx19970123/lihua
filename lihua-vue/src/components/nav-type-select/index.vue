@@ -65,7 +65,7 @@ const handleClockNavType = (key: string) => {
   .nav-select-sub-top {
     width: 70%;
     height: 30%;
-    background: #ffffff;
+    background: var(--lihua-background-color-level-2);
     float: right;
     border-top-right-radius: 6px;
   }
@@ -88,7 +88,7 @@ const handleClockNavType = (key: string) => {
   .nav-select-top {
     width: 100%;
     height: 30%;
-    background: #ffffff;
+    background: var(--lihua-background-color-level-2);
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
   }
@@ -113,14 +113,6 @@ const handleClockNavType = (key: string) => {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   }
 
-  .nav-select-sub-top {
-    width: 70%;
-    height: 30%;
-    background: #141414;
-    float: right;
-    border-top-right-radius: 6px;
-  }
-
   .nav-select-menu-left {
     width: 30%;
     height: 100%;
@@ -134,14 +126,6 @@ const handleClockNavType = (key: string) => {
     height: 70%;
     background: #212121;
     border-bottom-left-radius: 6px;
-  }
-
-  .nav-select-top {
-    width: 100%;
-    height: 30%;
-    background: #141414;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
   }
 
   .nav-select-menu-top {

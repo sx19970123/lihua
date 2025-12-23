@@ -357,7 +357,7 @@ onUnmounted(() => {
 .notice-card {
   width: 340px;
   max-height: 500px;
-  box-shadow: var(--lihua-light-box-shadow);
+  box-shadow: var(--lihua-box-shadow);
   padding: 8px;
   background-color: #ffffff;
   border-radius: 8px;

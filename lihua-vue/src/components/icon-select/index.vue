@@ -321,141 +321,74 @@ onUnmounted(() => {
   }
 })
 </script>
-<style>
+<style scoped>
 /* 小 */
 .small {
-  .icon-group {
-    padding: 4px;
-    border-radius: 8px;
-    width: 60px;
-    height: 32px;
-    transition: all 0.2s ease;
-  }
-  .icon-group:hover {
-    padding: 6px;
-    border-radius: 8px;
-    width: 60px;
-    height: 32px;
-    cursor: pointer;
-    color: #ffffff;
-    transition: all 0.2s ease;
-  }
-  .icon-group:hover .icon-size {
-    font-size: 20px;
-    transition: all 0.2s ease;
-  }
-  .icon-size {
-    font-size: 18px;
-    transition: all 0.2s ease;
-  }
-
-  /* 使用自定义css 变量 --colorPrimary 实现颜色跟随主题 */
-  .icon-group:hover {
-    background: var(--colorPrimary);
-  }
-  .icon-active {
-    background: var(--colorPrimary);
-    color: #ffffff;
-  }
-  .text-ellipsis {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
-    width: 0;
-  }
+  --icon-padding: 4px;
+  --icon-padding-hover: 6px;
+  --icon-width: 60px;
+  --icon-height: 32px;
+  --icon-font-size: 18px;
+  --icon-font-size-hover: 20px;
+  --text-width: 0;
 }
-
 
 /* 默认 */
 .default {
-  .icon-group {
-    padding: 6px;
-    border-radius: 8px;
-    width: 110px;
-    height: 60px;
-    transition: all 0.2s ease;
-  }
-  .icon-group:hover {
-    padding: 6px;
-    border-radius: 8px;
-    width: 110px;
-    height: 60px;
-    cursor: pointer;
-    color: #ffffff;
-    transition: all 0.2s ease;
-  }
-  .icon-group:hover .icon-size {
-    font-size: 26px;
-    transition: all 0.2s ease;
-  }
-  .icon-size {
-    font-size: 20px;
-    transition: all 0.2s ease;
-  }
-
-  /* 使用自定义css 变量 --colorPrimary 实现颜色跟随主题 */
-  .icon-group:hover {
-    background: var(--colorPrimary);
-  }
-  .icon-active {
-    background: var(--colorPrimary);
-    color: #ffffff;
-  }
-  .text-ellipsis {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
-    width: 110px;
-  }
+  --icon-padding: 6px;
+  --icon-padding-hover: 6px;
+  --icon-width: 110px;
+  --icon-height: 60px;
+  --icon-font-size: 20px;
+  --icon-font-size-hover: 26px;
+  --text-width: 110px;
 }
-
 
 /* 大 */
 .large {
-  .icon-group {
-    padding: 10px;
-    border-radius: 8px;
-    width: 180px;
-    height: 80px;
-    transition: all 0.2s ease;
-  }
-  .icon-group:hover {
-    padding: 10px;
-    border-radius: 8px;
-    width: 180px;
-    height: 80px;
-    cursor: pointer;
-    color: #ffffff;
-    transition: all 0.2s ease;
-  }
-  .icon-group:hover .icon-size {
-    font-size: 32px;
-    transition: all 0.2s ease;
-  }
-  .icon-size {
-    font-size: 24px;
-    transition: all 0.2s ease;
-  }
-
-  /* 使用自定义css 变量 --colorPrimary 实现颜色跟随主题 */
-  .icon-group:hover {
-    background: var(--colorPrimary);
-  }
-  .icon-active {
-    background: var(--colorPrimary);
-    color: #ffffff;
-  }
-  .text-ellipsis {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
-    width: 180px;
-  }
+  --icon-padding: 10px;
+  --icon-padding-hover: 10px;
+  --icon-width: 180px;
+  --icon-height: 80px;
+  --icon-font-size: 24px;
+  --icon-font-size-hover: 32px;
+  --text-width: 180px;
 }
 
+.icon-group {
+  padding: var(--icon-padding);
+  border-radius: 8px;
+  width: var(--icon-width);
+  height: var(--icon-height);
+  transition: all 0.2s ease;
+}
 
+.icon-group:hover {
+  padding: var(--icon-padding-hover);
+  cursor: pointer;
+  color: #ffffff;
+  background: var(--colorPrimary);
+}
 
+.icon-size {
+  font-size: var(--icon-font-size);
+  transition: all 0.2s ease;
+}
+
+.icon-group:hover .icon-size {
+  font-size: var(--icon-font-size-hover);
+}
+
+.icon-active {
+  background: var(--colorPrimary);
+  color: #ffffff;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  width: var(--text-width);
+}
 </style>

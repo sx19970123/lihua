@@ -116,6 +116,6 @@ const logout = async () => {
 <style scoped>
 .user-card {
   width: 220px;
-  box-shadow: var(--lihua-light-box-shadow);
+  box-shadow: var(--lihua-box-shadow);
 }
 </style>

@@ -47,7 +47,7 @@ const selectedColor = ({color, name, key}: ColorSelectItem) => {
   border-radius: 8px;
   cursor: pointer;
   margin-right: 10px;
-  box-shadow: var(--lihua-light-box-shadow);
+  box-shadow: var(--lihua-box-shadow);
 }
 
 .color-selected {

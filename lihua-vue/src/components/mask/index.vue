@@ -48,7 +48,7 @@ watch(() => showMask, (value) => {
 <style>
 [data-ground-glass = glass] {
   .lihua-mask {
-    backdrop-filter: blur(6px);
+    backdrop-filter: var(var(--lihua-backdrop-filter-sm));
   }
 }
 </style>

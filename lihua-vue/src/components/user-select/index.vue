@@ -421,7 +421,7 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: var(--lihua-backdrop-filter-lg);
   opacity: 0;
   transition: opacity 0.17s ease;
   pointer-events: none;

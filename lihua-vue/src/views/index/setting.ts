@@ -3,7 +3,7 @@ const nextUpdate = [
     {
         version: '1.3.1',
         record: [
-
+            '1. 将公共样式抽取为css变量，方便维护'
         ]
     }
 ]

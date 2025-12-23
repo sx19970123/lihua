@@ -35,8 +35,8 @@
     下拉菜单毛玻璃效果
  */
 .drop-down-glass {
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: var(--lihua-backdrop-filter-lg);
+    -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
     background: rgba(255,255,255,0);
     border-radius:8px
 }

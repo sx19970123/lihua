@@ -9,7 +9,7 @@
                          v-show="props.showLayout"
                          :style="themeStore.siderTheme === 'light' ?
                           { background: themeStore.layoutBackgroundColor } : ''">
-          <a-flex align="center" justify="space-between" style="margin-right: 32px; margin-left: 32px">
+          <a-flex align="center" justify="space-between" style="margin: 0 var(--lihua-layout-head-space) 0 var(--lihua-layout-head-space)">
             <!--logo-->
             <Logo class="logo"/>
             <!--导航-->
@@ -45,16 +45,16 @@ const props = defineProps<{showLayout: boolean }>()
 
 <style scoped>
 .tn-header {
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: var(--lihua-backdrop-filter-lg);
+  -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
   position: relative;
   z-index: 10;
 }
 .tn-layout-header {
   padding: 0;
-  height: 48px;
-  line-height: 48px;
-  box-shadow: var(--lihua-layout-light-box-shadow);
+  height: var(--lihua-layout-height);
+  line-height: var(--lihua-layout-height);
+  box-shadow: var(--lihua-layout-box-shadow);
 }
 
 .logo {
@@ -64,7 +64,7 @@ const props = defineProps<{showLayout: boolean }>()
 .sider {
   flex: 1 1 0;
   min-width: 0;
-  margin-left: 32px;
+  margin-left: var(--lihua-layout-head-space);
 }
 </style>
 
@@ -73,11 +73,6 @@ const props = defineProps<{showLayout: boolean }>()
   .tn-header {
     position: sticky;
     top: 0;
-  }
-}
-[data-theme = dark] {
-  .tn-layout-header {
-    box-shadow: var(--lihua-layout-dark-box-shadow);
   }
 }
 </style>

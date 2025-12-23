@@ -151,7 +151,7 @@ const replaceLoadingElement = () => {
 <style lang="less">
 /* 验证码外部容器样式 */
 #tianai-captcha-parent {
-  box-shadow: var(--lihua-light-box-shadow) !important;
+  box-shadow: var(--lihua-box-shadow) !important;
   border-radius: 8px !important;
   width: 332px !important;
   height: 326px !important;
@@ -223,10 +223,6 @@ const replaceLoadingElement = () => {
   border-radius: 5px 5px 0 0;
 }
 [data-theme = 'dark'] {
-  /* 验证码外部容器样式 */
-  #tianai-captcha-parent {
-    box-shadow: var(--lihua-dark-box-shadow) !important;
-  }
   /* 滑动提示文字样式 */
   #tianai-captcha-slider-move-track-font {
     color: rgba(255, 255, 255, 0.85) !important;

@@ -7,7 +7,7 @@
           :hover-scale="1.03"
           :expanded-width="600"
           :expanded-height="610"
-          :middle-style="{'background':themeStore.$state.isDarkTheme ? '#141414': '#fff','background-size': 'contain','border-radius':' 8px'}"
+          :middle-style="{'background': 'var(--lihua-background-color-level-2)','background-size': 'contain','border-radius':' 8px'}"
       >
         <template #overview>
           <a-card :body-style="{height: '100px'}" class="card-background">

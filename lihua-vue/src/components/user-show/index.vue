@@ -67,13 +67,12 @@ try {
   padding: 2px;
   display: inline-block;
   margin: 4px;
-  box-shadow: var(--lihua-layout-light-box-shadow);
+  box-shadow: var(--lihua-layout-box-shadow);
   user-select: none;
 }
 [data-theme="dark"] {
   .lihua-user-select {
     border: 1px solid #424242;
-    box-shadow: var(--lihua-layout-dark-box-shadow);
   }
 }
 </style>
