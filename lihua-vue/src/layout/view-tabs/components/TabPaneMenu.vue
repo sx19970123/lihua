@@ -300,7 +300,7 @@ const handleUnAffix = (tab: StarViewType) => {
 /* tabs图标 */
 .view-tab-icon {
   margin: 0 !important;
-  font-size: 12px
+  font-size: var(--lihua-font-size-xs)
 }
 
 /* 刷新图标淡入 */

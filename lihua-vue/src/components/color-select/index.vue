@@ -53,6 +53,6 @@ const selectedColor = ({color, name, key}: ColorSelectItem) => {
 .color-selected {
   color: #ffffff;
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--lihua-font-size-sm);
 }
 </style>

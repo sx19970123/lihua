@@ -170,7 +170,7 @@ const replaceLoadingElement = () => {
 /* 点击提示文字样式 */
 #tianai-captcha.tianai-captcha-word-click .click-tip #tianai-captcha-click-track-font {
   color: rgba(0, 0, 0, 0.88) !important;
-  font-size: 20px !important;
+  font-size: var(--lihua-font-size-xl) !important;
   font-weight: 500 !important;
 }
 
@@ -276,6 +276,6 @@ const replaceLoadingElement = () => {
   left: 50%;
   transform: translate(-50%, -50%);
   color: rgba(0, 0, 0, 0.65);
-  font-size: 14px;
+  font-size: var(--lihua-font-size-sm);
 }
 </style>

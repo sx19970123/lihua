@@ -438,7 +438,7 @@ onBeforeUnmount(() => {
   margin: var(--lihua-space-sm) 0;
 }
 .menu-icon {
-  font-size: 18px
+  font-size: var(--lihua-font-size-lg)
 }
 :deep(.title-search-input input) {
   cursor: pointer;

@@ -48,7 +48,7 @@ const handleClockNavType = (key: string) => {
   bottom: 6px;
   right: 6px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--lihua-font-size-sm);
 }
 
 .nav-select-content {

@@ -53,6 +53,6 @@ const handleClickNavColor = (key: string) => {
 .color-selected {
   color: #1677ff;
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--lihua-font-size-sm);
 }
 </style>
