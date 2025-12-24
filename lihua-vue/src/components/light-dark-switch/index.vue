@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-right: 16px;">
+  <div style="padding-right: var(--lihua-space-base)">
     <a-config-provider :wave="{ disabled: true }">
       <a-switch v-model:checked="themeStore.isDarkTheme"
                 @change="() => themeStore.changeDataDark()"

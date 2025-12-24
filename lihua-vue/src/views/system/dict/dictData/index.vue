@@ -1,6 +1,6 @@
 <template>
   <a-flex vertical :gap="16">
-    <a-card style="margin-top: 24px;" :body-style="{'padding-bottom': '0'}">
+    <a-card style="margin-top: var(--lihua-space-lg);" :body-style="{'padding-bottom': '0'}">
       <a-form :colon="false">
         <a-row :gutter="16">
           <a-col>

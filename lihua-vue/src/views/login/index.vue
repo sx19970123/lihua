@@ -226,9 +226,9 @@ onMounted(() => {
 /* 登录卡片 */
 .login-card {
   max-width: 380px;
-  padding-left: 16px;
-  padding-right: 16px;
-  border-radius: 24px;
+  padding-left: var(--lihua-space-base);
+  padding-right: var(--lihua-space-base);
+  border-radius: var(--lihua-radius-lg);
 }
 
 /* 表单 */
@@ -239,7 +239,7 @@ onMounted(() => {
 /* 视口宽度小于378时，卡片取96视口宽度 居中 */
 @media screen and (max-width: 378px) {
   .login-card {
-    width: calc(100vw - 32px);
+    width: calc(100vw - var(--lihua-space-xl));
     margin: auto;
   }
 }
@@ -247,8 +247,8 @@ onMounted(() => {
 /* 暗色模式切换开关 */
 .head-theme-switch {
   position: absolute;
-  top: 16px;
-  right: 24px;
+  top: var(--lihua-space-base);
+  right: var(--lihua-space-lg);
 }
 
 .card-enter-active {

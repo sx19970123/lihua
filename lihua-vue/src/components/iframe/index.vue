@@ -62,7 +62,7 @@ onUnmounted(() =>  sessionStorage.removeItem('isRefreshed' + src.value))
 <style>
 .lihua-iframe {
   width: 100%;
-  border-radius: 8px;
+  border-radius: var(--lihua-radius-sm);
   border: none;
 }
 

@@ -3,7 +3,7 @@
              style="width: 100%"
              :hover-scale="1"
              :expanded-width="600"
-             :middle-style="{'background':'#fff','background-size': 'contain','border-radius':' 8px'}"
+             :middle-style="{'background':'#fff','background-size': 'contain','border-radius':'var(--lihua-radius-sm)'}"
              :is-detail-visible="false"
              :expanded-height="600"
   >
@@ -20,15 +20,15 @@
             />
             <a-flex align="flex-start" vertical>
               <a-row>
-                <a-typography-title :level="3" style="margin: 4px 0 0;">欢迎回来</a-typography-title>
-                <a-typography-title :level="3" style="margin: 4px 0 0;" :style="{color: themeStore.getColorPrimary()}">&nbsp;{{userStore.$state.nickname}}</a-typography-title>
+                <a-typography-title :level="3" style="margin: var(--lihua-space-xs) 0 0;">欢迎回来</a-typography-title>
+                <a-typography-title :level="3" style="margin: var(--lihua-space-xs) 0 0;" :style="{color: themeStore.getColorPrimary()}">&nbsp;{{userStore.$state.nickname}}</a-typography-title>
               </a-row>
-              <a-typography-text style="margin-top: 4px" type="secondary">{{userStore.defaultDeptPosts.map(item => item.name).join(" ")}}</a-typography-text>
+              <a-typography-text style="margin-top: var(--lihua-space-xs)" type="secondary">{{userStore.defaultDeptPosts.map(item => item.name).join(" ")}}</a-typography-text>
             </a-flex>
           </a-flex>
           <a-flex vertical style="margin-top: 10px">
-            <a-typography-title :level="4" style="margin: 4px 0 0;">{{dayjs(new Date()).format('YYYY-MM-DD HH:mm')}}</a-typography-title>
-            <a-typography-text :level="4" style="margin-top: 4px;" type="secondary">{{daysOfWeek[new Date().getDay()]}}</a-typography-text>
+            <a-typography-title :level="4" style="margin: var(--lihua-space-xs) 0 0;">{{dayjs(new Date()).format('YYYY-MM-DD HH:mm')}}</a-typography-title>
+            <a-typography-text :level="4" style="margin-top: var(--lihua-space-xs);" type="secondary">{{daysOfWeek[new Date().getDay()]}}</a-typography-text>
           </a-flex>
         </a-flex>
       </a-card>

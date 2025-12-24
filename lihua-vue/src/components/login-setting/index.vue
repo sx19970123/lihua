@@ -96,18 +96,18 @@ const handleGoLogin = async () => {
 .login-setting-carousel {
   width: 600px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--lihua-radius-sm);
 }
 
 @media screen and (max-width: 600px) {
   .login-setting-carousel {
-    width: calc(100vw - 32px);
+    width: calc(100vw - var(--lihua-space-xl));
     margin: auto;
   }
 }
 
 :deep(.slick-list) {
-  border-radius: 8px;
+  border-radius: var(--lihua-radius-sm);
 }
 
 .next-leave-active {

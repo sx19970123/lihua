@@ -369,8 +369,8 @@ const initHover = () => {
   const handleAddHoverStyle = () => {
     if (props.hoverScale > 1) {
       style.value.cursor = 'pointer'
-      style.value.boxShadow = '0 8px 16px 0 rgba(0, 0, 0, 0.08)'
-      style.value.borderRadius = '8px'
+      style.value.boxShadow = 'var(--lihua-box-shadow)'
+      style.value.borderRadius = 'var(--lihua-radius-sm)'
     }
   }
   // 移除 hover 样式

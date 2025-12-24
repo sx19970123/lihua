@@ -6,7 +6,7 @@
                           :default-expand-all="true"
                           :multiple="false"
                           :field-names="{children:'children', title:'name', key:'id'}"
-                          :body-style="{padding: '16px', backgroundColor: themeStore.isDarkTheme ? '#1f1f1f' : '', borderRadius: '8px'}"
+                          :body-style="{padding: 'var(--lihua-space-base)', backgroundColor: themeStore.isDarkTheme ? '#1f1f1f' : '', borderRadius: 'var(--lihua-radius-sm)'}"
                           :bordered="false"
                           :show-toolbar="false"
                           v-model="userStore.defaultDept.id"

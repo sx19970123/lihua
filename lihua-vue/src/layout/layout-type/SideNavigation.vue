@@ -150,7 +150,7 @@ onUnmounted(() => {
   height: calc(100vh - var(--lihua-layout-height));
 }
 .logo {
-  padding: 8px 16px 8px 16px
+  padding: var(--lihua-space-sm) var(--lihua-space-base)
 }
 .sn-sider {
   position: sticky;

@@ -7,7 +7,7 @@
             <template #title>
               登陆或注册等场景下是否需要验证码
             </template>
-            <QuestionCircleOutlined style="margin-left: 4px"/>
+            <QuestionCircleOutlined style="margin-left: var(--lihua-space-xs)"/>
           </a-tooltip>
         </template>
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>

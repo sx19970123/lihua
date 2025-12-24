@@ -1,5 +1,5 @@
 <template>
-  <a-card class="login-setting-card" :body-style="{margin: '32px', 'padding-right': '16px'}">
+  <a-card class="login-setting-card" :body-style="{margin: 'var(--lihua-space-xl)', 'padding-right': 'var(--lihua-space-base)'}">
     <a-button class="login-setting-prev-btn" type="text" v-if="back" @click="handleBack">
       <template #icon>
         <LeftOutlined />
@@ -101,8 +101,8 @@ const handleGoLogin = () => {
 }
 .login-setting-prev-btn {
   position: absolute;
-  top: 16px;
-  left: 16px
+  top: var(--lihua-space-base);
+  left: var(--lihua-space-base)
 }
 .login-setting-icon {
   font-size: 60px
@@ -112,7 +112,7 @@ const handleGoLogin = () => {
   height: 75px;
 }
 .login-setting-content {
-  margin-top: 16px;
+  margin-top: var(--lihua-space-base);
   height: 240px
 }
 .login-setting-bottom-btn {

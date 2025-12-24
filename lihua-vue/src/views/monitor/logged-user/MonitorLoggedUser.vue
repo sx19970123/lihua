@@ -68,7 +68,7 @@
                 <DeleteOutlined />
               </template>
               强 退
-              <span v-if="logoutCacheKeys && logoutCacheKeys.length > 0" style="margin-left: 4px"> {{logoutCacheKeys.length}} 项</span>
+              <span v-if="logoutCacheKeys && logoutCacheKeys.length > 0" style="margin-left: var(--lihua-space-xs)"> {{logoutCacheKeys.length}} 项</span>
             </a-button>
           </a-popconfirm>
           <!--            表格设置-->

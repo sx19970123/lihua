@@ -42,7 +42,7 @@
             <index_10></index_10>
           </a-col>
         </a-row>
-        <a-row :gutter="16" style="margin-top: 16px">
+        <a-row :gutter="16" style="margin-top: var(--lihua-space-base)">
           <a-col :span="12">
             <index_11></index_11>
           </a-col>

@@ -7,7 +7,7 @@
             <template #title>
               同一账号最多允许 X 人同时登录，超出后先登录的用户将被强制下线
             </template>
-            <QuestionCircleOutlined style="margin-left: 4px"/>
+            <QuestionCircleOutlined style="margin-left: var(--lihua-space-xs)"/>
           </a-tooltip>
         </template>
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>

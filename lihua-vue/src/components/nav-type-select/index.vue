@@ -42,7 +42,7 @@ const handleClockNavType = (key: string) => {
 }
 </script>
 
-<style>
+<style scoped>
 .nav-select-check-icon {
   position: absolute;
   bottom: 6px;
@@ -51,89 +51,60 @@ const handleClockNavType = (key: string) => {
   font-size: 14px;
 }
 
-[data-theme = light] {
-  .nav-select-content {
-    position: relative; /* 设置为相对定位 */
-    width: 53px;
-    height: 43px;
-    background: #f3f3f3;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  }
-
-  .nav-select-sub-top {
-    width: 70%;
-    height: 30%;
-    background: var(--lihua-background-color-level-2);
-    float: right;
-    border-top-right-radius: 6px;
-  }
-
-  .nav-select-menu-left {
-    width: 30%;
-    height: 100%;
-    background: #021524;
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-  }
-
-  .nav-select-menu-sub-left {
-    width: 30%;
-    height: 70%;
-    background: #021524;
-    border-bottom-left-radius: 6px;
-  }
-
-  .nav-select-top {
-    width: 100%;
-    height: 30%;
-    background: var(--lihua-background-color-level-2);
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-  }
-
-  .nav-select-menu-top {
-    width: 100%;
-    height: 30%;
-    background: #021524;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-  }
+.nav-select-content {
+  position: relative;
+  width: 53px;
+  height: 43px;
+  background: var(--lihua-background-color-level-1);
+  border-radius: var(--lihua-radius-sm);
+  cursor: pointer;
+  box-shadow: var(--lihua-box-shadow);
 }
 
-[data-theme = dark] {
-  .nav-select-content {
-    position: relative; /* 设置为相对定位 */
-    width: 53px;
-    height: 43px;
-    background: #000000;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  }
+.nav-select-sub-top {
+  width: 70%;
+  height: 30%;
+  background: var(--lihua-background-color-level-2);
+  float: right;
+  border-top-right-radius: var(--lihua-radius-sm);
+}
 
-  .nav-select-menu-left {
-    width: 30%;
-    height: 100%;
-    background: #212121;
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-  }
+.nav-select-menu-left {
+  width: 30%;
+  height: 100%;
+  background: var(--lihua-sider-dark-color);
+  border-top-left-radius: var(--lihua-radius-sm);
+  border-bottom-left-radius: var(--lihua-radius-sm);
+}
 
-  .nav-select-menu-sub-left {
-    width: 30%;
-    height: 70%;
-    background: #212121;
-    border-bottom-left-radius: 6px;
-  }
+.nav-select-menu-sub-left {
+  width: 30%;
+  height: 70%;
+  background: var(--lihua-sider-dark-color);
+  border-bottom-left-radius: var(--lihua-radius-sm);
+}
 
+.nav-select-top {
+  width: 100%;
+  height: 30%;
+  background: var(--lihua-background-color-level-2);
+  border-top-left-radius: var(--lihua-radius-sm);
+  border-top-right-radius: var(--lihua-radius-sm);
+}
+
+.nav-select-menu-top {
+  width: 100%;
+  height: 30%;
+  background: var(--lihua-sider-dark-color);
+  border-top-left-radius: var(--lihua-radius-sm);
+  border-top-right-radius: var(--lihua-radius-sm);
+}
+
+[data-theme = 'dark'] {
+  .nav-select-menu-left,
+  .nav-select-menu-sub-left,
   .nav-select-menu-top {
-    width: 100%;
-    height: 30%;
-    background: #212121;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    background: var(--lihua-background-color-level-3);
   }
 }
 </style>

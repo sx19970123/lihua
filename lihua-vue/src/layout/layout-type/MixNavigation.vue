@@ -41,7 +41,7 @@
             <!-- 窗口缩小到阈值后特殊侧边栏logo-->
             <div class="sider-logo" :style="{width: !permissionStore.collapsed && isSmallWindow ? themeStore.siderWith + 'px' : '0px'}">
               <a-flex align="center" justify="center" v-if="!permissionStore.collapsed && isSmallWindow">
-                <Logo style="margin: 0; padding-right: 8px"/>
+                <Logo style="margin: 0; padding-right: var(--lihua-space-sm)"/>
               </a-flex>
             </div>
             <!-- 侧边栏-->
@@ -261,7 +261,7 @@ onUnmounted(() => {
   margin-right: var(--lihua-layout-head-space);
 }
 .logo {
-  padding: 0 0 0 8px;
+  padding: 0 0 0 var(--lihua-space-sm);
   margin-left: var(--lihua-layout-head-space);
 }
 .sider-logo {

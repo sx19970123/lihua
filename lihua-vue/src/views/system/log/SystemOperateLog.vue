@@ -89,7 +89,7 @@
                  <DeleteOutlined />
                </template>
                删 除
-               <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
+               <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: var(--lihua-space-xs)"> {{selectedIds.length}} 项</span>
              </a-button>
            </a-popconfirm>
 

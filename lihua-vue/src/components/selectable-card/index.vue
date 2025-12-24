@@ -292,23 +292,11 @@ watch(() => props.dataSource, () => {
 
 })
 </script>
-
-<style>
-  [data-theme="light"] {
-    .select-card {
-      border: 1px solid #d9d9d9;
-    }
-  }
-  [data-theme="dark"] {
-    .select-card {
-      border: 1px solid #424242;
-    }
-  }
-</style>
 <style scoped>
 .select-card {
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: var(--lihua-radius-sm);
+  padding: var(--lihua-space-base);
+  border: 1px solid var(--lihua-border-color);
   margin-right: 3px;
 }
 .select-card:hover {

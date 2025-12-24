@@ -355,7 +355,7 @@ onUnmounted(() => {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  box-shadow: 0 0 4px #ccc;
+  box-shadow: var(--lihua-box-shadow);
   overflow: hidden;
 }
 </style>

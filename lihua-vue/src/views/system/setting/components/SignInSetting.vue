@@ -7,7 +7,7 @@
             <template #title>
               是否允许新用户注册
             </template>
-            <QuestionCircleOutlined style="margin-left: 4px"/>
+            <QuestionCircleOutlined style="margin-left: var(--lihua-space-xs)"/>
           </a-tooltip>
         </template>
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
@@ -54,7 +54,7 @@
                       <a-typography-title :level="5" style="margin: 0">{{item?.deptName}}</a-typography-title>
                       <a-tag v-if="isSelected" :color="color">默认</a-tag>
                     </a-flex>
-                    <div style="margin-top: 16px;">
+                    <div style="margin-top: var(--lihua-space-base);">
                       <div v-if="item?.postList && item?.postList.length > 0">
                         <a-checkable-tag v-for="post in item?.postList"
                                          @change="(checked: boolean) => handleSelectPostId(post.id, checked)"
@@ -73,7 +73,7 @@
               </a-form-item>
             </a-card>
           </a-flex>
-          <a-form-item style="margin-top: 24px">
+          <a-form-item style="margin-top: var(--lihua-space-lg)">
             <a-button type="primary" html-type="submit" @click="handleSubmit" :loading="submitLoading">提 交</a-button>
           </a-form-item>
         </div>

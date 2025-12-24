@@ -322,9 +322,7 @@ watch(() => modelValue, () => {
 }
 /* 覆盖dialog阴影*/
 .tox .tox-dialog {
-  box-shadow:
-      0 4px 10px -4px rgba(255, 255, 255, 0.04),
-      0 0 20px 0 rgba(255, 255, 255, 0.03) !important;
+  box-shadow: var(--lihua-box-shadow)!important;
 }
 /* 覆盖源码预览，高度撑满容器*/
 .tox .tox-textarea-wrap {

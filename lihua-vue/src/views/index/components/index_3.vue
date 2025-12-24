@@ -31,7 +31,7 @@
           <a-typography-text type="secondary">当前SpringBoot版本为</a-typography-text>
           <a-typography-text :style="{color:themeStore.getColorPrimary()}">{{versionInfo.springBootVersion}}</a-typography-text>
         </a-typography-text>
-        <div class="scrollbar" style="height: 484px;margin-top: 16px">
+        <div class="scrollbar" style="height: 484px;margin-top: var(--lihua-space-base)">
           <a-typography-title :level="5">
             技术概览
           </a-typography-title>

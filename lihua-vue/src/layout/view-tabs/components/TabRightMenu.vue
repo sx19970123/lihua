@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-right: 8px">
+  <div style="padding-right: var(--lihua-space-sm)">
     <!--  恢复view-tabs缓存标签  -->
     <Transition name="down" mode="out-in">
       <button class="ant-tabs-nav-more" v-if="reversible" @click="reverse">
@@ -249,9 +249,9 @@ defineExpose({
 </script>
 <style>
 .ant-tabs-nav-more {
-  padding: 8px !important;
+  padding: var(--lihua-space-sm) !important;
   cursor: pointer;
-  border-radius: 8px
+  border-radius: var(--lihua-radius-sm)
 }
 .ant-tabs-nav-more:hover {
   color:  var(--colorPrimary) !important;

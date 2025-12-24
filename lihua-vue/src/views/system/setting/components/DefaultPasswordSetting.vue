@@ -7,7 +7,7 @@
             <template #title>
               用户管理模块新增用户时的默认密码
             </template>
-            <QuestionCircleOutlined style="margin-left: 4px"/>
+            <QuestionCircleOutlined style="margin-left: var(--lihua-space-xs)"/>
           </a-tooltip>
         </template>
         <password-input class="form-item-width" v-model:value="settingForm.defaultPassword" placeholder="请输入默认密码" :size="90"/>

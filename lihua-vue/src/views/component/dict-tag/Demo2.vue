@@ -10,7 +10,7 @@
   <a-typography-text strong>树形字典结构</a-typography-text>
   <a-row>
     <a-col :span="4">
-      <a-tree style="padding: 16px"
+      <a-tree style="padding: var(--lihua-space-base)"
               v-if="test_tree.length"
               :tree-data="test_tree"
               :field-names="{children:'children', title:'label'}"

@@ -7,7 +7,7 @@
             <template #title>
               设置系统用户多长时间需要修改密码
             </template>
-            <QuestionCircleOutlined style="margin-left: 4px"/>
+            <QuestionCircleOutlined style="margin-left: var(--lihua-space-xs)"/>
           </a-tooltip>
         </template>
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>

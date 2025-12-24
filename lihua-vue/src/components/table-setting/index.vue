@@ -519,7 +519,7 @@ watch(() => tableSettings.value, (newVal, oldValue) => {
   margin-left: auto
 }
 .divider {
-  margin: 4px 0 4px 0
+  margin: var(--lihua-space-xs) 0 var(--lihua-space-xs) 0
 }
 .content {
   overflow-x: hidden;
@@ -541,6 +541,6 @@ watch(() => tableSettings.value, (newVal, oldValue) => {
 }
 .right-rate-icon {
   transform: scaleX(-1);
-  margin-right: 8px
+  margin-right: var(--lihua-space-sm)
 }
 </style>

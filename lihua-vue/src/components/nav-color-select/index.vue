@@ -39,15 +39,15 @@ const handleClickNavColor = (key: string) => {
 }
 
 .color-block {
-  display: flex; /* 使用 Flexbox 布局 */
-  align-items: center; /* 垂直居中 */
-  justify-content: center; /* 水平居中 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 20px;
   width: 20px;
-  border-radius: 8px;
+  border-radius: var(--lihua-radius-sm);
   cursor: pointer;
   margin-right: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--lihua-box-shadow);
 }
 
 .color-selected {

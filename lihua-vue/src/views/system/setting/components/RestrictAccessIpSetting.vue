@@ -11,7 +11,7 @@
             <template #title>
               配置禁止访问ip地址，支持 ? * 通配符
             </template>
-            <QuestionCircleOutlined style="margin-left: 4px"/>
+            <QuestionCircleOutlined style="margin-left: var(--lihua-space-xs)"/>
           </a-tooltip>
         </template>
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
@@ -35,7 +35,7 @@
             }]"
             >
               <a-input class="form-item-width" placeholder="请输入ip地址" v-model:value="settingForm.ipList[index]" allow-clear/>
-              <a-button style="margin-left: 8px; margin-right: 8px"
+              <a-button style="margin-left: var(--lihua-space-sm); margin-right: var(--lihua-space-sm)"
                         danger
                         v-if="settingForm?.ipList.length > 1"
                         @click="handleRemoveIpItem(index)"

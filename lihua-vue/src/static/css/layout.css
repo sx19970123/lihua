@@ -18,12 +18,6 @@
     overflow-x: hidden;
 }
 
-/*顶栏右侧元素样式*/
-.header-right-item {
-    padding: 0 4px 0 4px;
-}
-
-
 /** 顶部右侧鼠标悬停修改背景颜色 */
 [data-theme = 'light']{
     .header-right:hover {

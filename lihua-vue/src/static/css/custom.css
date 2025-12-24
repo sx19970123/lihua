@@ -2,18 +2,12 @@
 .scrollbar, .sider-scrollbar {
     overflow: auto;
     scrollbar-width: thin !important;
-    scrollbar-color: rgb(227,227,227) transparent;
+    scrollbar-color: var(--lihua-scrollbar-thumb-color);
 }
 
-[data-theme = 'dark'] {
-    .scrollbar, .sider-scrollbar {
-        scrollbar-color: rgb(66,66,66) transparent;
-    }
-}
-
-[sider-dark = 'dark'] {
+[sider-dark = 'dark'][enable-mix-split-menu = 'active'][layout-type = 'mix-navigation'] {
     .sider-scrollbar {
-        scrollbar-color: rgb(66,66,66) transparent;
+        scrollbar-color: var(--lihua-mix-navigation-split-thumb-color);
     }
 }
 

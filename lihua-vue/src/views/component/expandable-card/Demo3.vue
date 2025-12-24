@@ -7,7 +7,7 @@
           :hover-scale="1.03"
           :expanded-width="600"
           :expanded-height="610"
-          :middle-style="{'background': 'var(--lihua-background-color-level-2)','background-size': 'contain','border-radius':' 8px'}"
+          :middle-style="{'background': 'var(--lihua-background-color-level-2)','background-size': 'contain','border-radius':'var(--lihua-radius-sm)'}"
       >
         <template #overview>
           <a-card :body-style="{height: '100px'}" class="card-background">
@@ -31,7 +31,7 @@
               <a-typography-text :style="{color:themeStore.getColorPrimary()}"> Vue </a-typography-text>
               <a-typography-text type="secondary">的权限管理系统</a-typography-text>
             </a-typography-text>
-            <div class="scrollbar" style="height: 484px;margin-top: 16px;overflow-x: hidden">
+            <div class="scrollbar" style="height: 484px;margin-top: var(--lihua-space-base);overflow-x: hidden">
               <a-typography-title :level="5">
                 为什么叫狸花猫
               </a-typography-title>

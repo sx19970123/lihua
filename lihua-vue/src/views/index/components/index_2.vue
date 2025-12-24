@@ -39,7 +39,7 @@
           <a-typography-text :style="{color:themeStore.getColorPrimary()}"> Vue </a-typography-text>
           <a-typography-text type="secondary">的权限管理系统</a-typography-text>
         </a-typography-text>
-        <div class="scrollbar" style="height: 484px;margin-top: 16px;overflow-x: hidden">
+        <div class="scrollbar" style="height: 484px;margin-top: var(--lihua-space-base);overflow-x: hidden">
           <a-typography-title :level="5">
             为什么叫狸花猫
           </a-typography-title>
@@ -49,12 +49,12 @@
               <a-typography-link @click="showLihua = !showLihua">{{!showLihua ? '看看猫猫' : '不看了'}}</a-typography-link>
             </p>
           </a-typography-text>
-          <a-carousel arrows style="margin: 24px" autoplay v-show="showLihua">
+          <a-carousel arrows style="margin: var(--lihua-space-lg)" autoplay v-show="showLihua">
             <div class="dark-overlay">
-              <img src="../static/miaomiao.jpg" style="width: 100%;border-radius: 8px">
+              <img src="../static/miaomiao.jpg" style="width: 100%;border-radius: var(--lihua-radius-sm)">
             </div>
             <div class="dark-overlay">
-              <img src="../static/heihei.jpg" style="width: 100%;border-radius: 8px">
+              <img src="../static/heihei.jpg" style="width: 100%;border-radius: var(--lihua-radius-sm)">
             </div>
           </a-carousel>
           <a-typography-title :level="5">

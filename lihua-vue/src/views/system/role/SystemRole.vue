@@ -76,7 +76,7 @@
                     <DeleteOutlined />
                   </template>
                   删 除
-                  <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: 4px"> {{selectedIds.length}} 项</span>
+                  <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: var(--lihua-space-xs)"> {{selectedIds.length}} 项</span>
                 </a-button>
               </a-popconfirm>
 
@@ -146,7 +146,7 @@
 <!--    角色模态框-->
     <a-modal v-model:open="modalActive.open" :footer="null">
       <template #title>
-        <div style="margin-bottom: 24px" v-draggable>
+        <div style="margin-bottom: var(--lihua-space-lg)" v-draggable>
           <a-typography-title :level="4">{{modalActive.title}}</a-typography-title>
         </div>
       </template>
@@ -176,7 +176,7 @@
                 <span>{{label.substring(label.indexOf(keyword) + keyword.length)}}</span>
               </span>
               <span v-else>{{ label }}</span>
-              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none', 'margin-left': '8px'}"/>
+              <dict-tag :dict-data-value="menuType" :dict-data-option="sys_menu_type" :style="{border: 'none', 'margin-left': 'var(--lihua-space-sm)'}"/>
             </template>
           </easy-tree-select>
         </a-form-item>

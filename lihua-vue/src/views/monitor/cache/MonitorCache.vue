@@ -1,7 +1,7 @@
 <template>
-  <a-flex vertical :gap="16">
+  <a-flex vertical :gap="8">
     <a-alert :message="'Redis 内存占用：' + useMemory" show-icon/>
-    <a-flex :gap="16" wrap="wrap">
+    <a-flex :gap="8" wrap="wrap">
       <a-card class="cache-card">
         <a-typography-title :level="5">缓存类型</a-typography-title>
         <div class="scrollbar cache-monitor-max-content-height">
@@ -292,12 +292,12 @@ onMounted(() => {
 <style>
 /* 根据是否开启多任务栏，设定不同的content高度 */
 [view-tabs=show][show-hide-layout=show] .cache-monitor-max-content-height {
-  max-height: calc(100vh - (48px + 54px + 16px + 156px));
+  max-height: calc(100vh - (var(--lihua-layout-height) + 54px  + 156px));
 }
 [view-tabs=hide][show-hide-layout=show] .cache-monitor-max-content-height {
-  max-height: calc(100vh - (48px + 16px + 156px));
+  max-height: calc(100vh - (var(--lihua-layout-height) + 156px));
 }
 [view-tabs=show][show-hide-layout=hide] .cache-monitor-max-content-height {
-  max-height: calc(100vh - (54px + 16px + 156px));
+  max-height: calc(100vh - (54px + 156px));
 }
 </style>

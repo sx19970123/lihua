@@ -31,9 +31,9 @@
         </a-flex>
         <a-typography-text type="secondary" ellipsis>如果这个项目对你有帮助，不妨支持一下作者吧~</a-typography-text>
         <a-typography-text type="secondary" ellipsis>非常感谢大家的捐赠与支持，大家的捐赠将用于演示环境服务器的各项支出</a-typography-text>
-        <a-flex :gap="16" class="dark-overlay" justify="space-around" style="margin-top:24px;">
-          <img src="../static/wx.jpg" style="width: 250px;border-radius: 8px;margin-top: 30px">
-          <img src="../static/zfb.jpg" style="width: 250px;border-radius: 8px">
+        <a-flex :gap="16" class="dark-overlay" justify="space-around" style="margin-top: var(--lihua-space-lg);">
+          <img src="../static/wx.jpg" style="width: 250px;border-radius: var(--lihua-radius-sm);margin-top: 30px">
+          <img src="../static/zfb.jpg" style="width: 250px;border-radius: var(--lihua-radius-sm)">
         </a-flex>
       </a-card>
     </template>

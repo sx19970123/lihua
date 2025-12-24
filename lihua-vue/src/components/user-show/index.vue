@@ -10,7 +10,7 @@
             :background-color="avatar.backgroundColor"
         />
 <!--        昵称-->
-        <a-typography style="padding-right: 8px;" v-if="props.nickname">{{props.nickname}}</a-typography>
+        <a-typography style="padding-right: var(--lihua-space-sm);" v-if="props.nickname">{{props.nickname}}</a-typography>
       </a-flex>
     </div>
   </div>
@@ -60,19 +60,14 @@ try {
 
 </script>
 
-<style>
+<style scoped>
 .lihua-user-select {
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--lihua-border-color);
   border-radius: 20px;
   padding: 2px;
   display: inline-block;
-  margin: 4px;
+  margin: var(--lihua-space-xs);
   box-shadow: var(--lihua-layout-box-shadow);
   user-select: none;
-}
-[data-theme="dark"] {
-  .lihua-user-select {
-    border: 1px solid #424242;
-  }
 }
 </style>

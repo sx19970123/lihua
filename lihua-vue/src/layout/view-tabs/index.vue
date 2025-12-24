@@ -1,7 +1,7 @@
 <template>
     <a-tabs :activeKey="activeKey"
             class="unselectable tab-none-padding"
-            style="padding: 8px 0 0 8px;"
+            style="padding: var(--lihua-space-sm) 0 0 var(--lihua-space-sm);"
             type="editable-card"
             size="small"
             hide-add
@@ -213,7 +213,7 @@ watch(() => route.path,(value) => {
 </script>
 <style>
 .ant-tabs-nav {
-  margin-bottom: 8px !important;
+  margin-bottom: var(--lihua-space-sm) !important;
 }
 .fallback {
   display: none !important;

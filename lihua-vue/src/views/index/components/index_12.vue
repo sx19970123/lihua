@@ -37,9 +37,9 @@
             <a-typography-text type="secondary">开源协议</a-typography-text>
           </a-typography-text>
           <br/>
-          <div class="scrollbar dark-overlay" style="height: 484px;margin-top: 16px">
+          <div class="scrollbar dark-overlay" style="height: 484px;margin-top: var(--lihua-space-base)">
             <a-typography-text type="secondary">免费全开源且可商用，无版权问题</a-typography-text>
-            <img src="../static/bq.png" style="width: 100%;border-radius: 8px;margin-top: 8px" alt=""/>
+            <img src="../static/bq.png" style="width: 100%;border-radius: var(--lihua-radius-sm);margin-top: var(--lihua-space-sm)" alt=""/>
           </div>
         </a-card>
       </template>

@@ -1,15 +1,13 @@
 <template>
   <div>
-      <div class="header-right-item">
-        <a-button type="text" @click="handleWindowChange">
-          <template #icon>
-            <a-tooltip placement="bottom" :title="isFull ? '进入全屏' : '退出全屏'" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
-              <FullscreenOutlined class="icon-default-color" v-if="isFull"/>
-              <FullscreenExitOutlined class="icon-default-color" v-else/>
-            </a-tooltip>
-          </template>
-        </a-button>
-      </div>
+    <a-button type="text" @click="handleWindowChange">
+      <template #icon>
+        <a-tooltip placement="bottom" :title="isFull ? '进入全屏' : '退出全屏'" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+          <FullscreenOutlined class="icon-default-color" v-if="isFull"/>
+          <FullscreenExitOutlined class="icon-default-color" v-else/>
+        </a-tooltip>
+      </template>
+    </a-button>
   </div>
 </template>
 

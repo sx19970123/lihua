@@ -397,8 +397,8 @@ onMounted(() => {
 
 <style scoped>
 .user-show-title {
-  margin-left: 16px;
-  margin-top: 8px
+  margin-left: var(--lihua-space-base);
+  margin-top: var(--lihua-space-sm)
 }
 .user-show-group {
   padding-left: 12px
@@ -416,7 +416,7 @@ onMounted(() => {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.06);
   z-index: 1;
-  border-radius: 24px;
+  border-radius: var(--lihua-radius-lg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -434,13 +434,13 @@ onMounted(() => {
 
 .dept-keyword-input {
   height: 28px;
-  margin-top: 4px;
+  margin-top: var(--lihua-space-xs);
   margin-right: 10px;
-  width: calc(100% - 16px)
+  width: calc(100% - var(--lihua-space-base))
 }
 
 .divider {
-  margin-bottom: 8px;
+  margin-bottom: var(--lihua-space-sm);
   margin-top: 6px
 }
 

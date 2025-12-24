@@ -85,7 +85,7 @@
         </div>
       </template>
 <!--                      通知公告主体-->
-      <div class="header-right-item" @click="() => open = true">
+      <div @click="() => open = true">
           <a-badge :count="unReadCount" :offset="[-5,5]" style="color: #FFFFFF">
             <a-button type="text">
               <template #icon>
@@ -358,14 +358,14 @@ onUnmounted(() => {
   width: 340px;
   max-height: 500px;
   box-shadow: var(--lihua-box-shadow);
-  padding: 8px;
+  padding: var(--lihua-space-sm);
   background-color: #ffffff;
-  border-radius: 8px;
+  border-radius: var(--lihua-radius-sm);
 }
 .notice-list-item:hover {
   background-color: rgba(0, 0, 0, 0.06);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: var(--lihua-radius-sm);
 }
 .notice-list {
   max-height: 400px

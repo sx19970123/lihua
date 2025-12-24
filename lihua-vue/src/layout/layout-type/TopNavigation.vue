@@ -58,7 +58,7 @@ const props = defineProps<{showLayout: boolean }>()
 }
 
 .logo {
-  padding-left: 8px;
+  padding-left: var(--lihua-space-sm);
 }
 
 .sider {

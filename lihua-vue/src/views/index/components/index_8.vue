@@ -14,7 +14,7 @@
             <a-typography-text ellipsis type="secondary">最新版本为：</a-typography-text>
             <a-typography-text ellipsis :style="{color:themeStore.getColorPrimary()}">{{latestVersion.version}}</a-typography-text>
           </a-typography-text>
-          <a-typography-title ellipsis :level="5" style="margin-top: 8px">
+          <a-typography-title ellipsis :level="5" style="margin-top: var(--lihua-space-sm)">
             {{latestVersion.updateDate}}
           </a-typography-title>
           <div v-for="(item,index) in latestVersion.updateContent">
@@ -44,15 +44,15 @@
           <a-typography-text type="secondary">最新版本为：</a-typography-text>
           <a-typography-text :style="{color:themeStore.getColorPrimary()}">{{latestVersion.version}}</a-typography-text>
         </a-typography-text>
-        <div class="scrollbar" id="lihua-index-8-content" style="height: 484px;margin-top: 16px">
-          <a-timeline style="margin-top: 16px">
+        <div class="scrollbar" id="lihua-index-8-content" style="height: 484px;margin-top: var(--lihua-space-base)">
+          <a-timeline style="margin-top: var(--lihua-space-base)">
             <div v-for="(item, index) in versionInfo.lihuaUpdateLog">
               <a-timeline-item v-if="index <= showIndex">
                 <a-typography-title :level="5">
                   {{item.version}}
                   <a-typography-text type="secondary">{{item.updateDate}}</a-typography-text>
                 </a-typography-title>
-                <a-alert v-if="item.title" strong :message="item.title" style="margin-bottom: 8px;margin-right: 8px">{{item.title}}</a-alert>
+                <a-alert v-if="item.title" strong :message="item.title" style="margin-bottom: var(--lihua-space-sm);margin-right: var(--lihua-space-sm)">{{item.title}}</a-alert>
                 <a-flex v-for="content in item.updateContent" vertical>
                   <a-typography-text>{{content}}</a-typography-text>
                 </a-flex>

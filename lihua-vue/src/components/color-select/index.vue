@@ -44,7 +44,7 @@ const selectedColor = ({color, name, key}: ColorSelectItem) => {
   flex: 0 0 auto;
   height: 20px;
   width: 20px;
-  border-radius: 8px;
+  border-radius: var(--lihua-radius-sm);
   cursor: pointer;
   margin-right: 10px;
   box-shadow: var(--lihua-box-shadow);

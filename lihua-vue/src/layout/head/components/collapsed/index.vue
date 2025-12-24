@@ -28,7 +28,7 @@ const handleCloseCollapsed = () => {
 </script>
 <style scoped>
 .menu-fold {
-  margin-left: 16px;
+  margin-left: var(--lihua-space-base);
 }
 .menu-fold-icon {
   font-size: 20px

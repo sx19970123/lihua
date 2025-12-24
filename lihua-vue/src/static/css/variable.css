@@ -5,19 +5,43 @@
     /* ======================主题颜色 会由ts进行覆盖======================== */
     --colorPrimary: rgba(0, 0, 0, 0);
 
+
     /* ===============================模糊=============================== */
     --lihua-backdrop-filter-lg: saturate(180%) blur(20px);
     --lihua-backdrop-filter-md: saturate(180%) blur(12px);
     --lihua-backdrop-filter-sm: saturate(180%) blur(6px);
 
+
     /* ============================layout高度============================ */
     --lihua-layout-height: 48px;
+
 
     /* =========================layout头部元素间距========================= */
     --lihua-layout-head-space: 32px;
 
+
     /* =============================深色菜单============================= */
     --lihua-sider-dark-color: rgba(0,21,41);
+
+
+    /* ===============================间距=============================== */
+    --lihua-space-xs: 4px;
+    --lihua-space-sm: 8px;
+    --lihua-space-base: 16px;
+    --lihua-space-lg: 24px;
+    --lihua-space-xl: 32px;
+
+    /* ===============================圆角=============================== */
+    --lihua-radius-xs: 4px;
+    --lihua-radius-sm: 8px;
+    --lihua-radius-base: 16px;
+    --lihua-radius-lg: 24px;
+
+
+    /* ==============================滚动条============================== */
+    --lihua-scrollbar-thumb-color: rgb(227,227,227) transparent;
+    --lihua-mix-navigation-split-thumb-color: rgb(227,227,227) transparent;
+
 
     /* ===============================阴影=============================== */
     /* layout阴影 */
@@ -30,13 +54,22 @@
             0 2px 6px rgba(0, 0, 0, 0.08),
             0 6px 16px rgba(0, 0, 0, 0.06);
 
+
     /* ===============================背景颜色=============================== */
-    --lihua-background-color-level-1: #f5f5f5;  /* 最底层 */
-    --lihua-background-color-level-2: #ffffff;  /* 上一层 */
+    --lihua-background-color-level-1: #f5f5f5;
+    --lihua-background-color-level-2: #ffffff;
+    --lihua-background-color-level-3: #fafafa;
+
+    /* ===============================边框颜色=============================== */
+    --lihua-border-color: #d9d9d9;
 }
 
 /* 暗色模式变量 */
 [data-theme = 'dark'] {
+    /* ==============================滚动条============================== */
+    --lihua-scrollbar-thumb-color: rgb(66,66,66) transparent;
+
+
     /* ===============================阴影=============================== */
     /* layout阴影 */
     --lihua-layout-box-shadow:
@@ -49,8 +82,17 @@
             0 6px 16px rgba(0, 0, 0, 0.25);
 
 
-    /* ===============================背景颜色=============================== */
-    --lihua-background-color-level-1: #000000;  /* 最底层 */
-    --lihua-background-color-level-2: #141414;  /* 上一层 */
 
+    /* ===============================背景颜色=============================== */
+    --lihua-background-color-level-1: #000000;
+    --lihua-background-color-level-2: #141414;
+    --lihua-background-color-level-3: #1e1e1e;
+
+    /* ===============================边框颜色=============================== */
+    --lihua-border-color: #424242;
+}
+
+[sider-dark = 'dark'] {
+    /* ==============================滚动条============================== */
+    --lihua-scrollbar-thumb-color: rgb(66,66,66) transparent;
 }

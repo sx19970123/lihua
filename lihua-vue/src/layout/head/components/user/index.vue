@@ -1,6 +1,6 @@
 <template>
   <a-dropdown :trigger="['contextmenu', 'click']" >
-    <a-button class="header-right-item" type="text" size="large" style="margin-left: 8px;padding-bottom: 38px">
+    <a-button type="text" size="large" style="padding: 0">
       <template #icon>
         <a-tooltip title="个人中心" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
           <user-avatar :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
@@ -18,7 +18,7 @@
                 <a-typography-text ellipsis :copyable="{ tooltip: false }" v-model:content="userStore.$state.userId" style="max-width: 120px"/>
               </a-tooltip>
             </a-flex>
-            <RightOutlined class="input-prefix-icon-color" style="position: absolute; right: 8px"/>
+            <RightOutlined class="input-prefix-icon-color" style="position: absolute; right: var(--lihua-space-sm)"/>
           </a-flex>
         </a-menu-item>
         <a-menu-divider/>

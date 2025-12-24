@@ -32,7 +32,7 @@
       <!--    图片上传-->
       <div v-if="mode === 'picture'">
         <component :is="icon ? icon : 'plus-outlined'"></component>
-        <div style="margin-top: 8px">{{text ? text : '点击上传'}}</div>
+        <div style="margin-top: var(--lihua-space-sm)">{{text ? text : '点击上传'}}</div>
       </div>
     </a-upload>
     <!--    拖拽上传-->
@@ -57,8 +57,8 @@
     </a-upload-dragger>
     <!--    图片/视频预览-->
     <a-modal :open="previewVisible" :title="previewTitle" :footer="null" @cancel="handleCancel" destroyOnClose>
-      <a-image style="border-radius: 8px" :preview="{maskClassName: 'attachment-upload-preview-mask'}" :src="previewURL" v-if="previewType === 'image'"/>
-      <video style="width: 100%;border-radius: 8px" controls preload="auto" :src="previewURL" v-if="previewType === 'video'"/>
+      <a-image style="border-radius: var(--lihua-radius-sm)" :preview="{maskClassName: 'attachment-upload-preview-mask'}" :src="previewURL" v-if="previewType === 'image'"/>
+      <video style="width: 100%;border-radius: var(--lihua-radius-sm)" controls preload="auto" :src="previewURL" v-if="previewType === 'video'"/>
     </a-modal>
   </a-spin>
 </template>
@@ -898,6 +898,6 @@ defineExpose({
 
 <style>
 .attachment-upload-preview-mask {
-  border-radius: 8px;
+  border-radius: var(--lihua-radius-sm);
 }
 </style>

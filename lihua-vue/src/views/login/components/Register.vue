@@ -204,11 +204,11 @@ const handleRegister = async (captchaVerification: string) => {
 
 <style scoped>
 .register-form-item {
-  height: 48px
+  height: var(--lihua-space-lg)
 }
 
 .register-title {
-  margin-top: 24px;
+  margin-top: var(--lihua-space-lg);
   margin-bottom: 56px;
 }
 </style>
