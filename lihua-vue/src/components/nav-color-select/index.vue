@@ -42,11 +42,11 @@ const handleClickNavColor = (key: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 20px;
-  width: 20px;
+  height: var(--lihua-space-lg);
+  width: var(--lihua-space-lg);
   border-radius: var(--lihua-radius-sm);
   cursor: pointer;
-  margin-right: 10px;
+  margin-right: var(--lihua-space-sm);
   box-shadow: var(--lihua-box-shadow);
 }
 
