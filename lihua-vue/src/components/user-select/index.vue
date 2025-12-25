@@ -11,7 +11,7 @@
                      @change="handleChangeKeyword"
                      class="dept-keyword-input">
               <template #suffix>
-                <SearchOutlined :style="{color: themeStore.isDarkTheme ? 'rgba(255, 255, 255, 0.45)' : 'rgba(0, 0, 0, 0.45)'}"/>
+                <SearchOutlined :style="{color: 'rgba(--lihua-alpha-level-4)'}"/>
               </template>
             </a-input>
             <a-divider class="divider"/>
@@ -414,7 +414,6 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.04);
   z-index: 1;
   border-radius: var(--lihua-radius-lg);
   display: flex;
@@ -450,12 +449,5 @@ onMounted(() => {
 /* 表格滚动条缩短 */
 :deep(.ant-table-body) {
   scrollbar-width: thin
-}
-</style>
-<style>
-[data-theme="dark"] {
-  .user-show:hover::after {
-    background-color: rgba(255, 255, 255, 0.06);
-  }
 }
 </style>

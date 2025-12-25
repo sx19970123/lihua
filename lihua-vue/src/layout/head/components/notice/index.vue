@@ -1,13 +1,13 @@
 <template>
   <div>
-    <a-dropdown trigger="click"
+    <a-dropdown :trigger="['contextmenu', 'click']"
                 placement="bottom"
                 v-model:open="open"
                 @openChange="handleChangeNoticeList"
                 :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode"
     >
       <template #overlay>
-        <div class="notice-card">
+        <a-card :body-style="{padding: 'var(--lihua-space-sm)',borderRadius: 'var(--lihua-radius-sm)', width: '340px', maxHeight: '500px'}" bordered >
           <a-tabs centered @change="handleChangeTabs">
             <a-tab-pane key="ALL">
               <template #tab>
@@ -26,7 +26,7 @@
               </template>
             </a-tab-pane>
           </a-tabs>
-<!--          通知列表-->
+          <!--          通知列表-->
           <a-list item-layout="horizontal"
                   :data-source="userNoticeList"
                   :loading="loading"
@@ -82,7 +82,7 @@
               </a-flex>
             </template>
           </a-list>
-        </div>
+        </a-card>
       </template>
 <!--                      通知公告主体-->
       <div @click="() => open = true">
@@ -354,16 +354,8 @@ onUnmounted(() => {
 })
 </script>
 <style scoped>
-.notice-card {
-  width: 340px;
-  max-height: 500px;
-  box-shadow: var(--lihua-box-shadow);
-  padding: var(--lihua-space-sm);
-  background-color: #ffffff;
-  border-radius: var(--lihua-radius-sm);
-}
 .notice-list-item:hover {
-  background-color: rgba(0, 0, 0, 0.06);
+  background-color: var(--lihua-hover-color);
   cursor: pointer;
   border-radius: var(--lihua-radius-sm);
 }
@@ -379,15 +371,5 @@ onUnmounted(() => {
 }
 .more-btn {
   width: 100%;
-}
-</style>
-<style>
-[data-theme = 'dark'] {
-  .notice-list-item:hover {
-    background-color: rgba(255, 255, 255, 0.12)
-  }
-  .notice-card {
-    background-color: #1f1f1f;
-  }
 }
 </style>

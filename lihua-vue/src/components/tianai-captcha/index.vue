@@ -222,6 +222,17 @@ const replaceLoadingElement = () => {
 #tianai-captcha.tianai-captcha-concat .tianai-captcha-slider-concat-img-div {
   border-radius: 5px 5px 0 0;
 }
+/* 滑块区域文本提示 */
+.slider-move-track::after {
+  content: "向右滑动完成验证";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(0, 0, 0, 0.65);
+  font-size: var(--lihua-font-size-sm);
+}
+
 [data-theme = 'dark'] {
   /* 滑动提示文字样式 */
   #tianai-captcha-slider-move-track-font {
@@ -267,15 +278,5 @@ const replaceLoadingElement = () => {
   .slider-move-track::after {
     color: rgba(255, 255, 255, 0.45);
   }
-}
-/* 滑块区域文本提示 */
-.slider-move-track::after {
-  content: "向右滑动完成验证";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: rgba(0, 0, 0, 0.65);
-  font-size: var(--lihua-font-size-sm);
 }
 </style>

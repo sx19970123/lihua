@@ -126,6 +126,6 @@ watch(() => openKeys, () => {
 <style scoped>
 .menu {
   border: none;
-  background-color: rgba(255,255,255,0)
+  background-color: var(--lihua-alpha-level-0);
 }
 </style>

@@ -2,7 +2,7 @@
   <div>
     <a-input size="large"
              v-model:value="value"
-             :style="{'border-color': showBordered || isGetFocus ? themeStore.getColorPrimary() : 'rgba(0,0,0,0)'}"
+             :style="{'border-color': showBordered || isGetFocus ? themeStore.getColorPrimary() : 'var(--lihua-alpha-level-0)'}"
              :readonly="loading"
              :id="'dynamic-border-input-' + uuid"
              @mouseover="handleMouseOver"

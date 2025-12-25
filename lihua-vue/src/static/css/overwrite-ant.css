@@ -48,15 +48,15 @@
     .ant-table-footer {
         background: #141414 !important;
     }
-    .ant-dropdown {
-        background-color: rgba(31, 31, 31, 0.8) !important;
-    }
-    .ant-dropdown-menu-submenu {
-        background-color: rgba(31, 31, 31, 0) !important;
-        .ant-dropdown-menu {
-            background-color: rgba(31, 31, 31, 0.8) !important;
-        }
-    }
+    /*.ant-dropdown {*/
+    /*    background-color: rgba(31, 31, 31, 0.8) !important;*/
+    /*}*/
+    /*.ant-dropdown-menu-submenu {*/
+    /*    background-color: rgba(31, 31, 31, 0) !important;*/
+    /*    .ant-dropdown-menu {*/
+    /*        background-color: rgba(31, 31, 31, 0.8) !important;*/
+    /*    }*/
+    /*}*/
 }
 
 .ant-table-wrapper .ant-table {
