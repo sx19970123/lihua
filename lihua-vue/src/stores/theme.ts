@@ -15,11 +15,6 @@ export const useThemeStore = defineStore('theme',{
         const followSystemTheme: boolean = settings.followSystemTheme
 
         /**
-         * 顶部栏背景颜色
-         */
-        const layoutBackgroundColor: string = settings.siderBackgroundColor
-
-        /**
          * 布局类型 side-navigation / mix-navigation / top-navigation
          */
         const layoutType: string = settings.layoutType
@@ -126,8 +121,6 @@ export const useThemeStore = defineStore('theme',{
             affixHead,
             mixSplitMenu,
             isSmallWindow,
-            layoutBackgroundColor,
-            // siderBackgroundColor,
             siderMode,
             siderGroup,
             siderWith,
@@ -178,26 +171,13 @@ export const useThemeStore = defineStore('theme',{
         },
         // 切换暗色模式，isSync：App.vue组件中用于同步标签页暗色模式
         changeDataDark(isSync?: boolean) {
-            let backgroundColor: string = ''
-            // 暗色模式下，顶部颜色为黑色、侧边颜色为黑色，透明度根据磨砂效果控制
+            // 暗色模式下
             if (this.$state.isDarkTheme) {
                 this.siderTheme = 'light'
-                if (this.$state.groundGlass) {
-                    backgroundColor = 'rgba(20,20,20,0.6)'
-                } else {
-                    backgroundColor = 'rgba(20,20,20,1)'
-                }
-                this.changeLayoutBackgroundColor(backgroundColor)
                 this.$state.themeConfig.algorithm = theme.darkAlgorithm
             }
-            // 亮色模式下，顶部颜色为白色、侧边颜色为白色
+            // 亮色模式下
             else {
-                if (this.$state.groundGlass) {
-                    backgroundColor = 'rgba(255,255,255,0.6)'
-                } else {
-                    backgroundColor = 'rgba(255,255,255,1)'
-                }
-                this.changeLayoutBackgroundColor(backgroundColor)
                 this.$state.themeConfig.algorithm = theme.defaultAlgorithm
             }
             this.changeSiderTheme()
@@ -248,18 +228,8 @@ export const useThemeStore = defineStore('theme',{
         changeGroundGlass() {
             if (this.$state.groundGlass) {
                 document.documentElement.setAttribute("data-ground-glass",'glass')
-                if (!this.$state.isDarkTheme) {
-                    this.changeLayoutBackgroundColor('rgba(255,255,255,0.6)')
-                } else {
-                    this.changeLayoutBackgroundColor('rgba(20,20,20,0.6)')
-                }
             } else {
                 document.documentElement.setAttribute("data-ground-glass",'no-glass')
-                if (!this.$state.isDarkTheme) {
-                    this.changeLayoutBackgroundColor('rgba(255,255,255,1)')
-                } else {
-                    this.changeLayoutBackgroundColor('rgba(20,20,20,1)')
-                }
             }
         },
         // 修改固定头部
@@ -269,10 +239,6 @@ export const useThemeStore = defineStore('theme',{
             } else {
                 document.documentElement.setAttribute("data-head-affix",'un-affix')
             }
-        },
-        // 切换顶部栏背景颜色
-        changeLayoutBackgroundColor(value: string) {
-            this.$state.layoutBackgroundColor = value
         },
         // 修改html标签，标记当前颜色模式
         changeDocumentElement(colorPrimary: string) {
@@ -297,7 +263,6 @@ export const useThemeStore = defineStore('theme',{
             this.$state.groundGlass = settings.groundGlass
             this.$state.mixSplitMenu = settings.mixSplitMenu
             this.$state.affixHead = settings.affixHead
-            this.$state.layoutBackgroundColor = settings.layoutBackgroundColor
             this.$state.siderMode = settings.siderMode
             this.$state.siderWith = settings.siderWith
             this.$state.originSiderWith = settings.originSiderWith

@@ -20,11 +20,6 @@ export default {
     followSystemTheme: true,
 
     /**
-     * 顶部栏背景颜色
-     */
-    layoutBackgroundColor: 'rgba(255,255,255,1)',
-
-    /**
      * 混合布局分隔菜单
      */
     mixSplitMenu: false,

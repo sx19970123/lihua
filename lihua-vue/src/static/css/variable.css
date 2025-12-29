@@ -10,6 +10,10 @@
     --lihua-backdrop-filter-md: saturate(180%) blur(12px);
     --lihua-backdrop-filter-sm: saturate(180%) blur(6px);
 
+    /* =========================模糊状态下背景颜色========================= */
+    --lihua-backdrop-filter-on-color: rgba(255,255,255,0.6);
+    --lihua-backdrop-filter-off-color: rgba(255,255,255,1);
+
     /* ============================layout高度============================ */
     --lihua-layout-height: 48px;
 
@@ -74,10 +78,20 @@
     --lihua-alpha-level-4: rgba(255,255,255,0.45);
     --lihua-alpha-level-5: rgba(255,255,255,0.65);
     --lihua-alpha-level-6: rgba(255,255,255,0.88);
+
+    /* ==============================不同状态颜色============================== */
+    --lihua-success-color: #52c41a;
+    --lihua-warning-color: #faad14;
+    --lihua-danger-color: #ff4d4f;
+
 }
 
 /* 暗色模式变量 */
 [data-theme = 'dark'] {
+    /* =========================模糊状态下背景颜色========================= */
+    --lihua-backdrop-filter-on-color: rgba(20,20,20,0.6);
+    --lihua-backdrop-filter-off-color: rgba(20,20,20,1);
+
     /* ==============================滚动条============================== */
     --lihua-scrollbar-thumb-color: rgb(66,66,66) transparent;
 
@@ -111,6 +125,11 @@
     --lihua-alpha-level-4: rgba(0,0,0,0.45);
     --lihua-alpha-level-5: rgba(0,0,0,0.65);
     --lihua-alpha-level-6: rgba(0,0,0,0.88);
+
+    /* ==============================不同状态颜色============================== */
+    --lihua-success-color: #49aa19;
+    --lihua-warning-color: #d89614;
+    --lihua-danger-color: #dc4446;
 }
 
 [sider-dark = 'dark'] {

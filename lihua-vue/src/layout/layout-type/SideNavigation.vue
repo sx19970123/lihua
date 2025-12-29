@@ -2,10 +2,8 @@
   <div>
     <a-layout style="min-height: 100vh">
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-sider
-                        :class="siderClass"
+        <a-layout-sider :class="[siderClass, glassClass]"
                         v-show="props.showLayout"
-                        :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                         :theme="themeStore.siderTheme"
                         :trigger="null"
                         :width="themeStore.siderWith"
@@ -22,8 +20,7 @@
         </a-layout-sider>
       </transition>
       <a-layout>
-        <a-layout-header class="sn-header"
-                         :style="{'background': themeStore.layoutBackgroundColor}">
+        <a-layout-header class="sn-header background-glass">
           <transition :name="themeStore.routeTransition" mode="out-in">
             <!--    菜单收缩-->
             <a-flex class="sn-head" justify="space-between" v-show="props.showLayout">
@@ -59,7 +56,7 @@ import Logo from "@/layout/logo/index.vue";
 import Mask from "@/components/mask/index.vue";
 import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
-import {nextTick, onMounted, onUnmounted, ref, watch} from "vue";
+import {computed, nextTick, onMounted, onUnmounted, ref, watch} from "vue";
 import HeadCollapsed from "@/layout/head/components/collapsed/index.vue";
 import Breadcrumb from "@/layout/head/components/breadcrumb/index.vue";
 
@@ -115,6 +112,10 @@ const handleKeyUp = (event: KeyboardEvent) => {
     handleCloseSider()
   }
 }
+
+const glassClass = computed(() => {
+  return themeStore.siderTheme === 'light' ? 'background-glass' : ''
+})
 
 // 监听窗口变化
 watch(() => themeStore.isSmallWindow, (value) => {

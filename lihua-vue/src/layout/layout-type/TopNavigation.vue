@@ -6,9 +6,8 @@
     <div class="tn-header">
       <transition :name="themeStore.routeTransition" mode="out-in">
         <a-layout-header class="tn-layout-header"
-                         v-show="props.showLayout"
-                         :style="themeStore.siderTheme === 'light' ?
-                          { background: themeStore.layoutBackgroundColor } : ''">
+                         :class="themeStore.siderTheme === 'light' ? 'background-glass' : ''"
+                         v-show="props.showLayout">
           <a-flex align="center" justify="space-between" style="margin: 0 var(--lihua-layout-head-space) 0 var(--lihua-layout-head-space)">
             <!--logo-->
             <Logo class="logo"/>
@@ -20,7 +19,7 @@
         </a-layout-header>
       </transition>
       <!--多标签-->
-      <view-tabs v-if="themeStore.showViewTabs" :style="{background: themeStore.layoutBackgroundColor}"/>
+      <view-tabs v-if="themeStore.showViewTabs" class="background-glass"/>
     </div>
     <a-layout-content>
       <!--内容-->

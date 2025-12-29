@@ -1,7 +1,8 @@
-/**
-    modal/drawer 背景毛玻璃效果
- */
 [data-ground-glass = glass] {
+    .background-glass {
+        background-color: var(--lihua-backdrop-filter-on-color) !important;
+    }
+
     /* 抽屉背景虚化 */
     .ant-drawer-mask {
         will-change: backdrop-filter;
@@ -27,7 +28,6 @@
             background-color: rgba(0, 0, 0, 0) !important;
         }
     }
-
     .ant-dropdown-menu-submenu {
         backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
     }
@@ -38,16 +38,13 @@
  */
 [data-theme = 'light'] {
     .ant-table-footer {
-        background: #FFFFFF !important;
+        background: var(--lihua-background-color-level-2) !important;
     }
     .ant-dropdown {
         background-color: rgba(255, 255, 255, 0.6) !important;
     }
 }
 [data-theme = 'dark'] {
-    .ant-table-footer {
-        background: #141414 !important;
-    }
     /*.ant-dropdown {*/
     /*    background-color: rgba(31, 31, 31, 0.8) !important;*/
     /*}*/
@@ -61,11 +58,4 @@
 
 .ant-table-wrapper .ant-table {
     border-radius: 8px !important;
-}
-
-/**
-    侧边风格2导航添加阴影效果
- */
-.ant-layout-sider-trigger {
-    box-shadow: 0 1px 4px rgba(0,21,41,.12);
 }

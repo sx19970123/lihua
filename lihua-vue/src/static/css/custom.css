@@ -25,42 +25,6 @@
     width: 196px !important
 }
 
-/**
-    下拉菜单毛玻璃效果
- */
-.drop-down-glass {
-    backdrop-filter: var(--lihua-backdrop-filter-lg);
-    -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
-    background: rgba(255,255,255,0);
-    border-radius:8px
-}
-
-/**
-    根据主题颜色改变图标颜色
- */
-.icon-default-color {
-    color: rgba(0, 0, 0, 0.88);
-}
-
-.input-prefix-icon-color {
-    color: rgba(0,0,0,0.25);
-}
-
-.danger-color {
-    color: #ff4d4f;
-}
-
-[data-theme = 'dark'] {
-    .icon-default-color {
-        color:  rgba(255, 255, 255, 0.85);
-    }
-    .input-prefix-icon-color {
-        color: rgba(255,255,255,0.25);
-    }
-    .danger-color {
-        color: #dc4446;
-    }
-}
 [sider-dark = 'dark'][layout-type = 'top-navigation'],
 [sider-dark = 'dark'][layout-type = 'mix-navigation'][enable-mix-split-menu='active'] {
     .icon-default-color {
@@ -71,12 +35,13 @@
     }
 
     .icon-default-color:hover {
-        color: rgba(255, 255, 255, 1);
+        color: #fff;
     }
     .text-default-color:hover {
-        color: rgba(255, 255, 255, 1);
+        color: #fff;
     }
 }
+
 /**
     顶部导航模式下，使用该css可使内容居中
  */
@@ -98,9 +63,9 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.2); /* 黑色半透明蒙版，透明度50% */
-        z-index: 1; /* 保证蒙版在内容之上 */
-        pointer-events: none; /* 允许点击穿透蒙版 */
+        background-color: rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        pointer-events: none;
     }
 }
 
@@ -121,10 +86,10 @@
     文本不可选中
  */
 .unselectable {
-    -webkit-user-select: none; /* Safari 3.1+ */
-    -moz-user-select: none; /* Firefox 2+ */
-    -ms-user-select: none; /* IE 10+ */
-    user-select: none; /* Standard syntax */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 /**

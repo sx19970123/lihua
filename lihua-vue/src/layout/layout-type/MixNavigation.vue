@@ -2,7 +2,7 @@
   <div>
     <a-layout>
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="mn-header" v-show="props.showLayout" :style="themeStore.siderTheme === 'light' || !isSplitMenu ? { background: themeStore.layoutBackgroundColor } : ''">
+        <a-layout-header class="mn-header" :class="!isSplitMenu ? 'background-glass' : ''" v-show="props.showLayout">
           <div ref="headerRef">
             <a-flex align="center" justify="space-between">
               <Logo class="logo" :show-title="!isSmallWindow"/>
@@ -26,9 +26,8 @@
 
       <a-layout>
         <transition :name="themeStore.routeTransition" mode="out-in" v-if="!isSplitMenu || isSmallWindow || subMenu.length > 0">
-          <a-layout-sider :class="siderClass"
+          <a-layout-sider :class="[siderClass, glassClass]"
                           v-show="props.showLayout"
-                          :style="themeStore.groundGlass && themeStore.siderTheme === 'light' ? { background: themeStore.layoutBackgroundColor } : ''"
                           :theme="isSmallWindow || !isSplitMenu ? themeStore.siderTheme : 'light'"
                           :width="themeStore.siderWith"
                           v-model:collapsed="permissionStore.collapsed"
@@ -55,7 +54,7 @@
         </transition>
         <!--    菜单开合开关-->
         <a-layout-content>
-          <view-tabs class="view-tabs" v-if="themeStore.showViewTabs" :style="{'background': themeStore.layoutBackgroundColor, 'top': !props.showLayout ? '0' : '' }"/>
+          <view-tabs class="view-tabs background-glass" v-if="themeStore.showViewTabs" :style="{'top': !props.showLayout ? '0' : '' }"/>
           <!--内容-->
           <Content class="layout-content"/>
         </a-layout-content>
@@ -203,6 +202,9 @@ const initSplitMenu = () => {
 
 const {subMenu, loadSideMenu} = initSplitMenu()
 
+const glassClass = computed(() => {
+  return themeStore.siderTheme === 'light' ? 'background-glass' : ''
+})
 
 // 监听窗口变化
 watch(() => themeStore.isSmallWindow, (value) => {

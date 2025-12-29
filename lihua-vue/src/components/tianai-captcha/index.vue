@@ -185,7 +185,7 @@ const replaceLoadingElement = () => {
 }
 /* 验证成功样式 */
 #tianai-captcha .content .tianai-captcha-tips.tianai-captcha-tips-success {
-  background-color: #52c41a !important;
+  background-color: var(--lihua-success-color) !important;
 }
 
 /* 点选样式 */
@@ -213,7 +213,7 @@ const replaceLoadingElement = () => {
 }
 /* 验证失败样式 */
 #tianai-captcha .content .tianai-captcha-tips.tianai-captcha-tips-error {
-  background-color: #ff4d4f !important;
+  background-color: var(--lihua-danger-color) !important;
 }
 /* 拼接类型验证统一圆角 */
 #tianai-captcha.tianai-captcha-concat .tianai-captcha-slider-concat-bg-img {
@@ -241,14 +241,6 @@ const replaceLoadingElement = () => {
   /* 点击提示文字样式 */
   #tianai-captcha.tianai-captcha-word-click .click-tip #tianai-captcha-click-track-font {
     color: rgba(255, 255, 255, 0.85) !important;
-  }
-  /* 验证成功样式 */
-  #tianai-captcha .content .tianai-captcha-tips.tianai-captcha-tips-success {
-    background-color: #306317 !important;
-  }
-  /* 验证失败样式 */
-  #tianai-captcha .content .tianai-captcha-tips.tianai-captcha-tips-error {
-    background-color: #7e2e2f !important;
   }
   /* 滑块轨道样式*/
   #tianai-captcha.tianai-captcha-slider .slider-move-track{

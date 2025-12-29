@@ -3,13 +3,11 @@
     <a-space>
       <component :is="tabPane.tab.icon" style="margin: 0"/>
       {{ tabPane.tab.label }}
-      <Transition name="fadein" mode="out-in">
-        <SyncOutlined v-if="tabPane.tab.routerPathKey === viewTabsStore.$state.activeKey"
-                      class="view-tab-icon"
-                      @click="handleReload"
-                      :spin="reloading"
-        />
-      </Transition>
+      <ReloadOutlined v-if="tabPane.tab.routerPathKey === viewTabsStore.$state.activeKey"
+                    class="view-tab-icon"
+                    @click="handleReload"
+                    :spin="reloading"
+      />
       <CloseOutlined v-if="!tabPane.tab.affix"
                      class="view-tab-icon"
                      @click="() => emits('closeViewTab', tabPane.tab.routerPathKey)"
@@ -124,7 +122,7 @@ const handleClickMenuTab = ({ key }:{ key :string }) => {
 const handleReload = () => {
   viewTabsStore.regenerateComponentKey()
   reloading.value = true
-  setTimeout(()=>{reloading.value = false}, 500)
+  setTimeout(()=>{reloading.value = false}, 1000)
 }
 
 // 初始化小窗相关，全局搜索：miniWindow=true 可查看ui小窗判定代码
@@ -301,14 +299,5 @@ const handleUnAffix = (tab: StarViewType) => {
 .view-tab-icon {
   margin: 0 !important;
   font-size: var(--lihua-font-size-xs)
-}
-
-/* 刷新图标淡入 */
-.fadein-enter-active {
-  transition: all .28s ease-in-out;
-}
-.fadein-enter-from {
-  transform: scale(0.75);
-  opacity: 0;
 }
 </style>
