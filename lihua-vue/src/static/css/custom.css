@@ -72,7 +72,7 @@
 /**
     灰色模式 由管理员统一开启
  */
-[enable-gray-model = 'active'] {
+[gray-model = 'enable'] {
     body {
         -webkit-filter: grayscale(100%);
         -moz-filter: grayscale(100%);

@@ -66,13 +66,13 @@ onUnmounted(() =>  sessionStorage.removeItem('isRefreshed' + src.value))
   border: none;
 }
 
-[view-tabs=show][show-hide-layout=show] .lihua-iframe {
+[view-tabs=show][layout=show] .lihua-iframe {
   min-height: calc(100vh - (48px + 52px + 35px + 2px));
 }
-[view-tabs=hide][show-hide-layout=show] .lihua-iframe {
+[view-tabs=hide][layout=show] .lihua-iframe {
   min-height: calc(100vh - (48px + 35px));
 }
-[view-tabs=show][show-hide-layout=hide] .lihua-iframe {
+[view-tabs=show][layout=hide] .lihua-iframe {
   min-height: calc(100vh - (52px + 35px));
 }
 </style>

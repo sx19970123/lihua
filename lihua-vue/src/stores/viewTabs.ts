@@ -24,7 +24,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
         // layout中content组件key值，修改以重新加载组件
         const contentComponentKey: string = ''
         // 显示layout
-        const showLayout: boolean = 'hide' !== localStorage.getItem("show-hide-layout")
+        const showLayout: boolean = 'hide' !== localStorage.getItem("layout")
         return {
             viewTabs,
             totalViewTabs,
@@ -270,9 +270,9 @@ export const useViewTabsStore = defineStore('viewTabs',{
             // 生成一个随机的 UUID
             this.$state.contentComponentKey = uuidv4();
         },
-        // 修改显示layout后更新html节点show-hide-layout
+        // 修改显示layout后更新html节点layout
         setShowLayoutAttribute () {
-            document.documentElement.setAttribute("show-hide-layout", 'hide' === localStorage.getItem("show-hide-layout")  ? 'hide' : 'show')
+            document.documentElement.setAttribute("layout", 'hide' === localStorage.getItem("show-hide-layout")  ? 'hide' : 'show')
         }
     }
 })

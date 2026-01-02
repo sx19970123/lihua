@@ -288,7 +288,7 @@ onUnmounted(() => {
 </style>
 
 <style lang="scss">
-[data-head-affix = affix] {
+[head-affix = enable] {
   .mn-header {
     position: sticky;
     top: 0;

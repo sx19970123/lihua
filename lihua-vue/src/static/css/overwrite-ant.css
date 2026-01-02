@@ -1,61 +1,13 @@
-[data-ground-glass = glass] {
-    .background-glass {
-        background-color: var(--lihua-backdrop-filter-on-color) !important;
-    }
-
-    /* 抽屉背景虚化 */
-    .ant-drawer-mask {
-        will-change: backdrop-filter;
-        backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
-        -webkit-backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
-    }
-    /* 模态框背景虚化 */
-    .ant-modal-wrap {
-        will-change: backdrop-filter;
-        backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
-        -webkit-backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
-    }
-    /* 选项卡选中项目虚化 */
-    .ant-tabs-tab-active {
-        background: rgba(255, 255, 255, 0) !important;
-        border-bottom-color: rgba(255, 255, 255, 0) !important;
-    }
-    /* 下拉菜单虚化 */
-    .ant-dropdown {
-        backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
-        border-radius: 8px;
-        .ant-dropdown-menu {
-            background-color: rgba(0, 0, 0, 0) !important;
-        }
-    }
-    .ant-dropdown-menu-submenu {
-        backdrop-filter: var(--lihua-backdrop-filter-sm) !important;
-    }
+/**
+    table 页脚背景设置为白色｜黑色
+ */
+.ant-table-footer {
+    background: var(--lihua-background-color-level-2) !important;
 }
 
 /**
-    table 页脚背景设置为白色
+    table 页脚圆角
  */
-[data-theme = 'light'] {
-    .ant-table-footer {
-        background: var(--lihua-background-color-level-2) !important;
-    }
-    .ant-dropdown {
-        background-color: rgba(255, 255, 255, 0.6) !important;
-    }
-}
-[data-theme = 'dark'] {
-    /*.ant-dropdown {*/
-    /*    background-color: rgba(31, 31, 31, 0.8) !important;*/
-    /*}*/
-    /*.ant-dropdown-menu-submenu {*/
-    /*    background-color: rgba(31, 31, 31, 0) !important;*/
-    /*    .ant-dropdown-menu {*/
-    /*        background-color: rgba(31, 31, 31, 0.8) !important;*/
-    /*    }*/
-    /*}*/
-}
-
 .ant-table-wrapper .ant-table {
     border-radius: 8px !important;
 }

@@ -6,6 +6,8 @@
 @import "nprogress.css";
 /* 覆盖ant-design-vue 4 样式 */
 @import "overwrite-ant.css";
+/* 毛玻璃效果 */
+@import "ground-glass.css";
 /* 自定义通用css */
 @import "custom.css";
 /* css 变量 */

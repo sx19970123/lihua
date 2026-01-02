@@ -94,7 +94,7 @@ export const useThemeStore = defineStore('theme',{
         /**
          * 灰色模式
          */
-        const grayModel: string = settings.grayModel
+        const grayModel: boolean = settings.grayModel
 
         /**
          * ant 主题配置
@@ -221,23 +221,23 @@ export const useThemeStore = defineStore('theme',{
             if (this.$state.siderTheme === 'dark') {
                 document.documentElement.setAttribute("sider-dark", "dark")
             } else {
-                document.documentElement.setAttribute("sider-dark", "light")
+                document.documentElement.removeAttribute("sider-dark")
             }
         },
-        // 修改磨砂玻璃效果
+        // html节点添加glass属性
         changeGroundGlass() {
             if (this.$state.groundGlass) {
-                document.documentElement.setAttribute("data-ground-glass",'glass')
+                document.documentElement.setAttribute("ground-glass",'enable')
             } else {
-                document.documentElement.setAttribute("data-ground-glass",'no-glass')
+                document.documentElement.removeAttribute("ground-glass")
             }
         },
         // 修改固定头部
         changeAffixHead() {
             if (this.$state.affixHead) {
-                document.documentElement.setAttribute("data-head-affix",'affix')
+                document.documentElement.setAttribute("head-affix",'enable')
             } else {
-                document.documentElement.setAttribute("data-head-affix",'un-affix')
+                document.documentElement.removeAttribute("head-affix")
             }
         },
         // 修改html标签，标记当前颜色模式
@@ -284,8 +284,12 @@ export const useThemeStore = defineStore('theme',{
         },
         // 是否开启灰色模式
         enableGrayModel(enable?: boolean) {
-            this.$state.grayModel = enable ? 'active' : 'none'
-            document.documentElement.setAttribute("enable-gray-model",this.$state.grayModel)
+            this.$state.grayModel = !!enable
+            if (enable) {
+                document.documentElement.setAttribute("gray-model", "enable")
+            } else {
+                document.documentElement.removeAttribute("gray-model")
+            }
         },
         // 开启混合模式下菜单分割
         enableMixSplitMenu(enable: boolean) {

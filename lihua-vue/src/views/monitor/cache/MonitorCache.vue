@@ -291,13 +291,13 @@ onMounted(() => {
 </style>
 <style>
 /* 根据是否开启多任务栏，设定不同的content高度 */
-[view-tabs=show][show-hide-layout=show] .cache-monitor-max-content-height {
+[view-tabs=show][layout=show] .cache-monitor-max-content-height {
   max-height: calc(100vh - (var(--lihua-layout-height) + 54px  + 156px));
 }
-[view-tabs=hide][show-hide-layout=show] .cache-monitor-max-content-height {
+[view-tabs=hide][layout=show] .cache-monitor-max-content-height {
   max-height: calc(100vh - (var(--lihua-layout-height) + 156px));
 }
-[view-tabs=show][show-hide-layout=hide] .cache-monitor-max-content-height {
+[view-tabs=show][layout=hide] .cache-monitor-max-content-height {
   max-height: calc(100vh - (54px + 156px));
 }
 </style>

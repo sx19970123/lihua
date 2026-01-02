@@ -68,7 +68,7 @@ const props = defineProps<{showLayout: boolean }>()
 </style>
 
 <style>
-[data-head-affix = affix] {
+[head-affix = enable] {
   .tn-header {
     position: sticky;
     top: 0;

@@ -40,8 +40,7 @@
                 </a-flex>
               </a-menu-item>
             </div>
-            <a-divider v-if="recentData.length > 0" style="margin: 0"/>
-            <a-menu-item v-if="recentData.length > 0" key="clear-recent" danger>
+            <a-menu-item v-if="recentData.length > 0"  key="clear-recent" danger>
               <div style="text-align: center">
                 <ClearOutlined /> 清空最近使用
               </div>
@@ -183,13 +182,13 @@ handleStarList(viewTabsStore.totalViewTabs)
  * 控制layout显示关闭
  */
 const showHideLayout = () => {
-  const data =  localStorage.getItem("show-hide-layout")
+  const data =  localStorage.getItem("layout")
   if ('hide' === data) {
-    localStorage.setItem("show-hide-layout",'show')
+    localStorage.setItem("layout",'show')
   } else {
-    localStorage.setItem("show-hide-layout",'hide')
+    localStorage.setItem("layout",'hide')
   }
-  viewTabsStore.$state.showLayout = localStorage.getItem("show-hide-layout") === 'show'
+  viewTabsStore.$state.showLayout = localStorage.getItem("layout") === 'show'
   viewTabsStore.setShowLayoutAttribute()
 }
 

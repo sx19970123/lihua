@@ -174,7 +174,7 @@ onUnmounted(() => {
 </style>
 
 <style lang="scss">
-[data-head-affix = affix] {
+[head-affix = enable] {
   .sn-header {
     position: sticky;
     top: 0;

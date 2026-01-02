@@ -123,9 +123,9 @@ export default {
     routeTransition: 'zoom',
 
     /**
-     * 灰色模式 none active
+     * 灰色模式
      */
-    grayModel: 'none',
+    grayModel: false,
 
     /**
      * ant 主题配置
