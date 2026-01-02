@@ -11,7 +11,7 @@
       </div>
       <!--    导航名称-->
       <a-typography-title class="title"
-                          :class="(themeStore.siderTheme === 'dark' && themeStore.layoutType !== 'mix-navigation') || (themeStore.siderTheme === 'dark' && themeStore.mixSplitMenu) ? 'main-name': ''"
+                          :class="(themeStore.siderTheme === 'dark' && themeStore.layoutType !== 'mix-navigation') || (themeStore.siderTheme === 'dark' && themeStore.mixSplitMenu) || (themeStore.siderTheme === 'dark' && isSmallWindow) ? 'main-name': ''"
                           :level="4"
                           ellipsis
                           content="Lihua Admin"
@@ -34,6 +34,7 @@
 import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
 import {useRouter} from 'vue-router'
+import {ref} from "vue";
 
 const router = useRouter()
 const permissionStore = usePermissionStore()
@@ -41,6 +42,7 @@ const themeStore = useThemeStore()
 const {showTitle = true} = defineProps<{
   showTitle?: boolean;
 }>()
+const isSmallWindow = ref<boolean>(themeStore.isSmallWindow)
 // 点击回到首页
 const goHome = async () => {
   await router.push("/index");

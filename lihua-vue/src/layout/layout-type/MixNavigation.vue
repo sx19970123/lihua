@@ -48,6 +48,7 @@
                   :sider-theme="isSmallWindow || !isSplitMenu ? undefined: 'light'"
                   :menu="isSmallWindow || !isSplitMenu ? undefined : subMenu"
                   :class="{'small-sider-content': isSmallWindow ,'header-invisible-sider-content': !headerVisible}"
+                  :sider-mode="isSmallWindow ? 'inline' : undefined"
                   @route-change="handleRouteChange"
             />
           </a-layout-sider>
