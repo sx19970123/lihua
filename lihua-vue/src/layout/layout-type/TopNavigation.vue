@@ -1,8 +1,8 @@
 <template>
   <a-layout>
-    <div class="tn-header">
+    <div class="top-navigation-header">
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="tn-layout-header"
+        <a-layout-header class="top-navigation-layout-header"
                          :class="themeStore.siderTheme === 'light' ? 'background-glass' : ''"
                          v-show="props.showLayout">
           <a-flex align="center" justify="space-between" style="margin: 0 var(--lihua-layout-head-space) 0 var(--lihua-layout-head-space)">
@@ -38,13 +38,13 @@ const props = defineProps<{showLayout: boolean }>()
 </script>
 
 <style scoped>
-.tn-header {
+.top-navigation-header {
   backdrop-filter: var(--lihua-backdrop-filter-lg);
   -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
   position: relative;
   z-index: 10;
 }
-.tn-layout-header {
+.top-navigation-layout-header {
   position: relative;
   z-index: 10;
   padding: 0;
@@ -66,7 +66,7 @@ const props = defineProps<{showLayout: boolean }>()
 
 <style>
 [head-affix = enable] {
-  .tn-header {
+  .top-navigation-header {
     position: sticky;
     top: 0;
   }

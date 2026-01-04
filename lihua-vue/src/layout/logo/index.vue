@@ -1,48 +1,53 @@
 <template>
-  <div class="logo unselectable" @click="goHome">
-    <a-flex gap="middle" align="center" justify="center" v-if="showTitle && (themeStore.layoutType === 'mix-navigation' || themeStore.layoutType === 'top-navigation' || !permissionStore.collapsed)">
-      <a-avatar :style="{backgroundColor: themeStore.getColorPrimary()}">
+  <div class="title-content unselectable" @click="goHome" :style="{maxWidth: maxWidth + 'px'}">
+    <a-flex gap="middle" align="center" justify="center">
+      <!--      系统logo-->
+      <a-avatar class="logo" :style="{backgroundColor: themeStore.getColorPrimary()}">
         <template #icon>
           <XiaoMiaoCool/>
         </template>
       </a-avatar>
-      <!--    导航名称-->
-      <a-typography-title class="title" :level="4" ellipsis content="Lihua Admin"/>
-    </a-flex>
-    <a-flex align="center" justify="center" v-else>
-      <!--    侧边导航折叠时展示的LOGO-->
-      <a-avatar :style="{ backgroundColor: themeStore.getColorPrimary()}">
-        <template #icon>
-          <XiaoMiaoCool />
-        </template>
-      </a-avatar>
+      <!--    系统名称-->
+      <a-typography-title content="Lihua Admin" class="title" :class="{'title-color': titleColor}" :level="4" ellipsis v-if="showTitle"/>
     </a-flex>
   </div>
 </template>
 
 <script setup lang="ts">
-import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
 import {useRouter} from 'vue-router'
-
+import {computed} from "vue";
 const router = useRouter()
-const permissionStore = usePermissionStore()
 const themeStore = useThemeStore()
-const {showTitle = true} = defineProps<{
-  showTitle?: boolean;
+const {showTitle = true, maxWidth} = defineProps<{
+  // 显示标题
+  showTitle?: boolean,
+  // 最大宽度
+  maxWidth?: number,
 }>()
 // 点击回到首页
 const goHome = async () => {
   await router.push("/index");
 }
+
+// 菜单栏为暗色并主题不为暗色时，使用自定义的标题颜色
+const titleColor = computed(() => themeStore.siderTheme === 'dark' && !themeStore.isDarkTheme)
 </script>
 
 <style scoped>
-.logo {
+.title-content {
   cursor: pointer;
+
+  .logo {
+    min-width: 32px;
+  }
   .title {
     margin: 0;
     overflow: hidden;
   }
+  .title-color {
+    color: var(--lihua-alpha-level-5);
+  }
 }
+
 </style>

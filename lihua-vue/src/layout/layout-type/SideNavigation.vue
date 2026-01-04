@@ -4,7 +4,7 @@
       <!--   左侧导航   -->
       <transition :name="themeStore.routeTransition" mode="out-in">
         <a-layout-sider :class="themeStore.siderTheme === 'light' ? 'background-glass' : ''"
-                        class="sn-sider"
+                        class="side-navigation-sider"
                         v-show="props.showLayout"
                         :theme="themeStore.siderTheme"
                         :trigger="null"
@@ -13,7 +13,7 @@
                         collapsible
                         breakpoint="xl"
         >
-          <Logo class="logo"/>
+          <Logo class="logo" :show-title="!permissionStore.collapsed"/>
           <!-- 侧边栏-->
           <div class="sider sider-scrollbar">
             <Side/>
@@ -22,10 +22,10 @@
       </transition>
       <!--   右侧head和content   -->
       <a-layout>
-        <a-layout-header class="sn-header background-glass">
+        <a-layout-header class="side-navigation-header background-glass">
           <transition :name="themeStore.routeTransition" mode="out-in">
             <!--    菜单收缩-->
-            <a-flex class="sn-head" justify="space-between" v-show="props.showLayout">
+            <a-flex class="side-navigation-head" justify="space-between" v-show="props.showLayout">
               <a-flex align="center" :gap="16">
                 <!--菜单开关-->
                 <HeadCollapsed/>
@@ -64,7 +64,7 @@ const props = defineProps<{showLayout: boolean}>()
 </script>
 
 <style scoped>
-.sn-header {
+.side-navigation-header {
   z-index: 3;
   height: auto;
   padding: 0;
@@ -72,7 +72,7 @@ const props = defineProps<{showLayout: boolean}>()
   -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
   line-height: var(--lihua-layout-height);
 }
-.sn-head {
+.side-navigation-head {
   box-shadow: var(--lihua-layout-box-shadow);
   padding-right: var(--lihua-layout-head-space);
 }
@@ -82,7 +82,7 @@ const props = defineProps<{showLayout: boolean}>()
 .logo {
   padding: var(--lihua-space-sm) var(--lihua-space-base)
 }
-.sn-sider {
+.side-navigation-sider {
   position: sticky;
   height: 100vh;
   top: 0;
@@ -93,7 +93,7 @@ const props = defineProps<{showLayout: boolean}>()
 
 <style lang="scss">
 [head-affix = enable] {
-  .sn-header {
+  .side-navigation-header {
     position: sticky;
     top: 0;
   }

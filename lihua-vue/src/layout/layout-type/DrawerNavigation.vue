@@ -2,9 +2,9 @@
   <div>
     <a-layout>
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="dn-header background-glass" v-show="props.showLayout">
+        <a-layout-header class="drawer-navigation-header background-glass" v-show="props.showLayout">
           <a-flex align="center" justify="space-between">
-            <Logo class="logo"/>
+            <Logo class="logo" :show-title="false"/>
             <!--页头-->
             <Head class="head"/>
           </a-flex>
@@ -13,7 +13,7 @@
 
       <a-layout>
         <transition :name="themeStore.routeTransition" mode="out-in">
-          <a-layout-sider class="dn-sider"
+          <a-layout-sider class="drawer-navigation-sider"
                           v-show="props.showLayout"
                           :theme="themeStore.siderTheme"
                           :width="themeStore.siderWith"
@@ -24,11 +24,9 @@
                           collapsible
           >
             <!-- 窗口缩小到阈值后特殊侧边栏logo-->
-            <div class="sider-logo" :style="{width: showMask ? themeStore.siderWith + 'px' : '0px'}">
-              <a-flex align="center" justify="center" v-if="showMask">
-                <Logo style="margin: 0"/>
-              </a-flex>
-            </div>
+            <a-flex align="center" justify="center" class="sider-logo">
+              <Logo :max-width="themeStore.siderWith"/>
+            </a-flex>
             <!-- 侧边栏-->
             <Side class="sider-scrollbar min-sider-content" @route-change="handleRouteChange"/>
           </a-layout-sider>
@@ -87,7 +85,7 @@ const handleRouteChange = () => {
 </script>
 
 <style scoped>
-.dn-header {
+.drawer-navigation-header {
   z-index: 5;
   padding: 0;
   height: var(--lihua-layout-height);
@@ -97,11 +95,11 @@ const handleRouteChange = () => {
   box-shadow: var(--lihua-layout-box-shadow);
 }
 
-.dn-sider {
+.drawer-navigation-sider {
   z-index: 101;
   height: 100vh;
   position: fixed;
-  top: var(--lihua-layout-height);
+  top: 0;
   box-shadow: var(--lihua-layout-box-shadow);
 }
 
@@ -116,15 +114,9 @@ const handleRouteChange = () => {
   padding: 0 0 0 var(--lihua-space-sm);
   margin-left: var(--lihua-layout-head-space);
 }
-
 .sider-logo {
   height: var(--lihua-layout-height);
-  line-height: var(--lihua-layout-height);
-  position: fixed;
-  top: 0;
-  transition: all 0.2s, background 0s;
 }
-
 .view-tabs {
   backdrop-filter: var(--lihua-backdrop-filter-lg);
   -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
@@ -135,7 +127,7 @@ const handleRouteChange = () => {
 
 <style lang="scss">
 [head-affix = enable] {
-  .dn-header {
+  .drawer-navigation-header {
     position: sticky;
     top: 0;
   }

@@ -1,7 +1,7 @@
 <template>
   <a-layout>
     <transition :name="themeStore.routeTransition" mode="out-in">
-      <a-layout-header class="mn-header" :class="{'background-glass': themeStore.siderTheme === 'light'}" v-show="props.showLayout">
+      <a-layout-header class="mix-navigation-header" :class="{'background-glass': themeStore.siderTheme === 'light'}" v-show="props.showLayout">
         <div ref="headerRef">
           <a-flex align="center" justify="space-between">
             <!-- 顶部logo-->
@@ -26,7 +26,7 @@
       <!--    二级导航侧边栏    -->
       <transition :name="themeStore.routeTransition" mode="out-in" v-if="subMenu.length > 0">
         <a-layout-sider :class="{'background-glass': themeStore.siderTheme === 'light'}"
-                        class="mn-sider"
+                        class="mix-navigation-sider"
                         v-show="props.showLayout"
                         theme="light"
                         :width="themeStore.siderWith"
@@ -151,7 +151,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.mn-header {
+.mix-navigation-header {
   z-index: 5;
   padding: 0;
   height: var(--lihua-layout-height);
@@ -160,7 +160,7 @@ onUnmounted(() => {
   -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
   box-shadow: var(--lihua-layout-box-shadow);
 }
-.mn-sider {
+.mix-navigation-sider {
   position: sticky;
   height: calc(100vh - var(--lihua-layout-height));
   z-index: 4;
@@ -195,11 +195,11 @@ onUnmounted(() => {
 
 <style lang="scss">
 [head-affix = enable] {
-  .mn-header {
+  .mix-navigation-header {
     position: sticky;
     top: 0;
   }
-  .mn-sider {
+  .mix-navigation-sider {
     position: sticky;
     top: var(--lihua-layout-height);
   }
