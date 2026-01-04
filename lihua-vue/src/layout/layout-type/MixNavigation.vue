@@ -39,7 +39,7 @@
       </transition>
       <!-- view-tab 和 content -->
       <a-layout-content>
-        <view-tabs class="view-tabs background-glass" v-if="themeStore.showViewTabs" :style="{'top': !props.showLayout ? '0' : '' }"/>
+        <view-tabs class="view-tabs background-glass" v-if="themeStore.showViewTabs"/>
         <Content class="layout-content"/>
       </a-layout-content>
     </a-layout>

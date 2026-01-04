@@ -23,7 +23,7 @@ const themeStore = useThemeStore()
 const route = useRoute()
 const router = useRouter()
 // pinia 中获取菜单数据
-const permission = usePermissionStore()
+const permissionStore = usePermissionStore()
 const viewTabsStore = useViewTabsStore()
 // 抛出函数，当路由发生变化时，抛出函数
 const emits = defineEmits(['routeChange', 'menuClick', 'mounted'])
@@ -43,7 +43,7 @@ const {siderMode, menu, selectedKeys, openKeys, siderTheme, isMixTop} = definePr
   isMixTop?: boolean,
 }>()
 
-const defaultMenu = computed(() => permission.menuRouters)
+const defaultMenu = computed(() => permissionStore.menuRouters)
 
 const state = reactive<{
   selectedKeys: string[],
@@ -75,7 +75,7 @@ const handleClickMenuItem = ({ key }: {key: string}) => {
 // 当菜单未收起并且不为顶部导航时，设置展开节点
 const setOpenKeys = () => {
   // 展开收起状态
-  const collapsed = permission.collapsed
+  const collapsed = permissionStore.collapsed
   // 导航类型
   const siderMode = themeStore.siderMode
 
@@ -104,7 +104,7 @@ watch(()=> route.matched,()=> {
 })
 
 // 收起/展开
-watch(() => permission.collapsed,(value) => {
+watch(() => permissionStore.collapsed,(value) => {
   if (isMixTop) {
     return
   }

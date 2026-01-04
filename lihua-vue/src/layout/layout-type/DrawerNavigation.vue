@@ -19,28 +19,29 @@
                           :width="themeStore.siderWith"
                           v-model:collapsed="permissionStore.collapsed"
                           :collapsedWidth="0"
-                          @collapse="handleChangeCollapse"
-                          :trigger="showMask ? null : ''"
                           collapsible
           >
-            <!-- 窗口缩小到阈值后特殊侧边栏logo-->
+            <template #trigger v-if="!permissionStore.collapsed">
+              <CloseOutlined />
+            </template>
+            <!-- 小屏模式-->
             <a-flex align="center" justify="center" class="sider-logo">
               <Logo :max-width="themeStore.siderWith"/>
             </a-flex>
             <!-- 侧边栏-->
-            <Side class="sider-scrollbar min-sider-content" @route-change="handleRouteChange"/>
+            <Side class="sider-scrollbar min-sider-content" sider-mode="inline" @route-change="closeSide"/>
           </a-layout-sider>
         </transition>
         <!--    菜单开合开关-->
         <a-layout-content>
-          <view-tabs class="view-tabs background-glass" v-if="themeStore.showViewTabs" :style="{'top': !props.showLayout ? '0' : '' }"/>
+          <view-tabs class="view-tabs background-glass" v-if="themeStore.showViewTabs"/>
           <!--内容-->
           <Content class="layout-content"/>
         </a-layout-content>
       </a-layout>
     </a-layout>
-    <!--  小窗口菜单遮罩  -->
-    <Mask :show-mask="showMask" :z-index="100" @click="handleCloseSider"/>
+    <!--  小屏菜单遮罩  -->
+    <Mask :show-mask="!permissionStore.collapsed" :z-index="100" @click="closeSide"/>
   </div>
 </template>
 
@@ -52,7 +53,6 @@ import Content from "@/layout/content/index.vue"
 import { usePermissionStore } from "@/stores/permission";
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/theme";
-import {ref} from "vue";
 import Mask from "@/components/mask/index.vue";
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()
@@ -60,28 +60,12 @@ const permissionStore = usePermissionStore()
 // 是否显示layout
 const props = defineProps<{ showLayout: boolean }>()
 
-// 小屏下抽屉样式遮罩
-const showMask = ref<boolean>(false)
-
-// 展开时打开遮罩
-const handleChangeCollapse = (collapsed: boolean) => {
-  if (!collapsed) {
-    showMask.value = true
-  }
-}
-
-// 处理关闭菜单
-const handleCloseSider = () => {
+// 关闭菜单
+const closeSide = () => {
   permissionStore.collapsed = true
-  showMask.value = false
 }
 
-// 路由变化时自动关闭菜单
-const handleRouteChange = () => {
-  if (showMask.value) {
-    handleCloseSider()
-  }
-}
+closeSide()
 </script>
 
 <style scoped>
@@ -136,6 +120,10 @@ const handleRouteChange = () => {
     z-index: 2;
     top: var(--lihua-layout-height);
   }
+}
+
+.ant-layout-sider-zero-width-trigger::after {
+  border-radius: 0  var(--lihua-radius-xs) var(--lihua-radius-xs) 0;
 }
 </style>
 
