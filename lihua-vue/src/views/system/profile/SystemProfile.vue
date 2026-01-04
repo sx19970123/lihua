@@ -1,5 +1,5 @@
 <template>
-  <div class="top-navigation-center">
+  <div>
     <a-row :gutter="8">
       <a-col :xxl="{span: 4}" :xl="{span: 5}" :lg="{span: 6}" :md="{span: 6}" :sm="{span: 6}" :xs="{span: 6}">
         <a-card style="height: 100%" :body-style="{padding: '22px'}">

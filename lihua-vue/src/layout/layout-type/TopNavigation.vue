@@ -45,6 +45,8 @@ const props = defineProps<{showLayout: boolean }>()
   z-index: 10;
 }
 .tn-layout-header {
+  position: relative;
+  z-index: 10;
   padding: 0;
   height: var(--lihua-layout-height);
   line-height: var(--lihua-layout-height);

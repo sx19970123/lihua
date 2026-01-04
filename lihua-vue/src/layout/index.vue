@@ -3,6 +3,7 @@
   <side-navigation v-if="themeStore.layoutType === 'side-navigation'" :show-layout="!isMiniWindow && viewTabsStore.$state.showLayout"/>
   <!--  混合导航-->
   <mix-navigation v-if="themeStore.layoutType === 'mix-navigation'" :show-layout="!isMiniWindow && viewTabsStore.$state.showLayout"/>
+<!--  <drawer-navigation v-if="themeStore.layoutType === 'side-navigation'" :show-layout="!isMiniWindow && viewTabsStore.$state.showLayout"/>-->
   <!--  顶部导航-->
   <top-navigation v-if="themeStore.layoutType === 'top-navigation'" :show-layout="!isMiniWindow && viewTabsStore.$state.showLayout"/>
 </template>
@@ -11,6 +12,7 @@
 import MixNavigation from "@/layout/layout-type/MixNavigation.vue";
 import SideNavigation from "@/layout/layout-type/SideNavigation.vue";
 import TopNavigation from "@/layout/layout-type/TopNavigation.vue"
+import DrawerNavigation from "@/layout/layout-type/DrawerNavigation.vue"
 import {useThemeStore} from "@/stores/theme";
 import {useViewTabsStore} from "@/stores/viewTabs.ts";
 import {onMounted, onUnmounted, ref} from "vue";
