@@ -449,7 +449,7 @@ onBeforeUnmount(() => {
 
 <style>
 [sider-dark='dark'][layout-type='top-navigation'],
-[sider-dark='dark'][layout-type='mix-navigation'][enable-mix-split-menu='active'] {
+[sider-dark='dark'][layout-type='mix-navigation'] {
   /* placeholder 颜色 */
   .title-search-input input::placeholder {
     color: var(--lihua-alpha-level-4) !important;

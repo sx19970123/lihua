@@ -158,7 +158,7 @@ const handleGenerateStaticMenuData = (staticRoutes: any[]): ItemType[] => {
 }
 
 // 生成动态菜单数据
-const handleGenerateMenuData = (sidebarRouters:RouterType[], isInner: boolean = false): ItemType[] => {
+const handleGenerateMenuData = (sidebarRouters:RouterType[]): ItemType[] => {
     const childrenItemType: ItemType[] = []
     sidebarRouters.forEach(sidebar => {
         // 是否显示菜单
@@ -166,7 +166,7 @@ const handleGenerateMenuData = (sidebarRouters:RouterType[], isInner: boolean = 
             // 菜单类型生成的对象包含children
             if (sidebar.type === 'directory') {
                 if (sidebar.children && sidebar.children.length > 0) {
-                    const resp = handleGenerateMenuData(sidebar.children, true)
+                    const resp = handleGenerateMenuData(sidebar.children)
                     // 存在子集
                     if (resp && resp.length > 0) {
                         const menuItem: ItemType = {
@@ -174,7 +174,7 @@ const handleGenerateMenuData = (sidebarRouters:RouterType[], isInner: boolean = 
                             icon: () => sidebar.meta.icon ? h(Icon, {icon: sidebar.meta.icon}) : h('template'),
                             label: sidebar.meta.label,
                             children: resp,
-                            type: isSiderGroup(isInner)
+                            type: isSiderGroup()
                         }
                         childrenItemType.push(menuItem)
                     }
@@ -185,13 +185,13 @@ const handleGenerateMenuData = (sidebarRouters:RouterType[], isInner: boolean = 
                         icon: () => sidebar.meta.icon ? h(Icon, {icon: sidebar.meta.icon}) : h('template'),
                         label: sidebar.meta.label,
                         children: [],
-                        type: isSiderGroup(isInner)
+                        type: isSiderGroup()
                     }
                     childrenItemType.push(menuItem)
                 }
             } else if (sidebar.type === 'layout') {
                 if (sidebar.children && sidebar.children.length > 0) {
-                    const resp = handleGenerateMenuData(sidebar.children, true)
+                    const resp = handleGenerateMenuData(sidebar.children)
                     resp.forEach(item => {
                         childrenItemType.push(item)
                     })
@@ -215,29 +215,24 @@ const handleGenerateMenuData = (sidebarRouters:RouterType[], isInner: boolean = 
 }
 
 // 重新加载菜单导航
-const handleReloadMenu = (menuRouters: any[], isInner: boolean = false) => {
+const handleReloadMenu = (menuRouters: any[]) => {
     menuRouters.forEach(router => {
         if (router.children) {
-            handleReloadMenu(router.children, true)
-            router.type = isSiderGroup(isInner)
+            handleReloadMenu(router.children)
+            router.type = isSiderGroup()
         }
     })
 }
 
 // 是否为分组菜单
-const isSiderGroup = (isInner: boolean): 'group' | undefined => {
+const isSiderGroup = (): 'group' | undefined => {
     if (!themeStore) themeStore = useThemeStore();
 
-    const { layoutType, mixSplitMenu, siderGroup, isSmallWindow } = themeStore;
+    const { layoutType, siderGroup, isSmallWindow } = themeStore;
 
     // 混合布局
-    if (layoutType === 'mix-navigation') {
-        if (isSmallWindow) {
-            return siderGroup ? 'group' : undefined;
-        }
-        if (isInner || !mixSplitMenu) {
-            return siderGroup ? 'group' : undefined;
-        }
+    if (layoutType === 'mix-navigation' && isSmallWindow) {
+        return siderGroup ? 'group' : undefined;
     }
 
     // 侧边布局

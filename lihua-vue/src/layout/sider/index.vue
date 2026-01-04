@@ -39,7 +39,7 @@ const {siderMode, menu, selectedKeys, openKeys, siderTheme, isMixTop} = definePr
   openKeys?: string[],
   // 菜单颜色
   siderTheme?: string,
-  // 是否未混合布局的顶栏
+  // 是否为混合布局的顶栏
   isMixTop?: boolean,
 }>()
 

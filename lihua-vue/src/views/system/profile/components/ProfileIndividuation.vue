@@ -32,9 +32,6 @@
           <a-radio value="large">更大</a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item label="分割菜单" v-if="themeStore.$state.layoutType === 'mix-navigation'">
-        <a-switch v-model:checked="themeStore.mixSplitMenu" @change="handleChangeSplitMenu"/>
-      </a-form-item>
       <a-form-item label="分组导航" v-if="themeStore.layoutType !== 'top-navigation'">
         <a-switch v-model:checked="themeStore.siderGroup" @change="handleChangeSiderGroup"/>
       </a-form-item>
@@ -108,12 +105,6 @@ const handleSaveTheme = async () => {
   } finally {
     submitLoading.value = false
   }
-}
-
-// 修改分割菜单
-const handleChangeSplitMenu = (value: boolean) => {
-  permissionStore.reloadMenu()
-  themeStore.enableMixSplitMenu(value)
 }
 
 // 处理修改菜单分组模式

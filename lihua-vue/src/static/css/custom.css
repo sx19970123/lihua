@@ -5,7 +5,7 @@
     scrollbar-color: var(--lihua-scrollbar-thumb-color);
 }
 
-[sider-dark = 'dark'][enable-mix-split-menu = 'active'][layout-type = 'mix-navigation'] {
+[sider-dark = 'dark'][layout-type = 'mix-navigation'] {
     .sider-scrollbar {
         scrollbar-color: var(--lihua-mix-navigation-split-thumb-color);
     }
@@ -26,7 +26,7 @@
 }
 
 [sider-dark = 'dark'][layout-type = 'top-navigation'],
-[sider-dark = 'dark'][layout-type = 'mix-navigation'][enable-mix-split-menu='active'] {
+[sider-dark = 'dark'][layout-type = 'mix-navigation'] {
     .icon-default-color {
         color: rgba(255, 255, 255, 0.65);
     }

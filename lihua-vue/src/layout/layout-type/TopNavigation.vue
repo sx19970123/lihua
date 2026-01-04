@@ -1,8 +1,5 @@
 <template>
-<!--  小屏状态切换至mix-navigation布局-->
-  <mix-navigation v-if="themeStore.isSmallWindow" :show-layout="props.showLayout"/>
-<!--  大屏状态使用top-navigation布局-->
-  <a-layout v-else>
+  <a-layout>
     <div class="tn-header">
       <transition :name="themeStore.routeTransition" mode="out-in">
         <a-layout-header class="tn-layout-header"
@@ -34,12 +31,10 @@ import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
 import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
-import MixNavigation from "@/layout/layout-type/MixNavigation.vue";
 import {useThemeStore} from "@/stores/theme";
 
 const themeStore = useThemeStore()
 const props = defineProps<{showLayout: boolean }>()
-
 </script>
 
 <style scoped>
