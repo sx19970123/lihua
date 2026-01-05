@@ -10,7 +10,7 @@
       />
       <CloseOutlined v-if="!tabPane.tab.affix"
                      class="view-tab-icon"
-                     @click="() => emits('closeViewTab', tabPane.tab.routerPathKey)"
+                     @click="(event: MouseEvent) => handleCloseTab(event, tabPane.tab.routerPathKey)"
       />
     </a-space>
     <template #overlay>
@@ -123,6 +123,12 @@ const handleReload = () => {
   viewTabsStore.regenerateComponentKey()
   reloading.value = true
   setTimeout(()=>{reloading.value = false}, 1000)
+}
+
+// 处理关闭tab
+const handleCloseTab = (event: MouseEvent, routerPathKey: string) => {
+  event.stopPropagation()
+  emits('closeViewTab', routerPathKey)
 }
 
 // 初始化小窗相关，全局搜索：miniWindow=true 可查看ui小窗判定代码
