@@ -4,10 +4,16 @@
     scrollbar-width: thin !important;
     scrollbar-color: var(--lihua-scrollbar-thumb-color);
 }
-
-[sider-dark = 'dark'][layout-type = 'mix-navigation'] {
+/* 暗色导航滚动条 */
+[sider-dark = 'dark'] {
     .sider-scrollbar {
-        scrollbar-color: var(--lihua-mix-navigation-split-thumb-color);
+        scrollbar-color: var(--lihua-sider-scrollbar-thumb-color);
+    }
+}
+/* 混合模式在暗色导航下，大屏模式下也是白色导航条 */
+[sider-dark = 'dark'][layout-type = 'mix-navigation'][is-small-window = 'false'] {
+    .sider-scrollbar {
+        scrollbar-color: var(--lihua-scrollbar-thumb-color);
     }
 }
 

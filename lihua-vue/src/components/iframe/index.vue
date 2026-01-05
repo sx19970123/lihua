@@ -1,15 +1,13 @@
 <template>
-  <div>
-    <iframe class="lihua-iframe" v-if="isInner" :src="src"/>
-    <div v-else>
-      <a-card class="lihua-iframe">
-        <a-flex :gap="16" justify="center" vertical align="center" style="margin-top: 48px">
-          <component is="XiaoMiaoHappy" style="font-size: 96px"/>
-          <a-typography-title style="margin: 0">页面已加载至浏览器新标签页</a-typography-title>
-          <a-typography-link @click="open">再次打开</a-typography-link>
-        </a-flex>
-      </a-card>
-    </div>
+  <iframe class="lihua-iframe" v-if="isInner" :src="src"/>
+  <div v-else>
+    <a-card class="lihua-iframe">
+      <a-flex :gap="16" justify="center" vertical align="center" style="margin-top: 48px">
+        <component is="XiaoMiaoHappy" style="font-size: 96px"/>
+        <a-typography-title style="margin: 0">页面已加载至浏览器新标签页</a-typography-title>
+        <a-typography-link @click="open">再次打开</a-typography-link>
+      </a-flex>
+    </a-card>
   </div>
 </template>
 <script setup lang="ts">
@@ -54,7 +52,9 @@ const open = () => {
 }
 
 // 组件加载完成
-onMounted(() => handleOpen())
+onMounted(() => {
+  handleOpen()
+})
 
 // 组件销毁
 onUnmounted(() =>  sessionStorage.removeItem('isRefreshed' + src.value))
@@ -66,13 +66,26 @@ onUnmounted(() =>  sessionStorage.removeItem('isRefreshed' + src.value))
   border: none;
 }
 
-[view-tabs=show][layout=show] .lihua-iframe {
-  min-height: calc(100vh - (48px + 52px + 35px + 2px));
+/* 根据layout和view-tabs是否显示进行高度计算 */
+/*
+ var(--lihua-layout-height)：顶部导航｜head高度
+ var(--lihua-space-base)：上下外边距高度
+ 54px：view-tabs高度
+ 3px：微调偏移量
+ */
+[layout='show'][view-tabs='show'] {
+  .lihua-iframe {
+    height: calc(100vh - var(--lihua-layout-height) - var(--lihua-space-base) - var(--lihua-space-base) - 54px - 3px);
+  }
 }
-[view-tabs=hide][layout=show] .lihua-iframe {
-  min-height: calc(100vh - (48px + 35px));
+[layout='hide'][view-tabs='show'] {
+  .lihua-iframe {
+    height: calc(100vh - var(--lihua-space-base) - var(--lihua-space-base) - 54px - 3px);
+  }
 }
-[view-tabs=show][layout=hide] .lihua-iframe {
-  min-height: calc(100vh - (52px + 35px));
+[layout='show'][view-tabs='hide'] {
+  .lihua-iframe {
+    height: calc(100vh - var(--lihua-layout-height) - var(--lihua-space-base) - var(--lihua-space-base) - 3px);
+  }
 }
 </style>

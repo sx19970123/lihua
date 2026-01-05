@@ -46,7 +46,7 @@
 
     /* ==============================滚动条============================== */
     --lihua-scrollbar-thumb-color: rgb(227,227,227) transparent;
-    --lihua-mix-navigation-split-thumb-color: rgb(227,227,227) transparent;
+    --lihua-sider-scrollbar-thumb-color: rgb(66,66,66) transparent;
 
     /* ===============================阴影=============================== */
     /* layout阴影 */
@@ -94,7 +94,7 @@
 
     /* ==============================滚动条============================== */
     --lihua-scrollbar-thumb-color: rgb(66,66,66) transparent;
-
+    --lihua-sider-scrollbar-thumb-color: rgb(66,66,66) transparent;
     /* ===============================阴影=============================== */
     /* layout阴影 */
     --lihua-layout-box-shadow:
@@ -134,5 +134,5 @@
 
 [sider-dark = 'dark'] {
     /* ==============================滚动条============================== */
-    --lihua-scrollbar-thumb-color: rgb(66,66,66) transparent;
+    --lihua-sider-scrollbar-thumb-color: rgb(66,66,66) transparent;
 }

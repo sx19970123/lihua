@@ -272,7 +272,7 @@ export const useViewTabsStore = defineStore('viewTabs',{
         },
         // 修改显示layout后更新html节点layout
         setShowLayoutAttribute () {
-            document.documentElement.setAttribute("layout", 'hide' === localStorage.getItem("show-hide-layout")  ? 'hide' : 'show')
+            document.documentElement.setAttribute("layout", 'hide' === localStorage.getItem("layout")  ? 'hide' : 'show')
         }
     }
 })
