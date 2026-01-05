@@ -296,7 +296,7 @@ const initSearch = () => {
       dataIndex: 'createTime',
       align: 'center',
       key: 'createTime',
-      ellipsis: true,
+      width: 200
 
     },
     {

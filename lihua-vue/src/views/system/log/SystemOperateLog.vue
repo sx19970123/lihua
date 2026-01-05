@@ -310,7 +310,8 @@ const initSearch = () => {
       title: '操作时间',
       key: 'createTime',
       dataIndex: 'createTime',
-      align: 'center'
+      align: 'center',
+      width: 200
     },
     {
       title: '操作耗时',

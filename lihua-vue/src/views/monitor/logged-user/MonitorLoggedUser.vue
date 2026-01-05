@@ -230,7 +230,8 @@ const initSearch = () => {
       title: '登录时间',
       key: 'loginTime',
       dataIndex: 'loginTime',
-      align: 'center'
+      align: 'center',
+      width: 200
     },{
       title: '客户端类型',
       key: 'clientType',

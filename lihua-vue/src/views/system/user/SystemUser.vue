@@ -493,7 +493,7 @@ const initSearch = () => {
       key: 'createTime',
       dataIndex: 'createTime',
       align: 'center',
-      ellipsis: true,
+      width: 200
     },
     {
       title: '操作',

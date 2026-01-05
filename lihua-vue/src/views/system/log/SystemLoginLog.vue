@@ -293,7 +293,9 @@ const initSearch = () => {
       title: '登陆时间',
       key: 'createTime',
       dataIndex: 'createTime',
-      align: 'center'
+      align: 'center',
+      width: 200
+
     },
     {
       title: '操作耗时',
