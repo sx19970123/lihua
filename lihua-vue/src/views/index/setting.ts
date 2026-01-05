@@ -19,7 +19,7 @@ export const versionInfo = {
         // 每次更新版本在集合头部新增一条
         {
             version: '1.4.0',
-            updateDate: '2025-01-05',
+            updateDate: '2026-01-05',
             title: "🎉🎉1.4.0 版本重构了Layout相关代码，逻辑更易读，维护更容易。",
             updateContent: [
                 '1. 将公共样式抽取为css变量，方便维护',
