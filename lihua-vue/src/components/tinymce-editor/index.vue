@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <Editor :init="editorConfig"
-            :key="editKey"
-            v-model="content"
-            licenseKey='gpl'
-            tinymceScriptSrc="/tinymce/tinymce.min.js"
-    />
-  </div>
+  <a-spin :spinning="spinning" tip="正在加载编辑器...">
+    <div :style="{height: height}" class="lihua-editor-container">
+      <Editor :init="editorConfig"
+              :key="editKey"
+              v-model="content"
+              licenseKey='gpl'
+              tinymceScriptSrc="/tinymce/tinymce.min.js"
+      />
+    </div>
+  </a-spin>
 </template>
 
 <script setup lang="ts">
@@ -58,6 +60,8 @@ const url = import.meta.env.VITE_APP_BASE_API + "/system/attachment/storage/down
 const fileDownloadBaseURL = attachmentURLPrefix === "baseURL" ? url : window.location.origin + url
 // 切换主题重新加载组件
 const editKey = ref<string>(uuidv4())
+// 加载中
+const spinning = ref<boolean>(true)
 
 // 附件上传回调类型
 type FilePickerCallback = (url: string, meta?: { title?: string; text?: string; alt?: string }) => void
@@ -94,6 +98,12 @@ const editorConfig = computed(() => ({
   // 附件上传类型，file-链接 image-图片 media-视频
   file_picker_types: 'file image media',
   /**
+   * 编辑器加载完成
+   */
+  init_instance_callback: () => {
+    spinning.value = false
+  },
+  /**
    * 附件上传，拿到附件后进行处理，处理完成后调用callback
    */
   file_picker_callback: (callback: FilePickerCallback, value: string, meta: FilePickerMeta) => {
@@ -124,37 +134,6 @@ const editorConfig = computed(() => ({
    * 处理粘贴的文本
    * 过滤img标签拿到url将图片保存到服务器
    */
-  // paste_postprocess: async (editor: any, args: {node: HTMLElement}) => {
-  //   if (!autoDownloadPasteImg) {
-  //     return
-  //   }
-  //   // 处理提示
-  //   const notif = editor.notificationManager.open({
-  //     text: '正在处理粘贴内容...',
-  //     type: 'info',
-  //     timeout: 0
-  //   })
-  //   // 拿到所有img标签
-  //   const imgs = args.node.querySelectorAll("img")
-  //   let innerHTML = args.node.innerHTML
-  //   let flag = false
-  //   // 遍历标签后进行上传，替换
-  //   for (const img of imgs) {
-  //     const resp = await handleLinkImageUpload(img.src)
-  //     if (resp) {
-  //       // 对 innerHTML 进行替换
-  //       innerHTML = innerHTML.replace(resp.originalURL, resp.url)
-  //       flag = true
-  //     }
-  //   }
-  //   // 拿到替换后的innerHTML为editor进行赋值
-  //   if (flag) {
-  //     editor.setContent(content.value + innerHTML);
-  //   }
-  //   // 关闭提示
-  //   notif.close();
-  // }
-
   paste_postprocess: async (editor: any, args: { node: HTMLElement }) => {
     if (!autoDownloadPasteImg) return;
 
@@ -329,6 +308,12 @@ watch(() => modelValue, () => {
   height: 100% !important;
   textarea {
     height: 100% !important;
+  }
+}
+/* 隐藏编辑器未加载完成时的textarea */
+.lihua-editor-container {
+  textarea {
+    display: none;
   }
 }
 </style>

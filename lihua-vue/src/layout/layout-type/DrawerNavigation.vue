@@ -6,7 +6,7 @@
           <a-flex align="center" justify="space-between">
             <Logo class="logo" :show-title="false"/>
             <!--页头-->
-            <Head class="head"/>
+            <div id="lihua-layout-head" class="head" />
           </a-flex>
         </a-layout-header>
       </transition>
@@ -34,9 +34,9 @@
         </transition>
         <!--    菜单开合开关-->
         <a-layout-content>
-          <view-tabs class="view-tabs background-glass" v-if="themeStore.showViewTabs"/>
+          <view-tabs class="view-tabs background-glass" v-if="themeStore.showViewTabs" :style="{'top': !props.showLayout ? '0' : '' }"/>
           <!--内容-->
-          <Content class="layout-content"/>
+          <div id="lihua-layout-content" class="layout-content"/>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -46,10 +46,8 @@
 </template>
 
 <script setup lang="ts">
-import Head from "@/layout/head/index.vue"
 import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
-import Content from "@/layout/content/index.vue"
 import { usePermissionStore } from "@/stores/permission";
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/theme";

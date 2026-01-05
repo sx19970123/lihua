@@ -25,11 +25,6 @@ export const useThemeStore = defineStore('theme',{
         const componentSize: string = settings.componentSize
 
         /**
-         * 导航模式 inline / horizontal
-         */
-        const siderMode: string = settings.siderMode
-
-        /**
          * 菜单分组
          */
         const siderGroup: boolean = settings.siderGroup
@@ -115,7 +110,6 @@ export const useThemeStore = defineStore('theme',{
             groundGlass,
             affixHead,
             isSmallWindow,
-            siderMode,
             siderGroup,
             siderWith,
             originSiderWith,
@@ -180,11 +174,6 @@ export const useThemeStore = defineStore('theme',{
         },
         // 布局类型
         changeLayoutType() {
-            if (this.$state.layoutType === 'top-navigation') {
-                this.changeSiderMode('horizontal')
-            } else {
-                this.changeSiderMode('inline')
-            }
             // 修改页面标识
             document.documentElement.setAttribute("layout-type", this.$state.layoutType)
         },
@@ -196,10 +185,6 @@ export const useThemeStore = defineStore('theme',{
             } else {
                 document.documentElement.setAttribute("view-tabs", "hide")
             }
-        },
-        // 导航类型
-        changeSiderMode(value: string) {
-            this.$state.siderMode = value
         },
         // 修改导航宽度时同时修改原始值
         changeSiderWidth() {
@@ -255,7 +240,6 @@ export const useThemeStore = defineStore('theme',{
             this.$state.siderTheme = settings.siderTheme
             this.$state.groundGlass = settings.groundGlass
             this.$state.affixHead = settings.affixHead
-            this.$state.siderMode = settings.siderMode
             this.$state.siderWith = settings.siderWith
             this.$state.originSiderWith = settings.originSiderWith
             this.$state.routeTransition = settings.routeTransition

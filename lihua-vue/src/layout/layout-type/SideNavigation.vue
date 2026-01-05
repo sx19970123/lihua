@@ -16,7 +16,7 @@
           <Logo class="logo" :show-title="!permissionStore.collapsed"/>
           <!-- 侧边栏-->
           <div class="sider sider-scrollbar">
-            <Side/>
+            <Side sider-mode="inline"/>
           </div>
         </a-layout-sider>
       </transition>
@@ -33,14 +33,14 @@
                 <Breadcrumb/>
               </a-flex>
               <!-- 右侧头部-->
-              <Head/>
+              <div id="lihua-layout-head"/>
             </a-flex>
           </transition>
           <view-tabs v-if="themeStore.showViewTabs"/>
         </a-layout-header>
         <a-layout-content>
           <!--内容-->
-          <Content class="layout-content"/>
+          <div id="lihua-layout-content" class="layout-content" />
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -48,10 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import Head from "@/layout/head/index.vue"
 import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
-import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
 import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";

@@ -446,25 +446,3 @@ onBeforeUnmount(() => {
 }
 
 </style>
-
-<style>
-[sider-dark='dark'][layout-type='top-navigation'],
-[sider-dark='dark'][layout-type='mix-navigation'] {
-  /* placeholder 颜色 */
-  .title-search-input input::placeholder {
-    color: var(--lihua-alpha-level-4) !important;
-  }
-
-  /* 输入框边框颜色 */
-  .title-search-input {
-    border-color: var(--lihua-alpha-level-5) !important;
-  }
-
-  /* 标签样式 */
-  .title-search-tag {
-    border-color: var(--lihua-alpha-level-5) !important;
-    color: var(--lihua-alpha-level-5) !important;
-  }
-}
-
-</style>

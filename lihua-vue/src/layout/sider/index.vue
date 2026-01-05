@@ -4,7 +4,7 @@
       style="border-inline-end: none"
       :items="menu ? menu : defaultMenu"
       :theme="siderTheme ? siderTheme : themeStore.siderTheme"
-      :mode="siderMode ? siderMode : themeStore.siderMode"
+      :mode="siderMode"
       v-model:selected-keys="state.selectedKeys"
       v-model:open-keys="state.openKeys"
       @select="handleClickMenuItem"
@@ -30,7 +30,7 @@ const emits = defineEmits(['routeChange', 'menuClick', 'mounted'])
 // 外部传入属性
 const {siderMode, menu, selectedKeys, openKeys, siderTheme, isMixTop} = defineProps<{
   // 导航类型
-  siderMode?: 'inline' | 'horizontal',
+  siderMode: 'inline' | 'horizontal',
   // 菜单
   menu?: ItemType[],
   // 选中菜单key
@@ -76,8 +76,6 @@ const handleClickMenuItem = ({ key }: {key: string}) => {
 const setOpenKeys = () => {
   // 展开收起状态
   const collapsed = permissionStore.collapsed
-  // 导航类型
-  const siderMode = themeStore.siderMode
 
   // 确保菜单可以及时响应
   nextTick(() => {

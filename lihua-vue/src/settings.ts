@@ -30,11 +30,6 @@ export default {
     componentSize: 'default',
 
     /**
-     * 导航模式 inline / horizontal
-     */
-    siderMode: 'inline',
-
-    /**
      * 菜单分组
      */
     siderGroup: false,

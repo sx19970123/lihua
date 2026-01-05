@@ -9,9 +9,9 @@
             <!--logo-->
             <Logo class="logo"/>
             <!--导航-->
-            <Side class="sider" v-rollDisable="true"/>
+            <Side class="sider" sider-mode="horizontal" v-rollDisable="true"/>
             <!--页头-->
-            <Head></Head>
+            <div id="lihua-layout-head"/>
           </a-flex>
         </a-layout-header>
       </transition>
@@ -20,16 +20,14 @@
     </div>
     <a-layout-content>
       <!--内容-->
-      <Content class="layout-content"/>
+      <div id="lihua-layout-content" class="layout-content" />
     </a-layout-content>
   </a-layout>
 </template>
 
 <script setup lang="ts">
-import Head from "@/layout/head/index.vue"
 import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
-import Content from "@/layout/content/index.vue"
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/theme";
 

@@ -25,23 +25,6 @@
     width: 196px !important
 }
 
-[sider-dark = 'dark'][layout-type = 'top-navigation'],
-[sider-dark = 'dark'][layout-type = 'mix-navigation'] {
-    .icon-default-color {
-        color: rgba(255, 255, 255, 0.65);
-    }
-    .text-default-color {
-        color: rgba(255, 255, 255, 0.65);
-    }
-
-    .icon-default-color:hover {
-        color: #fff;
-    }
-    .text-default-color:hover {
-        color: #fff;
-    }
-}
-
 /**
     顶部导航模式下，使用该css可使内容居中
  */
