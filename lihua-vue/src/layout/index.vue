@@ -87,7 +87,7 @@ const handleResize = () => {
 }
 
 // 函数防抖
-const debounceResize = debounce(handleResize, 100)
+const debounceResize = debounce(handleResize, 50)
 
 onMounted(() => {
   loadTeleportContainer()

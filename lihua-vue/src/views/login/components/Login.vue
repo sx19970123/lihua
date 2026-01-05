@@ -76,7 +76,6 @@ import {enableRegister, getLoginSetting} from "@/api/system/login/Login.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import {useRouter} from 'vue-router'
-import {useSettingStore} from "@/stores/setting.ts";
 
 const {enableCaptcha, errorMessage=""} = defineProps<{
   // 是否启用验证码
@@ -90,7 +89,6 @@ const emit = defineEmits(["changeComponent","showLoginSetting"])
 const router = useRouter()
 const userStore = useUserStore()
 const loginLoading = ref<boolean>()
-const settingStore = useSettingStore()
 const rememberMe = ref<boolean>(token.enableRememberMe())
 const verifyRef = useTemplateRef<InstanceType<typeof TianaiCaptcha>>("tianaiCaptchaRef")
 const registerUsername = inject<Ref<string|undefined>>("registerUsername")
