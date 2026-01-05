@@ -1,13 +1,9 @@
 // 下一版本更新记录
 const nextUpdate = [
     {
-        version: '1.4.0',
+        version: '1.4.1',
         record: [
-            '1. 将公共样式抽取为css变量，方便维护',
-            '2. 重构Layout代码，代码可读性和扩展性提升',
-            '3. view-tabs增大右键触发面积，右键菜单适配高级材质',
-            '4. 切换导航类型不再重新加载组件，避免不必要的请求',
-            '5. 富文本编辑器新增加载loading',
+
         ]
     }
 ]
@@ -21,6 +17,19 @@ export const versionInfo = {
     vueVersion: ' 3.5.22',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.4.0',
+            updateDate: '2025-01-05',
+            title: "🎉🎉1.4.0 版本重构了Layout相关代码，逻辑更易读，维护更容易。",
+            updateContent: [
+                '1. 将公共样式抽取为css变量，方便维护',
+                '2. 重构Layout代码，代码可读性和扩展性提升',
+                '3. view-tabs增大右键触发面积，右键菜单适配高级材质',
+                '4. 切换导航类型不再重新加载组件，避免不必要的请求',
+                '5. 富文本编辑器新增加载loading',
+                '6. settingStore缓存查询过的设置项',
+            ]
+        },
         {
             version: '1.3.0',
             updateDate: '2025-12-14',
