@@ -14,18 +14,18 @@
       <CompressOutlined v-else />
     </button>
     <!--  更多操作  -->
-    <a-dropdown >
+    <a-dropdown overlayClassName="enable-glass">
       <button class="ant-tabs-nav-more">
         <MoreOutlined />
       </button>
       <template #overlay>
         <a-menu @click="handleClickMenuTab">
-          <a-sub-menu class="menu-item-min-width" key="recent">
+          <a-sub-menu class="menu-item-min-width" key="recent" popupClassName="enable-glass">
             <template #title>
               <FieldTimeOutlined />
               最近使用
             </template>
-            <div class="scrollbar" v-if="recentData.length > 0" style="max-height: 400px">
+            <div class="scrollbar enable-glass" v-if="recentData.length > 0" style="max-height: 400px">
               <a-menu-item v-for="item in recentData" :key="item.path">
                 <template #icon>
                   <component :is="item.icon"/>
@@ -51,7 +51,7 @@
               </template>
             </a-empty>
           </a-sub-menu>
-          <a-sub-menu class="menu-item-min-width" key="star">
+          <a-sub-menu class="menu-item-min-width" key="star" popupClassName="enable-glass">
             <template #title>
               <StarOutlined />
               收藏夹栏
@@ -79,8 +79,6 @@
       </template>
     </a-dropdown>
   </div>
-
-
 </template>
 <script setup lang="ts">
 import {useViewTabsStore} from "@/stores/viewTabs";

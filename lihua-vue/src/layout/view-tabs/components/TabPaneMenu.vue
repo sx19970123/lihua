@@ -1,12 +1,12 @@
 <template>
-  <a-dropdown :trigger="['contextmenu']" class="view-tab-dropdown">
+  <a-dropdown :trigger="['contextmenu']" class="view-tab-dropdown" overlayClassName="enable-glass">
     <a-space>
       <component :is="tabPane.tab.icon" style="margin: 0"/>
       {{ tabPane.tab.label }}
       <ReloadOutlined v-if="tabPane.tab.routerPathKey === viewTabsStore.$state.activeKey"
-                    class="view-tab-icon"
-                    @click="handleReload"
-                    :spin="reloading"
+                      class="view-tab-icon"
+                      @click="handleReload"
+                      :spin="reloading"
       />
       <CloseOutlined v-if="!tabPane.tab.affix"
                      class="view-tab-icon"

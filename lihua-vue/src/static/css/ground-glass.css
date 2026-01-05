@@ -8,6 +8,12 @@
     .background-glass {
         background-color: var(--lihua-backdrop-filter-on-color) !important;
     }
+    /* 全屏幕遮罩 */
+    .lihua-mask {
+        will-change: backdrop-filter;
+        backdrop-filter: var(--lihua-backdrop-filter-sm);
+        -webkit-backdrop-filter: var(--lihua-backdrop-filter-sm);
+    }
 
     /* 抽屉背景虚化 */
     .ant-drawer-mask {
@@ -24,37 +30,37 @@
     }
 
     /* 选项卡选中项目虚化，背景颜色设置为透明 */
-    .ant-tabs-tab-active {
-        background: var(--lihua-alpha-level-0) !important;
-        border-bottom-color: var(--lihua-alpha-level-0) !important;
+    .enable-glass {
+        .ant-tabs-tab-active {
+            background: var(--lihua-alpha-level-0) !important;
+            border-bottom-color: var(--lihua-alpha-level-0) !important;
+        }
     }
 
     /* 下拉菜单虚化 */
-    .ant-dropdown {
+    .enable-glass.ant-dropdown {
         will-change: backdrop-filter;
         backdrop-filter: var(--lihua-backdrop-filter-md);
         -webkit-backdrop-filter: var(--lihua-backdrop-filter-md);
         border-radius: var(--lihua-radius-sm);
         overflow: hidden;
+        box-shadow: var(--lihua-box-shadow);
         .ant-dropdown-menu {
             background-color: var(--lihua-backdrop-filter-on-color);
         }
     }
 
     /* 弹出菜单虚化 */
-    .ant-dropdown-menu-submenu-popup {
+    .enable-glass.ant-dropdown-menu-submenu-popup {
         will-change: backdrop-filter;
         backdrop-filter: var(--lihua-backdrop-filter-md);
         -webkit-backdrop-filter: var(--lihua-backdrop-filter-md);
         border-radius: var(--lihua-radius-sm);
         overflow: hidden;
+        box-shadow: var(--lihua-secondary-box-shadow);
         .ant-dropdown-menu {
             margin: 0;
             background-color: var(--lihua-backdrop-filter-on-color);
         }
-    }
-
-    .lihua-mask {
-        backdrop-filter: var(--lihua-backdrop-filter-sm);
     }
 }

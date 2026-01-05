@@ -1,8 +1,8 @@
 <template>
     <a-tabs :activeKey="activeKey"
-            class="unselectable tab-none-padding"
+            class="unselectable tab-none-padding enable-glass"
             style="padding: var(--lihua-space-sm) 0 0 var(--lihua-space-sm);"
-            type="editable-card"
+            type="card"
             size="small"
             hide-add
             ref="viewTabRef"
@@ -10,7 +10,7 @@
             @change="handleSwitchTab"
             :key="tabsRenderKey"
     >
-      <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" :closable="false" style="padding: 0">
+      <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" class="enable-glass">
         <!--每个tab的下拉菜单-->
         <template #tab>
           <tab-pane-menu :tab="tab"

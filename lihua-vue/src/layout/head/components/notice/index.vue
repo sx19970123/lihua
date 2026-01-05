@@ -7,7 +7,7 @@
                 :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode"
     >
       <template #overlay>
-        <a-card :body-style="{padding: 'var(--lihua-space-sm)',borderRadius: 'var(--lihua-radius-sm)', width: '340px', maxHeight: '500px'}" bordered >
+        <div :style="{padding: 'var(--lihua-space-sm)',borderRadius: 'var(--lihua-radius-sm)', width: '340px', maxHeight: '500px', background: 'var(--lihua-background-color-level-2)', boxShadow: 'var(--lihua-box-shadow)'}">
           <a-tabs centered @change="handleChangeTabs">
             <a-tab-pane key="ALL">
               <template #tab>
@@ -82,7 +82,7 @@
               </a-flex>
             </template>
           </a-list>
-        </a-card>
+        </div>
       </template>
 <!--                      通知公告主体-->
       <div @click="() => open = true">
