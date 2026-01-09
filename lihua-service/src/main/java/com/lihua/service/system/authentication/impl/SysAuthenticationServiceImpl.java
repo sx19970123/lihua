@@ -78,14 +78,14 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Override
     public List<String> checkLoginSetting(LoginUser loginUser) {
-        // 需要进行登陆后设置的组件名集合
+        // 需要进行登录后设置的组件名集合
         List<String> loginSettingComponentNameList = new ArrayList<>();
 
         // 将密码设置到LoginUser对象中
         String password = sysProfileService.getPassword();
         loginUser.getUser().setPassword(password);
 
-        // 循环检查是否需要进行登陆后配置
+        // 循环检查是否需要进行登录后配置
         checkLoginSettingStrategyList.forEach(strategy -> {
             String componentName = strategy.checkSetting(loginUser);
             if (StringUtils.hasText(componentName)) {

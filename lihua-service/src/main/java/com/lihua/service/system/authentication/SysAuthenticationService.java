@@ -9,7 +9,7 @@ import java.util.List;
 public interface SysAuthenticationService {
 
     /**
-     * 用户登陆
+     * 用户登录
      */
     LoginUser login(CurrentUser currentUser);
 

@@ -84,7 +84,6 @@ public class SysUserController extends ApiResponseController {
     }
 
     @Operation(summary = "批量导出用户信息")
-    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("export")
     @Log(description = "批量导出用户信息", type = LogTypeEnum.EXPORT)
     public ApiResponseModel<String> exportExcel(@RequestBody SysUserDTO sysUserDTO) {

@@ -1,6 +1,5 @@
-import Cookies from "js-cookie"
-import {decrypt, encrypt} from "./Crypto.ts"
-
+import {decrypt, encrypt} from "@/utils/Crypto.ts"
+import {useStorage} from "@vueuse/core";
 
 const TOKEN_KEY: string = "lihua_token"
 
@@ -12,35 +11,41 @@ const REMEMBER_ME_KEY: string = "lihua_rememberMe"
 
 const LOGIN_SETTING_COMPLETE_KEY: string = "lihua_login_setting_complete"
 
+const tokenStorage = useStorage<null | string>(TOKEN_KEY, null);
+const usernameStorage = useStorage<null | string>(USERNAME_KEY, null);
+const passwordStorage = useStorage<null | string>(PASSWORD_KEY, null);
+const rememberMeStorage = useStorage<null | boolean>(REMEMBER_ME_KEY, null);
+const loginSettingCompleteStorage = useStorage<null | boolean>(LOGIN_SETTING_COMPLETE_KEY, null);
+
 // token
 const getToken = ():string => {
-    return Cookies.get(TOKEN_KEY)
+    return tokenStorage.value || ''
 }
 
 const setToken = (token: string):void => {
-    Cookies.set(TOKEN_KEY,token)
+    tokenStorage.value = token
 }
 
 const removeToken = () => {
-    Cookies.remove(TOKEN_KEY)
+    tokenStorage.value = null
 }
 
 // username
 const getUsername = ():string => {
-    return Cookies.get(USERNAME_KEY)
+    return usernameStorage.value || ''
 }
 
-const setUsername = (username:string, expires: number):void => {
-    Cookies.set(USERNAME_KEY,username, { expires: expires })
+const setUsername = (username:string):void => {
+    usernameStorage.value = username
 }
 
 const removeUsername = () => {
-    Cookies.remove(USERNAME_KEY)
+    usernameStorage.value = null
 }
 
 // password
 const getPassword = (): string => {
-    const pwd = Cookies.get(PASSWORD_KEY)
+    const pwd = passwordStorage.value
     if (pwd) {
         try {
             return decrypt(pwd)
@@ -49,33 +54,31 @@ const getPassword = (): string => {
             console.error("cookie密码解密异常",e)
         }
     }
-    return pwd;
+    return pwd || '';
 }
 
-const setPassword = (password:string, expires: number): void => {
-    Cookies.set(PASSWORD_KEY,encrypt(password), { expires: expires })
+const setPassword = (password:string): void => {
+    passwordStorage.value = encrypt(password)
 }
 
 const removePassword = () => {
-    Cookies.remove(PASSWORD_KEY)
+    passwordStorage.value = null
 }
 
-const enableRememberMe = ():boolean => {
-    return Cookies.get(REMEMBER_ME_KEY) === 'true' || Cookies.get(REMEMBER_ME_KEY)
+const enableRememberMe = (): boolean => {
+    return !!rememberMeStorage.value
 }
 
 // 记住我
 const rememberMe = (username:string, password:string) => {
-    // 记住我过期时间设置为30天
-    const expires = 30
-    Cookies.set(REMEMBER_ME_KEY,true, { expires: expires })
-    setUsername(username, expires)
-    setPassword(password, expires)
+    rememberMeStorage.value = true
+    setUsername(username)
+    setPassword(password)
 }
 
 // 忘记我
 const forgetMe = () => {
-    Cookies.remove(REMEMBER_ME_KEY)
+    rememberMeStorage.value = null
     removeUsername()
     removePassword()
 }
@@ -88,17 +91,17 @@ const getUsernamePassword = () => {
     }
 }
 
-// 获取登陆后设置结果
-const getLoginSettingResult = (): boolean | undefined => {
-    return Cookies.get(LOGIN_SETTING_COMPLETE_KEY) as boolean | undefined
+// 获取登录后设置结果
+const getLoginSettingResult = (): boolean | null => {
+    return loginSettingCompleteStorage.value
 }
 // 登录设置完成后记录结果
 const setLoginSettingResult = () => {
-    Cookies.set(LOGIN_SETTING_COMPLETE_KEY,true)
+    loginSettingCompleteStorage.value = true
 }
-// 删除登陆后设置信息
+// 删除登录后设置信息
 const removeLoginSettingResult = () => {
-    Cookies.remove(LOGIN_SETTING_COMPLETE_KEY)
+    loginSettingCompleteStorage.value = null
 }
 
 export default {

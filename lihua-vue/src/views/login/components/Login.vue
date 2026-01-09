@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="login-title">
-      <a-typography-title :level="2">欢迎登陆狸花猫</a-typography-title>
+      <a-typography-title :level="2">欢迎登录狸花猫</a-typography-title>
       <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
       <!--                    根据配置显示注册-->
       <div v-if="isRegistrationEnable">

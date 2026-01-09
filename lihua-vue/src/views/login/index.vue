@@ -114,7 +114,7 @@ const initLoginSetting = () => {
       settingComponentNames.value = settingComponentNameList
     }
   }
-  // 当需要登陆后配置时，刷新页面读取路由携带参数，加载配置页面
+  // 当需要登录后配置时，刷新页面读取路由携带参数，加载配置页面
   const routerCheckLoginSetting = () => {
     startLoginSetting(history.state.settingComponentNameList)
   }
@@ -184,7 +184,7 @@ onMounted(() => {
   handleChangeComponent("login")
   // 是否启用验证码
   captcha()
-  // 检查history.state中是否存在登陆后配置
+  // 检查history.state中是否存在登录后配置
   routerCheckLoginSetting()
   // 检查history.state中是否存在异常提示
   handleRedirect()
@@ -269,31 +269,47 @@ onMounted(() => {
   opacity: 0;
 }
 
+/* 公共优化 */
+.setting-enter-active,
+.setting-leave-active {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
 /* 登录后设置卡片呼出 */
 .setting-enter-active {
-  transition: all 0.7s cubic-bezier(0.4, 0.0, 0.10, 1);
+  transition:
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity   0.5s ease-out;
 }
+
 .setting-enter-from {
-  transform: translateY(100%);
+  transform: translate3d(0, 100%, 0);
   opacity: 0;
 }
+
 .setting-enter-to {
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
   opacity: 1;
 }
 
 /* 登录后设置卡片隐藏 */
 .setting-leave-active {
-  transition: all 0.2s cubic-bezier(0.25, 0.0, 1, 1);
+  transition:
+      transform 0.35s cubic-bezier(0.4, 0.0, 0.2, 1),
+      opacity   0.25s ease-in;
 }
+
 .setting-leave-from {
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
   opacity: 1;
 }
+
 .setting-leave-to {
-  transform: translateY(100%);
+  transform: translate3d(0, 100%, 0);
   opacity: 0;
 }
+
 
 </style>
 

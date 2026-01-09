@@ -33,7 +33,7 @@ service.interceptors.response.use((resp) => {
     const data = resp.data
     const config = resp.config
     currentRequests.delete(config.method + ":" + config.url)
-    // token 失效或解析异常，清空用户信息返回登陆
+    // token 失效或解析异常，清空用户信息返回登录
     if (data.code === 401) {
         const userStore= useUserStore()
         userStore.authenticationFailure(data.msg)

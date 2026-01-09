@@ -17,6 +17,10 @@
     }
 }
 
+.input-prefix-icon-color {
+    color: var(--lihua-input-icon-color);
+}
+
 /**
     单行 form-item 下 label margin设置为0
  */

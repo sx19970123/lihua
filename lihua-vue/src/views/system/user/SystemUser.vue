@@ -223,7 +223,7 @@
 <!--        显示基本信息-->
         <div v-show="segmented === 'basic'">
           <a-form-item label="用户名" name="username" :wrapper-col="{span: 16}">
-            <a-input v-model:value="sysUserDTO.username" placeholder="用于用户登陆" :maxlength="30" show-count allowClear/>
+            <a-input v-model:value="sysUserDTO.username" placeholder="用于用户登录" :maxlength="30" show-count allowClear/>
           </a-form-item>
           <a-form-item label="密码" name="password" :wrapper-col="{span: 16}" v-if="!sysUserDTO.id">
             <a-input-password v-model:value="sysUserDTO.password" placeholder="请输入密码" allowClear/>

@@ -290,7 +290,7 @@ const initSearch = () => {
       ellipsis: true
     },
     {
-      title: '登陆时间',
+      title: '登录时间',
       key: 'createTime',
       dataIndex: 'createTime',
       align: 'center',

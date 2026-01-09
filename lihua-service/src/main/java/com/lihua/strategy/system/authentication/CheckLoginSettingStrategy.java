@@ -3,7 +3,7 @@ package com.lihua.strategy.system.authentication;
 import com.lihua.model.security.LoginUser;
 
 /**
- * 检查用户是否需要登陆后进行配置
+ * 检查用户是否需要登录后进行配置
  */
 public interface CheckLoginSettingStrategy {
     /**

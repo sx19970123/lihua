@@ -5,7 +5,7 @@
         <template #tooltip>
           <a-tooltip>
             <template #title>
-              登陆或注册等场景下是否需要验证码
+              登录或注册等场景下是否需要验证码
             </template>
             <QuestionCircleOutlined style="margin-left: var(--lihua-space-xs)"/>
           </a-tooltip>

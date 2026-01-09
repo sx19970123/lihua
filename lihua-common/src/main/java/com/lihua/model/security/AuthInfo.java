@@ -18,7 +18,7 @@ public class AuthInfo implements Serializable {
     List<CurrentViewTab> viewTabs;
     // 所有角色信息
     List<CurrentRole> roles;
-    // 登陆用户信息
+    // 登录用户信息
     CurrentUser userInfo;
     // 部门信息
     List<CurrentDept> depts;

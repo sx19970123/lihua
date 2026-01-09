@@ -43,21 +43,21 @@ public class LoginUserContext implements Serializable {
     }
 
     /**
-     * 获取当前登陆用户角色
+     * 获取当前登录用户角色
      */
     public static List<CurrentRole> getRoleList() {
         return getLoginUser().getRoleList();
     }
 
     /**
-     * 获取当前登陆用户角色编码
+     * 获取当前登录用户角色编码
      */
     public static List<String> getRoleCodeList() {
         return getRoleList().stream().map(CurrentRole::getCode).toList();
     }
 
     /**
-     * 判断当前登陆用户是否为超级管理员
+     * 判断当前登录用户是否为超级管理员
      */
     public static boolean isAdmin() {
         return getRoleCodeList().contains("ROLE_admin");
@@ -149,14 +149,14 @@ public class LoginUserContext implements Serializable {
     }
 
     /**
-     * 获取当前登陆用户 LoginUser 信息
+     * 获取当前登录用户 LoginUser 信息
      */
      public static LoginUser getLoginUser() {
          return (LoginUser) getAuthentication().getPrincipal();
     }
 
     /**
-     * 判断当前 userId 用户是否为登陆状态
+     * 判断当前 userId 用户是否为登录状态
      */
     public static boolean isLogin(String userId) {
         if (!StringUtils.hasText(userId)) {

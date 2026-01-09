@@ -3,7 +3,11 @@ const nextUpdate = [
     {
         version: '1.4.1',
         record: [
-
+            '1. 修复input前缀图标颜色显示问题',
+            '2. 修复注册页面css样式问题',
+            '3. 错别字登陆->登录（绷）',
+            '4. 修复登录状态下关闭浏览器再进入需要重新登录',
+            '5. 后台decryptToString工具类判空',
         ]
     }
 ]
@@ -17,6 +21,17 @@ export const versionInfo = {
     vueVersion: ' 3.5.22',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.4.1',
+            updateDate: '2026-01-09',
+            updateContent: [
+                '1. 修复input前缀图标颜色显示问题',
+                '2. 修复注册页面css样式问题',
+                '3. 错别字登陆->登录（绷）',
+                '4. 修复登录状态下关闭浏览器再进入需要重新登录',
+                '5. 后台decryptToString工具类判空'
+            ]
+        },
         {
             version: '1.4.0',
             updateDate: '2026-01-05',
@@ -108,7 +123,7 @@ export const versionInfo = {
             updateDate: '2025-10-08',
             updateContent: [
                 '1. view-tabs支持拖拽排序',
-                '2. view-tabs在刷新/登陆时支持恢复到变化前的状态',
+                '2. view-tabs在刷新/登录时支持恢复到变化前的状态',
                 '3. 更新axios版本到1.12.0',
                 '4. 更新vite版本到7.1.5',
                 '5. 更新vue版本到3.5.22',
@@ -247,7 +262,7 @@ export const versionInfo = {
             updateContent: [
                 '1. 优化自适应，在移动端有更好的体验',
                 '2. 导航颜色选择/导航栏类型选中指示根据主题颜色变化',
-                '3. 优化登陆后设置卡片，防止移动换滑动直接进入系统，同时仅存在一项配置，无法通过检擦元素显示后面内容，重写切换动画',
+                '3. 优化登录后设置卡片，防止移动换滑动直接进入系统，同时仅存在一项配置，无法通过检擦元素显示后面内容，重写切换动画',
                 '4. 修复JsonUtil调用toJsonIgnoreNulls时无法处理LocalDate/LocalDateTime的 bug',
                 '5. 修复修改默认密码密钥后，删除默认密码数据也无法登录的bug',
                 '如何修改密钥请参考：https://gitee.com/yukino_git/lihua/issues/IBFWG4#note_36173102_link',
@@ -437,7 +452,7 @@ export const versionInfo = {
             updateDate: '2024-10-11',
             updateContent: [
                 '1. 优化全局滚动条，跟随暗色模式改变颜色',
-                '2. 修复登陆后配置信息发生异常时，可直接进入主页面的bug',
+                '2. 修复登录后配置信息发生异常时，可直接进入主页面的bug',
                 '3. 整理了前端开发文档大致目录'
             ]
         },

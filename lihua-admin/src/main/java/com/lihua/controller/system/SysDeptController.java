@@ -75,7 +75,6 @@ public class SysDeptController extends ApiResponseController {
     }
 
     @Operation(summary = "批量导出部门")
-    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("export")
     @Log(description = "批量导出部门", type = LogTypeEnum.EXPORT)
     public ApiResponseModel<String> exportExcel(@RequestBody SysDept sysDept) {

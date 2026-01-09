@@ -81,7 +81,6 @@ lihua-vue                 // 前端工程
             <a-descriptions-item label="数据加密">crypto-js</a-descriptions-item>
             <a-descriptions-item label="日期工具类">dayjs</a-descriptions-item>
             <a-descriptions-item label="动画库">gsap</a-descriptions-item>
-            <a-descriptions-item label="cookie工具">js-cookie</a-descriptions-item>
             <a-descriptions-item label="工具库">lodash</a-descriptions-item>
             <a-descriptions-item label="路由切换进度条">nprogress</a-descriptions-item>
             <a-descriptions-item label="富文本工具">tinymce</a-descriptions-item>

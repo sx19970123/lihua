@@ -1,6 +1,7 @@
 package com.lihua.utils.crypt;
 
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -35,6 +36,9 @@ public class AesUtils {
      */
     @SneakyThrows
     public static String decryptToString(String ciphertext, String secretKey) {
+        if (StringUtils.isEmpty(ciphertext)) {
+            return ciphertext;
+        }
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(), "AES");
         cipher.init(Cipher.DECRYPT_MODE, keySpec);

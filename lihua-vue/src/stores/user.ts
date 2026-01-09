@@ -149,7 +149,7 @@ export const useUserStore = defineStore('user', {
                 })
             })
         },
-        // 退出登陆
+        // 退出登录
         async handleLogout() {
             // 关闭 websocket 连接
             try {

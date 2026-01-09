@@ -46,7 +46,7 @@
         <a-menu-item danger key="logout">
           <a-flex :gap="8">
             <LogoutOutlined />
-            <span>退出登陆</span>
+            <span>退出登录</span>
           </a-flex>
         </a-menu-item>
       </a-menu>
@@ -105,7 +105,7 @@ const settingPage = () => {
   router.push('/setting')
 }
 
-// 退出登陆
+// 退出登录
 const logout = async () => {
   await userStore.handleLogout()
   message.success("退出成功")

@@ -40,7 +40,7 @@ public class SysProfileServiceImpl implements SysProfileService {
 
     @Override
     public String saveBasics(SysUser sysUser) {
-        // 获取当前登陆信息
+        // 获取当前登录信息
         CurrentUser currentUser = LoginUserContext.getLoginUser().getUser();
         // 验证手机号码、邮箱
         checkPhoneNumber(sysUser.getPhoneNumber(),currentUser.getId());

@@ -15,7 +15,7 @@ import java.util.Set;
 
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
-    // 用户登陆查询
+    // 用户登录查询
     CurrentUser loginSelect(@Param("username") String username);
 
     // 列表查询

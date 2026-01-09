@@ -12,7 +12,7 @@ public enum ResultCodeEnum {
 
     SUCCESS (200,"成功"),
     PARAMS_ERROR(400,"参数异常"),
-    AUTHENTICATION_EXPIRED(401,"身份验证过期，请重新登陆"),
+    AUTHENTICATION_EXPIRED(401,"身份验证过期，请重新登录"),
     PARAMS_MISSING(402,"参数缺失或不完整"),
     ACCESS_ERROR (403,"用户权限不足"),
     RESOURCE_NOT_FOUND_ERROR(404,"请求的资源不存在"),

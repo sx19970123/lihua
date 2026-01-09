@@ -86,7 +86,7 @@ public class SecurityConfig {
         // 添加 jwt token 验证过滤器
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // 添加退出登陆处理器
+        // 添加退出登录处理器
         http.logout(logoutCustomizer -> logoutCustomizer
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(logoutSuccessHandler));

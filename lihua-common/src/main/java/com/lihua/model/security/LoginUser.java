@@ -21,7 +21,7 @@ import java.util.List;
 public class LoginUser implements UserDetails {
 
     /**
-     * 当前登陆用户信息
+     * 当前登录用户信息
      */
     private CurrentUser user;
 

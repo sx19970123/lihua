@@ -29,8 +29,6 @@ interface Window {
     }
 }
 
-declare module 'js-cookie'
-
 declare module 'nprogress'
 
 declare module 'crypto-js'

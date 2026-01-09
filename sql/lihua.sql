@@ -543,7 +543,7 @@ CREATE TABLE `sys_setting` (
   `setting_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '设置名称',
   `setting_json` varbinary(2000) DEFAULT NULL COMMENT '设置参数',
   PRIMARY KEY (`setting_component_name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='用户和登陆后设置关联表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='用户和登录后设置关联表';
 
 -- ----------------------------
 -- Records of sys_setting

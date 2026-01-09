@@ -26,7 +26,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("用户名未找到");
         }
-        // 创建 LoginUser 包含登陆的用户信息 和 过期时间
+        // 创建 LoginUser 包含登录的用户信息 和 过期时间
         return new LoginUser(user, DateUtils.now().plusMinutes(lihuaConfig.getTokenExpireTime()));
     }
 }

@@ -69,7 +69,3 @@ watch(() => value, () => {
   handleChangePassword()
 })
 </script>
-
-<style scoped>
-
-</style>

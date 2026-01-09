@@ -42,7 +42,7 @@ router.beforeEach(async (to, from, next) => {
                 }
                 // 判断用户是否拥有静态路由中指定的角色
                 if (hasRouteRole(to?.meta?.role as string[])) {
-                    // 已登录状态下，请求登陆页面自动跳转到首页
+                    // 已登录状态下，请求登录页面自动跳转到首页
                     to.path === "/login" ? next('/index') : next({ ...to, replace: true })
                 } else {
                     next("/403")
