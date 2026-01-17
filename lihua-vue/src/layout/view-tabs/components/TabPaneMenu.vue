@@ -185,7 +185,7 @@ const handleCloseLeft = (tab: StarViewType) => {
   const closeKeys = viewTabsStore.closeLeft(tab.routerPathKey)
   emits('cancelKeepAlive',closeKeys)
   if (actIndex < index) {
-    emits('routeSkip',tab)
+    emits('routeSkip',tab.routerPathKey, tab.query)
   }
 }
 
@@ -196,7 +196,7 @@ const handleCloseRight = (tab: StarViewType) => {
   const closeKeys = viewTabsStore.closeRight(tab.routerPathKey)
   emits('cancelKeepAlive',closeKeys)
   if (actIndex > index) {
-    emits('routeSkip',tab)
+    emits('routeSkip',tab.routerPathKey, tab.query)
   }
 }
 
@@ -204,7 +204,7 @@ const handleCloseRight = (tab: StarViewType) => {
 const handleCloseOther = (tab: StarViewType) => {
   const closeKeys = viewTabsStore.closeOther(tab.routerPathKey)
   emits('cancelKeepAlive',closeKeys)
-  emits('routeSkip',tab)
+  emits('routeSkip',tab.routerPathKey, tab.query)
 }
 
 // 处理star

@@ -65,23 +65,48 @@ export const useViewTabsStore = defineStore('viewTabs',{
         },
         // 根据路由信息加载viewTag
         init(route: RouteLocationNormalizedLoaded) {
-            // 通过viewTab进行标签管理
-            if (route?.meta?.viewTab) {
-                this.selectedViewTab(route.path,route?.meta?.viewTab as boolean)
+            let key = route.path
+            let viewTab = route?.meta?.viewTab as boolean
+
+            console.log("route", route)
+
+            // 选中路由未进行viewTabs管理，activeKey置空
+            if (!viewTab) {
+                this.$state.activeKey = '';
+                return;
             }
-            // 跳过标签管理
-            else {
-                // 当前组件为跳过，默认选中其父组件
-                const unSkipList =  route.matched.filter(item => item?.meta?.viewTab && item.path !== '/')
-                if (unSkipList && unSkipList.length > 0) {
-                    // 选中接收view-tabs托管的父组件
-                    this.selectedViewTab(unSkipList[unSkipList.length - 1].path, route?.meta?.viewTab as boolean)
-                }
+
+            // 获取viewTab数据
+            let tab = this.getViewTabsByKey(key);
+            const isExistingTab = !!tab;
+
+            // 如果 tab 不存在，则从 totalTabs 中查找
+            if (!tab) {
+                tab = this.getTotalTabByKey(key);
             }
-        },
-        // key值是否包含在ViewTabs之中
-        isIncludeViewTabs(key: string) {
-            return this.getIndex(key) !== -1
+
+            // 处理param传参
+            if (route?.params) {
+                const matchedList = route.matched
+                tab = this.getTotalTabByKey(matchedList[matchedList.length - 1].path)
+                tab.routerPathKey = route.path
+            }
+
+            // 处理query传参
+            if (route?.query) {
+                tab.query = JSON.stringify(route.query)
+            }
+
+            // 如果 tab 是新添加的，执行 addViewTab 操作
+            if (!isExistingTab) {
+                this.addViewTab(tab);
+            }
+
+            // 更新选中的 tab
+            this.$state.activeKey = key;
+
+            // 缓存数据
+            handleAddTabCache(tab);
         },
         // 获取元素在数组中的索引值
         getIndex(key: string) {
@@ -101,38 +126,6 @@ export const useViewTabsStore = defineStore('viewTabs',{
         getTabByIndex(index: number) {
             return this.$state.viewTabs[index]
         },
-        // 选中tab页，skip跳过不进行view-tab 管理
-        selectedViewTab(key: string, viewTab: boolean, tempQuery?: string) {
-            if (!viewTab) {
-                // 取消当前选中所有的 tab
-                this.$state.activeKey = '';
-                return;
-            }
-
-            let tab = this.getViewTabsByKey(key);
-            const isExistingTab = !!tab;
-
-            // 如果 tab 不存在，则从 totalTabs 中查找
-            if (!tab) {
-                tab = this.getTotalTabByKey(key);
-            }
-
-            // 处理 query 合并
-            if (tempQuery) {
-                tab.query = this.mergeTabQuery(tab.query, tempQuery);
-            }
-
-            // 如果 tab 是新添加的，执行 addViewTab 操作
-            if (!isExistingTab) {
-                this.addViewTab(tab);
-            }
-
-            // 更新选中的 tab
-            this.$state.activeKey = key;
-
-            // 缓存数据
-            handleAddTabCache(tab);
-        },
         // 根据routerPathKey重置viewTabs
         resetViewTabsByPathKeys(routerPathKeyList: Array<string>) {
             if (routerPathKeyList && routerPathKeyList.length > 0) {
@@ -143,24 +136,6 @@ export const useViewTabsStore = defineStore('viewTabs',{
                         this.addViewTab(target[0])
                     }
                 })
-            }
-        },
-        mergeTabQuery(originQuery?: string, tempQuery?: string): string {
-            if (!tempQuery) return originQuery || '';
-
-            try {
-                const tempQueryObj = JSON.parse(tempQuery);
-
-                if (originQuery) {
-                    const originQueryObj = JSON.parse(originQuery);
-                    Object.assign(originQueryObj, tempQueryObj);
-                    return JSON.stringify(originQueryObj);
-                }
-
-                return tempQuery;
-            } catch (error) {
-                console.error("解析 query 失败:", error);
-                return originQuery || '';
             }
         },
         // 新开tab页

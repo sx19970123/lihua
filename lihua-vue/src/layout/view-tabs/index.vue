@@ -7,7 +7,7 @@
             hide-add
             ref="viewTabRef"
             @edit="closeTab"
-            @change="handleSwitchTab"
+            @change="routeSkip"
             :key="tabsRenderKey"
     >
       <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" class="enable-glass">
@@ -18,7 +18,7 @@
                          @route-skip="routeSkip"
                          @cancel-keep-alive="cancelKeepAliveCache"
                          @close-view-tab="closeTab"
-                         @mousedown="(event: MouseEvent) => event.button === 1 && !tab.affix ? closeTab(tab.routerPathKey) : ''"
+                         @mousedown="(event: MouseEvent) => event.button === 1 && !tab.affix && closeTab(tab.routerPathKey)"
           />
         </template>
       </a-tab-pane>
@@ -37,7 +37,6 @@ import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
 import {type ComponentPublicInstance, computed, nextTick, onMounted, type Ref, ref, useTemplateRef, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useViewTabsStore} from "@/stores/viewTabs";
-import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {type DraggableEvent, useDraggable} from 'vue-draggable-plus';
 import {isMobile} from 'is-mobile'
 
@@ -63,15 +62,6 @@ const init = () => {
 }
 const {viewTabs, activeKey} = init()
 
-
-/**
- * 通过key获取tab元素进行路由跳转
- * @param key
- */
-const handleSwitchTab = (key: string) => {
-  routeSkip(viewTabsStore.getViewTabsByKey(key))
-}
-
 /**
  * 删除标签，根据情况进行路由切换
  * @param key
@@ -90,7 +80,7 @@ const closeTab = (key: string) => {
     }
     // 返回元素不为空则跳转路由
     if (tab) {
-      routeSkip(tab)
+      routeSkip(tab.routerPathKey, tab.query)
     }
   }
   // 关闭标签
@@ -123,17 +113,12 @@ const cancelKeepAliveCache = (keys: Array<string>) => {
 
 /**
  * 路由跳转
- * @param tab
  */
-const routeSkip = (tab: StarViewType) => {
-  const { routerPathKey , query } = tab
+const routeSkip = (path: string, query?: string) => {
   if (query) {
-    router.push({
-      path: routerPathKey as string,
-      query: JSON.parse(query)
-    })
+    router.push({path: path, query: JSON.parse(query)})
   } else {
-    router.push(routerPathKey as string)
+    router.push(path)
   }
 }
 
@@ -197,11 +182,9 @@ onMounted(() => {
 /**
  * 监听路由变化进行切换 tab
  */
-watch(() => route.path,(value) => {
+watch(() => route.path,() => {
   // 切换tab
-  viewTabsStore.selectedViewTab(value,
-      route?.meta?.viewTab as boolean,
-      Object.keys(route.query).length !== 0 ? JSON.stringify(route.query) : undefined)
+  viewTabsStore.init(route)
   // 添加keepalive缓存
   addKeepAliveCache()
   // 子组件刷新缓存

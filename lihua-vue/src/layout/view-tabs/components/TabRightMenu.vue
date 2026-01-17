@@ -103,7 +103,8 @@ const handleClickMenuTab = ({ key }: { key :string }) => {
       const closeKeys = viewTabsStore.closeAll()
       emits('cancelKeepAlive',closeKeys)
       if (viewTabsStore.viewTabs.length > 0) {
-        emits('routeSkip',viewTabsStore.viewTabs[0])
+        const tab = viewTabsStore.viewTabs[0]
+        emits('routeSkip',tab.routerPathKey, tab.query)
       }
       break
     }
@@ -116,7 +117,7 @@ const handleClickMenuTab = ({ key }: { key :string }) => {
       break
     }
     default: {
-      emits('routeSkip', viewTabsStore.getTotalTabByKey(key))
+      emits('routeSkip', key)
     }
   }
 }
