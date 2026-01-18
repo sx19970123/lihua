@@ -208,23 +208,27 @@ const initSearch = () => {
     {
       title: '用户名',
       key: 'username',
-      dataIndex: 'username'
+      dataIndex: 'username',
+      ellipsis: true
     },
     {
       title: '昵称',
       key: 'nickname',
-      dataIndex: 'nickname'
+      dataIndex: 'nickname',
+      ellipsis: true
     },
     {
       title: '登录ip',
       key: 'ip',
       dataIndex: 'ip',
-      align: 'center'
+      align: 'center',
+      ellipsis: true
     },{
       title: '所属地区',
       key: 'region',
       dataIndex: 'region',
-      align: 'center'
+      align: 'center',
+      ellipsis: true
     },
     {
       title: '登录时间',

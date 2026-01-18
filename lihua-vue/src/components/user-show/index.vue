@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="lihua-user-select">
-      <a-flex align="center" :gap="4">
+      <a-flex align="center" :gap="4" wrap="nowrap">
 <!--        头像-->
         <user-avatar
             :value="avatar.value"
@@ -10,7 +10,7 @@
             :background-color="avatar.backgroundColor"
         />
 <!--        昵称-->
-        <a-typography style="padding-right: var(--lihua-space-sm);" v-if="props.nickname">{{props.nickname}}</a-typography>
+        <a-typography class="nickname" ellipsis v-if="props.nickname">{{props.nickname}}</a-typography>
       </a-flex>
     </div>
   </div>
@@ -69,5 +69,9 @@ try {
   margin: var(--lihua-space-xs);
   box-shadow: var(--lihua-layout-box-shadow);
   user-select: none;
+}
+.nickname {
+  padding-right: var(--lihua-space-sm);
+  white-space: nowrap;
 }
 </style>

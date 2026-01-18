@@ -6,6 +6,8 @@ const nextUpdate = [
             '1. 修复静态路由设置param传参与view-tabs不兼容的问题',
             '2. 修复esc退出全屏后header图标不变化的bug',
             '3. 去除苹果设备下橡皮筋回弹效果',
+            '4. 组件展示部分布局调整，修复小屏下显示异常的bug',
+            '5. DrawerNavigation布局重构，以侧边导航为模板',
         ]
     }
 ]

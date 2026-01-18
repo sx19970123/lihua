@@ -249,7 +249,8 @@ const initSearch = () => {
       title: '用户名',
       key: 'username',
       dataIndex: 'username',
-      align: 'center'
+      align: 'center',
+      ellipsis: true
     },
     {
       title: '操作人员',
@@ -266,7 +267,8 @@ const initSearch = () => {
       title: '地区',
       key: 'region',
       dataIndex: 'region',
-      align: 'center'
+      align: 'center',
+      ellipsis: true
     },
     {
       title: '登录结果',

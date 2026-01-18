@@ -290,7 +290,8 @@ const initSearch = () => {
       title: '地区',
       key: 'region',
       dataIndex: 'region',
-      align: 'center'
+      align: 'center',
+      ellipsis: true
     },
     {
       title: '执行结果',

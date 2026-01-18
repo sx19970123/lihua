@@ -7,7 +7,7 @@
                      :is-complete="loadSuccess"
                      @before-card-expand="handleCardClick"
                      @after-card-close="handleCardReady"
-                     style="width: 30%"
+                     style="width: 300px"
     >
       <template #overview>
         <a-card>

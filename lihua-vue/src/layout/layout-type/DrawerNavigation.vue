@@ -1,42 +1,43 @@
 <template>
   <div>
-    <a-layout>
+    <a-layout style="min-height: 100vh">
+      <!--   左侧导航   -->
       <transition :name="themeStore.routeTransition" mode="out-in">
-        <a-layout-header class="drawer-navigation-header background-glass" v-show="props.showLayout">
-          <a-flex align="center" justify="space-between">
-            <Logo class="logo" :show-title="false"/>
-            <!--页头-->
-            <div id="lihua-layout-head" class="head" />
-          </a-flex>
-        </a-layout-header>
+        <a-layout-sider class="drawer-navigation-sider"
+                        v-show="props.showLayout"
+                        :theme="themeStore.siderTheme"
+                        :trigger="permissionStore.collapsed ? null : '×'"
+                        :width="themeStore.siderWith"
+                        v-model:collapsed="permissionStore.collapsed"
+                        :collapsedWidth="0"
+                        collapsible
+        >
+          <Logo class="logo" :show-title="!permissionStore.collapsed"/>
+          <!-- 侧边栏-->
+          <div class="sider sider-scrollbar">
+            <Side sider-mode="inline" class="small-sider-content" @route-change="closeSide"/>
+          </div>
+        </a-layout-sider>
       </transition>
-
+      <!--   右侧head和content   -->
       <a-layout>
-        <transition :name="themeStore.routeTransition" mode="out-in">
-          <a-layout-sider class="drawer-navigation-sider"
-                          v-show="props.showLayout"
-                          :theme="themeStore.siderTheme"
-                          :width="themeStore.siderWith"
-                          v-model:collapsed="permissionStore.collapsed"
-                          :collapsedWidth="0"
-                          collapsible
-          >
-            <template #trigger v-if="!permissionStore.collapsed">
-              <CloseOutlined />
-            </template>
-            <!-- 小屏模式-->
-            <a-flex align="center" justify="center" class="sider-logo">
-              <Logo :max-width="themeStore.siderWith"/>
+        <a-layout-header class="drawer-navigation-header background-glass">
+          <transition :name="themeStore.routeTransition" mode="out-in">
+            <!--    菜单收缩-->
+            <a-flex class="drawer-navigation-head" justify="space-between" v-show="props.showLayout">
+              <a-flex align="center" :gap="16">
+                <!--菜单开关-->
+                <HeadCollapsed/>
+              </a-flex>
+              <!-- 右侧头部-->
+              <div id="lihua-layout-head"/>
             </a-flex>
-            <!-- 侧边栏-->
-            <Side class="sider-scrollbar min-sider-content" sider-mode="inline" @route-change="closeSide"/>
-          </a-layout-sider>
-        </transition>
-        <!--    菜单开合开关-->
+          </transition>
+          <view-tabs v-if="themeStore.showViewTabs"/>
+        </a-layout-header>
         <a-layout-content>
-          <view-tabs class="view-tabs background-glass" v-if="themeStore.showViewTabs" :style="{'top': !props.showLayout ? '0' : '' }"/>
           <!--内容-->
-          <div id="lihua-layout-content" class="layout-content"/>
+          <div id="lihua-layout-content" class="layout-content" />
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -48,15 +49,15 @@
 <script setup lang="ts">
 import ViewTabs from "@/layout/view-tabs/index.vue";
 import Side from "@/layout/sider/index.vue"
-import { usePermissionStore } from "@/stores/permission";
 import Logo from "@/layout/logo/index.vue";
+import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
+import HeadCollapsed from "@/layout/head/components/collapsed/index.vue";
 import Mask from "@/components/mask/index.vue";
+
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()
-
-// 是否显示layout
-const props = defineProps<{ showLayout: boolean }>()
+const props = defineProps<{showLayout: boolean}>()
 
 // 关闭菜单
 const closeSide = () => {
@@ -68,42 +69,29 @@ closeSide()
 
 <style scoped>
 .drawer-navigation-header {
-  z-index: 5;
+  z-index: 3;
+  height: auto;
   padding: 0;
-  height: var(--lihua-layout-height);
-  line-height: var(--lihua-layout-height);
   backdrop-filter: var(--lihua-backdrop-filter-lg);
   -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
-  box-shadow: var(--lihua-layout-box-shadow);
+  line-height: var(--lihua-layout-height);
 }
-
-.drawer-navigation-sider {
-  z-index: 101;
-  height: 100vh;
-  position: fixed;
-  top: 0;
+.drawer-navigation-head {
   box-shadow: var(--lihua-layout-box-shadow);
+  padding-right: var(--lihua-layout-head-space);
 }
-
-.min-sider-content {
+.sider {
   height: calc(100vh - var(--lihua-layout-height));
 }
-
-.head {
-  margin-right: var(--lihua-layout-head-space);
-}
 .logo {
-  padding: 0 0 0 var(--lihua-space-sm);
-  margin-left: var(--lihua-layout-head-space);
+  padding: var(--lihua-space-sm) var(--lihua-space-base)
 }
-.sider-logo {
-  height: var(--lihua-layout-height);
-}
-.view-tabs {
-  backdrop-filter: var(--lihua-backdrop-filter-lg);
-  -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
-  position: relative;
-  z-index: 1
+.drawer-navigation-sider {
+  position: fixed;
+  height: 100vh;
+  top: 0;
+  z-index: 101;
+  box-shadow: var(--lihua-layout-box-shadow);
 }
 </style>
 
@@ -113,13 +101,7 @@ closeSide()
     position: sticky;
     top: 0;
   }
-  .view-tabs {
-    position: sticky;
-    z-index: 2;
-    top: var(--lihua-layout-height);
-  }
 }
-
 .ant-layout-sider-zero-width-trigger::after {
   border-radius: 0  var(--lihua-radius-xs) var(--lihua-radius-xs) 0;
 }
