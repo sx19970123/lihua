@@ -215,7 +215,7 @@ export const useThemeStore = defineStore('theme',{
             if (this.$state.affixHead) {
                 document.documentElement.setAttribute("head-affix",'enable')
             } else {
-                document.documentElement.removeAttribute("head-affix")
+                document.documentElement.setAttribute("head-affix", "disable")
             }
         },
         // 修改html标签，标记当前颜色模式

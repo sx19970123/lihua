@@ -2,7 +2,7 @@
   <a-dropdown :trigger="['contextmenu', 'click']" overlayClassName="enable-glass">
     <a-button type="text" size="large" style="padding: 0">
       <template #icon>
-        <a-tooltip title="个人中心" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+        <a-tooltip title="个人中心" placement="bottom">
           <user-avatar :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
         </a-tooltip>
       </template>

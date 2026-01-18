@@ -61,7 +61,7 @@ public class SysMenuController extends ApiResponseController {
         // 校验 query 是否为json参数
         if (StringUtils.hasText(sysMenu.getQuery())) {
             try {
-                JsonUtils.isJson(sysMenu.getQuery().replace("\"",",,,"));
+                JsonUtils.isJson(sysMenu.getQuery());
             } catch (JsonProcessingException e) {
                 return error(ResultCodeEnum.PARAMS_ERROR);
             }

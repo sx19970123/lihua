@@ -8,6 +8,9 @@ const nextUpdate = [
             '3. 去除苹果设备下橡皮筋回弹效果',
             '4. 组件展示部分布局调整，修复小屏下显示异常的bug',
             '5. DrawerNavigation布局重构，以侧边导航为模板',
+            '6. MixNavigation布局重构，实现所有布局header高级材质表现相同',
+            '7. 修复保存菜单填写参数时后台报错的bug',
+            '8. spring security 过滤器token替换为PreAuthenticatedAuthenticationToken',
         ]
     }
 ]

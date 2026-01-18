@@ -1,7 +1,7 @@
 <template>
-  <a-dropdown v-model:open="open" :trigger="['contextmenu', 'click']" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+  <a-dropdown v-model:open="open" :trigger="['contextmenu', 'click']">
     <a-button type="text" style="max-width: 130px">
-      <a-tooltip title="默认部门" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+      <a-tooltip title="默认部门" placement="bottom">
         <a-typography-text ellipsis class="text-default-color" :type="userStore.defaultDeptName ? '' : 'secondary'" :content="userStore.defaultDeptName ? userStore.defaultDeptName : '设置默认部门'"/>
       </a-tooltip>
     </a-button>

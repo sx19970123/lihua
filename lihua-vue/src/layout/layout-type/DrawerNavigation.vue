@@ -7,7 +7,7 @@
                         v-show="props.showLayout"
                         :theme="themeStore.siderTheme"
                         :trigger="permissionStore.collapsed ? null : '×'"
-                        :width="themeStore.siderWith"
+                        :width="siderWidth"
                         v-model:collapsed="permissionStore.collapsed"
                         :collapsedWidth="0"
                         collapsible
@@ -54,10 +54,17 @@ import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
 import HeadCollapsed from "@/layout/head/components/collapsed/index.vue";
 import Mask from "@/components/mask/index.vue";
+import {computed} from "vue";
 
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()
 const props = defineProps<{showLayout: boolean}>()
+
+// 菜单栏宽度大于当前屏幕宽度时，减少60像素，保证可正常关闭
+const siderWidth = computed(() => {
+  const innerWidth = window.innerWidth
+  return themeStore.siderWith > innerWidth - 60 ? innerWidth - 60 : themeStore.siderWith
+})
 
 // 关闭菜单
 const closeSide = () => {

@@ -5,7 +5,6 @@
         <a-tooltip
             placement="bottom"
             :title="isFullscreen ? '退出全屏' : '进入全屏'"
-            :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode"
         >
           <FullscreenExitOutlined class="icon-default-color" v-if="isFullscreen"/>
           <FullscreenOutlined class="icon-default-color" v-else/>

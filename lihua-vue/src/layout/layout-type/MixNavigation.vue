@@ -1,32 +1,36 @@
 <template>
   <a-layout>
-    <transition :name="themeStore.routeTransition" mode="out-in">
-      <a-layout-header class="mix-navigation-header" :class="{'background-glass': themeStore.siderTheme === 'light'}" v-show="props.showLayout">
-        <div ref="headerRef">
-          <a-flex align="center" justify="space-between">
-            <!-- 顶部logo-->
-            <Logo class="logo"/>
-            <!-- 顶部导航栏-->
-            <Side class="sider"
-                  is-mix-top
-                  :menu="cloneDeep(permissionStore.menuRouters).map((item: MenuItemGroupType) => {delete item.children; return item})"
-                  sider-mode="horizontal"
-                  @route-change="(keys: string[]) => loadSideMenu(keys[0], false)"
-                  @mounted="(keys: string[]) => loadSideMenu(keys[0], false)"
-                  @menu-click="(key) => loadSideMenu(key, true)"
-            />
-            <!-- 头部组件-->
-            <div id="lihua-layout-head" class="head"/>
-          </a-flex>
-        </div>
-      </a-layout-header>
-    </transition>
+    <div class="mix-navigation-header">
+      <transition :name="themeStore.routeTransition" mode="out-in">
+        <a-layout-header class="mix-navigation-layout-header" :class="{'background-glass': themeStore.siderTheme === 'light'}" v-show="props.showLayout">
+          <div ref="headerRef">
+            <a-flex align="center" justify="space-between">
+              <!-- 顶部logo-->
+              <Logo class="logo"/>
+              <!-- 顶部导航栏-->
+              <Side class="sider"
+                    is-mix-top
+                    :menu="cloneDeep(permissionStore.menuRouters).map((item: MenuItemGroupType) => {delete item.children; return item})"
+                    sider-mode="horizontal"
+                    @route-change="(keys: string[]) => loadSideMenu(keys[0], false)"
+                    @mounted="(keys: string[]) => loadSideMenu(keys[0], false)"
+                    @menu-click="(key) => loadSideMenu(key, true)"
+              />
+              <!-- 头部组件-->
+              <div id="lihua-layout-head" class="head"/>
+            </a-flex>
+          </div>
+        </a-layout-header>
+      </transition>
+      <!--   为保证效果高级材质效果，需要view-tabs与header在同一元素的backdrop-filter下   -->
+      <view-tabs class="background-glass view-tab" v-if="themeStore.showViewTabs" :style="{'top': !props.showLayout ? '0' : '', marginLeft: subMenu.length > 0 && props.showLayout ? themeStore.siderWith + 'px' : 0}"/>
+    </div>
 
     <a-layout>
       <!--    二级导航侧边栏    -->
       <transition :name="themeStore.routeTransition" mode="out-in" v-if="subMenu.length > 0">
         <a-layout-sider :class="{'background-glass': themeStore.siderTheme === 'light'}"
-                        class="mix-navigation-sider"
+                        class="mix-navigation-sider sider-placeholder"
                         v-show="props.showLayout"
                         theme="light"
                         :width="themeStore.siderWith"
@@ -39,8 +43,7 @@
       </transition>
       <!-- view-tab 和 content -->
       <a-layout-content>
-        <view-tabs class="view-tabs background-glass" v-if="themeStore.showViewTabs" :style="{'top': !props.showLayout ? '0' : '' }"/>
-        <div id="lihua-layout-content" class="layout-content" />
+        <div id="lihua-layout-content" class="layout-content content-placeholder" />
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -150,19 +153,22 @@ onUnmounted(() => {
 
 <style scoped>
 .mix-navigation-header {
-  z-index: 5;
+  backdrop-filter: var(--lihua-backdrop-filter-lg);
+}
+.mix-navigation-layout-header {
+  position: relative;
   padding: 0;
+  z-index: 4;
   height: var(--lihua-layout-height);
   line-height: var(--lihua-layout-height);
-  backdrop-filter: var(--lihua-backdrop-filter-lg);
-  -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
   box-shadow: var(--lihua-layout-box-shadow);
 }
 .mix-navigation-sider {
   position: sticky;
-  height: calc(100vh - var(--lihua-layout-height));
-  z-index: 4;
   top: 0;
+  z-index: 3;
+  margin-top: -54px;
+  height: calc(100vh - var(--lihua-layout-height));
   box-shadow: var(--lihua-layout-box-shadow);
 }
 .sider-content {
@@ -178,34 +184,45 @@ onUnmounted(() => {
   padding: 0 0 0 var(--lihua-space-sm);
   margin-left: var(--lihua-layout-head-space);
 }
-.view-tabs {
-  backdrop-filter: var(--lihua-backdrop-filter-lg);
-  -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
-  position: relative;
-  z-index: 3
-}
 .sider {
   flex: 1 1 0;
   min-width: 0;
   margin-left: var(--lihua-layout-head-space);
+}
+.view-tab {
+  transition: margin-left 150ms ease-in-out;
 }
 </style>
 
 <style lang="scss">
 [head-affix = enable] {
   .mix-navigation-header {
-    position: sticky;
-    top: 0;
-  }
-  .mix-navigation-sider {
-    position: sticky;
-    top: var(--lihua-layout-height);
-  }
-  .view-tabs {
-    position: sticky;
+    position: fixed;
     z-index: 3;
+    width: 100vw
+  }
+  .sider-placeholder {
     top: var(--lihua-layout-height);
+    margin-top: var(--lihua-layout-height);
+  }
+  .content-placeholder {
+    margin-top: var(--lihua-layout-height);
+  }
+
+}
+[head-affix = enable][layout = show][view-tabs = show] {
+  .content-placeholder {
+    margin-top: calc(var(--lihua-layout-height) + 54px);
+  }
+}
+[head-affix = disable][layout = show][view-tabs = hide] {
+  .sider-placeholder {
+    margin-top: 0;
+  }
+}
+[head-affix = enable][layout = show][view-tabs = hide] {
+  .content-placeholder {
+    margin-top: var(--lihua-layout-height);
   }
 }
 </style>
-

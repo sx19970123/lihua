@@ -4,7 +4,6 @@
                 placement="bottom"
                 v-model:open="open"
                 @openChange="handleChangeNoticeList"
-                :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode"
     >
       <template #overlay>
         <div :style="{padding: 'var(--lihua-space-sm)',borderRadius: 'var(--lihua-radius-sm)', width: '340px', maxHeight: '500px', background: 'var(--lihua-background-color-level-2)', boxShadow: 'var(--lihua-box-shadow)'}">
@@ -89,7 +88,7 @@
           <a-badge :count="unReadCount" :offset="[-5,5]" style="color: #FFFFFF">
             <a-button type="text">
               <template #icon>
-                <a-tooltip title="通知公告" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
+                <a-tooltip title="通知公告" placement="bottom">
                   <BellOutlined class="icon-default-color"/>
                 </a-tooltip>
               </template>

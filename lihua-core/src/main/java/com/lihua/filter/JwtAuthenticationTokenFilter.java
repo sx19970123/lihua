@@ -9,9 +9,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -37,13 +37,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(token)) {
             LoginUser loginUser = LoginUserManager.getLoginUser(token);
             if (loginUser != null) {
+                PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(loginUser, null, loginUser.getPermissionList().stream().map(SimpleGrantedAuthority::new).toList());
                 // 将用户信息存入上下文
                 SecurityContextHolder
                         .getContext()
-                        .setAuthentication(new UsernamePasswordAuthenticationToken(
-                                loginUser,
-                                null,
-                                loginUser.getPermissionList().stream().map(SimpleGrantedAuthority::new).toList()));
+                        .setAuthentication(authentication);
                 // 判断过期时间进行重新缓存
                 LoginUserManager.verifyLoginUserCache();
             } else {
