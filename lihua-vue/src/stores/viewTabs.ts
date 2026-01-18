@@ -68,8 +68,6 @@ export const useViewTabsStore = defineStore('viewTabs',{
             let key = route.path
             let viewTab = route?.meta?.viewTab as boolean
 
-            console.log("route", route)
-
             // 选中路由未进行viewTabs管理，activeKey置空
             if (!viewTab) {
                 this.$state.activeKey = '';
@@ -86,14 +84,14 @@ export const useViewTabsStore = defineStore('viewTabs',{
             }
 
             // 处理param传参
-            if (route?.params) {
+            if (Object.keys(route?.params).length > 0) {
                 const matchedList = route.matched
                 tab = this.getTotalTabByKey(matchedList[matchedList.length - 1].path)
                 tab.routerPathKey = route.path
             }
 
             // 处理query传参
-            if (route?.query) {
+            if (Object.keys(route?.query).length > 0) {
                 tab.query = JSON.stringify(route.query)
             }
 
