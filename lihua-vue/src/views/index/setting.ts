@@ -4,6 +4,8 @@ const nextUpdate = [
         version: '1.4.2',
         record: [
             '1. 修复静态路由设置param传参与view-tabs不兼容的问题',
+            '2. 修复esc退出全屏后header图标不变化的bug',
+            '3. 去除苹果设备下橡皮筋回弹效果',
         ]
     }
 ]

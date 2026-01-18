@@ -1,7 +1,7 @@
 <template>
   <div>
     <div @click="open = true" v-show="!open">
-      <a-input placeholder="搜索" readonly class="title-search-input" v-if="windowWidth > settings.menuToggleWidth">
+      <a-input placeholder="搜索" readonly class="title-search-input" v-if="!themeStore.isSmallWindow">
         <template #prefix>
           <SearchOutlined class="icon-default-color"/>
         </template>
@@ -134,6 +134,7 @@
 import {nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from "vue";
 import {useViewTabsStore} from "@/stores/viewTabs.ts";
 import {usePermissionStore} from "@/stores/permission.ts";
+import {useThemeStore} from "@/stores/theme.ts";
 import {useRouter} from "vue-router";
 import {osType} from "@/utils/OS"
 import SelectableCard from "@/components/selectable-card/index.vue";
@@ -141,10 +142,10 @@ import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewT
 import {traverseWithPath} from "@/utils/Tree.ts";
 import {cloneDeep, debounce, throttle} from "lodash-es"
 import type {ItemType} from "ant-design-vue";
-import settings from "@/settings.ts";
 
 const viewTabsStore = useViewTabsStore();
 const permissionStore = usePermissionStore();
+const themeStore = useThemeStore();
 const router = useRouter();
 
 // 菜单类型
@@ -155,8 +156,6 @@ const open = ref<boolean>(false)
 const pathKey = ref<string>()
 // 滚动条位置
 const selectedIndex = ref<number>(0)
-// 窗口宽度
-const windowWidth = ref<number>(window.innerWidth)
 // 搜索框ref
 const menuSearchInputRef = useTemplateRef<HTMLInputElement>('menuSearchInputRef')
 // 全部按钮ref
@@ -384,13 +383,6 @@ const initRecentMenu = () => {
 
 const {recentMenuUnfoldStatus, recentDataList, loadRecentMenu} = initRecentMenu()
 
-/**
- * 窗口宽度发生变化
- */
-const windowWidthResize = () => {
-  windowWidth.value = window.innerWidth
-}
-
 watch(() => open.value, () => {
   // 打开modal时进行操作
   if (open.value) {
@@ -412,12 +404,10 @@ watch(() => open.value, () => {
 onMounted(() => {
   // 加载全部菜单基础数据
   loadBaseMenu()
-  window.addEventListener('resize', windowWidthResize)
   window.addEventListener('keydown', throttleHandleKeydown)
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', windowWidthResize)
   window.removeEventListener('keydown', throttleHandleKeydown)
 })
 </script>
