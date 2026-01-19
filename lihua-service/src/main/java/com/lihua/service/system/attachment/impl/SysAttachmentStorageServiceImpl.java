@@ -34,6 +34,8 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +110,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     public String uploadAttachment(MultipartFile file, SysAttachment sysAttachment) {
         try {
             fillParameters(file, sysAttachment);
-            String path = upload(file);
+            String path = upload(file, sysAttachment.getBusinessCode());
             sysAttachment.setPath(path).setStatus("0");
             return saveAttachment(sysAttachment);
         } catch (Exception e) {
@@ -129,7 +131,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             try {
                 fillParameters(file, sysAttachment);
                 // 执行上传，返回路径
-                String path = upload(file);
+                String path = upload(file, sysAttachment.getBusinessCode());
                 // 设置成功状态
                 sysAttachment.setPath(path).setStatus("0");
             } catch (Exception e) {
@@ -155,7 +157,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             }
 
             // 附件上传
-            String path = upload(multipartFile);
+            String path = upload(multipartFile, sysAttachment.getBusinessCode());
             sysAttachment
                     .setUploadMode("3")
                     .setPath(path)
@@ -339,12 +341,12 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     }
 
     // 附件上传方法
-    private String upload(MultipartFile file) {
+    private String upload(MultipartFile file, String businessCode) {
         AttachmentStorageStrategy strategy = getStrategy();
         // 获取新的附件名称
         String uuidFileName = FileUtils.generateUUIDFileName(file.getOriginalFilename());
         // 通过指定路径拼接附件全路径
-        String fullFilePath = lihuaConfig.getUploadFilePath() + uuidFileName;
+        String fullFilePath = Paths.get(lihuaConfig.getUploadFilePath(), businessCode, uuidFileName).toString();
         // 附件上传
         strategy.uploadFile(file, fullFilePath);
         return fullFilePath;

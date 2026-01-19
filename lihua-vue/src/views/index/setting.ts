@@ -11,6 +11,7 @@ const nextUpdate = [
             '6. MixNavigation布局重构，实现所有布局header高级材质表现相同',
             '7. 修复保存菜单填写参数时后台报错的bug',
             '8. spring security 过滤器token替换为PreAuthenticatedAuthenticationToken',
+            '9. 附件上传根据业务编码进行路径区分',
         ]
     }
 ]
