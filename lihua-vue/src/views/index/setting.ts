@@ -12,6 +12,7 @@ const nextUpdate = [
             '7. 修复保存菜单填写参数时后台报错的bug',
             '8. spring security 过滤器token替换为PreAuthenticatedAuthenticationToken',
             '9. 附件上传根据业务编码进行路径区分',
+            '10. tianai验证码更新至1.5.4',
         ]
     }
 ]
