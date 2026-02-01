@@ -130,6 +130,12 @@
         <module>lihua-core</module>
         <module>lihua-common</module>
         <module>lihua-service</module>
+        <module>lihua-base</module>
+        <module>lihua-bridge</module>
+        <module>lihua-biz</module>
+        <module>lihua-external</module>
+        <module>lihua-biz/lihua-system</module>
+        <module>lihua-biz/lihua-monitor</module>
     </modules>
 
     <build>
