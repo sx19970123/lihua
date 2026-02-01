@@ -10,7 +10,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 /**
@@ -39,7 +38,7 @@ public class WebUtils {
     /**
      * 从请求中获取 token
      */
-    public static String getToken(@Nullable HttpServletRequest request) {
+    public static String getToken(HttpServletRequest request) {
         // 获取 token
         String token = null;
         if (request != null) {

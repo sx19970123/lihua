@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 
 import static com.lihua.model.web.response.StrResponse.error;
@@ -30,7 +29,7 @@ import static com.lihua.model.web.response.StrResponse.error;
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(@Nullable HttpServletRequest request,@Nullable  HttpServletResponse response, @Nullable FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal( HttpServletRequest request,  HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 获取token
         String token = WebUtils.getToken(request);
 
