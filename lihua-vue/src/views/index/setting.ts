@@ -1,18 +1,9 @@
 // 下一版本更新记录
 const nextUpdate = [
     {
-        version: '1.4.2',
+        version: '2.0.0',
         record: [
-            '1. 修复静态路由设置param传参与view-tabs不兼容的问题',
-            '2. 修复esc退出全屏后header图标不变化的bug',
-            '3. 去除苹果设备下橡皮筋回弹效果',
-            '4. 组件展示部分布局调整，修复小屏下显示异常的bug',
-            '5. DrawerNavigation布局重构，以侧边导航为模板',
-            '6. MixNavigation布局重构，实现所有布局header高级材质表现相同',
-            '7. 修复保存菜单填写参数时后台报错的bug',
-            '8. spring security 过滤器token替换为PreAuthenticatedAuthenticationToken',
-            '9. 附件上传根据业务编码进行路径区分',
-            '10. tianai验证码更新至1.5.4',
+           
         ]
     }
 ]
@@ -26,6 +17,22 @@ export const versionInfo = {
     vueVersion: ' 3.5.22',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '1.4.2',
+            updateDate: '2026-02-01',
+            updateContent: [
+                '1. 修复静态路由设置param传参与view-tabs不兼容的问题',
+                '2. 修复esc退出全屏后header图标不变化的bug',
+                '3. 去除苹果设备下橡皮筋回弹效果',
+                '4. 组件展示部分布局调整，修复小屏下显示异常的bug',
+                '5. DrawerNavigation布局重构，以侧边导航为模板',
+                '6. MixNavigation布局重构，实现所有布局header高级材质表现相同',
+                '7. 修复保存菜单填写参数时后台报错的bug',
+                '8. spring security 过滤器token替换为PreAuthenticatedAuthenticationToken',
+                '9. 附件上传根据业务编码进行路径区分',
+                '10. tianai验证码更新至1.5.4',
+            ]
+        },
         {
             version: '1.4.1',
             updateDate: '2026-01-09',

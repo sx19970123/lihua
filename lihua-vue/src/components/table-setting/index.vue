@@ -342,10 +342,11 @@ const initChangeFixedDrag = () => {
   }
 
   // 拖拽排序结束后进行位置判断
-  const dragEnd = (event: DraggableEvent & {newIndex: number, oldIndex: number}) => {
+  const dragEnd = (event: DraggableEvent<any>) => {
+    const { newIndex } = event as DraggableEvent<any> & {
+      newIndex: number
+    }
     const tss = tableSettings.value
-    // 移动后的坐标
-    const newIndex = event.newIndex
     // 被移动的元素
     const dragItem = tss[newIndex]
     // 被移动元素的左右固定

@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 // 接受父组件传递参数
-import {defineProps, reactive, ref, useTemplateRef, watch} from "vue";
+import {reactive, ref, useTemplateRef, watch} from "vue";
 import AFlex from "ant-design-vue/es/flex"
 import {cloneDeep} from 'lodash-es'
 import {theme} from "ant-design-vue";

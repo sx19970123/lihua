@@ -14,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps} from "vue";
 import {useThemeStore} from "@/stores/theme.ts";
 // 接收全部颜色 items 和 双向绑定的颜色值 modelValue
 const props = defineProps<{

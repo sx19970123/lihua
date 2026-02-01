@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, ref, watch} from 'vue';
+import {ref, watch} from 'vue';
 import {useThemeStore} from "@/stores/theme.ts";
 
 const themeStore = useThemeStore();

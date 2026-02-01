@@ -70,7 +70,7 @@
 <script setup lang="ts">
 import {VueCropper} from "vue-cropper";
 import 'vue-cropper/dist/index.css'
-import {defineProps, ref, useTemplateRef} from 'vue';
+import {ref, useTemplateRef} from 'vue';
 import type {CropperDataType} from "@/components/image-cropper/CropperType.ts";
 import {message} from "ant-design-vue";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
