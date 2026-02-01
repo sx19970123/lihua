@@ -12,18 +12,18 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.8</version>
+        <version>4.0.2</version>
         <relativePath/>
     </parent>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
 
         <lihua.version>1.4.2</lihua.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mysql.version>8.2.0</mysql.version>
-        <mybatis-plus.version>3.5.14</mybatis-plus.version>
+        <mybatis-plus.version>3.5.16</mybatis-plus.version>
         <jwt.version>3.10.3</jwt.version>
         <myexcel.version>4.5.6</myexcel.version>
         <oshi.version>6.6.4</oshi.version>
@@ -35,7 +35,7 @@
         <knife4j.version>4.5.0</knife4j.version>
         <ipaddress.version>5.5.1</ipaddress.version>
         <ip2region.version>3.2.0</ip2region.version>
-        <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
+        <dynamic-datasource.version>4.5.0</dynamic-datasource.version>
     </properties>
 
 <!--    统一进行版本管理-->
@@ -74,14 +74,18 @@
         <!--         web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
         <!--         web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
-
+        <!--        jackson-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jackson</artifactId>
+        </dependency>
         <!--        security-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,12 +94,12 @@
         <!--        aop-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
         </dependency>
         <!--        mybatis-plus-->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
         </dependency>
         <!--        mybatis-plus插件-->
         <dependency>

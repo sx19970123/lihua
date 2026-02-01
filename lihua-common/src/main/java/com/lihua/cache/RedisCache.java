@@ -1,6 +1,5 @@
 package com.lihua.cache;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lihua.exception.ServiceException;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
@@ -8,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
@@ -23,7 +23,7 @@ public class RedisCache {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     /**
      * 缓存数据
@@ -94,8 +94,8 @@ public class RedisCache {
             return null;
         }
 
-        // 使用 ObjectMapper 转换为目标类型
-        return objectMapper.convertValue(value, clazz);
+        // 使用 jsonMapper 转换为目标类型
+        return jsonMapper.convertValue(value, clazz);
     }
 
 
@@ -121,7 +121,7 @@ public class RedisCache {
         }
 
         return range.stream()
-                .map(value -> objectMapper.convertValue(value, clazz))
+                .map(value -> jsonMapper.convertValue(value, clazz))
                 .collect(Collectors.toList());
     }
 
@@ -138,7 +138,7 @@ public class RedisCache {
               .entries(key)
               .entrySet()
               .stream()
-              .collect(Collectors.toMap(entry -> entry.getKey().toString(), entry -> objectMapper.convertValue(entry.getValue(), clazz)));
+              .collect(Collectors.toMap(entry -> entry.getKey().toString(), entry -> jsonMapper.convertValue(entry.getValue(), clazz)));
     }
 
     /** 根据 redisKey 和 MapKey 获取数据
@@ -154,7 +154,7 @@ public class RedisCache {
             return null;
         }
 
-        return objectMapper.convertValue(item, clazz);
+        return jsonMapper.convertValue(item, clazz);
     }
 
     /**

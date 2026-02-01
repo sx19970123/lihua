@@ -2,14 +2,14 @@ package com.lihua.utils.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.lihua.exception.ServiceException;
 import com.lihua.utils.spring.SpringUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.json.JsonWriteFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,19 +23,21 @@ import java.util.List;
 @Slf4j
 public class JsonUtils {
 
-    // 无特殊配置的objectMapper
-    private static final ObjectMapper objectMapper;
+    // 无特殊配置的jsonMapper
+    private static final JsonMapper jsonMapper;
 
-    // 序列化排除空值/空集合/''字符串的objectMapper
-    private static final ObjectMapper excludeNullWriter;
+    // 序列化排除空值/空集合/''字符串的jsonMapper
+    private static final JsonMapper excludeNullWriter;
 
     static {
-        // 从容器中获取objectMapper
-        objectMapper = SpringUtils.getBean(ObjectMapper.class);
-        // 复制objectMapper，设置忽略空值
-        ObjectMapper copyObjectMapper = objectMapper.copy();
-        copyObjectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-        excludeNullWriter = copyObjectMapper;
+        // 从容器中获取jsonMapper
+        jsonMapper = SpringUtils.getBean(JsonMapper.class);
+
+        // 忽略null值
+        excludeNullWriter = JsonMapper.builder()
+                .enable(JsonWriteFeature.ESCAPE_NON_ASCII)
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .build();
     }
 
     /**
@@ -46,7 +48,7 @@ public class JsonUtils {
      * @return json 数据
      */
     public static <T> String toJson(T data) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(data);
+        return jsonMapper.writeValueAsString(data);
     }
 
     /**
@@ -81,13 +83,7 @@ public class JsonUtils {
         if (excludeKeys == null || excludeKeys.isEmpty()) {
             return json;
         }
-        JsonNode jsonNode;
-        try {
-            jsonNode = objectMapper.readTree(json);
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage(), e);
-            return json;
-        }
+        JsonNode jsonNode = jsonMapper.readTree(json);
         removeKeyRecursively(jsonNode, excludeKeys);
 
         return toJsonOrCanonicalName(jsonNode);
@@ -100,7 +96,7 @@ public class JsonUtils {
      */
     @SneakyThrows
     public static <T> T toObject(String json, Class<T> clazz) {
-        return objectMapper.readValue(json, clazz);
+        return jsonMapper.readValue(json, clazz);
     }
 
     /**
@@ -110,14 +106,14 @@ public class JsonUtils {
      */
     @SneakyThrows
     public static <T> List<T> toArrayObject(String json, Class<T> clazz) {
-       return objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+       return jsonMapper.readValue(json, jsonMapper.getTypeFactory().constructCollectionType(List.class, clazz));
     }
 
     /**
      * 判断字符串是否为json
      */
     public static void isJson(String json) throws JsonProcessingException {
-        objectMapper.readTree(json);
+        jsonMapper.readTree(json);
     }
 
     /**
@@ -125,7 +121,7 @@ public class JsonUtils {
      */
     public static <T> T deepCopy(T item) {
         try {
-            return objectMapper.readValue(objectMapper.writeValueAsString(item), (Class<T>) item.getClass());
+            return jsonMapper.readValue(jsonMapper.writeValueAsString(item), (Class<T>) item.getClass());
         } catch (Exception e) {
             throw new ServiceException("深拷贝执行异常");
         }
@@ -147,15 +143,12 @@ public class JsonUtils {
     private static void removeKeyRecursively(JsonNode node, List<String> excludeKeys) {
         if (node.isObject()) {
             ObjectNode objectNode = (ObjectNode) node;
-            objectNode.remove(excludeKeys);
-
-            // 递归处理对象中的子节点
-            objectNode.fields().forEachRemaining(entry -> removeKeyRecursively(entry.getValue(), excludeKeys));
+            // 移除指定的 key
+            excludeKeys.forEach(objectNode::remove);
+            // 递归处理子节点
+            objectNode.forEach(entry -> removeKeyRecursively(entry, excludeKeys));
         } else if (node.isArray()) {
-            ArrayNode arrayNode = (ArrayNode) node;
-
-            // 递归处理数组中的每个元素
-            for (JsonNode item : arrayNode) {
+            for (JsonNode item : node) {
                 removeKeyRecursively(item, excludeKeys);
             }
         }
