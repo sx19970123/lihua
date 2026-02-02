@@ -22,15 +22,17 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-common</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-service</artifactId>
-        </dependency>
         <!-- xxl-job 定时任务 -->
         <dependency>
             <groupId>com.xuxueli</groupId>
             <artifactId>xxl-job-core</artifactId>
             <version>${xxl-job.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-system</artifactId>
+            <version>1.4.2</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

@@ -28,10 +28,9 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-common</artifactId>
         </dependency>
-        <!--        系统内置功能服务层-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-service</artifactId>
+            <artifactId>lihua-biz</artifactId>
         </dependency>
         <!--        mysql-->
         <dependency>

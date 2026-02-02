@@ -61,10 +61,9 @@
                 <artifactId>lihua-common</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-            <!--        系统内置功能服务层版本管理-->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-service</artifactId>
+                <artifactId>lihua-biz</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
         </dependencies>
@@ -129,7 +128,6 @@
         <module>lihua-admin</module>
         <module>lihua-core</module>
         <module>lihua-common</module>
-        <module>lihua-service</module>
         <module>lihua-base</module>
         <module>lihua-bridge</module>
         <module>lihua-biz</module>
