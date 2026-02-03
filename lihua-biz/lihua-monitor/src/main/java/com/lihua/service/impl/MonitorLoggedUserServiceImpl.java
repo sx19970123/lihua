@@ -1,11 +1,12 @@
 package com.lihua.service.impl;
 
 import com.lihua.cache.RedisCache;
-import com.lihua.entity.monitor.LoggedUser;
 import com.lihua.enums.RedisKeyPrefixEnum;
-import com.lihua.model.security.CurrentUser;
-import com.lihua.model.security.LoginUser;
-import com.lihua.utils.security.LoginUserManager;
+import com.lihua.manager.LoginUserManager;
+import com.lihua.model.CurrentUser;
+import com.lihua.model.LoggedUser;
+import com.lihua.model.LoginUser;
+import com.lihua.service.MonitorLoggedUserService;
 import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 package com.lihua.strategy.cacheloginuser;
 
 import com.lihua.mapper.SysPostMapper;
-import com.lihua.model.security.CurrentPost;
-import com.lihua.model.security.LoginUser;
+import com.lihua.model.CurrentPost;
+import com.lihua.model.LoginUser;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 

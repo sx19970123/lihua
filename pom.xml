@@ -66,6 +66,11 @@
                 <artifactId>lihua-biz</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.lihua</groupId>
+                <artifactId>lihua-base</artifactId>
+                <version>${lihua.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -75,31 +80,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
-        <!--         web-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
-        </dependency>
-        <!--        security-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
         <!--        aop-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aspectj</artifactId>
         </dependency>
-        <!--        mybatis-plus-->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
-        </dependency>
-        <!--        mybatis-plus插件-->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-jsqlparser</artifactId>
-        </dependency>
+
         <!--        lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -134,6 +120,9 @@
         <module>lihua-external</module>
         <module>lihua-biz/lihua-system</module>
         <module>lihua-biz/lihua-monitor</module>
+        <module>lihua-base/lihua-websocket</module>
+        <module>lihua-base/lihua-security</module>
+        <module>lihua-base/lihua-mybatis</module>
     </modules>
 
     <build>

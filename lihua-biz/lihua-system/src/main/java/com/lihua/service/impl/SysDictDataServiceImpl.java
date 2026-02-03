@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.entity.SysDictData;
 import com.lihua.exception.ServiceException;
+import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDictDataMapper;
 import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.dto.SysDictDataDTO;
 import com.lihua.service.SysDictDataService;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.dict.DictUtils;
-import com.lihua.utils.security.LoginUserContext;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -100,7 +100,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         updateWrapper
                 .lambda()
                 .set(SysDictData::getDictTypeCode,newTypeCode)
-                .set(SysDictData::getUpdateId,LoginUserContext.getUserId())
+                .set(SysDictData::getUpdateId, LoginUserContext.getUserId())
                 .set(SysDictData::getUpdateTime, DateUtils.now())
                 .eq(SysDictData::getDictTypeCode,oldTypeCode);
         sysDictDataMapper.update(updateWrapper);

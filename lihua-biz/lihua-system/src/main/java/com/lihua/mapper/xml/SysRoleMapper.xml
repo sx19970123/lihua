@@ -20,7 +20,7 @@
         sys_role.code
     </sql>
 
-    <select id="selectSysRoleByUserId" resultType="com.lihua.model.security.CurrentRole">
+    <select id="selectSysRoleByUserId" resultType="com.lihua.model.CurrentRole">
         SELECT
             <include refid="selectRoleItem"/>
         FROM
@@ -61,7 +61,7 @@
         AND del_flag = '0'
     </select>
 
-    <select id="selectAllRole" resultType="com.lihua.model.security.CurrentRole">
+    <select id="selectAllRole" resultType="com.lihua.model.CurrentRole">
         SELECT
         <include refid="selectRoleItem"/>
         FROM

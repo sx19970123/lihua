@@ -1,12 +1,12 @@
 package com.lihua.strategy.checkloginsetting;
 
 import com.lihua.entity.SysSetting;
+import com.lihua.model.LoginUser;
 import com.lihua.model.dto.SysSettingDTO;
-import com.lihua.model.security.LoginUser;
 import com.lihua.service.SysSettingService;
+import com.lihua.utils.SecurityUtils;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.json.JsonUtils;
-import com.lihua.utils.security.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

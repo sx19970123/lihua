@@ -48,7 +48,7 @@
         </collection>
     </resultMap>
 
-    <select id="loginSelect" resultType="com.lihua.model.security.CurrentUser">
+    <select id="loginSelect" resultType="com.lihua.model.CurrentUser">
         SELECT
             id,
             username,

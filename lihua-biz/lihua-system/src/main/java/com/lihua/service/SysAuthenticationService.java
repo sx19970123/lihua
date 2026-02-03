@@ -1,7 +1,8 @@
 package com.lihua.service;
 
-import com.lihua.model.security.CurrentUser;
-import com.lihua.model.security.LoginUser;
+
+import com.lihua.model.CurrentUser;
+import com.lihua.model.LoginUser;
 
 import java.util.List;
 

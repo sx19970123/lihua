@@ -1,6 +1,6 @@
 package com.lihua.strategy.cacheloginuser;
 
-import com.lihua.model.security.LoginUser;
+import com.lihua.model.LoginUser;
 import com.lihua.utils.web.WebUtils;
 import org.springframework.stereotype.Component;
 

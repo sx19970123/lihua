@@ -3,7 +3,7 @@ package com.lihua.controller;
 import com.lihua.annotation.Log;
 import com.lihua.entity.SysViewTab;
 import com.lihua.enums.LogTypeEnum;
-import com.lihua.model.security.CurrentViewTab;
+import com.lihua.model.CurrentViewTab;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysViewTabService;

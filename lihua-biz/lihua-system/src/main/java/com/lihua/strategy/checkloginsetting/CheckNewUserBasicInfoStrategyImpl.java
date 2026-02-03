@@ -1,6 +1,6 @@
 package com.lihua.strategy.checkloginsetting;
 
-import com.lihua.model.security.LoginUser;
+import com.lihua.model.LoginUser;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 

@@ -32,17 +32,15 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-biz</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base</artifactId>
+        </dependency>
         <!--        mysql-->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>${mysql.version}</version>
-        </dependency>
-        <!--        dynamic-datasource多数据源-->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>dynamic-datasource-spring-boot4-starter</artifactId>
-            <version>${dynamic-datasource.version}</version>
         </dependency>
     </dependencies>
 

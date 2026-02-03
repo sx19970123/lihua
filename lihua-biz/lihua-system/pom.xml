@@ -34,6 +34,22 @@
             <artifactId>okhttp-jvm</artifactId>
             <version>${okhttp3.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-websocket</artifactId>
+            <version>1.4.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-security</artifactId>
+            <version>1.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-mybatis</artifactId>
+            <version>1.4.2</version>
+        </dependency>
     </dependencies>
 
 </project>

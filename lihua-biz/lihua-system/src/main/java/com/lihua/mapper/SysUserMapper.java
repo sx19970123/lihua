@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.lihua.entity.SysUser;
-import com.lihua.model.security.CurrentUser;
+import com.lihua.model.CurrentUser;
 import com.lihua.model.dto.SysUserDeptDTO;
 import com.lihua.model.vo.SysUserVO;
 import org.apache.ibatis.annotations.Param;

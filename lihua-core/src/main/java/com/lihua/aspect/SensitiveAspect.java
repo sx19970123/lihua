@@ -7,7 +7,7 @@ import com.lihua.annotation.sensitive.ApplySensitive;
 import com.lihua.annotation.sensitive.DeepSensitive;
 import com.lihua.annotation.sensitive.Sensitive;
 import com.lihua.exception.SensitiveException;
-import com.lihua.utils.security.LoginUserContext;
+import com.lihua.manager.LoginUserContext;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

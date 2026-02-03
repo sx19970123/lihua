@@ -23,5 +23,10 @@
             <artifactId>lihua-system</artifactId>
             <version>1.4.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-monitor</artifactId>
+            <version>1.4.2</version>
+        </dependency>
     </dependencies>
 </project>

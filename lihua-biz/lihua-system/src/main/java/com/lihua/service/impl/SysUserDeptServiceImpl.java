@@ -4,14 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.entity.SysUserDept;
 import com.lihua.exception.ServiceException;
+import com.lihua.manager.LoginUserContext;
+import com.lihua.manager.LoginUserManager;
 import com.lihua.mapper.SysDeptMapper;
 import com.lihua.mapper.SysUserDeptMapper;
-import com.lihua.model.security.CurrentDept;
-import com.lihua.model.security.LoginUser;
+import com.lihua.model.CurrentDept;
+import com.lihua.model.LoginUser;
 import com.lihua.service.SysUserDeptService;
 import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.security.LoginUserContext;
-import com.lihua.utils.security.LoginUserManager;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
