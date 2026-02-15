@@ -9,13 +9,13 @@ import com.lihua.entity.SysPost;
 import com.lihua.exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDeptMapper;
-import com.lihua.model.dict.SysDictDataVO;
+import com.lihua.model.SysDictData;
 import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.vo.SysDeptVO;
 import com.lihua.service.SysDeptService;
 import com.lihua.service.SysPostService;
+import com.lihua.utils.DictUtils;
 import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
@@ -199,8 +199,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         getDbDeptData(sysDeptVOS, deptNameDbSet, deptCodeDbSet);
 
         // 用到的字典数据
-        List<SysDictDataVO> sysStatus = DictUtils.getDictData("sys_status");
-        String statusJoin = sysStatus.stream().map(SysDictDataVO::getLabel).collect(Collectors.joining("、"));
+        List<SysDictData> sysStatus = DictUtils.getDictData("sys_status");
+        String statusJoin = sysStatus.stream().map(SysDictData::getLabel).collect(Collectors.joining("、"));
 
         // 开始数据过滤
         importDeptVos = sysDeptVOS.stream().filter(sysDeptVO -> {
@@ -438,8 +438,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     // 过滤状态
-    private boolean filterStatus(SysDeptVO sysDeptVO, List<SysDeptVO> errorDeptVos, List<SysDictDataVO> sysStatus, String statusJoin) {
-        List<SysDictDataVO> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysDeptVO.getStatus())).toList();
+    private boolean filterStatus(SysDeptVO sysDeptVO, List<SysDeptVO> errorDeptVos, List<SysDictData> sysStatus, String statusJoin) {
+        List<SysDictData> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysDeptVO.getStatus())).toList();
         if (status.isEmpty()) {
             sysDeptVO.setImportErrorMsg("请填写部门状态或部门状态不合法，可输入项为：" + statusJoin);
             errorDeptVos.add(sysDeptVO);

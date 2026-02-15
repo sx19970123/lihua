@@ -1,13 +1,10 @@
-package com.lihua.model.dict;
+package com.lihua.model;
 
-import com.lihua.model.BaseEntity;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import java.util.List;
-@EqualsAndHashCode(callSuper = true)
+
 @Data
-public class SysDictDataVO extends BaseEntity {
+public class SysDictData {
     /**
      * 主键id
      */
@@ -61,5 +58,5 @@ public class SysDictDataVO extends BaseEntity {
     /**
      * 子集
      */
-    private List<SysDictDataVO> children;
+    private List<SysDictData> children;
 }

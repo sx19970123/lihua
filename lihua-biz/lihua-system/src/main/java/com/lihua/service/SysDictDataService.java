@@ -1,7 +1,6 @@
 package com.lihua.service;
 
 import com.lihua.entity.SysDictData;
-import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.dto.SysDictDataDTO;
 
 import java.util.List;
@@ -17,12 +16,12 @@ public interface SysDictDataService {
     /**
      * 获取字典数据option
      */
-    List<SysDictDataVO> queryDictOptionList(String dictTypeCode);
+    List<com.lihua.model.SysDictData> queryDictOptionList(String dictTypeCode);
 
     /**
      * 获取字典数据option
      */
-    Map<String, List<SysDictDataVO>> queryDictOptionList(List<String> dictTypeCodeList);
+    Map<String, List<com.lihua.model.SysDictData>> queryDictOptionList(List<String> dictTypeCodeList);
 
     /**
      * 保存方法

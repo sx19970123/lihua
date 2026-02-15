@@ -123,6 +123,8 @@
         <module>lihua-base/lihua-websocket</module>
         <module>lihua-base/lihua-security</module>
         <module>lihua-base/lihua-mybatis</module>
+        <module>lihua-base/lihua-redis</module>
+        <module>lihua-base/lihua-dict</module>
     </modules>
 
     <build>

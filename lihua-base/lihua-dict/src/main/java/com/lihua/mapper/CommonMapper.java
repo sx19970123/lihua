@@ -1,6 +1,6 @@
 package com.lihua.mapper;
 
-import com.lihua.model.dict.SysDictDataVO;
+import com.lihua.model.SysDictData;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,5 +13,5 @@ import java.util.List;
 public interface CommonMapper {
 
     // 根据字典类型编码查询对应字典数据
-    List<SysDictDataVO> queryByDictTypeCode(@Param("dictTypeCodeList") List<String> dictTypeCodeList);
+    List<SysDictData> queryByDictTypeCode(@Param("dictTypeCodeList") List<String> dictTypeCodeList);
 }

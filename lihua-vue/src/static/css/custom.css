@@ -17,6 +17,9 @@
     }
 }
 
+/**
+    input 框前缀图标颜色
+ */
 .input-prefix-icon-color {
     color: var(--lihua-input-icon-color);
 }

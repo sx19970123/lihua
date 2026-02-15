@@ -1,6 +1,6 @@
 package com.lihua.controller.app;
 
-import com.lihua.model.dict.SysDictDataVO;
+import com.lihua.model.SysDictData;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysDictDataService;
@@ -24,13 +24,13 @@ public class AppSysDictDataController extends ApiResponseController {
 
     @Operation(summary = "查询下拉框中字典选项")
     @GetMapping("option/{dictTypeCode}")
-    public ApiResponseModel<List<SysDictDataVO>> queryDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
+    public ApiResponseModel<List<SysDictData>> queryDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
         return success(sysDictDataService.queryDictOptionList(dictTypeCode));
     }
 
     @Operation(summary = "获取字典数据option")
     @PostMapping("option")
-    public ApiResponseModel<Map<String, List<SysDictDataVO>>> queryDictOptionList(@RequestBody List<String> dictTypeCodeList) {
+    public ApiResponseModel<Map<String, List<SysDictData>>> queryDictOptionList(@RequestBody List<String> dictTypeCodeList) {
         return success(sysDictDataService.queryDictOptionList(dictTypeCodeList));
     }
 }

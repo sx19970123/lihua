@@ -12,13 +12,13 @@ import com.lihua.exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDeptMapper;
 import com.lihua.mapper.SysPostMapper;
-import com.lihua.model.dict.SysDictDataVO;
+import com.lihua.model.SysDictData;
 import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.dto.SysPostDTO;
 import com.lihua.model.vo.SysPostVO;
 import com.lihua.service.SysPostService;
+import com.lihua.utils.DictUtils;
 import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
@@ -178,8 +178,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         getDbPostData(sysPostVOList, postCodeDbSet, deptNameIdMap, deptNameCodeMap);
 
         // 用到的字典数据
-        List<SysDictDataVO> sysStatus = DictUtils.getDictData("sys_status");
-        String statusJoin = sysStatus.stream().map(SysDictDataVO::getLabel).collect(Collectors.joining("、"));
+        List<SysDictData> sysStatus = DictUtils.getDictData("sys_status");
+        String statusJoin = sysStatus.stream().map(SysDictData::getLabel).collect(Collectors.joining("、"));
         // 开始过滤数据
         importPostVos = sysPostVOList.stream().filter(sysPostVO -> {
 
@@ -292,8 +292,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
 
     // 过滤岗位
-    private boolean filterStatus(SysPostVO sysPostVO, List<SysPostVO> errorPostVos, List<SysDictDataVO> sysStatus, String statusJoin) {
-        List<SysDictDataVO> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysPostVO.getStatus())).toList();
+    private boolean filterStatus(SysPostVO sysPostVO, List<SysPostVO> errorPostVos, List<SysDictData> sysStatus, String statusJoin) {
+        List<SysDictData> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysPostVO.getStatus())).toList();
         if (status.isEmpty()) {
             sysPostVO.setImportErrorMsg("请填写岗位状态或岗位状态不合法，可输入项为：" + statusJoin);
             errorPostVos.add(sysPostVO);

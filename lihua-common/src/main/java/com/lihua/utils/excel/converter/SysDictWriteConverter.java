@@ -2,7 +2,6 @@ package com.lihua.utils.excel.converter;
 
 import com.github.liaochong.myexcel.core.converter.CustomWriteContext;
 import com.github.liaochong.myexcel.core.converter.CustomWriteConverter;
-import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.annotation.ExcelWriteConverterDictTypeCode;
 import org.springframework.util.StringUtils;
 
@@ -22,15 +21,15 @@ public class SysDictWriteConverter implements CustomWriteConverter<String, Strin
         String dictTypeCode = annotation.value();
 
         // 通过字典类型编码和字典value获取label
-        if (StringUtils.hasText(dictTypeCode)) {
-            String label = DictUtils.getLabel(dictTypeCode, dictValue);
-
-            if (StringUtils.hasText(label)) {
-                return label;
-            }
-
-            return dictValue;
-        }
+//        if (StringUtils.hasText(dictTypeCode)) {
+//            String label = DictUtils.getLabel(dictTypeCode, dictValue);
+//
+//            if (StringUtils.hasText(label)) {
+//                return label;
+//            }
+//
+//            return dictValue;
+//        }
 
         return dictValue;
     }

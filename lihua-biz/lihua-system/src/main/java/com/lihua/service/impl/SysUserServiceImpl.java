@@ -14,7 +14,6 @@ import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDeptMapper;
 import com.lihua.mapper.SysRoleMapper;
 import com.lihua.mapper.SysUserMapper;
-import com.lihua.model.dict.SysDictDataVO;
 import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.dto.ResetPasswordDTO;
 import com.lihua.model.dto.SysUserDTO;
@@ -27,9 +26,9 @@ import com.lihua.service.SysUserDeptService;
 import com.lihua.service.SysUserPostService;
 import com.lihua.service.SysUserRoleService;
 import com.lihua.service.SysUserService;
+import com.lihua.utils.DictUtils;
 import com.lihua.utils.SecurityUtils;
 import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.dict.DictUtils;
 import com.lihua.utils.excel.ExcelUtils;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
@@ -286,10 +285,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
 
         // 获取需要的字典数据
-        List<SysDictDataVO> sysStatus = DictUtils.getDictData("sys_status");
-        List<SysDictDataVO> userGender = DictUtils.getDictData("user_gender");
-        String genderJoin = userGender.stream().map(SysDictDataVO::getLabel).collect(Collectors.joining("、"));
-        String statusJoin = sysStatus.stream().map(SysDictDataVO::getLabel).collect(Collectors.joining("、"));
+        List<com.lihua.model.SysDictData> sysStatus = DictUtils.getDictData("sys_status");
+        List<com.lihua.model.SysDictData> userGender = DictUtils.getDictData("user_gender");
+        String genderJoin = userGender.stream().map(com.lihua.model.SysDictData::getLabel).collect(Collectors.joining("、"));
+        String statusJoin = sysStatus.stream().map(com.lihua.model.SysDictData::getLabel).collect(Collectors.joining("、"));
 
 
         // 获取需要的角色数据
@@ -582,9 +581,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     /**
      * 过滤掉不合法的字典数据（性别、状态）
      */
-    private boolean filterDictData(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<SysDictDataVO> userGender, List<SysDictDataVO> sysStatus, String genderJoin, String statusJoin) {
-        List<SysDictDataVO> gender = userGender.stream().filter(ug -> ug.getLabel().equals(sysUserVO.getGender())).toList();
-        List<SysDictDataVO> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysUserVO.getStatus())).toList();
+    private boolean filterDictData(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<com.lihua.model.SysDictData> userGender, List<com.lihua.model.SysDictData> sysStatus, String genderJoin, String statusJoin) {
+        List<com.lihua.model.SysDictData> gender = userGender.stream().filter(ug -> ug.getLabel().equals(sysUserVO.getGender())).toList();
+        List<com.lihua.model.SysDictData> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysUserVO.getStatus())).toList();
         if (gender.isEmpty()) {
             sysUserVO.setImportErrorMsg("请填写用户性别或用户性别不合法，可输入项为：" + genderJoin);
             errorUserVos.add(sysUserVO);

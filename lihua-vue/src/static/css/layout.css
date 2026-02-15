@@ -7,8 +7,7 @@
    顶部head样式变化
    暗色导航、非小窗口、顶部导航和混合导航，图标颜色变化
  */
-[sider-dark = 'dark'][is-small-window = 'false'][layout-type = 'top-navigation'],
-[sider-dark = 'dark'][is-small-window = 'false'][layout-type = 'mix-navigation'] {
+[sider-dark = 'dark'][is-small-window = 'false'][layout-type = 'top-navigation'] {
     .icon-default-color {
         color: rgba(255, 255, 255, 0.65);
     }
