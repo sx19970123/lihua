@@ -125,6 +125,7 @@
         <module>lihua-base/lihua-mybatis</module>
         <module>lihua-base/lihua-redis</module>
         <module>lihua-base/lihua-dict</module>
+        <module>lihua-base/lihua-log</module>
     </modules>
 
     <build>

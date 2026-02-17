@@ -16,7 +16,7 @@
           <Logo class="logo" :show-title="!permissionStore.collapsed"/>
           <!-- 侧边栏-->
           <div class="sider sider-scrollbar">
-            <Side sider-mode="inline" :menu="subMenu"/>
+            <Side sider-mode="inline" :menu="subMenu" ref="sideRef"/>
           </div>
         </a-layout-sider>
       </transition>
@@ -25,6 +25,7 @@
         <a-layout-header class="side-navigation-header background-glass">
           <transition :name="themeStore.routeTransition" mode="out-in">
             <a-flex class="side-navigation-head" justify="space-between" v-show="props.showLayout">
+              <Logo class="logo" v-if="subMenu.length === 0"/>
               <!--顶部导航-->
               <Side is-mix-top
                     class="top-sider"
@@ -56,16 +57,16 @@ import Side from "@/layout/sider/index.vue"
 import Logo from "@/layout/logo/index.vue";
 import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
-import type {MenuItemGroupType} from "ant-design-vue/es/menu/src/interface";
 import {cloneDeep} from 'lodash-es'
 import type {ItemType} from "ant-design-vue";
-import {ref} from "vue";
-import {useRouter} from "vue-router";
+import type {MenuItemGroupType} from "ant-design-vue/es/menu/src/hooks/useItems";
+import {nextTick, ref, useTemplateRef} from "vue";
 
-const router = useRouter()
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()
 const props = defineProps<{showLayout: boolean}>()
+
+const sideRef = useTemplateRef<InstanceType<typeof Side>>("sideRef")
 
 /**
  * 初始化分割菜单相关
@@ -83,7 +84,12 @@ const initSplitMenu = () => {
       subMenu.value = menu.children || []
       // 存在子菜单并设置了自动选中，则默认跳转到第一个
       if (menu.children && autoClick) {
-        router.push(menu.children[0].key as string)
+        const key = menu.children[0].key as string
+        nextTick(() => {
+          if (sideRef.value) {
+            sideRef.value.handleClickMenuItem({key});
+          }
+        })
       }
     } else {
       subMenu.value = []

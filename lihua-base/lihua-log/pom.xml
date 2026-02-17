@@ -7,9 +7,10 @@
         <groupId>com.lihua</groupId>
         <artifactId>lihua</artifactId>
         <version>1.4.2</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>lihua-bridge</artifactId>
+    <artifactId>lihua-log</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -18,9 +19,9 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.lionsoul</groupId>
-            <artifactId>ip2region</artifactId>
-            <version>3.2.0</version>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-bridge</artifactId>
+            <version>1.4.2</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

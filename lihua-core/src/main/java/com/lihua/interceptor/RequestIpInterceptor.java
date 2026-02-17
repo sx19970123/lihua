@@ -21,9 +21,7 @@ public class RequestIpInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle( HttpServletRequest request, HttpServletResponse response,  Object handler) {
-        if (request != null) {
-            ipMatch(request.getRemoteAddr());
-        }
+        ipMatch(request.getRemoteAddr());
         return true;
     }
 

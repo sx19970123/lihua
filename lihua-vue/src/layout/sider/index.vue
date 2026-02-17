@@ -94,6 +94,10 @@ onMounted(() => {
   setOpenKeys()
 })
 
+defineExpose({
+  handleClickMenuItem
+})
+
 // 监听路由变化
 watch(()=> route.matched,()=> {
   state.selectedKeys = route.matched.map(r => r.path)
