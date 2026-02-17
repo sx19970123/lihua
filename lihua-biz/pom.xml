@@ -10,23 +10,11 @@
     </parent>
 
     <artifactId>lihua-biz</artifactId>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-system</artifactId>
-            <version>1.4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-monitor</artifactId>
-            <version>1.4.2</version>
-        </dependency>
-    </dependencies>
 </project>

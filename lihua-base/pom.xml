@@ -10,29 +10,12 @@
     </parent>
 
     <artifactId>lihua-base</artifactId>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-websocket</artifactId>
-            <version>1.4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-security</artifactId>
-            <version>1.4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-mybatis</artifactId>
-            <version>1.4.2</version>
-        </dependency>
-    </dependencies>
 
 </project>

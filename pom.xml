@@ -28,8 +28,6 @@
         <oshi.version>6.6.4</oshi.version>
         <guava.version>33.5.0-jre</guava.version>
         <tianai-captcha.version>1.5.4</tianai-captcha.version>
-        <okhttp3.version>5.1.0</okhttp3.version>
-        <knife4j.version>4.5.0</knife4j.version>
         <ipaddress.version>5.5.1</ipaddress.version>
         <ip2region.version>3.2.0</ip2region.version>
         <dynamic-datasource.version>4.5.0</dynamic-datasource.version>
@@ -92,12 +90,6 @@
             <groupId>cloud.tianai.captcha</groupId>
             <artifactId>tianai-captcha-springboot-starter</artifactId>
             <version>${tianai-captcha.version}</version>
-        </dependency>
-        <!-- knife4j 增强版 Swagger UI -->
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-            <version>${knife4j.version}</version>
         </dependency>
     </dependencies>
 
