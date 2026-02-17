@@ -24,14 +24,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-core</artifactId>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-security</artifactId>
         </dependency>
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-security</artifactId>
-            <version>1.4.2</version>
-            <scope>compile</scope>
+            <artifactId>lihua-mybatis</artifactId>
         </dependency>
     </dependencies>
 

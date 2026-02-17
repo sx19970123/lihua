@@ -18,8 +18,6 @@ import enums.ResultCodeEnum;
 import model.web.ApiResponseModel;
 import model.web.basecontroller.ApiResponseController;
 import utils.tree.TreeUtils;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 用户身份验证/授权/登录数据获取/注册
  */
-@Tag(name = "APP 登录、注册、元数据获取")
 @RestController
 @RequestMapping("app/system")
 public class AppSysAuthenticationController extends ApiResponseController {
@@ -45,7 +42,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
     /**
      * 用户登录
      */
-    @Operation(summary = "用户登录")
     @PostMapping("login")
     @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password", "requestKey"}, recordResult = false)
     public ApiResponseModel<String> login(@RequestBody @Valid CurrentUser currentUser) {
@@ -70,7 +66,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
     /**
      * 获取登录公钥
      */
-    @Operation(summary = "获取登录公钥")
     @GetMapping("publicKey/{requestKey}")
     public ApiResponseModel<String> getPublicKey(@PathVariable("requestKey") String requestKey) {
         return success(SecurityUtils.getPasswordPublicKey(requestKey));
@@ -79,7 +74,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
     /**
      * 从 SecurityContextHolder 中获取用户信息返回
      */
-    @Operation(summary = "从 SecurityContextHolder 中获取用户信息返回")
     @GetMapping("info")
     public ApiResponseModel<AuthInfo> getUserInfo() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
@@ -97,7 +91,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
     /**
      * 数据更新
      */
-    @Operation(summary = "数据更新")
     @PostMapping("reloadData")
     public ApiResponseModel<String> reloadData() {
         sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser(), true);
@@ -107,7 +100,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
     /**
      * 是否开启用户注册功能
      */
-    @Operation(summary = "是否开启用户注册功能")
     @GetMapping("enableRegister")
     public ApiResponseModel<Boolean> enableRegister() {
         SysSettingDTO.SignInSetting signInSetting = sysSettingService.getSignInSetting();
@@ -120,7 +112,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
     /**
      * 检查用户名是否重复
      */
-    @Operation(summary = "检查用户名是否重复")
     @PostMapping("checkUserName/{username}")
     public ApiResponseModel<Boolean> checkUserName(@PathVariable("username") String username) {
         return success(sysAuthenticationService.checkUserName(username));
@@ -129,7 +120,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
     /**
      * 用户注册
      */
-    @Operation(summary = "用户注册")
     @PostMapping("register")
     @Log(description = "用户注册", type = LogTypeEnum.REGISTER, excludeParams = {"password", "confirmPassword"}, recordResult = false)
     public ApiResponseModel<String> register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO) {
@@ -159,7 +149,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
         return success(sysAuthenticationService.register(sysRegisterDTO.getUsername(), password));
     }
 
-    @Operation(summary = "获取一次性令牌")
     @GetMapping("onceToken")
     public ApiResponseModel<String> getOnceToken() {
         return success(sysAuthenticationService.getOnceToken());

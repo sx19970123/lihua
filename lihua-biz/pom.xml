@@ -17,4 +17,31 @@
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-dict</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-sensitive</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-log</artifactId>
+        </dependency>
+    </dependencies>
 </project>

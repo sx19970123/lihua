@@ -1,7 +1,6 @@
 package utils.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import exception.ServiceException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -47,14 +46,14 @@ public class JsonUtils {
      * @param data 待转为 json 的对象
      * @return json 数据
      */
-    public static <T> String toJson(T data) throws JsonProcessingException {
+    public static <T> String toJson(T data) {
         return jsonMapper.writeValueAsString(data);
     }
 
     /**
      * 对象转为json并忽略null值
      */
-    public static <T> String toJsonIgnoreNulls(T data) throws JsonProcessingException {
+    public static <T> String toJsonIgnoreNulls(T data) {
         return excludeNullWriter.writeValueAsString(data);
     }
 
@@ -112,7 +111,7 @@ public class JsonUtils {
     /**
      * 判断字符串是否为json
      */
-    public static void isJson(String json) throws JsonProcessingException {
+    public static void isJson(String json) {
         jsonMapper.readTree(json);
     }
 

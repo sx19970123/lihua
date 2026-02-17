@@ -11,8 +11,6 @@ import enums.ResultCodeEnum;
 import model.web.ApiResponseModel;
 import model.web.basecontroller.ApiResponseController;
 import utils.json.JsonUtils;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +23,6 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import java.util.List;
 
-@Tag(name = "附件操作")
 @Slf4j
 @RestController
 @RequestMapping("system/attachment/storage")
@@ -34,19 +31,16 @@ public class SysAttachmentStorageController extends ApiResponseController {
     @Resource
     private SysAttachmentStorageService sysAttachmentStorageService;
 
-    @Operation(summary = "根据路径查询附件信息，用于附件组件数据回显")
     @PostMapping("info")
     public ApiResponseModel<List<SysAttachment>> queryAttachmentInfoByIds(@RequestBody @NotEmpty(message = "附件id为空") List<String> ids) {
         return success(sysAttachmentStorageService.queryAttachmentInfoByIds(ids));
     }
 
-    @Operation(summary = "附件是否存在（md5值，原文件名可选）")
     @PostMapping("exists")
     public ApiResponseModel<Boolean> existsAttachmentByMd5(@RequestBody @Validated(AttachmentValidation.AttachmentCheckMd5Validation.class) SysAttachment sysAttachment) {
         return success(sysAttachmentStorageService.existsAttachmentByMd5(sysAttachment.getMd5(), sysAttachment.getOriginalName()));
     }
 
-    @Operation(summary = "上传附件")
     @PostMapping("upload")
     @Log(description = "附件上传", type = LogTypeEnum.UPLOAD)
     public ApiResponseModel<String> upload(@RequestParam("file") MultipartFile file,
@@ -54,7 +48,6 @@ public class SysAttachmentStorageController extends ApiResponseController {
         return success(sysAttachmentStorageService.uploadAttachment(file, sysAttachment));
     }
 
-    @Operation(summary = "附件上传（批量）")
     @PostMapping("multiple/upload")
     @Log(description = "附件上传（批量）", type = LogTypeEnum.UPLOAD)
     public ApiResponseModel<List<String>> upload(@RequestParam("files") MultipartFile[] files,
@@ -69,34 +62,29 @@ public class SysAttachmentStorageController extends ApiResponseController {
         return success(sysAttachmentStorageService.batchUploadAttachment(files, attachmentList));
     }
 
-    @Operation(summary = "附件上传（URL）")
     @PostMapping("url/upload")
     @Log(description = "附件上传（URL）", type = LogTypeEnum.UPLOAD)
     public ApiResponseModel<SysAttachmentUrlVO> urlUpload(@RequestBody @Validated(AttachmentValidation.AttachmentUrlUploadValidation.class) SysAttachment sysAttachment) {
         return success(sysAttachmentStorageService.urlUploadAttachment(sysAttachment));
     }
 
-    @Operation(summary = "附件上传（秒传）")
     @PostMapping("fast/upload")
     @Log(description = "附件上传（秒传）", type = LogTypeEnum.UPLOAD)
     public ApiResponseModel<String> fastUpload(@RequestBody SysAttachment sysAttachment) {
         return success(sysAttachmentStorageService.fastUpload(sysAttachment));
     }
 
-    @Operation(summary = "附件上传（分片）")
     @PostMapping("chunk/start")
     @Log(description = "附件上传（分片）", type = LogTypeEnum.UPLOAD)
     public ApiResponseModel<SysAttachmentChunkVO> chunksUploadStart(@RequestBody SysAttachment sysAttachment) {
         return success(sysAttachmentStorageService.chunksUploadAttachmentStart(sysAttachment));
     }
 
-    @Operation(summary = "通过 uploadId值获取已上传分片附件的索引值")
     @GetMapping("chunk/uploadedIndex/{uploadId}")
     public ApiResponseModel<List<Integer>> chunksUploadedIndex(@PathVariable("uploadId") String uploadId) {
         return success(sysAttachmentStorageService.chunksUploadedIndex(uploadId));
     }
 
-    @Operation(summary = "分片上传")
     @PostMapping("chunk/upload/{uploadId}/{index}")
     public ApiResponseModel<String> chunksUpload(@RequestParam("file") MultipartFile file,
                                                  @PathVariable("uploadId") String uploadId,
@@ -105,14 +93,12 @@ public class SysAttachmentStorageController extends ApiResponseController {
         return success();
     }
 
-    @Operation(summary = "分片合并")
     @PostMapping("chunk/merge/{total}")
     public ApiResponseModel<String> chunksMerge(@RequestBody @Validated(AttachmentValidation.AttachmentChunksMergeUploadValidation.class) SysAttachment sysAttachment,
                                                 @PathVariable("total") Integer total) {
         return success(sysAttachmentStorageService.chunksMerge(sysAttachment, total));
     }
 
-    @Operation(summary = "附件删除（业务）")
     @DeleteMapping("business")
     @Log(description = "附件删除（业务）", type = LogTypeEnum.DELETE)
     public ApiResponseModel<String> deleteFromBusiness(@RequestBody @NotEmpty(message = "附件id不存在") List<String> ids) {
@@ -120,21 +106,18 @@ public class SysAttachmentStorageController extends ApiResponseController {
         return success();
     }
 
-    @Operation(summary = "附件下载（临时）")
     @GetMapping("download")
     @Log(description = "附件下载（临时）", type = LogTypeEnum.DOWNLOAD)
     public ResponseEntity<StreamingResponseBody> download(String key, String originName) {
         return sysAttachmentStorageService.localDownload(key, originName);
     }
 
-    @Operation(summary = "附件下载（公开）")
     @GetMapping("download/p/{id}")
     @Log(description = "附件下载（公开）", type = LogTypeEnum.DOWNLOAD)
     public ResponseEntity<StreamingResponseBody> publicDownload(@PathVariable("id") String id, String fileName) {
         return sysAttachmentStorageService.publicDownload(id, fileName);
     }
 
-    @Operation(summary = "附件下载（导出）")
     @GetMapping("download/e")
     @Log(description = "附件下载（导出）", type = LogTypeEnum.DOWNLOAD)
     public ResponseEntity<StreamingResponseBody> exportDownload(@NotNull(message = "导出附件路径为空") String path, String fileName) {

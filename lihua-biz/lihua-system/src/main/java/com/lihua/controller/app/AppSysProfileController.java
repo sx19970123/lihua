@@ -12,16 +12,12 @@ import com.lihua.service.SysSettingService;
 import com.lihua.service.SysUserDeptService;
 import com.lihua.utils.SecurityUtils;
 import enums.ResultCodeEnum;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import model.web.ApiResponseModel;
 import model.web.basecontroller.ApiResponseController;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-
-@Tag(name = "APP个人中心")
 @RestController
 @RequestMapping("app/system/profile")
 public class AppSysProfileController extends ApiResponseController {
@@ -35,14 +31,12 @@ public class AppSysProfileController extends ApiResponseController {
     @Resource
     private SysSettingService sysSettingService;
 
-    @Operation(summary = "保存个人信息")
     @PostMapping("basics")
     @Log(description = "保存个人信息", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> saveBasics(@RequestBody @Validated(ProfileValidation.ProfileSaveValidation.class) SysUser sysUser) {
         return success(sysProfileService.saveBasics(sysUser));
     }
 
-    @Operation(summary = "修改密码")
     @PostMapping("password")
     @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword", "confirmPassword" ,"oldPasswordRequestKey", "newPasswordRequestKey", "confirmPasswordRequestKey"})
     public ApiResponseModel<String> updatePassword(@RequestBody @Validated SysUpdatePasswordDTO sysUpdatePasswordDTO) {
@@ -77,13 +71,11 @@ public class AppSysProfileController extends ApiResponseController {
         return success(sysProfileService.updatePassword(newPassword));
     }
 
-    @Operation(summary = "设置默认部门")
     @PostMapping("default/{id}")
     public ApiResponseModel<CurrentDept> setDefaultDept(@PathVariable("id") String id) {
         return success(sysUserDeptService.setDefaultDept(id));
     }
 
-    @Operation(summary = "用户注销")
     @Log(description = "用户注销", type = LogTypeEnum.DELETE)
     @DeleteMapping("deactivate")
     public ApiResponseModel<String> accountDeactivate() {
@@ -91,7 +83,6 @@ public class AppSysProfileController extends ApiResponseController {
         return success();
     }
 
-    @Operation(summary = "验证密码")
     @PostMapping("checkPassword")
     @Log(description = "验证密码", type = LogTypeEnum.OTHER, excludeParams = {"password", "passwordRequestKey"})
     public ApiResponseModel<Boolean> checkPassword(@RequestBody SysCheckPasswordDTO sysCheckPasswordDTO) {

@@ -9,8 +9,6 @@ import com.lihua.model.dto.SysUserDTO;
 import com.lihua.model.vo.SysUserVO;
 import com.lihua.service.SysUserService;
 import enums.ResultCodeEnum;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import model.validation.MaxPageSizeLimit;
@@ -28,25 +26,21 @@ import java.util.List;
 @RestController
 @RequestMapping("system/user")
 @Validated
-@Tag(name = "用户管理")
 public class SysUserController extends ApiResponseController {
 
     @Resource
     private SysUserService sysUserService;
 
-    @Operation(summary = "分页查询用户")
     @PostMapping("page")
     public ApiResponseModel<IPage<SysUserVO>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysUserDTO sysUserDTO) {
         return success(sysUserService.queryPage(sysUserDTO));
     }
 
-    @Operation(summary = "根据id查询用户")
     @GetMapping("{id}")
     public ApiResponseModel<SysUserVO> queryById(@PathVariable("id") String id) {
         return success(sysUserService.queryById(id));
     }
 
-    @Operation(summary = "保存用户数据")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     @Log(description = "保存用户数据", type = LogTypeEnum.SAVE, excludeParams = {"password","passwordRequestKey"})
@@ -57,7 +51,6 @@ public class SysUserController extends ApiResponseController {
         return success(sysUserService.save(sysUserDTO));
     }
 
-    @Operation(summary = "更新用户状态")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
     @Log(description = "更新用户状态", type = LogTypeEnum.UPDATE_STATUS)
@@ -65,7 +58,6 @@ public class SysUserController extends ApiResponseController {
         return success(sysUserService.updateStatus(id, currentStatus));
     }
 
-    @Operation(summary = "删除用户数据")
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除用户数据", type = LogTypeEnum.DELETE)
@@ -74,7 +66,6 @@ public class SysUserController extends ApiResponseController {
         return success();
     }
 
-    @Operation(summary = "重置密码")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("resetPassword")
     @Log(description = "重置密码", type = LogTypeEnum.SAVE, excludeParams = {"password", "passwordRequestKey"})
@@ -82,26 +73,22 @@ public class SysUserController extends ApiResponseController {
         return success(sysUserService.resetPassword(resetPasswordDTO));
     }
 
-    @Operation(summary = "批量导出用户信息")
     @PostMapping("export")
     @Log(description = "批量导出用户信息", type = LogTypeEnum.EXPORT)
     public ApiResponseModel<String> exportExcel(@RequestBody SysUserDTO sysUserDTO) {
         return success(sysUserService.exportExcel(sysUserDTO));
     }
 
-    @Operation(summary = "系统用户选项（根据部门选择）")
     @GetMapping("option/{deptId}")
     public ApiResponseModel<List<SysUser>> userOption(@PathVariable("deptId") String deptId) {
         return success(sysUserService.userOption(deptId));
     }
 
-    @Operation(summary = "系统用户选项（根据用户id集合）")
     @PostMapping("option")
     public ApiResponseModel<List<SysUser>> userOption(@RequestBody @NotEmpty(message = "集合不能为空") List<String> userIds) {
         return success(sysUserService.userOption(userIds));
     }
 
-    @Operation(summary = "批量导入用户信息")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
     @Log(description = "批量导入用户信息", type = LogTypeEnum.IMPORT)

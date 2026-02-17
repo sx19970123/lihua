@@ -1,6 +1,5 @@
 package com.lihua.model.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -13,12 +12,9 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 
-@Schema(description = "用户登录")
 public class SysUserDTO extends BaseDTO {
 
     // 主键 id
-
-    @Schema(description = "用户名")
     private String id;
 
     // 部门id集合

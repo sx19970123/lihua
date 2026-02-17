@@ -1,9 +1,6 @@
 package com.lihua.manager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lihua.model.WebSocketResult;
-import enums.ResultCodeEnum;
-import exception.ServiceException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -162,11 +159,6 @@ public class WebSocketManager extends TextWebSocketHandler {
      */
     private <T> String toJson(WebSocketResult<T> result) {
         result.setTimestamp(System.currentTimeMillis());
-        try {
-            return JsonUtils.toJson(result);
-        } catch (JsonProcessingException e) {
-            log.error("WebSocket数据转换失败: {}", e.getMessage(), e);
-            throw new ServiceException(ResultCodeEnum.WEBSOCKET_SEND_MSG_ERROR);
-        }
+        return JsonUtils.toJson(result);
     }
 }

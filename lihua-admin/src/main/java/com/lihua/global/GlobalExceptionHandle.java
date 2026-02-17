@@ -1,10 +1,10 @@
 package com.lihua.global;
 
-import com.lihua.exception.*;
+import com.lihua.exception.IpIllegalException;
+import com.lihua.exception.SensitiveException;
 import enums.ResultCodeEnum;
 import exception.FileException;
 import exception.ServiceException;
-import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @Configuration
 @Slf4j
-@Hidden
 public class GlobalExceptionHandle extends StrResponseController {
 
     /**
