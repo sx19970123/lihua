@@ -2,8 +2,6 @@ package com.lihua.aspect;
 
 import com.lihua.annotation.Log;
 import com.lihua.handle.HandleRecodeLog;
-import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
@@ -14,6 +12,8 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import utils.date.DateUtils;
+import utils.web.WebUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

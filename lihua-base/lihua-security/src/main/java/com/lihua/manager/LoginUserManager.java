@@ -1,16 +1,17 @@
 package com.lihua.manager;
 
 import com.lihua.cache.RedisCache;
-import com.lihua.config.LihuaConfig;
+import config.LihuaConfig;
 import com.lihua.enums.RedisKeyPrefixEnum;
-import com.lihua.exception.ServiceException;
+import exception.ServiceException;
 import com.lihua.model.LoginUser;
 import com.lihua.utils.JwtUtils;
-import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.spring.SpringUtils;
-import com.lihua.utils.web.WebUtils;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
+import utils.date.DateUtils;
+import utils.spring.SpringUtils;
+import utils.web.WebUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

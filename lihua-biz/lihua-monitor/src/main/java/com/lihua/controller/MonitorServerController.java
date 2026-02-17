@@ -1,8 +1,8 @@
 package com.lihua.controller;
 
 import com.lihua.model.ServerInfo;
-import com.lihua.model.web.ApiResponseModel;
-import com.lihua.model.web.basecontroller.ApiResponseController;
+import model.web.ApiResponseModel;
+import model.web.basecontroller.ApiResponseController;
 import com.lihua.service.MonitorServerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

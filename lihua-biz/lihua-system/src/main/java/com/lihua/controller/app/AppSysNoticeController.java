@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.model.dto.SysNoticeDTO;
 import com.lihua.model.vo.SysNoticeVO;
 import com.lihua.model.vo.SysUserNoticeVO;
-import com.lihua.model.web.ApiResponseModel;
-import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysNoticeService;
 import com.lihua.service.SysUserNoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import model.web.ApiResponseModel;
+import model.web.basecontroller.ApiResponseController;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

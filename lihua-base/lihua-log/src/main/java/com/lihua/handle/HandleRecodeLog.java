@@ -1,27 +1,11 @@
 package com.lihua.handle;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lihua.annotation.Log;
-import com.lihua.enums.LogTypeEnum;
-import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.web.WebUtils;
-import jakarta.annotation.Resource;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.Signature;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * 处理日志对象的构建及调用对应 service保存至数据库

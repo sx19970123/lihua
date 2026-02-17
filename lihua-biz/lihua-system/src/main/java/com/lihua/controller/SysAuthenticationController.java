@@ -3,9 +3,7 @@ package com.lihua.controller;
 import cloud.tianai.captcha.application.ImageCaptchaApplication;
 import cloud.tianai.captcha.spring.plugins.secondary.SecondaryVerificationApplication;
 import com.lihua.annotation.Log;
-import com.lihua.annotation.RateLimiter;
 import com.lihua.enums.LogTypeEnum;
-import com.lihua.enums.ResultCodeEnum;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.model.AuthInfo;
 import com.lihua.model.CurrentDept;
@@ -13,12 +11,13 @@ import com.lihua.model.CurrentUser;
 import com.lihua.model.LoginUser;
 import com.lihua.model.dto.SysRegisterDTO;
 import com.lihua.model.dto.SysSettingDTO;
-import com.lihua.model.web.ApiResponseModel;
-import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysAuthenticationService;
 import com.lihua.service.SysSettingService;
 import com.lihua.utils.SecurityUtils;
-import com.lihua.utils.tree.TreeUtils;
+import enums.ResultCodeEnum;
+import model.web.ApiResponseModel;
+import model.web.basecontroller.ApiResponseController;
+import utils.tree.TreeUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -49,7 +48,6 @@ public class SysAuthenticationController extends ApiResponseController {
      */
     @Operation(summary = "用户登录")
     @PostMapping("login")
-    @RateLimiter
     @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password", "requestKey"}, recordResult = false)
     public ApiResponseModel<String> login(@RequestBody @Valid CurrentUser currentUser) {
         // 校验验证码
@@ -113,7 +111,6 @@ public class SysAuthenticationController extends ApiResponseController {
      */
     @Operation(summary = "数据更新")
     @PostMapping("reloadData")
-    @RateLimiter
     public ApiResponseModel<String> reloadData() {
         sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser(), true);
         return success();
@@ -146,7 +143,6 @@ public class SysAuthenticationController extends ApiResponseController {
      */
     @Operation(summary = "用户注册")
     @PostMapping("register")
-    @RateLimiter
     @Log(description = "用户注册", type = LogTypeEnum.REGISTER, excludeParams = {"password", "confirmPassword"}, recordResult = false)
     public ApiResponseModel<String> register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO) {
         // 校验验证码

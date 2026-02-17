@@ -2,9 +2,9 @@ package com.lihua.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.lihua.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import model.BaseEntity;
 
 import java.time.LocalDateTime;
 

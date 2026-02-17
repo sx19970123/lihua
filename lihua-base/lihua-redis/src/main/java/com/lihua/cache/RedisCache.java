@@ -1,6 +1,6 @@
 package com.lihua.cache;
 
-import com.lihua.exception.ServiceException;
+import exception.ServiceException;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

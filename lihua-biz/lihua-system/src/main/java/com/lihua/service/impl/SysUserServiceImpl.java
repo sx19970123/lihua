@@ -7,14 +7,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lihua.annotation.sensitive.ApplySensitive;
+import com.lihua.annotation.ApplySensitive;
 import com.lihua.entity.*;
-import com.lihua.exception.ServiceException;
+import exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDeptMapper;
 import com.lihua.mapper.SysRoleMapper;
 import com.lihua.mapper.SysUserMapper;
-import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.dto.ResetPasswordDTO;
 import com.lihua.model.dto.SysUserDTO;
 import com.lihua.model.dto.SysUserDeptDTO;
@@ -28,14 +27,13 @@ import com.lihua.service.SysUserRoleService;
 import com.lihua.service.SysUserService;
 import com.lihua.utils.DictUtils;
 import com.lihua.utils.SecurityUtils;
-import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.excel.ExcelUtils;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import utils.date.DateUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -251,12 +249,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         });
 
         // 导出excel
-        return ExcelUtils.excelExport(exportList, SysUserVO.class, "系统用户");
+        return null;
     }
 
     @Transactional
     @Override
-    public ExcelImportResult importExcel(List<SysUserVO> sysUserVOS) {
+    public String importExcel(List<SysUserVO> sysUserVOS) {
         String defaultPassword = sysSettingService.getDefaultPassword();
         if ("".equals(defaultPassword)) {
             throw new ServiceException("请联系管理员配置默认密码");
@@ -361,7 +359,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         if (!errorUserVos.isEmpty()) {
             String errExcelName = LoginUserContext.getUserId() + "_导入失败_" + UUID.randomUUID().toString().replace("-","");
             // 导出excel
-            errExcelPath = ExcelUtils.excelExport(errorUserVos, SysUserVO.class, errExcelName);
+            // errExcelPath = ExcelUtils.excelExport(errorUserVos, SysUserVO.class, errExcelName);
         }
         // 插入数据
         if (!importUserVos.isEmpty()) {
@@ -369,11 +367,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         }
 
         // 返回汇总的导入结果
-        return new ExcelImportResult(sysUserVOS.size() == importUserVos.size(),
-                sysUserVOS.size(),
-                importUserVos.size(),
-                errorUserVos.size(),
-                errExcelPath);
+        return null;
     }
 
     @Override

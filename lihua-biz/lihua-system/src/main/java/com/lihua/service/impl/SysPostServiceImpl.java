@@ -8,23 +8,21 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.entity.SysDept;
 import com.lihua.entity.SysPost;
-import com.lihua.exception.ServiceException;
+import exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDeptMapper;
 import com.lihua.mapper.SysPostMapper;
 import com.lihua.model.SysDictData;
-import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.dto.SysPostDTO;
 import com.lihua.model.vo.SysPostVO;
 import com.lihua.service.SysPostService;
 import com.lihua.utils.DictUtils;
-import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.excel.ExcelUtils;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import utils.date.DateUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -157,11 +155,11 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     public String exportExcel(SysPostDTO dto) {
         QueryWrapper<SysPost> queryWrapper = getQueryWrapper(dto);
         List<SysPostVO> sysPostVOList = sysPostMapper.queryPage(queryWrapper);
-        return ExcelUtils.excelExport(sysPostVOList, SysPostVO.class, "系统岗位");
+        return null;
     }
 
     @Override
-    public ExcelImportResult importExcel(List<SysPostVO> sysPostVOList) {
+    public String importExcel(List<SysPostVO> sysPostVOList) {
         // 无法倒入的部门列表
         List<SysPostVO> errorPostVos = new ArrayList<>();
         // 可导入的部门列表
@@ -223,7 +221,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         if (!errorPostVos.isEmpty()) {
             String errExcelName = LoginUserContext.getUserId() + "_导入失败_" + UUID.randomUUID().toString().replace("-","");
             // 导出excel
-            errExcelPath = ExcelUtils.excelExport(errorPostVos, SysPostVO.class, errExcelName);
+            // errExcelPath = ExcelUtils.excelExport(errorPostVos, SysPostVO.class, errExcelName);
         }
 
         // 插入数据
@@ -232,11 +230,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         }
 
         // 返回汇总的导入结果
-        return new ExcelImportResult(sysPostVOList.size() == importPostVos.size(),
-                sysPostVOList.size(),
-                importPostVos.size(),
-                errorPostVos.size(),
-                errExcelPath);
+        return null;
     }
 
     // 批量插入

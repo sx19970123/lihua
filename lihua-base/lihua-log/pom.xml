@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-bridge</artifactId>
+            <artifactId>lihua-common</artifactId>
             <version>1.4.2</version>
             <scope>compile</scope>
         </dependency>

@@ -2,7 +2,6 @@ package com.lihua.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.entity.SysUser;
-import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.dto.ResetPasswordDTO;
 import com.lihua.model.dto.SysUserDTO;
 import com.lihua.model.vo.SysUserVO;
@@ -47,7 +46,7 @@ public interface SysUserService {
     /**
      * excel 批量导入
      */
-    ExcelImportResult importExcel(List<SysUserVO> sysUserVOS);
+    String importExcel(List<SysUserVO> sysUserVOS);
 
     /**
      * 系统用户选项（根据部门选择）

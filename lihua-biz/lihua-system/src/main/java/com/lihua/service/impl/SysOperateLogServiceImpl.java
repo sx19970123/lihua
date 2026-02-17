@@ -8,7 +8,6 @@ import com.lihua.mapper.SysOperateLogMapper;
 import com.lihua.model.dto.SysLogDTO;
 import com.lihua.model.vo.SysLogVO;
 import com.lihua.service.SysLogService;
-import com.lihua.utils.excel.ExcelUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -128,7 +127,8 @@ public class SysOperateLogServiceImpl implements SysLogService {
 
         List<SysOperateLog> sysOperateLogs = sysOperateLogMapper.selectList(queryWrapper);
 
-        return ExcelUtils.excelExport(sysOperateLogs, SysOperateLog.class, "操作日志");
+        // return ExcelUtils.excelExport(sysOperateLogs, SysOperateLog.class, "操作日志");
+        return null;
     }
 
     @Override

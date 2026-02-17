@@ -5,7 +5,7 @@ import com.lihua.model.CurrentRouter;
 import com.lihua.model.CurrentViewTab;
 import com.lihua.model.LoginUser;
 import com.lihua.service.SysViewTabService;
-import com.lihua.utils.tree.TreeUtils;
+import utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

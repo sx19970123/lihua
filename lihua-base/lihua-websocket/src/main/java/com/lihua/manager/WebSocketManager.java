@@ -1,10 +1,9 @@
 package com.lihua.manager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.lihua.enums.ResultCodeEnum;
-import com.lihua.exception.ServiceException;
 import com.lihua.model.WebSocketResult;
-import com.lihua.utils.json.JsonUtils;
+import enums.ResultCodeEnum;
+import exception.ServiceException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import utils.json.JsonUtils;
 
 import java.io.IOException;
 import java.util.List;

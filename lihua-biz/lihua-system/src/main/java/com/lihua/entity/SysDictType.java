@@ -2,11 +2,11 @@ package com.lihua.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.lihua.model.BaseEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)

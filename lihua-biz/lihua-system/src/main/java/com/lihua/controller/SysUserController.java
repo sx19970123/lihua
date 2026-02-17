@@ -4,26 +4,25 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.annotation.Log;
 import com.lihua.entity.SysUser;
 import com.lihua.enums.LogTypeEnum;
-import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.dto.ResetPasswordDTO;
 import com.lihua.model.dto.SysUserDTO;
 import com.lihua.model.vo.SysUserVO;
-import com.lihua.model.validation.MaxPageSizeLimit;
-import com.lihua.model.web.ApiResponseModel;
-import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysUserService;
-import com.lihua.utils.excel.ExcelUtils;
+import enums.ResultCodeEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
+import model.validation.MaxPageSizeLimit;
+import model.web.ApiResponseModel;
+import model.web.basecontroller.ApiResponseController;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -106,8 +105,8 @@ public class SysUserController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
     @Log(description = "批量导入用户信息", type = LogTypeEnum.IMPORT)
-    public ApiResponseModel<ExcelImportResult> importExcel(@RequestParam("file") MultipartFile file) {
-        List<SysUserVO> sysUserVOS = ExcelUtils.importExport(file, SysUserVO.class, 1);
+    public ApiResponseModel importExcel(@RequestParam("file") MultipartFile file) {
+        List<SysUserVO> sysUserVOS = new ArrayList<>();
         return success(sysUserService.importExcel(sysUserVOS));
     }
 

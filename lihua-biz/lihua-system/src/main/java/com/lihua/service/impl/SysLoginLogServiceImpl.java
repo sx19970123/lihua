@@ -8,7 +8,6 @@ import com.lihua.mapper.SysLoginLogMapper;
 import com.lihua.model.dto.SysLogDTO;
 import com.lihua.model.vo.SysLogVO;
 import com.lihua.service.SysLogService;
-import com.lihua.utils.excel.ExcelUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -122,7 +121,8 @@ public class SysLoginLogServiceImpl implements SysLogService {
 
         List<SysLoginLog> sysLoginLogs = sysLoginLogMapper.selectList(queryWrapper);
 
-        return ExcelUtils.excelExport(sysLoginLogs, SysLoginLog.class, "登录日志");
+//        return ExcelUtils.excelExport(sysLoginLogs, SysLoginLog.class, "登录日志");
+        return null;
     }
 
     @Override

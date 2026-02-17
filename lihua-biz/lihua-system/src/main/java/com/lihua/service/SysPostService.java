@@ -3,7 +3,6 @@ package com.lihua.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.entity.SysPost;
-import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.dto.SysPostDTO;
 import com.lihua.model.vo.SysPostVO;
 
@@ -60,5 +59,5 @@ public interface SysPostService {
     /**
      * excel 导入
      */
-    ExcelImportResult importExcel(List<SysPostVO> sysPostVOList);
+    String importExcel(List<SysPostVO> sysPostVOList);
 }

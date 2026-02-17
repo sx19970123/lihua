@@ -25,12 +25,9 @@
         <mysql.version>8.2.0</mysql.version>
         <mybatis-plus.version>3.5.16</mybatis-plus.version>
         <jwt.version>3.10.3</jwt.version>
-        <myexcel.version>4.5.6</myexcel.version>
         <oshi.version>6.6.4</oshi.version>
         <guava.version>33.5.0-jre</guava.version>
-        <xxl-job.version>3.3.0</xxl-job.version>
         <tianai-captcha.version>1.5.4</tianai-captcha.version>
-        <minio.version>8.6.0</minio.version>
         <okhttp3.version>5.1.0</okhttp3.version>
         <knife4j.version>4.5.0</knife4j.version>
         <ipaddress.version>5.5.1</ipaddress.version>
@@ -53,12 +50,6 @@
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-core</artifactId>
-                <version>${lihua.version}</version>
-            </dependency>
-            <!--        公共模块版本管理-->
-            <dependency>
-                <groupId>com.lihua</groupId>
-                <artifactId>lihua-common</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
             <dependency>
@@ -112,12 +103,8 @@
 
     <modules>
         <module>lihua-admin</module>
-        <module>lihua-core</module>
-        <module>lihua-common</module>
         <module>lihua-base</module>
-        <module>lihua-bridge</module>
         <module>lihua-biz</module>
-        <module>lihua-external</module>
         <module>lihua-biz/lihua-system</module>
         <module>lihua-biz/lihua-monitor</module>
         <module>lihua-base/lihua-websocket</module>
@@ -126,6 +113,11 @@
         <module>lihua-base/lihua-redis</module>
         <module>lihua-base/lihua-dict</module>
         <module>lihua-base/lihua-log</module>
+        <module>lihua-base/lihua-common</module>
+        <module>lihua-base/lihua-sensitive</module>
+        <module>lihua-base/lihua-ip</module>
+        <module>lihua-base/lihua-doc</module>
+        <module>lihua-base/lihua-excel</module>
     </modules>
 
     <build>

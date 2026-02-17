@@ -1,6 +1,7 @@
 package com.lihua.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

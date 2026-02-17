@@ -6,18 +6,16 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.entity.SysDept;
 import com.lihua.entity.SysPost;
-import com.lihua.exception.ServiceException;
+import exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDeptMapper;
 import com.lihua.model.SysDictData;
-import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.vo.SysDeptVO;
 import com.lihua.service.SysDeptService;
 import com.lihua.service.SysPostService;
 import com.lihua.utils.DictUtils;
-import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.excel.ExcelUtils;
-import com.lihua.utils.tree.TreeUtils;
+import utils.date.DateUtils;
+import utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
@@ -177,11 +175,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         });
 
         // 返回附件路径
-        return ExcelUtils.excelExport(deptPostList, SysDeptVO.class, "系统部门");
+        return null;
     }
 
     @Override
-    public ExcelImportResult importExcel(List<SysDeptVO> sysDeptVOS) {
+    public String importExcel(List<SysDeptVO> sysDeptVOS) {
         // 无法倒入的部门列表
         List<SysDeptVO> errorDeptVos = new ArrayList<>();
         // 可导入的部门列表
@@ -256,7 +254,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         if (!errorDeptVos.isEmpty()) {
             String errExcelName = LoginUserContext.getUserId() + "_导入失败_" + UUID.randomUUID().toString().replace("-","");
             // 导出excel
-            errExcelPath = ExcelUtils.excelExport(errorDeptVos, SysDeptVO.class, errExcelName);
+            // errExcelPath = ExcelUtils.excelExport(errorDeptVos, SysDeptVO.class, errExcelName);
         }
 
         // 插入数据
@@ -265,11 +263,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         }
 
         // 返回汇总的导入结果
-        return new ExcelImportResult(sysDeptVOS.size() == importDeptVos.size(),
-                sysDeptVOS.size(),
-                importDeptVos.size(),
-                errorDeptVos.size(),
-                errExcelPath);
+        return  null;
     }
 
     // 批量插入

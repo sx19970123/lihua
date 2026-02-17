@@ -1,7 +1,6 @@
 package com.lihua.service;
 
 import com.lihua.entity.SysDept;
-import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.vo.SysDeptVO;
 
 import java.util.List;
@@ -54,5 +53,5 @@ public interface SysDeptService {
     /**
      * excel 导入
      */
-    ExcelImportResult importExcel(List<SysDeptVO> sysUserVOS);
+    String importExcel(List<SysDeptVO> sysUserVOS);
 }

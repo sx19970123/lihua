@@ -1,8 +1,8 @@
 package com.lihua.strategy.cacheloginuser;
 
 import com.lihua.model.LoginUser;
-import com.lihua.utils.web.WebUtils;
 import org.springframework.stereotype.Component;
+import utils.web.WebUtils;
 
 /**
  * 缓存其他数据实现类

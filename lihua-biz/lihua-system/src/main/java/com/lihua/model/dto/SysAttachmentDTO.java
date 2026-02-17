@@ -1,8 +1,7 @@
 package com.lihua.model.dto;
-
-import com.lihua.model.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import model.BaseDTO;
 
 import java.time.LocalDate;
 import java.util.List;

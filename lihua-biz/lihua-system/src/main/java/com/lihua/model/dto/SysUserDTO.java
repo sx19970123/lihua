@@ -1,11 +1,11 @@
 package com.lihua.model.dto;
 
-import com.lihua.model.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import model.BaseDTO;
 
 import java.time.LocalDate;
 import java.util.List;

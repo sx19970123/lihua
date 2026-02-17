@@ -4,24 +4,23 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.annotation.Log;
 import com.lihua.entity.SysPost;
 import com.lihua.enums.LogTypeEnum;
-import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.dto.SysPostDTO;
 import com.lihua.model.vo.SysPostVO;
-import com.lihua.model.validation.MaxPageSizeLimit;
-import com.lihua.model.web.ApiResponseModel;
-import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysPostService;
-import com.lihua.utils.excel.ExcelUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.SneakyThrows;
+import model.validation.MaxPageSizeLimit;
+import model.web.ApiResponseModel;
+import model.web.basecontroller.ApiResponseController;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -91,8 +90,8 @@ public class SysPostController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
     @Log(description = "导入岗位数据", type = LogTypeEnum.IMPORT)
-    public ApiResponseModel<ExcelImportResult> importExcel(@RequestParam("file") MultipartFile file) {
-        List<SysPostVO> sysPostVOList = ExcelUtils.importExport(file, SysPostVO.class, 0);
+    public ApiResponseModel importExcel(@RequestParam("file") MultipartFile file) {
+        List<SysPostVO> sysPostVOList = new ArrayList();
         return success(sysPostService.importExcel(sysPostVOList));
     }
 }

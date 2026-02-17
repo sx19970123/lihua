@@ -5,7 +5,7 @@ import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.model.CacheMonitor;
 import com.lihua.service.MonitorCacheService;
 import com.lihua.service.SysSettingService;
-import com.lihua.utils.json.JsonUtils;
+import utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;

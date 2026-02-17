@@ -3,13 +3,11 @@ package com.lihua.controller;
 import com.lihua.annotation.Log;
 import com.lihua.entity.SysDept;
 import com.lihua.enums.LogTypeEnum;
-import com.lihua.model.excel.ExcelImportResult;
 import com.lihua.model.vo.SysDeptVO;
-import com.lihua.model.web.ApiResponseModel;
-import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysDeptService;
-import com.lihua.utils.excel.ExcelUtils;
-import com.lihua.utils.tree.TreeUtils;
+import model.web.ApiResponseModel;
+import model.web.basecontroller.ApiResponseController;
+import utils.tree.TreeUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -19,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "部门管理")
@@ -86,8 +85,8 @@ public class SysDeptController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
     @Log(description = "批量入部门", type = LogTypeEnum.IMPORT)
-    public ApiResponseModel<ExcelImportResult> importExcel(@RequestParam("file") MultipartFile file) {
-        List<SysDeptVO> sysUserVOS = ExcelUtils.importExport(file, SysDeptVO.class, 0);
+    public ApiResponseModel importExcel(@RequestParam("file") MultipartFile file) {
+        List<SysDeptVO> sysUserVOS = new ArrayList<>();
         return success(sysDeptService.importExcel(sysUserVOS));
     }
 }

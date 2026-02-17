@@ -7,7 +7,7 @@ import com.lihua.mapper.SysSettingMapper;
 import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.service.SysSettingService;
 import com.lihua.utils.SecurityUtils;
-import com.lihua.utils.json.JsonUtils;
+import utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
