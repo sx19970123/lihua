@@ -3,11 +3,11 @@ package com.lihua.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.lihua.model.BaseEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import com.lihua.model.BaseEntity;
 
 import java.util.List;
 

@@ -1,8 +1,9 @@
 package com.lihua.filter;
 
+import com.lihua.enums.ResultCodeEnum;
 import com.lihua.manager.LoginUserManager;
 import com.lihua.model.LoginUser;
-import com.lihua.enums.ResultCodeEnum;
+import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +15,6 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.lihua.utils.web.WebUtils;
 
 import java.io.IOException;
 

@@ -6,19 +6,17 @@ import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.LoginUser;
 import com.lihua.utils.JwtUtils;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.spring.SpringUtils;
 import com.lihua.utils.web.WebUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class LoginUserManager {

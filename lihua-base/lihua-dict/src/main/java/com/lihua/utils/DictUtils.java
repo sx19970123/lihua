@@ -4,8 +4,8 @@ import com.lihua.cache.RedisCache;
 import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.mapper.CommonMapper;
 import com.lihua.model.SysDictData;
-import org.springframework.util.StringUtils;
 import com.lihua.utils.spring.SpringUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

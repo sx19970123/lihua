@@ -5,24 +5,25 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.cache.RedisCache;
 import com.lihua.entity.SysUser;
 import com.lihua.exception.ServiceException;
-import com.lihua.manager.*;
+import com.lihua.manager.LoginUserContext;
+import com.lihua.manager.LoginUserManager;
 import com.lihua.mapper.SysUserMapper;
-import com.lihua.model.*;
+import com.lihua.model.CurrentUser;
+import com.lihua.model.LoginUser;
 import com.lihua.model.dto.SysCheckPasswordDTO;
 import com.lihua.service.SysProfileService;
 import com.lihua.service.SysUserService;
 import com.lihua.utils.SecurityUtils;
+import com.lihua.utils.date.DateUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import com.lihua.utils.date.DateUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static com.lihua.enums.RedisKeyPrefixEnum.CHECK_PASSWORD_REDIS_PREFIX;
 

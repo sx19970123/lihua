@@ -1,6 +1,7 @@
 package com.lihua.model;
 
 import lombok.Data;
+
 import java.util.List;
 
 @Data

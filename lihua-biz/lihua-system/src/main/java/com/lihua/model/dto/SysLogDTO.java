@@ -2,9 +2,9 @@ package com.lihua.model.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.lihua.model.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import com.lihua.model.BaseDTO;
 
 import java.time.LocalDate;
 import java.util.List;

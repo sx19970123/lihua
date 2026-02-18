@@ -1,6 +1,5 @@
 package com.lihua.started;
 
-import cloud.tianai.captcha.resource.ResourceStore;
 import cloud.tianai.captcha.resource.common.model.dto.Resource;
 import cloud.tianai.captcha.spring.plugins.RedisResourceStore;
 import com.lihua.enums.CaptchaTypeEnum;

@@ -2,10 +2,10 @@ package com.lihua.model.vo;
 
 import com.lihua.annotation.Sensitive;
 import com.lihua.enums.DesensitizedTypeEnum;
+import com.lihua.model.BaseEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import com.lihua.model.BaseEntity;
 
 import java.util.List;
 

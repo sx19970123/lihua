@@ -1,7 +1,6 @@
 package com.lihua.interceptor;
 
 import com.lihua.exception.IpIllegalException;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

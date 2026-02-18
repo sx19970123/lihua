@@ -1,10 +1,10 @@
 package com.lihua.model.dto;
 
+import com.lihua.model.BaseDTO;
 import com.lihua.model.validation.UserAssociationValidation;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import com.lihua.model.BaseDTO;
 
 import java.util.List;
 

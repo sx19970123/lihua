@@ -17,9 +17,9 @@ import com.lihua.service.SysAuthenticationService;
 import com.lihua.service.SysProfileService;
 import com.lihua.service.SysSettingService;
 import com.lihua.strategy.cacheloginuser.CacheLoginUserStrategy;
+import com.lihua.strategy.cacheloginuser.CacheUserStrategyImpl;
 import com.lihua.strategy.checkloginsetting.CheckLoginSettingStrategy;
 import com.lihua.strategy.saveuserregister.SaveRegisterUserAssociatedStrategy;
-import com.lihua.strategy.cacheloginuser.CacheUserStrategyImpl;
 import com.lihua.utils.JwtUtils;
 import com.lihua.utils.SecurityUtils;
 import com.lihua.utils.date.DateUtils;
@@ -36,7 +36,6 @@ import org.springframework.util.StringUtils;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service

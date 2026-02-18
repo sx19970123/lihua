@@ -1,8 +1,8 @@
 package com.lihua.model;
 
+import com.lihua.model.validation.MaxPageSizeLimit;
 import jakarta.validation.constraints.Max;
 import lombok.Data;
-import com.lihua.model.validation.MaxPageSizeLimit;
 
 import java.io.Serial;
 import java.io.Serializable;

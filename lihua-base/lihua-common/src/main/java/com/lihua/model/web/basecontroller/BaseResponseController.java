@@ -2,12 +2,12 @@ package com.lihua.model.web.basecontroller;
 
 import com.lihua.attachment.AttachmentStreamAndInfoModel;
 import com.lihua.enums.ResultCodeEnum;
-import lombok.SneakyThrows;
 import com.lihua.model.web.ApiResponseModel;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import com.lihua.utils.file.FileUtils;
 import com.lihua.utils.json.JsonUtils;
+import lombok.SneakyThrows;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.File;
 import java.io.InputStream;

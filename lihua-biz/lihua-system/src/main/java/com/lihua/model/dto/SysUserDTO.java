@@ -1,10 +1,10 @@
 package com.lihua.model.dto;
 
+import com.lihua.model.BaseDTO;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import com.lihua.model.BaseDTO;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -4,11 +4,11 @@ import cloud.tianai.captcha.application.ImageCaptchaApplication;
 import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
-import com.lihua.service.SysSettingService;
 import com.lihua.enums.CaptchaTypeEnum;
-import jakarta.annotation.Resource;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
+import com.lihua.service.SysSettingService;
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
