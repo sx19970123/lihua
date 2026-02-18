@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.entity.SysDept;
 import com.lihua.entity.SysPost;
-import exception.ServiceException;
+import com.lihua.exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDeptMapper;
 import com.lihua.mapper.SysPostMapper;
@@ -22,7 +22,7 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import utils.date.DateUtils;
+import com.lihua.utils.date.DateUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;

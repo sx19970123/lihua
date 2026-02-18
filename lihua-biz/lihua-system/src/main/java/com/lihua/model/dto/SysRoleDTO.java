@@ -2,7 +2,7 @@ package com.lihua.model.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import model.BaseDTO;
+import com.lihua.model.BaseDTO;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

@@ -1,6 +1,6 @@
 package com.lihua.exception;
 
-import enums.ResultCodeEnum;
+import com.lihua.enums.ResultCodeEnum;
 
 /**
  * ip 非法异常

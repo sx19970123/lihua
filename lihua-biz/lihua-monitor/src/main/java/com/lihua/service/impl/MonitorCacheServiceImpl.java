@@ -5,7 +5,7 @@ import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.model.CacheMonitor;
 import com.lihua.service.MonitorCacheService;
 import com.lihua.service.SysSettingService;
-import utils.json.JsonUtils;
+import com.lihua.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -67,7 +67,7 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
         String redisType = redisCache.getRedisType(key);
 
         switch (redisType) {
-            case "string": {
+            case "object", "string": {
                 cacheMonitor.setValue(JsonUtils.toJson(redisCache.getCacheObject(key, Object.class)));
                 break;
             }
@@ -75,13 +75,12 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
                 cacheMonitor.setValue(JsonUtils.toJson(redisCache.getCacheList(key, Object.class)));
                 break;
             }
-            case "hash": {
+            case "map": {
                 cacheMonitor.setValue(JsonUtils.toJson(redisCache.getCacheMap(key, Object.class)));
                 break;
             }
-            // todo：当业务需要有其他数据类型时，可在此添加
+            // 当业务需要有其他数据类型时，可在此添加
         }
-
         cacheMonitor.setExpireMinutes(redisCache.getExpireMinutes(key));
         return cacheMonitor;
     }

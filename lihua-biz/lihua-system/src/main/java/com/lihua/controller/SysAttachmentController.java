@@ -10,8 +10,8 @@ import com.lihua.service.SysAttachmentService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
-import model.web.ApiResponseModel;
-import model.web.basecontroller.ApiResponseController;
+import com.lihua.model.web.ApiResponseModel;
+import com.lihua.model.web.basecontroller.ApiResponseController;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

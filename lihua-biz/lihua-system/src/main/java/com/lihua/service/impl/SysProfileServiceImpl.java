@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.cache.RedisCache;
 import com.lihua.entity.SysUser;
-import exception.ServiceException;
+import com.lihua.exception.ServiceException;
 import com.lihua.manager.*;
 import com.lihua.mapper.SysUserMapper;
 import com.lihua.model.*;
@@ -16,8 +16,9 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import utils.date.DateUtils;
+import com.lihua.utils.date.DateUtils;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -159,7 +160,7 @@ public class SysProfileServiceImpl implements SysProfileService {
 
         if (checked) {
             // 验证成功后向redis记录1分钟缓存
-            redisCache.setCacheObject(CHECK_PASSWORD_REDIS_PREFIX.getValue() + LoginUserContext.getUserId(), "1", 1L, TimeUnit.MINUTES);
+            redisCache.setCacheObject(CHECK_PASSWORD_REDIS_PREFIX.getValue() + LoginUserContext.getUserId(), "1", Duration.ofMinutes(1));
         }
         return checked;
     }

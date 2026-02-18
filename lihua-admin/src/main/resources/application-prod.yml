@@ -67,27 +67,24 @@ spring:
 #            # 连接生命时长（毫秒）
 #            max-lifetime: 25800
 
-  # redis配置
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
-      # 读取超时
-      timeout: 3000
-      # 连接超时
-      connectTimeout: 5000
-      # lettuce连接池
-      lettuce:
-        pool:
-          # 最小空闲连接
-          min-idle: 5
-          # 最大空闲连接
-          max-idle: 10
-          # 最大连接数
-          max-active: 100
-          # 连接分配应该阻塞的最大时间
-          max-wait: 2000
+  # redisson配置，官方文档：https://redisson.pro/docs/integration-with-spring/#spring-boot-starter
+  redis:
+    redisson:
+      config: |
+        singleServerConfig:
+          address: "redis://${REDIS_HOST}:${REDIS_PORT}"
+          password: ${REDIS_PASSWORD}
+          database: 0
+          # 命令超时时间
+          timeout: 3000
+          # 连接超时时间
+          connectTimeout: 10000
+          # 连接池最大连接数
+          connectionPoolSize: 64
+          # 最小空闲连接数
+          connectionMinimumIdleSize: 10
+        # 自定义序列化器
+        codec: !<com.lihua.config.TypedRedissonJsonCodec> {}
 
 # 日志配置
 logging:
@@ -96,46 +93,3 @@ logging:
   level:
     com.lihua: debug
     org.springframework: info
-
-xxl-job:
-  # 是否启用定时任务
-  enable: true
-  # 调度中心部署地址
-  adminAddress: http://${XXL_JOB_HOST}:${XXL_JOB_PORT}/xxl-job-admin
-  # 执行器通讯token
-  accessToken: default_token
-  # 执行器应用名称
-  appName: lihua
-  # 执行器注册地址
-  address:
-  # 执行器ip
-  ip:
-  # 执行器端口号
-  port: 0
-  # 执行器日志保存目录
-  logPath: ${BASE_FILE_PATH}job-logs
-  # 执行器日志保存天数
-  logRetentionDays: 30
-
- # minio 相关配置（若要启用minio需在lihua-uploadFileModel中设置值为MINIO）
-minio:
-  endpoint: ${MINIO_ENDPOINT}
-  accessKey: ${MINIO_ACCESS_KEY}
-  secretKey: ${MINIO_SECRET_KEY}
-  bucketName: ${MINIO_BUCKET_NAME}
-
-# springdoc-openapi项目配置
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: alpha
-  api-docs:
-    path: /v3/api-docs
-# knife4j的增强配置，不需要增强可以不配
-knife4j:
-  enable: true
-# 生产模式打开，防止接口泄漏
-  production: true
-  setting:
-    language: zh_cn

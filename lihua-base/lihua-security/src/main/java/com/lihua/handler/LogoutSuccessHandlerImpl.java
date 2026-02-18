@@ -4,11 +4,11 @@ import com.lihua.manager.LoginUserManager;
 import com.lihua.model.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.web.basecontroller.StrResponseController;
+import com.lihua.model.web.basecontroller.StrResponseController;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
-import utils.web.WebUtils;
+import com.lihua.utils.web.WebUtils;
 
 @Component
 public class LogoutSuccessHandlerImpl extends StrResponseController implements LogoutSuccessHandler {

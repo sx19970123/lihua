@@ -5,7 +5,7 @@ import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.mapper.CommonMapper;
 import com.lihua.model.SysDictData;
 import org.springframework.util.StringUtils;
-import utils.spring.SpringUtils;
+import com.lihua.utils.spring.SpringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +67,7 @@ public class DictUtils {
         List<SysDictData> dictCache = redisCache.getCacheList(RedisKeyPrefixEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode, SysDictData.class);
         // 缓存数据为空时，尝试从数据库再次获取，数据库未查询到数据时，返回空集合
         // 查询到数据时，再次调用自身返回字典数据
-        if (dictCache == null) {
+        if (dictCache == null || dictCache.isEmpty()) {
             int i = resetCacheDict(dictTypeCode);
             if (i == 0) {
                 return new ArrayList<>();
@@ -80,6 +80,7 @@ public class DictUtils {
 
     /**
      * 重新缓存字典
+     * @return 查询到的字典数量
      */
     public static int resetCacheDict(String dictTypeCode) {
         if (!StringUtils.hasText(dictTypeCode)) {

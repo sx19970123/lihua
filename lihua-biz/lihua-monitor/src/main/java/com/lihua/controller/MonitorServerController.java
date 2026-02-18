@@ -1,8 +1,8 @@
 package com.lihua.controller;
 
 import com.lihua.model.ServerInfo;
-import model.web.ApiResponseModel;
-import model.web.basecontroller.ApiResponseController;
+import com.lihua.model.web.ApiResponseModel;
+import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.MonitorServerService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
