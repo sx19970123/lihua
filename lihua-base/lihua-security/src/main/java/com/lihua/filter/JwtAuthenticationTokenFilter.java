@@ -2,7 +2,7 @@ package com.lihua.filter;
 
 import com.lihua.manager.LoginUserManager;
 import com.lihua.model.LoginUser;
-import enums.ResultCodeEnum;
+import com.lihua.enums.ResultCodeEnum;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,11 +14,11 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import utils.web.WebUtils;
+import com.lihua.utils.web.WebUtils;
 
 import java.io.IOException;
 
-import static model.web.response.StrResponse.error;
+import static com.lihua.model.web.response.StrResponse.error;
 
 /**
  * 请求 token 过滤器

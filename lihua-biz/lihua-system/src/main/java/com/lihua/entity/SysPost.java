@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import model.BaseEntity;
+import com.lihua.model.BaseEntity;
 
 
 @EqualsAndHashCode(callSuper = true)

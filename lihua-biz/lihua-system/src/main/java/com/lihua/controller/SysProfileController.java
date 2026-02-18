@@ -10,10 +10,10 @@ import com.lihua.service.SysProfileService;
 import com.lihua.service.SysSettingService;
 import com.lihua.service.SysUserDeptService;
 import com.lihua.utils.SecurityUtils;
-import enums.ResultCodeEnum;
+import com.lihua.enums.ResultCodeEnum;
 import jakarta.annotation.Resource;
-import model.web.ApiResponseModel;
-import model.web.basecontroller.ApiResponseController;
+import com.lihua.model.web.ApiResponseModel;
+import com.lihua.model.web.basecontroller.ApiResponseController;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

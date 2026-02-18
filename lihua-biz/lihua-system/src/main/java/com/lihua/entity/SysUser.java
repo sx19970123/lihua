@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import model.BaseEntity;
+import com.lihua.model.BaseEntity;
 
 import java.time.LocalDateTime;
 

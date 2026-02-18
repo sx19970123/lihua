@@ -5,7 +5,7 @@ import com.lihua.cache.RedisCache;
 import com.lihua.entity.SysSetting;
 import com.lihua.entity.SysUser;
 import com.lihua.enums.RedisKeyPrefixEnum;
-import exception.ServiceException;
+import com.lihua.exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.manager.LoginUserManager;
 import com.lihua.mapper.SysRoleMapper;
@@ -22,8 +22,8 @@ import com.lihua.strategy.saveuserregister.SaveRegisterUserAssociatedStrategy;
 import com.lihua.strategy.cacheloginuser.CacheUserStrategyImpl;
 import com.lihua.utils.JwtUtils;
 import com.lihua.utils.SecurityUtils;
-import utils.date.DateUtils;
-import utils.json.JsonUtils;
+import com.lihua.utils.date.DateUtils;
+import com.lihua.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -201,7 +202,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Override
     public String getOnceToken() {
         String uuid = UUID.randomUUID().toString();
-        redisCache.setCacheObject(RedisKeyPrefixEnum.ONCE_TOKEN_REDIS_PREFIX.getValue() + uuid, LoginUserContext.getUserId(), 1L, TimeUnit.MINUTES);
+        redisCache.setCacheObject(RedisKeyPrefixEnum.ONCE_TOKEN_REDIS_PREFIX.getValue() + uuid, LoginUserContext.getUserId(), Duration.ofMinutes(1));
         return uuid;
     }
 

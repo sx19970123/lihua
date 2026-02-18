@@ -1,7 +1,7 @@
 package com.lihua.exception;
 
 
-import enums.ResultCodeEnum;
+import com.lihua.enums.ResultCodeEnum;
 
 /**
  * 数据脱敏异常

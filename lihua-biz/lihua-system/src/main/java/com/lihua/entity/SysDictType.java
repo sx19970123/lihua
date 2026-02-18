@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import model.BaseEntity;
+import com.lihua.model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)

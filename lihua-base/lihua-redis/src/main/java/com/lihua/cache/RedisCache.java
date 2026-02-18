@@ -1,23 +1,24 @@
 package com.lihua.cache;
 
-import exception.ServiceException;
 import jakarta.annotation.Resource;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.*;
+import org.redisson.api.options.KeysScanOptions;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.json.JsonMapper;
-
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class RedisCache {
+
+    @Resource
+    private RedissonClient redissonClient;
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -31,41 +32,39 @@ public class RedisCache {
      * @param value 缓存值
      */
     public <T> void setCacheObject(String key,T value) {
-        redisTemplate.opsForValue().set(key, value);
+        redissonClient.getBucket(key).set(value);
     }
 
     /**
      * 缓存数据
      * @param key 缓存key
      * @param value 缓存值
-     * @param timeout 过期时间
-     * @param timeUnit 时间单位
+     * @param duration 过期时间
      */
-    public <T> void setCacheObject(String key,T value,Long timeout,TimeUnit timeUnit) {
-        redisTemplate.opsForValue().set(key,value,timeout,timeUnit);
+    public <T> void setCacheObject(String key, T value, Duration duration) {
+        redissonClient.getBucket(key).set(value, duration);
     }
 
     /**
      * 缓存集合
      * @param key 缓存key
      * @param valueList 集合数据
-     * @param <T> 集合类型
      */
     public <T> void setCacheList(String key, List<T> valueList) {
-        if (valueList != null) {
-            ListOperations<String, Object> stringObjectListOperations = redisTemplate.opsForList();
-            valueList.forEach(value -> stringObjectListOperations.rightPush(key, value));
-        }
+        RList<Object> list = redissonClient.getList(key);
+        list.clear();
+        list.addAll(valueList);
     }
 
     /**
      * 缓存整个 map
      * @param key RedisKey
      * @param map map集合
-     * @param <T> mapValue类型
      */
     public <T> void setCacheMap(String key, Map<String, T> map) {
-        redisTemplate.opsForHash().putAll(key, map);
+        RMap<Object, Object> rMap = redissonClient.getMap(key);
+        rMap.clear();
+        rMap.putAll(map);
     }
 
     /**
@@ -73,10 +72,9 @@ public class RedisCache {
      * @param key RedisKey
      * @param mapKey MapKey
      * @param mapValue MapValue
-     * @param <T> mapValue类型
      */
     public <T> void setCacheMapItem(String key, String mapKey, T mapValue) {
-        redisTemplate.opsForHash().put(key, mapKey, mapValue);
+        redissonClient.getMap(key).put(mapKey, mapValue);
     }
 
     /**
@@ -86,8 +84,7 @@ public class RedisCache {
      * @return 目标对象
      */
     public <T> T getCacheObject(String key, Class<T> clazz) {
-        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
-        Object value = operations.get(key);
+        Object value = redissonClient.getBucket(key).get();
 
         // 检查获取的值是否为 null
         if (value == null) {
@@ -105,24 +102,12 @@ public class RedisCache {
      * @param clazz 对象类型
      * @return 返回的集合值
      */
-    @SneakyThrows
     public <T> List<T> getCacheList(String key, Class<T> clazz) {
-        ListOperations<String, Object> listOperations = redisTemplate.opsForList();
-        Long size = listOperations.size(key);
-
-        if (size == null || size == 0) {
-            return null; // 或者抛出自定义异常
-        }
-
-        List<Object> range = listOperations.range(key, 0,  - 1);
-
-        if (range == null) {
-            return new ArrayList<>();
-        }
-
-        return range.stream()
-                .map(value -> jsonMapper.convertValue(value, clazz))
-                .collect(Collectors.toList());
+        RList<Object> list = redissonClient.getList(key);
+        // 格式转换
+        List<T> resultList = new ArrayList<>(list.size());
+        list.forEach(item -> resultList.add(jsonMapper.convertValue(item, clazz)));
+        return resultList;
     }
 
     /**
@@ -133,36 +118,11 @@ public class RedisCache {
      * @param <T> MapValue类型
      */
     public <T> Map<String, T> getCacheMap(String key, Class<T> clazz) {
-      return redisTemplate
-              .opsForHash()
-              .entries(key)
-              .entrySet()
-              .stream()
-              .collect(Collectors.toMap(entry -> entry.getKey().toString(), entry -> jsonMapper.convertValue(entry.getValue(), clazz)));
-    }
-
-    /** 根据 redisKey 和 MapKey 获取数据
-     * @param key redisKey
-     * @param mapKey MapKey
-     * @param clazz 获取的数据类型
-     * @return 获取的数据
-     * @param <T> 获取的数据类型
-     */
-    public <T> T getCacheMapItem(String key, String mapKey, Class<T> clazz) {
-        Object item = redisTemplate.opsForHash().get(key, mapKey);
-        if (item == null) {
-            return null;
-        }
-
-        return jsonMapper.convertValue(item, clazz);
-    }
-
-    /**
-     * 判断key是否存在
-     * @param key redisKey
-     */
-    public Boolean hasKey(String key) {
-        return redisTemplate.hasKey(key);
+        RMap<Object, Object> map = redissonClient.getMap(key);
+        // 格式转换
+        Map<String, T> resultMap = new HashMap<>(map.size());
+        map.forEach((k, v) -> resultMap.put(k.toString(), jsonMapper.convertValue(v, clazz)));
+        return resultMap;
     }
 
     /**
@@ -180,45 +140,47 @@ public class RedisCache {
         return scanKeys("*");
     }
 
+    /**
+     * 按规则匹配 redisKeys
+     * @param pattern redis 匹配规则
+     * @return 目标keys
+     */
     public Set<String> scanKeys(String pattern) {
         Set<String> keys = new HashSet<>();
-
-        redisTemplate.execute((RedisCallback<Void>) connection -> {
-            ScanOptions options = ScanOptions.scanOptions()
-                    .match(pattern)
-                    .count(1000)  // 每次扫描条数，可调整
-                    .build();
-
-            try (Cursor<byte[]> cursor = connection.scan(options)) {
-                while (cursor.hasNext()) {
-                    keys.add(new String(cursor.next(), StandardCharsets.UTF_8));
-                }
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                throw new ServiceException(e.getMessage());
-            }
-            return null;
-        });
-
+        RKeys resultKeys = redissonClient.getKeys();
+        // 目标keys放入set集合
+        for (String key : resultKeys.getKeys(KeysScanOptions.defaults().pattern(pattern).chunkSize(100))) {
+            keys.add(key);
+        }
         return keys;
     }
 
     /**
-     * 根据 key 获取过期期间（分钟）
+     * 根据 key 获取剩余过期时间（分钟）
      * @param key redisKey
      */
     public Long getExpireMinutes(String key) {
-        return redisTemplate.getExpire(key,TimeUnit.MINUTES);
+        RExpirable expirable = redissonClient.getBucket(key);
+        // 返回剩余过期时间（毫秒）
+        long expireTime = expirable.remainTimeToLive();
+
+        // -1 永不过期；-2不存在
+        if (expireTime < 0) {
+            return expireTime;
+        }
+
+        // 转为分钟
+        return TimeUnit.MILLISECONDS.toMinutes(expireTime);
     }
 
     /**
      * 指定key的过期时间
      * @param key redisKey
-     * @param time 时间
-     * @param unit 单位
+     * @param duration 过期时间
      */
-    public void setExpire(String key,Long time,TimeUnit unit) {
-        redisTemplate.expire(key, time, unit);
+    public void setExpire(String key, Duration duration) {
+        RExpirable expirable = redissonClient.getBucket(key);
+        expirable.expire(duration);
     }
 
     /**
@@ -226,7 +188,7 @@ public class RedisCache {
      * @param key redisKey
      */
     public Boolean delete(String key) {
-        return redisTemplate.delete(key);
+       return redissonClient.getKeys().delete(key) == 1;
     }
 
     /**
@@ -234,7 +196,7 @@ public class RedisCache {
      * @param keys redisKey
      */
     public Long delete(String... keys) {
-        return delete(List.of(keys));
+        return redissonClient.getKeys().delete(keys);
     }
 
     /**
@@ -242,26 +204,16 @@ public class RedisCache {
      * @param keys redisKey
      */
     public Long delete(Collection<String> keys) {
-        return redisTemplate.delete(keys);
+        return delete(keys.toArray(new String[0]));
     }
 
     /**
-     * 根据redisKey和 MapKeys 删除map中数据
-     * @param redisKey redisKey
-     * @param mapKeys mapKey
-     * @return 删除数量
+     * 获取 key 对应的value在redis中对应的数据类型
+     * @return 返回值包括：string、list、set、hash、zset等
      */
-    public Long deleteMapValue(String redisKey, List<String> mapKeys) {
-        return redisTemplate.opsForHash().delete(redisKey, mapKeys);
-    }
-
-    /**
-     * 指定 key 递增 val
-     * @param key redisKey
-     * @param val 递增数值
-     */
-    public Long increment(String key, long val) {
-        return redisTemplate.opsForValue().increment(key,val);
+    public String getRedisType(String key) {
+        RKeys rKeys = redissonClient.getKeys();
+        return rKeys.getType(key).name().toLowerCase();
     }
 
     /**
@@ -276,11 +228,4 @@ public class RedisCache {
         return "-";
     }
 
-    /**
-     * 获取 key 对应的value在redis中对应的数据类型
-     * @return 返回值包括：string、list、set、hash、zset等
-     */
-    public String getRedisType(String key) {
-        return Objects.requireNonNull(redisTemplate.type(key)).code();
-    }
 }

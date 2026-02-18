@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.entity.SysAttachment;
-import exception.ServiceException;
+import com.lihua.exception.ServiceException;
 import com.lihua.mapper.SysAttachmentMapper;
 import com.lihua.model.dto.SysAttachmentDTO;
 import com.lihua.model.vo.SysAttachmentVO;

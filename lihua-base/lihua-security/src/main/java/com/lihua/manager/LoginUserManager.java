@@ -1,18 +1,19 @@
 package com.lihua.manager;
 
 import com.lihua.cache.RedisCache;
-import config.LihuaConfig;
+import com.lihua.config.LihuaConfig;
 import com.lihua.enums.RedisKeyPrefixEnum;
-import exception.ServiceException;
+import com.lihua.exception.ServiceException;
 import com.lihua.model.LoginUser;
 import com.lihua.utils.JwtUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-import utils.date.DateUtils;
-import utils.spring.SpringUtils;
-import utils.web.WebUtils;
+import com.lihua.utils.date.DateUtils;
+import com.lihua.utils.spring.SpringUtils;
+import com.lihua.utils.web.WebUtils;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -63,7 +64,7 @@ public class LoginUserManager {
     public static void verifyLoginUserCache() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
         if (DateUtils.differenceMinute(loginUser.getExpirationTime(),DateUtils.now()) < lihuaConfig().getRefreshThreshold()) {
-            redisCache.setExpire(loginUser.getCacheKey(), lihuaConfig().getTokenExpireTime(), TimeUnit.MINUTES);
+            redisCache.setExpire(loginUser.getCacheKey(), Duration.ofMinutes(lihuaConfig().getTokenExpireTime()));
         }
     }
 
@@ -89,8 +90,7 @@ public class LoginUserManager {
         // 设置缓存
         redisCache.setCacheObject(cacheKey,
                 loginUser,
-                lihuaConfig().getTokenExpireTime(),
-                TimeUnit.MINUTES);
+                Duration.ofMinutes(lihuaConfig().getTokenExpireTime()));
 
         // 缓存key
         return cacheKey;

@@ -5,7 +5,7 @@ import com.lihua.enums.DesensitizedTypeEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import model.BaseEntity;
+import com.lihua.model.BaseEntity;
 
 import java.util.List;
 

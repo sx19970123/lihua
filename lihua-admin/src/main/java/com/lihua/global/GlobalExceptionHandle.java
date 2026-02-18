@@ -2,13 +2,13 @@ package com.lihua.global;
 
 import com.lihua.exception.IpIllegalException;
 import com.lihua.exception.SensitiveException;
-import enums.ResultCodeEnum;
-import exception.FileException;
-import exception.ServiceException;
+import com.lihua.enums.ResultCodeEnum;
+import com.lihua.exception.FileException;
+import com.lihua.exception.ServiceException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import model.web.basecontroller.StrResponseController;
+import com.lihua.model.web.basecontroller.StrResponseController;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import utils.web.WebUtils;
+import com.lihua.utils.web.WebUtils;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

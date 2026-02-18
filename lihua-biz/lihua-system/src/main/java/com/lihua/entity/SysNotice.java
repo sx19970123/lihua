@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import model.BaseEntity;
+import com.lihua.model.BaseEntity;
 
 import java.time.LocalDateTime;
 

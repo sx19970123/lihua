@@ -2,7 +2,7 @@ package com.lihua.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import enums.SysBaseEnum;
+import com.lihua.enums.SysBaseEnum;
 
 /**
  * 简单 JWT 加密解密工具类

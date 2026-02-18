@@ -3,7 +3,7 @@ package com.lihua.started;
 import cloud.tianai.captcha.resource.ResourceStore;
 import cloud.tianai.captcha.resource.common.model.dto.Resource;
 import cloud.tianai.captcha.spring.plugins.RedisResourceStore;
-import enums.CaptchaTypeEnum;
+import com.lihua.enums.CaptchaTypeEnum;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -23,9 +23,6 @@ public class InitCaptchaResource {
 
     @jakarta.annotation.Resource
     private ResourcePatternResolver resourcePatternResolver;
-
-    @jakarta.annotation.Resource
-    private ResourceStore resourceStore;
 
     @jakarta.annotation.Resource
     private StringRedisTemplate stringRedisTemplate;

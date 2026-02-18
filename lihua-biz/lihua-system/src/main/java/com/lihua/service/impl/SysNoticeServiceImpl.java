@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.entity.SysNotice;
 import com.lihua.entity.SysUserNotice;
 import com.lihua.enums.WebSocketMsgTypeEnum;
-import exception.ServiceException;
+import com.lihua.exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.manager.WebSocketManager;
 import com.lihua.mapper.SysNoticeMapper;
@@ -24,7 +24,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import utils.date.DateUtils;
+import com.lihua.utils.date.DateUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
