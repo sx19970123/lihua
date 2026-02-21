@@ -23,11 +23,7 @@ import java.util.Set;
 @Slf4j
 public class LoginUserContext implements Serializable {
 
-    private static final RedisCache redisCache;
-
-    static {
-        redisCache = SpringUtils.getBean(RedisCache.class);
-    }
+    private static final RedisCache redisCache = SpringUtils.getBean(RedisCache.class);
 
     /**
      * 获取当前登录用户 id

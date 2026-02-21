@@ -9,7 +9,7 @@ import com.lihua.entity.SysPost;
 import com.lihua.exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDeptMapper;
-import com.lihua.model.SysDictData;
+import com.lihua.model.DictDataModel;
 import com.lihua.model.vo.SysDeptVO;
 import com.lihua.service.SysDeptService;
 import com.lihua.service.SysPostService;
@@ -197,8 +197,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         getDbDeptData(sysDeptVOS, deptNameDbSet, deptCodeDbSet);
 
         // 用到的字典数据
-        List<SysDictData> sysStatus = DictUtils.getDictData("sys_status");
-        String statusJoin = sysStatus.stream().map(SysDictData::getLabel).collect(Collectors.joining("、"));
+        List<DictDataModel> sysStatus = DictUtils.getDictData("sys_status");
+        String statusJoin = sysStatus.stream().map(DictDataModel::getLabel).collect(Collectors.joining("、"));
 
         // 开始数据过滤
         importDeptVos = sysDeptVOS.stream().filter(sysDeptVO -> {
@@ -432,8 +432,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     // 过滤状态
-    private boolean filterStatus(SysDeptVO sysDeptVO, List<SysDeptVO> errorDeptVos, List<SysDictData> sysStatus, String statusJoin) {
-        List<SysDictData> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysDeptVO.getStatus())).toList();
+    private boolean filterStatus(SysDeptVO sysDeptVO, List<SysDeptVO> errorDeptVos, List<DictDataModel> sysStatus, String statusJoin) {
+        List<DictDataModel> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysDeptVO.getStatus())).toList();
         if (status.isEmpty()) {
             sysDeptVO.setImportErrorMsg("请填写部门状态或部门状态不合法，可输入项为：" + statusJoin);
             errorDeptVos.add(sysDeptVO);

@@ -12,7 +12,7 @@ import com.lihua.exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDeptMapper;
 import com.lihua.mapper.SysPostMapper;
-import com.lihua.model.SysDictData;
+import com.lihua.model.DictDataModel;
 import com.lihua.model.dto.SysPostDTO;
 import com.lihua.model.vo.SysPostVO;
 import com.lihua.service.SysPostService;
@@ -176,8 +176,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         getDbPostData(sysPostVOList, postCodeDbSet, deptNameIdMap, deptNameCodeMap);
 
         // 用到的字典数据
-        List<SysDictData> sysStatus = DictUtils.getDictData("sys_status");
-        String statusJoin = sysStatus.stream().map(SysDictData::getLabel).collect(Collectors.joining("、"));
+        List<DictDataModel> sysStatus = DictUtils.getDictData("sys_status");
+        String statusJoin = sysStatus.stream().map(DictDataModel::getLabel).collect(Collectors.joining("、"));
         // 开始过滤数据
         importPostVos = sysPostVOList.stream().filter(sysPostVO -> {
 
@@ -286,8 +286,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
 
     // 过滤岗位
-    private boolean filterStatus(SysPostVO sysPostVO, List<SysPostVO> errorPostVos, List<SysDictData> sysStatus, String statusJoin) {
-        List<SysDictData> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysPostVO.getStatus())).toList();
+    private boolean filterStatus(SysPostVO sysPostVO, List<SysPostVO> errorPostVos, List<DictDataModel> sysStatus, String statusJoin) {
+        List<DictDataModel> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysPostVO.getStatus())).toList();
         if (status.isEmpty()) {
             sysPostVO.setImportErrorMsg("请填写岗位状态或岗位状态不合法，可输入项为：" + statusJoin);
             errorPostVos.add(sysPostVO);

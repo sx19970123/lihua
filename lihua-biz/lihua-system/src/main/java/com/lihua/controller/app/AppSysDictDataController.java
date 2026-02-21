@@ -1,6 +1,6 @@
 package com.lihua.controller.app;
 
-import com.lihua.model.SysDictData;
+import com.lihua.model.DictDataModel;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysDictDataService;
@@ -20,12 +20,12 @@ public class AppSysDictDataController extends ApiResponseController {
     private SysDictDataService sysDictDataService;
 
     @GetMapping("option/{dictTypeCode}")
-    public ApiResponseModel<List<SysDictData>> queryDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
+    public ApiResponseModel<List<DictDataModel>> queryDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
         return success(sysDictDataService.queryDictOptionList(dictTypeCode));
     }
 
     @PostMapping("option")
-    public ApiResponseModel<Map<String, List<SysDictData>>> queryDictOptionList(@RequestBody List<String> dictTypeCodeList) {
+    public ApiResponseModel<Map<String, List<DictDataModel>>> queryDictOptionList(@RequestBody List<String> dictTypeCodeList) {
         return success(sysDictDataService.queryDictOptionList(dictTypeCodeList));
     }
 }

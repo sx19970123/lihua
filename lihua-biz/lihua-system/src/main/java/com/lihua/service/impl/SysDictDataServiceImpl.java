@@ -6,6 +6,7 @@ import com.lihua.entity.SysDictData;
 import com.lihua.exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDictDataMapper;
+import com.lihua.model.DictDataModel;
 import com.lihua.model.dto.SysDictDataDTO;
 import com.lihua.service.SysDictDataService;
 import com.lihua.utils.DictUtils;
@@ -57,16 +58,16 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     }
 
     @Override
-    public List<com.lihua.model.SysDictData> queryDictOptionList(String dictTypeCode) {
-        List<com.lihua.model.SysDictData> dictData = DictUtils.getDictData(dictTypeCode);
+    public List<DictDataModel> queryDictOptionList(String dictTypeCode) {
+        List<DictDataModel> dictData = DictUtils.getDictData(dictTypeCode);
         return TreeUtils.buildTree(dictData);
     }
 
     @Override
-    public Map<String, List<com.lihua.model.SysDictData>> queryDictOptionList(List<String> dictTypeCodeList) {
-        Map<String, List<com.lihua.model.SysDictData>> map = new HashMap<>();
+    public Map<String, List<DictDataModel>> queryDictOptionList(List<String> dictTypeCodeList) {
+        Map<String, List<DictDataModel>> map = new HashMap<>();
         dictTypeCodeList.forEach(dictTypeCode -> {
-            List<com.lihua.model.SysDictData> dictOptionList = queryDictOptionList(dictTypeCode);
+            List<DictDataModel> dictOptionList = queryDictOptionList(dictTypeCode);
             map.put(dictTypeCode, dictOptionList);
         });
 

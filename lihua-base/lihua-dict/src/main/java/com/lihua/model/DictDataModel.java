@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class SysDictData {
+public class DictDataModel {
     /**
      * 主键id
      */
@@ -59,5 +59,5 @@ public class SysDictData {
     /**
      * 子集
      */
-    private List<SysDictData> children;
+    private List<DictDataModel> children;
 }

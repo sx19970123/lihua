@@ -4,6 +4,7 @@ import com.lihua.annotation.Log;
 import com.lihua.entity.SysDictData;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.model.DictDataModel;
 import com.lihua.model.dto.SysDictDataDTO;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
@@ -35,12 +36,12 @@ public class SysDictDataController extends ApiResponseController {
     }
 
     @GetMapping("option/{dictTypeCode}")
-    public ApiResponseModel<List<com.lihua.model.SysDictData>> queryDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
+    public ApiResponseModel<List<DictDataModel>> queryDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
         return success(sysDictDataService.queryDictOptionList(dictTypeCode));
     }
 
     @PostMapping("option")
-    public ApiResponseModel<Map<String, List<com.lihua.model.SysDictData>>> queryDictOptionList(@RequestBody List<String> dictTypeCodeList) {
+    public ApiResponseModel<Map<String, List<DictDataModel>>> queryDictOptionList(@RequestBody List<String> dictTypeCodeList) {
         return success(sysDictDataService.queryDictOptionList(dictTypeCodeList));
     }
 

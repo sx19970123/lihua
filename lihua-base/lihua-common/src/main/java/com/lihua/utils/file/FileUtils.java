@@ -34,13 +34,9 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 public class FileUtils {
 
-    private static final LihuaConfig lihuaConfig;
+    private static final LihuaConfig lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
 
     private static final Map<String, Path> map = new ConcurrentHashMap<>();
-
-    static {
-        lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
-    }
 
     /**
      * 单附件上传

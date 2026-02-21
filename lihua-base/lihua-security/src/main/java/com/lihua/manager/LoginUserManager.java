@@ -21,12 +21,7 @@ import java.util.UUID;
 @Slf4j
 public class LoginUserManager {
 
-    private static final RedisCache redisCache;
-
-    static {
-        redisCache = SpringUtils.getBean(RedisCache.class);
-    }
-
+    private static final RedisCache redisCache = SpringUtils.getBean(RedisCache.class);
 
     /**
      * 获取spring容器中的配置信息
