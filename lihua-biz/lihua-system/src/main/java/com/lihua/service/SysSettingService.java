@@ -3,8 +3,6 @@ package com.lihua.service;
 import com.lihua.entity.SysSetting;
 import com.lihua.model.dto.SysSettingDTO;
 
-import java.util.List;
-
 public interface SysSettingService {
 
     /**
@@ -30,11 +28,6 @@ public interface SysSettingService {
      * 获取自助注册配置
      */
     SysSettingDTO.SignInSetting getSignInSetting();
-
-    /**
-     * 获取ip黑名单
-     */
-    List<String> getIpBlackList();
 
     /**
      * 获取默认密码（已解密）

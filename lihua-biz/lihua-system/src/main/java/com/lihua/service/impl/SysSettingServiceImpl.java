@@ -111,12 +111,6 @@ public class SysSettingServiceImpl implements SysSettingService {
     }
 
     @Override
-    public List<String> getIpBlackList() {
-        List<String> ipBlackList = redisCache.getCacheList(IP_BLACKLIST_KEY, String.class);
-        return ipBlackList == null ? new ArrayList<>(): ipBlackList;
-    }
-
-    @Override
     public String getDefaultPassword() {
         SysSetting defaultPasswordSetting = getSysSettingByComponentName("DefaultPasswordSetting");
         // 没有配置默认密码情况下返回 ""
