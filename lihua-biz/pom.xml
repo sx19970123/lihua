@@ -43,5 +43,9 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-log</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-ip</artifactId>
+        </dependency>
     </dependencies>
 </project>

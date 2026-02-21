@@ -20,7 +20,7 @@ public class RequestIpInterceptor implements HandlerInterceptor {
 //    private SysSettingService sysSettingService;
 
     @Override
-    public boolean preHandle( HttpServletRequest request, HttpServletResponse response,  Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,  Object handler) {
         ipMatch(request.getRemoteAddr());
         return true;
     }

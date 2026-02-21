@@ -20,13 +20,11 @@
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-common</artifactId>
-            <version>1.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.lionsoul</groupId>
             <artifactId>ip2region</artifactId>
-            <version>3.2.0</version>
-            <scope>compile</scope>
+            <version>${ip2region.version}</version>
         </dependency>
     </dependencies>
 

@@ -1,0 +1,24 @@
+package com.lihua.utils;
+
+import com.lihua.enums.ConstantEnum;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.util.StringUtils;
+
+public class TokenUtils {
+
+    /**
+     * 从请求中获取 token
+     */
+    public static String getToken(HttpServletRequest request) {
+        // 获取 token
+        String token = null;
+        if (request != null) {
+            token = request.getHeader(ConstantEnum.TOKEN_KEY.getValue());
+        }
+        if (StringUtils.hasText(token)) {
+            return token.replace(ConstantEnum.TOKEN_PREFIX.getValue(), "").trim();
+        }
+
+        return null;
+    }
+}

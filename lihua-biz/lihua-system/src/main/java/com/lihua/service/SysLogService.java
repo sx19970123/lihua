@@ -1,6 +1,7 @@
 package com.lihua.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.lihua.model.LogModel;
 import com.lihua.model.dto.SysLogDTO;
 import com.lihua.model.vo.SysLogVO;
 
@@ -11,7 +12,7 @@ public interface SysLogService {
     /**
      * 保存日志到数据库
      */
-    void insert(SysLogVO sysLogVO);
+    void insert(LogModel logModel);
 
     /**
      * 查询日志列表

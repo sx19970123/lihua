@@ -2,6 +2,7 @@ package com.lihua.aspect;
 
 import com.lihua.annotation.Log;
 import com.lihua.handle.HandleRecodeLog;
+import com.lihua.utils.IpUtils;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.web.WebUtils;
 import jakarta.annotation.Resource;
@@ -49,7 +50,7 @@ public class LogAspect {
                 proceed,
                 httpServletRequest.getRequestURI(),
                 httpServletRequest.getHeader("User-Agent"),
-                WebUtils.getIpAddress(),
+                IpUtils.getIpAddress(),
                 WebUtils.getClientType(),
                 null);
 
@@ -69,7 +70,7 @@ public class LogAspect {
                 null,
                 httpServletRequest.getRequestURI(),
                 httpServletRequest.getHeader("User-Agent"),
-                WebUtils.getIpAddress(),
+                IpUtils.getIpAddress(),
                 WebUtils.getClientType(),
                 exception);
     }

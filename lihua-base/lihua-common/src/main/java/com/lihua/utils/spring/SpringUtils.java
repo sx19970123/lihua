@@ -1,6 +1,7 @@
 package com.lihua.utils.spring;
 
 import lombok.Getter;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -11,17 +12,20 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SpringUtils implements ApplicationContextAware {
+
     @Getter
     private static ApplicationContext applicationContext;
 
-    @Override
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
-        applicationContext = context;
-    }
-
-    // 通过clazz获取spring托管的bean
+    /**
+     * 通过clazz获取spring托管的bean
+     * @param clazz 获取对应bean的class信息
+     */
     public static <T> T getBean(Class<T> clazz) {
        return applicationContext.getBean(clazz);
     }
 
+    @Override
+    public void setApplicationContext(@NonNull ApplicationContext context) throws BeansException {
+        applicationContext = context;
+    }
 }

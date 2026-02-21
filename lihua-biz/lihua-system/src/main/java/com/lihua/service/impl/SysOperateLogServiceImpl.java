@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.entity.SysOperateLog;
 import com.lihua.mapper.SysOperateLogMapper;
+import com.lihua.model.LogModel;
 import com.lihua.model.dto.SysLogDTO;
 import com.lihua.model.vo.SysLogVO;
 import com.lihua.service.SysLogService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -23,9 +25,10 @@ public class SysOperateLogServiceImpl implements SysLogService {
     private SysOperateLogMapper sysOperateLogMapper;
 
     @Override
-    public void insert(SysLogVO sysLogVO) {
+    @EventListener(condition = "#logModel.typeCode != 'LOGIN'")
+    public void insert(LogModel logModel) {
         SysOperateLog sysOperateLog = new SysOperateLog();
-        BeanUtils.copyProperties(sysLogVO, sysOperateLog);
+        BeanUtils.copyProperties(logModel, sysOperateLog);
         sysOperateLogMapper.insert(sysOperateLog);
     }
 

@@ -3,6 +3,7 @@ package com.lihua.manager;
 import com.lihua.cache.RedisCache;
 import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.model.*;
+import com.lihua.utils.IpUtils;
 import com.lihua.utils.spring.SpringUtils;
 import com.lihua.utils.tree.TreeUtils;
 import com.lihua.utils.web.WebUtils;
@@ -180,7 +181,7 @@ public class LoginUserContext implements Serializable {
      * 获取当前请求ip
      */
     public static String getIpAddress() {
-        return WebUtils.getIpAddress();
+        return IpUtils.getIpAddress();
     }
 
     /**

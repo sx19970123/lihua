@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.entity.SysLoginLog;
 import com.lihua.mapper.SysLoginLogMapper;
+import com.lihua.model.LogModel;
 import com.lihua.model.dto.SysLogDTO;
 import com.lihua.model.vo.SysLogVO;
 import com.lihua.service.SysLogService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -23,9 +25,10 @@ public class SysLoginLogServiceImpl implements SysLogService {
     private SysLoginLogMapper sysLoginLogMapper;
 
     @Override
-    public void insert(SysLogVO sysLogVO) {
+    @EventListener(condition = "#logModel.typeCode == 'LOGIN'")
+    public void insert(LogModel logModel) {
         SysLoginLog sysLoginLog = new SysLoginLog();
-        BeanUtils.copyProperties(sysLogVO, sysLoginLog);
+        BeanUtils.copyProperties(logModel, sysLoginLog);
         sysLoginLogMapper.insert(sysLoginLog);
     }
 

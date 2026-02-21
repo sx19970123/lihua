@@ -3,6 +3,7 @@ package com.lihua.filter;
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.manager.LoginUserManager;
 import com.lihua.model.LoginUser;
+import com.lihua.utils.TokenUtils;
 import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,7 +31,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal( HttpServletRequest request,  HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 获取token
-        String token = WebUtils.getToken(request);
+        String token = TokenUtils.getToken(request);
 
         if (StringUtils.hasText(token)) {
             LoginUser loginUser = LoginUserManager.getLoginUser(token);
