@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.entity.SysOperateLog;
 import com.lihua.mapper.SysOperateLogMapper;
-import com.lihua.model.LogModel;
+import com.lihua.model.bridge.log.LogModel;
 import com.lihua.model.dto.SysLogDTO;
 import com.lihua.model.vo.SysLogVO;
 import com.lihua.service.SysLogService;

@@ -29,15 +29,17 @@
             <artifactId>java-jwt</artifactId>
             <version>${jwt.version}</version>
         </dependency>
-
+        <!--        缓存模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-redis</artifactId>
         </dependency>
+        <!--        公共模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-common</artifactId>
         </dependency>
+        <!--        ip处理模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-ip</artifactId>

@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.cache.RedisCache;
 import com.lihua.entity.SysSetting;
 import com.lihua.mapper.SysSettingMapper;
+import com.lihua.model.bridge.setting.CacheBlackIp;
+import com.lihua.model.bridge.setting.CacheSetting;
 import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.service.SysSettingService;
 import com.lihua.utils.SecurityUtils;
 import com.lihua.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,12 +48,6 @@ public class SysSettingServiceImpl implements SysSettingService {
         // 缓存登录黑名单
         cacheIpBlackList();
         return sysSetting.getSettingComponentName();
-    }
-
-    @Override
-    public void initSetting() {
-        // 重新设置缓存
-        reCacheSetting(getSettingMap());
     }
 
     @Override
@@ -137,6 +134,17 @@ public class SysSettingServiceImpl implements SysSettingService {
             return;
         }
         redisCache.setCacheList(IP_BLACKLIST_KEY, ipSetting.getIpList());
+    }
+
+    @EventListener
+    public void cacheIpBlackList(CacheBlackIp cacheBlackIp) {
+        cacheIpBlackList();
+    }
+
+    @EventListener
+    public void cacheSetting(CacheSetting cacheSetting) {
+        // 重新设置缓存
+        reCacheSetting(getSettingMap());
     }
 
     // 获取系统设置数据

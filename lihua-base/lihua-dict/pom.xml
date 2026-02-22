@@ -17,15 +17,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        <!--        mybatis-plus 持久化-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-mybatis</artifactId>
-            <version>1.4.2</version>
         </dependency>
+        <!--        redis 缓存-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-redis</artifactId>
-            <version>1.4.2</version>
         </dependency>
     </dependencies>
 

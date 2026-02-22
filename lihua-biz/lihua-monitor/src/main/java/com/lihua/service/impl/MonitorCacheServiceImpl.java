@@ -3,11 +3,13 @@ package com.lihua.service.impl;
 import com.lihua.cache.RedisCache;
 import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.model.CacheMonitor;
+import com.lihua.model.bridge.setting.CacheBlackIp;
+import com.lihua.model.bridge.setting.CacheSetting;
 import com.lihua.service.MonitorCacheService;
-import com.lihua.service.SysSettingService;
 import com.lihua.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +26,7 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
     private RedisCache redisCache;
 
     @Resource
-    private SysSettingService sysSettingService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
 
     @Override
@@ -90,13 +92,14 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
         Set<String> keys = cacheKeys(keyPrefix);
         redisCache.delete(keys);
 
-        // 系统配置和 ip 黑名单删除后立即刷新
+        // 系统配置刷新缓存
         if (keyPrefix.startsWith(SYSTEM_SETTING_REDIS_PREFIX.getValue())) {
-            sysSettingService.initSetting();
+            applicationEventPublisher.publishEvent(new CacheSetting());
         }
 
+        // ip黑名单刷新缓存
         if (keyPrefix.startsWith(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue())) {
-            sysSettingService.cacheIpBlackList();
+            applicationEventPublisher.publishEvent(new CacheBlackIp());
         }
     }
 }

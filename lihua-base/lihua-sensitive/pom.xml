@@ -17,19 +17,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>33.5.0-jre</version>
-            <scope>compile</scope>
-        </dependency>
+        <!--        安全模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-security</artifactId>
         </dependency>
+        <!--        持久化模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-mybatis</artifactId>
+        </dependency>
+        <!--        公共模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-common</artifactId>
         </dependency>
     </dependencies>
 

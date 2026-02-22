@@ -11,11 +11,6 @@ public interface SysSettingService {
     String insert(SysSetting sysSetting);
 
     /**
-     * 初始化配置
-     */
-    void initSetting();
-
-    /**
      * 根据组件名称获取配置
      */
     SysSetting getSysSettingByComponentName(String componentName);

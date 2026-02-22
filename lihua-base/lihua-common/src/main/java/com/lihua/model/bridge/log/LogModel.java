@@ -1,4 +1,4 @@
-package com.lihua.model;
+package com.lihua.model.bridge.log;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -7,6 +7,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * 日志跨模块调用传参
+ */
 @Data
 @Accessors(chain = true)
 public class LogModel implements Serializable {

@@ -25,7 +25,7 @@
             <artifactId>tianai-captcha-springboot-starter</artifactId>
             <version>${tianai-captcha.version}</version>
         </dependency>
-        <!-- redis缓存 -->
+        <!-- 缓存模块 -->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-redis</artifactId>

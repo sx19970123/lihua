@@ -17,15 +17,17 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        <!--        公共模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-common</artifactId>
         </dependency>
+        <!--        缓存模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-redis</artifactId>
         </dependency>
-
+        <!--        ip归属地-->
         <dependency>
             <groupId>org.lionsoul</groupId>
             <artifactId>ip2region</artifactId>
