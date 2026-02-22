@@ -4,11 +4,11 @@ import com.lihua.cache.RedisCache;
 import com.lihua.enums.RedisKeyPrefixEnum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -38,7 +38,7 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
         String key = RedisKeyPrefixEnum.ONCE_TOKEN_REDIS_PREFIX.getValue() + params.getFirst("token");
         String userId = redisCache.getCacheObject(key, String.class);
 
-        if (StringUtils.isEmpty(userId)) {
+        if (!StringUtils.hasText(userId)) {
             log.error("webSocket握手失败，不存在的token");
             return false;
         }

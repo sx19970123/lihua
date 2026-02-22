@@ -1,4 +1,4 @@
-package com.lihua.started;
+package com.lihua.config;
 
 import cloud.tianai.captcha.resource.common.model.dto.Resource;
 import cloud.tianai.captcha.spring.plugins.RedisResourceStore;
@@ -28,7 +28,6 @@ public class InitCaptchaResource {
 
     @SneakyThrows
     @PostConstruct
-
     public void init() {
         RedisResourceStore crudResourceStore = new RedisResourceStore(stringRedisTemplate);
 

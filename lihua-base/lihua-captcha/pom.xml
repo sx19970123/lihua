@@ -5,11 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.lihua</groupId>
-        <artifactId>lihua-biz</artifactId>
+        <artifactId>lihua</artifactId>
         <version>1.4.2</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>lihua-system</artifactId>
+    <artifactId>lihua-captcha</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -18,9 +19,17 @@
     </properties>
 
     <dependencies>
+        <!-- tianai-captcha 验证码 -->
+        <dependency>
+            <groupId>cloud.tianai.captcha</groupId>
+            <artifactId>tianai-captcha-springboot-starter</artifactId>
+            <version>${tianai-captcha.version}</version>
+        </dependency>
+        <!-- redis缓存 -->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-captcha</artifactId>
+            <artifactId>lihua-redis</artifactId>
         </dependency>
     </dependencies>
+
 </project>

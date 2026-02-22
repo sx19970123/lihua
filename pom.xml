@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.2</version>
+        <version>4.0.3</version>
         <relativePath/>
     </parent>
 
@@ -28,7 +28,7 @@
         <redisson.version>4.2.0</redisson.version>
         <oshi.version>6.6.4</oshi.version>
         <guava.version>33.5.0-jre</guava.version>
-        <tianai-captcha.version>1.5.4</tianai-captcha.version>
+        <tianai-captcha.version>1.5.5</tianai-captcha.version>
         <ipaddress.version>5.5.1</ipaddress.version>
         <ip2region.version>3.2.0</ip2region.version>
         <dynamic-datasource.version>4.5.0</dynamic-datasource.version>
@@ -37,14 +37,13 @@
     <dependencyManagement>
         <dependencies>
 <!--            业务依赖=============================================-->
-
-<!--            系统监控-->
+<!--            系统监控 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-monitor</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            系统业务-->
+<!--            系统业务 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-system</artifactId>
@@ -52,70 +51,76 @@
             </dependency>
 
 <!--            基础依赖=============================================-->
-<!--            公共模块-->
+<!--            公共模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-common</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            字典模块-->
+<!--            字典模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-dict</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            文档模块-->
+<!--            文档模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-doc</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            excel导入导出模块-->
+<!--            excel导入导出模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-excel</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            ip处理模块-->
+<!--            ip处理模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-ip</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            日志模块-->
+<!--            日志模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-log</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            mybatis持久层模块-->
+<!--            mybatis持久层模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-mybatis</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            缓存模块-->
+<!--            缓存模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-redis</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            安全模块-->
+<!--            安全模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-security</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            数据脱敏模块-->
+<!--            数据脱敏模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-sensitive</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            websocket模块-->
+<!--            websocket模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-websocket</artifactId>
+                <version>${lihua.version}</version>
+            </dependency>
+<!--            验证码模块 -->
+            <dependency>
+                <groupId>com.lihua</groupId>
+                <artifactId>lihua-captcha</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
         </dependencies>
@@ -148,12 +153,6 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>${mysql.version}</version>
         </dependency>
-        <!-- tianai-captcha 验证码 -->
-        <dependency>
-            <groupId>cloud.tianai.captcha</groupId>
-            <artifactId>tianai-captcha-springboot-starter</artifactId>
-            <version>${tianai-captcha.version}</version>
-        </dependency>
     </dependencies>
 
     <modules>
@@ -173,6 +172,7 @@
         <module>lihua-base/lihua-ip</module>
         <module>lihua-base/lihua-doc</module>
         <module>lihua-base/lihua-excel</module>
+        <module>lihua-base/lihua-captcha</module>
     </modules>
     <build>
         <plugins>

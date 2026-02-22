@@ -1,7 +1,7 @@
 package com.lihua.utils.crypt;
 
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -36,7 +36,7 @@ public class AesUtils {
      */
     @SneakyThrows
     public static String decryptToString(String ciphertext, String secretKey) {
-        if (StringUtils.isEmpty(ciphertext)) {
+        if (!StringUtils.hasText(ciphertext)) {
             return ciphertext;
         }
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
