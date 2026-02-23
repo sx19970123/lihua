@@ -11,6 +11,9 @@ import lombok.EqualsAndHashCode;
 import org.apache.fesod.sheet.annotation.ExcelIgnoreUnannotated;
 import org.apache.fesod.sheet.annotation.ExcelProperty;
 import org.apache.fesod.sheet.annotation.write.style.ColumnWidth;
+import org.apache.fesod.sheet.annotation.write.style.ContentStyle;
+import org.apache.fesod.sheet.enums.poi.HorizontalAlignmentEnum;
+import org.apache.fesod.sheet.enums.poi.VerticalAlignmentEnum;
 
 import java.util.List;
 
@@ -18,6 +21,10 @@ import java.util.List;
  * 系统用户
  */
 @ExcelIgnoreUnannotated
+@ContentStyle(
+    horizontalAlignment = HorizontalAlignmentEnum.CENTER,
+    verticalAlignment = VerticalAlignmentEnum.CENTER
+)
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysUserVO extends BaseEntity {

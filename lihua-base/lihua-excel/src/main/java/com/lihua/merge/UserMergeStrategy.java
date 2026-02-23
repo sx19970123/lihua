@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 处理用户导出单元格合并
+ * 处理用户导出单元格合并策略
  */
 public final class UserMergeStrategy extends AbstractMergeStrategy {
 
