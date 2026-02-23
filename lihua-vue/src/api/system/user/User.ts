@@ -78,10 +78,11 @@ export const getUserOptionByUserIds = (userIds: String[]) => {
 
 // excel导出
 export const exportExcel = (data: SysUserDTO) => {
-    return request<string>({
+    return request<Blob>({
         url: 'system/user/export',
         method: "post",
         data: data,
+        responseType: 'blob'
     })
 }
 

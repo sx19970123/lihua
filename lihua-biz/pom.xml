@@ -19,33 +19,45 @@
     </properties>
 
     <dependencies>
+        <!--        持久化模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-mybatis</artifactId>
         </dependency>
+        <!--        公共模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-common</artifactId>
         </dependency>
+        <!--        websocket模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-websocket</artifactId>
         </dependency>
+        <!--        字典模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-dict</artifactId>
         </dependency>
+        <!--        数据脱敏模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-sensitive</artifactId>
         </dependency>
+        <!--        日志模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-log</artifactId>
         </dependency>
+        <!--        ip模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-ip</artifactId>
+        </dependency>
+        <!--        excel模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-excel</artifactId>
         </dependency>
     </dependencies>
 </project>

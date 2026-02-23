@@ -262,7 +262,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         String email = sysPostVO.getEmail();
         if (StringUtils.hasText(email)) {
             if (!EMAIL_PATTERN.matcher(email).matches()) {
-                sysPostVO.setImportErrorMsg("邮箱格式错误，请检查数据");
+//                sysPostVO.setImportErrorMsg("邮箱格式错误，请检查数据");
                 errorPostVos.add(sysPostVO);
                 return false;
             }
@@ -275,7 +275,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         String phoneNumber = sysPostVO.getPhoneNumber();
         if (StringUtils.hasText(phoneNumber)) {
             if (!PHONE_NUMBER_PATTERN.matcher(phoneNumber).matches()) {
-                sysPostVO.setImportErrorMsg("手机号码格式错误，请检查数据");
+//                sysPostVO.setImportErrorMsg("手机号码格式错误，请检查数据");
                 errorPostVos.add(sysPostVO);
                 return false;
             }
@@ -289,7 +289,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     private boolean filterStatus(SysPostVO sysPostVO, List<SysPostVO> errorPostVos, List<DictDataModel> sysStatus, String statusJoin) {
         List<DictDataModel> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysPostVO.getStatus())).toList();
         if (status.isEmpty()) {
-            sysPostVO.setImportErrorMsg("请填写岗位状态或岗位状态不合法，可输入项为：" + statusJoin);
+//            sysPostVO.setImportErrorMsg("请填写岗位状态或岗位状态不合法，可输入项为：" + statusJoin);
             errorPostVos.add(sysPostVO);
             return false;
         }
@@ -302,7 +302,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         String deptName = sysPostVO.getDeptName();
 
         if (!StringUtils.hasText(deptName)) {
-            sysPostVO.setImportErrorMsg("请填写部门名称");
+//            sysPostVO.setImportErrorMsg("请填写部门名称");
             errorPostVos.add(sysPostVO);
             return false;
         }
@@ -310,7 +310,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         String deptId = deptNameIdMap.get(deptName);
         String deptCode = deptNameCodeMap.get(deptName);
         if (!StringUtils.hasText(deptId) || !StringUtils.hasText(deptCode)) {
-            sysPostVO.setImportErrorMsg("岗位所在部门不存在，请检查部门数据");
+//            sysPostVO.setImportErrorMsg("岗位所在部门不存在，请检查部门数据");
             errorPostVos.add(sysPostVO);
             return false;
         }
@@ -324,7 +324,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     //  过滤岗位名称
     private boolean filterPostName(SysPostVO sysPostVO, List<SysPostVO> errorPostVos) {
         if (!StringUtils.hasText(sysPostVO.getName())) {
-            sysPostVO.setImportErrorMsg("请填写岗位名称");
+//            sysPostVO.setImportErrorMsg("请填写岗位名称");
             errorPostVos.add(sysPostVO);
             return false;
         }
@@ -335,17 +335,17 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     private boolean filterPostCode(SysPostVO sysPostVO, List<SysPostVO> errorPostVos, Set<String> postCodeRepeatSet, Set<String> postCodeDbSet) {
         String code = sysPostVO.getCode();
         if (!StringUtils.hasText(code)) {
-            sysPostVO.setImportErrorMsg("请填写岗位编码");
+//            sysPostVO.setImportErrorMsg("请填写岗位编码");
             errorPostVos.add(sysPostVO);
             return false;
         }
         if (postCodeRepeatSet.contains(code)) {
-            sysPostVO.setImportErrorMsg("当前excel附件中岗位编码：" + code + " 重复，请检查");
+//            sysPostVO.setImportErrorMsg("当前excel附件中岗位编码：" + code + " 重复，请检查");
             errorPostVos.add(sysPostVO);
             return false;
         }
         if (postCodeDbSet.contains(code)) {
-            sysPostVO.setImportErrorMsg("岗位编码已存在");
+//            sysPostVO.setImportErrorMsg("岗位编码已存在");
             errorPostVos.add(sysPostVO);
             return false;
         }

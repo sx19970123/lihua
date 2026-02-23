@@ -17,4 +17,24 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <!--        excel 导入导出工具-->
+        <dependency>
+            <groupId>org.apache.fesod</groupId>
+            <artifactId>fesod-sheet</artifactId>
+            <version>${fesod.version}</version>
+        </dependency>
+
+        <!--        公共模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-common</artifactId>
+        </dependency>
+
+        <!--        字典模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-dict</artifactId>
+        </dependency>
+    </dependencies>
 </project>

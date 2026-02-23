@@ -41,7 +41,7 @@ public interface SysUserService {
     /**
      * 导出excel
      */
-    String exportExcel(SysUserDTO sysUserDTO);
+    List<SysUserVO> exportExcel(SysUserDTO sysUserDTO);
 
     /**
      * excel 批量导入

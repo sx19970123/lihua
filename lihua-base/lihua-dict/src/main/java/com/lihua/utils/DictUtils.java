@@ -6,7 +6,6 @@ import com.lihua.mapper.DictDataMapper;
 import com.lihua.model.DictDataModel;
 import com.lihua.utils.spring.SpringUtils;
 import org.springframework.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +24,7 @@ public class DictUtils {
     /**
      * 根据字典 value 和 字典type_code 获取字典label
      */
-    public static String getLabel(String dictTypeCode,String value) {
+    public static String getLabel(String dictTypeCode, String value) {
         List<DictDataModel> dictDataList = getDictData(dictTypeCode);
         if (dictDataList.isEmpty()) {
             return null;
@@ -34,6 +33,24 @@ public class DictUtils {
         for (DictDataModel dictData : dictDataList) {
             if (dictData.getValue().equals(value)) {
                 return dictData.getLabel();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 根据字典 label 和 字典type_code 获取字典value
+     */
+    public static String getValue(String dictTypeCode, String label) {
+        List<DictDataModel> dictDataList = getDictData(dictTypeCode);
+        if (dictDataList.isEmpty()) {
+            return null;
+        }
+
+        for (DictDataModel dictData : dictDataList) {
+            if (dictData.getLabel().equals(label)) {
+                return dictData.getValue();
             }
         }
 

@@ -183,7 +183,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     }
 
     @Override
-    public String exportExcel(SysUserDTO sysUserDTO) {
+    public List<SysUserVO> exportExcel(SysUserDTO sysUserDTO) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
 
         // 部门id
@@ -244,8 +244,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             export.setRoleName(String.join("、",export.getRoleNameList()));
         });
 
-        // 导出excel
-        return null;
+        return exportList;
     }
 
     @Transactional
@@ -473,20 +472,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                                      Set<String> emailRepeatSet) {
         if (!usernameRepeatSet.isEmpty()) {
             if (usernameRepeatSet.contains(sysUserVO.getUsername())) {
-                sysUserVO.setImportErrorMsg("当前excel附件中用户名：" + sysUserVO.getUsername() + " 重复，请检查");
+//                sysUserVO.setImportErrorMsg("当前excel附件中用户名：" + sysUserVO.getUsername() + " 重复，请检查");
                 errorUserVos.add(sysUserVO);
                 return false;
             }
         }
 
         if (!phoneNumberRepeatSet.isEmpty()) {
-            sysUserVO.setImportErrorMsg("当前excel附件中电话号码：" + sysUserVO.getPhoneNumber() + " 重复，请检查");
+//            sysUserVO.setImportErrorMsg("当前excel附件中电话号码：" + sysUserVO.getPhoneNumber() + " 重复，请检查");
             errorUserVos.add(sysUserVO);
             return false;
         }
 
         if (!emailRepeatSet.isEmpty()) {
-            sysUserVO.setImportErrorMsg("当前excel附件中邮箱：" + sysUserVO.getEmail() + " 重复，请检查");
+//            sysUserVO.setImportErrorMsg("当前excel附件中邮箱：" + sysUserVO.getEmail() + " 重复，请检查");
             errorUserVos.add(sysUserVO);
             return false;
         }
@@ -501,13 +500,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                                    List<SysUserVO> errorUserVos,
                                    Set<String> usernames) {
         if (!StringUtils.hasText(sysUserVO.getUsername())) {
-            sysUserVO.setImportErrorMsg("请填写用户名");
+//            sysUserVO.setImportErrorMsg("请填写用户名");
             errorUserVos.add(sysUserVO);
             return false;
         }
 
         if (usernames.contains(sysUserVO.getUsername())) {
-            sysUserVO.setImportErrorMsg("用户名已存在");
+//            sysUserVO.setImportErrorMsg("用户名已存在");
             errorUserVos.add(sysUserVO);
             return false;
         }
@@ -521,13 +520,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         String phoneNumber = sysUserVO.getPhoneNumber();
         if (StringUtils.hasText(phoneNumber)) {
             if (!PHONE_NUMBER_PATTERN.matcher(phoneNumber).matches()) {
-                sysUserVO.setImportErrorMsg("手机号码格式错误，请检查数据");
+//                sysUserVO.setImportErrorMsg("手机号码格式错误，请检查数据");
                 errorUserVos.add(sysUserVO);
                 return false;
             }
 
             if (phoneNumberDbSet.contains(sysUserVO.getPhoneNumber())) {
-                sysUserVO.setImportErrorMsg("手机号码已存在");
+//                sysUserVO.setImportErrorMsg("手机号码已存在");
                 errorUserVos.add(sysUserVO);
                 return false;
             }
@@ -542,13 +541,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         String email = sysUserVO.getEmail();
         if (StringUtils.hasText(email)) {
             if (!EMAIL_PATTERN.matcher(email).matches()) {
-                sysUserVO.setImportErrorMsg("电子邮箱格式错误，请检查数据");
+//                sysUserVO.setImportErrorMsg("电子邮箱格式错误，请检查数据");
                 errorUserVos.add(sysUserVO);
                 return false;
             }
 
             if (emailDbSet.contains(sysUserVO.getEmail())) {
-                sysUserVO.setImportErrorMsg("电子邮箱已存在");
+//                sysUserVO.setImportErrorMsg("电子邮箱已存在");
                 errorUserVos.add(sysUserVO);
                 return false;
             }
@@ -561,7 +560,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
      */
     private boolean filterNickname(SysUserVO sysUserVO, List<SysUserVO> errorUserVos) {
         if (!StringUtils.hasText(sysUserVO.getNickname())) {
-            sysUserVO.setImportErrorMsg("请填写用户昵称");
+//            sysUserVO.setImportErrorMsg("请填写用户昵称");
             errorUserVos.add(sysUserVO);
             return false;
         }
@@ -575,12 +574,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         List<DictDataModel> gender = userGender.stream().filter(ug -> ug.getLabel().equals(sysUserVO.getGender())).toList();
         List<DictDataModel> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysUserVO.getStatus())).toList();
         if (gender.isEmpty()) {
-            sysUserVO.setImportErrorMsg("请填写用户性别或用户性别不合法，可输入项为：" + genderJoin);
+//            sysUserVO.setImportErrorMsg("请填写用户性别或用户性别不合法，可输入项为：" + genderJoin);
             errorUserVos.add(sysUserVO);
             return false;
         }
         if (status.isEmpty()) {
-            sysUserVO.setImportErrorMsg("请填写用户状态或用户状态不合法，可输入项为：" + statusJoin);
+//            sysUserVO.setImportErrorMsg("请填写用户状态或用户状态不合法，可输入项为：" + statusJoin);
             errorUserVos.add(sysUserVO);
             return false;
         }
@@ -595,7 +594,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     private boolean filterRole(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<String> allRoleNameList) {
         if (StringUtils.hasText(sysUserVO.getRoleName())) {
             if (sysUserVO.getRoleName().contains("超级管理员")) {
-                sysUserVO.setImportErrorMsg("不允许导入超级管理员角色用户");
+                // sysUserVO.setImportErrorMsg("不允许导入超级管理员角色用户");
                 errorUserVos.add(sysUserVO);
                 return false;
             }
@@ -603,7 +602,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             String[] roleNames = sysUserVO.getRoleName().split("、");
             for (String roleName : roleNames) {
                 if (!allRoleNameList.contains(roleName)) {
-                    sysUserVO.setImportErrorMsg("角色 " + roleName + " 不存在，请检查数据或联系管理员");
+                    // sysUserVO.setImportErrorMsg("角色 " + roleName + " 不存在，请检查数据或联系管理员");
                     errorUserVos.add(sysUserVO);
                     return false;
                 }
@@ -623,7 +622,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         }
         for (String deptLabel : deptLabelList) {
             if (!allDeptNameList.contains(deptLabel)) {
-                sysUserVO.setImportErrorMsg("部门 " + deptLabel + " 不存在，请检查数据或联系管理员");
+                // sysUserVO.setImportErrorMsg("部门 " + deptLabel + " 不存在，请检查数据或联系管理员");
                 errorUserVos.add(sysUserVO);
                 return false;
             }
@@ -639,7 +638,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         List<String> postLabelList = sysUserVO.getPostLabelList() == null ? new ArrayList<>() : sysUserVO.getPostLabelList();
         // 正常情况下部门集合和岗位集合大小是相同的，当岗位集合数量 > 部门集合数量时，即数据有误
         if (postLabelList.size() > deptLabelList.size()) {
-            sysUserVO.setImportErrorMsg("部门与岗位数量不匹配，请检查数据");
+            // sysUserVO.setImportErrorMsg("部门与岗位数量不匹配，请检查数据");
             errorUserVos.add(sysUserVO);
             return false;
         }
@@ -651,7 +650,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             SysDeptVO targetDept = targetDeptList.get(0);
             // 没有部门但是有对应岗位的情况
             if (targetDept == null && !StringUtils.hasText(postLabelsStr)) {
-                sysUserVO.setImportErrorMsg("请填写岗位对应的部门");
+                // sysUserVO.setImportErrorMsg("请填写岗位对应的部门");
                 errorUserVos.add(sysUserVO);
                 return false;
             }
@@ -664,7 +663,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                     List<String> postNameList = sysPostList.stream().map(SysPost::getName).toList();
                     for (String postName : postArray) {
                         if (!postNameList.contains(postName)) {
-                            sysUserVO.setImportErrorMsg(targetDept.getName() + " 下无 " + postName + " 岗位，请检查数据");
+                            // sysUserVO.setImportErrorMsg(targetDept.getName() + " 下无 " + postName + " 岗位，请检查数据");
                             errorUserVos.add(sysUserVO);
                             return false;
                         }
@@ -672,7 +671,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                 } else {
                     // 部门下岗位为空，但导入数据下有岗位
                     if (StringUtils.hasText(postLabelsStr)) {
-                        sysUserVO.setImportErrorMsg(targetDept.getName() + " 下无 " + postLabelsStr + " 岗位，请检查数据");
+                        // sysUserVO.setImportErrorMsg(targetDept.getName() + " 下无 " + postLabelsStr + " 岗位，请检查数据");
                         errorUserVos.add(sysUserVO);
                         return false;
                     }

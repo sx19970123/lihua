@@ -22,12 +22,6 @@ public class SysDeptVO extends SysDept {
     private String postNames;
 
     /**
-     * excel 批量导入异常说明
-     * 数据导入后，因异常无法入库的数据错误描述
-     */
-    private String importErrorMsg;
-
-    /**
      * 岗位信息
      */
     private List<SysPost> sysPostList;

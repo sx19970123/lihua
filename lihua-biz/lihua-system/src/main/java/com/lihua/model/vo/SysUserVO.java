@@ -1,20 +1,25 @@
 package com.lihua.model.vo;
 
+import com.lihua.annotation.DictType;
 import com.lihua.annotation.Sensitive;
+import com.lihua.converter.DictConverter;
 import com.lihua.enums.DesensitizedTypeEnum;
 import com.lihua.model.BaseEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
+import org.apache.fesod.sheet.annotation.ExcelIgnoreUnannotated;
+import org.apache.fesod.sheet.annotation.ExcelProperty;
 import java.util.List;
 
 /**
  * 系统用户
  */
+@ExcelIgnoreUnannotated
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysUserVO extends BaseEntity {
+
     /**
      * 主键
      */
@@ -24,6 +29,7 @@ public class SysUserVO extends BaseEntity {
      * 用户名
      */
     @NotNull(message = "用户名不能为空")
+    @ExcelProperty({"用户信息", "用户名"})
     private String username;
 
     /**
@@ -35,7 +41,54 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户名称
      */
+    @ExcelProperty({"用户信息", "昵称"})
     private String nickname;
+
+    /**
+     * 性别
+     */
+    @ExcelProperty(value = {"用户信息", "性别"}, converter = DictConverter.class)
+    @DictType("user_gender")
+    private String gender;
+
+    /**
+     * 用户状态
+     */
+    @ExcelProperty(value = {"用户信息", "状态"}, converter = DictConverter.class)
+    @DictType("sys_status")
+    private String status;
+
+    /**
+     * 用户注册类型
+     */
+    @ExcelProperty(value = {"用户信息", "注册方式"}, converter = DictConverter.class)
+    @DictType("sys_user_register_type")
+    private String registerType;
+
+    /**
+     * 手机号码
+     */
+    @Sensitive(type = DesensitizedTypeEnum.PHONE_NUMBER, ignoreRoleCodes = {})
+    @ExcelProperty({"用户信息", "手机号码"})
+    private String phoneNumber;
+
+    /**
+     * 邮箱
+     */
+    @ExcelProperty({"用户信息", "邮箱"})
+    private String email;
+
+    /**
+     * 角色名称
+     */
+    @ExcelProperty({"用户信息", "角色名称"})
+    private String roleName;
+
+    /**
+     * 备注
+     */
+    @ExcelProperty({"用户信息", "备注"})
+    private String remark;
 
     /**
      * 用户头像
@@ -43,40 +96,9 @@ public class SysUserVO extends BaseEntity {
     private String avatar;
 
     /**
-     * 性别
-     */
-    private String gender;
-
-    /**
-     * 用户状态
-     */
-    private String status;
-
-    /**
      * 用户应用系统主题
      */
     private String theme;
-
-    /**
-     * 手机号码
-     */
-    @Sensitive(type = DesensitizedTypeEnum.PHONE_NUMBER, ignoreRoleCodes = {})
-    private String phoneNumber;
-
-    /**
-     * 邮箱
-     */
-    private String email;
-
-    /**
-     * 备注
-     */
-    private String remark;
-
-    /**
-     * 角色名称
-     */
-    private String roleName;
 
     /**
      * 所属部门名称集合
@@ -123,14 +145,4 @@ public class SysUserVO extends BaseEntity {
      */
     private List<String> roleNameList;
 
-    /**
-     * excel 批量导入异常说明
-     * 数据导入后，因异常无法入库的数据错误描述
-     */
-    private String importErrorMsg;
-
-    /**
-     * 用户注册类型
-     */
-    private String registerType;
 }

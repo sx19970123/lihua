@@ -393,7 +393,7 @@ import {useSettingStore} from "@/stores/setting.ts";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
 import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
-import {download} from "@/utils/AttachmentDownload.ts";
+import {download, downloadFromUrl} from "@/utils/AttachmentDownload.ts";
 import settings from "@/settings.ts";
 import {useUserStore} from "@/stores/user.ts";
 import {refreshUserData} from "@/utils/AppInit.ts";
@@ -1118,12 +1118,9 @@ const initExcel = () => {
     const spinInstance = Spin.service({
       tip: '努力加载中...'
     });
-    const resp = await exportExcel(userQuery.value)
-    if (resp.code === 200) {
-      download(resp.data)
-    } else {
-      message.error(resp.msg)
-    }
+    // blob转为url后进行下载
+    const blob = await exportExcel(userQuery.value)
+    downloadFromUrl(URL.createObjectURL(blob), "导出用户")
     spinInstance.close()
   }
   // 文件上传前校验格式

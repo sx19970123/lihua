@@ -352,7 +352,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             String namePath = deptVO.getNamePath();
             for (String errorParentName : errorParentNameSet) {
                 if (namePath.contains(errorParentName)) {
-                    deptVO.setImportErrorMsg("父级部门 " + errorParentName + " 存在异常或不存在，请检查对应父级部门数据");
+                    // deptVO.setImportErrorMsg("父级部门 " + errorParentName + " 存在异常或不存在，请检查对应父级部门数据");
                     errorDeptVos.add(deptVO);
                     return false;
                 }
@@ -390,13 +390,13 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         String namePath = sysDeptVO.getNamePath();
 
         if (!StringUtils.hasText(namePath)) {
-            sysDeptVO.setImportErrorMsg("部门名称路径为空，请检查数据");
+            // sysDeptVO.setImportErrorMsg("部门名称路径为空，请检查数据");
             errorDeptVos.add(sysDeptVO);
             return false;
         }
 
         if (!namePath.endsWith(sysDeptVO.getName())) {
-            sysDeptVO.setImportErrorMsg("部门名称路径最后一级必须为当前部门名称，请检查数据");
+            // sysDeptVO.setImportErrorMsg("部门名称路径最后一级必须为当前部门名称，请检查数据");
             errorDeptVos.add(sysDeptVO);
             return false;
         }
@@ -409,7 +409,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         String email = sysDeptVO.getEmail();
         if (StringUtils.hasText(email)) {
             if (!EMAIL_PATTERN.matcher(email).matches()) {
-                sysDeptVO.setImportErrorMsg("邮箱格式错误，请检查数据");
+                // sysDeptVO.setImportErrorMsg("邮箱格式错误，请检查数据");
                 errorDeptVos.add(sysDeptVO);
                 return false;
             }
@@ -422,7 +422,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         String phoneNumber = sysDeptVO.getPhoneNumber();
         if (StringUtils.hasText(phoneNumber)) {
             if (!PHONE_NUMBER_PATTERN.matcher(phoneNumber).matches()) {
-                sysDeptVO.setImportErrorMsg("手机号码格式错误，请检查数据");
+                // sysDeptVO.setImportErrorMsg("手机号码格式错误，请检查数据");
                 errorDeptVos.add(sysDeptVO);
                 return false;
             }
@@ -435,7 +435,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     private boolean filterStatus(SysDeptVO sysDeptVO, List<SysDeptVO> errorDeptVos, List<DictDataModel> sysStatus, String statusJoin) {
         List<DictDataModel> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysDeptVO.getStatus())).toList();
         if (status.isEmpty()) {
-            sysDeptVO.setImportErrorMsg("请填写部门状态或部门状态不合法，可输入项为：" + statusJoin);
+            // sysDeptVO.setImportErrorMsg("请填写部门状态或部门状态不合法，可输入项为：" + statusJoin);
             errorDeptVos.add(sysDeptVO);
             return false;
         }
@@ -446,12 +446,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     // 过滤部门名称
     private boolean filterDeptName(SysDeptVO sysDeptVO, List<SysDeptVO> errorDeptVos, Set<String> deptNameRepeatSet) {
         if (!StringUtils.hasText(sysDeptVO.getName())) {
-            sysDeptVO.setImportErrorMsg("请填写部门名称");
+            // sysDeptVO.setImportErrorMsg("请填写部门名称");
             errorDeptVos.add(sysDeptVO);
             return false;
         }
         if (deptNameRepeatSet.contains(sysDeptVO.getName())) {
-            sysDeptVO.setImportErrorMsg("部门名称已存在");
+            // sysDeptVO.setImportErrorMsg("部门名称已存在");
             errorDeptVos.add(sysDeptVO);
             return false;
         }
@@ -461,12 +461,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     // 过滤部门编码
     private boolean filterDeptCode(SysDeptVO sysDeptVO, List<SysDeptVO> errorDeptVos, Set<String> deptCodeDbSet) {
         if (!StringUtils.hasText(sysDeptVO.getCode())) {
-            sysDeptVO.setImportErrorMsg("请填写部门编码");
+            // sysDeptVO.setImportErrorMsg("请填写部门编码");
             errorDeptVos.add(sysDeptVO);
             return false;
         }
         if (deptCodeDbSet.contains(sysDeptVO.getCode())) {
-            sysDeptVO.setImportErrorMsg("部门编码已存在");
+            // sysDeptVO.setImportErrorMsg("部门编码已存在");
             errorDeptVos.add(sysDeptVO);
             return false;
         }
@@ -501,13 +501,13 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         String code = sysDeptVO.getCode();
 
         if (deptNameRepeatSet.contains(name)) {
-            sysDeptVO.setImportErrorMsg("当前excel附件中部门名称：" + name + " 重复，请检查");
+//            sysDeptVO.setImportErrorMsg("当前excel附件中部门名称：" + name + " 重复，请检查");
             errorDeptVos.add(sysDeptVO);
             return false;
         }
 
         if (deptCodeRepeatSet.contains(code)) {
-            sysDeptVO.setImportErrorMsg("当前excel附件中部门编码：" + code + " 重复，请检查");
+//            sysDeptVO.setImportErrorMsg("当前excel附件中部门编码：" + code + " 重复，请检查");
             errorDeptVos.add(sysDeptVO);
             return false;
         }

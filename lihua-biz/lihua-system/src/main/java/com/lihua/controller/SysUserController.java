@@ -12,6 +12,7 @@ import com.lihua.model.vo.SysUserVO;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysUserService;
+import com.lihua.utils.ExcelUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -75,8 +76,9 @@ public class SysUserController extends ApiResponseController {
 
     @PostMapping("export")
     @Log(description = "批量导出用户信息", type = LogTypeEnum.EXPORT)
-    public ApiResponseModel<String> exportExcel(@RequestBody SysUserDTO sysUserDTO) {
-        return success(sysUserService.exportExcel(sysUserDTO));
+    public void exportExcel(@RequestBody SysUserDTO sysUserDTO) {
+        List<SysUserVO> sysUserVOS = sysUserService.exportExcel(sysUserDTO);
+        ExcelUtils.export(sysUserVOS, SysUserVO.class);
     }
 
     @GetMapping("option/{deptId}")

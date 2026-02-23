@@ -25,12 +25,18 @@ public class WebUtils {
     }
 
     /**
-     * 获取当前请求的HttpServletRequest
+     * 获取当前请求的 HttpServletRequest
      */
     public static HttpServletRequest getCurrentRequest() {
         return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
     }
 
+    /**
+     * 获取当前请求的 HttpServletResponse
+     */
+    public static HttpServletResponse getCurrentResponse() {
+        return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getResponse();
+    }
 
     /**
      * 获取客户端类型
