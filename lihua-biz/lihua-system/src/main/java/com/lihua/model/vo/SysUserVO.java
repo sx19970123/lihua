@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.fesod.sheet.annotation.ExcelIgnoreUnannotated;
 import org.apache.fesod.sheet.annotation.ExcelProperty;
+import org.apache.fesod.sheet.annotation.write.style.ColumnWidth;
+
 import java.util.List;
 
 /**
@@ -30,6 +32,7 @@ public class SysUserVO extends BaseEntity {
      */
     @NotNull(message = "用户名不能为空")
     @ExcelProperty({"用户信息", "用户名"})
+    @ColumnWidth(20)
     private String username;
 
     /**
@@ -42,6 +45,7 @@ public class SysUserVO extends BaseEntity {
      * 用户名称
      */
     @ExcelProperty({"用户信息", "昵称"})
+    @ColumnWidth(20)
     private String nickname;
 
     /**
@@ -49,6 +53,7 @@ public class SysUserVO extends BaseEntity {
      */
     @ExcelProperty(value = {"用户信息", "性别"}, converter = DictConverter.class)
     @DictType("user_gender")
+    @ColumnWidth(10)
     private String gender;
 
     /**
@@ -56,6 +61,7 @@ public class SysUserVO extends BaseEntity {
      */
     @ExcelProperty(value = {"用户信息", "状态"}, converter = DictConverter.class)
     @DictType("sys_status")
+    @ColumnWidth(10)
     private String status;
 
     /**
@@ -63,6 +69,7 @@ public class SysUserVO extends BaseEntity {
      */
     @ExcelProperty(value = {"用户信息", "注册方式"}, converter = DictConverter.class)
     @DictType("sys_user_register_type")
+    @ColumnWidth(20)
     private String registerType;
 
     /**
@@ -70,25 +77,43 @@ public class SysUserVO extends BaseEntity {
      */
     @Sensitive(type = DesensitizedTypeEnum.PHONE_NUMBER, ignoreRoleCodes = {})
     @ExcelProperty({"用户信息", "手机号码"})
+    @ColumnWidth(20)
     private String phoneNumber;
 
     /**
      * 邮箱
      */
     @ExcelProperty({"用户信息", "邮箱"})
+    @ColumnWidth(30)
     private String email;
 
     /**
      * 角色名称
      */
     @ExcelProperty({"用户信息", "角色名称"})
+    @ColumnWidth(30)
     private String roleName;
 
     /**
      * 备注
      */
     @ExcelProperty({"用户信息", "备注"})
+    @ColumnWidth(20)
     private String remark;
+
+    /**
+     * 部门编码
+     */
+    @ExcelProperty({"所属部门", "部门名称"})
+    @ColumnWidth(30)
+    private String deptName;
+
+    /**
+     * 部门名称
+     */
+    @ExcelProperty({"所属部门", "部门编码"})
+    @ColumnWidth(30)
+    private String deptCode;
 
     /**
      * 用户头像
@@ -101,26 +126,6 @@ public class SysUserVO extends BaseEntity {
     private String theme;
 
     /**
-     * 所属部门名称集合
-     */
-    private List<String> deptLabelList;
-
-    /**
-     * 所属部门编码集合
-     */
-    private List<String> deptCodeList;
-
-    /**
-     * 所属部门下的岗位名称
-     */
-    private List<String> postLabelList;
-
-    /**
-     * 所属部门id集合
-     */
-    private List<String> deptIdList;
-
-    /**
      * 默认单位id
      */
     private String defaultDeptId;
@@ -131,18 +136,22 @@ public class SysUserVO extends BaseEntity {
     private List<String> defaultDeptIdList;
 
     /**
-     * 所属角色id集合
+     * 部门id列表
      */
-    private List<String> roleIdList;
+    private List<String> deptIdList;
 
     /**
-     * 所属岗位id集合
+     * 岗位id列表
      */
     private List<String> postIdList;
 
     /**
-     * 角色名称集合
+     * 角色id列表
+     */
+    private List<String> roleIdList;
+
+    /**
+     * 角色名称列表
      */
     private List<String> roleNameList;
-
 }

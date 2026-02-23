@@ -33,16 +33,11 @@
         <result column="status" property="status" />
         <result column="email" property="email" />
         <result column="phone_number" property="phoneNumber" />
+        <result column="register_type" property="registerType" />
         <result column="remark" property="remark" />
-        <collection property="deptIdList" ofType="java.lang.String">
-            <result column="id"/>
-        </collection>
-        <collection property="deptCodeList" ofType="java.lang.String">
-            <result column="code"/>
-        </collection>
-        <collection property="deptLabelList" ofType="java.lang.String">
-            <result column="deptName"/>
-        </collection>
+        <result column="deptName" property="deptName" />
+        <result column="deptCode" property="deptCode" />
+        <result column="deptCode" property="deptCode" />
         <collection property="roleNameList" ofType="java.lang.String">
             <result column="roleName"/>
         </collection>
@@ -133,11 +128,11 @@
             sys_user.nickname,
             sys_user.gender,
             sys_user.status,
+            sys_user.register_type,
             sys_user.phone_number,
             sys_user.email,
             sys_user.remark,
-            sys_dept.id,
-            sys_dept.code,
+            sys_dept.code as deptCode,
             sys_dept.name as deptName,
             sys_role.name as roleName
         FROM

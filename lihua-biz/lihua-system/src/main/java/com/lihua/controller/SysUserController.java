@@ -5,6 +5,7 @@ import com.lihua.annotation.Log;
 import com.lihua.entity.SysUser;
 import com.lihua.enums.LogTypeEnum;
 import com.lihua.enums.ResultCodeEnum;
+import com.lihua.merge.UserMergeStrategy;
 import com.lihua.model.dto.ResetPasswordDTO;
 import com.lihua.model.dto.SysUserDTO;
 import com.lihua.model.validation.MaxPageSizeLimit;
@@ -78,7 +79,7 @@ public class SysUserController extends ApiResponseController {
     @Log(description = "批量导出用户信息", type = LogTypeEnum.EXPORT)
     public void exportExcel(@RequestBody SysUserDTO sysUserDTO) {
         List<SysUserVO> sysUserVOS = sysUserService.exportExcel(sysUserDTO);
-        ExcelUtils.export(sysUserVOS, SysUserVO.class);
+        ExcelUtils.export(sysUserVOS, SysUserVO.class, new UserMergeStrategy(sysUserVOS.size()));
     }
 
     @GetMapping("option/{deptId}")

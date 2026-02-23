@@ -213,38 +213,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
         queryWrapper.eq("sys_user.del_flag","0").orderByDesc("sys_user.id");
 
-        List<SysUserVO> exportList = sysUserMapper.queryExportData(queryWrapper);
+        // 数据查询
+        List<SysUserVO> sysUserVOS = sysUserMapper.queryExportData(queryWrapper);
 
-        // 获取所有部门id
-        List<String> deptIds = exportList
+        // 处理拼接角色名称
+        return sysUserVOS
                 .stream()
-                .map(SysUserVO::getDeptIdList)
-                .flatMap(Collection::stream)
-                .distinct()
+                .peek(sysUserVO -> sysUserVO.setRoleName(String.join("、", sysUserVO.getRoleNameList())))
                 .toList();
-
-        // 根据部门id获取岗位信息
-        List<SysPost> postList = sysPostService.queryPostByDeptId(deptIds);
-
-        // 创建deptId 与 post 映射
-        Map<String, List<String>> postGroupByDeptId = postList
-                .stream()
-                .collect(Collectors.groupingBy(SysPost::getDeptId,Collectors.mapping(SysPost::getName, Collectors.toList())));
-
-        exportList.forEach(export -> {
-            // 根据deptId顺序设置岗位名称
-            List<String> postNameLis = export.getDeptIdList()
-                    .stream()
-                    .map(deptId -> {
-                        List<String> postNames = postGroupByDeptId.getOrDefault(deptId, Collections.emptyList());
-                        return String.join("、", postNames);
-                    }).toList();
-            export.setPostLabelList(postNameLis);
-            // 角色名称
-            export.setRoleName(String.join("、",export.getRoleNameList()));
-        });
-
-        return exportList;
     }
 
     @Transactional
@@ -615,18 +591,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
      * 过滤掉不合法的部门数据
      */
     private boolean filterDept(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<String> allDeptNameList) {
-        List<String> deptLabelList = sysUserVO.getDeptLabelList();
-        // 允许部门为空
-        if (deptLabelList == null) {
-            return true;
-        }
-        for (String deptLabel : deptLabelList) {
-            if (!allDeptNameList.contains(deptLabel)) {
-                // sysUserVO.setImportErrorMsg("部门 " + deptLabel + " 不存在，请检查数据或联系管理员");
-                errorUserVos.add(sysUserVO);
-                return false;
-            }
-        }
+//        List<String> deptLabelList = sysUserVO.getDeptLabelList();
+//        // 允许部门为空
+//        if (deptLabelList == null) {
+//            return true;
+//        }
+//        for (String deptLabel : deptLabelList) {
+//            if (!allDeptNameList.contains(deptLabel)) {
+//                // sysUserVO.setImportErrorMsg("部门 " + deptLabel + " 不存在，请检查数据或联系管理员");
+//                errorUserVos.add(sysUserVO);
+//                return false;
+//            }
+//        }
         return true;
     }
 
@@ -634,50 +610,50 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
      * 过滤掉不合法的岗位
      */
     private boolean filterPost(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<SysDeptVO> sysDeptList) {
-        List<String> deptLabelList = sysUserVO.getDeptLabelList() == null ? new ArrayList<>() : sysUserVO.getDeptLabelList();
-        List<String> postLabelList = sysUserVO.getPostLabelList() == null ? new ArrayList<>() : sysUserVO.getPostLabelList();
-        // 正常情况下部门集合和岗位集合大小是相同的，当岗位集合数量 > 部门集合数量时，即数据有误
-        if (postLabelList.size() > deptLabelList.size()) {
-            // sysUserVO.setImportErrorMsg("部门与岗位数量不匹配，请检查数据");
-            errorUserVos.add(sysUserVO);
-            return false;
-        }
-
-        for (int i = 0; i < deptLabelList.size(); i++) {
-            String deptLabel = deptLabelList.get(i);
-            String postLabelsStr = postLabelList.get(i);
-            List<SysDeptVO> targetDeptList = sysDeptList.stream().filter(dept -> dept.getName().equals(deptLabel)).toList();
-            SysDeptVO targetDept = targetDeptList.get(0);
-            // 没有部门但是有对应岗位的情况
-            if (targetDept == null && !StringUtils.hasText(postLabelsStr)) {
-                // sysUserVO.setImportErrorMsg("请填写岗位对应的部门");
-                errorUserVos.add(sysUserVO);
-                return false;
-            }
-            // 部门不为空检查对应岗位
-            if (targetDept != null) {
-                // 部门下岗位不为空，检查填写岗位是否存在
-                List<SysPost> sysPostList = targetDept.getSysPostList();
-                if (sysPostList != null && StringUtils.hasText(postLabelsStr)) {
-                    String[] postArray = postLabelsStr.split("、");
-                    List<String> postNameList = sysPostList.stream().map(SysPost::getName).toList();
-                    for (String postName : postArray) {
-                        if (!postNameList.contains(postName)) {
-                            // sysUserVO.setImportErrorMsg(targetDept.getName() + " 下无 " + postName + " 岗位，请检查数据");
-                            errorUserVos.add(sysUserVO);
-                            return false;
-                        }
-                    }
-                } else {
-                    // 部门下岗位为空，但导入数据下有岗位
-                    if (StringUtils.hasText(postLabelsStr)) {
-                        // sysUserVO.setImportErrorMsg(targetDept.getName() + " 下无 " + postLabelsStr + " 岗位，请检查数据");
-                        errorUserVos.add(sysUserVO);
-                        return false;
-                    }
-                }
-            }
-        }
+//        List<String> deptLabelList = sysUserVO.getDeptLabelList() == null ? new ArrayList<>() : sysUserVO.getDeptLabelList();
+//        List<String> postLabelList = sysUserVO.getPostLabelList() == null ? new ArrayList<>() : sysUserVO.getPostLabelList();
+//        // 正常情况下部门集合和岗位集合大小是相同的，当岗位集合数量 > 部门集合数量时，即数据有误
+//        if (postLabelList.size() > deptLabelList.size()) {
+//            // sysUserVO.setImportErrorMsg("部门与岗位数量不匹配，请检查数据");
+//            errorUserVos.add(sysUserVO);
+//            return false;
+//        }
+//
+//        for (int i = 0; i < deptLabelList.size(); i++) {
+//            String deptLabel = deptLabelList.get(i);
+//            String postLabelsStr = postLabelList.get(i);
+//            List<SysDeptVO> targetDeptList = sysDeptList.stream().filter(dept -> dept.getName().equals(deptLabel)).toList();
+//            SysDeptVO targetDept = targetDeptList.get(0);
+//            // 没有部门但是有对应岗位的情况
+//            if (targetDept == null && !StringUtils.hasText(postLabelsStr)) {
+//                // sysUserVO.setImportErrorMsg("请填写岗位对应的部门");
+//                errorUserVos.add(sysUserVO);
+//                return false;
+//            }
+//            // 部门不为空检查对应岗位
+//            if (targetDept != null) {
+//                // 部门下岗位不为空，检查填写岗位是否存在
+//                List<SysPost> sysPostList = targetDept.getSysPostList();
+//                if (sysPostList != null && StringUtils.hasText(postLabelsStr)) {
+//                    String[] postArray = postLabelsStr.split("、");
+//                    List<String> postNameList = sysPostList.stream().map(SysPost::getName).toList();
+//                    for (String postName : postArray) {
+//                        if (!postNameList.contains(postName)) {
+//                            // sysUserVO.setImportErrorMsg(targetDept.getName() + " 下无 " + postName + " 岗位，请检查数据");
+//                            errorUserVos.add(sysUserVO);
+//                            return false;
+//                        }
+//                    }
+//                } else {
+//                    // 部门下岗位为空，但导入数据下有岗位
+//                    if (StringUtils.hasText(postLabelsStr)) {
+//                        // sysUserVO.setImportErrorMsg(targetDept.getName() + " 下无 " + postLabelsStr + " 岗位，请检查数据");
+//                        errorUserVos.add(sysUserVO);
+//                        return false;
+//                    }
+//                }
+//            }
+//        }
         return true;
     }
 
@@ -715,38 +691,38 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                     }
                 }
             }
-            // 构建部门/岗位
-            List<String> deptLabelList = sysUserVO.getDeptLabelList() == null ? new ArrayList<>() : sysUserVO.getDeptLabelList();
-            List<String> postLabelList = sysUserVO.getPostLabelList() == null ? new ArrayList<>() : sysUserVO.getPostLabelList();
-            if (!deptLabelList.isEmpty()) {
-                // 循环计数器
-                AtomicInteger index = new AtomicInteger();
-                deptLabelList.forEach(deptLabel -> {
-                    List<SysDeptVO> deptVOList = sysDeptList.stream().filter(dept -> dept.getName().equals(deptLabel)).toList();
-                    if (!deptVOList.isEmpty()) {
-                        SysDeptVO sysDeptVO = deptVOList.get(0);
-                        // 构建部门
-                        SysUserDept sysUserDept = new SysUserDept(userId, sysDeptVO.getId(), DateUtils.now(), LoginUserContext.getUserId(), "1");
-                        sysUserDeptList.add(sysUserDept);
-
-                        // 构建部门下岗位
-                        List<SysPost> sysPostList = sysDeptVO.getSysPostList();
-                        // deptLabelList 与 postLabelList 集合size 相同，通过循环 deptLabelList 获取index从 postLabelList 中获取对应元素
-                        String postStrNames = postLabelList.get(index.get());
-                        if (StringUtils.hasText(postStrNames)) {
-                            String[] postNames = postStrNames.split("、");
-                            for (String postName : postNames) {
-                                List<String> postIds = sysPostList.stream().filter(post -> post.getName().equals(postName)).map(SysPost::getId).toList();
-                                if (!postIds.isEmpty()) {
-                                    SysUserPost sysUserPost = new SysUserPost(userId, postIds.get(0), DateUtils.now(), LoginUserContext.getUserId());
-                                    sysUserPostList.add(sysUserPost);
-                                }
-                            }
-                        }
-                    }
-                    index.getAndIncrement();
-                });
-            }
+//            // 构建部门/岗位
+//            List<String> deptLabelList = sysUserVO.getDeptLabelList() == null ? new ArrayList<>() : sysUserVO.getDeptLabelList();
+//            List<String> postLabelList = sysUserVO.getPostLabelList() == null ? new ArrayList<>() : sysUserVO.getPostLabelList();
+//            if (!deptLabelList.isEmpty()) {
+//                // 循环计数器
+//                AtomicInteger index = new AtomicInteger();
+//                deptLabelList.forEach(deptLabel -> {
+//                    List<SysDeptVO> deptVOList = sysDeptList.stream().filter(dept -> dept.getName().equals(deptLabel)).toList();
+//                    if (!deptVOList.isEmpty()) {
+//                        SysDeptVO sysDeptVO = deptVOList.get(0);
+//                        // 构建部门
+//                        SysUserDept sysUserDept = new SysUserDept(userId, sysDeptVO.getId(), DateUtils.now(), LoginUserContext.getUserId(), "1");
+//                        sysUserDeptList.add(sysUserDept);
+//
+//                        // 构建部门下岗位
+//                        List<SysPost> sysPostList = sysDeptVO.getSysPostList();
+//                        // deptLabelList 与 postLabelList 集合size 相同，通过循环 deptLabelList 获取index从 postLabelList 中获取对应元素
+//                        String postStrNames = postLabelList.get(index.get());
+//                        if (StringUtils.hasText(postStrNames)) {
+//                            String[] postNames = postStrNames.split("、");
+//                            for (String postName : postNames) {
+//                                List<String> postIds = sysPostList.stream().filter(post -> post.getName().equals(postName)).map(SysPost::getId).toList();
+//                                if (!postIds.isEmpty()) {
+//                                    SysUserPost sysUserPost = new SysUserPost(userId, postIds.get(0), DateUtils.now(), LoginUserContext.getUserId());
+//                                    sysUserPostList.add(sysUserPost);
+//                                }
+//                            }
+//                        }
+//                    }
+//                    index.getAndIncrement();
+//                });
+//            }
         });
 
         // 保存用户数据
@@ -767,11 +743,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         Map<String, List<SysUserDeptDTO>> groupByUserId = userDeptByUserIds.stream().collect(Collectors.groupingBy(SysUserDeptDTO::getUserId));
 
         // 为用户所属部门赋值
-        records.forEach(user -> groupByUserId.forEach((key, value) -> {
-            if (user.getId().equals(key)) {
-                user.setDeptLabelList(value.stream().map(SysUserDeptDTO::getDeptName).toList());
-            }
-        }));
+//        records.forEach(user -> groupByUserId.forEach((key, value) -> {
+//            if (user.getId().equals(key)) {
+//                user.setDeptLabelList(value.stream().map(SysUserDeptDTO::getDeptName).toList());
+//            }
+//        }));
     }
 
     // 新增用户
