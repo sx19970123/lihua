@@ -19,12 +19,14 @@ import com.lihua.model.dto.ResetPasswordDTO;
 import com.lihua.model.dto.SysUserDTO;
 import com.lihua.model.dto.SysUserDeptDTO;
 import com.lihua.model.vo.SysDeptVO;
+import com.lihua.model.vo.SysPostVO;
 import com.lihua.model.vo.SysUserVO;
 import com.lihua.service.*;
 import com.lihua.utils.DictUtils;
 import com.lihua.utils.SecurityUtils;
 import com.lihua.utils.date.DateUtils;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,6 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -216,10 +217,30 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         // 数据查询
         List<SysUserVO> sysUserVOS = sysUserMapper.queryExportData(queryWrapper);
 
+        // 根据用户id查询用户拥有的岗位，并根据部门id分组，获取部门id下对应的岗位集合
+        Set<String> userIdSet = sysUserVOS.stream().map(SysUserVO::getId).collect(Collectors.toSet());
+        List<SysPostVO> sysPosts = sysUserPostService.queryPostByUserIds(userIdSet);
+        Map<String, List<SysPostVO>> groupByDeptIdPostMap = sysPosts
+                .stream()
+                .collect(Collectors.groupingBy(SysPost::getDeptId));
+
         // 处理拼接角色名称
         return sysUserVOS
                 .stream()
-                .peek(sysUserVO -> sysUserVO.setRoleName(String.join("、", sysUserVO.getRoleNameList())))
+                .peek(sysUserVO -> {
+                    // 角色名称
+                    sysUserVO.setRoleName(String.join("、", sysUserVO.getRoleNameList()));
+                    // 用户拥有的岗位
+                    List<SysPostVO> sysPostVOS = groupByDeptIdPostMap.get(sysUserVO.getDeptId());
+                    if (sysPostVOS != null && !sysPostVOS.isEmpty()) {
+                        Set<String> postNames = sysPostVOS
+                                .stream()
+                                .filter(post -> post.getUserId().equals(sysUserVO.getId()))
+                                .map(SysPostVO::getName)
+                                .collect(Collectors.toSet());
+                        sysUserVO.setPostName(String.join("、", postNames));
+                    }
+                })
                 .toList();
     }
 

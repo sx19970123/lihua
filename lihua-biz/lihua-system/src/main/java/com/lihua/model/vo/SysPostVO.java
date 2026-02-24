@@ -10,4 +10,7 @@ public class SysPostVO extends SysPost {
 
     // 所属部门名称
     private String deptName;
+
+    // 对应用户id
+    private String userId;
 }

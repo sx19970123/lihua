@@ -27,6 +27,7 @@
     </resultMap>
 
     <resultMap id="queryExportDataMap" type="com.lihua.model.vo.SysUserVO">
+        <result column="id" property="id" />
         <result column="username" property="username" />
         <result column="nickname" property="nickname" />
         <result column="gender" property="gender" />
@@ -36,6 +37,7 @@
         <result column="register_type" property="registerType" />
         <result column="remark" property="remark" />
         <result column="deptName" property="deptName" />
+        <result column="deptId" property="deptId" />
         <result column="deptCode" property="deptCode" />
         <result column="deptCode" property="deptCode" />
         <collection property="roleNameList" ofType="java.lang.String">
@@ -124,6 +126,7 @@
 
     <select id="queryExportData" resultMap="queryExportDataMap">
         SELECT
+            sys_user.id,
             sys_user.username,
             sys_user.nickname,
             sys_user.gender,
@@ -132,6 +135,7 @@
             sys_user.phone_number,
             sys_user.email,
             sys_user.remark,
+            sys_dept.id as deptId,
             sys_dept.code as deptCode,
             sys_dept.name as deptName,
             sys_role.name as roleName

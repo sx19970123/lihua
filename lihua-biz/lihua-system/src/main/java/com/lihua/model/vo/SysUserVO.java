@@ -123,6 +123,18 @@ public class SysUserVO extends BaseEntity {
     private String deptCode;
 
     /**
+     * 岗位名称
+     */
+    @ExcelProperty({"所属部门", "岗位"})
+    @ColumnWidth(30)
+    private String postName;
+
+    /**
+     * 部门id
+     */
+    private String deptId;
+
+    /**
      * 用户头像
      */
     private String avatar;
