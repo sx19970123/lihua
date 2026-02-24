@@ -99,47 +99,28 @@
                 <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: var(--lihua-space-xs)"> {{selectedIds.length}} 项</span>
               </a-button>
             </a-popconfirm>
-            <div v-show="showMore">
-              <a-flex :gap="8">
-                <a-button ghost type="primary" @click="handleExportExcel">
-                  <template #icon>
-                    <ExportOutlined />
-                  </template>
-                  导出
-                </a-button>
-                <a-popover title="导入说明">
-                  <template #content>
-                    <a-space direction="vertical">
-                      <a-typography-text>1. 请参考“导出功能”下载的Excel作为导入模板</a-typography-text>
-                      <a-typography-text>2. 以用户名为准，保证全局唯一性。遇到重复数据将无法导入</a-typography-text>
-                      <a-typography-text>3. 带有*标记的为必填字段</a-typography-text>
-                      <a-typography-text>4. 涉及到角色、部门信息、岗位信息请确保系统中录入了对应数据</a-typography-text>
-                      <a-typography-text>5. 无法导入的数据会被收集并导出，同时标记错误信息，修改后可重新导入</a-typography-text>
-                    </a-space>
-                  </template>
-                  <a-upload :customRequest="handleCustomRequest"
-                            :beforeUpload="handleBeforeUpdate"
-                            :showUploadList="false"
-                            accept=".xlsx,.xls"
-                  >
-
-                      <a-button ghost type="primary">
-                        <template #icon>
-                          <ImportOutlined />
-                        </template>
-                        导入
-                      </a-button>
-                  </a-upload>
-                </a-popover>
-              </a-flex>
-            </div>
-            <a-button ghost type="primary" @click="showMore = !showMore">
-              <template #icon>
-                <DoubleLeftOutlined v-if="showMore" />
-                <DoubleRightOutlined v-else />
+            <a-dropdown>
+              <a-button type="primary" ghost>
+                Excel
+                <DownOutlined />
+              </a-button>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item key="export" @click="handleExportExcel">批量导出</a-menu-item>
+                  <a-menu-item key="import">
+                    <a-upload :customRequest="handleCustomRequest"
+                              :beforeUpload="handleBeforeUpdate"
+                              :showUploadList="false"
+                              accept=".xlsx,.xls"
+                              style="width: 100%;"
+                    >
+                      批量导入
+                    </a-upload>
+                  </a-menu-item>
+                  <a-menu-item key="template">模板下载</a-menu-item>
+                </a-menu>
               </template>
-            </a-button>
-
+            </a-dropdown>
             <!--            表格设置-->
             <table-setting v-model="userColumn"/>
           </a-flex>
@@ -404,8 +385,6 @@ const settingStore = useSettingStore()
 const userStore = useUserStore()
 const route = useRoute()
 const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
-// 显示更多按钮
-const showMore = ref<boolean>(false)
 // 默认密码
 const defaultPassword = ref<string>('')
 // 列表查询
