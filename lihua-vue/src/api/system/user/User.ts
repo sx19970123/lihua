@@ -76,6 +76,15 @@ export const getUserOptionByUserIds = (userIds: String[]) => {
     })
 }
 
+// 下载用户导入模板
+export const excelTemplate = () => {
+    return request<Blob>({
+        url: 'system/user/exportTemplate',
+        method: "get",
+        responseType: 'blob'
+    })
+}
+
 // excel导出
 export const exportExcel = (data: SysUserDTO) => {
     return request<Blob>({

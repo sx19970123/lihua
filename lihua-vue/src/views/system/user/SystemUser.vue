@@ -101,7 +101,7 @@
             </a-popconfirm>
             <a-dropdown>
               <a-button type="primary" ghost>
-                Excel
+                更多
                 <DownOutlined />
               </a-button>
               <template #overlay>
@@ -117,7 +117,7 @@
                       批量导入
                     </a-upload>
                   </a-menu-item>
-                  <a-menu-item key="template">模板下载</a-menu-item>
+                  <a-menu-item @click="handleDownloadExcelTemplate">模板下载</a-menu-item>
                 </a-menu>
               </template>
             </a-dropdown>
@@ -339,7 +339,7 @@
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {
-  deleteByIds,
+  deleteByIds, excelTemplate,
   exportExcel,
   importExcel,
   queryById,
@@ -1092,6 +1092,17 @@ const {handleDelete,closePopconfirm,openPopconfirm,openDeletePopconfirm} = intiD
 
 // 初始化excel导入导出相关操作
 const initExcel = () => {
+
+  // 下载excel模板
+  const handleDownloadExcelTemplate = async () => {
+    const spinInstance = Spin.service({
+      tip: '努力加载中...'
+    });
+    const blob = await excelTemplate()
+    downloadFromUrl(URL.createObjectURL(blob), "用户导入模板")
+    spinInstance.close()
+  }
+
   // 导出excel
   const handleExportExcel = async () => {
     const spinInstance = Spin.service({
@@ -1102,6 +1113,7 @@ const initExcel = () => {
     downloadFromUrl(URL.createObjectURL(blob), "导出用户")
     spinInstance.close()
   }
+
   // 文件上传前校验格式
   const handleBeforeUpdate = (file: File) => {
     const fileName = file.name
@@ -1110,6 +1122,7 @@ const initExcel = () => {
       return false
     }
   }
+
   // excel批量导入
   const handleCustomRequest = async (uploadRequest: UploadRequestOption) => {
     if (!uploadRequest) {
@@ -1156,12 +1169,13 @@ const initExcel = () => {
   }
 
   return {
+    handleDownloadExcelTemplate,
     handleExportExcel,
     handleBeforeUpdate,
     handleCustomRequest
   }
 }
-const { handleExportExcel, handleBeforeUpdate, handleCustomRequest } = initExcel()
+const { handleDownloadExcelTemplate, handleExportExcel, handleBeforeUpdate, handleCustomRequest } = initExcel()
 
 // 重置密码
 const initResetPassword = () => {

@@ -2,7 +2,7 @@
   <div>
     <a-layout style="min-height: 100vh">
       <!--   左侧导航   -->
-      <transition :name="themeStore.routeTransition" mode="out-in">
+      <transition :name="themeStore.routeTransition" mode="out-in" v-if="subMenu.length > 0">
         <a-layout-sider :class="themeStore.siderTheme === 'light' ? 'background-glass' : ''"
                         class="side-navigation-sider"
                         v-show="props.showLayout"
@@ -11,7 +11,6 @@
                         v-model:collapsed="permissionStore.collapsed"
                         collapsible
                         breakpoint="xl"
-                        v-if="subMenu.length > 0"
         >
           <Logo class="logo" :show-title="!permissionStore.collapsed"/>
           <!-- 侧边栏-->
