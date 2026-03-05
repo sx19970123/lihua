@@ -1,7 +1,6 @@
 import request from "@/utils/Request.ts";
-import type {ExcelImportResult, MapResponseType, PageResponseType} from "@/api/global/Type.ts";
+import type {MapResponseType, PageResponseType} from "@/api/global/Type.ts";
 import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
-import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 
 /**
  * 分页查询

@@ -1,7 +1,5 @@
 import request from "@/utils/Request.ts";
 import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
-import type {ExcelImportResult} from "@/api/global/Type.ts";
-import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 
 /**
  * 列表查询

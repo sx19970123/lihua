@@ -80,15 +80,7 @@ service.interceptors.response.use((resp) => {
 })
 
 // 数据返回统一封装样式
-export default <T> (config: AxiosRequestConfig) => {
-    return new Promise<ResponseType<T> & Blob>((resolve, reject) => {
-        service
-          .request<ResponseType<T> & Blob>(config)
-          .then((response: AxiosResponse<ResponseType<T> & Blob>) => {
-              resolve(response.data)
-          })
-          .catch((err: ResponseErrorType) => {
-              reject(err);
-          });
-    });
-};
+export default async function request<T>(config: AxiosRequestConfig): Promise<T> {
+    const res = await service.request<T>(config);
+    return res.data;
+}
