@@ -255,7 +255,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         LocalDateTime now = DateUtils.now();
         // 批量插入
         sysUserList.forEach(sysUser -> {
-            sysUser.setRegisterType("3");
+            sysUser.setRegisterType("2");
             sysUser.setPassword(SecurityUtils.encryptPassword(defaultPassword));
             sysUser.setPasswordUpdateTime(now);
         });
