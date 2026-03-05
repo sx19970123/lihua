@@ -79,27 +79,10 @@ export const getPostOptionByDeptId = (deptIds: string[]) => {
  * @param data
  */
 export const exportExcel = (data: SysPostDTO) => {
-    return request<string>({
+    return request<Blob>({
         url: 'system/post/export',
         method: 'post',
-        data: data
-    })
-}
-
-/**
- * excel 导入
- * @param file
- */
-export const importExcel = (file:  string | Blob | RcFile) => {
-    const formData = new FormData()
-    formData.append('file', file)
-
-    return request<ExcelImportResult>({
-        url: 'system/post/import',
-        method: 'post',
-        data: formData,
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
+        data: data,
+        responseType: "blob"
     })
 }

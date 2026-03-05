@@ -54,10 +54,5 @@ public interface SysPostService {
     /**
      * excel 导出
      */
-    String exportExcel(SysPostDTO dto);
-
-    /**
-     * excel 导入
-     */
-    String importExcel(List<SysPostVO> sysPostVOList);
+    List<SysPostVO> exportExcel(SysPostDTO dto);
 }

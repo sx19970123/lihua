@@ -7,15 +7,14 @@ import com.lihua.model.vo.SysDeptVO;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysDeptService;
+import com.lihua.utils.ExcelUtils;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -66,17 +65,9 @@ public class SysDeptController extends ApiResponseController {
 
     @PostMapping("export")
     @Log(description = "批量导出部门", type = LogTypeEnum.EXPORT)
-    public ApiResponseModel<String> exportExcel(@RequestBody SysDept sysDept) {
-        String path = sysDeptService.exportExcel(sysDept);
-        return success(path);
-    }
-
-    @PreAuthorize("hasRole('ROLE_admin')")
-    @PostMapping("import")
-    @Log(description = "批量入部门", type = LogTypeEnum.IMPORT)
-    public ApiResponseModel importExcel(@RequestParam("file") MultipartFile file) {
-        List<SysDeptVO> sysUserVOS = new ArrayList<>();
-        return success(sysDeptService.importExcel(sysUserVOS));
+    public void exportExcel(@RequestBody SysDept sysDept) {
+        List<SysDeptVO> sysDeptVOS = sysDeptService.exportExcel(sysDept);
+        ExcelUtils.export(sysDeptVOS, SysDeptVO.class);
     }
 }
 

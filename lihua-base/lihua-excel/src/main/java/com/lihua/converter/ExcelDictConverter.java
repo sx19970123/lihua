@@ -1,7 +1,7 @@
 package com.lihua.converter;
 
-import com.lihua.annotation.DictType;
-import com.lihua.annotation.Dropdown;
+import com.lihua.annotation.ExcelDictType;
+import com.lihua.annotation.ExcelDropdown;
 import com.lihua.enums.DropdownTypeEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.utils.DictUtils;
@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
 /**
  * 字典转换器
  */
-public class DictConverter implements Converter<String> {
+public class ExcelDictConverter implements Converter<String> {
 
     /**
      * excel导出字典转换器
@@ -31,7 +31,7 @@ public class DictConverter implements Converter<String> {
         }
 
         // 字典注解不存在
-        DictType annotation = contentProperty.getField().getAnnotation(DictType.class);
+        ExcelDictType annotation = contentProperty.getField().getAnnotation(ExcelDictType.class);
         if (annotation == null) {
             return new WriteCellData<>(value);
         }
@@ -73,21 +73,21 @@ public class DictConverter implements Converter<String> {
      * 从注解获取字典类型编码
      */
     private String getDictTypeCode(Field field) {
-        // 获取 DictType 注解
-        DictType dictType = field.getAnnotation(DictType.class);
+        // 获取 ExcelDictType 注解
+        ExcelDictType excelDictType = field.getAnnotation(ExcelDictType.class);
 
-        if (dictType == null) {
-            // DictType 注解不存在获取 Dropdown 注解，获取dictCode
-            Dropdown dropdown = field.getAnnotation(Dropdown.class);
-            if (dropdown == null) {
+        if (excelDictType == null) {
+            // ExcelDictType 注解不存在获取 ExcelDropdown 注解，获取dictCode
+            ExcelDropdown excelDropdown = field.getAnnotation(ExcelDropdown.class);
+            if (excelDropdown == null) {
                 throw new ServiceException("字典相关注解不存在");
             }
-            if (dropdown.type() != DropdownTypeEnum.DICT) {
-                throw new ServiceException("Dropdown 注解类型不为字典类型");
+            if (excelDropdown.type() != DropdownTypeEnum.DICT) {
+                throw new ServiceException("ExcelDropdown 注解类型不为字典类型");
             }
-            return dropdown.value();
+            return excelDropdown.value();
         }
 
-        return dictType.value();
+        return excelDictType.value();
     }
 }

@@ -48,10 +48,5 @@ public interface SysDeptService {
     /**
      * 导出excel
      */
-    String exportExcel(SysDept sysDept);
-
-    /**
-     * excel 导入
-     */
-    String importExcel(List<SysDeptVO> sysUserVOS);
+    List<SysDeptVO> exportExcel(SysDept sysDept);
 }

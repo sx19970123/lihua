@@ -1,6 +1,6 @@
 package com.lihua.handle;
 
-import com.lihua.annotation.Dropdown;
+import com.lihua.annotation.ExcelDropdown;
 import com.lihua.enums.DropdownTypeEnum;
 import com.lihua.model.DictDataModel;
 import com.lihua.utils.DictUtils;
@@ -30,7 +30,7 @@ public class DropdownHandler implements CellWriteHandler {
         // 获取下拉注解
         Field field = head.getField();
         field.setAccessible(true);
-        Dropdown annotation = field.getAnnotation(Dropdown.class);
+        ExcelDropdown annotation = field.getAnnotation(ExcelDropdown.class);
         if (annotation == null) {
             return;
         }
@@ -52,7 +52,7 @@ public class DropdownHandler implements CellWriteHandler {
     /**
      * 获取下拉选项
      */
-    private String[] getOptions(Dropdown annotation) {
+    private String[] getOptions(ExcelDropdown annotation) {
         // 根据不同的下拉类型获取对应label数组
         DropdownTypeEnum dropdownType = annotation.type();
         switch (dropdownType){
@@ -74,7 +74,7 @@ public class DropdownHandler implements CellWriteHandler {
     /**
      * 获取字典下拉
      */
-    private String[] getDictOptions(Dropdown annotation) {
+    private String[] getDictOptions(ExcelDropdown annotation) {
         String dictTypeCode = annotation.value();
         List<DictDataModel> dictData = DictUtils.getDictData(dictTypeCode);
         if (dictData.isEmpty()) {
@@ -86,7 +86,7 @@ public class DropdownHandler implements CellWriteHandler {
     /**
      * 获取自定义下拉
      */
-    private String[] getCustomOptions(Dropdown annotation) {
+    private String[] getCustomOptions(ExcelDropdown annotation) {
         return annotation.options();
     }
 }

@@ -6,9 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 是否启用批注
+ * excel 导出对应字典翻译注解
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface EnableComment {
+@Target(ElementType.FIELD)
+public @interface ExcelDictType {
+
+    /**
+     * 字典编码
+     */
+    String value();
 }

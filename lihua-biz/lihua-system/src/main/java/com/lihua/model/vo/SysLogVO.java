@@ -2,9 +2,9 @@ package com.lihua.model.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.lihua.annotation.DictType;
-import com.lihua.converter.DictConverter;
-import com.lihua.converter.LocalDateTimeConverter;
+import com.lihua.annotation.ExcelDictType;
+import com.lihua.converter.ExcelDictConverter;
+import com.lihua.converter.ExcelLocalDateTimeConverter;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.fesod.sheet.annotation.ExcelIgnoreUnannotated;
@@ -53,9 +53,9 @@ public class SysLogVO implements Serializable {
     /**
      * 日志执行状态
      */
-    @ExcelProperty(value = "执行结果", converter = DictConverter.class)
+    @ExcelProperty(value = "执行结果", converter = ExcelDictConverter.class)
     @ColumnWidth(20)
-    @DictType("sys_log_status")
+    @ExcelDictType("sys_log_status")
     private String executeStatus;
 
     /**
@@ -106,7 +106,7 @@ public class SysLogVO implements Serializable {
     /**
      * 创建时间（操作时间）
      */
-    @ExcelProperty(value = "操作时间", converter = LocalDateTimeConverter.class)
+    @ExcelProperty(value = "操作时间", converter = ExcelLocalDateTimeConverter.class)
     @ColumnWidth(25)
     private LocalDateTime createTime;
 
@@ -146,9 +146,9 @@ public class SysLogVO implements Serializable {
     /**
      * 操作客户端
      */
-    @ExcelProperty(value = "客户端类型", converter = DictConverter.class)
+    @ExcelProperty(value = "客户端类型", converter = ExcelDictConverter.class)
     @ColumnWidth(20)
-    @DictType("sys_client_type")
+    @ExcelDictType("sys_client_type")
     private String clientType;
 
     /**

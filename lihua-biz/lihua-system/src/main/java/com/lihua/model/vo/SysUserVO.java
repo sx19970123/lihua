@@ -1,9 +1,9 @@
 package com.lihua.model.vo;
 
-import com.lihua.annotation.Comment;
-import com.lihua.annotation.DictType;
+import com.lihua.annotation.ExcelComment;
+import com.lihua.annotation.ExcelDictType;
 import com.lihua.annotation.Sensitive;
-import com.lihua.converter.DictConverter;
+import com.lihua.converter.ExcelDictConverter;
 import com.lihua.enums.CommentUseEnum;
 import com.lihua.enums.DesensitizedTypeEnum;
 import com.lihua.model.BaseEntity;
@@ -42,7 +42,7 @@ public class SysUserVO extends BaseEntity {
     @NotNull(message = "用户名不能为空")
     @ExcelProperty({"用户信息", "用户名"})
     @ColumnWidth(20)
-    @Comment(value = "用户名，全局唯一", headRowNum = 1)
+    @ExcelComment(value = "用户名，全局唯一", headRowNum = 1)
     private String username;
 
     /**
@@ -56,31 +56,31 @@ public class SysUserVO extends BaseEntity {
      */
     @ExcelProperty({"用户信息", "昵称"})
     @ColumnWidth(20)
-    @Comment(value = "昵称，必填", use = CommentUseEnum.HEAD, headRowNum = 1)
+    @ExcelComment(value = "昵称，必填", use = CommentUseEnum.HEAD, headRowNum = 1)
     private String nickname;
 
     /**
      * 性别
      */
-    @ExcelProperty(value = {"用户信息", "性别"}, converter = DictConverter.class)
-    @DictType("user_gender")
+    @ExcelProperty(value = {"用户信息", "性别"}, converter = ExcelDictConverter.class)
+    @ExcelDictType("user_gender")
     @ColumnWidth(10)
-    @Comment(value = "性别，字典数据", use = CommentUseEnum.BODY)
+    @ExcelComment(value = "性别，字典数据", use = CommentUseEnum.BODY)
     private String gender;
 
     /**
      * 用户状态
      */
-    @ExcelProperty(value = {"用户信息", "状态"}, converter = DictConverter.class)
-    @DictType("sys_status")
+    @ExcelProperty(value = {"用户信息", "状态"}, converter = ExcelDictConverter.class)
+    @ExcelDictType("sys_status")
     @ColumnWidth(10)
     private String status;
 
     /**
      * 用户注册类型
      */
-    @ExcelProperty(value = {"用户信息", "注册方式"}, converter = DictConverter.class)
-    @DictType("sys_user_register_type")
+    @ExcelProperty(value = {"用户信息", "注册方式"}, converter = ExcelDictConverter.class)
+    @ExcelDictType("sys_user_register_type")
     @ColumnWidth(20)
     private String registerType;
 

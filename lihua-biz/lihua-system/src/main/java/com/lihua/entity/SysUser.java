@@ -3,7 +3,7 @@ package com.lihua.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.lihua.annotation.*;
-import com.lihua.converter.DictConverter;
+import com.lihua.converter.ExcelDictConverter;
 import com.lihua.enums.DropdownTypeEnum;
 import com.lihua.model.BaseEntity;
 import com.lihua.model.validation.ProfileValidation;
@@ -18,8 +18,8 @@ import org.apache.fesod.sheet.annotation.write.style.ColumnWidth;
 
 import java.time.LocalDateTime;
 
-@EnableComment
-@EnableDropdown
+@ExcelEnableComment
+@ExcelEnableDropdown
 @ExcelIgnoreUnannotated
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -36,7 +36,7 @@ public class SysUser extends BaseEntity {
      */
     @ExcelProperty("用户名")
     @ColumnWidth(20)
-    @Comment(value = "用户名必填且系统唯一")
+    @ExcelComment(value = "用户名必填且系统唯一")
     private String username;
 
     /**
@@ -52,7 +52,7 @@ public class SysUser extends BaseEntity {
         groups = ProfileValidation.ProfileSaveValidation.class)
     @ExcelProperty("昵称")
     @ColumnWidth(20)
-    @Comment(value = "用户昵称必填")
+    @ExcelComment(value = "用户昵称必填")
     private String nickname;
 
     /**
@@ -63,19 +63,19 @@ public class SysUser extends BaseEntity {
     /**
      * 用户性别
      */
-    @ExcelProperty(value = "性别", converter = DictConverter.class)
+    @ExcelProperty(value = "性别", converter = ExcelDictConverter.class)
     @ColumnWidth(20)
-    @Dropdown(type = DropdownTypeEnum.DICT, value = "user_gender")
-    @Comment(value = "性别必填，且只能使用下拉选项值")
+    @ExcelDropdown(type = DropdownTypeEnum.DICT, value = "user_gender")
+    @ExcelComment(value = "性别必填，且只能使用下拉选项值")
     private String gender;
 
     /**
      * 用户状态
      */
-    @ExcelProperty(value = "状态", converter = DictConverter.class)
+    @ExcelProperty(value = "状态", converter = ExcelDictConverter.class)
     @ColumnWidth(20)
-    @Dropdown(type = DropdownTypeEnum.DICT, value = "sys_status")
-    @Comment(value = "状态必填，且只能使用下拉选项值")
+    @ExcelDropdown(type = DropdownTypeEnum.DICT, value = "sys_status")
+    @ExcelComment(value = "状态必填，且只能使用下拉选项值")
     private String status;
 
     /**
@@ -93,7 +93,7 @@ public class SysUser extends BaseEntity {
             groups = ProfileValidation.ProfileSaveValidation.class)
     @ExcelProperty("邮箱")
     @ColumnWidth(20)
-    @Comment(value = "邮箱选填，请注意格式")
+    @ExcelComment(value = "邮箱选填，请注意格式")
     private String email;
 
     /**
@@ -104,7 +104,7 @@ public class SysUser extends BaseEntity {
             groups = ProfileValidation.ProfileSaveValidation.class)
     @ExcelProperty("手机号码")
     @ColumnWidth(20)
-    @Comment(value = "手机号码选填，请注意格式")
+    @ExcelComment(value = "手机号码选填，请注意格式")
     private String phoneNumber;
 
     /**
@@ -112,7 +112,7 @@ public class SysUser extends BaseEntity {
      */
     @ExcelProperty("备注")
     @ColumnWidth(30)
-    @Comment(value = "备注选填")
+    @ExcelComment(value = "备注选填")
     private String remark;
 
     /**

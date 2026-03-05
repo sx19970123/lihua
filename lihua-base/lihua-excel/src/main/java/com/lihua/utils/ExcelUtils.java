@@ -1,7 +1,7 @@
 package com.lihua.utils;
 
-import com.lihua.annotation.EnableComment;
-import com.lihua.annotation.EnableDropdown;
+import com.lihua.annotation.ExcelEnableComment;
+import com.lihua.annotation.ExcelEnableDropdown;
 import com.lihua.exception.ServiceException;
 import com.lihua.handle.CommentHandler;
 import com.lihua.handle.DropdownHandler;
@@ -52,14 +52,14 @@ public class ExcelUtils {
             }
 
             // 判断是否启用了单元格下拉
-            EnableDropdown enableDropdown = clazz.getAnnotation(EnableDropdown.class);
-            if (enableDropdown != null) {
+            ExcelEnableDropdown excelEnableDropdown = clazz.getAnnotation(ExcelEnableDropdown.class);
+            if (excelEnableDropdown != null) {
                 write.registerWriteHandler(new DropdownHandler());
             }
 
             // 判断是否启用了单元格批注
-            EnableComment enableComment = clazz.getAnnotation(EnableComment.class);
-            if (enableComment != null) {
+            ExcelEnableComment excelEnableComment = clazz.getAnnotation(ExcelEnableComment.class);
+            if (excelEnableComment != null) {
                 write.inMemory(true);
                 write.registerWriteHandler(new CommentHandler());
             }

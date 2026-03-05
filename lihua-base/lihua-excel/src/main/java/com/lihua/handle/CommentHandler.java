@@ -7,7 +7,7 @@ import org.apache.fesod.sheet.write.handler.CellWriteHandler;
 import org.apache.fesod.sheet.write.metadata.holder.WriteSheetHolder;
 import org.apache.fesod.sheet.write.metadata.holder.WriteTableHolder;
 import org.apache.poi.ss.usermodel.*;
-import com.lihua.annotation.Comment;
+import com.lihua.annotation.ExcelComment;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 
@@ -22,7 +22,7 @@ public class CommentHandler implements CellWriteHandler {
     @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, List<WriteCellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
         Field field = head.getField();
-        Comment annotation = field.getAnnotation(Comment.class);
+        ExcelComment annotation = field.getAnnotation(ExcelComment.class);
 
         // 检查是否添加批注
         if (!checkAddComment(annotation, cell, relativeRowIndex, isHead)) {
@@ -48,7 +48,7 @@ public class CommentHandler implements CellWriteHandler {
     /**
      * 检查是否提添加批注
      */
-    private boolean checkAddComment(Comment annotation, Cell cell, int relativeRowIndex, Boolean isHead) {
+    private boolean checkAddComment(ExcelComment annotation, Cell cell, int relativeRowIndex, Boolean isHead) {
 
         if (annotation == null) {
             return false;

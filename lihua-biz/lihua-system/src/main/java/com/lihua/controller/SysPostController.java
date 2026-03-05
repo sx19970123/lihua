@@ -10,6 +10,7 @@ import com.lihua.model.vo.SysPostVO;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysPostService;
+import com.lihua.utils.ExcelUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.SneakyThrows;
@@ -70,17 +71,8 @@ public class SysPostController extends ApiResponseController {
 
     @PostMapping("export")
     @Log(description = "导出岗位数据", type = LogTypeEnum.EXPORT)
-    public ApiResponseModel<String> exportExcel(SysPostDTO dto) {
-        String path = sysPostService.exportExcel(dto);
-        return success(path);
-    }
-
-    @SneakyThrows
-    @PreAuthorize("hasRole('ROLE_admin')")
-    @PostMapping("import")
-    @Log(description = "导入岗位数据", type = LogTypeEnum.IMPORT)
-    public ApiResponseModel importExcel(@RequestParam("file") MultipartFile file) {
-        List<SysPostVO> sysPostVOList = new ArrayList();
-        return success(sysPostService.importExcel(sysPostVOList));
+    public void exportExcel(SysPostDTO dto) {
+        List<SysPostVO> sysPostVOS = sysPostService.exportExcel(dto);
+        ExcelUtils.export(sysPostVOS, SysPostVO.class);
     }
 }

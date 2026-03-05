@@ -77,27 +77,10 @@ export const getDeptOption = () => {
  * @param data
  */
 export const exportExcel = (data: SysDept) => {
-  return request<string>({
+  return request<Blob>({
     url: 'system/dept/export',
     method: 'post',
-    data: data
-  })
-}
-
-/**
- * excel 导入
- * @param file
- */
-export const importExcel = (file:  string | Blob | RcFile) => {
-  const formData = new FormData()
-  formData.append('file', file)
-
-  return request<ExcelImportResult>({
-    url: 'system/dept/import',
-    method: 'post',
-    data: formData,
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+    data: data,
+    responseType: "blob"
   })
 }

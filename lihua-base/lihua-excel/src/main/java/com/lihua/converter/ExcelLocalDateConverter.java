@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * LocatDate转换器
  */
-public class LocalDateConverter implements Converter<LocalDate> {
+public class ExcelLocalDateConverter implements Converter<LocalDate> {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

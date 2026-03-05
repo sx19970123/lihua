@@ -1108,10 +1108,15 @@ const initExcel = () => {
     const spinInstance = Spin.service({
       tip: '努力加载中...'
     });
-    // blob转为url后进行下载
-    const blob = await exportExcel(userQuery.value)
-    downloadBlob(blob, "导出用户")
-    spinInstance.close()
+    try {
+      // blob转为url后进行下载
+      const blob = await exportExcel(userQuery.value)
+      downloadBlob(blob, "导出用户")
+    } catch (e) {
+      message.error("导出失败")
+    } finally {
+      spinInstance.close()
+    }
   }
 
   // 文件上传前校验格式
