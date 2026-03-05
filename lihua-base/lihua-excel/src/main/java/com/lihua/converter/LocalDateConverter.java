@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * LocatDateTime转换器
+ * LocatDate转换器
  */
 public class LocalDateConverter implements Converter<LocalDate> {
 
