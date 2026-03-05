@@ -2,7 +2,7 @@
   <div>
     <a-layout style="min-height: 100vh">
       <!--   左侧导航   -->
-      <transition :name="themeStore.routeTransition" mode="out-in" v-if="subMenu.length > 0">
+      <transition :name="themeStore.routeTransition" mode="out-in" v-if="showSider">
         <a-layout-sider :class="themeStore.siderTheme === 'light' ? 'background-glass' : ''"
                         class="side-navigation-sider"
                         v-show="props.showLayout"
@@ -23,11 +23,15 @@
       <a-layout>
         <a-layout-header class="side-navigation-header background-glass">
           <transition :name="themeStore.routeTransition" mode="out-in">
-            <a-flex class="side-navigation-head" justify="space-between" v-show="props.showLayout">
-              <Logo class="logo" v-if="subMenu.length === 0"/>
+            <a-flex class="side-navigation-header-inner"
+                    :style="{'padding-left': !showSider ? 'var(--lihua-layout-head-space)' : 0}"
+                    align="center"
+                    v-show="props.showLayout">
+              <Logo class="top-logo" v-if="!showSider"/>
               <!--顶部导航-->
               <Side is-mix-top
                     class="top-sider"
+                    :style="{'margin-left': !showSider ? 'var(--lihua-layout-head-space)' : 0}"
                     :menu="cloneDeep(permissionStore.menuRouters).map((item: MenuItemGroupType) => {delete item.children; return item})"
                     sider-theme="light"
                     sider-mode="horizontal"
@@ -59,7 +63,7 @@ import {useThemeStore} from "@/stores/theme";
 import {cloneDeep} from 'lodash-es'
 import type {ItemType} from "ant-design-vue";
 import type {MenuItemGroupType} from "ant-design-vue/es/menu/src/hooks/useItems";
-import {nextTick, ref, useTemplateRef} from "vue";
+import {computed, nextTick, ref, useTemplateRef} from "vue";
 
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()
@@ -102,6 +106,11 @@ const initSplitMenu = () => {
 }
 
 const {subMenu, loadSideMenu} = initSplitMenu()
+
+// 显示侧边栏
+const showSider = computed(() => {
+  return subMenu.value.length > 0
+})
 </script>
 
 <style scoped>
@@ -113,7 +122,8 @@ const {subMenu, loadSideMenu} = initSplitMenu()
   -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
   line-height: var(--lihua-layout-height);
 }
-.side-navigation-head {
+
+.side-navigation-header-inner {
   box-shadow: var(--lihua-layout-box-shadow);
   padding-right: var(--lihua-layout-head-space);
 }
@@ -126,6 +136,9 @@ const {subMenu, loadSideMenu} = initSplitMenu()
 }
 .logo {
   padding: var(--lihua-space-sm) var(--lihua-space-base)
+}
+.top-logo {
+  padding-left: var(--lihua-space-sm);
 }
 .side-navigation-sider {
   position: sticky;

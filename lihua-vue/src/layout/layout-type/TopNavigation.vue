@@ -5,7 +5,8 @@
         <a-layout-header class="top-navigation-layout-header"
                          :class="themeStore.siderTheme === 'light' ? 'background-glass' : ''"
                          v-show="props.showLayout">
-          <a-flex align="center" justify="space-between" style="margin: 0 var(--lihua-layout-head-space) 0 var(--lihua-layout-head-space)">
+          <a-flex align="center"
+                  style="margin: 0 var(--lihua-layout-head-space) 0 var(--lihua-layout-head-space)">
             <!--logo-->
             <Logo class="logo"/>
             <!--导航-->
