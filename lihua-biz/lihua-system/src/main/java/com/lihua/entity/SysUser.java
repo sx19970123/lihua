@@ -2,6 +2,11 @@ package com.lihua.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.lihua.annotation.Comment;
+import com.lihua.annotation.Dropdown;
+import com.lihua.annotation.EnableComment;
+import com.lihua.annotation.EnableDropdown;
+import com.lihua.enums.DropdownTypeEnum;
 import com.lihua.model.BaseEntity;
 import com.lihua.model.validation.ProfileValidation;
 import jakarta.validation.constraints.NotNull;
@@ -9,9 +14,15 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.fesod.sheet.annotation.ExcelIgnoreUnannotated;
+import org.apache.fesod.sheet.annotation.ExcelProperty;
+import org.apache.fesod.sheet.annotation.write.style.ColumnWidth;
 
 import java.time.LocalDateTime;
 
+@EnableComment
+@EnableDropdown
+@ExcelIgnoreUnannotated
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysUser extends BaseEntity {
@@ -25,6 +36,9 @@ public class SysUser extends BaseEntity {
     /**
      * 用户名
      */
+    @ExcelProperty("用户名")
+    @ColumnWidth(20)
+    @Comment(value = "用户名必填且系统唯一")
     private String username;
 
     /**
@@ -38,6 +52,9 @@ public class SysUser extends BaseEntity {
     @Size(max = 20,
         message = "用户昵称最大不能超过20字符",
         groups = ProfileValidation.ProfileSaveValidation.class)
+    @ExcelProperty("昵称")
+    @ColumnWidth(20)
+    @Comment(value = "用户昵称必填")
     private String nickname;
 
     /**
@@ -48,11 +65,19 @@ public class SysUser extends BaseEntity {
     /**
      * 用户性别
      */
+    @ExcelProperty("性别")
+    @ColumnWidth(20)
+    @Dropdown(type = DropdownTypeEnum.DICT, value = "user_gender")
+    @Comment(value = "性别必填，且只能使用下拉选项值")
     private String gender;
 
     /**
      * 用户状态
      */
+    @ExcelProperty("状态")
+    @ColumnWidth(20)
+    @Dropdown(type = DropdownTypeEnum.DICT, value = "sys_status")
+    @Comment(value = "状态必填，且只能使用下拉选项值")
     private String status;
 
     /**
@@ -73,6 +98,9 @@ public class SysUser extends BaseEntity {
     @Pattern(regexp = "^(|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})$",
             message = "请输入正确的邮箱地址",
             groups = ProfileValidation.ProfileSaveValidation.class)
+    @ExcelProperty("邮箱")
+    @ColumnWidth(20)
+    @Comment(value = "邮箱选填，请注意格式")
     private String email;
 
     /**
@@ -81,11 +109,17 @@ public class SysUser extends BaseEntity {
     @Pattern(regexp = "^(|1[3-9]\\d{9})$",
             message = "请输入正确的手机号码",
             groups = ProfileValidation.ProfileSaveValidation.class)
+    @ExcelProperty("手机号码")
+    @ColumnWidth(20)
+    @Comment(value = "手机号码选填，请注意格式")
     private String phoneNumber;
 
     /**
      * 备注
      */
+    @ExcelProperty("备注")
+    @ColumnWidth(30)
+    @Comment(value = "备注选填")
     private String remark;
 
     /**

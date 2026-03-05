@@ -11,7 +11,6 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-
 public class SysUserDTO extends BaseDTO {
 
     // 主键 id

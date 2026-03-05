@@ -22,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class SysUserController extends ApiResponseController {
 
     @GetMapping("exportTemplate")
     public void exportTemplate() {
-        ExcelUtils.export(new ArrayList<>(), SysUserVO.class);
+        ExcelUtils.export(new ArrayList<>(), SysUser.class);
     }
 
     @PostMapping("export")
@@ -100,9 +101,9 @@ public class SysUserController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
     @Log(description = "批量导入用户信息", type = LogTypeEnum.IMPORT)
-    public ApiResponseModel importExcel(@RequestParam("file") MultipartFile file) {
-        List<SysUserVO> sysUserVOS = new ArrayList<>();
-        return success(sysUserService.importExcel(sysUserVOS));
+    public ApiResponseModel importExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        List<SysUser> sysUserImportDTOS = ExcelUtils.excelImport(file.getInputStream(), SysUser.class);
+        return success(sysUserService.importExcel(sysUserImportDTOS));
     }
 
 }

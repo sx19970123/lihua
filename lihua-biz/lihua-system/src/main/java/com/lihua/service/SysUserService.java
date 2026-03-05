@@ -46,7 +46,7 @@ public interface SysUserService {
     /**
      * excel 批量导入
      */
-    String importExcel(List<SysUserVO> sysUserVOS);
+    String importExcel(List<SysUser> sysUserList);
 
     /**
      * 系统用户选项（根据部门选择）

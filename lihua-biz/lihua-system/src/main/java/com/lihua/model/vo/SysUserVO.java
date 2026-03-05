@@ -1,8 +1,10 @@
 package com.lihua.model.vo;
 
+import com.lihua.annotation.Comment;
 import com.lihua.annotation.DictType;
 import com.lihua.annotation.Sensitive;
 import com.lihua.converter.DictConverter;
+import com.lihua.enums.CommentUseEnum;
 import com.lihua.enums.DesensitizedTypeEnum;
 import com.lihua.model.BaseEntity;
 import jakarta.validation.constraints.NotNull;
@@ -40,6 +42,7 @@ public class SysUserVO extends BaseEntity {
     @NotNull(message = "用户名不能为空")
     @ExcelProperty({"用户信息", "用户名"})
     @ColumnWidth(20)
+    @Comment(value = "用户名，全局唯一", headRowNum = 1)
     private String username;
 
     /**
@@ -53,6 +56,7 @@ public class SysUserVO extends BaseEntity {
      */
     @ExcelProperty({"用户信息", "昵称"})
     @ColumnWidth(20)
+    @Comment(value = "昵称，必填", use = CommentUseEnum.HEAD, headRowNum = 1)
     private String nickname;
 
     /**
@@ -61,6 +65,7 @@ public class SysUserVO extends BaseEntity {
     @ExcelProperty(value = {"用户信息", "性别"}, converter = DictConverter.class)
     @DictType("user_gender")
     @ColumnWidth(10)
+    @Comment(value = "性别，字典数据", use = CommentUseEnum.BODY)
     private String gender;
 
     /**
@@ -173,4 +178,9 @@ public class SysUserVO extends BaseEntity {
      * 角色名称列表
      */
     private List<String> roleNameList;
+
+    /**
+     * 部门名称集合
+     */
+    private List<String> deptLabelList;
 }

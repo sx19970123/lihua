@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.annotation.ApplySensitive;
@@ -14,25 +13,19 @@ import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDeptMapper;
 import com.lihua.mapper.SysRoleMapper;
 import com.lihua.mapper.SysUserMapper;
-import com.lihua.model.DictDataModel;
 import com.lihua.model.dto.ResetPasswordDTO;
 import com.lihua.model.dto.SysUserDTO;
 import com.lihua.model.dto.SysUserDeptDTO;
-import com.lihua.model.vo.SysDeptVO;
 import com.lihua.model.vo.SysPostVO;
 import com.lihua.model.vo.SysUserVO;
 import com.lihua.service.*;
-import com.lihua.utils.DictUtils;
 import com.lihua.utils.SecurityUtils;
 import com.lihua.utils.date.DateUtils;
 import jakarta.annotation.Resource;
-import jakarta.validation.constraints.NotNull;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -183,6 +176,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         return status;
     }
 
+    @ApplySensitive
     @Override
     public List<SysUserVO> exportExcel(SysUserDTO sysUserDTO) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
@@ -246,117 +240,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Transactional
     @Override
-    public String importExcel(List<SysUserVO> sysUserVOS) {
+    public String importExcel(List<SysUser> sysUserList) {
         String defaultPassword = sysSettingService.getDefaultPassword();
         if ("".equals(defaultPassword)) {
             throw new ServiceException("请联系管理员配置默认密码");
         }
 
-        // 无法倒入的用户列表
-        List<SysUserVO> errorUserVos = new ArrayList<>();
-        // 可倒入的用户列表
-        List<SysUserVO> importUserVos;
+        // 1. 用户名、昵称 必填
 
+        // 2. 用户名、昵称、邮箱长度限制；手机号码、邮箱格式校验
 
-        // 记录到的重复数据：用户名/电话号码/邮箱
-        Set<String> usernameRepeatSet = new HashSet<>();
-        Set<String> phoneNumberRepeatSet = new HashSet<>();
-        Set<String> emailRepeatSet = new HashSet<>();
-        // 记录重复的数据
-        recordRepeatData(sysUserVOS, usernameRepeatSet, phoneNumberRepeatSet, emailRepeatSet);
+        // 3. 用户名、手机号、邮箱 系统唯一
 
+        // 4. 性别 字典翻译
 
-        // 从数据库查询出的数据：用户名/手机号码/邮箱
-        Set<String> usernameDbSet = new HashSet<>();
-        Set<String> phoneNumberDbSet = new HashSet<>();
-        Set<String> emailDbSet = new HashSet<>();
-        // 从数据库查询对应用户名
-        getDbUserData(sysUserVOS, usernameDbSet, phoneNumberDbSet, emailDbSet);
+        // 5. 角色翻译
 
+        // 6. 部门翻译
 
-        // 获取需要的字典数据
-        List<DictDataModel> sysStatus = DictUtils.getDictData("sys_status");
-        List<DictDataModel> userGender = DictUtils.getDictData("user_gender");
-        String genderJoin = userGender.stream().map(DictDataModel::getLabel).collect(Collectors.joining("、"));
-        String statusJoin = sysStatus.stream().map(DictDataModel::getLabel).collect(Collectors.joining("、"));
+        // 7. 岗位翻译
 
-
-        // 获取需要的角色数据
-        List<SysRole> roleList = sysRoleMapper.queryAllRole();
-        List<String> allRoleNameList = roleList.stream().map(SysRole::getName).toList();
-
-
-        // 获取需要的部门/岗位数据
-        List<SysDeptVO> sysDeptList = sysDeptMapper.queryAllDept();
-        List<String> allDeptNameList = sysDeptList.stream().map(SysDept::getName).toList();
-
-        // 开始过滤数据，返回false的数据将存储到 errorUserVos
-        importUserVos = sysUserVOS.stream().filter(sysUserVO -> {
-
-            // 过滤excel表格内的重复数据（用户名/手机号码/邮箱）
-            boolean filterRepeatData = filterRepeatData(sysUserVO, errorUserVos, usernameRepeatSet, phoneNumberRepeatSet, emailRepeatSet);
-            if (!filterRepeatData) {
-                return false;
-            }
-
-            // 过滤excel表格内不符合的用户名（已存在、未填写）
-            boolean filterUsername = filterUsername(sysUserVO, errorUserVos, usernameDbSet);
-            if (!filterUsername) {
-                return false;
-            }
-
-            // 过滤excel表格内不合符的手机号码（已存在、格式不符合）
-            boolean filterPhoneNumber = filterPhoneNumber(sysUserVO, errorUserVos, phoneNumberDbSet);
-            if (!filterPhoneNumber) {
-                return false;
-            }
-
-            // 过滤excel表格内不合符的邮箱（已存在、格式不符合）
-            boolean filterEmail = filterEmail(sysUserVO, errorUserVos, emailDbSet);
-            if (!filterEmail) {
-                return false;
-            }
-
-            // 过滤掉excel表格中不符合的用户昵称（未填写）
-            boolean filterNickname = filterNickname(sysUserVO, errorUserVos);
-            if (!filterNickname) {
-                return false;
-            }
-
-            // 过滤掉excel表格中不符合的字典数据（label不存在、未填写），符合条件的字典label将被替换为value
-            boolean filterDictData = filterDictData(sysUserVO, errorUserVos, userGender, sysStatus, genderJoin, statusJoin);
-            if (!filterDictData) {
-                return false;
-            }
-
-            // 过滤掉excel表格中不符合的角色（admin、系统不存在的数据）
-            boolean filterRole = filterRole(sysUserVO, errorUserVos, allRoleNameList);
-            if (!filterRole) {
-                return false;
-            }
-
-            // 过滤掉excel表格中不符合的部门（系统不存在的数据）
-            boolean filterDept = filterDept(sysUserVO, errorUserVos,allDeptNameList);
-            if (!filterDept) {
-                return false;
-            }
-
-            // 过滤掉excel表格中不符合的岗位（数量不匹配、系统不存在的数据）
-            return filterPost(sysUserVO, errorUserVos, sysDeptList);
-        }).toList();
-
-        // 处理完毕后获得两批数据：通过校验可导入 / 数据存在异常需用户重新处理
-        // 导出错误数据集
-        String errExcelPath = null;
-        if (!errorUserVos.isEmpty()) {
-            String errExcelName = LoginUserContext.getUserId() + "_导入失败_" + UUID.randomUUID().toString().replace("-","");
-            // 导出excel
-            // errExcelPath = ExcelUtils.excelExport(errorUserVos, SysUserVO.class, errExcelName);
-        }
-        // 插入数据
-        if (!importUserVos.isEmpty()) {
-            batchInsert(importUserVos, roleList, sysDeptList);
-        }
 
         // 返回汇总的导入结果
         return null;
@@ -397,365 +300,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         return resetPasswordDTO.getUserId();
     }
 
-    /**
-     * 循环 sysUserVOS 记录重复数据
-     */
-    private void recordRepeatData(List<SysUserVO> sysUserVOS, Set<String> usernameRepeatSet, Set<String> phoneNumberRepeatSet, Set<String> emailRepeatSet) {
-        // 去除列表中重复的数据（用户名/手机号码/邮箱）
-        Map<String, Integer> usernameCountMap = new HashMap<>();
-        Map<String, Integer> phoneNumberCountMap = new HashMap<>();
-        Map<String, Integer> emailCountMap = new HashMap<>();
-
-        sysUserVOS.forEach(sysUserVO -> {
-            usernameCountMap.put(sysUserVO.getUsername(), usernameCountMap.getOrDefault(sysUserVO.getUsername(),0) + 1);
-            if (usernameCountMap.get(sysUserVO.getUsername()) > 1) {
-                usernameRepeatSet.add(sysUserVO.getUsername());
-            }
-
-            if (StringUtils.hasText(sysUserVO.getPhoneNumber())) {
-                phoneNumberCountMap.put(sysUserVO.getPhoneNumber(), phoneNumberCountMap.getOrDefault(sysUserVO.getPhoneNumber(),0) + 1);
-                if (phoneNumberCountMap.get(sysUserVO.getPhoneNumber()) > 1) {
-                    phoneNumberRepeatSet.add(sysUserVO.getPhoneNumber());
-                }
-            }
-
-            if (StringUtils.hasText(sysUserVO.getEmail())) {
-                emailCountMap.put(sysUserVO.getEmail(), emailCountMap.getOrDefault(sysUserVO.getEmail(),0) + 1);
-                if (emailCountMap.get(sysUserVO.getEmail()) > 1) {
-                    emailRepeatSet.add(sysUserVO.getEmail());
-                }
-            }
-        });
-    }
-
-    /**
-     * 获取全部用户名
-     */
-    private void getDbUserData(List<SysUserVO> sysUserVOS,
-                                       Set<String> usernameDbSet,
-                                       Set<String> phoneNumberDbSet,
-                                       Set<String> emailDbSet) {
-        Set<String> collectUsername = new HashSet<>();
-        Set<String> collectPhoneNumber = new HashSet<>();
-        Set<String> collectEmail = new HashSet<>();
-
-        sysUserVOS.forEach(sysUserVO -> {
-            collectUsername.add(sysUserVO.getUsername());
-            collectPhoneNumber.add(sysUserVO.getPhoneNumber());
-            collectEmail.add(sysUserVO.getEmail());
-        });
-
-        if (collectUsername.isEmpty()) {
-            throw new ServiceException("当前excel中用户名为空，请检查数据");
-        }
-
-
-        usernameDbSet.addAll(sysUserMapper.queryUsername(collectUsername));
-        if (!collectPhoneNumber.isEmpty()) {
-            phoneNumberDbSet.addAll(sysUserMapper.queryPhoneNumber(collectPhoneNumber));
-        }
-        if (!collectEmail.isEmpty()) {
-            emailDbSet.addAll(sysUserMapper.queryEmail(collectEmail));
-        }
-    }
-
-    /**
-     * 过滤重复数据
-     */
-    private boolean filterRepeatData(SysUserVO sysUserVO,
-                                     List<SysUserVO> errorUserVos,
-                                     Set<String> usernameRepeatSet,
-                                     Set<String> phoneNumberRepeatSet,
-                                     Set<String> emailRepeatSet) {
-        if (!usernameRepeatSet.isEmpty()) {
-            if (usernameRepeatSet.contains(sysUserVO.getUsername())) {
-//                sysUserVO.setImportErrorMsg("当前excel附件中用户名：" + sysUserVO.getUsername() + " 重复，请检查");
-                errorUserVos.add(sysUserVO);
-                return false;
-            }
-        }
-
-        if (!phoneNumberRepeatSet.isEmpty()) {
-//            sysUserVO.setImportErrorMsg("当前excel附件中电话号码：" + sysUserVO.getPhoneNumber() + " 重复，请检查");
-            errorUserVos.add(sysUserVO);
-            return false;
-        }
-
-        if (!emailRepeatSet.isEmpty()) {
-//            sysUserVO.setImportErrorMsg("当前excel附件中邮箱：" + sysUserVO.getEmail() + " 重复，请检查");
-            errorUserVos.add(sysUserVO);
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * 过滤掉不合法的用户名
-     */
-    private boolean filterUsername(SysUserVO sysUserVO,
-                                   List<SysUserVO> errorUserVos,
-                                   Set<String> usernames) {
-        if (!StringUtils.hasText(sysUserVO.getUsername())) {
-//            sysUserVO.setImportErrorMsg("请填写用户名");
-            errorUserVos.add(sysUserVO);
-            return false;
-        }
-
-        if (usernames.contains(sysUserVO.getUsername())) {
-//            sysUserVO.setImportErrorMsg("用户名已存在");
-            errorUserVos.add(sysUserVO);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 过滤掉不合法的手机号码
-     */
-    private boolean filterPhoneNumber(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, Set<String> phoneNumberDbSet) {
-        String phoneNumber = sysUserVO.getPhoneNumber();
-        if (StringUtils.hasText(phoneNumber)) {
-            if (!PHONE_NUMBER_PATTERN.matcher(phoneNumber).matches()) {
-//                sysUserVO.setImportErrorMsg("手机号码格式错误，请检查数据");
-                errorUserVos.add(sysUserVO);
-                return false;
-            }
-
-            if (phoneNumberDbSet.contains(sysUserVO.getPhoneNumber())) {
-//                sysUserVO.setImportErrorMsg("手机号码已存在");
-                errorUserVos.add(sysUserVO);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 过滤掉不合法的邮箱
-     */
-    private boolean filterEmail(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, Set<String> emailDbSet) {
-        String email = sysUserVO.getEmail();
-        if (StringUtils.hasText(email)) {
-            if (!EMAIL_PATTERN.matcher(email).matches()) {
-//                sysUserVO.setImportErrorMsg("电子邮箱格式错误，请检查数据");
-                errorUserVos.add(sysUserVO);
-                return false;
-            }
-
-            if (emailDbSet.contains(sysUserVO.getEmail())) {
-//                sysUserVO.setImportErrorMsg("电子邮箱已存在");
-                errorUserVos.add(sysUserVO);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 过滤掉不合法的昵称
-     */
-    private boolean filterNickname(SysUserVO sysUserVO, List<SysUserVO> errorUserVos) {
-        if (!StringUtils.hasText(sysUserVO.getNickname())) {
-//            sysUserVO.setImportErrorMsg("请填写用户昵称");
-            errorUserVos.add(sysUserVO);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 过滤掉不合法的字典数据（性别、状态）
-     */
-    private boolean filterDictData(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<DictDataModel> userGender, List<DictDataModel> sysStatus, String genderJoin, String statusJoin) {
-        List<DictDataModel> gender = userGender.stream().filter(ug -> ug.getLabel().equals(sysUserVO.getGender())).toList();
-        List<DictDataModel> status = sysStatus.stream().filter(ug -> ug.getLabel().equals(sysUserVO.getStatus())).toList();
-        if (gender.isEmpty()) {
-//            sysUserVO.setImportErrorMsg("请填写用户性别或用户性别不合法，可输入项为：" + genderJoin);
-            errorUserVos.add(sysUserVO);
-            return false;
-        }
-        if (status.isEmpty()) {
-//            sysUserVO.setImportErrorMsg("请填写用户状态或用户状态不合法，可输入项为：" + statusJoin);
-            errorUserVos.add(sysUserVO);
-            return false;
-        }
-        sysUserVO.setGender(gender.get(0).getValue());
-        sysUserVO.setStatus(status.get(0).getValue());
-        return true;
-    }
-
-    /**
-     * 过滤掉不合法的角色数据
-     */
-    private boolean filterRole(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<String> allRoleNameList) {
-        if (StringUtils.hasText(sysUserVO.getRoleName())) {
-            if (sysUserVO.getRoleName().contains("超级管理员")) {
-                // sysUserVO.setImportErrorMsg("不允许导入超级管理员角色用户");
-                errorUserVos.add(sysUserVO);
-                return false;
-            }
-
-            String[] roleNames = sysUserVO.getRoleName().split("、");
-            for (String roleName : roleNames) {
-                if (!allRoleNameList.contains(roleName)) {
-                    // sysUserVO.setImportErrorMsg("角色 " + roleName + " 不存在，请检查数据或联系管理员");
-                    errorUserVos.add(sysUserVO);
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 过滤掉不合法的部门数据
-     */
-    private boolean filterDept(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<String> allDeptNameList) {
-//        List<String> deptLabelList = sysUserVO.getDeptLabelList();
-//        // 允许部门为空
-//        if (deptLabelList == null) {
-//            return true;
-//        }
-//        for (String deptLabel : deptLabelList) {
-//            if (!allDeptNameList.contains(deptLabel)) {
-//                // sysUserVO.setImportErrorMsg("部门 " + deptLabel + " 不存在，请检查数据或联系管理员");
-//                errorUserVos.add(sysUserVO);
-//                return false;
-//            }
-//        }
-        return true;
-    }
-
-    /**
-     * 过滤掉不合法的岗位
-     */
-    private boolean filterPost(SysUserVO sysUserVO, List<SysUserVO> errorUserVos, List<SysDeptVO> sysDeptList) {
-//        List<String> deptLabelList = sysUserVO.getDeptLabelList() == null ? new ArrayList<>() : sysUserVO.getDeptLabelList();
-//        List<String> postLabelList = sysUserVO.getPostLabelList() == null ? new ArrayList<>() : sysUserVO.getPostLabelList();
-//        // 正常情况下部门集合和岗位集合大小是相同的，当岗位集合数量 > 部门集合数量时，即数据有误
-//        if (postLabelList.size() > deptLabelList.size()) {
-//            // sysUserVO.setImportErrorMsg("部门与岗位数量不匹配，请检查数据");
-//            errorUserVos.add(sysUserVO);
-//            return false;
-//        }
-//
-//        for (int i = 0; i < deptLabelList.size(); i++) {
-//            String deptLabel = deptLabelList.get(i);
-//            String postLabelsStr = postLabelList.get(i);
-//            List<SysDeptVO> targetDeptList = sysDeptList.stream().filter(dept -> dept.getName().equals(deptLabel)).toList();
-//            SysDeptVO targetDept = targetDeptList.get(0);
-//            // 没有部门但是有对应岗位的情况
-//            if (targetDept == null && !StringUtils.hasText(postLabelsStr)) {
-//                // sysUserVO.setImportErrorMsg("请填写岗位对应的部门");
-//                errorUserVos.add(sysUserVO);
-//                return false;
-//            }
-//            // 部门不为空检查对应岗位
-//            if (targetDept != null) {
-//                // 部门下岗位不为空，检查填写岗位是否存在
-//                List<SysPost> sysPostList = targetDept.getSysPostList();
-//                if (sysPostList != null && StringUtils.hasText(postLabelsStr)) {
-//                    String[] postArray = postLabelsStr.split("、");
-//                    List<String> postNameList = sysPostList.stream().map(SysPost::getName).toList();
-//                    for (String postName : postArray) {
-//                        if (!postNameList.contains(postName)) {
-//                            // sysUserVO.setImportErrorMsg(targetDept.getName() + " 下无 " + postName + " 岗位，请检查数据");
-//                            errorUserVos.add(sysUserVO);
-//                            return false;
-//                        }
-//                    }
-//                } else {
-//                    // 部门下岗位为空，但导入数据下有岗位
-//                    if (StringUtils.hasText(postLabelsStr)) {
-//                        // sysUserVO.setImportErrorMsg(targetDept.getName() + " 下无 " + postLabelsStr + " 岗位，请检查数据");
-//                        errorUserVos.add(sysUserVO);
-//                        return false;
-//                    }
-//                }
-//            }
-//        }
-        return true;
-    }
-
-    // 批量保存
-    private void batchInsert(List<SysUserVO> importUserVos, List<SysRole> roleList, List<SysDeptVO> sysDeptList) {
-        List<SysUser> sysUserList = new ArrayList<>();
-        List<SysUserRole> sysUserRoleList = new ArrayList<>();
-        List<SysUserDept> sysUserDeptList = new ArrayList<>();
-        List<SysUserPost> sysUserPostList = new ArrayList<>();
-
-        // 构建用户、用户角色、用户部门、用户岗位 数据
-        importUserVos.forEach(sysUserVO -> {
-            SysUser sysUser = new SysUser();
-            String userId = String.valueOf(IdWorker.getId(sysUser));
-            BeanUtils.copyProperties(sysUserVO, sysUser);
-            sysUser.setPassword(SecurityUtils.encryptPassword(sysSettingService.getDefaultPassword()));
-            sysUser.setCreateTime(DateUtils.now());
-            sysUser.setCreateId(LoginUserContext.getUserId());
-            sysUser.setDelFlag("0");
-            sysUser.setStatus("0");
-            sysUser.setRegisterType("2");
-            sysUser.setId(userId);
-
-            // 构建用户
-            sysUserList.add(sysUser);
-            // 构建用户角色
-            String roleName = sysUserVO.getRoleName();
-            if (StringUtils.hasText(roleName)) {
-                String[] roleNames = roleName.split("、");
-                for (String name : roleNames) {
-                    List<String> roleIds = roleList.stream().filter(role -> role.getName().equals(name)).map(SysRole::getId).toList();
-                    if (!roleIds.isEmpty()) {
-                        SysUserRole sysUserRole = new SysUserRole(userId, roleIds.get(0), DateUtils.now(), LoginUserContext.getUserId());
-                        sysUserRoleList.add(sysUserRole);
-                    }
-                }
-            }
-//            // 构建部门/岗位
-//            List<String> deptLabelList = sysUserVO.getDeptLabelList() == null ? new ArrayList<>() : sysUserVO.getDeptLabelList();
-//            List<String> postLabelList = sysUserVO.getPostLabelList() == null ? new ArrayList<>() : sysUserVO.getPostLabelList();
-//            if (!deptLabelList.isEmpty()) {
-//                // 循环计数器
-//                AtomicInteger index = new AtomicInteger();
-//                deptLabelList.forEach(deptLabel -> {
-//                    List<SysDeptVO> deptVOList = sysDeptList.stream().filter(dept -> dept.getName().equals(deptLabel)).toList();
-//                    if (!deptVOList.isEmpty()) {
-//                        SysDeptVO sysDeptVO = deptVOList.get(0);
-//                        // 构建部门
-//                        SysUserDept sysUserDept = new SysUserDept(userId, sysDeptVO.getId(), DateUtils.now(), LoginUserContext.getUserId(), "1");
-//                        sysUserDeptList.add(sysUserDept);
-//
-//                        // 构建部门下岗位
-//                        List<SysPost> sysPostList = sysDeptVO.getSysPostList();
-//                        // deptLabelList 与 postLabelList 集合size 相同，通过循环 deptLabelList 获取index从 postLabelList 中获取对应元素
-//                        String postStrNames = postLabelList.get(index.get());
-//                        if (StringUtils.hasText(postStrNames)) {
-//                            String[] postNames = postStrNames.split("、");
-//                            for (String postName : postNames) {
-//                                List<String> postIds = sysPostList.stream().filter(post -> post.getName().equals(postName)).map(SysPost::getId).toList();
-//                                if (!postIds.isEmpty()) {
-//                                    SysUserPost sysUserPost = new SysUserPost(userId, postIds.get(0), DateUtils.now(), LoginUserContext.getUserId());
-//                                    sysUserPostList.add(sysUserPost);
-//                                }
-//                            }
-//                        }
-//                    }
-//                    index.getAndIncrement();
-//                });
-//            }
-        });
-
-        // 保存用户数据
-        SysUserServiceImpl sysUserService = (SysUserServiceImpl) AopContext.currentProxy();
-        sysUserService.saveBatch(sysUserList);
-        // 保存用户角色数据
-        sysUserRoleService.save(sysUserRoleList);
-        // 保存用户部门数据
-        sysUserDeptService.save(sysUserDeptList);
-        // 保存用户岗位数据
-        sysUserPostService.save(sysUserPostList);
-    }
 
     // 处理用户所属部门
     private void handleUserDept(List<SysUserVO> records) {
@@ -764,11 +308,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         Map<String, List<SysUserDeptDTO>> groupByUserId = userDeptByUserIds.stream().collect(Collectors.groupingBy(SysUserDeptDTO::getUserId));
 
         // 为用户所属部门赋值
-//        records.forEach(user -> groupByUserId.forEach((key, value) -> {
-//            if (user.getId().equals(key)) {
-//                user.setDeptLabelList(value.stream().map(SysUserDeptDTO::getDeptName).toList());
-//            }
-//        }));
+        records.forEach(user -> groupByUserId.forEach((key, value) -> {
+            if (user.getId().equals(key)) {
+                user.setDeptLabelList(value.stream().map(SysUserDeptDTO::getDeptName).toList());
+            }
+        }));
     }
 
     // 新增用户
