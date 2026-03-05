@@ -55,11 +55,6 @@ public class SysDictData extends BaseEntity {
     private String remark;
 
     /**
-     * 删除标识
-     */
-    private String delFlag;
-
-    /**
      * 状态
      */
     @NotNull(message = "请选择状态")

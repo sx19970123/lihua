@@ -68,16 +68,11 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     private String insert(SysPost sysPost) {
-        sysPost.setCreateTime(DateUtils.now());
-        sysPost.setCreateId(LoginUserContext.getUserId());
-        sysPost.setDelFlag("0");
         sysPostMapper.insert(sysPost);
         return sysPost.getId();
     }
 
     private String update(SysPost sysPost) {
-        sysPost.setUpdateId(LoginUserContext.getUserId());
-        sysPost.setUpdateTime(DateUtils.now());
         sysPostMapper.updateById(sysPost);
         return sysPost.getId();
     }
@@ -244,9 +239,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
             BeanUtils.copyProperties(sysPostVO, sysPost);
             String id = String.valueOf(IdWorker.getId(sysPost));
             sysPost.setId(id);
-            sysPost.setDelFlag("0");
-            sysPost.setCreateTime(now);
-            sysPost.setCreateId(LoginUserContext.getUserId());
             sysPost.setSort(index.get());
             index.getAndIncrement();
             sysPostList.add(sysPost);

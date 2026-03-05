@@ -59,11 +59,6 @@ public class SysNotice extends BaseEntity {
     private String releaseId;
 
     /**
-     * 逻辑删除标识
-     */
-    private String delFlag;
-
-    /**
      * 备注
      */
     private String remark;

@@ -137,16 +137,11 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     }
 
     private String insert(SysDictData sysDictData) {
-        sysDictData.setCreateId(LoginUserContext.getUserId());
-        sysDictData.setDelFlag("0");
-        sysDictData.setCreateTime(DateUtils.now());
         sysDictDataMapper.insert(sysDictData);
         return sysDictData.getId();
     }
 
     private String updateById(SysDictData sysDictData) {
-        sysDictData.setUpdateId(LoginUserContext.getUserId());
-        sysDictData.setUpdateTime(DateUtils.now());
         sysDictDataMapper.updateById(sysDictData);
         return sysDictData.getId();
     }

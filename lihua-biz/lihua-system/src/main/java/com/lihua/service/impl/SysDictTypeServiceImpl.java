@@ -85,9 +85,6 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     }
 
     private String insert(SysDictType sysDictType) {
-        sysDictType.setCreateId(LoginUserContext.getUserId());
-        sysDictType.setCreateTime(DateUtils.now());
-        sysDictType.setDelFlag("0");
         sysDictTypeMapper.insert(sysDictType);
         return sysDictType.getId();
     }
@@ -95,8 +92,6 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     private String updateById(SysDictType sysDictType) {
         // 从数据库中查询旧数据，验证code是否有修改
         SysDictType oldDictType = sysDictTypeMapper.selectById(sysDictType.getId());
-        sysDictType.setUpdateId(LoginUserContext.getUserId());
-        sysDictType.setUpdateTime(DateUtils.now());
         sysDictTypeMapper.updateById(sysDictType);
         // 当code发生修改，更新dictData表中对应的DictTypeCode值
         if (!oldDictType.getCode().equals(sysDictType.getCode())) {

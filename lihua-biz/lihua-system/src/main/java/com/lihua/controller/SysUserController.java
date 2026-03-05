@@ -101,9 +101,10 @@ public class SysUserController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
     @Log(description = "批量导入用户信息", type = LogTypeEnum.IMPORT)
-    public ApiResponseModel importExcel(@RequestParam("file") MultipartFile file) throws IOException {
-        List<SysUser> sysUserImportDTOS = ExcelUtils.excelImport(file.getInputStream(), SysUser.class);
-        return success(sysUserService.importExcel(sysUserImportDTOS));
+    public ApiResponseModel<String> importExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        List<SysUser> sysUserList = ExcelUtils.excelImport(file.getInputStream(), SysUser.class);
+        sysUserService.importExcel(sysUserList);
+        return success();
     }
 
 }

@@ -2,10 +2,8 @@ package com.lihua.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.lihua.annotation.Comment;
-import com.lihua.annotation.Dropdown;
-import com.lihua.annotation.EnableComment;
-import com.lihua.annotation.EnableDropdown;
+import com.lihua.annotation.*;
+import com.lihua.converter.DictConverter;
 import com.lihua.enums.DropdownTypeEnum;
 import com.lihua.model.BaseEntity;
 import com.lihua.model.validation.ProfileValidation;
@@ -65,7 +63,7 @@ public class SysUser extends BaseEntity {
     /**
      * 用户性别
      */
-    @ExcelProperty("性别")
+    @ExcelProperty(value = "性别", converter = DictConverter.class)
     @ColumnWidth(20)
     @Dropdown(type = DropdownTypeEnum.DICT, value = "user_gender")
     @Comment(value = "性别必填，且只能使用下拉选项值")
@@ -74,7 +72,7 @@ public class SysUser extends BaseEntity {
     /**
      * 用户状态
      */
-    @ExcelProperty("状态")
+    @ExcelProperty(value = "状态", converter = DictConverter.class)
     @ColumnWidth(20)
     @Dropdown(type = DropdownTypeEnum.DICT, value = "sys_status")
     @Comment(value = "状态必填，且只能使用下拉选项值")
@@ -86,11 +84,6 @@ public class SysUser extends BaseEntity {
     @NotNull(message = "主题描述字符串为空",
             groups = ProfileValidation.ProfileThemeValidation.class)
     private String theme;
-
-    /**
-     * 逻辑删除标志
-     */
-    private String delFlag;
 
     /**
      * 邮箱

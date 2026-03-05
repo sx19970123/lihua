@@ -1,10 +1,10 @@
 package com.lihua.model;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
+import java.io.Serializable;
+
 @Data
-public class CurrentRole extends BaseEntity {
+public class CurrentRole implements Serializable {
     /**
      * 主键
      */

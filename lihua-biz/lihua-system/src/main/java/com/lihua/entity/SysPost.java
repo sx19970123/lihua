@@ -84,8 +84,4 @@ public class SysPost extends BaseEntity {
      */
     private String remark;
 
-    /**
-     * 逻辑删除标志
-     */
-    private String delFlag;
 }

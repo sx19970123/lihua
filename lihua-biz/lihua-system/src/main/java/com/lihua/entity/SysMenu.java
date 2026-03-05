@@ -98,11 +98,6 @@ public class SysMenu extends BaseEntity {
     private String icon;
 
     /**
-     * 逻辑删除标志
-     */
-    private String delFlag;
-
-    /**
      * 备注
      */
     private String remark;

@@ -231,9 +231,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     private String insert(SysNoticeDTO sysNoticeDTO) {
         SysNotice sysNotice = new SysNotice();
         BeanUtils.copyProperties(sysNoticeDTO, sysNotice);
-        sysNotice.setDelFlag("0");
-        sysNotice.setCreateId(LoginUserContext.getUserId());
-        sysNotice.setCreateTime(DateUtils.now());
         sysNoticeMapper.insert(sysNotice);
         return sysNotice.getId();
     }
@@ -249,8 +246,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
         SysNotice sysNotice = new SysNotice();
         BeanUtils.copyProperties(sysNoticeDTO, sysNotice);
-        sysNotice.setUpdateId(LoginUserContext.getUserId());
-        sysNotice.setUpdateTime(DateUtils.now());
         sysNoticeMapper.updateById(sysNotice);
         return sysNotice.getId();
     }

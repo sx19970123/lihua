@@ -39,11 +39,6 @@ public class SysRole extends BaseEntity {
     private String status;
 
     /**
-     * 逻辑删除标识
-     */
-    private String delFlag;
-
-    /**
      * 备注
      */
     private String remark;

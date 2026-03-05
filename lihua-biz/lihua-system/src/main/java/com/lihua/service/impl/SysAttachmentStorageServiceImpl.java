@@ -357,10 +357,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
                 .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
                 .setStorageLocation(lihuaConfig.getUploadFileModel())
-                .setCreateId(LoginUserContext.getUserId())
-                .setCreateTime(DateUtils.now())
-                .setClientType(LoginUserContext.getClientType())
-                .setDelFlag("0");
+                .setClientType(LoginUserContext.getClientType());
         // 保存附件信息
         saveOrUpdate(sysAttachment);
         return sysAttachment.getId();
@@ -377,10 +374,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
                 .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
                 .setStorageLocation(uploadFileModel)
-                .setCreateId(userId)
-                .setCreateTime(DateUtils.now())
-                .setClientType(clientType)
-                .setDelFlag("0"));
+                .setClientType(clientType));
         saveBatch(sysAttachmentList);
         return sysAttachmentList.stream().map(SysAttachment::getId).toList();
     }

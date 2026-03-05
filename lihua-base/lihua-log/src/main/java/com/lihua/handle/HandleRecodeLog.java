@@ -84,12 +84,10 @@ public class HandleRecodeLog {
                 .setIpAddress(ip)
                 .setRegion(IpUtils.getRegion(ip))
                 .setParams(params)
-                .setCreateTime(DateUtils.now())
                 .setUrl(requestURI)
                 .setUserAgent(userAgent)
                 .setClientType(clientType)
                 .setExecuteTime(time)
-                .setDelFlag("0")
                 .setExecuteStatus("0");
 
         // 处理返回值

@@ -8,19 +8,22 @@ import com.lihua.handle.DropdownHandler;
 import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.fesod.sheet.FesodSheet;
-import org.apache.fesod.sheet.read.listener.PageReadListener;
+import org.apache.fesod.sheet.context.AnalysisContext;
+import org.apache.fesod.sheet.read.listener.ReadListener;
 import org.apache.fesod.sheet.write.builder.ExcelWriterBuilder;
 import org.apache.fesod.sheet.write.handler.WriteHandler;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 基于Fesod的excel导入导出工具类
  */
+@Slf4j
 public class ExcelUtils {
 
     /**
@@ -75,9 +78,21 @@ public class ExcelUtils {
      * @return excel中读取到的数据集合
      */
     public static <T> List<T> excelImport(InputStream inputStream, Class<T> clazz) {
-        AtomicReference<List<T>> result = new AtomicReference<>();
-        FesodSheet.read(inputStream, clazz, new PageReadListener<T>(result::set)).sheet().doRead();
-        return result.get();
+        List<T> list = new ArrayList<>();
+        FesodSheet.read(inputStream, clazz, new ReadListener<T>() {
+                    @Override
+                    public void invoke(T data, AnalysisContext context) {
+                        list.add(data);
+                    }
+
+                    @Override
+                    public void doAfterAllAnalysed(AnalysisContext context) {
+                        log.info("数据全部读取完成");
+                    }
+                })
+                .sheet()
+                .doRead();
+        return list;
     }
 
     /**

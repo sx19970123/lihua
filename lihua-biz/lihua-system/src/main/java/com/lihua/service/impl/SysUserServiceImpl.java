@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.annotation.ApplySensitive;
 import com.lihua.entity.*;
+import com.lihua.exception.ExcelImportException;
 import com.lihua.exception.ServiceException;
 import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysDeptMapper;
@@ -20,6 +21,7 @@ import com.lihua.model.vo.SysPostVO;
 import com.lihua.model.vo.SysUserVO;
 import com.lihua.service.*;
 import com.lihua.utils.SecurityUtils;
+import com.lihua.utils.collection.CollectionUtils;
 import com.lihua.utils.date.DateUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
@@ -29,7 +31,6 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,9 +61,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     private SysSettingService sysSettingService;
 
     // 校验手机号码
-    private final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^1[3-9]\\d{9}$");
+    private final String PHONE_NUMBER_PATTERN = "^1[3-9]\\d{9}$";
     // 校验邮箱
-    private final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    private final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
     @ApplySensitive
     @Override
@@ -240,29 +241,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Transactional
     @Override
-    public String importExcel(List<SysUser> sysUserList) {
+    public void importExcel(List<SysUser> sysUserList) {
         String defaultPassword = sysSettingService.getDefaultPassword();
-        if ("".equals(defaultPassword)) {
-            throw new ServiceException("请联系管理员配置默认密码");
+        if (!StringUtils.hasText(defaultPassword)) {
+            throw new ExcelImportException("请联系管理员配置默认密码");
         }
 
-        // 1. 用户名、昵称 必填
+        // 进行数据格式、重复项等检查
+        checkImportData(sysUserList);
 
-        // 2. 用户名、昵称、邮箱长度限制；手机号码、邮箱格式校验
+        LocalDateTime now = DateUtils.now();
+        // 批量插入
+        sysUserList.forEach(sysUser -> {
+            sysUser.setRegisterType("3");
+            sysUser.setPassword(SecurityUtils.encryptPassword(defaultPassword));
+            sysUser.setPasswordUpdateTime(now);
+        });
 
-        // 3. 用户名、手机号、邮箱 系统唯一
-
-        // 4. 性别 字典翻译
-
-        // 5. 角色翻译
-
-        // 6. 部门翻译
-
-        // 7. 岗位翻译
-
-
-        // 返回汇总的导入结果
-        return null;
+        saveBatch(sysUserList);
     }
 
     @Override
@@ -321,9 +317,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         LocalDateTime now = DateUtils.now();
         // 密码加密
         sysUser.setPassword(SecurityUtils.encryptPassword(sysUser.getPassword()));
-        sysUser.setCreateId(LoginUserContext.getUserId());
-        sysUser.setCreateTime(now);
-        sysUser.setDelFlag("0");
         sysUser.setRegisterType("0");
         sysUser.setPasswordUpdateTime(now);
         sysUserMapper.insert(sysUser);
@@ -332,8 +325,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     // 更细用户信息
     private String update(SysUser sysUser) {
-        sysUser.setUpdateId(LoginUserContext.getUserId());
-        sysUser.setCreateTime(DateUtils.now());
         // 用户管理中无法更新用户密码。mp默认策略不更新null值数据
         sysUser.setPassword(null);
         sysUserMapper.updateById(sysUser);
@@ -446,6 +437,136 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             sysUserDeptService.save(sysUserDeptList);
         }
 
+    }
+
+    /**
+     * 数据导入检查
+     */
+    private void checkImportData(List<SysUser> sysUserList) {
+
+        if (sysUserList.isEmpty()) {
+            throw new ExcelImportException("数据为空");
+        }
+
+        List<String> importErrMssageList = new ArrayList<>();
+
+        // 记录重复数据
+        List<String> usernameList = new ArrayList<>();
+        List<String> phonenumberList = new ArrayList<>();
+        List<String> emailList = new ArrayList<>();
+
+        // 必填｜格式 校验
+        for (int i = 0; i < sysUserList.size(); i++) {
+            SysUser sysUser = sysUserList.get(i);
+            List<String> errItemList = new ArrayList<>();
+
+            String username = sysUser.getUsername();
+            if (!StringUtils.hasText(username)) {
+                errItemList.add("用户名为空");
+            } else {
+                usernameList.add(username);
+            }
+
+            String nickname = sysUser.getNickname();
+            if (!StringUtils.hasText(nickname)) {
+                errItemList.add("昵称为空");
+            }
+
+            String gender = sysUser.getGender();
+            if (!StringUtils.hasText(gender)) {
+                errItemList.add("性别为空");
+            }
+
+            String status = sysUser.getStatus();
+            if (!StringUtils.hasText(status)) {
+                errItemList.add("状态为空");
+            }
+
+            String email = sysUser.getEmail();
+            if (StringUtils.hasText(email)) {
+                boolean matches = email.matches(EMAIL_PATTERN);
+                if (!matches) {
+                    errItemList.add("邮箱格式不正确");
+                } else {
+                    emailList.add(email);
+                }
+            }
+
+            String phoneNumber = sysUser.getPhoneNumber();
+            if (StringUtils.hasText(phoneNumber)) {
+                boolean matches = phoneNumber.matches(PHONE_NUMBER_PATTERN);
+                if (!matches) {
+                    errItemList.add("手机号码格式不正确");
+                } else {
+                    phonenumberList.add(phoneNumber);
+                }
+            }
+
+            // 汇总错误信息
+            if (!errItemList.isEmpty()) {
+                errItemList.set(0, "第" + (i + 1) + "行 " + errItemList.get(0));
+                importErrMssageList.add(String.join("，", errItemList));
+            }
+        }
+
+        // 必填｜格式校验不通过，抛出异常
+        if (!importErrMssageList.isEmpty()) {
+            throw new ExcelImportException(importErrMssageList);
+        }
+
+        // 获取单元格内重复的字段
+        Set<String> usernameSet = CollectionUtils.getRepeatItem(usernameList);
+        Set<String> phonenumberSet = CollectionUtils.getRepeatItem(phonenumberList);
+        Set<String> emailSet = CollectionUtils.getRepeatItem(emailList);
+
+        // 重复的用户名
+        if (!usernameSet.isEmpty()) {
+            importErrMssageList.add("重复用户名：" + String.join(",", usernameSet));
+        }
+
+        // 重复的手机号
+        if (!phonenumberSet.isEmpty()) {
+            importErrMssageList.add("重复手机号：" + String.join(",", phonenumberSet));
+        }
+
+        // 重复的邮箱地址
+        if (!emailSet.isEmpty()) {
+            importErrMssageList.add("重复邮箱：" + String.join(",", String.join(",", emailSet)));
+        }
+
+        // 单元格内存在重复数据，抛出异常
+        if (!importErrMssageList.isEmpty()) {
+            throw new ExcelImportException(importErrMssageList);
+        }
+
+        // 用户名不为空
+        if (!usernameList.isEmpty()) {
+            List<String> dbUsernameList = lambdaQuery().select(SysUser::getUsername).in(SysUser::getUsername, usernameList).list().stream().map(SysUser::getUsername).toList();
+            if (!dbUsernameList.isEmpty()) {
+                importErrMssageList.add("数据库已存在的用户名：" + String.join(",", dbUsernameList));
+            }
+        }
+
+        // 手机号不为空
+        if (!phonenumberList.isEmpty()) {
+            List<String> dbPhonenumberList = lambdaQuery().select(SysUser::getPhoneNumber).in(SysUser::getPhoneNumber, phonenumberList).list().stream().map(SysUser::getPhoneNumber).toList();
+            if (!dbPhonenumberList.isEmpty()) {
+                importErrMssageList.add("数据库已存在的手机号：" + String.join(",", dbPhonenumberList));
+            }
+        }
+
+        // 邮箱不为空
+        if (!emailList.isEmpty()) {
+            List<String> dbEmailList = lambdaQuery().select(SysUser::getEmail).in(SysUser::getEmail, emailList).list().stream().map(SysUser::getEmail).toList();
+            if (!dbEmailList.isEmpty()) {
+                importErrMssageList.add("数据库已存在的邮箱：" + String.join(",", dbEmailList));
+            }
+        }
+
+        // 数据库中存在的数据，抛出异常
+        if (!importErrMssageList.isEmpty()) {
+            throw new ExcelImportException(importErrMssageList);
+        }
     }
 
 }

@@ -42,11 +42,6 @@ public class SysDictType extends BaseEntity {
     private String remark;
 
     /**
-     * 逻辑删除标识
-     */
-    private String delFlag;
-
-    /**
      * 字典类型状态
      */
     @NotNull(message = "请选择字典状态")

@@ -75,16 +75,11 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     private String insert(SysRole sysRole) {
-        sysRole.setCreateId(LoginUserContext.getUserId());
-        sysRole.setCreateTime(DateUtils.now());
-        sysRole.setDelFlag("0");
         sysRoleMapper.insert(sysRole);
         return sysRole.getId();
     }
 
     private String update(SysRole sysRole) {
-        sysRole.setUpdateId(LoginUserContext.getUserId());
-        sysRole.setUpdateTime(DateUtils.now());
         sysRoleMapper.updateById(sysRole);
         return sysRole.getId();
     }

@@ -75,11 +75,6 @@ public class SysDept extends BaseEntity {
     private String fax;
 
     /**
-     * 逻辑删除标志
-     */
-    private String delFlag;
-
-    /**
      * 备注
      */
     private String remark;

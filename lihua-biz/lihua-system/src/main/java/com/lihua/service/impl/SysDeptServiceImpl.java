@@ -105,16 +105,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     private String update(SysDept sysDept) {
-        sysDept.setUpdateId(LoginUserContext.getUserId());
-        sysDept.setUpdateTime(DateUtils.now());
         sysDeptMapper.updateById(sysDept);
         return sysDept.getId();
     }
 
     private String insert(SysDept sysDept) {
-        sysDept.setCreateId(LoginUserContext.getUserId());
-        sysDept.setCreateTime(DateUtils.now());
-        sysDept.setDelFlag("0");
         sysDeptMapper.insert(sysDept);
         return sysDept.getId();
     }
@@ -278,9 +273,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             BeanUtils.copyProperties(deptVO, sysDept);
             String id = String.valueOf(IdWorker.getId(sysDept));
             sysDept.setId(id);
-            sysDept.setDelFlag("0");
-            sysDept.setCreateTime(now);
-            sysDept.setCreateId(LoginUserContext.getUserId());
             sysDept.setSort(index.get());
             sysDeptList.add(sysDept);
             deptNameToDeptMap.put(sysDept.getName(), sysDept);

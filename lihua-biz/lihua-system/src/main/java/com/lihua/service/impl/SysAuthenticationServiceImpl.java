@@ -146,8 +146,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         SysUser sysUser = new SysUser();
         sysUser.setUsername(username);
         sysUser.setPassword(SecurityUtils.encryptPassword(password));
-        sysUser.setCreateTime(now);
-        sysUser.setDelFlag("0");
         sysUser.setStatus("0");
         sysUser.setRegisterType("1");
         sysUser.setPasswordUpdateTime(now);

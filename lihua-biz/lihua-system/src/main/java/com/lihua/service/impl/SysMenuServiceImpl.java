@@ -65,16 +65,11 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     private String insert(SysMenu sysMenu) {
-        sysMenu.setCreateId(LoginUserContext.getUserId());
-        sysMenu.setCreateTime(DateUtils.now());
-        sysMenu.setDelFlag("0");
         sysMenuMapper.insert(sysMenu);
         return sysMenu.getId();
     }
 
     private String update(SysMenu sysMenu) {
-        sysMenu.setUpdateId(LoginUserContext.getUserId());
-        sysMenu.setUpdateTime(DateUtils.now());
         sysMenuMapper.updateById(sysMenu);
         return sysMenu.getId();
     }
