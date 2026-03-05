@@ -2,6 +2,7 @@ package com.lihua.exception;
 
 import com.lihua.utils.json.JsonUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
 public class ExcelImportException extends RuntimeException {
 
     public ExcelImportException(String message) {
-        super(message);
+        super(JsonUtils.toJson(Collections.singletonList(message)));
     }
 
     public ExcelImportException(List<String> errMessages) {

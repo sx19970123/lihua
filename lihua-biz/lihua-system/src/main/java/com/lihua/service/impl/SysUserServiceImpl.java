@@ -28,6 +28,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import java.rmi.ServerException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -443,7 +445,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
      * 数据导入检查
      */
     private void checkImportData(List<SysUser> sysUserList) {
-
         if (sysUserList.isEmpty()) {
             throw new ExcelImportException("数据为空");
         }

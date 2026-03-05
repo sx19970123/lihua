@@ -1,10 +1,7 @@
 package com.lihua.global;
 
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.exception.FileException;
-import com.lihua.exception.IpIllegalException;
-import com.lihua.exception.SensitiveException;
-import com.lihua.exception.ServiceException;
+import com.lihua.exception.*;
 import com.lihua.model.web.basecontroller.StrResponseController;
 import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.http.HttpServletResponse;
@@ -98,6 +95,14 @@ public class GlobalExceptionHandle extends StrResponseController {
                 .distinct()
                 .collect(Collectors.joining("；"));
         return error(ResultCodeEnum.PARAMS_MISSING, errMessages);
+    }
+
+    /**
+     * 全局捕获excel导入异常
+     */
+    @ExceptionHandler(ExcelImportException.class)
+    public String handleExcelImportException(ExcelImportException e) {
+        return error(ResultCodeEnum.EXCEL_IMPORT_ERROR, e.getMessage());
     }
 
     /**

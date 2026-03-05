@@ -349,7 +349,7 @@ import {
   updateStatus
 } from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/Dict.ts"
-import {createVNode, onMounted, reactive, ref, useTemplateRef} from "vue";
+import {createVNode, h, onMounted, reactive, ref, useTemplateRef} from "vue";
 import SelectableCard from "@/components/selectable-card/index.vue"
 import PasswordInput from "@/components/password-input/index.vue"
 import DictTag from "@/components/dict-tag/index.vue"
@@ -1135,24 +1135,16 @@ const initExcel = () => {
     try {
       const resp = await importExcel(uploadRequest.file)
       if (resp.code === 200) {
-        const data = resp.data
-        // 是否完全导入成功
-        if (data.allSuccess) {
-          message.success(resp.msg);
-        } else {
-          // 部分成功可下载导入失败的数据集
-          Modal.confirm({
-            title: '导入完成，部分数据未成功导入',
-            icon: createVNode(ExclamationCircleOutlined),
-            content: `共解析到 ${data.readCount} 条数据，成功导入 ${data.successCount} 条，失败 ${data.errorCount} 条。点击“确定”下载失败数据集。`,
-            onOk: () => {
-              // 下载导入失败excel
-              download(data.errorExcelPath)
-            }
-          })
-        }
-        // 导入完成后刷新页面
         await initPage()
+      } else if (resp.code === 510) {
+        const errMsgList = JSON.parse(resp.msg) as string[]
+        Modal.confirm({
+          title: '导入失败',
+          icon: h(ExclamationCircleOutlined),
+          width: 600,
+          content: h('div', errMsgList.map(item => h('div', item))),
+          okCancel: false
+        })
       } else {
         message.error(resp.msg)
       }

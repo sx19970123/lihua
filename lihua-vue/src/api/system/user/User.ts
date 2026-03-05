@@ -99,8 +99,7 @@ export const exportExcel = (data: SysUserDTO) => {
 export const importExcel = (file:  string | Blob | RcFile) => {
     const formData = new FormData()
     formData.append('file', file)
-
-    return request<ExcelImportResult>({
+    return request<String>({
         url: 'system/user/import',
         method: 'post',
         data: formData,
