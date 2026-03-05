@@ -2,8 +2,14 @@ package com.lihua.model.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.lihua.annotation.DictType;
+import com.lihua.converter.DictConverter;
+import com.lihua.converter.LocalDateTimeConverter;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.apache.fesod.sheet.annotation.ExcelIgnoreUnannotated;
+import org.apache.fesod.sheet.annotation.ExcelProperty;
+import org.apache.fesod.sheet.annotation.write.style.ColumnWidth;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,6 +18,7 @@ import java.time.LocalDateTime;
 /**
  * 系统日志
  */
+@ExcelIgnoreUnannotated
 @Data
 @Accessors(chain = true)
 public class SysLogVO implements Serializable {
@@ -27,6 +34,8 @@ public class SysLogVO implements Serializable {
     /**
      * 业务描述
      */
+    @ExcelProperty("业务描述")
+    @ColumnWidth(20)
     private String description;
 
     /**
@@ -37,31 +46,44 @@ public class SysLogVO implements Serializable {
     /**
      * 业务类型描述
      */
+    @ExcelProperty("业务类型")
+    @ColumnWidth(20)
     private String typeMsg;
 
     /**
      * 日志执行状态
      */
+    @ExcelProperty(value = "执行结果", converter = DictConverter.class)
+    @ColumnWidth(20)
+    @DictType("sys_log_status")
     private String executeStatus;
 
     /**
      * 包类名
      */
+    @ExcelProperty("包类名")
+    @ColumnWidth(40)
     private String className;
 
     /**
      * 方法名
      */
+    @ExcelProperty("方法名")
+    @ColumnWidth(20)
     private String methodName;
 
     /**
      * 请求参数
      */
+    @ExcelProperty("请求参数")
+    @ColumnWidth(30)
     private String params;
 
     /**
      * 请求返回
      */
+    @ExcelProperty("返回结果")
+    @ColumnWidth(30)
     private String result;
 
     /**
@@ -77,31 +99,43 @@ public class SysLogVO implements Serializable {
     /**
      * 操作人姓名
      */
+    @ExcelProperty("操作人")
+    @ColumnWidth(15)
     private String createName;
 
     /**
      * 创建时间（操作时间）
      */
+    @ExcelProperty(value = "操作时间", converter = LocalDateTimeConverter.class)
+    @ColumnWidth(25)
     private LocalDateTime createTime;
 
     /**
      * 执行耗时
      */
+    @ExcelProperty("耗时(ms)")
+    @ColumnWidth(15)
     private Long executeTime;
 
     /**
      * 请求URL
      */
+    @ExcelProperty("请求URL")
+    @ColumnWidth(20)
     private String url;
 
     /**
      * ip地址
      */
+    @ExcelProperty("请求IP")
+    @ColumnWidth(30)
     private String ipAddress;
 
     /**
      * 归属地
      */
+    @ExcelProperty("归属地")
+    @ColumnWidth(20)
     private String region;
 
     /**
@@ -112,6 +146,9 @@ public class SysLogVO implements Serializable {
     /**
      * 操作客户端
      */
+    @ExcelProperty(value = "客户端类型", converter = DictConverter.class)
+    @ColumnWidth(20)
+    @DictType("sys_client_type")
     private String clientType;
 
     /**

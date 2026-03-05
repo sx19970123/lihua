@@ -29,6 +29,11 @@ export const downloadExport = (path: string, fileName?: string) => {
     downloadFromUrl(import.meta.env.VITE_APP_BASE_API + `/system/attachment/storage/download/e?path=${encodeURIComponent(path)}&fileName=${fileName?encodeURIComponent(fileName):''}`, fileName);
 }
 
+// 下载blob附件
+export const downloadBlob = (blob: Blob, filename?: string) => {
+    downloadFromUrl(URL.createObjectURL(blob), filename)
+}
+
 // 通过url下载
 export const downloadFromUrl = (url: string, fileName?: string) => {
     const linkElement = document.createElement('a');

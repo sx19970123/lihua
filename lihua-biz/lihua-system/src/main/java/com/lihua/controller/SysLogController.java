@@ -9,6 +9,7 @@ import com.lihua.model.vo.SysLogVO;
 import com.lihua.model.web.ApiResponseModel;
 import com.lihua.model.web.basecontroller.ApiResponseController;
 import com.lihua.service.SysLogService;
+import com.lihua.utils.ExcelUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -71,9 +72,9 @@ public class SysLogController extends ApiResponseController {
 
     @PostMapping("operate/export")
     @Log(description = "导出操作日志", type = LogTypeEnum.EXPORT)
-    public ApiResponseModel<String> exportOperateExcel(@RequestBody SysLogDTO sysLogDTO) {
-        String path = sysOperateLogService.exportExcel(sysLogDTO);
-        return success(path);
+    public void exportOperateExcel(@RequestBody SysLogDTO sysLogDTO) {
+        List<? extends SysLogVO> sysLogVOS = sysOperateLogService.exportExcel(sysLogDTO);
+        ExcelUtils.export(sysLogVOS, SysLogVO.class);
     }
 
 
@@ -112,9 +113,9 @@ public class SysLogController extends ApiResponseController {
 
     @PostMapping("login/export")
     @Log(description = "导出登录日志", type = LogTypeEnum.EXPORT)
-    public ApiResponseModel<String> exportLoginExcel(@RequestBody SysLogDTO sysLogDTO) {
-        String path = sysLoginLogService.exportExcel(sysLogDTO);
-        return success(path);
+    public void exportLoginExcel(@RequestBody SysLogDTO sysLogDTO) {
+        List<? extends SysLogVO> sysLogVOS = sysLoginLogService.exportExcel(sysLogDTO);
+        ExcelUtils.export(sysLogVOS, SysLogVO.class);
     }
 
 }

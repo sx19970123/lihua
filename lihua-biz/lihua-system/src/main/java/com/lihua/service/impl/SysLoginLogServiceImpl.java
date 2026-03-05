@@ -96,7 +96,7 @@ public class SysLoginLogServiceImpl implements SysLogService {
     }
 
     @Override
-    public String exportExcel(SysLogDTO sysLogDTO) {
+    public List<? extends SysLogVO> exportExcel(SysLogDTO sysLogDTO) {
 
         QueryWrapper<SysLoginLog> queryWrapper = new QueryWrapper<>();
 
@@ -120,12 +120,8 @@ public class SysLoginLogServiceImpl implements SysLogService {
             queryWrapper.lambda().between(SysLogVO::getCreateTime, sysLogDTO.getCreateTimeList().get(0), sysLogDTO.getCreateTimeList().get(1));
         }
 
-        queryWrapper.lambda().eq(SysLogVO::getDelFlag, "0").orderByDesc(SysLogVO::getId);
-
-        List<SysLoginLog> sysLoginLogs = sysLoginLogMapper.selectList(queryWrapper);
-
-//        return ExcelUtils.excelExport(sysLoginLogs, SysLoginLog.class, "登录日志");
-        return null;
+        queryWrapper.lambda().orderByDesc(SysLogVO::getId);
+        return sysLoginLogMapper.selectList(queryWrapper);
     }
 
     @Override

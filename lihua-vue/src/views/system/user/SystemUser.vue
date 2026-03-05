@@ -349,7 +349,7 @@ import {
   updateStatus
 } from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/Dict.ts"
-import {createVNode, h, onMounted, reactive, ref, useTemplateRef} from "vue";
+import {h, onMounted, reactive, ref, useTemplateRef} from "vue";
 import SelectableCard from "@/components/selectable-card/index.vue"
 import PasswordInput from "@/components/password-input/index.vue"
 import DictTag from "@/components/dict-tag/index.vue"
@@ -374,7 +374,7 @@ import {useSettingStore} from "@/stores/setting.ts";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
 import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
-import {download, downloadFromUrl} from "@/utils/AttachmentDownload.ts";
+import {downloadBlob} from "@/utils/AttachmentDownload.ts";
 import settings from "@/settings.ts";
 import {useUserStore} from "@/stores/user.ts";
 import {refreshUserData} from "@/utils/AppInit.ts";
@@ -1099,7 +1099,7 @@ const initExcel = () => {
       tip: '努力加载中...'
     });
     const blob = await excelTemplate()
-    downloadFromUrl(URL.createObjectURL(blob), "用户导入模板")
+    downloadBlob(blob, "用户导入模板")
     spinInstance.close()
   }
 
@@ -1110,7 +1110,7 @@ const initExcel = () => {
     });
     // blob转为url后进行下载
     const blob = await exportExcel(userQuery.value)
-    downloadFromUrl(URL.createObjectURL(blob), "导出用户")
+    downloadBlob(blob, "导出用户")
     spinInstance.close()
   }
 

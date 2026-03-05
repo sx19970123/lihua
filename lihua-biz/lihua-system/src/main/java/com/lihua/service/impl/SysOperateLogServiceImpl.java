@@ -3,6 +3,7 @@ package com.lihua.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lihua.entity.SysLoginLog;
 import com.lihua.entity.SysOperateLog;
 import com.lihua.mapper.SysOperateLogMapper;
 import com.lihua.model.bridge.log.LogModel;
@@ -97,8 +98,7 @@ public class SysOperateLogServiceImpl implements SysLogService {
     }
 
     @Override
-    public String exportExcel(SysLogDTO sysLogDTO) {
-
+    public List<? extends SysLogVO> exportExcel(SysLogDTO sysLogDTO) {
         QueryWrapper<SysOperateLog> queryWrapper = new QueryWrapper<>();
 
         // 类型
@@ -126,12 +126,8 @@ public class SysOperateLogServiceImpl implements SysLogService {
             queryWrapper.lambda().between(SysLogVO::getCreateTime, sysLogDTO.getCreateTimeList().get(0), sysLogDTO.getCreateTimeList().get(1));
         }
 
-        queryWrapper.lambda().eq(SysLogVO::getDelFlag, "0").orderByDesc(SysLogVO::getId);
-
-        List<SysOperateLog> sysOperateLogs = sysOperateLogMapper.selectList(queryWrapper);
-
-        // return ExcelUtils.excelExport(sysOperateLogs, SysOperateLog.class, "操作日志");
-        return null;
+        queryWrapper.lambda().orderByDesc(SysLogVO::getId);
+        return sysOperateLogMapper.selectList(queryWrapper);
     }
 
     @Override

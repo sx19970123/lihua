@@ -46,20 +46,22 @@ export const clearOperateLog = () => {
 
 // 导出操作日志
 export const excelOperateExport = (data: SysLogDTO) => {
-    return request<string>({
+    return request<Blob>({
         url: 'system/log/operate/export',
         method: 'post',
-        data: data
+        data: data,
+        responseType: 'blob'
     })
 }
 
 
 // 导出登录日志
 export const excelLoginExport = (data: SysLogDTO) => {
-    return request<string>({
+    return request<Blob>({
         url: 'system/log/login/export',
         method: 'post',
-        data: data
+        data: data,
+        responseType: 'blob'
     })
 }
 

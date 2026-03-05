@@ -201,7 +201,7 @@ import type {SysLog, SysLogDTO} from "@/api/system/log/type/SysLog.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import dayjs from "dayjs";
 import {ResponseError} from "@/api/global/Type.ts";
-import {download} from "@/utils/AttachmentDownload.ts";
+import {download, downloadBlob} from "@/utils/AttachmentDownload.ts";
 import Spin from "@/components/spin";
 
 const {sys_log_status, sys_client_type} = initDict("sys_log_status", "sys_client_type")
@@ -518,12 +518,8 @@ const handleExportExcel = async () => {
   const spinInstance = Spin.service({
     tip: '努力加载中...'
   });
-  const resp = await excelLoginExport(logQuery.value)
-  if (resp.code === 200) {
-    download(resp.data)
-  } else {
-    message.error(resp.msg)
-  }
+  const blob = await excelLoginExport(logQuery.value)
+  downloadBlob(blob, "登录日志")
   spinInstance.close()
 }
 </script>
