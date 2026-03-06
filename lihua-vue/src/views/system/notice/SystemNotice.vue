@@ -245,7 +245,7 @@ import NoticePreview from "@/components/notice-preview/index.vue"
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {getUserOptionByUserIds} from "@/api/system/user/User.ts";
-import {ResponseError} from "@/api/global/Type.ts";
+import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
@@ -393,13 +393,7 @@ const {selectedIds, noticeRowSelectionType, noticeColumn, noticeQuery, noticeLis
 const initSave = () => {
   const formRef = useTemplateRef<FormInstance>("formRef")
 
-  // 模态框状态
-  type modalActiveType = {
-    open: boolean, // 模态框开关
-    saveLoading: boolean, // 点击保存按钮加载
-    title: string // 模态框标题
-  }
-  const modalActive = reactive<modalActiveType>({
+  const modalActive = reactive<BaseModalActiveType>({
     open: false,
     saveLoading: false,
     title: ""

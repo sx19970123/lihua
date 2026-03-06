@@ -505,7 +505,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
             // 汇总错误信息
             if (!errItemList.isEmpty()) {
-                errItemList.set(0, "第" + (i + 1) + "行 " + errItemList.get(0));
+                errItemList.set(0, "第" + (i + 1) + "行：" + errItemList.get(0));
                 importErrMssageList.add(String.join("，", errItemList));
             }
         }

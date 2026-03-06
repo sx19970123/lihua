@@ -229,14 +229,13 @@ import {
   deleteData,
   exportExcel,
   getDeptOption,
-  importExcel,
   queryById,
   queryList,
   save,
   updateStatus
 } from "@/api/system/dept/Dept.ts";
-import {createVNode, reactive, ref, useTemplateRef} from "vue";
-import {type FormInstance, message, Modal} from "ant-design-vue";
+import {reactive, ref, useTemplateRef} from "vue";
+import {type FormInstance, message} from "ant-design-vue";
 import {initDict} from "@/utils/Dict.ts";
 import {cloneDeep} from "lodash-es";
 import type {Rule} from "ant-design-vue/es/form";
@@ -244,11 +243,9 @@ import {useRouter} from "vue-router";
 import {flattenTree} from "@/utils/Tree.ts";
 import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
-import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import Spin from "@/components/spin";
-import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
-import {ResponseError} from "@/api/global/Type.ts";
-import {download, downloadBlob} from "@/utils/AttachmentDownload.ts";
+import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
+import {downloadBlob} from "@/utils/AttachmentDownload.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
@@ -435,14 +432,7 @@ const initSave = () => {
   // 表单
   const formRef = useTemplateRef<FormInstance>("formRef")
 
-  // 模态框状态
-  type modalActiveType = {
-    open: boolean, // 模态框开关
-    saveLoading: boolean, // 点击保存按钮加载
-    title: string // 模态框标题
-  }
-
-  const modalActive = reactive<modalActiveType>({
+  const modalActive = reactive<BaseModalActiveType>({
     open: false,
     saveLoading: false,
     title: ""

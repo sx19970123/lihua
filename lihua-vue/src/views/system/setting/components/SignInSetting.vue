@@ -91,7 +91,6 @@ import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
-import {cloneDeep} from 'lodash-es';
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
 import {traverse} from "@/utils/Tree.ts";
 import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
@@ -100,7 +99,6 @@ import SelectableCard from "@/components/selectable-card/index.vue";
 import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
 import {message} from "ant-design-vue";
 import {isAdmin} from "@/utils/Auth.ts";
-import {ResponseError} from "@/api/global/Type.ts";
 
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
@@ -141,19 +139,11 @@ const initRoleData = () => {
   const sysRoleList = ref<Array<SysRole>>([])
   // 加载角色信息
   const initRole = async () => {
-    try {
-      const resp = await getRoleOption()
-      if (resp.code === 200) {
-        sysRoleList.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await getRoleOption()
+    if (resp.code === 200) {
+      sysRoleList.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
   initRole()
@@ -171,20 +161,12 @@ const initDeptData = () => {
 
   // 加载部门信息
   const initDept = async () => {
-    try {
-      const resp = await getDeptOption()
-      if (resp.code === 200) {
-        // 单位树
-        sysDeptList.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await getDeptOption()
+    if (resp.code === 200) {
+      // 单位树
+      sysDeptList.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
 
@@ -194,6 +176,7 @@ const initDeptData = () => {
   }
 }
 const {sysDeptList,initDept} = initDeptData()
+
 // 岗位/默认部门
 const initPostData = () => {
 
@@ -221,24 +204,32 @@ const initPostData = () => {
         postLoading.value = true
         await initPostByDeptIds(settingForm.value.deptIds)
       }
-    } catch (error) {
-      console.error(error)
     } finally {
       postLoading.value = false
     }
   }
 
-  // 通过部门id获取部门名称用于回显
-  const initPostByDeptIds = async (value: Array<string>) => {
-    const option:Array<{
-      value: string,
-      label: string
-    }> = []
-    // 组合option
-    value.forEach(item => {
-      traverse(sysDeptList.value, (dept: SysDept) => {
-        if (dept.id === item && dept.name) {
-          option.push({
+  // 根据部门id初始化岗位信息
+  const initPostByDeptIds = async (deptIds: string[]) => {
+    if (!deptIds.length) {
+      sysPostList.value = []
+      return
+    }
+
+    // 获取部门id｜名称集合
+    const deptOptions = getDeptOptions(deptIds)
+
+    await initPostByDeptIdOption(deptIds, deptOptions)
+  }
+
+  // 获取部门选项集合
+  const getDeptOptions = (deptIds: string[]) => {
+    const options: { value: string; label: string }[] = []
+
+    deptIds.forEach(id => {
+      traverse(sysDeptList.value, (dept) => {
+        if (dept.id === id && dept.name) {
+          options.push({
             value: dept.id,
             label: dept.name
           })
@@ -247,75 +238,54 @@ const initPostData = () => {
       })
     })
 
-    if (value.length > 0) {
-      await initPostByDeptIdOption(value, option)
-    } else {
-      sysPostList.value = []
-    }
+    return options
   }
 
-  // 加载岗位信息，通过 选中部门/表单回显写入部门id 进行加载
-  const initPostByDeptIdOption = async (deptIds: string[], option: Array<{label: string, value: string}>) => {
-    // 记录原始部门ID集合
+  const initPostByDeptIdOption = async (deptIds: string[], options: { label: string; value: string }[]) => {
+
     const originDeptIds = sysPostList.value.map(post => post.deptId)
-    // 删除没有被选中的id
-    originDeptIds.forEach(deptId => {
-      if (!deptIds.includes(deptId)) {
-        const index = sysPostList.value.findIndex(item => item.deptId === deptId)
-        if (index > -1) {
-          sysPostList.value.splice(index, 1)
-        }
-      }
+
+    // 删除未选中的部门
+    sysPostList.value = sysPostList.value.filter(item => deptIds.includes(item.deptId))
+    // 找新增部门
+    const newDeptIds = deptIds.filter(id => !originDeptIds.includes(id))
+
+    if (!newDeptIds.length) return
+
+    const resp = await getPostOptionByDeptId(newDeptIds)
+
+    if (resp.code !== 200) {
+      message.error(resp.msg)
+      return
+    }
+
+    const data = resp.data
+
+    newDeptIds.forEach(deptId => {
+      const dept = options.find(item => item.value === deptId)
+
+      sysPostList.value.push({
+        deptId,
+        deptName: dept?.label ?? '',
+        postList: sysPostsToPostOptional(data[deptId])
+      })
     })
 
-    // 如果新旧ID集合长度相同，直接返回
-    if (deptIds.length === sysPostList.value.length) {
-      return;
-    }
-
-    // 新选中的部门id集合
-    const newDeptIds = deptIds.filter(item => !originDeptIds.includes(item))
-    // 后端查询新部门及岗位数据
-    try {
-      const resp = await getPostOptionByDeptId(newDeptIds)
-      if (resp.code === 200) {
-        const data = resp.data
-        newDeptIds.forEach(deptId => {
-          sysPostList.value.push({
-            deptId: deptId,
-            deptName: cloneDeep(option).find((item:{label: string, value: string}) => item.value === deptId).label,
-            postList: sysPostsToPostOptional(data[deptId])
-          })
-        })
-        // 回显部门
-        if (settingForm.value.postIds) {
-          initPostTag(settingForm.value.postIds)
-        }
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    // 回显岗位
+    if (settingForm.value.postIds?.length) {
+      initPostTag(settingForm.value.postIds)
     }
   }
 
-  // 将 SysPost 集合  转换为 PostOptional 集合
-  const sysPostsToPostOptional = (postList: Array<SysPost>): Array<PostOptional> => {
-    const resp: Array<PostOptional> = []
-    if (postList) {
-      postList.forEach(post => {
-        resp.push({
-          id: post.id,
-          name: post.name,
-          checked: false
-        })
-      })
-    }
-    return resp
+  // 岗位数据转为可选项
+  const sysPostsToPostOptional = (postList?: SysPost[]): PostOptional[] => {
+    if (!postList) return []
+
+    return postList.map(post => ({
+      id: post.id,
+      name: post.name,
+      checked: false
+    }))
   }
 
   // 处理选中/取消选中 岗位标签
@@ -363,7 +333,7 @@ const initPostData = () => {
     initPostByDeptIds
   }
 }
-const {sysPostList, postLoading, loadPost ,handleSelectPostId,} = initPostData()
+const {sysPostList, postLoading, loadPost ,handleSelectPostId} = initPostData()
 
 // 处理开关switch
 const handleChangeSwitch = async () => {

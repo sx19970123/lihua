@@ -339,7 +339,8 @@
 // 列表查询
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {
-  deleteByIds, excelTemplate,
+  deleteByIds,
+  excelTemplate,
   exportExcel,
   importExcel,
   queryById,
@@ -373,7 +374,7 @@ import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useSettingStore} from "@/stores/setting.ts";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
 import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
-import {ResponseError} from "@/api/global/Type.ts";
+import {type BaseModalActiveType} from "@/api/global/Type.ts";
 import {downloadBlob} from "@/utils/AttachmentDownload.ts";
 import settings from "@/settings.ts";
 import {useUserStore} from "@/stores/user.ts";
@@ -515,16 +516,9 @@ const initSearch = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       queryLoading.value = false
     }
-
   }
 
   // 条件检索初始页码设置为0
@@ -611,15 +605,8 @@ const initSave = () => {
 
   const segmented = ref<string>(segmentedOption[0].value)
 
-  // modal 相关属性定义
-  type modalActiveType = {
-    open: boolean, // 模态框开关
-    saveLoading: boolean, // 点击保存按钮加载
-    title: string, // 模态框标题
-  }
-
   // 模态框状态
-  const modalActive = reactive<modalActiveType>({
+  const modalActive = reactive<BaseModalActiveType>({
     open: false,
     saveLoading: false,
     title: ''
@@ -665,7 +652,7 @@ const initSave = () => {
     }
     // 分段器设置为默认
     segmented.value = 'basic'
-    // 重制部门岗位
+    // 重置部门岗位
     initPostByDeptIds([])
     initPostTag([])
     // 重置树形选择组件
@@ -674,29 +661,43 @@ const initSave = () => {
 
   // 保存用户信息
   const saveUser = async () => {
+    modalActive.saveLoading = true
+
+    // 表单验证
     try {
       await formRef.value?.validate()
-      modalActive.saveLoading = true
-      const userDTO = cloneDeep(sysUserDTO.value)
-      // 处理用户部门、手机号、邮箱
-      userDTO.deptIdList = sysUserDTO.value.deptIdList
-      userDTO.phoneNumber === "" ? sysUserDTO.value.phoneNumber = undefined : sysUserDTO.value.phoneNumber
-      userDTO.email === "" ? sysUserDTO.value.email = undefined : sysUserDTO.value.email
+    } catch (error) {
+      // 出现表单验证信息后跳转到表单首页
+      toNextForm('basic')
+      return
+    } finally {
+      modalActive.saveLoading = false
+    }
 
-      const userId = sysUserDTO.value.id
-      const password = sysUserDTO.value.password
+    const userDTO = cloneDeep(sysUserDTO.value)
+    // 处理用户部门、手机号、邮箱
+    userDTO.deptIdList = sysUserDTO.value.deptIdList
+    userDTO.phoneNumber === "" ? sysUserDTO.value.phoneNumber = undefined : sysUserDTO.value.phoneNumber
+    userDTO.email === "" ? sysUserDTO.value.email = undefined : sysUserDTO.value.email
 
-      // 操作为新增用户时，进行密码加密
-      if (!userId && password) {
-        try {
-          const passwordEncrypt = await rasEncryptPassword(password)
-          userDTO.password = passwordEncrypt.ciphertext
-          userDTO.passwordRequestKey = passwordEncrypt.requestKey
-        } catch (error) {
-          message.success(error as string)
-        }
+    const userId = sysUserDTO.value.id
+    const password = sysUserDTO.value.password
+
+    // 操作为新增用户时，进行密码加密
+    if (!userId && password) {
+      try {
+        const passwordEncrypt = await rasEncryptPassword(password)
+        userDTO.password = passwordEncrypt.ciphertext
+        userDTO.passwordRequestKey = passwordEncrypt.requestKey
+      } catch (error) {
+        message.error(error as string)
+        return
+      } finally {
+        modalActive.saveLoading = false
       }
+    }
 
+    try {
       // 调用保存接口
       const resp = await save(userDTO)
       if (resp.code === 200) {
@@ -711,14 +712,6 @@ const initSave = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
-      // 出现表单验证信息后跳转到表单首页
-      toNextForm('basic')
     } finally {
       modalActive.saveLoading = false
     }
@@ -727,67 +720,51 @@ const initSave = () => {
   // 处理改变状态
   const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
     event.stopPropagation()
-    let newStatus: string = ''
+    let newStatus: string = status
     try {
       const resp = await updateStatus(id, status)
       if (resp.code === 200) {
         newStatus = resp.data
         message.success(resp.msg)
       } else {
-        newStatus = status
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       // 重新赋值
       userList.value.some(user => {
         if (user.id === id) {
           user.status = newStatus
-          user.statusIsNormal =  user.status === '0'
+          user.statusIsNormal = user.status === '0'
           user.updateStatusLoading = false
           return
         }
       })
     }
-
   }
 
   // 根据id查询用户信息
   const getUserInfo = async (event: MouseEvent, userId: string) => {
     event.stopPropagation()
-    try {
-      const resp = await queryById(userId)
-      if (resp.code === 200) {
-        handleModelStatus("编辑用户")
-        // 表单数据赋值
-        sysUserDTO.value = cloneDeep(resp.data)
-        // 默认部门 / 岗位 回显
-        const deptIds = sysUserDTO.value.deptIdList
-        const postIds = sysUserDTO.value.postIdList
-        // 加载部门
-        if (deptIds) {
-          await initPostByDeptIds(deptIds)
-        }
-        // 岗位标签回显
-        if (postIds) {
-          initPostTag(postIds)
-        }
-        // 默认部门回显
-        sysUserDTO.value.defaultDeptId = resp.data.defaultDeptId
-      } else {
-        message.error(resp.msg)
+    const resp = await queryById(userId)
+    if (resp.code === 200) {
+      handleModelStatus("编辑用户")
+      // 表单数据赋值
+      sysUserDTO.value = cloneDeep(resp.data)
+      // 默认部门 / 岗位 回显
+      const deptIds = sysUserDTO.value.deptIdList
+      const postIds = sysUserDTO.value.postIdList
+      // 加载部门
+      if (deptIds) {
+        await initPostByDeptIds(deptIds)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
+      // 岗位标签回显
+      if (postIds) {
+        initPostTag(postIds)
       }
+      // 默认部门回显
+      sysUserDTO.value.defaultDeptId = resp.data.defaultDeptId
+    } else {
+      message.error(resp.msg)
     }
   }
   return {
@@ -814,17 +791,11 @@ const initRoleData = () => {
   const sysRoleList = ref<Array<SysRole>>([])
   // 加载角色信息
   const initRole = async () => {
-    try {
-      const resp = await getRoleOption()
-      if (resp.code === 200) {
-        sysRoleList.value = resp.data
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await getRoleOption()
+    if (resp.code === 200) {
+      sysRoleList.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
   initRole()
@@ -840,20 +811,12 @@ const initDeptData = () => {
   const sysDeptList = ref<Array<SysDept>>([])
   // 加载部门信息
   const initDept = async () => {
-    try {
-      const resp = await getDeptOption()
-      if (resp.code === 200) {
-        // 单位树
-        sysDeptList.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await getDeptOption()
+    if (resp.code === 200) {
+      // 单位树
+      sysDeptList.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
   initDept()
@@ -890,24 +853,32 @@ const initPostData = () => {
         postLoading.value = true
         await initPostByDeptIds(sysUserDTO.value.deptIdList)
       }
-    } catch (error) {
-      console.error(error)
     } finally {
       postLoading.value = false
     }
   }
 
-  // 通过部门id获取部门名称用于回显
-  const initPostByDeptIds = async (value: Array<string>) => {
-    const option:Array<{
-      value: string,
-      label: string
-    }> = []
-    // 组合option
-    value.forEach(item => {
+  // 根据部门ID初始化岗位
+  const initPostByDeptIds = async (deptIds: string[]) => {
+    if (!deptIds.length) {
+      sysPostList.value = []
+      return
+    }
+
+    // 获取部门id｜名称集合
+    const deptOptions = getDeptOptions(deptIds)
+
+    await updatePostList(deptIds, deptOptions)
+  }
+
+  // 获取部门选项集合
+  const getDeptOptions = (deptIds: string[]) => {
+    const options: { value: string; label: string }[] = []
+
+    deptIds.forEach(id => {
       traverse(sysDeptList.value, (dept) => {
-        if (dept.id === item && dept.name) {
-          option.push({
+        if (dept.id === id && dept.name) {
+          options.push({
             value: dept.id,
             label: dept.name
           })
@@ -916,72 +887,49 @@ const initPostData = () => {
       })
     })
 
-    if (value.length > 0) {
-      await initPostByDeptIdOption(value, option)
-    } else {
-      sysPostList.value = []
-    }
+    return options
   }
 
-  // 加载岗位信息，通过 选中部门/表单回显写入部门id 进行加载
-  const initPostByDeptIdOption = async (deptIds: string[], option: Array<{label: string, value: string}>) => {
-    // 记录原始部门ID集合
-    const originDeptIds = sysPostList.value.map(post => post.deptId)
-    // 删除没有被选中的id
-    originDeptIds.forEach(deptId => {
-      if (!deptIds.includes(deptId)) {
-        const index = sysPostList.value.findIndex(item => item.deptId === deptId)
-        if (index > -1) {
-          sysPostList.value.splice(index, 1)
-        }
-      }
-    })
+  // 更新岗位列表
+  const updatePostList = async ( deptIds: string[], deptOptions: { label: string; value: string }[] ) => {
 
-    // 如果新旧ID集合长度相同，直接返回
-    if (deptIds.length === sysPostList.value.length) {
-      return;
+    const originDeptIds = sysPostList.value.map(p => p.deptId)
+
+    // 需要删除的部门
+    const removeDeptIds = originDeptIds.filter(id => !deptIds.includes(id))
+    // 删除旧数据
+    sysPostList.value = sysPostList.value.filter(item => !removeDeptIds.includes(item.deptId))
+    // 新增部门
+    const newDeptIds = deptIds.filter(id => !originDeptIds.includes(id))
+
+    if (!newDeptIds.length) return
+
+    const resp = await getPostOptionByDeptId(newDeptIds)
+
+    if (resp.code !== 200) {
+      message.error(resp.msg)
+      return
     }
 
-    // 新选中的部门id集合
-    const newDeptIds = deptIds.filter(item => !originDeptIds.includes(item))
+    newDeptIds.forEach(deptId => {
+      const dept = deptOptions.find(d => d.value === deptId)
 
-    // 后端查询新部门及岗位数据
-    try {
-      const resp = await getPostOptionByDeptId(newDeptIds)
-      if (resp.code === 200) {
-        const data = resp.data
-        newDeptIds.forEach(deptId => {
-          sysPostList.value.push({
-            deptId: deptId,
-            deptName: cloneDeep(option).find((item:{label: string, value: string}) => item.value === deptId).label,
-            postList: sysPostsToPostOptional(data[deptId])
-          })
-        })
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
-    }
-  }
-
-  // 将 SysPost 集合  转换为 PostOptional 集合
-  const sysPostsToPostOptional = (postList: Array<SysPost>): Array<PostOptional> => {
-    const resp: Array<PostOptional> = []
-    if (postList) {
-      postList.forEach(post => {
-        resp.push({
-          id: post.id,
-          name: post.name,
-          checked: false
-        })
+      sysPostList.value.push({
+        deptId,
+        deptName: dept?.label ?? '',
+        postList: toPostOptional(resp.data[deptId])
       })
-    }
-    return resp
+    })
+  }
+
+  const toPostOptional = (postList?: SysPost[]): PostOptional[] => {
+    if (!postList) return []
+
+    return postList.map(post => ({
+      id: post.id,
+      name: post.name,
+      checked: false
+    }))
   }
 
   // 处理选中/取消选中 岗位标签
@@ -1048,33 +996,29 @@ const intiDelete = () => {
   const closePopconfirm = () => {
     openDeletePopconfirm.value = false
   }
+
   // 处理删除逻辑
   const handleDelete = async (id?: string) => {
     const deleteIds = id ? [id] : [...selectedIds.value];
 
+    if (deleteIds.length === 0) {
+      message.warning("请勾选数据")
+      return
+    }
+
     try {
-      if (deleteIds.length > 0) {
-        const resp = await deleteByIds(deleteIds)
-        if (resp.code === 200) {
-          message.success(resp.msg);
-          // id 不存在则清空选中数据
-          if (!id) {
-            selectedIds.value = []
-          } else {
-            selectedIds.value = selectedIds.value.filter(item => item !== id)
-          }
-          await initPage()
+      const resp = await deleteByIds(deleteIds)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        // id 不存在则清空选中数据
+        if (!id) {
+          selectedIds.value = []
         } else {
-          message.error(resp.msg)
+          selectedIds.value = selectedIds.value.filter(item => item !== id)
         }
+        await initPage()
       } else {
-        message.warning("请勾选数据")
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
+        message.error(resp.msg)
       }
     } finally {
       closePopconfirm()
@@ -1112,7 +1056,7 @@ const initExcel = () => {
       // blob转为url后进行下载
       const blob = await exportExcel(userQuery.value)
       downloadBlob(blob, "导出用户")
-    } catch (e) {
+    } catch (err) {
       message.error("导出失败")
     } finally {
       spinInstance.close()
@@ -1153,16 +1097,9 @@ const initExcel = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       spinInstance.close()
     }
-
   }
 
   return {
@@ -1204,11 +1141,7 @@ const initResetPassword = () => {
     ]
   }
   // 重置密码表单
-  const resetPasswordForm = ref<{
-    password?: string
-  }>({
-    password: ''
-  })
+  const resetPasswordForm = ref<{password?: string}>({password: ''})
   // 触发打开模态框
   const handleOpenResetPasswordModel = (event: MouseEvent, targetUser: SysUserVO) => {
     event.stopPropagation()
@@ -1234,12 +1167,6 @@ const initResetPassword = () => {
         } else {
           message.error(resp.msg)
         }
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       resetPasswordLoading.value = false

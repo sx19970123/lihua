@@ -206,7 +206,7 @@ import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
 import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRole.ts";
-import {ResponseError} from "@/api/global/Type.ts";
+import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
@@ -365,13 +365,7 @@ const {roleQuery,roleTotal,roleColumn,roleList,tableLoad,selectedIds,roleRowSele
 
 // 数据保存相关
 const initSave = () => {
-  // modal 相关属性定义
-  type modalActiveType = {
-    open: boolean, // 模态框开关
-    saveLoading: boolean, // 点击保存按钮加载
-    title: string, // 模态框标题
-  }
-  const modalActive = reactive<modalActiveType>({
+  const modalActive = reactive<BaseModalActiveType>({
     open: false,
     saveLoading: false,
     title: ''

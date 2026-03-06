@@ -212,7 +212,7 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted, reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
-import {ResponseError, type ResponseType} from "@/api/global/Type.ts"
+import {type BaseModalActiveType, ResponseError, type ResponseType} from "@/api/global/Type.ts"
 import type {ColumnsType} from 'ant-design-vue/es/table/interface';
 import {deleteData, queryById, queryPage, reloadCache, save, updateStatus} from "@/api/system/dict/DictType.ts";
 import dayjs from "dayjs";
@@ -397,13 +397,8 @@ const initSave = () => {
         { pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/, message: '字典编码支持字母、数字、下划线，并且不能以数字开头', trigger: 'change' },
     ],
   }
-  // modal 相关属性定义
-  type modalActiveType = {
-    open: boolean, // 模态框开关
-    saveLoading: boolean, // 点击保存按钮加载
-    title: string, // 模态框标题
-  }
-  const modalActive = reactive<modalActiveType>( {
+
+  const modalActive = reactive<BaseModalActiveType>( {
     open: false,
     saveLoading: false,
     title: ''

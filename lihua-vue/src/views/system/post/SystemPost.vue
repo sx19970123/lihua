@@ -223,29 +223,19 @@
 <script setup lang="ts">
 
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
-import {createVNode, reactive, ref, useTemplateRef, watch} from "vue";
+import {reactive, ref, useTemplateRef, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {initDict} from "@/utils/Dict.ts";
-import {
-  deleteData,
-  exportExcel,
-  importExcel,
-  queryById,
-  queryPage,
-  save,
-  updateStatus
-} from "@/api/system/post/Post.ts";
+import {deleteData, exportExcel, queryById, queryPage, save, updateStatus} from "@/api/system/post/Post.ts";
 import {useRoute} from "vue-router";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTree} from "@/utils/Tree.ts";
-import {type FormInstance, message, Modal} from "ant-design-vue";
+import {type FormInstance, message} from "ant-design-vue";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
-import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
-import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import Spin from "@/components/spin";
-import {ResponseError} from "@/api/global/Type.ts";
-import {download, downloadBlob} from "@/utils/AttachmentDownload.ts";
+import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
+import {downloadBlob} from "@/utils/AttachmentDownload.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
@@ -459,13 +449,7 @@ const initSave = () => {
     ]
   }
 
-  // 模态框状态
-  type modalActiveType = {
-    open: boolean,
-    saveLoading: boolean,
-    title: string,
-  }
-  const modalActive = reactive<modalActiveType>({
+  const modalActive = reactive<BaseModalActiveType>({
     open: false,
     saveLoading: false,
     title: ''

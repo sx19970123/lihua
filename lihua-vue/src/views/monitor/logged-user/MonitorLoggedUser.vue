@@ -165,6 +165,7 @@ import {ResponseError} from "@/api/global/Type.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 import DictTag from "@/components/dict-tag/index.vue";
 import {initDict} from "@/utils/Dict.ts";
+
 const {sys_client_type} = initDict( "sys_client_type")
 const initSearch = () => {
   // 选中的数据id集合

@@ -328,7 +328,7 @@ import {type FormInstance, message} from "ant-design-vue";
 import {cloneDeep} from 'lodash-es';
 import {useThemeStore} from "@/stores/theme";
 import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
-import {ResponseError} from "@/api/global/Type.ts";
+import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
 import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
@@ -551,14 +551,7 @@ const initSave = () => {
     ]
   }
 
-  // modal 相关属性定义
-  type modalActiveType = {
-    open: boolean, // 模态框开关
-    saveLoading: boolean, // 点击保存按钮加载
-    title: string, // 模态框标题
-    moreSetting: boolean, // 表单更多设置显示隐藏开关
-  }
-  const modalActive = reactive<modalActiveType>( {
+  const modalActive = reactive<BaseModalActiveType & {moreSetting: boolean}>( {
     open: false,
     saveLoading: false,
     title: '',
