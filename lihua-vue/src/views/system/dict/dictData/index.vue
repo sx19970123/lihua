@@ -209,7 +209,6 @@ import dictTag from "@/components/dict-tag/index.vue"
 import type {SysDictDataType, SysDictDataTypeDTO} from "@/api/system/dict/type/SysDictDataType.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {v4 as uuidv4} from "uuid";
-import settings from "@/settings.ts";
 
 const props = defineProps<{
   typeCode: string,
@@ -267,7 +266,7 @@ const initSearch = () => {
       align: 'center',
       key: 'action',
       width: props.type === '1' ? 238 : 148,
-      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
+      fixed: 'right'
     },
   ])
   // 定义查询条件对象
@@ -287,12 +286,6 @@ const initSearch = () => {
         dictDataList.value = resp.data
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       tableLoading.value = false
@@ -532,10 +525,6 @@ const initSave = () => {
         // 保存失败的处理
         message.error(resp.msg);
       }
-    } catch (error) {
-      // 错误处理
-      console.error(error);
-      message.error("保存数据时发生错误");
     } finally {
       tableLoading.value = false;
     }
@@ -583,21 +572,13 @@ const initDelete = () => {
       handleDeleteTableData(id,list)
       message.success("成功")
     } else {
-      try {
-        // 其余数据从库中删除
-        const resp = await deleteData([id])
-        if (resp.code === 200) {
-          handleDeleteTableData(id,list)
-          message.success(resp.msg)
-        } else {
-          message.error(resp.msg)
-        }
-      } catch (e) {
-        if (e instanceof ResponseError) {
-          message.error(e.msg)
-        } else {
-          console.log(e)
-        }
+      // 其余数据从库中删除
+      const resp = await deleteData([id])
+      if (resp.code === 200) {
+        handleDeleteTableData(id,list)
+        message.success(resp.msg)
+      } else {
+        message.error(resp.msg)
       }
     }
     handleSort(list)

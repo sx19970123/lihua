@@ -204,12 +204,6 @@ const initVModel = async (newVal: string, oldValue?: string) => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       vModelComplete = true
     }

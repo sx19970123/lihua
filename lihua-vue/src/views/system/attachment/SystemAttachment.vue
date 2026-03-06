@@ -380,7 +380,7 @@ const initSearch = () => {
       key: 'action',
       align: 'center',
       width: '244px',
-      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
+      fixed: 'right'
     }
   ])
 
@@ -415,12 +415,6 @@ const initSearch = () => {
         attachmentList.value = resp.data.records
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       tableLoad.value = false
@@ -503,12 +497,6 @@ const initDelete = () => {
         }
       } else {
         message.warning("请勾选数据")
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       closePopconfirm()
@@ -630,20 +618,12 @@ const intiInfo = () => {
   // 处理打开模态框
   const handleOpenInfoModal = async (event: MouseEvent, id: string) => {
     event.stopPropagation()
-    try {
-      const resp = await queryById(id)
-      if (resp.code === 200) {
-        showInfoModal.value = true
-        attachmentInfo.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await queryById(id)
+    if (resp.code === 200) {
+      showInfoModal.value = true
+      attachmentInfo.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
 
@@ -691,19 +671,11 @@ const handleDownload = async (event: MouseEvent, id: string, status: string) => 
     message.error("仅上传完成附件可下载")
     return;
   }
-  try {
-    const resp = await getDownloadURL(id)
-    if (resp.code === 200) {
-      download(resp.data.startsWith("/") ? baseAPI + resp.data : resp.data)
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  const resp = await getDownloadURL(id)
+  if (resp.code === 200) {
+    download(resp.data.startsWith("/") ? baseAPI + resp.data : resp.data)
+  } else {
+    message.error(resp.msg)
   }
 }
 

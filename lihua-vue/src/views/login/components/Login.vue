@@ -176,12 +176,6 @@ const login = async (captchaVerification: string) => {
       message.error(msg);
       loginLoading.value = false
     }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg);
-    } else {
-      console.error("登录失败:", e);
-    }
   } finally {
     token.removeLoginSettingResult()
     loginLoading.value = false
@@ -208,8 +202,7 @@ const initRegisterSetting = () => {
     } else {
       isRegistrationEnable.value = false
     }
-  }).catch(e => {
-    console.error(e)
+  }).finally(() => {
     isRegistrationEnable.value = false
   })
 }

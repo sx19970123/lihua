@@ -329,7 +329,6 @@ import {cloneDeep} from 'lodash-es';
 import {useThemeStore} from "@/stores/theme";
 import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
 import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
-import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const themeStore = useThemeStore()
@@ -425,7 +424,7 @@ const initSearch = () => {
       align: 'center',
       key: 'action',
       width: '292px',
-      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
+      fixed: 'right'
     }
   ])
   // 筛选条件
@@ -449,12 +448,6 @@ const initSearch = () => {
         handleMenuStatus(menuList.value)
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       tableLoad.value = false
@@ -576,20 +569,12 @@ const initSave = () => {
   // 根据id获取菜单数据
   const getMenu = async (event:MouseEvent, id:string) => {
     event.stopPropagation()
-    try {
-      const resp = await queryById(id)
-      if (resp.code === 200) {
-        handleModelStatus('编辑菜单')
-        sysMenu.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await queryById(id)
+    if (resp.code === 200) {
+      handleModelStatus('编辑菜单')
+      sysMenu.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
   // 新增菜单
@@ -653,12 +638,6 @@ const initSave = () => {
         newStatus = status
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       // 重新赋值
       menuIds.forEach(id => handleMenuStatus(menuList.value, id, newStatus))
@@ -699,29 +678,21 @@ const initSave = () => {
 
   // 加载菜单树
   const initTreeData = async () => {
-    try {
-      const resp = await queryMenuTreeOption()
-      if (resp.code === 200) {
-        // 深拷贝数据
-        const menuTree = cloneDeep(resp.data)
-        // 过滤不需要的数据（只保留菜单和页面）
-        handleMenuTree(menuTree)
-        // 表单树
-        parentMenuTree.value = [{
-          label: '根节点',
-          id: '0',
-          menuType: 'directory',
-          children: menuTree
-        }]
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await queryMenuTreeOption()
+    if (resp.code === 200) {
+      // 深拷贝数据
+      const menuTree = cloneDeep(resp.data)
+      // 过滤不需要的数据（只保留菜单和页面）
+      handleMenuTree(menuTree)
+      // 表单树
+      parentMenuTree.value = [{
+        label: '根节点',
+        id: '0',
+        menuType: 'directory',
+        children: menuTree
+      }]
+    } else {
+      message.error(resp.msg)
     }
   }
 
@@ -749,12 +720,6 @@ const initSave = () => {
         modalActive.open = false
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       modalActive.saveLoading = false
@@ -815,12 +780,6 @@ const initDelete = () => {
         }
       } else {
         message.warning("请勾选数据")
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       closePopconfirm()

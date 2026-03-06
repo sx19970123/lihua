@@ -376,7 +376,6 @@ import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts
 import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
 import {type BaseModalActiveType} from "@/api/global/Type.ts";
 import {downloadBlob} from "@/utils/AttachmentDownload.ts";
-import settings from "@/settings.ts";
 import {useUserStore} from "@/stores/user.ts";
 import {refreshUserData} from "@/utils/AppInit.ts";
 import {useRoute} from "vue-router";
@@ -481,7 +480,7 @@ const initSearch = () => {
       dataIndex: 'action',
       align: 'center',
       width: '292px',
-      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
+      fixed: 'right'
     }
   ])
 
@@ -589,10 +588,7 @@ const initSave = () => {
   })
 
   // 表单滑块选项
-  const segmentedOption = reactive<Array<{
-    value: 'basic' | 'dept' | 'post',
-    label: string
-  }>>([{
+  const segmentedOption = [{
     value: 'basic',
     label: '基础信息',
   }, {
@@ -601,7 +597,7 @@ const initSave = () => {
   }, {
     value: 'post',
     label: '岗位&默认部门'
-  }])
+  }]
 
   const segmented = ref<string>(segmentedOption[0].value)
 

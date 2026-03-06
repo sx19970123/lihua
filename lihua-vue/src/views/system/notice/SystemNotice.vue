@@ -246,7 +246,6 @@ import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {getUserOptionByUserIds} from "@/api/system/user/User.ts";
 import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
-import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_notice_type, sys_notice_status, 	sys_notice_user_scope, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_status", "sys_notice_user_scope", "sys_notice_priority")
@@ -325,7 +324,7 @@ const initSearch = () => {
       key: 'action',
       align: 'center',
       width: '264px',
-      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
+      fixed: 'right'
     }
   ])
 
@@ -361,12 +360,6 @@ const initSearch = () => {
         noticeTotal.value = resp.data.total
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       tableLoad.value = false
@@ -476,22 +469,13 @@ const initSave = () => {
       sysNoticeVO.value.icon = 'NotificationOutlined'
     }
 
-    try {
-
-      const resp = await save(sysNoticeVO.value);
-      if (resp.code === 200) {
-        message.success(resp.msg)
-        modalActive.open = false
-        await initPage()
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await save(sysNoticeVO.value);
+    if (resp.code === 200) {
+      message.success(resp.msg)
+      modalActive.open = false
+      await initPage()
+    } else {
+      message.error(resp.msg)
     }
   }
 
@@ -502,39 +486,24 @@ const initSave = () => {
       message.error('已发布消息通知无法编辑')
       return
     }
-    try {
-      const resp = await queryById(id)
-      if (resp.code === 200) {
-        handleModalStatus("修改通知公告")
-        sysNoticeVO.value = resp.data
-        if (resp.data.userScope === '1') {
-          const length = resp.data?.userIdList?.length
-          if (length && length > 0) {
-            try {
-              const selectUserList = await getUserOptionByUserIds(resp.data.userIdList as string[])
-              if (selectUserList.code === 200) {
-                handleSelectUserInfo(selectUserList.data)
-              } else {
-                message.error(resp.msg)
-              }
-            } catch (e) {
-              if (e instanceof ResponseError) {
-                message.error(e.msg)
-              } else {
-                console.log(e)
-              }
-            }
+
+    const resp = await queryById(id)
+    if (resp.code === 200) {
+      handleModalStatus("修改通知公告")
+      sysNoticeVO.value = resp.data
+      if (resp.data.userScope === '1') {
+        const length = resp.data?.userIdList?.length
+        if (length && length > 0) {
+          const selectUserList = await getUserOptionByUserIds(resp.data.userIdList as string[])
+          if (selectUserList.code === 200) {
+            handleSelectUserInfo(selectUserList.data)
+          } else {
+            message.error(resp.msg)
           }
         }
-      } else {
-        message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.log(e)
-      }
+    } else {
+      message.error(resp.msg)
     }
   }
   return {
@@ -571,26 +540,18 @@ const initDelete = () => {
   const handleDelete = async (id?: string) => {
     const deleteIds = id ? [id] : [...selectedIds.value];
     if (deleteIds.length > 0) {
-      try {
-        const resp = await deleteByIds(deleteIds)
-        if (resp.code === 200) {
-          message.success(resp.msg);
-          // id 不存在则清空选中数据
-          if (!id) {
-            selectedIds.value = []
-          } else {
-            selectedIds.value = selectedIds.value.filter(item => item !== id)
-          }
-          await initPage()
+      const resp = await deleteByIds(deleteIds)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        // id 不存在则清空选中数据
+        if (!id) {
+          selectedIds.value = []
         } else {
-          message.error(resp.msg)
+          selectedIds.value = selectedIds.value.filter(item => item !== id)
         }
-      } catch (e) {
-        if (e instanceof ResponseError) {
-          message.error(e.msg)
-        } else {
-          console.log(e)
-        }
+        await initPage()
+      } else {
+        message.error(resp.msg)
       }
     } else {
       message.warning("请勾选数据")
@@ -630,40 +591,24 @@ const { previewModelOpen, previewNoticeId, showPreview } = initPreview()
 // 处理文章发布
 const handleRelease = async (event:MouseEvent, id: string) => {
   event.stopPropagation()
-  try {
-    const resp = await release(id)
-    if (resp.code === 200) {
-      await initPage()
-      message.success(resp.msg)
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  const resp = await release(id)
+  if (resp.code === 200) {
+    await initPage()
+    message.success(resp.msg)
+  } else {
+    message.error(resp.msg)
   }
 }
 
 // 处理文章撤销
 const handleRevoke = async (event:MouseEvent, id: string) => {
   event.stopPropagation()
-  try {
-    const resp = await revoke(id)
-    if (resp.code === 200) {
-      await initPage()
-      message.success(resp.msg)
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  const resp = await revoke(id)
+  if (resp.code === 200) {
+    await initPage()
+    message.success(resp.msg)
+  } else {
+    message.error(resp.msg)
   }
 }
 

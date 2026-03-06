@@ -282,12 +282,6 @@ const initSearch = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       queryLoading.value = false
     }
@@ -371,12 +365,6 @@ const handleConfirm = async (cacheKey?: string) => {
     } else {
       message.error(resp.msg)
     }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
   } finally {
     openLogoutPopconfirm.value = false
   }
@@ -392,26 +380,18 @@ const initLogInfo = () => {
   // 根据id查询日志详情
   const selectByCacheKey = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
-    try {
-      const resp = await queryLoginByCacheKey(id)
-      if (resp.code === 200) {
-        logInfo.value = resp.data
+    const resp = await queryLoginByCacheKey(id)
+    if (resp.code === 200) {
+      logInfo.value = resp.data
 
-        if (!resp.data) {
-          message.error('用户信息不存在')
-        } else {
-          openModal.value = true
-        }
+      if (!resp.data) {
+        message.error('用户信息不存在')
+      } else {
+        openModal.value = true
+      }
 
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    } else {
+      message.error(resp.msg)
     }
   }
 

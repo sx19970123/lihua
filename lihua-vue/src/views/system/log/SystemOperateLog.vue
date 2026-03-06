@@ -218,19 +218,11 @@ const initSearch = () => {
   // 操作类型选项
   const logTypeOption = ref<Array<{ value: string, label: string }>>([])
   const initLogTypeOption = async () => {
-    try {
-      const resp = await getLogTypeOption();
-      if (resp.code === 200) {
-        logTypeOption.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await getLogTypeOption();
+    if (resp.code === 200) {
+      logTypeOption.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
   initLogTypeOption()
@@ -354,12 +346,6 @@ const initSearch = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       tableLoad.value = false
     }
@@ -394,21 +380,13 @@ const initLogInfo = () => {
   const selectById = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
 
-    try {
-      const resp = await queryOperateById(id)
-      if (resp.code === 200) {
-        logInfo.value = resp.data
-        closePopconfirm()
-        openModal.value = true
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await queryOperateById(id)
+    if (resp.code === 200) {
+      logInfo.value = resp.data
+      closePopconfirm()
+      openModal.value = true
+    } else {
+      message.error(resp.msg)
     }
   }
 
@@ -453,12 +431,6 @@ const initDelete = () => {
       } else {
         message.warning("请勾选数据")
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       closePopconfirm()
     }
@@ -500,21 +472,13 @@ const initClear = () => {
 
   // 处理清除数据
   const handleClear = async () => {
-    try {
-      const resp = await clearOperateLog()
-      if (resp.code === 200) {
-        message.success(resp.msg);
-        selectedIds.value = []
-        await initPage()
-      } else {
-        message.error(resp.msg);
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await clearOperateLog()
+    if (resp.code === 200) {
+      message.success(resp.msg);
+      selectedIds.value = []
+      await initPage()
+    } else {
+      message.error(resp.msg);
     }
   }
 

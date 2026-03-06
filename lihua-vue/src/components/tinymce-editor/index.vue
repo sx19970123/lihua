@@ -165,12 +165,6 @@ const editorConfig = computed(() => ({
           }
         }
       });
-    } catch (error) {
-      if (error instanceof ResponseError) {
-        message.error(error.msg)
-      } else {
-        console.error(error)
-      }
     } finally {
       notif.close();
     }

@@ -236,7 +236,6 @@ import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPos
 import Spin from "@/components/spin";
 import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
 import {downloadBlob} from "@/utils/AttachmentDownload.ts";
-import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_status} = initDict("sys_status")
@@ -253,19 +252,11 @@ watch(() => route.query.deptId, (value) => {
 const initDept = () => {
   const deptTree = ref<Array<SysDept>>([])
   const initDeptTree = async () => {
-    try {
-      const resp = await getDeptOption()
-      if (resp.code === 200 ) {
-        deptTree.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await getDeptOption()
+    if (resp.code === 200 ) {
+      deptTree.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
   initDeptTree()
@@ -346,7 +337,7 @@ const initSearch = () => {
       key: 'action',
       align: 'center',
       width: '182px',
-      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
+      fixed: 'right'
     }
   ])
 
@@ -386,12 +377,6 @@ const initSearch = () => {
         })
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       tableLoad.value = false
@@ -470,26 +455,19 @@ const initSave = () => {
 
   const selectById = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
-    try {
-      const resp = await queryById(id)
-      if (resp.code === 200) {
-        handleModalStatus('修改岗位')
-        sysPost.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await queryById(id)
+    if (resp.code === 200) {
+      handleModalStatus('修改岗位')
+      sysPost.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
 
   // 保存岗位数据
   const savePost = async () => {
     await formRef.value?.validate()
+    modalActive.saveLoading = true
 
     // 设置岗位编码
     const flattenTreeList = flattenTree(deptTree.value)
@@ -498,7 +476,7 @@ const initSave = () => {
         sysPost.value.deptCode = item.code
       }
     })
-    modalActive.saveLoading = true
+
     try {
       const resp = await save(sysPost.value)
       if (resp.code === 200) {
@@ -507,12 +485,6 @@ const initSave = () => {
         await initPage()
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       modalActive.saveLoading = false
@@ -523,21 +495,14 @@ const initSave = () => {
   // 修改角色状态
   const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
     event.stopPropagation()
-    let newStatus: string = ''
+    let newStatus: string = status
     try {
       const resp = await updateStatus(id, status)
       if (resp.code === 200) {
         newStatus = resp.data
         message.success(resp.msg)
       } else {
-        newStatus = status
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       // 重新赋值
@@ -550,9 +515,7 @@ const initSave = () => {
         }
       })
     }
-
   }
-
 
   return {
     modalActive,
@@ -604,12 +567,6 @@ const initDelete = () => {
         }
       } else {
         message.warning("请勾选数据")
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       closePopconfirm()

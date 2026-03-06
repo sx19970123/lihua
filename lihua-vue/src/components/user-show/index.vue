@@ -40,12 +40,6 @@ try {
     if (avatar.value.value && avatar.value.type === 'image') {
       publicAttachmentDownload(avatar.value.value).then((resp:Blob) => {
         avatar.value.url = URL.createObjectURL(resp)
-      }).catch(e => {
-        if (e instanceof ResponseError) {
-          message.error(e.msg)
-        } else {
-          console.error(e)
-        }
       })
     }
   } else {

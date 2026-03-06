@@ -246,7 +246,6 @@ import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import Spin from "@/components/spin";
 import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
 import {downloadBlob} from "@/utils/AttachmentDownload.ts";
-import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_status} = initDict("sys_status")
@@ -325,7 +324,7 @@ const initSearch = () => {
       key: 'action',
       align: 'center',
       width: '292px',
-      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
+      fixed: 'right'
     }
   ])
 
@@ -348,12 +347,6 @@ const initSearch = () => {
         handleDeptStatus(deptList.value)
       } else {
         message.error(resp.msg);
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       tableLoad.value = false
@@ -438,7 +431,6 @@ const initSave = () => {
     title: ""
   })
 
-
   // 部门数据
   const sysDept = ref<SysDept>({})
   // 上级部门
@@ -479,20 +471,12 @@ const initSave = () => {
   // 根据id查询数据
   const selectById = async (event: MouseEvent,id: string) => {
     event.stopPropagation()
-    try {
-      const resp = await queryById(id)
-      if (resp.code === 200) {
-        handleModelStatus("修改部门")
-        sysDept.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await queryById(id)
+    if (resp.code === 200) {
+      handleModelStatus("修改部门")
+      sysDept.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
 
@@ -517,25 +501,17 @@ const initSave = () => {
 
   // 初始化树型结构
   const initTreeData = async () => {
-    try {
-      const resp = await getDeptOption()
-      if (resp.code === 200) {
-        const deepDeptList = cloneDeep(resp.data)
-        handleDeptTree(deepDeptList)
-        parentDeptList.value = [{
-          id: '0',
-          name: '根节点',
-          children: deepDeptList
-        }]
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await getDeptOption()
+    if (resp.code === 200) {
+      const deepDeptList = cloneDeep(resp.data)
+      handleDeptTree(deepDeptList)
+      parentDeptList.value = [{
+        id: '0',
+        name: '根节点',
+        children: deepDeptList
+      }]
+    } else {
+      message.error(resp.msg)
     }
   }
 
@@ -562,12 +538,6 @@ const initSave = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       modalActive.saveLoading = false
     }
@@ -585,12 +555,6 @@ const initSave = () => {
       } else {
         newStatus = status
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       // 重新赋值
@@ -674,12 +638,6 @@ const initDelete = () => {
         }
       } else {
         message.warning("请勾选数据")
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.log(e)
       }
     } finally {
       closePopconfirm()

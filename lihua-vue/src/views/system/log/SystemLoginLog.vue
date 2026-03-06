@@ -339,12 +339,6 @@ const initSearch = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       tableLoad.value = false
     }
@@ -377,23 +371,14 @@ const initLogInfo = () => {
   // 根据id查询日志详情
   const selectById = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
-    try {
-      const resp = await queryLoginById(id)
-      if (resp.code === 200) {
-        logInfo.value = resp.data
-        closePopconfirm()
-        openModal.value = true
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.log(e)
-      }
+    const resp = await queryLoginById(id)
+    if (resp.code === 200) {
+      logInfo.value = resp.data
+      closePopconfirm()
+      openModal.value = true
+    } else {
+      message.error(resp.msg)
     }
-
   }
 
   return {
@@ -438,12 +423,6 @@ const initDelete = () => {
       } else {
         message.warning("请勾选数据")
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.log(e)
-      }
     } finally {
       closePopconfirm()
     }
@@ -486,21 +465,13 @@ const initClear = () => {
 
   // 处理清除数据
   const handleClear = async () => {
-    try {
-      const resp = await clearLoginLog()
-      if (resp.code === 200) {
-        message.success(resp.msg);
-        selectedIds.value = []
-        await initPage()
-      } else {
-        message.error(resp.msg);
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await clearLoginLog()
+    if (resp.code === 200) {
+      message.success(resp.msg);
+      selectedIds.value = []
+      await initPage()
+    } else {
+      message.error(resp.msg);
     }
   }
 
