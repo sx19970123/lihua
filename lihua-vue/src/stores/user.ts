@@ -155,12 +155,6 @@ export const useUserStore = defineStore('user', {
             try {
                 closeConnect()
                 await logout()
-            } catch (e) {
-                if (e instanceof ResponseError) {
-                    message.error(e.msg)
-                } else {
-                    console.error(e)
-                }
             } finally {
                 this.clearUserInfo()
             }
@@ -245,11 +239,6 @@ export const useUserStore = defineStore('user', {
                     publicAttachmentDownload(avatar.value).then((resp: Blob) => {
                         avatar.url = URL.createObjectURL(resp)
                     }).catch((e) => {
-                        if (e instanceof ResponseError) {
-                            message.error(e.msg)
-                        } else {
-                            console.error(e)
-                        }
                         this.$state.avatar = this.getDefaultAvatar()
                     })
                 } else {

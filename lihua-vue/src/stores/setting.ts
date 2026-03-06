@@ -20,11 +20,6 @@ export const useSettingStore = defineStore('setting', {
                     this.map.delete(setting.settingComponentName)
                     resolve(resp as ResponseType<String>)
                 }).catch((e) => {
-                    if (e instanceof ResponseError) {
-                        message.error(e.msg)
-                    } else {
-                        console.error(e)
-                    }
                     reject(e)
                 })
             })

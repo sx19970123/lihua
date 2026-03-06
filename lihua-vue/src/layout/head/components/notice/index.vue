@@ -133,19 +133,11 @@ const {sys_notice_type, sys_notice_priority} = initDict("sys_notice_type", "sys_
 const unReadCount = ref<number>(0)
 // 查询未读数量
 const handleUnReadCount = async () => {
-  try {
-    const resp = await queryUnReadCount()
-    if (resp.code === 200) {
-      unReadCount.value = resp.data
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  const resp = await queryUnReadCount()
+  if (resp.code === 200) {
+    unReadCount.value = resp.data
+  } else {
+    message.error(resp.msg)
   }
 }
 
@@ -258,12 +250,6 @@ const initList = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       loading.value = false
     }
@@ -311,19 +297,11 @@ const {noticeId, readNoticeDetail, showNoticeDetail} = initNoticeDetail()
 
 // 处理标星
 const handleStar = async (noticeId: string, value: number) => {
-  try {
-    const resp = await star(noticeId, value.toString())
-    if (resp.code === 200) {
-      message.success(resp.msg)
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  const resp = await star(noticeId, value.toString())
+  if (resp.code === 200) {
+    message.success(resp.msg)
+  } else {
+    message.error(resp.msg)
   }
 }
 // 处理已读
@@ -333,12 +311,6 @@ const handleRead = (id: string) => {
       handleUnReadCount()
     } else {
       message.error(resp.msg)
-    }
-  }).catch(e => {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
     }
   })
 }
