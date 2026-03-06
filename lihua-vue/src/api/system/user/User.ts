@@ -1,4 +1,4 @@
-import request from "@/utils/Request.ts";
+import request, {blobRequest} from "@/utils/Request.ts";
 import type {PageResponseType} from "@/api/global/Type.ts";
 import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
 import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
@@ -78,20 +78,18 @@ export const getUserOptionByUserIds = (userIds: String[]) => {
 
 // 下载用户导入模板
 export const excelTemplate = () => {
-    return request<Blob>({
+    return blobRequest({
         url: 'system/user/exportTemplate',
-        method: "get",
-        responseType: 'blob'
+        method: "get"
     })
 }
 
 // excel导出
 export const exportExcel = (data: SysUserDTO) => {
-    return request<Blob>({
+    return blobRequest({
         url: 'system/user/export',
         method: "post",
-        data: data,
-        responseType: 'blob'
+        data: data
     })
 }
 

@@ -1,6 +1,6 @@
-import axios, {type AxiosRequestConfig, type AxiosResponse} from 'axios';
+import axios, {type AxiosRequestConfig} from 'axios';
 import token from "@/utils/Token.ts"
-import {ResponseError, type ResponseErrorType, type ResponseType} from "@/api/global/Type.ts"
+import {ResponseError, type ResponseType} from "@/api/global/Type.ts"
 import {useUserStore} from "@/stores/user";
 import router from "@/router";
 
@@ -16,7 +16,9 @@ const service = axios.create({
 });
 
 
-// 请求拦截器
+/**
+ * 请求拦截器
+ */
 service.interceptors.request.use(config => {
     // 每次请求将 token 设置到请求头
     if (getToken()) {
@@ -28,7 +30,9 @@ service.interceptors.request.use(config => {
     Promise.reject(error).then(r => {})
 })
 
-// 响应拦截器
+/**
+ * 响应拦截器
+ */
 service.interceptors.response.use((resp) => {
     const data = resp.data
     const config = resp.config
@@ -79,8 +83,19 @@ service.interceptors.response.use((resp) => {
     }
 })
 
-// 数据返回统一封装样式
-export default async function request<T>(config: AxiosRequestConfig): Promise<T> {
+/**
+ * 二进制类型返回
+ */
+export const blobRequest = async (config: AxiosRequestConfig): Promise<Blob> => {
+    config.responseType = 'blob';
+    const res = await service.request(config);
+    return res.data as Blob;
+}
+
+/**
+ * 数据返回统一封装样式
+ */
+export default async function request<T>(config: AxiosRequestConfig): Promise<ResponseType<T>> {
     const res = await service.request<T>(config);
-    return res.data;
+    return res.data as ResponseType<T>;
 }

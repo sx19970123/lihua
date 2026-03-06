@@ -1,4 +1,4 @@
-import request from "@/utils/Request.ts";
+import request, {blobRequest} from "@/utils/Request.ts";
 import type {MapResponseType, PageResponseType} from "@/api/global/Type.ts";
 import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
 
@@ -78,10 +78,9 @@ export const getPostOptionByDeptId = (deptIds: string[]) => {
  * @param data
  */
 export const exportExcel = (data: SysPostDTO) => {
-    return request<Blob>({
+    return blobRequest({
         url: 'system/post/export',
         method: 'post',
-        data: data,
-        responseType: "blob"
+        data: data
     })
 }

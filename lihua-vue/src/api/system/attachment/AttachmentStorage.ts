@@ -1,4 +1,4 @@
-import request from "@/utils/Request.ts";
+import request, {blobRequest} from "@/utils/Request.ts";
 import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
 import type {SysAttachmentUrl} from "@/api/system/attachment/type/SysAttachmentUrl.ts";
 
@@ -128,9 +128,8 @@ export const chunksMerge = (data: SysAttachment, index: number) => {
 
 // 公开附件下载
 export const publicAttachmentDownload = (id: string) => {
-    return request<Blob>({
+    return blobRequest({
         url: `system/attachment/storage/download/p/${id}`,
-        method: 'get',
-        responseType: 'blob'
+        method: 'get'
     })
 }

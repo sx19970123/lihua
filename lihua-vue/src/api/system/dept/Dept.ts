@@ -1,4 +1,4 @@
-import request from "@/utils/Request.ts";
+import request, {blobRequest} from "@/utils/Request.ts";
 import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
 
 /**
@@ -75,10 +75,9 @@ export const getDeptOption = () => {
  * @param data
  */
 export const exportExcel = (data: SysDept) => {
-  return request<Blob>({
+  return blobRequest({
     url: 'system/dept/export',
     method: 'post',
-    data: data,
-    responseType: "blob"
+    data: data
   })
 }
