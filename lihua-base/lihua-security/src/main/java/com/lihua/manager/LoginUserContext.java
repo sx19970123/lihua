@@ -4,7 +4,7 @@ import com.lihua.cache.RedisCache;
 import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.model.*;
 import com.lihua.utils.IpUtils;
-import com.lihua.utils.WebUtils;
+import com.lihua.utils.web.WebUtils;
 import com.lihua.utils.spring.SpringUtils;
 import com.lihua.utils.tree.TreeUtils;
 import lombok.extern.slf4j.Slf4j;

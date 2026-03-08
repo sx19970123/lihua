@@ -2,6 +2,8 @@ package com.lihua.config;
 
 import com.lihua.filter.JwtAuthenticationTokenFilter;
 import com.lihua.handler.LogoutSuccessHandlerImpl;
+import com.lihua.handler.SecurityAccessDeniedHandler;
+import com.lihua.handler.SecurityAuthenticationEntryPoint;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.servlet.DispatcherType;
@@ -36,8 +38,14 @@ public class SecurityConfig {
     @Resource
     private LogoutSuccessHandlerImpl logoutSuccessHandler;
 
+    @Resource
+    private SecurityAccessDeniedHandler securityAccessDeniedHandler;
+
+    @Resource
+    private SecurityAuthenticationEntryPoint securityAuthenticationEntryPoint;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
 
         // 配置拦截请求
         http.authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
@@ -90,6 +98,12 @@ public class SecurityConfig {
         http.logout(logoutCustomizer -> logoutCustomizer
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(logoutSuccessHandler));
+
+        // 添加权限/认证异常处理器
+        http.exceptionHandling(e -> {
+            e.authenticationEntryPoint(securityAuthenticationEntryPoint);
+            e.accessDeniedHandler(securityAccessDeniedHandler);
+        });
 
         return http.build();
     }

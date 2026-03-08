@@ -72,7 +72,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Override
     public LoginUser login(CurrentUser currentUser) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(currentUser.getUsername(), currentUser.getPassword()));
-        return  (LoginUser) authenticate.getPrincipal();
+        return (LoginUser) authenticate.getPrincipal();
     }
 
 

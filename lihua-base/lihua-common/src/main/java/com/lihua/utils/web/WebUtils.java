@@ -1,4 +1,4 @@
-package com.lihua.utils;
+package com.lihua.utils.web;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +17,8 @@ public class WebUtils {
      * 将 json 数据进行响应
      */
     @SneakyThrows
-    public static void renderJson(HttpServletResponse response, String json) {
+    public static void renderJson(String json) {
+        HttpServletResponse response = getCurrentResponse();
         response.setStatus(200);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

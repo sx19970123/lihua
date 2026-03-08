@@ -2,9 +2,9 @@ package com.lihua.handler;
 
 import com.lihua.manager.LoginUserManager;
 import com.lihua.model.LoginUser;
-import com.lihua.model.basecontroller.StrResponseController;
+import com.lihua.model.response.basecontroller.StrResponseController;
 import com.lihua.utils.TokenUtils;
-import com.lihua.utils.WebUtils;
+import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
@@ -25,7 +25,7 @@ public class LogoutSuccessHandlerImpl extends StrResponseController implements L
             LoginUserManager.removeLoginUserCache(token);
         }
 
-        WebUtils.renderJson(response, success("退出成功"));
+        WebUtils.renderJson(success("退出成功"));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.lihua.utils;
 
 import com.lihua.utils.spring.SpringUtils;
+import com.lihua.utils.web.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.lionsoul.ip2region.xdb.Searcher;
 import org.springframework.util.StringUtils;

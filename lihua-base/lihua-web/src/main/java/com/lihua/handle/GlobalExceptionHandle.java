@@ -2,9 +2,8 @@ package com.lihua.handle;
 
 import com.lihua.enums.ResultCodeEnum;
 import com.lihua.exception.BaseException;
-import com.lihua.model.basecontroller.StrResponseController;
-import com.lihua.utils.WebUtils;
-import jakarta.servlet.http.HttpServletResponse;
+import com.lihua.model.response.basecontroller.StrResponseController;
+import com.lihua.utils.web.WebUtils;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -75,26 +74,18 @@ public class GlobalExceptionHandle extends StrResponseController {
      * 处理404异常
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public void handleNoHandlerFoundException(NoHandlerFoundException e, HttpServletResponse response) {
+    public void handleNoHandlerFoundException(NoHandlerFoundException e) {
         log.error(e.getMessage(),e);
-        WebUtils.renderJson(response, error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR));
+        WebUtils.renderJson(error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR));
     }
 
     /**
      * 处理405请求方法异常
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public void handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletResponse response) {
+    public void handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error(e.getMessage(),e);
-        WebUtils.renderJson(response, error(ResultCodeEnum.REQUEST_METHOD_ERROR));
+        WebUtils.renderJson(error(ResultCodeEnum.REQUEST_METHOD_ERROR));
     }
 
-    /**
-     * 权限不足全局处理
-     */
-//    @ExceptionHandler(AuthorizationDeniedException.class)
-//    public String handleAuthorizationDeniedException(AuthorizationDeniedException e) {
-//        log.error(e.getMessage(),e);
-//        return error(ResultCodeEnum.ACCESS_ERROR);
-//    }
 }

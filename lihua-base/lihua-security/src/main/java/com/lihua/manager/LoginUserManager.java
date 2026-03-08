@@ -6,7 +6,7 @@ import com.lihua.enums.RedisKeyPrefixEnum;
 import com.lihua.exception.ServiceException;
 import com.lihua.model.LoginUser;
 import com.lihua.utils.JwtUtils;
-import com.lihua.utils.WebUtils;
+import com.lihua.utils.web.WebUtils;
 import com.lihua.utils.date.DateUtils;
 import com.lihua.utils.spring.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
