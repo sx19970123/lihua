@@ -100,10 +100,9 @@ public class SecurityConfig {
                 .logoutSuccessHandler(logoutSuccessHandler));
 
         // 添加权限/认证异常处理器
-        http.exceptionHandling(e -> {
-            e.authenticationEntryPoint(securityAuthenticationEntryPoint);
-            e.accessDeniedHandler(securityAccessDeniedHandler);
-        });
+        http.exceptionHandling(exceptionHandlingCustomizer -> exceptionHandlingCustomizer
+                .authenticationEntryPoint(securityAuthenticationEntryPoint)
+                .accessDeniedHandler(securityAccessDeniedHandler));
 
         return http.build();
     }
