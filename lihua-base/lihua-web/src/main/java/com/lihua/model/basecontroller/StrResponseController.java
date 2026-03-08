@@ -1,6 +1,6 @@
-package com.lihua.model.web.basecontroller;
+package com.lihua.model.basecontroller;
 
-import com.lihua.model.web.response.StrResponse;
+import com.lihua.model.response.StrResponse;
 
 /**
  * 统一返回 Json

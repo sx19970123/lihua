@@ -6,16 +6,17 @@ import com.lihua.enums.ResultCodeEnum;
 /**
  * 通用服务异常
  */
-public class ServiceException extends RuntimeException {
+public class ServiceException extends BaseException {
 
-    public ServiceException() {}
+    public ServiceException() {
+        super(ResultCodeEnum.ERROR, null);
+    }
 
     public ServiceException(String message) {
-        super(message);
+        super(ResultCodeEnum.ERROR, message, null);
     }
 
-    public ServiceException(ResultCodeEnum resultCodeEnum) {
-        super(resultCodeEnum.getDefaultMsg());
+    public ServiceException(String message, Object data) {
+        super(ResultCodeEnum.ERROR, message, data);
     }
-
 }

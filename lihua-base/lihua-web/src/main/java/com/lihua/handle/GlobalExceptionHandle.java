@@ -1,21 +1,19 @@
-package com.lihua.global;
+package com.lihua.handle;
 
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.exception.*;
-import com.lihua.model.web.basecontroller.StrResponseController;
-import com.lihua.utils.web.WebUtils;
+import com.lihua.exception.BaseException;
+import com.lihua.model.basecontroller.StrResponseController;
+import com.lihua.utils.WebUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.Arrays;
@@ -29,63 +27,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandle extends StrResponseController {
 
-    /**
-     * 捕获全局 RuntimeException 异常
-     */
-    @ExceptionHandler(RuntimeException.class)
-    public String handleRuntimeException(Exception e) {
+    @ExceptionHandler(BaseException.class)
+    public String handleBaseException(BaseException e) {
         log.error(e.getMessage(),e);
-        return error(ResultCodeEnum.ERROR, e.getMessage());
-    }
-
-    /**
-     * 捕获全局 ServiceException 异常
-     */
-    @ExceptionHandler(ServiceException.class)
-    public String handleServiceException(Exception e) {
-        log.error(e.getMessage(),e);
-        return error(ResultCodeEnum.ERROR, e.getMessage());
-    }
-
-    /**
-     * 捕获全局 FileException 异常
-     */
-    @ExceptionHandler(FileException.class)
-    public String handleFileException(Exception e) {
-        log.error(e.getMessage(),e);
-        return error(ResultCodeEnum.FILE_ERROR, e.getMessage());
-    }
-
-    /**
-     * 捕获全局 SensitiveException 异常
-     */
-    @ExceptionHandler(SensitiveException.class)
-    public String handleSensitiveException(Exception e) {
-        log.error(e.getMessage(),e);
-        return error(ResultCodeEnum.SENSITIVE_ERROR, e.getMessage());
-    }
-
-    /**
-     * 上传附件尺寸超过系统设置
-     */
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public void handelMaxUploadSizeExceededException(MaxUploadSizeExceededException e, HttpServletResponse response) {
-        log.error(e.getMessage(),e);
-        WebUtils.renderJson(response, error(ResultCodeEnum.MAX_UPLOAD_SIZE_EXCEEDED_ERROR));
-    }
-
-    /**
-     * 捕获全局 IpIllegalException 异常
-     */
-    @ExceptionHandler(IpIllegalException.class)
-    public String handleIpIllegalException() {
-        return error(ResultCodeEnum.IP_ILLEGAL_ERROR);
+        return error(e.getResultCodeEnum(), e.getMessage(), e.getData());
     }
 
     /**
      * 捕获全局spring validation 异常信息
      */
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public String handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String errMessages = e
                 .getBindingResult()
@@ -98,17 +49,9 @@ public class GlobalExceptionHandle extends StrResponseController {
     }
 
     /**
-     * 全局捕获excel导入异常
-     */
-    @ExceptionHandler(ExcelImportException.class)
-    public String handleExcelImportException(ExcelImportException e) {
-        return error(ResultCodeEnum.EXCEL_IMPORT_ERROR, e.getMessage());
-    }
-
-    /**
      * 全局捕获直接在controller中校验的 validation 异常信息
      */
-    @ExceptionHandler({ConstraintViolationException.class})
+    @ExceptionHandler(ConstraintViolationException.class)
     public String handleConstraintViolationException(ConstraintViolationException e) {
         String errMessages = Arrays.stream(e.getMessage().split(","))
                 .map(item -> item.split(":"))
@@ -149,9 +92,9 @@ public class GlobalExceptionHandle extends StrResponseController {
     /**
      * 权限不足全局处理
      */
-    @ExceptionHandler(AuthorizationDeniedException.class)
-    public String handleAuthorizationDeniedException(AuthorizationDeniedException e) {
-        log.error(e.getMessage(),e);
-        return error(ResultCodeEnum.ACCESS_ERROR);
-    }
+//    @ExceptionHandler(AuthorizationDeniedException.class)
+//    public String handleAuthorizationDeniedException(AuthorizationDeniedException e) {
+//        log.error(e.getMessage(),e);
+//        return error(ResultCodeEnum.ACCESS_ERROR);
+//    }
 }

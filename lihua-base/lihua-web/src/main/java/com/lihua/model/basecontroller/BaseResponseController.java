@@ -1,8 +1,8 @@
-package com.lihua.model.web.basecontroller;
+package com.lihua.model.basecontroller;
 
 import com.lihua.attachment.AttachmentStreamAndInfoModel;
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.web.ApiResponseModel;
+import com.lihua.model.ApiResponseModel;
 import com.lihua.utils.file.FileUtils;
 import com.lihua.utils.json.JsonUtils;
 import lombok.SneakyThrows;

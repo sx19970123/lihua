@@ -4,7 +4,7 @@ import com.lihua.enums.ResultCodeEnum;
 import com.lihua.manager.LoginUserManager;
 import com.lihua.model.LoginUser;
 import com.lihua.utils.TokenUtils;
-import com.lihua.utils.web.WebUtils;
+import com.lihua.utils.WebUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.lihua.model.web.response.StrResponse.error;
+import static com.lihua.model.response.StrResponse.error;
 
 /**
  * 请求 token 过滤器

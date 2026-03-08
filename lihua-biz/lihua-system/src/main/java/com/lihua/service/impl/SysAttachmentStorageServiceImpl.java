@@ -14,7 +14,7 @@ import com.lihua.manager.LoginUserContext;
 import com.lihua.mapper.SysAttachmentMapper;
 import com.lihua.model.vo.SysAttachmentChunkVO;
 import com.lihua.model.vo.SysAttachmentUrlVO;
-import com.lihua.model.web.response.ApiResponse;
+import com.lihua.model.response.ApiResponse;
 import com.lihua.service.SysAttachmentStorageService;
 import com.lihua.strategy.attachment.AttachmentStorageStrategy;
 import com.lihua.utils.crypt.AesUtils;

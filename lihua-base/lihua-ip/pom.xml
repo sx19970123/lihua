@@ -33,6 +33,10 @@
             <artifactId>ip2region</artifactId>
             <version>${ip2region.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-web</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

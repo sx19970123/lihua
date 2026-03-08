@@ -1,6 +1,5 @@
 package com.lihua.exception;
 
-
 import com.lihua.enums.ResultCodeEnum;
 
 /**

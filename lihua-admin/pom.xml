@@ -87,6 +87,11 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-websocket</artifactId>
         </dependency>
+        <!--            web模块 -->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-web</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

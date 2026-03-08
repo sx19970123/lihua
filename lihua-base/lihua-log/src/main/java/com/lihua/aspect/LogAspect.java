@@ -4,7 +4,7 @@ import com.lihua.annotation.Log;
 import com.lihua.handle.HandleRecodeLog;
 import com.lihua.utils.IpUtils;
 import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.web.WebUtils;
+import com.lihua.utils.WebUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;

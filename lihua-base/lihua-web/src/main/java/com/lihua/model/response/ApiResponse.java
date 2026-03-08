@@ -1,9 +1,9 @@
-package com.lihua.model.web.response;
+package com.lihua.model.response;
 
 
 import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.web.ApiResponseModel;
-import com.lihua.model.web.basecontroller.BaseResponseController;
+import com.lihua.model.ApiResponseModel;
+import com.lihua.model.basecontroller.BaseResponseController;
 import org.springframework.util.StringUtils;
 
 import static com.lihua.enums.ResultCodeEnum.SUCCESS;

@@ -1,4 +1,4 @@
-package com.lihua.model.web;
+package com.lihua.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Builder;
