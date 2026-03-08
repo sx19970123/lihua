@@ -8,7 +8,7 @@
         </template>
       </a-avatar>
       <!--    系统名称-->
-      <a-typography-title content="Lihua Admin" class="title" :class="{'title-color': titleColor}" :level="4" ellipsis v-if="showTitle"/>
+      <a-typography-title content="Lihua Admin" class="title" :class="{'title-color': darkSiderColor}" :level="4" ellipsis v-if="showTitle"/>
     </a-flex>
   </div>
 </template>
@@ -19,11 +19,13 @@ import {useRouter} from 'vue-router'
 import {computed} from "vue";
 const router = useRouter()
 const themeStore = useThemeStore()
-const {showTitle = true, maxWidth} = defineProps<{
+const {showTitle = true, maxWidth, autoColor = true} = defineProps<{
   // 显示标题
   showTitle?: boolean,
   // 最大宽度
   maxWidth?: number,
+  // 自动匹配深浅菜单颜色
+  autoColor?: boolean,
 }>()
 // 点击回到首页
 const goHome = async () => {
@@ -31,7 +33,12 @@ const goHome = async () => {
 }
 
 // 菜单栏为暗色并主题不为暗色时，使用自定义的标题颜色
-const titleColor = computed(() => themeStore.siderTheme === 'dark' && !themeStore.isDarkTheme)
+const darkSiderColor = computed(() => {
+  if (autoColor) {
+    return themeStore.siderTheme === 'dark' && !themeStore.isDarkTheme
+  }
+  return autoColor
+})
 </script>
 
 <style scoped>

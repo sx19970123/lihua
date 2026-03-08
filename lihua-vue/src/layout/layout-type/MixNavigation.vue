@@ -27,7 +27,7 @@
                     :style="{'padding-left': !showSider ? 'var(--lihua-layout-head-space)' : 0}"
                     align="center"
                     v-show="props.showLayout">
-              <Logo class="top-logo" v-if="!showSider"/>
+              <Logo class="top-logo" :auto-color="false" v-if="!showSider"/>
               <!--顶部导航-->
               <Side is-mix-top
                     class="top-sider"
