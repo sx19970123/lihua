@@ -6,17 +6,17 @@ import com.lihua.enums.ResultCodeEnum;
 /**
  * 附件相关异常
  */
-public class FileException extends RuntimeException {
+public class FileException extends BaseException {
 
     public FileException() {
-        super(ResultCodeEnum.FILE_ERROR.getDefaultMsg());
+        super(ResultCodeEnum.FILE_ERROR, null);
     }
 
     public FileException(String message) {
-        super(message);
+        super(ResultCodeEnum.FILE_ERROR, message);
     }
 
     public FileException(ResultCodeEnum resultCodeEnum) {
-        super(resultCodeEnum.getDefaultMsg());
+        super(resultCodeEnum, null);
     }
 }

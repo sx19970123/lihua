@@ -628,7 +628,7 @@ const initSave = () => {
   }
 
   // 前往下一表单页面
-  const toNextForm = (nextSegmentedValue?: 'basic' | 'dept' | 'post') => {
+  const toNextForm = (nextSegmentedValue?: string) => {
     if (nextSegmentedValue) {
       if (nextSegmentedValue === 'post') {
         toPostForm()
@@ -1082,7 +1082,7 @@ const initExcel = () => {
       if (resp.code === 200) {
         await initPage()
       } else if (resp.code === 510) {
-        const errMsgList = JSON.parse(resp.msg) as string[]
+        const errMsgList = JSON.parse(resp.data) as string[]
         Modal.confirm({
           title: '导入失败',
           icon: h(ExclamationCircleOutlined),

@@ -26,6 +26,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandle extends StrResponseController {
 
+    /**
+     * 通用业务异常处理
+     */
     @ExceptionHandler(BaseException.class)
     public String handleBaseException(BaseException e) {
         log.error(e.getMessage(),e);
