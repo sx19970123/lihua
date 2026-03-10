@@ -10,7 +10,6 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,21 +22,13 @@ import java.util.List;
 public class JsonUtils {
 
     // 无特殊配置的jsonMapper
-    private static final JsonMapper jsonMapper;
+    private static final JsonMapper jsonMapper = SpringUtils.getBean(JsonMapper.class);;
 
     // 序列化排除空值/空集合/''字符串的jsonMapper
-    private static final JsonMapper excludeNullWriter;
-
-    static {
-        // 从容器中获取jsonMapper
-        jsonMapper = SpringUtils.getBean(JsonMapper.class);
-
-        // 忽略null值
-        excludeNullWriter = JsonMapper.builder()
-                .enable(JsonWriteFeature.ESCAPE_NON_ASCII)
-                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
-                .build();
-    }
+    private static final JsonMapper excludeNullWriter = JsonMapper.builder()
+            .enable(JsonWriteFeature.ESCAPE_NON_ASCII)
+            .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+            .build();
 
     /**
      *  对象转为 JSON
@@ -124,18 +115,6 @@ public class JsonUtils {
         } catch (Exception e) {
             throw new ServiceException("深拷贝执行异常");
         }
-    }
-
-    /**
-     * 集合深拷贝
-     */
-    public static <T> List<T> deepCopyList(List<T> itemList) {
-        List<T> deepCopyList = new ArrayList<>();
-        if (itemList == null || itemList.isEmpty()) {
-            return deepCopyList;
-        }
-        itemList.forEach(item -> deepCopyList.add(deepCopy(item)));
-        return deepCopyList;
     }
 
     // 递归方法，遍历整个 JSON 结构并移除指定的键
