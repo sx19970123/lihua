@@ -156,8 +156,7 @@ public class SysProfileServiceImpl implements SysProfileService {
 
     @Override
     public Boolean checkPassword(SysCheckPasswordDTO sysCheckPasswordDTO) {
-        String password = SecurityUtils.decryptGetPassword(sysCheckPasswordDTO.getPassword(), sysCheckPasswordDTO.getPasswordRequestKey());
-        boolean checked = SecurityUtils.matchesPassword(password, getPassword());
+        boolean checked = SecurityUtils.matchesPassword(sysCheckPasswordDTO.getPassword(), getPassword());
 
         if (checked) {
             // 验证成功后向redis记录1分钟缓存

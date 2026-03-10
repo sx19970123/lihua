@@ -115,7 +115,7 @@ public class SysSettingServiceImpl implements SysSettingService {
             return "";
         }
         SysSettingDTO.DefaultPasswordSetting passwordSetting = JsonUtils.toObject(defaultPasswordSetting.getSettingJson(), SysSettingDTO.DefaultPasswordSetting.class);
-        return SecurityUtils.defaultPasswordDecrypt(passwordSetting.getDefaultPassword());
+        return passwordSetting.getDefaultPassword();
     }
 
     // 缓存ip黑名单

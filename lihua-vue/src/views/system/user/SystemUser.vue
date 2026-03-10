@@ -373,7 +373,6 @@ import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useSettingStore} from "@/stores/setting.ts";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
-import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
 import {type BaseModalActiveType} from "@/api/global/Type.ts";
 import {downloadBlob} from "@/utils/AttachmentDownload.ts";
 import {useUserStore} from "@/stores/user.ts";
@@ -677,22 +676,6 @@ const initSave = () => {
     userDTO.email === "" ? sysUserDTO.value.email = undefined : sysUserDTO.value.email
 
     const userId = sysUserDTO.value.id
-    const password = sysUserDTO.value.password
-
-    // 操作为新增用户时，进行密码加密
-    if (!userId && password) {
-      try {
-        const passwordEncrypt = await rasEncryptPassword(password)
-        userDTO.password = passwordEncrypt.ciphertext
-        userDTO.passwordRequestKey = passwordEncrypt.requestKey
-      } catch (error) {
-        message.error(error as string)
-        return
-      } finally {
-        modalActive.saveLoading = false
-      }
-    }
-
     try {
       // 调用保存接口
       const resp = await save(userDTO)
@@ -1153,10 +1136,8 @@ const initResetPassword = () => {
     const id = targetUserInfo.value.id
     try {
       if (password && id) {
-        // 密码加密处理
-        const passwordEncrypt = await rasEncryptPassword(password)
         // 修改密码
-        const resp = await resetPassword(id, passwordEncrypt.ciphertext, passwordEncrypt.requestKey)
+        const resp = await resetPassword(id, password)
         if (resp.code === 200) {
           showResetPassword.value = false
           message.success(resp.msg)
@@ -1187,7 +1168,7 @@ const {showResetPassword, targetUserInfo, resetPasswordForm, useDefaultPassword,
 const initDefaultPassword = async () => {
   const resp = await settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")
   if (resp) {
-    defaultPassword.value = defaultPasswordDecrypt(resp.defaultPassword)
+    defaultPassword.value = resp.defaultPassword
   }
 }
 

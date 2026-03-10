@@ -28,7 +28,6 @@ import {message} from "ant-design-vue";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
 import PasswordInput from "@/components/password-input/index.vue";
 import {cloneDeep} from 'lodash-es'
-import {defaultPasswordDecrypt, defaultPasswordEncrypt} from "@/utils/Crypto.ts";
 
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
@@ -39,7 +38,6 @@ const init = async () => {
   if (!resp) {
     await settingStore.save(setting.value)
   } else {
-    resp.defaultPassword = defaultPasswordDecrypt(resp.defaultPassword)
     settingForm.value = resp
   }
 }
@@ -65,9 +63,7 @@ const rules: Record<string, Rule[]> = {
 
 const handleFinish = async () => {
   submitLoading.value = true
-  // 对默认密码进行加密处理
   const defaultPasswordForm: DefaultPassword = cloneDeep(settingForm.value)
-  defaultPasswordForm.defaultPassword = defaultPasswordEncrypt(defaultPasswordForm.defaultPassword)
   setting.value.settingJson = JSON.stringify(defaultPasswordForm)
   try {
     const resp = await settingStore.save(setting.value)

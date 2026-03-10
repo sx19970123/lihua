@@ -63,7 +63,6 @@ import PasswordInput from "@/components/password-input/index.vue"
 import type {Rule} from "ant-design-vue/es/form";
 import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
-import {rasEncryptPassword} from "@/utils/Crypto.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
 
@@ -166,19 +165,8 @@ const handleRegister = async (captchaVerification: string) => {
   registerLoading.value = true
   const {username, password, confirmPassword} = userRegister.value
   try {
-    // 对密码加密处理
-    const passwordEncrypt = await rasEncryptPassword(password)
-    // 对确认密码加密处理
-    const confirmPasswordEncrypt = await rasEncryptPassword(confirmPassword)
     // 用户注册
-    const resp = await register(
-        username,
-        passwordEncrypt.ciphertext,
-        passwordEncrypt.requestKey,
-        confirmPasswordEncrypt.ciphertext,
-        confirmPasswordEncrypt.requestKey,
-        captchaVerification)
-
+    const resp = await register(username, password, confirmPassword, captchaVerification)
     if (resp.code === 200) {
       message.success("注册成功，即将前往登录")
       if (registerUsername) {
@@ -192,11 +180,6 @@ const handleRegister = async (captchaVerification: string) => {
       message.error(resp.msg)
     }
   } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
     registerLoading.value = false
   }
 }

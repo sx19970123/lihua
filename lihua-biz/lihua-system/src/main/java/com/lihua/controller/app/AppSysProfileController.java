@@ -38,12 +38,12 @@ public class AppSysProfileController extends ApiResponseController {
     }
 
     @PostMapping("password")
-    @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword", "confirmPassword" ,"oldPasswordRequestKey", "newPasswordRequestKey", "confirmPasswordRequestKey"})
+    @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword", "confirmPassword"})
     public ApiResponseModel<String> updatePassword(@RequestBody @Validated SysUpdatePasswordDTO sysUpdatePasswordDTO) {
         // 解密旧密码、新密码、确认密码
-        String oldPassword = SecurityUtils.decryptGetPassword(sysUpdatePasswordDTO.getOldPassword(), sysUpdatePasswordDTO.getOldPasswordRequestKey());
-        String newPassword = SecurityUtils.decryptGetPassword(sysUpdatePasswordDTO.getNewPassword(), sysUpdatePasswordDTO.getNewPasswordRequestKey());
-        String confirmPassword = SecurityUtils.decryptGetPassword(sysUpdatePasswordDTO.getConfirmPassword(), sysUpdatePasswordDTO.getConfirmPasswordRequestKey());
+        String oldPassword = sysUpdatePasswordDTO.getOldPassword();
+        String newPassword = sysUpdatePasswordDTO.getNewPassword();
+        String confirmPassword = sysUpdatePasswordDTO.getConfirmPassword();
 
         // 获取旧密码
         String currentPassword = sysProfileService.getPassword();

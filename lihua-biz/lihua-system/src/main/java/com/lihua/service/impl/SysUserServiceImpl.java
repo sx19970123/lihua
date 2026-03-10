@@ -137,8 +137,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
         // 插入/更新
         if (!StringUtils.hasText(sysUserDTO.getId())) {
-            // 对密码进行解密处理
-            sysUser.setPassword(SecurityUtils.decryptGetPassword(sysUserDTO.getPassword(), sysUserDTO.getPasswordRequestKey()));
             id = insert(sysUser);
         } else {
             id = update(sysUser);
@@ -283,14 +281,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Override
     public String resetPassword(ResetPasswordDTO resetPasswordDTO) {
-        // 解密获取密码明文
-        String password = SecurityUtils.decryptGetPassword(resetPasswordDTO.getPassword(), resetPasswordDTO.getPasswordRequestKey());
-
         LocalDateTime now = DateUtils.now();
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda()
                         .eq(SysUser::getId, resetPasswordDTO.getUserId())
-                        .set(SysUser::getPassword, SecurityUtils.encryptPassword(password))
+                        .set(SysUser::getPassword, SecurityUtils.encryptPassword(resetPasswordDTO.getPassword()))
                         .set(SysUser::getPasswordUpdateTime, now)
                         .set(SysUser::getUpdateId, LoginUserContext.getUserId())
                         .set(SysUser::getUpdateTime, now);

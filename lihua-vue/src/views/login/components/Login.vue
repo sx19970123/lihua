@@ -202,8 +202,6 @@ const initRegisterSetting = () => {
     } else {
       isRegistrationEnable.value = false
     }
-  }).finally(() => {
-    isRegistrationEnable.value = false
   })
 }
 

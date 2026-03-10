@@ -16,7 +16,6 @@ import com.lihua.model.response.ApiResponseModel;
 import com.lihua.model.response.basecontroller.ApiResponseController;
 import com.lihua.service.SysAuthenticationService;
 import com.lihua.service.SysSettingService;
-import com.lihua.utils.SecurityUtils;
 import com.lihua.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -51,8 +50,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
             return error(ResultCodeEnum.CAPTCHA_ERROR);
         }
 
-        // 0.对密码进行AES解密
-        currentUser.setPassword(SecurityUtils.decryptGetPassword(currentUser.getPassword(), currentUser.getRequestKey()));
         // 1.用户登录
         LoginUser loginUser = sysAuthenticationService.login(currentUser);
         // 2.生成token
@@ -61,14 +58,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
         sysAuthenticationService.checkSameAccount(token);
 
         return success(ResultCodeEnum.SUCCESS, token);
-    }
-
-    /**
-     * 获取登录公钥
-     */
-    @GetMapping("publicKey/{requestKey}")
-    public ApiResponseModel<String> getPublicKey(@PathVariable("requestKey") String requestKey) {
-        return success(SecurityUtils.getPasswordPublicKey(requestKey));
     }
 
     /**
@@ -130,7 +119,7 @@ public class AppSysAuthenticationController extends ApiResponseController {
         }
 
         // 获取解密后的密码
-        String password = SecurityUtils.decryptGetPassword(sysRegisterDTO.getPassword(), sysRegisterDTO.getPasswordRequestKey());
+        String password = sysRegisterDTO.getPassword();
 
         // 密码长度校验
         if (password.length() < 6 || password.length() >= 30 ) {
@@ -138,7 +127,7 @@ public class AppSysAuthenticationController extends ApiResponseController {
         }
 
         // 获取解密后的确认密码
-        String confirmPassword = SecurityUtils.decryptGetPassword(sysRegisterDTO.getConfirmPassword(), sysRegisterDTO.getConfirmPasswordRequestKey());
+        String confirmPassword = sysRegisterDTO.getConfirmPassword();
 
         // 校验两次密码输入是否相同
         if (!password.equals(confirmPassword)) {

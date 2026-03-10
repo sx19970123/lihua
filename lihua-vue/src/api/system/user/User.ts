@@ -47,14 +47,13 @@ export const deleteByIds = (ids: string[]) => {
 }
 
 // 重置密码
-export const resetPassword = (userId: string,  password: string, passwordRequestKey: string) => {
+export const resetPassword = (userId: string, password: string) => {
     return request<string>({
         url: 'system/user/resetPassword',
         method: 'post',
         data: {
             userId: userId,
-            password: password,
-            passwordRequestKey: passwordRequestKey
+            password: password
         }
     })
 }

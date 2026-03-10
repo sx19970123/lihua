@@ -84,10 +84,4 @@ public class CurrentUser implements Serializable {
      * 验证码
      */
     private String captchaVerification;
-
-    /**
-     * 请求 key
-     */
-    @NotNull(message = "请求key不存在")
-    private String requestKey;
 }

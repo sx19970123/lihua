@@ -1,24 +1,14 @@
 import request from "@/utils/Request.ts";
 
-interface LoginType {
-    username: string,
-    password: string,
-    captchaVerification: string,
-    requestKey: string
-}
 // 用户登录
-export const login = (username: string,
-                      password: string,
-                      captchaVerification: string,
-                      requestKey: string) => {
+export const login = (username: string, password: string, captchaVerification: string) => {
     return request<string>({
         url: '/system/login',
         method: 'post',
         data: {
             username,
             password,
-            captchaVerification,
-            requestKey
+            captchaVerification
         }
     })
 }
@@ -48,22 +38,14 @@ export const checkUserName = (username: string) => {
 }
 
 // 用户注册
-export const register = (username: string,
-                         password: string,
-                         passwordRequestKey: string,
-                         confirmPassword: string,
-                         confirmPasswordRequestKey: string,
-                         captchaVerification: string
-                         ) => {
+export const register = (username: string, password: string, confirmPassword: string, captchaVerification: string) => {
     return request<string>({
         url: '/system/register',
         method: 'post',
         data: {
             username: username,
             password: password,
-            passwordRequestKey: passwordRequestKey,
             confirmPassword: confirmPassword,
-            confirmPasswordRequestKey: confirmPasswordRequestKey,
             captchaVerification: captchaVerification
         }
     })

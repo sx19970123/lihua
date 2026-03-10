@@ -57,7 +57,7 @@ const getPassword = (): string => {
     return pwd || '';
 }
 
-const setPassword = (password:string): void => {
+const setPassword = (password: string): void => {
     passwordStorage.value = encrypt(password)
 }
 

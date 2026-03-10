@@ -19,22 +19,13 @@ export const saveBasics = (userInfo: {avatar?: string,nickname?: string,gender?:
     })
 }
 
-export const updatePassword = (oldPassword: string,
-                               oldPasswordRequestKey: string,
-                               newPassword: string,
-                               newPasswordRequestKey: string,
-                               confirmPassword: string,
-                               confirmPasswordRequestKey: string
-                               ) => {
+export const updatePassword = (oldPassword: string, newPassword: string, confirmPassword: string) => {
     return request<string>({
         url: '/system/profile/password',
         data: {
             oldPassword: oldPassword,
-            oldPasswordRequestKey: oldPasswordRequestKey,
             newPassword: newPassword,
-            newPasswordRequestKey: newPasswordRequestKey,
-            confirmPassword: confirmPassword,
-            confirmPasswordRequestKey: confirmPasswordRequestKey
+            confirmPassword: confirmPassword
         },
         method: 'post'
     })
