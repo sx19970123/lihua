@@ -2,7 +2,6 @@ package com.lihua.security.manager;
 
 import com.lihua.redis.cache.RedisCache;
 import com.lihua.redis.enums.RedisKeyPrefixEnum;
-import com.lihua.model.*;
 import com.lihua.ip.utils.IpUtils;
 import com.lihua.common.utils.web.WebUtils;
 import com.lihua.common.utils.spring.SpringUtils;

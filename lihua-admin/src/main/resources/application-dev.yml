@@ -78,7 +78,7 @@ spring:
           # 最小空闲连接数
           connectionMinimumIdleSize: 10
         # 自定义序列化器
-        codec: !<com.lihua.config.TypedRedissonJsonCodec> {}
+        codec: !<com.lihua.redis.config.TypedRedissonJsonCodec> {}
 # 日志配置
 logging:
   file:
