@@ -1,6 +1,6 @@
 package com.lihua.strategy.cacheloginuser;
 
-import com.lihua.model.LoginUser;
+import com.lihua.security.model.LoginUser;
 
 /**
  * 缓存登录用户信息策略接口

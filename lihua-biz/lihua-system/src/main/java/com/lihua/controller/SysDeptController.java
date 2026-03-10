@@ -1,14 +1,14 @@
 package com.lihua.controller;
 
-import com.lihua.annotation.Log;
+import com.lihua.log.annotation.Log;
 import com.lihua.entity.SysDept;
-import com.lihua.enums.LogTypeEnum;
+import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.vo.SysDeptVO;
-import com.lihua.model.response.ApiResponseModel;
-import com.lihua.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.service.SysDeptService;
-import com.lihua.utils.ExcelUtils;
-import com.lihua.utils.tree.TreeUtils;
+import com.lihua.excel.utils.ExcelUtils;
+import com.lihua.common.utils.tree.TreeUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;

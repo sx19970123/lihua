@@ -1,28 +1,26 @@
 package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.lihua.cache.RedisCache;
+import com.lihua.redis.cache.RedisCache;
 import com.lihua.entity.SysSetting;
 import com.lihua.mapper.SysSettingMapper;
-import com.lihua.model.bridge.setting.CacheBlackIp;
-import com.lihua.model.bridge.setting.CacheSetting;
+import com.lihua.common.model.bridge.setting.CacheBlackIp;
+import com.lihua.common.model.bridge.setting.CacheSetting;
 import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.service.SysSettingService;
-import com.lihua.utils.SecurityUtils;
-import com.lihua.utils.json.JsonUtils;
+import com.lihua.common.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.lihua.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
-import static com.lihua.enums.RedisKeyPrefixEnum.SYSTEM_SETTING_REDIS_PREFIX;
+import static com.lihua.redis.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
+import static com.lihua.redis.enums.RedisKeyPrefixEnum.SYSTEM_SETTING_REDIS_PREFIX;
 
 @Service
 @Slf4j

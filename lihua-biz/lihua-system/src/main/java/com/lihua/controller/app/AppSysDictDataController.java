@@ -1,8 +1,8 @@
 package com.lihua.controller.app;
 
-import com.lihua.model.DictDataModel;
-import com.lihua.model.response.ApiResponseModel;
-import com.lihua.model.response.basecontroller.ApiResponseController;
+import com.lihua.dict.model.DictDataModel;
+import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.service.SysDictDataService;
 import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;

@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.entity.SysUser;
 import com.lihua.entity.SysUserNotice;
-import com.lihua.manager.LoginUserContext;
+import com.lihua.security.manager.LoginUserContext;
 import com.lihua.mapper.SysUserNoticeMapper;
 import com.lihua.service.SysUserNoticeService;
 import com.lihua.service.SysUserService;
-import com.lihua.utils.date.DateUtils;
+import com.lihua.common.utils.date.DateUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 

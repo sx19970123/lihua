@@ -1,15 +1,15 @@
 package com.lihua.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.lihua.annotation.Log;
+import com.lihua.log.annotation.Log;
 import com.lihua.entity.SysRole;
-import com.lihua.enums.LogTypeEnum;
-import com.lihua.manager.LoginUserContext;
-import com.lihua.model.CurrentRole;
+import com.lihua.log.enums.LogTypeEnum;
+import com.lihua.security.manager.LoginUserContext;
+import com.lihua.security.model.CurrentRole;
 import com.lihua.model.dto.SysRoleDTO;
-import com.lihua.model.validation.MaxPageSizeLimit;
-import com.lihua.model.response.ApiResponseModel;
-import com.lihua.model.response.basecontroller.ApiResponseController;
+import com.lihua.mybatis.model.validation.MaxPageSizeLimit;
+import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.service.SysMenuService;
 import com.lihua.service.SysRoleService;
 import jakarta.annotation.Resource;

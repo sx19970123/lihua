@@ -2,9 +2,9 @@ package com.lihua.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.lihua.annotation.ExcelDictType;
-import com.lihua.converter.ExcelDictConverter;
-import com.lihua.model.BaseEntity;
+import com.lihua.excel.annotation.ExcelDictType;
+import com.lihua.excel.converter.ExcelDictConverter;
+import com.lihua.mybatis.model.BaseEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;

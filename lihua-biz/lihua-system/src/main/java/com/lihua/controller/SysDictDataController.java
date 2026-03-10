@@ -1,13 +1,13 @@
 package com.lihua.controller;
 
-import com.lihua.annotation.Log;
+import com.lihua.log.annotation.Log;
 import com.lihua.entity.SysDictData;
-import com.lihua.enums.LogTypeEnum;
-import com.lihua.enums.ResultCodeEnum;
-import com.lihua.model.DictDataModel;
+import com.lihua.log.enums.LogTypeEnum;
+import com.lihua.common.enums.ResultCodeEnum;
+import com.lihua.dict.model.DictDataModel;
 import com.lihua.model.dto.SysDictDataDTO;
-import com.lihua.model.response.ApiResponseModel;
-import com.lihua.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.service.SysDictDataService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;

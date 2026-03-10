@@ -1,12 +1,12 @@
 package com.lihua.service.impl;
 
-import com.lihua.cache.RedisCache;
-import com.lihua.enums.RedisKeyPrefixEnum;
+import com.lihua.redis.cache.RedisCache;
+import com.lihua.redis.enums.RedisKeyPrefixEnum;
 import com.lihua.model.CacheMonitor;
-import com.lihua.model.bridge.setting.CacheBlackIp;
-import com.lihua.model.bridge.setting.CacheSetting;
+import com.lihua.common.model.bridge.setting.CacheBlackIp;
+import com.lihua.common.model.bridge.setting.CacheSetting;
 import com.lihua.service.MonitorCacheService;
-import com.lihua.utils.json.JsonUtils;
+import com.lihua.common.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import org.springframework.context.ApplicationEventPublisher;
@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.lihua.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
-import static com.lihua.enums.RedisKeyPrefixEnum.SYSTEM_SETTING_REDIS_PREFIX;
+import static com.lihua.redis.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
+import static com.lihua.redis.enums.RedisKeyPrefixEnum.SYSTEM_SETTING_REDIS_PREFIX;
 
 @Service
 public class MonitorCacheServiceImpl implements MonitorCacheService {

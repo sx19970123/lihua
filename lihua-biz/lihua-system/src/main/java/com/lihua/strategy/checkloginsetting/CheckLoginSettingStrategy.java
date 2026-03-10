@@ -1,6 +1,6 @@
 package com.lihua.strategy.checkloginsetting;
 
-import com.lihua.model.LoginUser;
+import com.lihua.security.model.LoginUser;
 
 /**
  * 检查用户是否需要登录后进行配置

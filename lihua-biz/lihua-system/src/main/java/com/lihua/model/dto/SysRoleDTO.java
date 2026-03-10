@@ -1,6 +1,6 @@
 package com.lihua.model.dto;
 
-import com.lihua.model.BaseDTO;
+import com.lihua.mybatis.model.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

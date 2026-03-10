@@ -3,7 +3,7 @@ package com.lihua.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.lihua.model.BaseEntity;
+import com.lihua.mybatis.model.BaseEntity;
 import com.lihua.model.validation.MenuValidation;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

@@ -1,11 +1,11 @@
 package com.lihua.strategy.attachment;
 
-import com.lihua.config.LihuaConfig;
-import com.lihua.enums.SysBaseEnum;
-import com.lihua.exception.FileException;
-import com.lihua.utils.crypt.AesUtils;
-import com.lihua.utils.date.DateUtils;
-import com.lihua.utils.file.FileUtils;
+import com.lihua.common.config.LihuaConfig;
+import com.lihua.common.enums.SysBaseEnum;
+import com.lihua.common.exception.FileException;
+import com.lihua.common.utils.crypt.AesUtils;
+import com.lihua.common.utils.date.DateUtils;
+import com.lihua.common.utils.file.FileUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;

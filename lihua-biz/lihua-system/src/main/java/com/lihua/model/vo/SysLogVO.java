@@ -2,9 +2,9 @@ package com.lihua.model.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.lihua.annotation.ExcelDictType;
-import com.lihua.converter.ExcelDictConverter;
-import com.lihua.converter.ExcelLocalDateTimeConverter;
+import com.lihua.excel.annotation.ExcelDictType;
+import com.lihua.excel.converter.ExcelDictConverter;
+import com.lihua.excel.converter.ExcelLocalDateTimeConverter;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.fesod.sheet.annotation.ExcelIgnoreUnannotated;

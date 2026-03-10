@@ -2,7 +2,7 @@ package com.lihua.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lihua.entity.SysRole;
-import com.lihua.model.CurrentRole;
+import com.lihua.security.model.CurrentRole;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

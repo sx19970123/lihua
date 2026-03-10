@@ -1,12 +1,12 @@
 package com.lihua.model.vo;
 
-import com.lihua.annotation.ExcelComment;
-import com.lihua.annotation.ExcelDictType;
-import com.lihua.annotation.Sensitive;
-import com.lihua.converter.ExcelDictConverter;
-import com.lihua.enums.CommentUseEnum;
-import com.lihua.enums.DesensitizedTypeEnum;
-import com.lihua.model.BaseEntity;
+import com.lihua.excel.annotation.ExcelComment;
+import com.lihua.excel.annotation.ExcelDictType;
+import com.lihua.sensitive.annotation.Sensitive;
+import com.lihua.excel.converter.ExcelDictConverter;
+import com.lihua.excel.enums.CommentUseEnum;
+import com.lihua.sensitive.enums.DesensitizedTypeEnum;
+import com.lihua.mybatis.model.BaseEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

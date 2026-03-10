@@ -2,7 +2,7 @@ package com.lihua.model.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.lihua.model.BaseDTO;
+import com.lihua.mybatis.model.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

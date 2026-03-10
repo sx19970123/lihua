@@ -19,7 +19,7 @@
         </foreach>
     </select>
 
-    <select id="selectByUserId" resultType="com.lihua.model.CurrentDept">
+    <select id="selectByUserId" resultType="com.lihua.security.model.CurrentDept">
         SELECT
             id,
             parent_id,
@@ -38,7 +38,7 @@
         user_id = #{userId} AND del_flag = '0' AND status = '0'
     </select>
 
-    <select id="selectAllDept" resultType="com.lihua.model.CurrentDept">
+    <select id="selectAllDept" resultType="com.lihua.security.model.CurrentDept">
         SELECT
             id,
             parent_id,

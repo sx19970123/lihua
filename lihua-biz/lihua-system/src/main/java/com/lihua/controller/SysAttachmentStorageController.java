@@ -1,16 +1,16 @@
 package com.lihua.controller;
 
-import com.lihua.annotation.Log;
+import com.lihua.log.annotation.Log;
 import com.lihua.entity.SysAttachment;
-import com.lihua.enums.LogTypeEnum;
-import com.lihua.enums.ResultCodeEnum;
+import com.lihua.log.enums.LogTypeEnum;
+import com.lihua.common.enums.ResultCodeEnum;
 import com.lihua.model.validation.AttachmentValidation;
 import com.lihua.model.vo.SysAttachmentChunkVO;
 import com.lihua.model.vo.SysAttachmentUrlVO;
-import com.lihua.model.response.ApiResponseModel;
-import com.lihua.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.service.SysAttachmentStorageService;
-import com.lihua.utils.json.JsonUtils;
+import com.lihua.common.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

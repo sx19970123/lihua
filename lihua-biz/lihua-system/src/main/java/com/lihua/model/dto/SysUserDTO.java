@@ -1,6 +1,6 @@
 package com.lihua.model.dto;
 
-import com.lihua.model.BaseDTO;
+import com.lihua.mybatis.model.BaseDTO;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;

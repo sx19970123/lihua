@@ -1,10 +1,10 @@
 package com.lihua.service.impl;
 
-import com.lihua.config.LihuaConfig;
+import com.lihua.common.config.LihuaConfig;
 import com.lihua.mapper.SysUserMapper;
-import com.lihua.model.CurrentUser;
-import com.lihua.model.LoginUser;
-import com.lihua.utils.date.DateUtils;
+import com.lihua.security.model.CurrentUser;
+import com.lihua.security.model.LoginUser;
+import com.lihua.common.utils.date.DateUtils;
 import jakarta.annotation.Resource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

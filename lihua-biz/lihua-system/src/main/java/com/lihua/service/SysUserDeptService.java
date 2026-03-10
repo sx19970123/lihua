@@ -1,7 +1,7 @@
 package com.lihua.service;
 
 import com.lihua.entity.SysUserDept;
-import com.lihua.model.CurrentDept;
+import com.lihua.security.model.CurrentDept;
 
 import java.util.List;
 
