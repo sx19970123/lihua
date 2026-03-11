@@ -1,5 +1,22 @@
 <template>
-  <a-spin v-model:spinning="uploading" :tip="uploadTip">
+  <a-spin v-model:spinning="uploading">
+    <template #tip>
+      <!--   计算md5   -->
+      <div v-if="status === 'MD5'">
+        正在处理
+        <a-progress :stroke-color="themeStore.getColorPrimary()" status="active" :show-info="false" :percent="progress"/>
+      </div>
+      <!--   上传   -->
+      <div v-if="status === 'UPDATE'">
+        正在上传
+        <a-progress :stroke-color="themeStore.getColorPrimary()" status="active" :show-info="false" :percent="progress"/>
+      </div>
+      <!--   合并   -->
+      <div v-if="status === 'MERGE'">
+        正在合并
+        <a-progress :stroke-color="themeStore.getColorPrimary()" status="active" :show-info="false" :percent="100"/>
+      </div>
+    </template>
     <a-upload v-if="mode === 'button' || mode === 'picture'"
               v-model:file-list="fileList"
               :action="uploadURL"
@@ -85,6 +102,7 @@ import {currentRequests} from "@/utils/Request.ts";
 import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import {useThemeStore} from "@/stores/theme.ts";
 
 const { getToken } = token
 
@@ -95,6 +113,8 @@ const uploadURL = `${baseAPI}/system/attachment/storage/upload`
 const chunk_upload_prefix = "upload-record-"
 const authorization = 'Bearer ' + getToken()
 const router = useRoute()
+const themeStore = useThemeStore()
+
 let vModelComplete = false
 
 // 参数
@@ -421,8 +441,10 @@ const { beforeUpload, handleChange, handleFastUpload, handleModelValue, handleUp
 const initChunkUpload = () => {
   // 上传loading
   const uploading = ref<boolean>(false)
-  // 分片上传提示
-  const uploadTip = ref<string>()
+  // 进度
+  const progress = ref<number>(0)
+  // 状态，在计算md5 ｜ 正在上传 | 分片合并
+  const status = ref<'MD5'|'UPDATE'|'MERGE'>();
   // 分片上传记录类型
   type UploadRecordType = {
     uploadId: string,
@@ -452,6 +474,8 @@ const initChunkUpload = () => {
 
   // 处理分片上传逻辑
   const handleChunkUpload = async (file: UploadFile, md5: string) => {
+    status.value = "UPDATE"
+    progress.value = 0
     // 获取浏览器缓存中记录的分片上传信息
     const record = localStorage.getItem(chunk_upload_prefix + md5)
     if (!record) { return }
@@ -492,33 +516,40 @@ const initChunkUpload = () => {
       // 状态改为进行中
       const {chunk, index} = needUploadChunks[i]
       needUploadChunks[i].status = "in_progress"
-      // 调用分片上传接口
-      const resp = await chunksUpload(chunk, recordObj.uploadId, md5, index, (bytes: number) => {
-        // 上传状态显示，并实时更新上传进度
-        uploadedChunkSize = bytes + uploadedChunkSize
-        recordObj.uploadedChunkSize = Math.trunc(uploadedChunkSize / 1024 / 1024)
-        recordObj.totalSize = Math.trunc(file.size ? file.size / 1024 / 1024 : 0 )
-        localStorage.setItem(chunk_upload_prefix + md5, JSON.stringify(recordObj))
-        uploadTip.value = `正在上传：${recordObj.uploadedChunkSize}MB / ${recordObj.totalSize}MB（${Math.trunc(recordObj.uploadedChunkSize / recordObj.totalSize * 100)}%）`
-      })
-      if (resp.code === 200) {
-        // 修改状态为已上传
-        needUploadChunks[i].status = "completed"
-        // 计数器 + 1
-        uploadedChunkNum++
-        // 所有分片上传完成
-        if (uploadedChunkNum == needUploadChunks.length) {
-          // 处理分片合并
-          handleChunksMerge(file, recordObj, md5)
-        } else {
-          // 7. 获取下一个等待中状态的数据进行上传
-          const nextIndex = needUploadChunks.findIndex(item => item.status === "pending")
-          if (nextIndex !== -1) {
-            await uploadChunk(nextIndex)
+      try {
+        // 调用分片上传接口
+        const resp = await chunksUpload(chunk, recordObj.uploadId, md5, index, (bytes: number) => {
+          // 上传状态显示，并实时更新上传进度
+          uploadedChunkSize = bytes + uploadedChunkSize
+          recordObj.uploadedChunkSize = Math.trunc(uploadedChunkSize / 1024 / 1024)
+          recordObj.totalSize = Math.trunc(file.size ? file.size / 1024 / 1024 : 0 )
+          localStorage.setItem(chunk_upload_prefix + md5, JSON.stringify(recordObj))
+          progress.value = Math.trunc(recordObj.uploadedChunkSize / recordObj.totalSize * 100)
+        })
+        if (resp.code === 200) {
+          // 修改状态为已上传
+          needUploadChunks[i].status = "completed"
+          // 计数器 + 1
+          uploadedChunkNum++
+          // 所有分片上传完成
+          if (uploadedChunkNum == needUploadChunks.length) {
+            // 处理分片合并
+            handleChunksMerge(file, recordObj, md5)
+          } else {
+            // 7. 获取下一个等待中状态的数据进行上传
+            const nextIndex = needUploadChunks.findIndex(item => item.status === "pending")
+            if (nextIndex !== -1) {
+              await uploadChunk(nextIndex)
+            }
           }
+        } else {
+          message.error(resp.msg)
         }
-      } else {
-        message.error(resp.msg)
+      } catch (e) {
+        if (e instanceof ResponseError) {
+          message.error(e.msg)
+        }
+        handleUploadError(file, "分片上传失败")
       }
     }
 
@@ -544,7 +575,7 @@ const initChunkUpload = () => {
     if (record) {
       const interval = setInterval(() => {
         const recordObj: UploadRecordType = JSON.parse(record)
-        uploadTip.value = `正在上传：${recordObj.uploadedChunkSize}MB / ${recordObj.totalSize}MB（${Math.trunc(recordObj.uploadedChunkSize / recordObj.totalSize * 100)}%）`
+        progress.value = Math.trunc(recordObj.uploadedChunkSize / recordObj.totalSize * 100)
         // 检测到上传状态为completed时，执行附件秒传获取数据
         if (recordObj.status === "completed") {
           handleFastUpload(file, md5)
@@ -571,6 +602,9 @@ const initChunkUpload = () => {
 
   // 计算附件哈希
   const handleCalculateHash = (file: UploadFile) => {
+    status.value = "MD5"
+    progress.value = 0
+
     const chunks = handleChunk(file, 10)
     return new Promise(resolve => {
       // 通过webWorker后台处理hash计算，防止ui阻塞
@@ -582,7 +616,7 @@ const initChunkUpload = () => {
           resolve(resp)
           worker.terminate()
         } else {
-          uploadTip.value = `正在扫描附件（${resp}%）`
+          progress.value = resp
         }
       }
       worker.postMessage(chunks)
@@ -653,7 +687,7 @@ const initChunkUpload = () => {
 
   // 处理附件合并
   const handleChunksMerge = (file: UploadFile, recordObj: UploadRecordType, md5: string) => {
-    uploadTip.value = "正在进行数据合并"
+    status.value = "MERGE"
     chunksMerge({id: recordObj.attachmentId, originalName: file.name, md5: md5, uploadId:  recordObj.uploadId}, recordObj.chunkSize).then((resp) => {
       if (resp.code === 200) {
         // 上传成功后删除浏览器缓存记录
@@ -679,17 +713,20 @@ const initChunkUpload = () => {
         console.error(e)
       }
     }).finally(() => {
+      status.value = undefined
+      progress.value = 0
       uploading.value = false
     })
   }
   return {
     uploading,
-    uploadTip,
+    progress,
+    status,
     handleCalculateHash,
     startChunkUpload
   }
 }
-const { uploading, uploadTip, handleCalculateHash, startChunkUpload } = initChunkUpload()
+const { uploading, progress, status, handleCalculateHash, startChunkUpload } = initChunkUpload()
 
 // 初始化预览
 const initPreview = () => {

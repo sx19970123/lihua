@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-
 import java.io.File;
 import java.io.InputStream;
 import java.net.URLDecoder;
@@ -51,6 +50,9 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
     @Resource
     private AttachmentConfig attachmentConfig;
+
+    @Resource
+    private SysAttachmentMapper sysAttachmentMapper;
 
     // 可以通过url下载的附件后缀
     private static final List<String> UPLOADED_URL_SUFFIX = List.of("jpg", "jpeg", "png", "gif");
@@ -351,7 +353,11 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setStorageLocation(attachmentConfig.getUploadFileModel())
                 .setClientType(LoginUserContext.getClientType());
         // 保存附件信息
-        saveOrUpdate(sysAttachment);
+        if (StringUtils.hasText(sysAttachment.getId())) {
+            sysAttachmentMapper.updateById(sysAttachment);
+        } else {
+            sysAttachmentMapper.insert(sysAttachment);
+        }
         return sysAttachment.getId();
     }
 

@@ -1,17 +1,20 @@
 package com.lihua.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.lihua.model.validation.AttachmentValidation;
+import com.lihua.mybatis.model.BaseEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
-public class SysAttachment implements Serializable {
+public class SysAttachment extends BaseEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -19,6 +22,7 @@ public class SysAttachment implements Serializable {
     /**
      * 主键
      */
+    @TableId
     private String id;
 
     /**
@@ -87,21 +91,6 @@ public class SysAttachment implements Serializable {
      */
     @NotNull(message = "md5值不能为空", groups = { AttachmentValidation.AttachmentCheckMd5Validation.class })
     private String md5;
-
-    /**
-     * 上传人id
-     */
-    private String createId;
-
-    /**
-     * 上传时间
-     */
-    private LocalDateTime createTime;
-
-    /**
-     * 删除标识
-     */
-    private String delFlag;
 
     /**
      * 上传失败原因

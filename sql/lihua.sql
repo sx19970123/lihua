@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 08/12/2025 09:07:17
+ Date: 11/03/2026 13:18:49
 */
 
 SET NAMES utf8mb4;
@@ -38,6 +38,8 @@ CREATE TABLE `sys_attachment` (
   `md5` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '文件md5值',
   `create_id` bigint DEFAULT NULL COMMENT '上传人id',
   `create_time` datetime DEFAULT NULL COMMENT '上传时间',
+  `update_id` bigint DEFAULT NULL COMMENT '更新人id',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '删除标识',
   `error_msg` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '上传失败原因',
   `url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '原url（通过url上传有该字段）',

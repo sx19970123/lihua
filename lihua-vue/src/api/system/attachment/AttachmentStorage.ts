@@ -113,7 +113,7 @@ export const chunksUpload = (file: Blob, uploadId: string, md5: string, index: n
         },
         onUploadProgress: (progressEvent) => {
             callback(progressEvent.bytes)
-        },
+        }
     })
 }
 

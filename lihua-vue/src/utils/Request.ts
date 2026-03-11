@@ -57,26 +57,28 @@ service.interceptors.response.use((resp) => {
     if (error.response) {
         // Nginx 返回的错误响应会带有状态码
         const status = error.response.status;
+        let errMsg: string;
         switch (status) {
             case 404:
-                console.error("资源未找到 (404)");
+                errMsg = "资源未找到 (404)"
                 break;
             case 413:
-                console.error("请求体超过限制大小 (413)");
+                errMsg = "请求体超过限制大小 (413)"
                 break;
             case 500:
-                console.error("服务器异常 (500)");
+                errMsg = "服务器异常 (500)"
                 break;
             case 502:
-                console.error("网关错误 (502)");
+                errMsg = "网关错误 (502)"
                 break;
             case 504:
-                console.error("网关超时 (504)");
+                errMsg = "网关超时 (504)"
                 break;
             default:
-                console.error(`其他错误 (${status})`);
+                errMsg = `其他错误 (${status})`
         }
-        return Promise.reject(new ResponseError(status, error.response.statusText));
+        console.error(errMsg)
+        return Promise.reject(new ResponseError(status, errMsg));
     } else {
         console.error(error);
         return Promise.reject(new ResponseError(500, error.message));
