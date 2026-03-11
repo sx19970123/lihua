@@ -81,9 +81,8 @@
 </template>
 
 <script setup lang="ts">
-import {message, Upload, type UploadFile} from "ant-design-vue";
-import { Modal } from 'ant-design-vue';
-import {onMounted, ref, watch, createVNode} from "vue";
+import {message, Modal, Upload, type UploadFile} from "ant-design-vue";
+import {createVNode, ref, watch} from "vue";
 import {useRoute} from "vue-router";
 import token from "@/utils/Token.ts";
 import {
@@ -101,7 +100,7 @@ import {ResponseError} from "@/api/global/Type.ts";
 import {currentRequests} from "@/utils/Request.ts";
 import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
-import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
 import {useThemeStore} from "@/stores/theme.ts";
 
 const { getToken } = token
@@ -114,11 +113,10 @@ const chunk_upload_prefix = "upload-record-"
 const authorization = 'Bearer ' + getToken()
 const router = useRoute()
 const themeStore = useThemeStore()
-
-let vModelComplete = false
+const lastModelValue = ref<string>()
 
 // 参数
-const {mode = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 10, multiple = true, directory = false, modelValue = "", businessCode, businessName, chunk = false, chunkSize = 20, chunkUploadCount = 3, fileName, autoRemove = true} = defineProps<{
+const {mode = 'button', icon, text, uploadType = [], description, maxCount = 10, maxSize = 10, multiple = true, directory = false, modelValue = "", businessCode, businessName, chunk = false, chunkSize = 20, chunkUploadCount = 3, fileName, autoRemove = false} = defineProps<{
   // 模式：按钮/图片/拖拽
   mode?: 'button' | 'picture' | 'dragger',
   // 图标
@@ -194,38 +192,27 @@ const fileList = ref<UploadFile[]>([])
 // 附件秒传轮询等待变量
 const awaitHandleFile = ref<boolean>(false)
 // 初始化双向绑定
-const initVModel = async (newVal: string, oldValue?: string) => {
+const initVModel = async () => {
   const ids = modelValue.split(",").filter(Boolean)
   if (ids && ids.length > 0) {
-    try {
-      // 初次加载数据时根据双向绑定内容请求附件信息
-      const resp = await queryAttachmentInfoByIds(ids)
-      if (resp.code === 200) {
-        // 组合fileList
-        const data = resp.data.map(item => {
-          const id = item.id
-          const uploadFile: UploadFile = {
-            uid: id ? id : '',
-            name: item.originalName ? item.originalName : '',
-            status: item.status === 'error' ? "error" : "done",
-            url: id,
-            thumbUrl: handleThumbUrl(item.path)
-          }
-          return uploadFile;
-        })
-        // 数据回显
-        if (data && data.length > 0) {
-          fileList.value.unshift(...data)
+    // 初次加载数据时根据双向绑定内容请求附件信息
+    const resp = await queryAttachmentInfoByIds(ids)
+    if (resp.code === 200) {
+      // 组合fileList
+      // 数据回显
+      fileList.value = resp.data.map(item => {
+        const id = item.id
+        const uploadFile: UploadFile = {
+          uid: id ? id : '',
+          name: item.originalName ? item.originalName : '',
+          status: item.status === 'error' ? 'error' : 'done',
+          url: id,
+          thumbUrl: handleThumbUrl(item.path)
         }
-        // 在双向绑定加载前又上传了数据的情况，将新加载的newVal拼接到oldValue之前，再次更新双向绑定
-        if (oldValue) {
-          emits("update:modelValue", newVal + "," + oldValue)
-        }
-      } else {
-        message.error(resp.msg)
-      }
-    } finally {
-      vModelComplete = true
+        return uploadFile;
+      })
+    } else {
+      message.error(resp.msg)
     }
   }
 }
@@ -323,8 +310,11 @@ const initUpload = () => {
         }
       }
     })
+
+    const modelValue = modelValueList.join(",")
+    lastModelValue.value = modelValue
     // 处理双向绑定
-    emits("update:modelValue", modelValueList.join(","))
+    emits("update:modelValue", modelValue)
   }
 
   // 处理附件上传变化（uploading：上传中 done：上传成功 error：上传失败 removed：已删除）
@@ -837,22 +827,13 @@ const initRemove = () => {
             content: '删除后无法恢复，是否删除？',
             // 确认删除
             onOk: async () => {
-              try {
-                const resp = await deleteFromBusiness([id])
-                if (resp.code === 200) {
-                  emits("remove", {id: id, status: "success"})
-                  resolve({})
-                } else {
-                  reject()
-                  emits("remove", {id: id, status: "error"})
-                }
-              } catch (e) {
+              const resp = await deleteFromBusiness([id])
+              if (resp.code === 200) {
+                emits("remove", {id: id, status: "success"})
+                resolve({})
+              } else {
                 reject()
-                if (e instanceof ResponseError) {
-                  message.error(e.msg)
-                } else {
-                  console.error(e)
-                }
+                emits("remove", {id: id, status: "error"})
               }
             },
             // 取消删除
@@ -898,28 +879,11 @@ const initRemove = () => {
 const {handleRemove, businessRemove} = initRemove()
 
 // 监听双向绑定
-watch(() => modelValue, (newVal, oldValue) => {
-  // 已执行过双向绑定回显直接返回
-  if (vModelComplete) {
-    return;
+watch(() => modelValue, (value) => {
+  if (lastModelValue.value !== value) {
+    initVModel()
   }
-  // 1. 求newVal, oldValue集合间的交集，交集为空，表示为双向绑定触发的watch，执行initVModel()
-  const intersection = newVal?.split(",").filter(nv => oldValue.split(",")?.includes(nv))
-  // 2. 双向绑定数据加载前上传的集合
-  const newUpload = fileList.value.filter(fl => fl.url && newVal.includes(fl.url))
-
-  // 符合 1、2 条件并 newVal 存在，即为双向绑定加载的数据，执行initVModel
-  if (intersection && intersection.length === 0 && newUpload && newUpload.length === 0 && newVal) {
-    initVModel(newVal, oldValue)
-  }
-})
-
-// 组件加载完成后先初始化一次modelValue
-onMounted(() => {
-  if (modelValue) {
-    initVModel(modelValue, undefined)
-  }
-})
+}, {immediate: true})
 
 // 抛出函数
 defineExpose({

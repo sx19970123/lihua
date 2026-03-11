@@ -25,7 +25,7 @@ const themeStore = useThemeStore();
 const router = useRoute()
 // 上传默认大小
 const defaultSize = 1024 * 1024 * 2
-const {modelValue, autoDownloadPasteImg = true, height = '50vh',attachmentURLPrefix = "origin", businessCode, businessName, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
+const {modelValue, autoDownloadPasteImg = false, height = '50vh', attachmentURLPrefix = "origin", businessCode, businessName, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
   // 双向绑定
   modelValue?: string,
   // 编辑器高度
@@ -169,7 +169,6 @@ const editorConfig = computed(() => ({
       notif.close();
     }
   }
-
 }))
 
 // 双向绑定
@@ -177,7 +176,6 @@ const content = ref<string | undefined>(modelValue)
 
 /**
  * 处理链接图片上传
- * todo 替换方案，不将url直接上传到后台，转由前端fetch拿到blob，将附件上传到后台
  * @param url
  */
 const handleLinkImageUpload = async (url?: string): Promise<SysAttachmentUrl | false> => {
