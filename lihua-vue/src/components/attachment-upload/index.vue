@@ -1,5 +1,6 @@
 <template>
   <a-spin v-model:spinning="uploading">
+    <!--  分片进度条loading  -->
     <template #tip>
       <!--   计算md5   -->
       <div v-if="status === 'MD5'">
@@ -17,6 +18,7 @@
         <a-progress :stroke-color="themeStore.getColorPrimary()" status="active" :show-info="false" :percent="100"/>
       </div>
     </template>
+    
     <a-upload v-if="mode === 'button' || mode === 'picture'"
               v-model:file-list="fileList"
               :action="uploadURL"
