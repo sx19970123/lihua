@@ -14,6 +14,7 @@ import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {closeConnect} from "@/utils/WebSocket.ts";
 import {publicAttachmentDownload} from "@/api/system/attachment/AttachmentStorage.ts";
 import router from "@/router";
+import {attachmentUrl} from "@/utils/AttachmentUrl.ts";
 
 const { setToken,removeToken } = token
 
@@ -77,7 +78,6 @@ export const useUserStore = defineStore('user', {
         async updatePassword(oldPassword: string, newPassword: string, confirmPassword: string): Promise<ResponseType<string>> {
             return new Promise(async (resolve, reject) => {
                 try {
-
                     // 更新密码
                     const resp = await updatePassword(oldPassword, newPassword, confirmPassword)
                     if (resp.code === 200) {
@@ -221,11 +221,7 @@ export const useUserStore = defineStore('user', {
             if (avatar.type === 'image') {
                 // 当头像类型为 image 但 image不存在时，赋值默认头像
                 if (avatar.value) {
-                    publicAttachmentDownload(avatar.value).then((resp: Blob) => {
-                        avatar.url = URL.createObjectURL(resp)
-                    }).catch((e) => {
-                        this.$state.avatar = this.getDefaultAvatar()
-                    })
+                    avatar.url = attachmentUrl(avatar.value)
                 } else {
                     this.$state.avatar = this.getDefaultAvatar()
                 }

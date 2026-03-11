@@ -14,7 +14,7 @@ public class AttachmentException extends BaseException {
     }
 
     public AttachmentException(String message) {
-        super(ResultCodeEnum.FILE_ERROR, message);
+        super(ResultCodeEnum.FILE_ERROR, message, null);
     }
 
     public AttachmentException(ResultCodeEnum resultCodeEnum) {

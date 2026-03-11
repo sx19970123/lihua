@@ -47,6 +47,7 @@
         <a-input v-if="avatarType === 'text'" v-model:value="avatarText" style="max-width: 260px;" size="large" placeholder="请输入头像文本"/>
         <!--        头像编辑-->
         <image-cropper v-if="avatarType === 'image'"
+                       :key="imageCropperWight"
                        ref="imageCropperRef"
                        v-model:realTime="avatarImg"
                        v-model:img="avatarUrl"
@@ -76,7 +77,7 @@ import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import {cloneDeep} from 'lodash-es'
 import {useThemeStore} from "@/stores/theme.ts";
 import {ResponseError} from "@/api/global/Type.ts";
-import {deleteFromBusiness, upload} from "@/api/system/attachment/AttachmentStorage.ts";
+import {deleteFromBusiness, publicUpload} from "@/api/system/attachment/AttachmentStorage.ts";
 import {v4 as uuidv4} from "uuid";
 
 const themeStore = useThemeStore()
@@ -85,6 +86,13 @@ const userStore = useUserStore()
 const props = defineProps(['modelValue'])
 // 双向绑定修改方法
 const emits = defineEmits(['update:modelValue','change'])
+
+let updatedData: AvatarType = {
+  type :'',
+  backgroundColor :'',
+  value :''
+};
+
 const init = () => {
   // 控制modal开关
   const open = ref<boolean>(false)
@@ -207,11 +215,6 @@ const imageCropperRef = useTemplateRef<InstanceType<typeof ImageCropper>>("image
  * 处理确认数据
  */
 const handleOk = async () => {
-  let updatedData: AvatarType = {
-    type :'',
-    backgroundColor :'',
-    value :''
-  };
   try {
     switch (avatarType.value) {
       case "image": {
@@ -232,9 +235,9 @@ const handleOk = async () => {
           throw new Error('头像不能超过 2MB');
         }
 
-        const resp = await upload(new File([blob],uuidv4() + ".png", { type: "image/png" }), "UserAvatar", "用户头像");
+        const resp = await publicUpload(new File([blob],uuidv4() + ".png", { type: "image/png" }), "UserAvatar");
         if (resp.code !== 200) {
-          throw new Error('头像上传失败');
+          throw new Error(resp.msg);
         }
         updatedData = {
           url: URL.createObjectURL(blob),
@@ -296,6 +299,7 @@ const close = () => {
   open.value = true;
   showConfirm()
 };
+
 const showConfirm = () => {
   Modal.confirm({
     title: '提 示',
@@ -315,6 +319,9 @@ onMounted(() => {
 })
 // 组件销毁后删除监听
 onUnmounted(() => {
+  if (updatedData.url) {
+    URL.revokeObjectURL(updatedData?.url)
+  }
   window.removeEventListener('resize', handleWindowWith)
 })
 

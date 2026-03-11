@@ -62,10 +62,4 @@ public class AppSysAttachmentStorageController extends ApiResponseController {
         return sysAttachmentStorageService.localDownload(key, originName);
     }
 
-    @GetMapping("download/p/{id}")
-    @Log(description = "附件下载（公开）", type = LogTypeEnum.DOWNLOAD)
-    public ResponseEntity<StreamingResponseBody> publicDownload(@PathVariable("id") String id, String fileName) {
-        return sysAttachmentStorageService.publicDownload(id, fileName);
-    }
-
 }

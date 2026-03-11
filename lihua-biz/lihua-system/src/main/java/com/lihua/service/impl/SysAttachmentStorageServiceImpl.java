@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +114,17 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             saveAttachment(sysAttachment);
             throw new AttachmentException("附件上传失败");
         }
+    }
+
+    @Override
+    public String publicUpload(MultipartFile file, String businessCode) {
+        boolean contains = attachmentConfig.getUploadPublicBusinessCode().contains(businessCode);
+        if (!contains) {
+            log.error("请检查配置文件，是否将此业务编码 " + businessCode + " 配置在 uploadPublicBusinessCode");
+            throw new AttachmentException("当前附件业务编码不为公开访问附件，无法上传");
+        }
+
+        return upload(file, businessCode);
     }
 
     @Override
@@ -214,24 +226,6 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         return strategy.getDownloadURL(path, originalName, expireTime != null && expireTime != 0 ? expireTime : attachmentConfig.getFileDownloadExpireTime());
     }
 
-    @Override
-    public ResponseEntity<StreamingResponseBody> publicDownload(String id, String fileName) {
-        // 根据路径和公开业务编码进行查询
-        SysAttachment sysAttachment = lambdaQuery()
-                .select(SysAttachment::getPath, SysAttachment::getOriginalName, SysAttachment::getSize)
-                .eq(SysAttachment::getId, id)
-                .in(SysAttachment::getBusinessCode, attachmentConfig.getUploadPublicBusinessCode())
-                .one();
-
-        if (sysAttachment == null) {
-            throw new AttachmentException("请求资源不存在");
-        }
-
-        AttachmentStorageStrategy strategy = getStrategy();
-        InputStream inputStream = strategy.download(sysAttachment.getPath());
-        // 返回下载file和原附件名
-        return AttachmentResponse.success(inputStream, StringUtils.hasText(fileName) ? fileName : sysAttachment.getOriginalName(), sysAttachment.getSize());
-    }
 
     @Override
     public ResponseEntity<StreamingResponseBody> localDownload(String key, String originName) {
@@ -267,6 +261,26 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         }
 
         throw new AttachmentException("下载失败，路径不匹配");
+    }
+
+    @Override
+    public ResponseEntity<StreamingResponseBody> download(String fullPath) {
+        List<String> uploadPublicBusinessCode = attachmentConfig.getUploadPublicBusinessCode();
+        String uploadFilePath = attachmentConfig.getUploadFilePath();
+
+        Path targetPath = Paths.get(fullPath).normalize();
+
+        // 校验路径
+        boolean allow = uploadPublicBusinessCode.stream()
+                .map(code -> Paths.get(uploadFilePath, code).normalize())
+                .anyMatch(targetPath::startsWith);
+
+        if (!allow) {
+            throw new AttachmentException("未知的附件");
+        }
+
+        AttachmentStorageStrategy strategy = getStrategy();
+        return AttachmentResponse.success(strategy.download(fullPath), FileUtils.getFileNameByPath(fullPath));
     }
 
     // 附件上传方法

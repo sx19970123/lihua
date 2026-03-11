@@ -37,6 +37,12 @@ public class SysAttachmentStorageController extends ApiResponseController {
         return success(sysAttachmentStorageService.existsAttachmentByMd5(sysAttachment.getMd5(), sysAttachment.getOriginalName()));
     }
 
+    @PostMapping("public/upload")
+    @Log(description = "公开附件上传", type = LogTypeEnum.UPLOAD)
+    public ApiResponseModel<String> publicUpload(@RequestParam("file") MultipartFile file, @RequestParam("businessCode") String businessCode) {
+        return success(sysAttachmentStorageService.publicUpload(file, businessCode));
+    }
+
     @PostMapping("upload")
     @Log(description = "附件上传", type = LogTypeEnum.UPLOAD)
     public ApiResponseModel<String> upload(@RequestParam("file") MultipartFile file,
@@ -88,9 +94,8 @@ public class SysAttachmentStorageController extends ApiResponseController {
         return sysAttachmentStorageService.localDownload(key, originName);
     }
 
-    @GetMapping("download/p/{id}")
-    @Log(description = "附件下载（公开）", type = LogTypeEnum.DOWNLOAD)
-    public ResponseEntity<StreamingResponseBody> publicDownload(@PathVariable("id") String id, String fileName) {
-        return sysAttachmentStorageService.publicDownload(id, fileName);
+    @GetMapping("download/p")
+    public ResponseEntity<StreamingResponseBody> download(@RequestParam("fullPath") String fullPath) {
+        return sysAttachmentStorageService.download(fullPath);
     }
 }

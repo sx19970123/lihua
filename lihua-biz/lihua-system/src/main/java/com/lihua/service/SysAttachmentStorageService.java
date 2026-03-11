@@ -32,6 +32,14 @@ public interface SysAttachmentStorageService {
     String uploadAttachment(MultipartFile file, SysAttachment sysAttachment);
 
     /**
+     * 上传公开附件，记录不入库，仅用作头像、富文本等可直接访问的附件
+     * @param file 文件
+     * @param businessCode 业务编码
+     * @return 存储地址
+     */
+    String publicUpload(MultipartFile file, String businessCode);
+
+    /**
      * 附件秒传
      * @return 附件id
      */
@@ -93,9 +101,9 @@ public interface SysAttachmentStorageService {
     ResponseEntity<StreamingResponseBody> localDownload(String key, String originName);
 
     /**
-     * 公开附件下载
-     * @param id 附件id
+     * 根据路径获取附件
+     * @param fullPath 路径
      * @return 附件
      */
-    ResponseEntity<StreamingResponseBody> publicDownload(String id, String fileName);
+    ResponseEntity<StreamingResponseBody> download(String fullPath);
 }
