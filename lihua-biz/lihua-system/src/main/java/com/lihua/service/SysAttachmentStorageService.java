@@ -2,7 +2,6 @@ package com.lihua.service;
 
 import com.lihua.entity.SysAttachment;
 import com.lihua.model.vo.SysAttachmentChunkVO;
-import com.lihua.model.vo.SysAttachmentUrlVO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -31,21 +30,6 @@ public interface SysAttachmentStorageService {
      * @return 附件表id
      */
     String uploadAttachment(MultipartFile file, SysAttachment sysAttachment);
-
-    /**
-     * 附件上传（批量）
-     * @param files 文件数组
-     * @param attachmentList 附件对象集合
-     * @return 附件id集合
-     */
-    List<String> batchUploadAttachment(MultipartFile[] files, List<SysAttachment> attachmentList);
-
-    /**
-     * 附件上传（URL）
-     * @param sysAttachment 附件对象
-     * @return 原URL和附件表ID对象
-     */
-    SysAttachmentUrlVO urlUploadAttachment(SysAttachment sysAttachment);
 
     /**
      * 附件秒传

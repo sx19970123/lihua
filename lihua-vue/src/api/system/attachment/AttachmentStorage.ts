@@ -90,15 +90,6 @@ export const fastUpload = (data: SysAttachment) => {
     })
 }
 
-// 上传url附件
-export const urlUpload = (url: string, businessCode: string, businessName: string) => {
-    return request<SysAttachmentUrl>({
-        url: `system/attachment/storage/url/upload`,
-        method: "post",
-        data: {url, businessCode, businessName},
-    })
-}
-
 // 分片文件上传
 export const chunksUpload = (file: Blob, uploadId: string, md5: string, index: number, callback: Function) => {
     const formData = new FormData();

@@ -9,7 +9,6 @@ import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.model.AttachmentResponse;
 import com.lihua.attachment.strategy.AttachmentStorageStrategy;
 import com.lihua.attachment.utils.FileUtils;
-import com.lihua.attachment.utils.UrlFileUtils;
 import com.lihua.redis.cache.RedisCache;
 import com.lihua.entity.SysAttachment;
 import com.lihua.redis.enums.RedisKeyPrefixEnum;
@@ -17,14 +16,12 @@ import com.lihua.common.exception.ServiceException;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.mapper.SysAttachmentMapper;
 import com.lihua.model.vo.SysAttachmentChunkVO;
-import com.lihua.model.vo.SysAttachmentUrlVO;
 import com.lihua.service.SysAttachmentStorageService;
 import com.lihua.common.utils.crypt.AesUtils;
 import com.lihua.common.utils.date.DateUtils;
 import jakarta.annotation.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -53,9 +50,6 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
     @Resource
     private SysAttachmentMapper sysAttachmentMapper;
-
-    // 可以通过url下载的附件后缀
-    private static final List<String> UPLOADED_URL_SUFFIX = List.of("jpg", "jpeg", "png", "gif");
 
     @Override
     public boolean existsAttachmentByMd5(String md5, String originFileName) {
@@ -118,64 +112,6 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
             saveAttachment(sysAttachment);
             throw new AttachmentException("附件上传失败");
-        }
-    }
-
-    @Override
-    @Transactional
-    public List<String> batchUploadAttachment(MultipartFile[] files, List<SysAttachment> attachmentList) {
-        // 遍历上传附件
-        for (int i = 0; i < files.length; i++) {
-            MultipartFile file = files[i];
-            SysAttachment sysAttachment = attachmentList.get(i);
-
-            try {
-                fillParameters(file, sysAttachment);
-                // 执行上传，返回路径
-                String path = upload(file, sysAttachment.getBusinessCode());
-                // 设置成功状态
-                sysAttachment.setPath(path).setStatus("0");
-            } catch (Exception e) {
-                // 记录错误状态
-                sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
-            }
-        }
-
-        return batchSaveAttachment(attachmentList);
-    }
-
-    @Override
-    public SysAttachmentUrlVO urlUploadAttachment(SysAttachment sysAttachment) {
-        // url 转为 MultipartFile 对象
-        MultipartFile multipartFile = UrlFileUtils.urlToMultipartFile(sysAttachment.getUrl());
-        try {
-            // 判断url附件类型是否在UPLOADED_URL_SUFFIX定义的集合中
-            boolean isEmpty = UPLOADED_URL_SUFFIX.stream()
-                    .filter(suffix -> StringUtils.hasText(multipartFile.getOriginalFilename()) && multipartFile.getOriginalFilename().toLowerCase().endsWith(suffix))
-                    .toList().isEmpty();
-            if (isEmpty) {
-                throw new AttachmentException("附件类型不在UPLOADED_URL_SUFFIX定义中，不进行上传");
-            }
-
-            // 附件上传
-            String path = upload(multipartFile, sysAttachment.getBusinessCode());
-            sysAttachment
-                    .setUploadMode("3")
-                    .setPath(path)
-                    .setStatus("0")
-                    .setOriginalName(multipartFile.getOriginalFilename())
-                    .setSize(String.valueOf(multipartFile.getSize()))
-                    .setType(multipartFile.getContentType());
-            // 保存附件返回id
-            String id = saveAttachment(sysAttachment);
-            // 返回原路径和id
-            return new SysAttachmentUrlVO(id, sysAttachment.getUrl());
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
-            saveAttachment(sysAttachment);
-            // 异常返回原url
-            throw new AttachmentException(sysAttachment.getUrl());
         }
     }
 
@@ -359,22 +295,6 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             sysAttachmentMapper.insert(sysAttachment);
         }
         return sysAttachment.getId();
-    }
-
-    // 批量保存附件
-    @Transactional
-    protected List<String> batchSaveAttachment(List<SysAttachment> sysAttachmentList) {
-        String clientType = LoginUserContext.getClientType();
-        String userId = LoginUserContext.getUserId();
-        String uploadFileModel = attachmentConfig.getUploadFileModel();
-
-        sysAttachmentList.forEach(sysAttachment -> sysAttachment
-                .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
-                .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
-                .setStorageLocation(uploadFileModel)
-                .setClientType(clientType));
-        saveBatch(sysAttachmentList);
-        return sysAttachmentList.stream().map(SysAttachment::getId).toList();
     }
 
     // 分片上传中通过uploadId获取fullFilePath

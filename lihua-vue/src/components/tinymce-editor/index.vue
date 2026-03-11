@@ -17,7 +17,7 @@ import Editor from '@tinymce/tinymce-vue'
 import {useThemeStore} from "@/stores/theme.ts";
 import {v4 as uuidv4} from "uuid";
 import {useRoute} from "vue-router";
-import {upload, urlUpload} from "@/api/system/attachment/AttachmentStorage.ts";
+import {upload} from "@/api/system/attachment/AttachmentStorage.ts";
 import type {SysAttachmentUrl} from "@/api/system/attachment/type/SysAttachmentUrl.ts";
 import {message} from "ant-design-vue";
 import {ResponseError} from "@/api/global/Type.ts";
@@ -25,7 +25,7 @@ const themeStore = useThemeStore();
 const router = useRoute()
 // 上传默认大小
 const defaultSize = 1024 * 1024 * 2
-const {modelValue, autoDownloadPasteImg = false, height = '50vh',attachmentURLPrefix = "origin", businessCode, businessName, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
+const {modelValue, autoDownloadPasteImg = true, height = '50vh',attachmentURLPrefix = "origin", businessCode, businessName, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
   // 双向绑定
   modelValue?: string,
   // 编辑器高度
@@ -177,39 +177,31 @@ const content = ref<string | undefined>(modelValue)
 
 /**
  * 处理链接图片上传
+ * todo 替换方案，不将url直接上传到后台，转由前端fetch拿到blob，将附件上传到后台
  * @param url
  */
 const handleLinkImageUpload = async (url?: string): Promise<SysAttachmentUrl | false> => {
-  // 业务编码｜业务名称不存在，则返回原url
-  if (!bCode || !bName || !url) {
+  if (!url) {
     return false
   }
-  try {
-    // url上传
-    const resp = await urlUpload(url, bCode, bName)
-    if (resp.code === 200) {
-      const data = resp.data
-      // 组合url
-      data.url = fileDownloadBaseURL + data.id
-      return data
-    } else {
-      message.error(resp.msg)
-      return false
+  // 拿到url对应的二进制附件
+  const resp = await fetch(url)
+  const blob = await resp.blob()
+  const file = new File([blob], `editor_${uuidv4()}.png`, {type: blob.type})
+  const fileResp = await handleUpload(file, 'image');
+  if (fileResp) {
+    return {
+      url: fileResp.url,
+      originalURL: url
     }
-  } catch (error) {
-    if (error instanceof ResponseError) {
-      message.error(error.msg)
-    } else {
-      console.error(error)
-    }
-    return false
   }
+  return false;
 }
 
 /**
  * 处理附件上传
  */
-const handleUpload = async (files: FileList | null, type: "file" | "image" | "media") => {
+const handleUpload = async (files: FileList | File | null, type: "file" | "image" | "media") => {
   // 附件类型
   const fileTypes: string[] = []
   // 附件大小
@@ -224,8 +216,15 @@ const handleUpload = async (files: FileList | null, type: "file" | "image" | "me
     fileTypes.push(...fileType)
     maxSize = fileMaxSize
   }
-  // 拿到附件
-  const file = files?.item(0)
+
+  // 获取file
+  let file: File | null = null
+  if (files instanceof FileList) {
+    file = files?.item(0)
+  }
+  if (files instanceof File) {
+    file = files
+  }
 
   // 附件不存在
   if (!file) {

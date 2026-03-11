@@ -239,12 +239,7 @@ public class FileUtils {
             return null;
         }
 
-        String[] pathSplit = fullPath.split("\\\\");
-        if (pathSplit.length == 0) {
-            return null;
-        }
-
-        return pathSplit[pathSplit.length - 1];
+        return new File(fullPath).getName();
     }
 
     /**

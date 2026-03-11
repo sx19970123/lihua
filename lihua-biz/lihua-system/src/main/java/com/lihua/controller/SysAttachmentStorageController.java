@@ -3,14 +3,11 @@ package com.lihua.controller;
 import com.lihua.log.annotation.Log;
 import com.lihua.entity.SysAttachment;
 import com.lihua.log.enums.LogTypeEnum;
-import com.lihua.common.enums.ResultCodeEnum;
 import com.lihua.model.validation.AttachmentValidation;
 import com.lihua.model.vo.SysAttachmentChunkVO;
-import com.lihua.model.vo.SysAttachmentUrlVO;
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.service.SysAttachmentStorageService;
-import com.lihua.common.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
@@ -45,26 +42,6 @@ public class SysAttachmentStorageController extends ApiResponseController {
     public ApiResponseModel<String> upload(@RequestParam("file") MultipartFile file,
                                            @ModelAttribute SysAttachment sysAttachment) {
         return success(sysAttachmentStorageService.uploadAttachment(file, sysAttachment));
-    }
-
-    @PostMapping("multiple/upload")
-    @Log(description = "附件上传（批量）", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<List<String>> upload(@RequestParam("files") MultipartFile[] files,
-                         @RequestParam("sysAttachmentJsonList") String sysAttachmentJsonList) {
-
-        List<SysAttachment> attachmentList = JsonUtils.toArrayObject(sysAttachmentJsonList, SysAttachment.class);
-        // 校验数量是否匹配
-        if (files.length != attachmentList.size()) {
-            return error(ResultCodeEnum.FILE_ERROR, "附件数量与附件信息数量不匹配");
-        }
-
-        return success(sysAttachmentStorageService.batchUploadAttachment(files, attachmentList));
-    }
-
-    @PostMapping("url/upload")
-    @Log(description = "附件上传（URL）", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<SysAttachmentUrlVO> urlUpload(@RequestBody @Validated(AttachmentValidation.AttachmentUrlUploadValidation.class) SysAttachment sysAttachment) {
-        return success(sysAttachmentStorageService.urlUploadAttachment(sysAttachment));
     }
 
     @PostMapping("fast/upload")
