@@ -10,12 +10,6 @@
         scrollbar-color: var(--lihua-sider-scrollbar-thumb-color);
     }
 }
-/* 混合模式在暗色导航下，大屏模式下也是白色导航条 */
-[sider-dark = 'dark'][layout-type = 'mix-navigation'][is-small-window = 'false'] {
-    .sider-scrollbar {
-        scrollbar-color: var(--lihua-scrollbar-thumb-color);
-    }
-}
 
 /**
     input 框前缀图标颜色
