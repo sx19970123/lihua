@@ -1,18 +1,17 @@
-package com.lihua.strategy.attachment;
+package com.lihua.attachment.strategy;
 
-import com.lihua.common.config.LihuaConfig;
-import com.lihua.common.enums.SysBaseEnum;
-import com.lihua.common.exception.FileException;
+import com.lihua.attachment.config.AttachmentConfig;
+import com.lihua.attachment.enums.AttachmentEnum;
+import com.lihua.attachment.utils.FileUtils;
+import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.common.utils.crypt.AesUtils;
 import com.lihua.common.utils.date.DateUtils;
-import com.lihua.common.utils.file.FileUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
@@ -32,7 +31,7 @@ import java.util.stream.Stream;
 public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
 
     @Resource
-    private LihuaConfig lihuaConfig;
+    private AttachmentConfig attachmentConfig;
 
     private String TEMPORARY_PATH;
 
@@ -62,7 +61,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
             // 没有找到对应附件
             return new ArrayList<>();
         } catch (IOException e) {
-            throw new FileException("获取分片临时附件出错");
+            throw new AttachmentException("获取分片临时附件出错");
         }
     }
 
@@ -79,7 +78,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
         // 校验临时文件数量
         try (Stream<Path> temporaryListStream = Files.list(temporaryPath)) {
             if (temporaryListStream.count() != total) {
-                throw new FileException("附件合并失败，缺少数据项");
+                throw new AttachmentException("附件合并失败，缺少数据项");
             }
         }
 
@@ -99,7 +98,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
             Files.delete(temporaryPath);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new FileException("附件合并失败");
+            throw new AttachmentException("附件合并失败");
         }
     }
 
@@ -115,7 +114,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
         // 附件路径和过期时间
         String params = fullFilePath + "::" + expirationTime;
         // 对链接参数进行加密
-        String key = AesUtils.encrypt(params, SysBaseEnum.ATTACHMENT_URL_KEY.getValue());
+        String key = AesUtils.encrypt(params, AttachmentEnum.ATTACHMENT_URL_KEY.getValue());
         // 返回附件url后缀
         return "/system/attachment/storage/download?key=" + URLEncoder.encode(key, StandardCharsets.UTF_8) + "&originName=" + URLEncoder.encode(originName, StandardCharsets.UTF_8);
     }
@@ -124,18 +123,18 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     public InputStream download(String fullFilePath) {
         try {
             // 路径检查
-            if (FileUtils.checkPath(fullFilePath, lihuaConfig.getUploadFilePath())) {
+            if (FileUtils.checkPath(fullFilePath, attachmentConfig.getUploadFilePath())) {
                 return Files.newInputStream(Path.of(fullFilePath));
             }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        throw new FileException("获取附件失败");
+        throw new AttachmentException("获取附件失败");
     }
 
     // 项目启动时将TEMPORARY_PATH初始化
     @PostConstruct
     void initTemporaryPath() {
-        TEMPORARY_PATH = lihuaConfig.getUploadFilePath() + "temporary/";
+        TEMPORARY_PATH = attachmentConfig.getUploadFilePath() + "temporary/";
     }
 }

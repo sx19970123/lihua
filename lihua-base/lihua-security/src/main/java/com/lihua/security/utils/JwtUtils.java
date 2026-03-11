@@ -2,7 +2,7 @@ package com.lihua.security.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.lihua.common.enums.SysBaseEnum;
+import com.lihua.security.enums.TokenEnum;
 
 /**
  * 简单 JWT 加密解密工具类
@@ -16,7 +16,7 @@ public class JwtUtils {
         return JWT
                 .create()
                 .withAudience(key)
-                .sign(Algorithm.HMAC256(SysBaseEnum.JWT_TOKEN_SECRET.getValue()));
+                .sign(Algorithm.HMAC256(TokenEnum.JWT_TOKEN_SECRET.getValue()));
     }
 
     /**
@@ -34,7 +34,7 @@ public class JwtUtils {
      */
     public static void verify(String jwtToken) {
         JWT
-        .require(Algorithm.HMAC256(SysBaseEnum.JWT_TOKEN_SECRET.getValue()))
+        .require(Algorithm.HMAC256(TokenEnum.JWT_TOKEN_SECRET.getValue()))
         .build()
         .verify(jwtToken);
     }

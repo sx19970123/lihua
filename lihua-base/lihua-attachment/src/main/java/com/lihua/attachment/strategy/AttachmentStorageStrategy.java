@@ -1,7 +1,6 @@
-package com.lihua.strategy.attachment;
+package com.lihua.attachment.strategy;
 
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.InputStream;
 import java.util.List;
 

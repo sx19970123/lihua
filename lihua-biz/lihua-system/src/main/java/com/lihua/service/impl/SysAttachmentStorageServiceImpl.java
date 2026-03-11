@@ -3,24 +3,24 @@ package com.lihua.service.impl;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lihua.attachment.config.AttachmentConfig;
+import com.lihua.attachment.enums.AttachmentEnum;
+import com.lihua.attachment.exception.AttachmentException;
+import com.lihua.attachment.model.AttachmentResponse;
+import com.lihua.attachment.strategy.AttachmentStorageStrategy;
+import com.lihua.attachment.utils.FileUtils;
+import com.lihua.attachment.utils.UrlFileUtils;
 import com.lihua.redis.cache.RedisCache;
-import com.lihua.common.config.LihuaConfig;
 import com.lihua.entity.SysAttachment;
 import com.lihua.redis.enums.RedisKeyPrefixEnum;
-import com.lihua.common.enums.SysBaseEnum;
-import com.lihua.common.exception.FileException;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.mapper.SysAttachmentMapper;
 import com.lihua.model.vo.SysAttachmentChunkVO;
 import com.lihua.model.vo.SysAttachmentUrlVO;
-import com.lihua.common.model.response.response.ApiResponse;
 import com.lihua.service.SysAttachmentStorageService;
-import com.lihua.strategy.attachment.AttachmentStorageStrategy;
 import com.lihua.common.utils.crypt.AesUtils;
 import com.lihua.common.utils.date.DateUtils;
-import com.lihua.common.utils.file.FileUtils;
-import com.lihua.common.utils.file.UrlFileUtils;
 import jakarta.annotation.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -50,7 +50,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     private RedisCache redisCache;
 
     @Resource
-    private LihuaConfig lihuaConfig;
+    private AttachmentConfig attachmentConfig;
 
     // 可以通过url下载的附件后缀
     private static final List<String> UPLOADED_URL_SUFFIX = List.of("jpg", "jpeg", "png", "gif");
@@ -75,7 +75,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         if (exists) {
             return true;
         }
-        throw new FileException("服务器附件与数据库记录不符，服务器无该附件");
+        throw new AttachmentException("服务器附件与数据库记录不符，服务器无该附件");
     }
 
     @Override
@@ -115,7 +115,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         } catch (Exception e) {
             sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
             saveAttachment(sysAttachment);
-            throw new FileException("附件上传失败");
+            throw new AttachmentException("附件上传失败");
         }
     }
 
@@ -152,7 +152,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                     .filter(suffix -> StringUtils.hasText(multipartFile.getOriginalFilename()) && multipartFile.getOriginalFilename().toLowerCase().endsWith(suffix))
                     .toList().isEmpty();
             if (isEmpty) {
-                throw new FileException("附件类型不在UPLOADED_URL_SUFFIX定义中，不进行上传");
+                throw new AttachmentException("附件类型不在UPLOADED_URL_SUFFIX定义中，不进行上传");
             }
 
             // 附件上传
@@ -173,7 +173,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
             saveAttachment(sysAttachment);
             // 异常返回原url
-            throw new FileException(sysAttachment.getUrl());
+            throw new AttachmentException(sysAttachment.getUrl());
         }
     }
 
@@ -196,7 +196,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
     @Override
     public SysAttachmentChunkVO chunksUploadAttachmentStart(SysAttachment sysAttachment) {
-        String path = lihuaConfig.getUploadFilePath() + FileUtils.generateUUIDFileName(sysAttachment.getOriginalName());
+        String path = attachmentConfig.getUploadFilePath() + FileUtils.generateUUIDFileName(sysAttachment.getOriginalName());
         sysAttachment.setStatus("2").setPath(path);
         try {
             // 获取附件id
@@ -209,7 +209,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             log.error(e.getMessage(), e);
             sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
             saveAttachment(sysAttachment);
-            throw new FileException(e.getMessage());
+            throw new AttachmentException(e.getMessage());
         }
     }
 
@@ -240,7 +240,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         } catch (Exception e) {
             sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
             saveAttachment(sysAttachment);
-            throw new FileException("附件合并失败");
+            throw new AttachmentException("附件合并失败");
         } finally {
             // 删除redis缓存
             redisCache.delete(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId);
@@ -273,7 +273,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     @Override
     public String getAttachmentURL(String path, String originalName, Integer expireTime) {
         AttachmentStorageStrategy strategy = getStrategy();
-        return strategy.getDownloadURL(path, originalName, expireTime != null && expireTime != 0 ? expireTime : lihuaConfig.getFileDownloadExpireTime());
+        return strategy.getDownloadURL(path, originalName, expireTime != null && expireTime != 0 ? expireTime : attachmentConfig.getFileDownloadExpireTime());
     }
 
     @Override
@@ -282,32 +282,32 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         SysAttachment sysAttachment = lambdaQuery()
                 .select(SysAttachment::getPath, SysAttachment::getOriginalName, SysAttachment::getSize)
                 .eq(SysAttachment::getId, id)
-                .in(SysAttachment::getBusinessCode, lihuaConfig.getUploadPublicBusinessCode())
+                .in(SysAttachment::getBusinessCode, attachmentConfig.getUploadPublicBusinessCode())
                 .one();
 
         if (sysAttachment == null) {
-            throw new FileException("请求资源不存在");
+            throw new AttachmentException("请求资源不存在");
         }
 
         AttachmentStorageStrategy strategy = getStrategy();
         InputStream inputStream = strategy.download(sysAttachment.getPath());
         // 返回下载file和原附件名
-        return ApiResponse.success(inputStream, StringUtils.hasText(fileName) ? fileName : sysAttachment.getOriginalName(), sysAttachment.getSize());
+        return AttachmentResponse.success(inputStream, StringUtils.hasText(fileName) ? fileName : sysAttachment.getOriginalName(), sysAttachment.getSize());
     }
 
     @Override
     public ResponseEntity<StreamingResponseBody> localDownload(String key, String originName) {
-        if (!"LOCAL".equals(lihuaConfig.getUploadFileModel())) {
-            throw new FileException("存储模式不受支持");
+        if (!"LOCAL".equals(attachmentConfig.getUploadFileModel())) {
+            throw new AttachmentException("存储模式不受支持");
         }
         String params;
         try {
             // 解密数据
             String decode = URLDecoder.decode(URLEncoder.encode(key, StandardCharsets.UTF_8), StandardCharsets.UTF_8);
-            params = AesUtils.decryptToString(decode, SysBaseEnum.ATTACHMENT_URL_KEY.getValue());
+            params = AesUtils.decryptToString(decode, AttachmentEnum.ATTACHMENT_URL_KEY.getValue());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new FileException();
+            throw new AttachmentException();
         }
 
         // 附件路径::过期时间
@@ -318,25 +318,17 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
         // 当前时间戳大于过期时间，表示链接已过期
         if (DateUtils.nowTimeStamp() > Long.parseLong(expirationTime)) {
-            throw new FileException("当前链接已失效");
+            throw new AttachmentException("当前链接已失效");
         }
 
         String filePath = splitParams[0];
 
         // 校验路径
-        if (FileUtils.checkPath(filePath, lihuaConfig.getUploadFilePath())) {
-            return ApiResponse.success(new File(filePath), originName);
+        if (FileUtils.checkPath(filePath, attachmentConfig.getUploadFilePath())) {
+            return AttachmentResponse.success(new File(filePath), originName);
         }
 
-        throw new FileException("下载失败，路径不匹配");
-    }
-
-    @Override
-    public ResponseEntity<StreamingResponseBody> exportDownload(String path, String fileName) {
-        if (FileUtils.checkPath(path, lihuaConfig.getExportFilePath())) {
-            return ApiResponse.success(new File(path), fileName, true);
-        }
-        throw new FileException("下载失败，路径不匹配");
+        throw new AttachmentException("下载失败，路径不匹配");
     }
 
     // 附件上传方法
@@ -345,7 +337,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         // 获取新的附件名称
         String uuidFileName = FileUtils.generateUUIDFileName(file.getOriginalFilename());
         // 通过指定路径拼接附件全路径
-        String fullFilePath = Paths.get(lihuaConfig.getUploadFilePath(), businessCode, uuidFileName).toString();
+        String fullFilePath = Paths.get(attachmentConfig.getUploadFilePath(), businessCode, uuidFileName).toString();
         // 附件上传
         strategy.uploadFile(file, fullFilePath);
         return fullFilePath;
@@ -356,7 +348,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         sysAttachment
                 .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
                 .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
-                .setStorageLocation(lihuaConfig.getUploadFileModel())
+                .setStorageLocation(attachmentConfig.getUploadFileModel())
                 .setClientType(LoginUserContext.getClientType());
         // 保存附件信息
         saveOrUpdate(sysAttachment);
@@ -368,7 +360,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     protected List<String> batchSaveAttachment(List<SysAttachment> sysAttachmentList) {
         String clientType = LoginUserContext.getClientType();
         String userId = LoginUserContext.getUserId();
-        String uploadFileModel = lihuaConfig.getUploadFileModel();
+        String uploadFileModel = attachmentConfig.getUploadFileModel();
 
         sysAttachmentList.forEach(sysAttachment -> sysAttachment
                 .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
@@ -386,7 +378,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         if (!StringUtils.hasText(fullFilePath)) {
             List<SysAttachment> list = lambdaQuery().select(SysAttachment::getPath).eq(SysAttachment::getUploadId, uploadId).list();
             if (list.isEmpty()) {
-                throw new FileException("获取分片路径失败");
+                throw new AttachmentException("获取分片路径失败");
             }
             fullFilePath = list.get(0).getPath();
             redisCache.setCacheObject(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, fullFilePath);
@@ -420,7 +412,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
     // 获取 AttachmentStorageStrategy 对应实现
     private AttachmentStorageStrategy getStrategy() {
-        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(lihuaConfig.getUploadFileModel());
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(attachmentConfig.getUploadFileModel());
         if (attachmentStorageStrategy == null) {
             log.error("获取附件实现策略失败，请检查uploadFileModel策略配置，可选参数" + attachmentStorageStrategyMap.keySet());
             throw new ServiceException("获取附件实现策略失败");

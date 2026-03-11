@@ -114,12 +114,4 @@ public interface SysAttachmentStorageService {
      * @return 附件
      */
     ResponseEntity<StreamingResponseBody> publicDownload(String id, String fileName);
-
-    /**
-     * 附件导出下载
-     * @param path 导出附件路径
-     * @param fileName 附件名称
-     * @return 附件
-     */
-    ResponseEntity<StreamingResponseBody> exportDownload(String path, String fileName);
 }

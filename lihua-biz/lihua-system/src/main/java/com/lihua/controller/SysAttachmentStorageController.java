@@ -13,7 +13,6 @@ import com.lihua.service.SysAttachmentStorageService;
 import com.lihua.common.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -116,11 +115,5 @@ public class SysAttachmentStorageController extends ApiResponseController {
     @Log(description = "附件下载（公开）", type = LogTypeEnum.DOWNLOAD)
     public ResponseEntity<StreamingResponseBody> publicDownload(@PathVariable("id") String id, String fileName) {
         return sysAttachmentStorageService.publicDownload(id, fileName);
-    }
-
-    @GetMapping("download/e")
-    @Log(description = "附件下载（导出）", type = LogTypeEnum.DOWNLOAD)
-    public ResponseEntity<StreamingResponseBody> exportDownload(@NotNull(message = "导出附件路径为空") String path, String fileName) {
-        return sysAttachmentStorageService.exportDownload(path, fileName);
     }
 }

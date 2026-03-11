@@ -1,8 +1,8 @@
-package com.lihua.common.utils.file;
+package com.lihua.attachment.utils;
 
-import com.lihua.common.exception.FileException;
 //import inet.ipaddr.IPAddress;
 //import inet.ipaddr.IPAddressString;
+import com.lihua.attachment.exception.AttachmentException;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -43,7 +43,7 @@ public class UrlFileUtils {
     public static String upload(String url) {
         // 判断url是否合法
         if (!StringUtils.hasText(url)) {
-            throw new FileException("附件URL不存在");
+            throw new AttachmentException("附件URL不存在");
         }
         MultipartFile multipartFile = urlToMultipartFile(url);
         return FileUtils.upload(multipartFile);
@@ -60,7 +60,7 @@ public class UrlFileUtils {
             uri = new URL(url);
         } catch (MalformedURLException e) {
             log.error(e.getMessage(), e);
-            throw new FileException("读取URL失败");
+            throw new AttachmentException("读取URL失败");
         }
         // 检查 url 是否正确
         // checkUrlSafely(uri);
@@ -79,7 +79,7 @@ public class UrlFileUtils {
             contentType = connection.getContentType();
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            throw new FileException("读取URL失败");
+            throw new AttachmentException("读取URL失败");
         }
 
         // 获取缓存字节
@@ -94,7 +94,7 @@ public class UrlFileUtils {
             cachedBytes = baos.toByteArray();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new FileException("读取URL失败");
+            throw new AttachmentException("读取URL失败");
         }
 
         final URL finalUrl = uri;

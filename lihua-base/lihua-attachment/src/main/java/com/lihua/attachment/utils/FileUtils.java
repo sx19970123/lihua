@@ -1,9 +1,9 @@
-package com.lihua.common.utils.file;
+package com.lihua.attachment.utils;
 
-import com.lihua.common.attachment.AttachmentStreamAndInfoModel;
-import com.lihua.common.config.LihuaConfig;
+import com.lihua.attachment.config.AttachmentConfig;
+import com.lihua.attachment.model.AttachmentStreamAndInfoModel;
 import com.lihua.common.enums.ResultCodeEnum;
-import com.lihua.common.exception.FileException;
+import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.common.utils.spring.SpringUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -34,7 +33,7 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 public class FileUtils {
 
-    private static final LihuaConfig lihuaConfig = SpringUtils.getBean(LihuaConfig.class);
+    private static final AttachmentConfig attachmentConfig = SpringUtils.getBean(AttachmentConfig.class);
 
     private static final Map<String, Path> map = new ConcurrentHashMap<>();
 
@@ -56,7 +55,7 @@ public class FileUtils {
         try {
             return upload(file.getInputStream(), fullFilePath);
         } catch (IOException e) {
-            throw new FileException("附件上传异常");
+            throw new AttachmentException("附件上传异常");
         }
     }
 
@@ -90,7 +89,7 @@ public class FileUtils {
             Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            throw new FileException("保存附件失败");
+            throw new AttachmentException("保存附件失败");
         }
         return fullFilePath;
     }
@@ -133,14 +132,14 @@ public class FileUtils {
      */
     public static ResponseEntity<StreamingResponseBody> download(File file, String fileName, boolean autoDelete) {
         if (file == null || !file.exists()) {
-            throw new FileException(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
+            throw new AttachmentException(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
         }
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             return download(fileInputStream, StringUtils.hasText(fileName) ? fileName : file.getName(), String.valueOf(file.length()), autoDelete ? file : null);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
-            throw new FileException(e.getMessage());
+            throw new AttachmentException(e.getMessage());
         }
     }
 
@@ -149,7 +148,7 @@ public class FileUtils {
      */
     public static ResponseEntity<StreamingResponseBody> download(List<AttachmentStreamAndInfoModel> fileAndNameList) {
         if (fileAndNameList == null || fileAndNameList.isEmpty()) {
-            throw new FileException("附件集合为空");
+            throw new AttachmentException("附件集合为空");
         }
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -173,7 +172,7 @@ public class FileUtils {
             return download(inputStreamResource.getInputStream(), fileAndNameList.get(0).getOriginName() + "等" + fileAndNameList.size() + "个附件.zip", size != 0 ? String.valueOf(size) : null,null);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            throw new FileException(e.getMessage());
+            throw new AttachmentException(e.getMessage());
         }
     }
 
@@ -190,7 +189,7 @@ public class FileUtils {
      */
     private static ResponseEntity<StreamingResponseBody> download(InputStream inputStream, String fileName, String size, File deleteFile) {
         if (!StringUtils.hasText(fileName)) {
-            throw new FileException("请指定下载附件的名称");
+            throw new AttachmentException("请指定下载附件的名称");
         }
         fileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
         StreamingResponseBody stream = out -> {
@@ -202,7 +201,7 @@ public class FileUtils {
                 }
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
-                throw new FileException(e.getMessage());
+                throw new AttachmentException(e.getMessage());
             } finally {
                 try {
                     inputStream.close();
@@ -277,7 +276,7 @@ public class FileUtils {
             Files.delete(path);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            throw new FileException("附件 " + path + " 删除失败");
+            throw new AttachmentException("附件 " + path + " 删除失败");
         }
     }
 
@@ -354,6 +353,6 @@ public class FileUtils {
     // 生成附件路径，与附件名拼接
     private static String generateFilePath(String fileName) {
         // 业务编码为空时直接拼接日期和附件名
-        return Paths.get(lihuaConfig.getUploadFilePath(), fileName).toString();
+        return Paths.get(attachmentConfig.getUploadFilePath(), fileName).toString();
     }
 }

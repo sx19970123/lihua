@@ -1,7 +1,6 @@
-package com.lihua.common.attachment;
+package com.lihua.attachment.model;
 
 import lombok.Data;
-
 import java.io.InputStream;
 
 /**
