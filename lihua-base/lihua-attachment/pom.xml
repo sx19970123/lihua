@@ -17,6 +17,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        <!--    阿里云oss    -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.18.5</version>
+        </dependency>
+
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-common</artifactId>
