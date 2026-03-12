@@ -2,12 +2,12 @@ package com.lihua.attachment.strategy;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.*;
+import com.lihua.attachment.exception.AttachmentException;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,10 +32,8 @@ public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
     public void uploadFile(MultipartFile file, String fullFilePath) {
         try (InputStream inputStream = file.getInputStream()) {
             ossClient.putObject(bucketName, fullFilePath, inputStream);
-            log.info("文件上传成功: {}", fullFilePath);
         } catch (Exception e) {
-            log.error("文件上传失败: {}", fullFilePath, e);
-            throw new RuntimeException("OSS 文件上传失败", e);
+            throw new AttachmentException("OSS 文件上传失败");
         }
     }
 
@@ -66,7 +64,7 @@ public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
         return ossClient.listParts(listPartsRequest)
                 .getParts()
                 .stream()
-                .map(p -> p.getPartNumber())
+                .map(PartSummary::getPartNumber)
                 .toList();
     }
 
@@ -84,10 +82,8 @@ public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
             uploadPartRequest.setPartSize(file.getSize());
             uploadPartRequest.setPartNumber(index);
             ossClient.uploadPart(uploadPartRequest);
-            log.info("分片上传成功: {} partNumber={}", fullFilePath, index);
         } catch (Exception e) {
-            log.error("分片上传失败: {} partNumber={}", fullFilePath, index, e);
-            throw new RuntimeException("OSS 分片上传失败", e);
+            throw new AttachmentException("OSS 分片上传失败");
         }
     }
 
@@ -114,11 +110,9 @@ public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
                     bucketName, fullFilePath, uploadId, partETags
             );
 
-            CompleteMultipartUploadResult result = ossClient.completeMultipartUpload(completeRequest);
-            log.info("分片合并完成: {}, ETag: {}", fullFilePath, result.getETag());
+            ossClient.completeMultipartUpload(completeRequest);
         } catch (Exception e) {
-            log.error("分片合并失败: {}", fullFilePath, e);
-            throw new RuntimeException("OSS 分片合并失败", e);
+            throw new AttachmentException("OSS 分片合并失败");
         }
     }
 
@@ -129,10 +123,8 @@ public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
     public void delete(String fullFilePath) {
         try {
             ossClient.deleteObject(bucketName, fullFilePath);
-            log.info("文件删除成功: {}", fullFilePath);
         } catch (Exception e) {
-            log.error("文件删除失败: {}", fullFilePath, e);
-            throw new RuntimeException("OSS 删除文件失败", e);
+            throw new AttachmentException("OSS 删除文件失败");
         }
     }
 
@@ -154,8 +146,7 @@ public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
         try {
             return ossClient.getObject(bucketName, fullFilePath).getObjectContent();
         } catch (Exception e) {
-            log.error("文件下载失败: {}", fullFilePath, e);
-            throw new RuntimeException("OSS 文件下载失败", e);
+            throw new AttachmentException("OSS 文件下载失败");
         }
     }
 }
