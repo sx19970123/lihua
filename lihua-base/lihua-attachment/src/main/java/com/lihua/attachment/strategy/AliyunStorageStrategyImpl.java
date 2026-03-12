@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component("ALIYUN-OSS")
@@ -144,10 +143,6 @@ public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
     public String getDownloadURL(String fullFilePath, String originName, int expiryInMinutes) {
         Date expiration = new Date(System.currentTimeMillis() + expiryInMinutes * 60L * 1000L);
         URL url = ossClient.generatePresignedUrl(bucketName, fullFilePath, expiration);
-        if (originName != null && !originName.isEmpty()) {
-            // 可以通过 query 参数指定下载时的文件名
-            return url.toString() + "&response-content-disposition=attachment;filename=" + originName;
-        }
         return url.toString();
     }
 

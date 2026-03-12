@@ -146,7 +146,12 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
     @Override
     public SysAttachmentChunkVO chunksUploadAttachmentStart(SysAttachment sysAttachment) {
-        String path = attachmentConfig.getUploadFilePath() + FileUtils.generateUUIDFileName(sysAttachment.getOriginalName());
+        String path = Paths.get(
+                attachmentConfig.getUploadFilePath(),
+                sysAttachment.getBusinessCode(),
+                FileUtils.generateUUIDFileName(sysAttachment.getOriginalName())
+        ).toString();
+        path = path.replace("\\", "/");
         sysAttachment.setStatus("2").setPath(path);
         try {
             // 获取附件id
@@ -290,6 +295,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         String uuidFileName = FileUtils.generateUUIDFileName(file.getOriginalFilename());
         // 通过指定路径拼接附件全路径
         String fullFilePath = Paths.get(attachmentConfig.getUploadFilePath(), businessCode, uuidFileName).toString();
+        fullFilePath = fullFilePath.replace("\\", "/");
         // 附件上传
         strategy.uploadFile(file, fullFilePath);
         return fullFilePath;
