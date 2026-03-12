@@ -74,12 +74,11 @@ import {useUserStore} from "@/stores/user";
 import {message, Modal} from 'ant-design-vue';
 import settings from "@/settings";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
-import {cloneDeep} from 'lodash-es'
+import {cloneDeep, debounce} from 'lodash-es'
 import {useThemeStore} from "@/stores/theme.ts";
 import {ResponseError} from "@/api/global/Type.ts";
 import {deleteFromBusiness, publicUpload} from "@/api/system/attachment/AttachmentStorage.ts";
 import {v4 as uuidv4} from "uuid";
-
 const themeStore = useThemeStore()
 const userStore = useUserStore()
 // 双向绑定值
@@ -313,16 +312,19 @@ const showConfirm = () => {
   });
 };
 
+// 拖动窗口防抖
+const debounceChangeWith = debounce(handleWindowWith, 300)
+
 // 组件创建完成后获取抽屉展开宽度
 onMounted(() => {
-  window.addEventListener('resize', handleWindowWith)
+  window.addEventListener('resize', debounceChangeWith)
 })
 // 组件销毁后删除监听
 onUnmounted(() => {
   if (updatedData.url) {
     URL.revokeObjectURL(updatedData?.url)
   }
-  window.removeEventListener('resize', handleWindowWith)
+  window.removeEventListener('resize', debounceChangeWith)
 })
 
 </script>
