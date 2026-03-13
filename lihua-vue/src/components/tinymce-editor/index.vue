@@ -17,23 +17,21 @@ import Editor from '@tinymce/tinymce-vue'
 import {useThemeStore} from "@/stores/theme.ts";
 import {v4 as uuidv4} from "uuid";
 import {useRoute} from "vue-router";
-import {publicUpload, upload} from "@/api/system/attachment/AttachmentStorage.ts";
+import {publicUpload} from "@/api/system/attachment/AttachmentStorage.ts";
 import type {SysAttachmentUrl} from "@/api/system/attachment/type/SysAttachmentUrl.ts";
 import {message} from "ant-design-vue";
-import {ResponseError} from "@/api/global/Type.ts";
+import {attachmentUrl} from "@/utils/AttachmentUrl.ts";
 const themeStore = useThemeStore();
 const router = useRoute()
 // 上传默认大小
 const defaultSize = 1024 * 1024 * 2
-const {modelValue, autoDownloadPasteImg = true, height = '50vh', attachmentURLPrefix = "origin", businessCode, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
+const {modelValue, autoDownloadPasteImg = true, height = '50vh', businessCode, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
   // 双向绑定
   modelValue?: string,
   // 编辑器高度
   height?: string | number,
   // 自动下载剪贴板中的图片
   autoDownloadPasteImg?: boolean,
-  // 保存附件前缀
-  attachmentURLPrefix?: "baseURL" | "origin",
   // 业务编码
   businessCode?: string,
   // 图片后缀及最大尺寸
@@ -52,9 +50,6 @@ const emits = defineEmits(['update:modelValue'])
 // 附件业务编码
 const bCode = businessCode ?? router.name?.toString()
 
-// 附件上传后保存前缀（/prod-api 或 http://xxx:xx/prod-api）
-const url = import.meta.env.VITE_APP_BASE_API + "/system/attachment/storage/download/p?fullPath="
-const fileDownloadBaseURL = attachmentURLPrefix === "baseURL" ? url : window.location.origin + url
 // 切换主题重新加载组件
 const editKey = ref<string>(uuidv4())
 // 加载中
@@ -251,7 +246,7 @@ const handleUpload = async (files: FileList | File | null, type: "file" | "image
     // 上传成功
     if (resp.code === 200) {
       return {
-        url: fileDownloadBaseURL + encodeURIComponent(resp.data),
+        url: attachmentUrl(resp.data),
         name: file.name,
       }
     } else {

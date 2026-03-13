@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
-            <version>3.18.5</version>
+            <version>${oss.version}</version>
         </dependency>
 
         <dependency>
