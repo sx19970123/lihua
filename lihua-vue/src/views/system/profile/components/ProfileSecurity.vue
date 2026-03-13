@@ -87,13 +87,7 @@ const handleFinish = async (data: passwordType) => {
     } else {
       message.error(resp.msg)
     }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
-  } finally {
+  }  finally {
     submitLoading.value = false
   }
 }

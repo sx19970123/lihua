@@ -5,8 +5,8 @@
         <a-card style="height: 100%" :body-style="{padding: '22px'}">
           <a-menu v-model:selectedKeys="selectedKeys" @click="handleChangeUserMenu" style="border: 0;width: 100%" :inlineCollapsed="themeStore.isSmallWindow">
             <a-menu-item key="Basic"> <UserOutlined /> <span>个人资料</span></a-menu-item>
-            <a-menu-item key="Security"> <SafetyCertificateOutlined /> <span>安全设置</span></a-menu-item>
-            <a-menu-item> <LockOutlined /> <span>锁屏设置</span></a-menu-item>
+            <a-menu-item key="Security"> <SafetyCertificateOutlined /> <span>登录密码</span></a-menu-item>
+            <a-menu-item key="LockScreen"> <LockOutlined /> <span>锁屏设置</span></a-menu-item>
             <a-menu-divider/>
             <a-menu-item key="Individuation"> <SkinOutlined /> <span>样式布局</span></a-menu-item>
           </a-menu>
@@ -25,6 +25,7 @@
 import Basic from './components/ProfileBasicSetting.vue'
 import Individuation from './components/ProfileIndividuation.vue'
 import ProfileSecurity from './components/ProfileSecurity.vue'
+import ProfileLockScreen from './components/ProfileLockScreen.vue'
 import {markRaw, ref} from "vue";
 import {useThemeStore} from "@/stores/theme"
 
@@ -42,6 +43,10 @@ const allComponents = ref([
   {
     name: 'Security',
     com: markRaw(ProfileSecurity)
+  },
+  {
+    name: 'LockScreen',
+    com: markRaw(ProfileLockScreen)
   }
 ])
 // 默认选中组件
