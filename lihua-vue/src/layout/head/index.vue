@@ -4,6 +4,8 @@
 <!--    菜单搜索-->
     <menu-search/>
 <!--    通知公告-->
+    <lock/>
+<!--    通知公告-->
     <notification/>
 <!--    全屏-->
     <windows-change/>
@@ -19,4 +21,5 @@ import WindowsChange from "@/layout/head/components/window-change/index.vue"
 import Notification from "@/layout/head/components/notice/index.vue"
 import DefaultDept from "@/layout/head/components/dept/index.vue"
 import MenuSearch from "@/layout/head/components/menu-search/index.vue"
+import Lock from "@/layout/head/components/lock/index.vue"
 </script>

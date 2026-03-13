@@ -36902,7 +36902,7 @@
         const translatedAriaText = editor.translate(getIframeAriaText(editor));
         const iframeBodyAriaLabel = Env.browser.isFirefox() ? '' : `aria-label="${translatedAriaText}"`;
         if (getContentSecurityPolicy(editor)) {
-            iframeHTML += '<meta http-equiv="Content-Security-Policy" content="' + getContentSecurityPolicy(editor) + '" />';
+            iframeHTML += '<meta http-equiv="Content-ProfileSecurity-Policy" content="' + getContentSecurityPolicy(editor) + '" />';
         }
         iframeHTML += '</head>' +
             `<body id="${bodyId}" class="mce-content-body ${bodyClass}" data-id="${editor.id}" ${iframeBodyAriaLabel}>` +
