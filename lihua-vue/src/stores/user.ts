@@ -12,11 +12,10 @@ import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {closeConnect} from "@/utils/WebSocket.ts";
-import {publicAttachmentDownload} from "@/api/system/attachment/AttachmentStorage.ts";
 import router from "@/router";
 import {attachmentUrl} from "@/utils/AttachmentUrl.ts";
 
-const { setToken,removeToken } = token
+const { setToken,removeToken,getToken } = token
 
 export const useUserStore = defineStore('user', {
     state: () => {
@@ -145,11 +144,9 @@ export const useUserStore = defineStore('user', {
             }
         },
         // 认证失效
-        authenticationFailure(msg: string) {
+        authenticationFailure() {
             this.clearUserInfo()
-            // 路由跳转到登录页
-            router.push({name: 'Login', state: {msg: msg}})
-            throw msg
+            router.push("/login")
         },
         /**
          * 清空用户信息

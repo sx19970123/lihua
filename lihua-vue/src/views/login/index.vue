@@ -164,15 +164,6 @@ const captcha = async () => {
   }
 }
 
-// 判断重定向回来的参数，给用户合适的提示
-// 提示信息显示完成后销毁，刷新页面时不再提示
-const handleRedirect = () => {
-  if (history.state.msg) {
-    message.error(history.state.msg)
-    history.state.msg = undefined
-  }
-}
-
 // 显示卡片
 const handleShowCard = () => {
   showCard.value = false
@@ -187,8 +178,6 @@ onMounted(() => {
   captcha()
   // 检查history.state中是否存在登录后配置
   routerCheckLoginSetting()
-  // 检查history.state中是否存在异常提示
-  handleRedirect()
   // 进入登录页的用户关闭锁屏
   screenUnlock()
 })
