@@ -151,7 +151,7 @@ const preLock = () => {
           { transform: 'translateY(-100vh)' },
           { transform: `translateY(${startLocation})` }
         ],
-        { duration: 300, easing: 'ease', fill: 'forwards' }
+        { duration: 500, easing: 'ease', fill: 'forwards' }
     )
 
     animation?.finished.then(() => {
@@ -176,7 +176,7 @@ const resetPreLock = () => {
         { transform: `translateY(calc(${startLocation} + ${offsetY.value}px))` },
         { transform: `translateY(${startLocation})` }
       ],
-      { duration: 300, easing: 'ease', fill: 'forwards' }
+      { duration: 500, easing: 'ease', fill: 'forwards' }
   )
 
   // 动画结束后执行清除操作
@@ -375,7 +375,7 @@ const initCheckPassword = () => {
     if (!checked) {
       formStatus.value.status = 'error';
       formStatus.value.msg = '密码错误';
-      nextTick(() => startShake.value = true)
+      setTimeout(() => startShake.value = true)
       return
     }
 
@@ -395,7 +395,7 @@ const initCheckPassword = () => {
     if (!password.value) {
       formStatus.value.status = 'error';
       formStatus.value.msg = '请输入密码';
-      nextTick(() => startShake.value = true)
+      setTimeout(() => startShake.value = true)
       return false
     } else {
       formStatus.value.status = 'success';
@@ -608,15 +608,17 @@ onUnmounted(() => {
 }
 
 @keyframes shake {
-  0%   { transform: translateX(0); }
-  20%  { transform: translateX(-8px); }
-  40%  { transform: translateX(8px); }
-  60%  { transform: translateX(-6px); }
-  80%  { transform: translateX(6px); }
-  100% { transform: translateX(0); }
+  0%,100% { transform: translate3d(0,0,0) rotate(0deg); }
+  15% { transform: translate3d(-10px,0,0) rotate(-1deg); }
+  30% { transform: translate3d(8px,0,0) rotate(1deg); }
+  45% { transform: translate3d(-6px,0,0) rotate(-0.8deg); }
+  60% { transform: translate3d(4px,0,0) rotate(0.6deg); }
+  75% { transform: translate3d(-2px,0,0) rotate(-0.3deg); }
+  90% { transform: translate3d(1px,0,0) rotate(0.2deg); }
 }
 
 .shake {
-  animation: shake 0.35s ease;
+  animation: shake 0.4s ease;
+  transform-origin: center;
 }
 </style>
