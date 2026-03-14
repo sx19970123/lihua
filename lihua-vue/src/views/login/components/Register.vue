@@ -63,7 +63,6 @@ import PasswordInput from "@/components/password-input/index.vue"
 import type {Rule} from "ant-design-vue/es/form";
 import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
-import {ResponseError} from "@/api/global/Type.ts";
 import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
 
 const registerLoading = ref<boolean>()
@@ -116,12 +115,7 @@ const handleCheckUsername = async (_rule: Rule, value: string) => {
         return Promise.reject(resp.msg)
       }
     } catch (e) {
-      if (e instanceof ResponseError) {
-        return Promise.reject(e.msg)
-      } else {
-        console.error(e)
-        return Promise.reject("未知异常")
-      }
+      return Promise.reject("业务异常")
     }
   }
 }
@@ -172,14 +166,12 @@ const handleRegister = async (captchaVerification: string) => {
       if (registerUsername) {
         registerUsername.value = username
       }
-      setTimeout(() => {
-        handleChangeComponent('login')
-        registerLoading.value = false
-      },1000)
+
+      handleChangeComponent('login')
     } else {
       message.error(resp.msg)
     }
-  } catch (e) {
+  } finally {
     registerLoading.value = false
   }
 }
