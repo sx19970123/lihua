@@ -54,6 +54,7 @@ import UserLogin from "@/views/login/components/Login.vue"
 import {message} from "ant-design-vue";
 import {ResponseError} from "@/api/global/Type.ts";
 import settings from "@/settings"
+import {screenUnlock} from "@/utils/LockScreenUtils.ts";
 
 // 显示登录卡片
 const showCard = ref<boolean>(false)
@@ -188,6 +189,8 @@ onMounted(() => {
   routerCheckLoginSetting()
   // 检查history.state中是否存在异常提示
   handleRedirect()
+  // 进入登录页的用户关闭锁屏
+  screenUnlock()
 })
 </script>
 

@@ -89,7 +89,14 @@ import UserAvatar from "@/components/user-avatar/index.vue";
 import {useUserStore} from "@/stores/user.ts";
 import dayjs from "dayjs";
 import {useRouter} from "vue-router";
-import {checkPassword, getLockScreenInfo} from "@/utils/LockScreenUtils.ts";
+import {
+  checkPassword,
+  getLockKey,
+  getLockScreenInfo,
+  isLocked,
+  screenLock, screenLogout,
+  screenUnlock
+} from "@/utils/LockScreenUtils.ts";
 import {message} from "ant-design-vue";
 import {throttle} from 'lodash-es'
 import {disableOverflowY, enableOverflowY} from "@/utils/Scrollbar.ts";
@@ -99,7 +106,6 @@ const router = useRouter()
 
 // 启始锁屏位置
 const startLocation = '-50vh'
-const lockedStorageKey = 'lihua-lock'
 
 const nowDate = ref<string>()
 const nowWeek = ref<string>()
@@ -114,7 +120,7 @@ const openLock = ref<boolean>(false)
 // 锁屏元素
 const lockMaskRef = useTemplateRef<HTMLDivElement>("lockMaskRef")
 // 锁屏状态，关闭锁屏、重置锁屏、可锁屏、已锁屏
-const status = ref<'close' | 'reset' | 'lockable' | 'locked'>('reset')
+const status = ref<'close' | 'reset' | 'lockable' | 'locked' | 'autoLock'>('reset')
 
 let rafId: number | null = null
 let latestClientY = 0
@@ -167,7 +173,7 @@ const resetPreLock = () => {
   // 播放关闭动画
   const animation = element?.animate(
       [
-        { transform: `translateY(calc(${startLocation} + ${offsetY}px))` },
+        { transform: `translateY(calc(${startLocation} + ${offsetY.value}px))` },
         { transform: `translateY(${startLocation})` }
       ],
       { duration: 300, easing: 'ease', fill: 'forwards' }
@@ -188,7 +194,7 @@ const unlock = () => {
   // 播放关闭动画
   const animation = element?.animate(
       [
-        { transform: `translateY(calc(${startLocation} + ${offsetY}px))` },
+        { transform: `translateY(calc(${startLocation} + ${offsetY.value}px))` },
         { transform: 'translateY(-100vh)' }
       ],
       { duration: 300, easing: 'ease', fill: 'forwards' }
@@ -196,11 +202,7 @@ const unlock = () => {
 
   // 动画结束后执行清除操作
   animation?.finished.finally(() => {
-    // 清除监听
-    element?.removeEventListener("pointerdown", moveStart)
-    window.removeEventListener("pointerup", moveEnd)
-    window?.removeEventListener("pointermove", moving)
-    localStorage.setItem(lockedStorageKey, "unlocked")
+    screenUnlock()
     clear()
     animation?.cancel()
     openLock.value = false
@@ -214,21 +216,25 @@ const lock = () => {
   // 播放关闭动画
   const animate = element?.animate(
       [
-        { transform: `translateY(calc(${startLocation} + ${offsetY}px))` },
+        { transform: `translateY(calc(${startLocation} + ${offsetY.value}px))` },
         { transform: 'translateY(0)' }
       ],
       { duration: 300, easing: 'ease', fill: 'forwards' }
   )
   animate?.finished.finally(() => {
+    // 清除监听
+    element?.removeEventListener("pointerdown", moveStart)
+    window.removeEventListener("pointerup", moveEnd)
+    window?.removeEventListener("pointermove", moving)
+
     status.value = 'locked'
-    localStorage.setItem(lockedStorageKey, "locked")
+    screenLock()
   })
 }
 
 // 检查锁定
 const checkLock = () => {
-  const status = localStorage.getItem(lockedStorageKey)
-  if (status === "locked") {
+  if (isLocked()) {
     autoLock()
   }
 }
@@ -240,6 +246,7 @@ const autoLock = () => {
     return
   }
 
+  status.value = 'autoLock'
   openLock.value = true
   nextTick(() => lock())
 }
@@ -247,7 +254,7 @@ const autoLock = () => {
 // 同步上锁解锁
 const syncLock = () => {
   window.addEventListener('storage', (e) => {
-    if (e.key !== lockedStorageKey) return
+    if (e.key !== getLockKey()) return
 
     // 锁定
     if (e.newValue === 'locked') {
@@ -400,7 +407,7 @@ const initCheckPassword = () => {
   // 退出登录
   const handleLogout = async () => {
     userStore.handleLogout().finally(() => {
-      localStorage.setItem(lockedStorageKey, "logout")
+      screenLogout()
       unlock()
       router.push('/login')
     })
