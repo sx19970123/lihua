@@ -60,9 +60,10 @@
 
             <!-- 提示 -->
             <div class="tips">
-              <a-typography type="secondary">
+              <a-typography-text type="secondary">
                 <div v-if="status === 'reset'">
-                  <DoubleRightOutlined style="transform: rotate(90deg);"/> 向下滑动锁定
+                  <DoubleRightOutlined style="transform: rotate(90deg);"/>
+                  向下滑动锁定
                 </div>
                 <div v-if="status === 'close'">
                   松开鼠标，取消锁屏
@@ -70,7 +71,7 @@
                 <div v-if="status === 'lockable'">
                   松开鼠标，锁定屏幕
                 </div>
-              </a-typography>
+              </a-typography-text>
             </div>
           </div>
         </div>

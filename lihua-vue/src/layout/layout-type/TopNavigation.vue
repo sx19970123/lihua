@@ -1,5 +1,5 @@
 <template>
-  <a-layout>
+  <a-layout class="layout">
     <div class="top-navigation-header">
       <transition :name="themeStore.routeTransition" mode="out-in">
         <a-layout-header class="top-navigation-layout-header"
@@ -23,12 +23,17 @@
       <!--内容-->
       <div id="lihua-layout-content" class="layout-content" />
     </a-layout-content>
+    <!--页脚-->
+    <a-layout-footer class="layout-footer" v-if="themeStore.$state.showFooter">
+      <page-footer/>
+    </a-layout-footer>
   </a-layout>
 </template>
 
 <script setup lang="ts">
 import ViewTabs from "@/layout/view-tabs/index.vue";
-import Side from "@/layout/sider/index.vue"
+import Side from "@/layout/sider/index.vue";
+import PageFooter from "@/layout/footer/index.vue";
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/theme";
 

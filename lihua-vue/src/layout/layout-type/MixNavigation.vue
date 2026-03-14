@@ -1,62 +1,64 @@
 <template>
-  <div>
-    <a-layout style="min-height: 100vh">
-      <!--   左侧导航   -->
-      <transition :name="themeStore.routeTransition" mode="out-in" v-if="showSider">
-        <a-layout-sider :class="themeStore.siderTheme === 'light' ? 'background-glass' : ''"
-                        class="side-navigation-sider"
-                        v-show="props.showLayout"
-                        :theme="themeStore.siderTheme"
-                        :width="themeStore.siderWith"
-                        v-model:collapsed="permissionStore.collapsed"
-                        collapsible
-                        breakpoint="xl"
-        >
-          <Logo class="logo" :show-title="!permissionStore.collapsed"/>
-          <!-- 侧边栏-->
-          <div class="sider sider-scrollbar">
-            <Side sider-mode="inline" :menu="subMenu" ref="sideRef"/>
-          </div>
-        </a-layout-sider>
-      </transition>
-      <!--   右侧head和content   -->
-      <a-layout>
-        <a-layout-header class="side-navigation-header background-glass">
-          <transition :name="themeStore.routeTransition" mode="out-in">
-            <a-flex class="side-navigation-header-inner"
-                    :style="{'padding-left': !showSider ? 'var(--lihua-layout-head-space)' : 0}"
-                    align="center"
-                    v-show="props.showLayout">
-              <Logo class="top-logo" :auto-color="false" v-if="!showSider"/>
-              <!--顶部导航-->
-              <Side is-mix-top
-                    class="top-sider"
-                    :style="{'margin-left': !showSider ? 'var(--lihua-layout-head-space)' : 0}"
-                    :menu="cloneDeep(permissionStore.menuRouters).map((item: MenuItemGroupType) => {delete item.children; return item})"
-                    sider-theme="light"
-                    sider-mode="horizontal"
-                    @route-change="(keys: string[]) => loadSideMenu(keys[0], false)"
-                    @mounted="(keys: string[]) => loadSideMenu(keys[0], false)"
-                    @menu-click="(key) => loadSideMenu(key, true)"
-              />
-              <!-- 右侧头部-->
-              <div id="lihua-layout-head"/>
-            </a-flex>
-          </transition>
-          <view-tabs v-if="themeStore.showViewTabs"/>
-        </a-layout-header>
-        <a-layout-content>
-          <!--内容-->
-          <div id="lihua-layout-content" class="layout-content" />
-        </a-layout-content>
-      </a-layout>
+  <a-layout class="layout">
+    <!--   左侧导航   -->
+    <transition :name="themeStore.routeTransition" mode="out-in" v-if="showSider">
+      <a-layout-sider :class="themeStore.siderTheme === 'light' ? 'background-glass' : ''"
+                      class="side-navigation-sider"
+                      v-show="props.showLayout"
+                      :theme="themeStore.siderTheme"
+                      :width="themeStore.siderWith"
+                      v-model:collapsed="permissionStore.collapsed"
+                      collapsible
+                      breakpoint="xl"
+      >
+        <Logo class="logo" :show-title="!permissionStore.collapsed"/>
+        <!-- 侧边栏-->
+        <div class="sider sider-scrollbar">
+          <Side sider-mode="inline" :menu="subMenu" ref="sideRef"/>
+        </div>
+      </a-layout-sider>
+    </transition>
+    <!--   右侧head和content   -->
+    <a-layout>
+      <a-layout-header class="side-navigation-header background-glass">
+        <transition :name="themeStore.routeTransition" mode="out-in">
+          <a-flex class="side-navigation-header-inner"
+                  :style="{'padding-left': !showSider ? 'var(--lihua-layout-head-space)' : 0}"
+                  align="center"
+                  v-show="props.showLayout">
+            <Logo class="top-logo" :auto-color="false" v-if="!showSider"/>
+            <!--顶部导航-->
+            <Side is-mix-top
+                  class="top-sider"
+                  :style="{'margin-left': !showSider ? 'var(--lihua-layout-head-space)' : 0}"
+                  :menu="cloneDeep(permissionStore.menuRouters).map((item: MenuItemGroupType) => {delete item.children; return item})"
+                  sider-theme="light"
+                  sider-mode="horizontal"
+                  @route-change="(keys: string[]) => loadSideMenu(keys[0], false)"
+                  @mounted="(keys: string[]) => loadSideMenu(keys[0], false)"
+                  @menu-click="(key) => loadSideMenu(key, true)"
+            />
+            <!-- 右侧头部-->
+            <div id="lihua-layout-head"/>
+          </a-flex>
+        </transition>
+        <view-tabs v-if="themeStore.showViewTabs"/>
+      </a-layout-header>
+      <a-layout-content>
+        <!--内容-->
+        <div id="lihua-layout-content" class="layout-content" />
+      </a-layout-content>
+      <!--页脚-->
+      <a-layout-footer class="layout-footer" v-if="themeStore.$state.showFooter">
+        <page-footer/>
+      </a-layout-footer>
     </a-layout>
-  </div>
+  </a-layout>
 </template>
 
 <script setup lang="ts">
 import ViewTabs from "@/layout/view-tabs/index.vue";
-import Side from "@/layout/sider/index.vue"
+import Side from "@/layout/sider/index.vue";
 import Logo from "@/layout/logo/index.vue";
 import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
@@ -64,6 +66,7 @@ import {cloneDeep} from 'lodash-es'
 import type {ItemType} from "ant-design-vue";
 import type {MenuItemGroupType} from "ant-design-vue/es/menu/src/hooks/useItems";
 import {computed, nextTick, ref, useTemplateRef} from "vue";
+import PageFooter from "@/layout/footer/index.vue";
 
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()

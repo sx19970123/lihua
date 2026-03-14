@@ -57,6 +57,11 @@ export const useThemeStore = defineStore('theme',{
         const showViewTabs: boolean = settings.showViewTabs
 
         /**
+         * 显示页脚
+         */
+        const showFooter: boolean = settings.showFooter
+
+        /**
          * 侧边颜色 light / dark
           */
         const siderTheme: string = settings.siderTheme
@@ -102,6 +107,7 @@ export const useThemeStore = defineStore('theme',{
             layoutType,
             componentSize,
             showViewTabs,
+            showFooter,
             isDarkTheme,
             followSystemTheme,
             colorPrimary,

@@ -1,8 +1,19 @@
+/* layout */
+.layout {
+    min-height: 100vh
+}
+
 /* content */
 .layout-content {
     padding: var(--lihua-space-base);
     overflow-x: hidden;
 }
+
+/* 页脚 */
+.layout-footer {
+    text-align: center
+}
+
 /**
    顶部head样式变化
    暗色导航、非小窗口、顶部导航和混合导航，图标颜色变化

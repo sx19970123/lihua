@@ -93,6 +93,11 @@ export default {
     showViewTabs: true,
 
     /**
+     * 是否显示页脚
+     */
+    showFooter: true,
+
+    /**
      * 侧边颜色 light / dark
      */
     siderTheme: 'light',

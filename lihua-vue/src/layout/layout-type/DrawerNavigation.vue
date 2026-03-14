@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-layout style="min-height: 100vh">
+    <a-layout class="layout">
       <!--   左侧导航   -->
       <transition :name="themeStore.routeTransition" mode="out-in">
         <a-layout-sider class="drawer-navigation-sider"
@@ -39,6 +39,10 @@
           <!--内容-->
           <div id="lihua-layout-content" class="layout-content" />
         </a-layout-content>
+        <!--页脚-->
+        <a-layout-footer class="layout-footer" v-if="themeStore.$state.showFooter">
+          <page-footer/>
+        </a-layout-footer>
       </a-layout>
     </a-layout>
     <!--  小屏菜单遮罩  -->
@@ -48,13 +52,14 @@
 
 <script setup lang="ts">
 import ViewTabs from "@/layout/view-tabs/index.vue";
-import Side from "@/layout/sider/index.vue"
+import Side from "@/layout/sider/index.vue";
 import Logo from "@/layout/logo/index.vue";
 import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
 import HeadCollapsed from "@/layout/head/components/collapsed/index.vue";
 import Mask from "@/components/mask/index.vue";
 import {computed} from "vue";
+import PageFooter from "@/layout/footer/index.vue";
 
 const themeStore = useThemeStore()
 const permissionStore = usePermissionStore()
