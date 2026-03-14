@@ -61,18 +61,16 @@
       </a-flex>
     </div>
     <!--    验证码-->
-    <tianai-captcha ref="tianaiCaptchaRef" @success="login"/>
+    <tianai-captcha ref="tianaiCaptchaRef" @success="userLogin"/>
   </div>
 </template>
 
 <script setup lang="ts">
-import {useUserStore} from "@/stores/user"
-import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
 import {inject, onMounted, reactive, type Ref, ref, useTemplateRef} from "vue";
 import token from "@/utils/Token.ts"
 import {init} from "@/utils/AppInit.ts";
-import {enableRegister, getLoginSetting} from "@/api/system/login/Login.ts";
+import {enableRegister, getLoginSetting, login} from "@/api/system/login/Login.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import {useRouter} from 'vue-router'
@@ -87,7 +85,6 @@ const {enableCaptcha, errorMessage=""} = defineProps<{
 const emit = defineEmits(["changeComponent","showLoginSetting"])
 
 const router = useRouter()
-const userStore = useUserStore()
 const loginLoading = ref<boolean>()
 const rememberMe = ref<boolean>(token.enableRememberMe())
 const verifyRef = useTemplateRef<InstanceType<typeof TianaiCaptcha>>("tianaiCaptchaRef")
@@ -118,7 +115,7 @@ const handleFinish = () => {
   if (enableCaptcha) {
     showVerify()
   } else {
-    login('loginCaptcha')
+    userLogin('loginCaptcha')
   }
 }
 
@@ -145,37 +142,43 @@ const clearRegisterUsername = () => {
 }
 
 // 登录请求
-const login = async (captchaVerification: string) => {
+const userLogin = async (captchaVerification: string) => {
   loginLoading.value = true
   try {
-    const {code, msg}: ResponseType<string> = await userStore.login(loginForm.username, loginForm.password, captchaVerification);
-    if (code === 200) {
-      if (rememberMe.value) {
-        token.rememberMe(loginForm.username, loginForm.password)
+    // 登录
+    const resp = await login(loginForm.username, loginForm.password, captchaVerification);
+    if (resp.code !== 200) {
+      message.error(resp.msg)
+      return
+    }
+    // 设置token
+    token.setToken(resp.data);
+    // 记住我设置
+    if (rememberMe.value) {
+      token.rememberMe(loginForm.username, loginForm.password)
+    } else {
+      token.forgetMe()
+    }
+
+    // 清除注册用户名
+    clearRegisterUsername()
+
+    // 检查是否需要登录后设置
+    const loginSettingResp = await getLoginSetting()
+    if (loginSettingResp.code === 200) {
+      // 登录后设置返回data为空，表示无需进行额外设置，进入首页
+      if (loginSettingResp.data.length === 0) {
+        message.success("登录成功")
+        await router.push("/index");
       } else {
-        token.forgetMe()
-      }
-      // 清除注册用户名
-      clearRegisterUsername()
-      // 检查是否需要登录后设置
-      const loginSettingResp = await getLoginSetting()
-      if (loginSettingResp.code === 200) {
-        // 登录后设置返回data为空，表示无需进行额外设置，进入首页
-        if (loginSettingResp.data.length === 0) {
-          message.success("登录成功")
-          await router.push("/index");
-        } else {
-          await init()
-          // 开始登录后配置
-          emit("showLoginSetting", loginSettingResp.data)
-        }
-      } else {
-        message.error(loginSettingResp.msg)
+        await init()
+        // 开始登录后配置
+        emit("showLoginSetting", loginSettingResp.data)
       }
     } else {
-      message.error(msg);
-      loginLoading.value = false
+      message.error(loginSettingResp.msg)
     }
+
   } finally {
     token.removeLoginSettingResult()
     loginLoading.value = false

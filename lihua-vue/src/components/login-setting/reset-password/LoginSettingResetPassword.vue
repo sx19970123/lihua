@@ -44,6 +44,7 @@ import {useUserStore} from "@/stores/user.ts";
 import {type FormInstance, message} from "ant-design-vue";
 import PasswordInput from "@/components/password-input/index.vue";
 import {ResponseError} from "@/api/global/Type.ts";
+import {updatePassword} from "@/api/system/profile/Profile.ts";
 
 const resetPasswordRef = useTemplateRef<FormInstance>("resetPasswordRef")
 const userStore = useUserStore()
@@ -97,7 +98,7 @@ const handleNext = async (loading:Ref<boolean>) => {
   await resetPasswordRef.value?.validate()
   loading.value = true
   try {
-    const resp = await userStore.updatePassword(password.oldPassword,password.newPassword,password.confirmPassword)
+    const resp = await updatePassword(password.oldPassword,password.newPassword,password.confirmPassword)
     loading.value = false
     if (resp.code === 200) {
       emits('next', loading.value)

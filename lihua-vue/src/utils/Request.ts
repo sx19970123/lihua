@@ -40,7 +40,8 @@ service.interceptors.response.use((resp) => {
     // token 失效或解析异常，清空用户信息返回登录
     if (data.code === 401) {
         const userStore = useUserStore()
-        userStore.authenticationFailure()
+        userStore.authenticationFailure(data.msg)
+        throw data.msg
     }
     // 配置的非法ip访问
     if (data.code === 407) {

@@ -34,6 +34,7 @@ import {useUserStore} from "@/stores/user.ts";
 import {message} from "ant-design-vue";
 import PasswordInput from "@/components/password-input/index.vue";
 import {ResponseError} from "@/api/global/Type.ts";
+import {updatePassword} from "@/api/system/profile/Profile.ts";
 
 const userStore = useUserStore()
 const submitLoading = ref<boolean>(false)
@@ -81,7 +82,7 @@ const rules: Record<string, Rule[]> = {
 const handleFinish = async (data: passwordType) => {
   submitLoading.value = true
   try {
-    const resp = await userStore.updatePassword(data.oldPassword, data.newPassword, data.confirmPassword)
+    const resp = await updatePassword(data.oldPassword, data.newPassword, data.confirmPassword)
     if (resp.code === 200) {
       message.success("修改成功")
     } else {
