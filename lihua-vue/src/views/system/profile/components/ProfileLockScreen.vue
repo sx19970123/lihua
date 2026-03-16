@@ -13,7 +13,7 @@
         <a-switch v-model:checked="formData.autoLock"></a-switch>
       </a-form-item>
       <a-form-item label="时长（分钟）" v-if="formData.autoLock">
-        <a-input-number v-model:value="formData.timeout" class="form-item-width" placeholder="请输入无操作时长"></a-input-number>
+        <a-input-number v-model:value="formData.timeout" :min="1" :precision="0" class="form-item-width" placeholder="请输入自动锁屏时长"/>
       </a-form-item>
       <a-form-item label="锁屏密码" name="password">
         <a-input-password v-model:value="formData.password" class="form-item-width" placeholder="请输入锁屏密码"/>
@@ -49,7 +49,7 @@ type LockScreenType = {
   confirmPassword?: string
 }
 
-const formData = ref<LockScreenType>({autoLock: false, timeout: 0})
+const formData = ref<LockScreenType>({autoLock: false, timeout: 10})
 
 
 /**
