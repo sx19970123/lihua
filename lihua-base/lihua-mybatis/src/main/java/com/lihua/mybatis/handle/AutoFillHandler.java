@@ -1,6 +1,7 @@
 package com.lihua.mybatis.handle;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.lihua.common.utils.date.DateUtils;
 import com.lihua.security.manager.LoginUserContext;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ public class AutoFillHandler implements MetaObjectHandler {
             this.strictInsertFill(metaObject, "createId", String.class, LoginUserContext.getUserId());
         }
         // 创建时间
-        this.strictInsertFill(metaObject, "createTime", LocalDateTime.class, LocalDateTime.now());
+        this.strictInsertFill(metaObject, "createTime", LocalDateTime.class, DateUtils.now());
         // 逻辑删除
         this.strictInsertFill(metaObject, "delFlag", String.class, "0");
     }
@@ -32,6 +33,6 @@ public class AutoFillHandler implements MetaObjectHandler {
             this.strictUpdateFill(metaObject, "updateId", String.class, LoginUserContext.getUserId());
         }
         // 更新时间
-        this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class, LocalDateTime.now());
+        this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class, DateUtils.now());
     }
 }

@@ -1,5 +1,6 @@
 package com.lihua.strategy.saveuserregister;
 
+import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysUserPost;
 import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.service.SysUserPostService;
@@ -21,7 +22,7 @@ public class SavePostStrategyImpl implements SaveRegisterUserAssociatedStrategy 
         // 用户岗位关联表
         List<String> postIds = signInSetting.getPostIds();
         if (!postIds.isEmpty()) {
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = DateUtils.now();
             List<SysUserPost> sysUserPosts  = new ArrayList<>(postIds.size());
             postIds.forEach(postId -> sysUserPosts.add(new SysUserPost(userId, postId, now, null)));
             sysUserPostService.save(sysUserPosts);

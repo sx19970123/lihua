@@ -1,5 +1,6 @@
 package com.lihua.strategy.saveuserregister;
 
+import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysUserDept;
 import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.service.SysUserDeptService;
@@ -20,7 +21,7 @@ public class SaveDeptStrategyImpl implements SaveRegisterUserAssociatedStrategy 
         // 用户部门关联表
         List<String> deptIds = signInSetting.getDeptIds();
         if (!deptIds.isEmpty()) {
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = DateUtils.now();
             String defaultDeptId = signInSetting.getDefaultDeptId();
             List<SysUserDept> sysUserDeptList  = new ArrayList<>(deptIds.size());
             deptIds.forEach(deptId -> sysUserDeptList.add(new SysUserDept(userId, deptId, now, null, deptId.equals(defaultDeptId) ? "0" : "1")));

@@ -110,7 +110,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     @Override
     public String getDownloadURL(String fullFilePath, String originName, int expiryInMinutes) {
         // 获取过期时间
-        long expirationTime = DateUtils.timeStamp(LocalDateTime.now().plusMinutes(expiryInMinutes));
+        long expirationTime = DateUtils.timeStamp(DateUtils.now().plusMinutes(expiryInMinutes));
         // 附件路径和过期时间
         String params = fullFilePath + "::" + expirationTime;
         // 对链接参数进行加密

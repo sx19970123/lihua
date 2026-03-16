@@ -1,5 +1,6 @@
 package com.lihua.strategy.saveuserregister;
 
+import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysUserRole;
 import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.service.SysUserRoleService;
@@ -21,7 +22,7 @@ public class SaveRoleStrategyImpl implements SaveRegisterUserAssociatedStrategy 
         List<String> roleIds = signInSetting.getRoleIds();
         // 用户角色关联表
         if (!roleIds.isEmpty()) {
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = DateUtils.now();
             List<SysUserRole> sysUserRoles = new ArrayList<>(roleIds.size());
             roleIds.forEach(roleId -> sysUserRoles.add(new SysUserRole(userId, roleId, now, null)));
             sysUserRoleService.save(sysUserRoles);
