@@ -1,6 +1,5 @@
 package com.lihua.service;
 
-
 import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUser;
 

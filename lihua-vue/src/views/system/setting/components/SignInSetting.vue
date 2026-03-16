@@ -86,7 +86,7 @@
 import {useThemeStore} from "@/stores/theme.ts";
 import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
-import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
+import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
 import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
@@ -99,6 +99,7 @@ import SelectableCard from "@/components/selectable-card/index.vue";
 import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
 import {message} from "ant-design-vue";
 import {isAdmin} from "@/utils/Auth.ts";
+import {save} from "@/api/system/setting/Setting.ts";
 
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
@@ -108,9 +109,7 @@ const submitLoading = ref<boolean>(false);
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {
   const resp = await settingStore.getSetting<SignIn>(componentName);
-  if (!resp) {
-    await settingStore.save(setting.value)
-  } else {
+  if (resp) {
     await initDept()
     settingForm.value = resp
     await loadPost()
@@ -127,10 +126,9 @@ const settingForm = ref<SignIn>({
 })
 
 // 保存到数据库中的对象
-const setting = ref<SystemSetting>({
-  settingName: '自助注册',
-  settingComponentName: componentName,
-  settingJson: JSON.stringify(settingForm.value)
+const setting = ref<SysSetting>({
+  settingKey: componentName,
+  json: JSON.stringify(settingForm.value)
 })
 
 // 角色
@@ -370,10 +368,11 @@ const handleSubmit = async () => {
       return
     }
   }
-  submitLoading.value = true
-  setting.value.settingJson = JSON.stringify(settingForm.value)
+
   try {
-    const resp = await settingStore.save(setting.value)
+    submitLoading.value = true
+    setting.value.json = JSON.stringify(settingForm.value)
+    const resp = await save(setting.value)
 
     if (resp.code === 200) {
       message.success(resp.msg)

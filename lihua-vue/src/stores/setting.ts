@@ -1,55 +1,56 @@
 import {defineStore} from "pinia";
-import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
-import {insert, querySysSettingByComponentName} from "@/api/system/setting/Setting.ts";
+import {getSysSettingByKey} from "@/api/system/setting/Setting.ts";
 import {message} from "ant-design-vue";
-import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 
 export const useSettingStore = defineStore('setting', {
     state:() => {
-        // 配置集合
-        const map = new Map();
+
+        /**
+         * 是否启用验证码
+         */
+        const enableCaptcha: boolean = true;
+
+        /**
+         * 是否启用灰色模式
+         */
+        const enableGrayMode: boolean = false;
+
+        /**
+         * 是否启用自助注册
+         */
+        const enableSignIn: boolean = false;
+
+
         return {
-            map
+            enableCaptcha,
+            enableGrayMode,
+            enableSignIn,
         }
     },
     actions: {
-        // 保存系统配置
-        save(setting: SystemSetting):Promise<ResponseType<String>> {
-            return new Promise((resolve, reject) => {
-                insert(setting).then(resp => {
-                    this.map.delete(setting.settingComponentName)
-                    resolve(resp as ResponseType<String>)
-                }).catch((e) => {
-                    reject(e)
-                })
-            })
-        },
-        // 根据组件名称获取配置信息
-        async getSetting<T>(componentName?: string) {
-            if (!componentName) {
-                return undefined;
+        /**
+         * 获取配置信息
+         */
+        async getSettingInfo<T> (key?: string)  {
+            if (!key) {
+                return
             }
-            // 从state中获取配置信息
-            if (this.map.has(componentName)) {
-                return JSON.parse(this.map.get(componentName)) as T
-            }
-            try {
-                const resp = await querySysSettingByComponentName(componentName)
-                if (resp.code === 200) {
-                    // 判断返回的settingJson是否存在
-                    const data = resp.data?.settingJson
-                    if (data) {
-                        this.map.set(componentName, data)
-                        return JSON.parse(data) as T
-                    }
-                    return undefined;
-                } else {
-                    message.error(resp.msg)
-                    return undefined
+
+            // 获取系统配置
+            const resp = await getSysSettingByKey(key)
+            if (resp.code === 200) {
+                const setting = resp.data
+                if (!setting) {
+                    return
                 }
-            } catch (e) {
-                console.error(e)
-                return undefined
+
+                return {
+                    id: setting.id,
+                    settingKey: key,
+                    data: JSON.parse(setting.json) as T
+                }
+            } else {
+                message.error(resp.msg)
             }
         }
     }

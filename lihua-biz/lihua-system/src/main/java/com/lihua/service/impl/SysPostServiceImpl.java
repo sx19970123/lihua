@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihua.entity.SysPost;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.security.manager.LoginUserContext;
-import com.lihua.mapper.SysDeptMapper;
 import com.lihua.mapper.SysPostMapper;
 import com.lihua.model.dto.SysPostDTO;
 import com.lihua.model.vo.SysPostVO;
@@ -17,9 +16,7 @@ import com.lihua.common.utils.date.DateUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,15 +24,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     @Resource
     private SysPostMapper sysPostMapper;
-
-    @Resource
-    private SysDeptMapper sysDeptMapper;
-
-    // 校验手机号码
-    private final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^1[3-9]\\d{9}$");
-    // 校验邮箱
-    private final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
-
 
     @Override
     public IPage<SysPostVO> queryPage(SysPostDTO dto) {

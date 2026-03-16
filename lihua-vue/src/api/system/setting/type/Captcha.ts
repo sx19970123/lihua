@@ -1,4 +1,4 @@
-export interface VerificationCode {
+export interface Captcha {
     /**
      * 是否启用
      */

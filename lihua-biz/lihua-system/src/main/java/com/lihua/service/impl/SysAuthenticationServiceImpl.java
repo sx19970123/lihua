@@ -1,6 +1,7 @@
 package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.lihua.enums.SysSettingEnum;
 import com.lihua.redis.cache.RedisCache;
 import com.lihua.entity.SysSetting;
 import com.lihua.entity.SysUser;
@@ -162,12 +163,12 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Override
     public void checkSameAccount(String token) {
         // 获取最大登录用户配置信息
-        SysSetting sameAccountLoginSetting = sysSettingService.getSysSettingByComponentName("SameAccountLoginSetting");
+        SysSetting sameAccountLoginSetting = sysSettingService.getSysSettingByKey(SysSettingEnum.SAME_ACCOUNT_LOGIN.getKey());
 
         if (sameAccountLoginSetting == null) {
             return;
         }
-        SysSettingDTO.SameAccountLoginSetting setting = JsonUtils.toObject(sameAccountLoginSetting.getSettingJson(), SysSettingDTO.SameAccountLoginSetting.class);
+        SysSettingDTO.SameAccountLoginSetting setting = JsonUtils.toObject(sameAccountLoginSetting.getJson(), SysSettingDTO.SameAccountLoginSetting.class);
         // 是否启用
         if (!setting.isEnable()) {
             return;

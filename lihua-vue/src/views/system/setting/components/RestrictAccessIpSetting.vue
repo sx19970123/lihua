@@ -66,11 +66,12 @@
 <script setup lang="ts">
 import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
-import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
+import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
 import type {RestrictAccessIp} from "@/api/system/setting/type/RestrictAccessIp.ts";
 import {message} from "ant-design-vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {isAdmin} from "@/utils/Auth.ts";
+import {save} from "@/api/system/setting/Setting.ts";
 
 const themeStore = useThemeStore()
 const settingStore = useSettingStore();
@@ -80,9 +81,7 @@ const submitLoading = ref<boolean>(false);
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {
   const resp = await settingStore.getSetting<RestrictAccessIp>(componentName);
-  if (!resp) {
-    await settingStore.save(setting.value)
-  } else {
+  if (resp) {
     settingForm.value = resp
   }
 }
@@ -94,10 +93,9 @@ const settingForm = ref<RestrictAccessIp>({
 })
 
 // 保存到数据库中的对象
-const setting = ref<SystemSetting>({
-  settingName: '限制访问IP',
-  settingComponentName: componentName,
-  settingJson: JSON.stringify(settingForm.value)
+const setting = ref<SysSetting>({
+  settingKey: componentName,
+  json: JSON.stringify(settingForm.value)
 })
 
 // 添加ip
@@ -120,16 +118,17 @@ const handleFinish = async () => {
   if (ipSet.size !== ipList.length) {
     flag = true
   }
-  settingForm.value.ipList = [... ipSet]
-  setting.value.settingJson = JSON.stringify(settingForm.value)
+
   try {
-    const resp = await settingStore.save(setting.value)
+    settingForm.value.ipList = [... ipSet]
+    setting.value.json = JSON.stringify(settingForm.value)
+    const resp = await save(setting.value)
     if (resp.code === 200) {
       if (flag){
         message.warn("已合并重复ip")
       }
       message.success(resp.msg)
-      init()
+      await init()
     } else {
       message.error(resp.msg)
     }

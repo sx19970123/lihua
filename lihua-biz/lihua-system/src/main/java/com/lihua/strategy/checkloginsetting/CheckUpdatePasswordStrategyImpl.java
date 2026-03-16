@@ -1,6 +1,7 @@
 package com.lihua.strategy.checkloginsetting;
 
 import com.lihua.entity.SysSetting;
+import com.lihua.enums.SysSettingEnum;
 import com.lihua.security.model.LoginUser;
 import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.service.SysSettingService;
@@ -34,8 +35,12 @@ public class CheckUpdatePasswordStrategyImpl implements CheckLoginSettingStrateg
         }
 
         // 获取定期修改密码配置
-        SysSetting intervalUpdatePasswordSetting = sysSettingService.getSysSettingByComponentName("IntervalUpdatePasswordSetting");
-        SysSettingDTO.IntervalUpdatePasswordSetting updatePasswordSetting = JsonUtils.toObject(intervalUpdatePasswordSetting.getSettingJson(), SysSettingDTO.IntervalUpdatePasswordSetting.class);
+        SysSetting intervalUpdatePasswordSetting = sysSettingService.getSysSettingByKey(SysSettingEnum.INTERVAL_UPDATE_PASSWORD.getKey());
+        if (intervalUpdatePasswordSetting == null) {
+            return null;
+        }
+
+        SysSettingDTO.IntervalUpdatePasswordSetting updatePasswordSetting = JsonUtils.toObject(intervalUpdatePasswordSetting.getJson(), SysSettingDTO.IntervalUpdatePasswordSetting.class);
 
         boolean enable = updatePasswordSetting.isEnable();
 

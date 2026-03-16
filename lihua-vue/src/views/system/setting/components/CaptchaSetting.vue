@@ -17,36 +17,38 @@
 </template>
 
 <script setup lang="ts">
-import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
-import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
-import type {VerificationCode} from "@/api/system/setting/type/VerificationCode.ts";
+import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
+import type {Captcha} from "@/api/system/setting/type/Captcha.ts";
 import {message} from "ant-design-vue";
 import {isAdmin} from "@/utils/Auth.ts";
+import {save} from "@/api/system/setting/Setting.ts";
+import {useSettingStore} from "@/stores/setting.ts";
+const settingStore = useSettingStore();
 
 const componentName = getCurrentInstance()?.type.__name
-const settingStore = useSettingStore();
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {
-  const resp = await settingStore.getSetting<VerificationCode>(componentName);
-  if (!resp) {
-    await settingStore.save(setting.value)
-  } else {
-    settingForm.value = resp
+  if (!componentName) {
+    return;
+  }
+
+  const settingData = await settingStore.getSettingInfo<Captcha>(componentName);
+  if (settingData) {
+    settingForm.value = settingData.data
+    setting.value.id = settingData.id
   }
 }
 
-
 // 默认密码配置表单对象
-const settingForm = ref<VerificationCode>({
+const settingForm = ref<Captcha>({
   enable: true
 })
 
 // 保存到数据库中的对象
-const setting = ref<SystemSetting>({
-  settingName: '验证码',
-  settingComponentName: componentName,
-  settingJson: JSON.stringify(settingForm.value)
+const setting = ref<SysSetting>({
+  settingKey: componentName,
+  json: JSON.stringify(settingForm.value)
 })
 
 // 处理保存设置
@@ -57,8 +59,8 @@ const handleChangeSwitch = async () => {
     return
   }
 
-  setting.value.settingJson = JSON.stringify(settingForm.value)
-  const resp = await settingStore.save(setting.value)
+  setting.value.json = JSON.stringify(settingForm.value)
+  const resp = await save(setting.value)
   if (resp.code === 200) {
     message.success(resp.msg)
   } else {

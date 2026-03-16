@@ -6,14 +6,14 @@ import com.lihua.model.dto.SysSettingDTO;
 public interface SysSettingService {
 
     /**
-     * 插入设置
+     * 保存设置
      */
-    String insert(SysSetting sysSetting);
+    String saveSetting(SysSetting sysSetting);
 
     /**
      * 根据组件名称获取配置
      */
-    SysSetting getSysSettingByComponentName(String componentName);
+    SysSetting getSysSettingByKey(String key);
 
     /**
      * 是否启用验证码
@@ -28,9 +28,4 @@ public interface SysSettingService {
      * 获取默认密码（已解密）
      */
     String getDefaultPassword();
-
-    /**
-     * 缓存ip黑名单
-     */
-    void cacheIpBlackList();
 }

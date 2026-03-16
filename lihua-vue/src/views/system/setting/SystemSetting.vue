@@ -5,7 +5,7 @@
         <a-card style="height: 100%">
           <a-menu v-model:selected-keys="selectKeys"
                   style="border: 0;width: 100%"
-                  :inlineCollapsed="collapsed"
+                  :inlineCollapsed="themeStore.isSmallWindow"
                   @click="handleChangeSetting"
           >
             <a-menu-item-group title="账号">
@@ -27,7 +27,7 @@
                 <IdcardOutlined />
                 <span>自助注册</span>
               </a-menu-item>
-              <a-menu-item key="VerificationCodeSetting">
+              <a-menu-item key="CaptchaSetting">
                 <RobotOutlined />
                 <span>验证码</span>
               </a-menu-item>
@@ -59,13 +59,13 @@ import DefaultPasswordSetting from "@/views/system/setting/components/DefaultPas
 import GrayModelSetting from "@/views/system/setting/components/GrayModelSetting.vue";
 import SignInSetting from "@/views/system/setting/components/SignInSetting.vue";
 import UpdatePasswordSetting from "@/views/system/setting/components/IntervalUpdatePasswordSetting.vue";
-import VerificationCodeSetting from "@/views/system/setting/components/VerificationCodeSetting.vue";
+import CaptchaSetting from "@/views/system/setting/components/CaptchaSetting.vue";
 import RestrictAccessIpSetting from "@/views/system/setting/components/RestrictAccessIpSetting.vue";
 import SameAccountLoginSetting from "@/views/system/setting/components/SameAccountLoginSetting.vue";
-import {markRaw, onMounted, onUnmounted, ref} from "vue";
+import {markRaw, ref} from "vue";
 
 const themeStore = useThemeStore()
-const collapsed = ref<boolean>(false)
+
 const allComponents = ref([
   {
     name: 'DefaultPasswordSetting',
@@ -84,8 +84,8 @@ const allComponents = ref([
     com: markRaw(UpdatePasswordSetting)
   },
   {
-    name: 'VerificationCodeSetting',
-    com: markRaw(VerificationCodeSetting)
+    name: 'CaptchaSetting',
+    com: markRaw(CaptchaSetting)
   },
   {
     name: 'RestrictAccessIpSetting',
@@ -105,18 +105,4 @@ const handleChangeSetting = ({key}: {key: string}) => {
   const target = allComponents.value.filter(item => item.name === key)[0]
   activeComponent.value = target.com
 }
-// 处理屏幕宽度变化
-const handleChangeInnerWidth = () => {
-  const width = window.innerWidth
-  collapsed.value = width <= 992;
-}
-
-onMounted(() => {
-  handleChangeInnerWidth()
-  window.addEventListener('resize', handleChangeInnerWidth)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', handleChangeInnerWidth)
-})
 </script>

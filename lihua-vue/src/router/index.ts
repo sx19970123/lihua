@@ -78,7 +78,7 @@ const routers = [
       {
         path: '/setting',
         component: () => import("@/views/system/setting/SystemSetting.vue"),
-        name: 'SystemSetting',
+        name: 'SysSetting',
         meta: {
           label: "系统设置",
           icon: "SettingOutlined",

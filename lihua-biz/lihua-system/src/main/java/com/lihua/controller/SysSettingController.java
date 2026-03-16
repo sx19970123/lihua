@@ -21,11 +21,11 @@ public class SysSettingController extends ApiResponseController {
     @PostMapping
     @Log(description = "保存系统配置", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> insert(@RequestBody SysSetting sysSetting) {
-        return success(sysSettingService.insert(sysSetting));
+        return success(sysSettingService.saveSetting(sysSetting));
     }
 
-    @GetMapping("{componentName}")
-    public ApiResponseModel<SysSetting> querySysSettingByComponentName(@PathVariable("componentName") String componentName) {
-        return success(sysSettingService.getSysSettingByComponentName(componentName));
+    @GetMapping("{key}")
+    public ApiResponseModel<SysSetting> getSysSettingByKey(@PathVariable("key") String key) {
+        return success(sysSettingService.getSysSettingByKey(key));
     }
 }

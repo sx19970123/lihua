@@ -9,7 +9,6 @@ import com.lihua.common.exception.ServiceException;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.mapper.SysRoleMapper;
 import com.lihua.model.dto.SysRoleDTO;
-import com.lihua.service.SysMenuService;
 import com.lihua.service.SysRoleService;
 import com.lihua.common.utils.date.DateUtils;
 import jakarta.annotation.Resource;
@@ -24,9 +23,6 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Resource
     private SysRoleMapper sysRoleMapper;
-
-    @Resource
-    private SysMenuService sysMenuService;
 
     @Override
     public IPage<SysRole> queryPage(SysRoleDTO sysRoleDTO) {

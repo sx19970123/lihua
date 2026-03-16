@@ -1,11 +1,10 @@
 import request from "@/utils/Request.ts";
-import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
+import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
 
 /**
- * 插入新设置
- * @param setting
+ * 保存设置
  */
-export const insert = (setting :SystemSetting) => {
+export const save = (setting :SysSetting) => {
     return request<String>({
         url: "system/setting",
         method: "POST",
@@ -16,9 +15,9 @@ export const insert = (setting :SystemSetting) => {
 /**
  * 根据组件名称获取配置
  */
-export const querySysSettingByComponentName = (componentName: string) => {
-    return request<SystemSetting>({
-        url: "system/setting/" + componentName,
+export const getSysSettingByKey = (key: string) => {
+    return request<SysSetting>({
+        url: "system/setting/" + key,
         method: "GET",
     })
 }

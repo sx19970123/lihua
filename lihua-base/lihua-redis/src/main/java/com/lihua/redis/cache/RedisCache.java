@@ -8,7 +8,6 @@ import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.json.JsonMapper;
-
 import java.text.DecimalFormat;
 import java.time.Duration;
 import java.util.*;
@@ -77,6 +76,31 @@ public class RedisCache {
     public <T> void setCacheMapItem(String key, String mapKey, T mapValue) {
         redissonClient.getMap(key).put(mapKey, mapValue);
     }
+
+    /**
+     * 获取redis hash key 对应的 value
+     * @param key redis key
+     * @param mapKey hash key
+     * @param clazz key 对应 value 的类型
+     */
+    public <T> T getCacheMapItem(String key, String mapKey, Class<T> clazz) {
+        Object o = redissonClient.getMap(key).get(mapKey);
+        if (o == null) {
+            return null;
+        }
+
+        return jsonMapper.convertValue(o, clazz);
+    }
+
+    /**
+     * 删除 redis hash 指定的 key
+     * @param key redis key
+     * @param mapKey map对应的key
+     */
+    public void removeMapItem(String key, String mapKey) {
+        redissonClient.getMap(key).remove(mapKey);
+    }
+
 
     /**
      * 根据 key 获取基本对象

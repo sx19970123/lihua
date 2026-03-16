@@ -22,23 +22,22 @@
 <script setup lang="ts">
 import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
-import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
+import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
 import PasswordInput from "@/components/password-input/index.vue";
-import {cloneDeep} from 'lodash-es'
+import {save} from "@/api/system/setting/Setting.ts";
 
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
 const submitLoading = ref<boolean>(false);
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {
-  const resp = await settingStore.getSetting<DefaultPassword>(componentName);
-  if (!resp) {
-    await settingStore.save(setting.value)
-  } else {
-    settingForm.value = resp
+  const settingData = await settingStore.getSettingInfo<DefaultPassword>(componentName);
+  if (settingData) {
+    settingForm.value = settingData.data
+    setting.value.id = settingData.id
   }
 }
 
@@ -48,10 +47,9 @@ const settingForm = ref<DefaultPassword>({
 })
 
 // 保存到数据库中的对象
-const setting = ref<SystemSetting>({
-  settingName: '默认密码',
-  settingComponentName: componentName,
-  settingJson: JSON.stringify(settingForm.value)
+const setting = ref<SysSetting>({
+  settingKey: componentName,
+  json: JSON.stringify(settingForm.value)
 })
 
 const rules: Record<string, Rule[]> = {
@@ -62,11 +60,10 @@ const rules: Record<string, Rule[]> = {
 }
 
 const handleFinish = async () => {
-  submitLoading.value = true
-  const defaultPasswordForm: DefaultPassword = cloneDeep(settingForm.value)
-  setting.value.settingJson = JSON.stringify(defaultPasswordForm)
   try {
-    const resp = await settingStore.save(setting.value)
+    submitLoading.value = true
+    setting.value.json = JSON.stringify(settingForm.value)
+    const resp = await save(setting.value)
 
     if (resp.code === 200) {
       message.success(resp.msg)

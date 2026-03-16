@@ -3,30 +3,20 @@ package com.lihua.service.impl;
 import com.lihua.redis.cache.RedisCache;
 import com.lihua.redis.enums.RedisKeyPrefixEnum;
 import com.lihua.model.CacheMonitor;
-import com.lihua.common.model.bridge.setting.CacheBlackIp;
-import com.lihua.common.model.bridge.setting.CacheSetting;
 import com.lihua.service.MonitorCacheService;
 import com.lihua.common.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.lihua.redis.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
-import static com.lihua.redis.enums.RedisKeyPrefixEnum.SYSTEM_SETTING_REDIS_PREFIX;
 
 @Service
 public class MonitorCacheServiceImpl implements MonitorCacheService {
 
     @Resource
     private RedisCache redisCache;
-
-    @Resource
-    private ApplicationEventPublisher applicationEventPublisher;
 
 
     @Override
@@ -91,15 +81,5 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
     public void remove(String keyPrefix) {
         Set<String> keys = cacheKeys(keyPrefix);
         redisCache.delete(keys);
-
-        // 系统配置刷新缓存
-        if (keyPrefix.startsWith(SYSTEM_SETTING_REDIS_PREFIX.getValue())) {
-            applicationEventPublisher.publishEvent(new CacheSetting());
-        }
-
-        // ip黑名单刷新缓存
-        if (keyPrefix.startsWith(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue())) {
-            applicationEventPublisher.publishEvent(new CacheBlackIp());
-        }
     }
 }

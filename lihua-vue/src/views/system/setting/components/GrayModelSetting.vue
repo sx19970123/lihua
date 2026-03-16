@@ -38,31 +38,32 @@
 import {useSettingStore} from "@/stores/setting.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
-import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
+import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
 import type {GrayModel} from "@/api/system/setting/type/GrayModel.ts";
 import {message} from "ant-design-vue";
 import dayjs, {type Dayjs} from "dayjs";
 import {isAdmin} from "@/utils/Auth.ts";
+import {save} from "@/api/system/setting/Setting.ts";
 
 const themeStore = useThemeStore();
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name
 const submitLoading = ref<boolean>(false)
 const init = async () => {
-  const grayModel = await settingStore.getSetting<GrayModel>(componentName);
-  if (!grayModel) {
-    await settingStore.save(setting.value)
-  } else {
-    if (grayModel.closeTime) {
+  const settingData = await settingStore.getSettingInfo<GrayModel>(componentName);
+  if (settingData) {
+    const data = settingData.data
+    setting.value.id = settingData.id
+    if (data.closeTime) {
       // 当前时间小于指定关闭时间进行回显
-      if (dayjs() < dayjs(grayModel.closeTime)) {
-        settingForm.value = grayModel
+      if (dayjs() < dayjs(data.closeTime)) {
+        settingForm.value = data
         closeTime.value = dayjs(settingForm.value.closeTime)
       } else {
         closeTime.value = undefined
       }
     } else {
-      settingForm.value = grayModel
+      settingForm.value = data
     }
   }
 }
@@ -84,10 +85,9 @@ const settingForm = ref<GrayModel>({
 const closeTime = ref<Dayjs>()
 
 // 保存到数据库中的对象
-const setting = ref<SystemSetting>({
-  settingName: '灰色模式',
-  settingComponentName: componentName,
-  settingJson: JSON.stringify(settingForm.value)
+const setting = ref<SysSetting>({
+  settingKey: componentName,
+  json: JSON.stringify(settingForm.value)
 })
 
 // 处理开关switch
@@ -101,8 +101,8 @@ const handleChangeSwitch = async () => {
     settingForm.value.closeTime = undefined
     closeTime.value = undefined
   }
-  setting.value.settingJson = JSON.stringify(settingForm.value)
-  const resp = await settingStore.save(setting.value)
+  setting.value.json = JSON.stringify(settingForm.value)
+  const resp = await save(setting.value)
   if (resp.code === 200) {
     themeStore.enableGrayModel(settingForm.value.enable)
     message.success(resp.msg)
@@ -118,10 +118,10 @@ const handleChangeDate = (data?: Dayjs) => {
 
 // 处理选择日期时间
 const handleSubmit = async () => {
-  submitLoading.value = true
-  setting.value.settingJson = JSON.stringify(settingForm.value)
   try {
-    const resp = await settingStore.save(setting.value)
+    submitLoading.value = true
+    setting.value.json = JSON.stringify(settingForm.value)
+    const resp = await save(setting.value)
 
     if (resp.code === 200) {
       message.success(resp.msg)
