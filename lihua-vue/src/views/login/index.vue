@@ -142,7 +142,6 @@ const handleShowCard = () => {
 }
 
 onMounted(() => {
-  alert(11)
   // 默认显示login
   handleChangeComponent("login")
   // 检查history.state中是否存在登录后配置
