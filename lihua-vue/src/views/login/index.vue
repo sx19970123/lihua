@@ -22,12 +22,7 @@
           <a-card class="login-card">
             <transition name="form" mode="out-in" v-show="showCard">
               <!-- 用户登录/注册等卡片内表单在这儿通过组件形式切换 -->
-              <component :is="activeComponent"
-                         :enable-captcha="settingStore.enableCaptcha"
-                         :error-message="errorMessage"
-                         @change-component="handleChangeComponent"
-                         @show-login-setting="startLoginSetting"
-              />
+              <component :is="activeComponent" @change-component="handleChangeComponent" @show-login-setting="startLoginSetting"/>
             </transition>
           </a-card>
         </transition>
@@ -52,15 +47,12 @@ import UserRegister from "@/views/login/components/Register.vue"
 import UserLogin from "@/views/login/components/Login.vue"
 import settings from "@/settings"
 import {screenUnlock} from "@/utils/LockScreenUtils.ts";
-import {useSettingStore} from "@/stores/setting.ts";
-// 系统设置
-const settingStore = useSettingStore();
+
 // 显示登录卡片
 const showCard = ref<boolean>(false)
 // 显示左侧title
 const showTitle = ref<boolean>(false)
-// 错误信息
-const errorMessage = ref<string>()
+
 // 注册的用户数据，定义registerUsername后，注册组件通过inject接收值，并在注册成功后赋值为用户名，登录组件可获取后进行处理
 provide("registerUsername",ref<string>())
 
@@ -150,6 +142,7 @@ const handleShowCard = () => {
 }
 
 onMounted(() => {
+  alert(11)
   // 默认显示login
   handleChangeComponent("login")
   // 检查history.state中是否存在登录后配置

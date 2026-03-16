@@ -2,7 +2,7 @@
   <div>
     <div class="login-title">
       <a-typography-title :level="2">欢迎登录狸花猫</a-typography-title>
-      <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
+      <a-typography-text v-if="!settingStore.isServerConnected" type="danger">无法连接服务器</a-typography-text>
       <!--                    根据配置显示注册-->
       <div v-if="settingStore.enableSignUp">
         <a-typography-text>没有账号？</a-typography-text>
@@ -77,12 +77,6 @@ import {useRouter} from 'vue-router'
 import {useSettingStore} from "@/stores/setting.ts";
 // 系统设置
 const settingStore = useSettingStore();
-const {enableCaptcha, errorMessage=""} = defineProps<{
-  // 是否启用验证码
-  enableCaptcha: boolean,
-  // 错误信息
-  errorMessage?: string,
-}>()
 
 const emit = defineEmits(["changeComponent","showLoginSetting"])
 
@@ -114,7 +108,7 @@ const initRememberMe = () => {
 
 // 触发登录
 const handleFinish = () => {
-  if (enableCaptcha) {
+  if (settingStore.enableCaptcha) {
     showVerify()
   } else {
     userLogin('loginCaptcha')

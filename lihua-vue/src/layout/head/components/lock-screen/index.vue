@@ -68,10 +68,10 @@
                   向下滑动锁定
                 </div>
                 <div v-if="status === 'close'">
-                  松开鼠标，取消锁屏
+                  <UnlockOutlined /> 取消锁屏
                 </div>
                 <div v-if="status === 'lockable'">
-                  松开鼠标，锁定屏幕
+                  <LockOutlined /> 锁定屏幕
                 </div>
               </a-typography-text>
             </div>

@@ -10,6 +10,10 @@ import {message} from "ant-design-vue";
 
 export const useSettingStore = defineStore('setting', {
     state:() => {
+        /**
+         * 是否连接后台服务器
+         */
+        const isServerConnected: boolean = true;
 
         /**
          * 是否启用验证码
@@ -29,7 +33,8 @@ export const useSettingStore = defineStore('setting', {
         return {
             enableCaptcha,
             enableGrayMode,
-            enableSignUp
+            enableSignUp,
+            isServerConnected
         }
     },
     actions: {
@@ -57,9 +62,13 @@ export const useSettingStore = defineStore('setting', {
          * 初始化基础设置
          */
         async initBaseSetting() {
-            await this.fetchEnableGrayMode()
-            await this.fetchEnableSignUp()
-            await this.fetchEnableCaptcha()
+            try {
+                await this.fetchEnableGrayMode()
+                await this.fetchEnableSignUp()
+                await this.fetchEnableCaptcha()
+            } catch (error) {
+                this.isServerConnected = false
+            }
         },
         /**
          * 获取默认密码

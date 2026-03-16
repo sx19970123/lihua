@@ -64,11 +64,11 @@ import type {Rule} from "ant-design-vue/es/form";
 import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
 import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
-
+import {useSettingStore} from "@/stores/setting.ts";
+// 系统设置
+const settingStore = useSettingStore();
 const registerLoading = ref<boolean>()
-const {enableCaptcha} = defineProps<{
-  enableCaptcha: boolean
-}>()
+
 // 向父组件抛出切登录方法
 const emits = defineEmits(['changeComponent'])
 
@@ -139,7 +139,7 @@ const rules: Record<string, Rule[]> = {
 
 // 触发注册
 const handleFinish = () => {
-  if (enableCaptcha) {
+  if (settingStore.enableCaptcha) {
     showVerify()
   } else {
     handleRegister("registerCaptcha")
