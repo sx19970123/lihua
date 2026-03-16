@@ -1,6 +1,7 @@
 package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lihua.common.model.bridge.setting.CacheBlackIp;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.enums.SysSettingEnum;
 import com.lihua.redis.cache.RedisCache;
@@ -11,6 +12,7 @@ import com.lihua.service.SysSettingService;
 import com.lihua.common.utils.json.JsonUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -36,9 +38,9 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
         saveOrUpdate(sysSetting);
         // 删除 redis map 中对应属性
         redisCache.removeMapItem(REDIS_SETTING_KEY, sysSetting.getSettingKey());
-        // 修改黑名单相关配置时，删除黑名单缓存
+        // 修改黑名单相关配置时，重新缓存ip黑名单
         if (SysSettingEnum.RESTRICT_ACCESS_IP.getKey().equals(sysSetting.getSettingKey())) {
-            redisCache.delete(IP_BLACKLIST_KEY);
+            cacheIpBlackList(null);
         }
         return sysSetting.getSettingKey();
     }
@@ -132,7 +134,8 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
     }
 
     // 缓存ip黑名单
-    private void cacheIpBlackList() {
+    @EventListener
+    public void cacheIpBlackList(CacheBlackIp cacheBlackIp) {
         redisCache.delete(IP_BLACKLIST_KEY);
         // 系统中配置的禁止访问ip
         SysSetting restrictAccessIpSetting = getSysSettingByKey(SysSettingEnum.RESTRICT_ACCESS_IP.getKey());

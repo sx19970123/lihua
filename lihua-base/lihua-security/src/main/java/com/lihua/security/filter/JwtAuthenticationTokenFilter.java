@@ -34,9 +34,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             if (loginUser != null) {
                 PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(loginUser, null, loginUser.getPermissionList().stream().map(SimpleGrantedAuthority::new).toList());
                 // 将用户信息存入上下文
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
                 // 判断过期时间进行重新缓存
                 LoginUserManager.verifyLoginUserCache();
             }
