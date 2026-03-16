@@ -1,11 +1,13 @@
 <template>
   <div>
     <!--  锁屏按钮  -->
-    <a-button type="text" @click="preLock">
-      <template #icon>
-        <LockOutlined class="icon-default-color"/>
-      </template>
-    </a-button>
+    <a-tooltip title="锁定屏幕" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
+      <a-button type="text" @click="preLock">
+        <template #icon>
+          <LockOutlined class="icon-default-color"/>
+        </template>
+      </a-button>
+    </a-tooltip>
 
     <!--  锁屏  -->
     <Teleport v-if="openLock" to="body">
