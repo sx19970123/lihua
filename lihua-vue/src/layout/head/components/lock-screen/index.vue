@@ -176,7 +176,7 @@ const resetPreLock = () => {
         { transform: `translateY(calc(${startLocation} + ${offsetY.value}px))` },
         { transform: `translateY(${startLocation})` }
       ],
-      { duration: 500, easing: 'ease', fill: 'forwards' }
+      { duration: 300, easing: 'ease', fill: 'forwards' }
   )
 
   // 动画结束后执行清除操作
@@ -191,13 +191,13 @@ const resetPreLock = () => {
 const unlock = () => {
   enableOverflowY()
   const element = lockMaskRef.value
-  // 播放关闭动画
+  // 播放关闭动画，关闭时移动到-120vh位置，防止快速滑动时阴影闪现
   const animation = element?.animate(
       [
         { transform: `translateY(calc(${startLocation} + ${offsetY.value}px))` },
-        { transform: 'translateY(-100vh)' }
+        { transform: 'translateY(-120vh)' }
       ],
-      { duration: 300, easing: 'ease', fill: 'forwards' }
+      { duration: 400, easing: 'ease', fill: 'forwards' }
   )
 
   // 动画结束后执行清除操作
@@ -314,39 +314,37 @@ const moving = (e: MouseEvent) => {
   latestClientY = e.clientY
 
   // 如果当前帧还没执行
-  if (rafId === null) {
-    rafId = requestAnimationFrame(() => {
-      const innerHeight = window.innerHeight
+  if (rafId !== null) return
 
-      // 计算拖动距离
-      const moveY = latestClientY - startY
-      const newOffset = startOffset + moveY
+  rafId = requestAnimationFrame(() => {
+    rafId = null
 
-      // 计算状态
-      const value = (newOffset + innerHeight / 2) / innerHeight
+    const innerHeight = window.innerHeight
 
-      if (value < 0.3) {
-        status.value = 'close'
-      } else if (value < 0.7) {
-        status.value = 'reset'
-      } else {
-        status.value = 'lockable'
-      }
+    // 计算拖动距离
+    const moveY = latestClientY - startY
+    const newOffset = startOffset + moveY
 
-      // 拉到底部并且还向下拉时，不可下拉
-      if (lastY - latestClientY < 0 && value > 1) {
-        rafId = null
-        return
-      }
+    // 限制拖动范围
+    const maxOffset = innerHeight / 2
+    const offset = Math.min(newOffset, maxOffset)
 
-      // 更新位置
-      offsetY.value = newOffset
-      lastY = latestClientY
+    // 更新位置
+    offsetY.value = offset
+    lastY = latestClientY
 
-      // 重置 raf
-      rafId = null
-    })
-  }
+    // 计算当前比例
+    const value = (offset + innerHeight / 2) / innerHeight
+
+    // 更新状态
+    if (value < 0.3) {
+      status.value = 'close'
+    } else if (value < 0.7) {
+      status.value = 'reset'
+    } else {
+      status.value = 'lockable'
+    }
+  })
 }
 
 /**
