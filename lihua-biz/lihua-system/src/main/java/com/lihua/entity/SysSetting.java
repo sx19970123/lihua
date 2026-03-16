@@ -11,14 +11,9 @@ import lombok.EqualsAndHashCode;
 public class SysSetting extends BaseEntity {
 
     /**
-     * 主键
-     */
-    @TableId(type = IdType.ASSIGN_ID)
-    private String id;
-
-    /**
      * 设置key（前端vue组件名称）
      */
+    @TableId(type = IdType.INPUT)
     private String settingKey;
 
     /**

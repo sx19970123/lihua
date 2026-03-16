@@ -36,8 +36,7 @@ const submitLoading = ref<boolean>(false);
 const init = async () => {
   const settingData = await settingStore.getSettingInfo<DefaultPassword>(componentName);
   if (settingData) {
-    settingForm.value = settingData.data
-    setting.value.id = settingData.id
+    settingForm.value = settingData
   }
 }
 

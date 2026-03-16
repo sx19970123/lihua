@@ -35,8 +35,7 @@ const init = async () => {
 
   const settingData = await settingStore.getSettingInfo<Captcha>(componentName);
   if (settingData) {
-    settingForm.value = settingData.data
-    setting.value.id = settingData.id
+    settingForm.value = settingData
   }
 }
 

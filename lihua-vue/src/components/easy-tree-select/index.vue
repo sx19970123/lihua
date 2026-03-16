@@ -7,8 +7,8 @@
     </div>
     <a-card :body-style="bodyStyle" :bordered="bordered" style="box-shadow: none">
       <a-input v-if="showSearch" class="keyword-input" :placeholder="searchPlaceholder" v-model:value="keyword" allowClear @change="handleChangeKeyWord()"/>
-      <div :style="maxHeight ? {maxHeight: maxHeight + 'px'} : {}" class="scrollbar" v-if="deepCloneTreeData && deepCloneTreeData.length > 0">
-        <a-tree :tree-data="deepCloneTreeData"
+      <div :style="maxHeight ? {maxHeight: maxHeight + 'px'} : {}" class="scrollbar" v-if="cloneTreeData && cloneTreeData.length > 0">
+        <a-tree :tree-data="cloneTreeData"
                 :field-names="fieldNames"
                 :check-strictly="!treeSetting.checkStrictly"
                 v-model:expanded-keys="expandKeys"
@@ -134,12 +134,12 @@ const allParentKeys = ref<any[]>([])
 // 模糊搜索
 const keyword = ref<string>('')
 // 深度克隆的树形数据，值会跟随关键词变化
-const deepCloneTreeData = ref<any[]>(treeData)
+const cloneTreeData = ref<any[]>([])
 
 // 处理全选
 const handleCheckedAll = () => {
   // 递归遍历集合
-  traverse(deepCloneTreeData.value, (item) => {
+  traverse(cloneTreeData.value, (item) => {
     if (item && item[fieldNames.key]) {
       const key = item[fieldNames.key]
       // 全选，将遍历出的树形结构key 添加到集合
@@ -218,13 +218,13 @@ const handleChangeKeyWord = () => {
   const key = keyword.value
   if (key) {
     // 节点过滤
-    deepCloneTreeData.value = handleFilterTree(treeData, key)
+    cloneTreeData.value = handleFilterTree(treeData, key)
     // 展开全部树形结构
     treeSetting.value.expand = true
   } else {
     // 折叠全部树形结构
     treeSetting.value.expand = defaultExpandAll
-    deepCloneTreeData.value = treeData
+    cloneTreeData.value = treeData
   }
   handleExpandAll()
 }
@@ -305,6 +305,12 @@ handleAllKeys()
 watch(() => modelValue, () => {
   handleCheckedKey()
 })
+
+// 监听treeData变化
+watch(() => treeData, () => {
+  cloneTreeData.value = treeData
+  handleAllKeys()
+}, {immediate: true})
 
 // 加载组件时处理v-model回显
 onMounted(() => handleCheckedKey())

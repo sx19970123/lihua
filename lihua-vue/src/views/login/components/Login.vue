@@ -4,7 +4,7 @@
       <a-typography-title :level="2">欢迎登录狸花猫</a-typography-title>
       <a-typography-text v-if="errorMessage" type="danger">{{errorMessage}}</a-typography-text>
       <!--                    根据配置显示注册-->
-      <div v-if="isRegistrationEnable">
+      <div v-if="settingStore.enableSignUp">
         <a-typography-text>没有账号？</a-typography-text>
         <a-typography-link @click="handleChangeComponent('register')">快速注册
           <RightOutlined/>
@@ -70,11 +70,13 @@ import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
 import {inject, onMounted, reactive, type Ref, ref, useTemplateRef} from "vue";
 import token from "@/utils/Token.ts"
 import {init} from "@/utils/AppInit.ts";
-import {enableRegister, getLoginSetting, login} from "@/api/system/login/Login.ts";
+import {getLoginSetting, login} from "@/api/system/login/Login.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import {useRouter} from 'vue-router'
-
+import {useSettingStore} from "@/stores/setting.ts";
+// 系统设置
+const settingStore = useSettingStore();
 const {enableCaptcha, errorMessage=""} = defineProps<{
   // 是否启用验证码
   enableCaptcha: boolean,
@@ -196,18 +198,6 @@ const showVerify = () => {
   verifyRef.value?.show()
 }
 
-// 是否开启自处注册
-const isRegistrationEnable = ref<boolean>(false)
-const initRegisterSetting = () => {
-  enableRegister().then(resp => {
-    if (resp.code === 200) {
-      isRegistrationEnable.value = resp.data
-    } else {
-      isRegistrationEnable.value = false
-    }
-  })
-}
-
 // 处理切换组件
 const handleChangeComponent = (name: string) => {
   emit('changeComponent', name)
@@ -218,8 +208,6 @@ onMounted(() => {
   checkRegister()
   // 加载记住我
   initRememberMe()
-  // 是否开启注册
-  initRegisterSetting()
 })
 </script>
 

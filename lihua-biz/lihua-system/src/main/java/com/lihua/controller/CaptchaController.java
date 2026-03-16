@@ -5,9 +5,7 @@ import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import com.lihua.captcha.enums.CaptchaTypeEnum;
-import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
-import com.lihua.service.SysSettingService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,14 +19,6 @@ public class CaptchaController extends ApiResponseController {
 
     @Resource
     private ImageCaptchaApplication imageCaptchaApplication;
-
-    @Resource
-    private SysSettingService sysSettingService;
-
-    @GetMapping("enable")
-    public ApiResponseModel<Boolean> enable() {
-        return success(sysSettingService.enableCaptcha());
-    }
 
     @PostMapping("get")
     public ApiResponse<ImageCaptchaVO> getCaptcha() {

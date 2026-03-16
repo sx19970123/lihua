@@ -21,3 +21,43 @@ export const getSysSettingByKey = (key: string) => {
         method: "GET",
     })
 }
+
+/**
+ * 获取默认密码
+ */
+export const getDefaultPassword = () => {
+    return request<string>({
+        url: "system/setting/defaultPassword",
+        method: "GET",
+    })
+}
+
+/**
+ * 是否开启验证码
+ */
+export const enableCaptcha = () => {
+    return request<boolean>({
+        url: "system/setting/base/enableCaptcha",
+        method: "GET",
+    })
+}
+
+/**
+ * 是否开启灰色模式
+ */
+export const enableGrayMode = () => {
+    return request<boolean>({
+        url: "system/setting/base/enableGrayMode",
+        method: "GET",
+    })
+}
+
+/**
+ * 是否开启自助注册
+ */
+export const enableSignUp = () => {
+    return request<boolean>({
+        url: "system/setting/base/enableSignUp",
+        method: "GET",
+    })
+}

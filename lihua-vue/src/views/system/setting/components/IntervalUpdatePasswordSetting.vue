@@ -55,9 +55,9 @@ const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
 const submitLoading = ref<boolean>(false);
 const init = async () => {
-  const resp = await settingStore.getSetting<IntervalUpdatePassword>(componentName);
-  if (resp) {
-    settingForm.value = resp
+  const settingData = await settingStore.getSettingInfo<IntervalUpdatePassword>(componentName);
+  if (settingData) {
+    settingForm.value = settingData
   }
 }
 

@@ -1,5 +1,11 @@
 import {defineStore} from "pinia";
-import {getSysSettingByKey} from "@/api/system/setting/Setting.ts";
+import {
+    enableCaptcha,
+    enableGrayMode,
+    enableSignUp,
+    getDefaultPassword,
+    getSysSettingByKey
+} from "@/api/system/setting/Setting.ts";
 import {message} from "ant-design-vue";
 
 export const useSettingStore = defineStore('setting', {
@@ -18,13 +24,12 @@ export const useSettingStore = defineStore('setting', {
         /**
          * 是否启用自助注册
          */
-        const enableSignIn: boolean = false;
-
+        const enableSignUp: boolean = false;
 
         return {
             enableCaptcha,
             enableGrayMode,
-            enableSignIn,
+            enableSignUp
         }
     },
     actions: {
@@ -43,14 +48,55 @@ export const useSettingStore = defineStore('setting', {
                 if (!setting) {
                     return
                 }
-
-                return {
-                    id: setting.id,
-                    settingKey: key,
-                    data: JSON.parse(setting.json) as T
-                }
+                return JSON.parse(setting.json) as T
             } else {
                 message.error(resp.msg)
+            }
+        },
+        /**
+         * 初始化基础设置
+         */
+        async initBaseSetting() {
+            await this.fetchEnableGrayMode()
+            await this.fetchEnableSignUp()
+            await this.fetchEnableCaptcha()
+        },
+        /**
+         * 获取默认密码
+         */
+        async fetchDefaultPassword() {
+            const resp = await getDefaultPassword()
+            if (resp.code === 200) {
+                return resp.data
+            } else {
+                message.error(resp.msg)
+            }
+        },
+        /**
+         * 获取是否开启验证码
+         */
+        async fetchEnableCaptcha() {
+            const resp = await enableCaptcha()
+            if (resp.code === 200) {
+                this.$state.enableCaptcha = resp.data
+            }
+        },
+        /**
+         * 获取是否开启灰色模式
+         */
+        async fetchEnableGrayMode() {
+            const resp = await enableGrayMode()
+            if (resp.code === 200) {
+                this.$state.enableGrayMode = resp.data
+            }
+        },
+        /**
+         * 获取是否开启自助注册
+         */
+        async fetchEnableSignUp() {
+            const resp = await enableSignUp()
+            if (resp.code === 200) {
+                this.$state.enableSignUp = resp.data
             }
         }
     }

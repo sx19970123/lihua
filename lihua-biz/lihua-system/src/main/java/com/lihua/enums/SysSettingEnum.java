@@ -26,7 +26,7 @@ public enum SysSettingEnum {
     /**
      * 注册
      */
-    SIGN_IN("SignInSetting"),
+    SIGN_UP("SignUpSetting"),
     /**
      * 灰色模式
      */

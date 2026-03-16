@@ -1,6 +1,7 @@
 package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lihua.common.utils.date.DateUtils;
 import com.lihua.enums.SysSettingEnum;
 import com.lihua.redis.cache.RedisCache;
 import com.lihua.entity.SysSetting;
@@ -12,6 +13,8 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.time.LocalDateTime;
 
 import static com.lihua.redis.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
 import static com.lihua.redis.enums.RedisKeyPrefixEnum.SYSTEM_SETTING_REDIS_PREFIX;
@@ -37,7 +40,7 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
         if (SysSettingEnum.RESTRICT_ACCESS_IP.getKey().equals(sysSetting.getSettingKey())) {
             redisCache.delete(IP_BLACKLIST_KEY);
         }
-        return sysSetting.getId();
+        return sysSetting.getSettingKey();
     }
 
     @Override
@@ -59,27 +62,55 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
     @Override
     public boolean enableCaptcha() {
         SysSetting captchaSetting = getSysSettingByKey(SysSettingEnum.CAPTCHA.getKey());
-
         if (captchaSetting == null) {
             return true;
         }
-
-        // 获取具体配置后解析json返回是否启用验证码
         // 出现任何值为空都认为需要验证码
-        String settingJson = captchaSetting.getJson();
-
-        if (!StringUtils.hasText(settingJson)) {
+        String json = captchaSetting.getJson();
+        if (!StringUtils.hasText(json)) {
             return true;
         }
-
-        SysSettingDTO sysSettingDTO = JsonUtils.toObject(settingJson, SysSettingDTO.class);
+        SysSettingDTO sysSettingDTO = JsonUtils.toObject(json, SysSettingDTO.class);
         return sysSettingDTO.isEnable();
+    }
 
+    @Override
+    public boolean enableGrayMode() {
+        SysSetting captchaSetting = getSysSettingByKey(SysSettingEnum.GRAY_MODEL.getKey());
+        if (captchaSetting == null) {
+            return false;
+        }
+        String json = captchaSetting.getJson();
+        if (!StringUtils.hasText(json)) {
+            return false;
+        }
+        SysSettingDTO.GrayModelSetting grayModelSetting = JsonUtils.toObject(json, SysSettingDTO.GrayModelSetting.class);
+        // 关闭时间
+        LocalDateTime closeTime = grayModelSetting.getCloseTime();
+        // 指定的过期时间对比
+        if (grayModelSetting.isEnable() && closeTime != null && DateUtils.differenceMinute(DateUtils.now(), closeTime) > 0) {
+            return true;
+        }
+        return grayModelSetting.isEnable();
+    }
+
+    @Override
+    public boolean enableSignUp() {
+        SysSetting captchaSetting = getSysSettingByKey(SysSettingEnum.SIGN_UP.getKey());
+        if (captchaSetting == null) {
+            return false;
+        }
+        String json = captchaSetting.getJson();
+        if (!StringUtils.hasText(json)) {
+            return false;
+        }
+        SysSettingDTO sysSettingDTO = JsonUtils.toObject(json, SysSettingDTO.class);
+        return sysSettingDTO.isEnable();
     }
 
     @Override
     public SysSettingDTO.SignInSetting getSignInSetting() {
-        SysSetting setting = getSysSettingByKey(SysSettingEnum.SIGN_IN.getKey());
+        SysSetting setting = getSysSettingByKey(SysSettingEnum.SIGN_UP.getKey());
 
         if (setting == null) {
             return null;
@@ -121,6 +152,6 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
      * 根据Key获取配置信息
      */
     private SysSetting queryByKey(String key) {
-        return lambdaQuery().select(SysSetting ::getId, SysSetting::getSettingKey, SysSetting::getJson).eq(SysSetting::getSettingKey, key).one();
+        return lambdaQuery().select(SysSetting::getSettingKey, SysSetting::getJson).eq(SysSetting::getSettingKey, key).one();
     }
 }

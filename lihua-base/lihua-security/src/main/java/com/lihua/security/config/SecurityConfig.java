@@ -57,7 +57,6 @@ public class SecurityConfig {
                         "/system/publicKey/**",                         // 获取公钥
                         "/system/attachment/storage/download/**",       // 附件下载
                         "/system/setting/GrayModelSetting",             // 灰色模式设置
-                        "/system/enableRegister",                       // 是否开启用户注册
                         "/system/checkUserName/**",                     // 检查用户名
                         "/system/register/**"                           // 注册
                 ).permitAll()
@@ -66,14 +65,14 @@ public class SecurityConfig {
                         "/app/system/login",                                // 登录
                         "/app/system/publicKey/**",                         // 获取公钥
                         "/app/system/attachment/storage/download/**",       // 附件下载
-                        "/app/system/enableRegister",                       // 是否开启用户注册
                         "/app/system/checkUserName/**",                     // 检查用户名
                         "/app/system/register/**"                           // 注册
                 ).permitAll()
                 // 系统其他接口配置
                 .requestMatchers(
-                        "/ws-connect/**",                               // websocket建立连接
                         "/captcha/**",                                  // 验证码
+                        "/system/setting/base/**",                      // 基础设置
+                        "/ws-connect/**",                               // websocket建立连接
                         "/druid/**",                                    // druid数据库监控
                         "/doc.html",                                    // knife4文档
                         "/webjars/**",                                  // knife4文档

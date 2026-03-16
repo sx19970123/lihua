@@ -64,16 +64,6 @@ const showOldBrowserAlert = () => {
   }
 }
 
-// 加载灰色模式
-const initGrayModel = async () => {
-  const grayModel = await settingStore.getSetting<GrayModel>('GrayModelSetting');
-  if (grayModel?.closeTime && dayjs() > dayjs(grayModel.closeTime)) {
-    themeStore.enableGrayModel(false)
-  } else {
-    themeStore.enableGrayModel(grayModel?.enable)
-  }
-}
-
 // 加载主题相关
 const initTheme = () => {
   // 匹配系统主题
@@ -123,11 +113,16 @@ watch(() => themeStore.followSystemTheme && themeStore.$state.isServerLoad, () =
   handleFollowSystemTheme()
 })
 
+// 监听灰色模式
+watch(() => settingStore.enableGrayMode, () => {
+  themeStore.enableGrayModel(settingStore.enableGrayMode)
+})
+
 onMounted(() => {
+  // 初始化基础设置
+  settingStore.initBaseSetting()
   // 主题跟随系统
   handleFollowSystemTheme()
-  // 灰色模式
-  initGrayModel()
   // 启用监听storage以同步标签页间主题
   window.addEventListener('storage', syncTabTheme)
 })

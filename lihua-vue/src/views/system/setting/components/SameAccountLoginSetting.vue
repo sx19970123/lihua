@@ -47,9 +47,9 @@ const componentName = getCurrentInstance()?.type.__name
 const submitLoading = ref<boolean>(false);
 
 const init = async () => {
-  const resp = await settingStore.getSetting<SameAccountLoginSetting>(componentName);
-  if (resp) {
-    settingForm.value = resp
+  const settingData = await settingStore.getSettingInfo<SameAccountLoginSetting>(componentName);
+  if (settingData) {
+    settingForm.value = settingData
   }
 }
 

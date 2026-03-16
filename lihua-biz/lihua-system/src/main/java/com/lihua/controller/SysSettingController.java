@@ -25,7 +25,28 @@ public class SysSettingController extends ApiResponseController {
     }
 
     @GetMapping("{key}")
+    @PreAuthorize("hasRole('ROLE_admin')")
     public ApiResponseModel<SysSetting> getSysSettingByKey(@PathVariable("key") String key) {
         return success(sysSettingService.getSysSettingByKey(key));
+    }
+
+    @GetMapping("defaultPassword")
+    public ApiResponseModel<String> getDefaultPassword() {
+        return success(sysSettingService.getDefaultPassword());
+    }
+
+    @GetMapping("base/enableCaptcha")
+    public ApiResponseModel<Boolean> enableCaptcha() {
+        return success(sysSettingService.enableCaptcha());
+    }
+
+    @GetMapping("base/enableGrayMode")
+    public ApiResponseModel<Boolean> enableGrayMode() {
+        return success(sysSettingService.enableGrayMode());
+    }
+
+    @GetMapping("base/enableSignUp")
+    public ApiResponseModel<Boolean> enableSignUp() {
+        return success(sysSettingService.enableSignUp());
     }
 }

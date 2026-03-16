@@ -1,11 +1,6 @@
 export interface SysSetting {
     /**
-     * 主键
-     */
-    id?: string
-
-    /**
-     * 设置key（值为设置项组件名称）
+     * 设置key（值为设置项组件名称，主键）
      */
     settingKey?: string,
 

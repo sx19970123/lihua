@@ -31,6 +31,7 @@
               <a-typography-title :level="5">部门</a-typography-title>
               <a-form-item class="form-item-width">
                 <easy-tree-select :tree-data="sysDeptList"
+                                  defaultExpandAll
                                   v-model="settingForm.deptIds"
                                   :field-names="{children:'children', title:'name', key: 'id' }"
                                   @change="loadPost"
@@ -87,7 +88,7 @@ import {useThemeStore} from "@/stores/theme.ts";
 import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
 import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
-import type {SignIn} from "@/api/system/setting/type/SignIn.ts";
+import type {SignUp} from "@/api/system/setting/type/SignUp.ts";
 import type {SysRole} from "@/api/system/role/type/SysRole.ts";
 import {getRoleOption} from "@/api/system/role/Role.ts";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
@@ -108,16 +109,15 @@ const submitLoading = ref<boolean>(false);
 
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {
-  const resp = await settingStore.getSetting<SignIn>(componentName);
-  if (resp) {
-    await initDept()
-    settingForm.value = resp
+  const settingData = await settingStore.getSettingInfo<SignUp>(componentName);
+  if (settingData) {
+    settingForm.value = settingData
     await loadPost()
   }
 }
 
 // 自助注册配置表单对象
-const settingForm = ref<SignIn>({
+const settingForm = ref<SignUp>({
   enable: false,
   deptIds: [],
   defaultDeptId: '',
@@ -384,8 +384,9 @@ const handleSubmit = async () => {
   }
 }
 
-onMounted(() => {
-  init()
+onMounted(async () => {
+  await initDept()
+  await init()
 })
 </script>
 

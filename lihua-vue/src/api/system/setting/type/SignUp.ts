@@ -1,4 +1,4 @@
-export interface SignIn {
+export interface SignUp {
 
     /**
      * 是否启用

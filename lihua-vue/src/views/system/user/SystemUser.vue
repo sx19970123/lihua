@@ -372,7 +372,6 @@ import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useSettingStore} from "@/stores/setting.ts";
-import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
 import {type BaseModalActiveType} from "@/api/global/Type.ts";
 import {downloadBlob} from "@/utils/AttachmentDownload.ts";
 import {useUserStore} from "@/stores/user.ts";
@@ -385,7 +384,7 @@ const userStore = useUserStore()
 const route = useRoute()
 const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
 // 默认密码
-const defaultPassword = ref<string>('')
+const defaultPassword = ref<string>()
 // 列表查询
 const initSearch = () => {
   // 选中的数据id集合
@@ -1166,10 +1165,7 @@ const {showResetPassword, targetUserInfo, resetPasswordForm, useDefaultPassword,
 
 // 加载默认密码
 const initDefaultPassword = async () => {
-  const resp = await settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")
-  if (resp) {
-    defaultPassword.value = resp.defaultPassword
-  }
+  defaultPassword.value = await settingStore.fetchDefaultPassword()
 }
 
 onMounted(() => {

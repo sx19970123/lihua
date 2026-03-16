@@ -80,9 +80,9 @@ const submitLoading = ref<boolean>(false);
 
 // 加载配置，已保存的系统配置中没有当前配置的话会进行创建
 const init = async () => {
-  const resp = await settingStore.getSetting<RestrictAccessIp>(componentName);
-  if (resp) {
-    settingForm.value = resp
+  const settingData = await settingStore.getSettingInfo<RestrictAccessIp>(componentName);
+  if (settingData) {
+    settingForm.value = settingData
   }
 }
 

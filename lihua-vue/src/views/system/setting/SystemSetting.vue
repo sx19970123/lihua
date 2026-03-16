@@ -57,7 +57,7 @@
 import {useThemeStore} from "@/stores/theme.ts";
 import DefaultPasswordSetting from "@/views/system/setting/components/DefaultPasswordSetting.vue";
 import GrayModelSetting from "@/views/system/setting/components/GrayModelSetting.vue";
-import SignInSetting from "@/views/system/setting/components/SignInSetting.vue";
+import SignUpSetting from "@/views/system/setting/components/SignUpSetting.vue";
 import UpdatePasswordSetting from "@/views/system/setting/components/IntervalUpdatePasswordSetting.vue";
 import CaptchaSetting from "@/views/system/setting/components/CaptchaSetting.vue";
 import RestrictAccessIpSetting from "@/views/system/setting/components/RestrictAccessIpSetting.vue";
@@ -77,7 +77,7 @@ const allComponents = ref([
   },
   {
     name: 'SignInSetting',
-    com: markRaw(SignInSetting)
+    com: markRaw(SignUpSetting)
   },
   {
     name: 'IntervalUpdatePassword',

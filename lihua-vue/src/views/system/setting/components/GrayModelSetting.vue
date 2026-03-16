@@ -52,8 +52,7 @@ const submitLoading = ref<boolean>(false)
 const init = async () => {
   const settingData = await settingStore.getSettingInfo<GrayModel>(componentName);
   if (settingData) {
-    const data = settingData.data
-    setting.value.id = settingData.id
+    const data = settingData
     if (data.closeTime) {
       // 当前时间小于指定关闭时间进行回显
       if (dayjs() < dayjs(data.closeTime)) {
@@ -131,7 +130,6 @@ const handleSubmit = async () => {
   } finally {
     submitLoading.value = false
   }
-
 }
 
 onMounted(() => init())
