@@ -3,6 +3,7 @@ package com.lihua.attachment.strategy;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.*;
 import com.lihua.attachment.exception.AttachmentException;
+import com.lihua.common.utils.date.DateUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -133,7 +134,7 @@ public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
      */
     @Override
     public String getDownloadURL(String fullFilePath, String originName, int expiryInMinutes) {
-        Date expiration = new Date(System.currentTimeMillis() + expiryInMinutes * 60L * 1000L);
+        Date expiration = new Date(DateUtils.nowTimeStamp() + expiryInMinutes * 60L * 1000L);
         URL url = ossClient.generatePresignedUrl(bucketName, fullFilePath, expiration);
         return url.toString();
     }

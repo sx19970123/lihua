@@ -56,7 +56,7 @@ public class LoginUserManager {
      */
     public static void verifyLoginUserCache() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
-        if (DateUtils.differenceMinute(loginUser.getExpirationTime(),DateUtils.now()) < lihuaConfig().getRefreshThreshold()) {
+        if (DateUtils.differenceMinute(DateUtils.now(), loginUser.getExpirationTime()) < lihuaConfig().getRefreshThreshold()) {
             redisCache.setExpire(loginUser.getCacheKey(), Duration.ofMinutes(lihuaConfig().getTokenExpireTime()));
         }
     }
@@ -104,7 +104,7 @@ public class LoginUserManager {
     private static String getLoginUserKey(String userId) {
         return RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue()
                 + userId + ":"
-                + System.currentTimeMillis() + ":"
+                + DateUtils.nowTimeStamp() + ":"
                 + UUID.randomUUID().toString().replace("-", "");
 
     }

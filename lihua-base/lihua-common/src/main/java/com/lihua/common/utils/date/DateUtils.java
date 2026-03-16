@@ -1,14 +1,22 @@
 package com.lihua.common.utils.date;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
  * 时间日期工具类
  */
 public class DateUtils {
+
+    /**
+     * 时间日期格式化
+     */
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    /**
+     * 日期格式化
+     */
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
      * 获取当前时间
@@ -28,7 +36,16 @@ public class DateUtils {
      * 获取当前时间戳
      */
     public static long nowTimeStamp() {
-        return timeStamp(now());
+        return System.currentTimeMillis();
+    }
+
+    /**
+     * 时间戳转 LocalDateTime
+     */
+    public static LocalDateTime fromTimestamp(long timestamp) {
+        return Instant.ofEpochMilli(timestamp)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     /**
@@ -41,24 +58,35 @@ public class DateUtils {
     /**
      * 格式化时间
      */
-    public static String format(LocalDateTime localDateTime,String format) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
-        return localDateTime.format(dateTimeFormatter);
+    public static String format(LocalDateTime localDateTime) {
+        return localDateTime.format(DATE_TIME_FORMATTER);
     }
 
     /**
      * 格式化日期
      */
-    public static String format(LocalDate localDate,String format) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
-        return localDate.format(dateTimeFormatter);
+    public static String format(LocalDate localDate) {
+        return localDate.format(DATE_FORMATTER);
+    }
+
+    /**
+     * 时间日期字符串转 LocalDateTime
+     */
+    public static LocalDateTime parseDateTime(String datetime) {
+        return LocalDateTime.parse(datetime, DATE_TIME_FORMATTER);
+    }
+
+    /**
+     * 日期字符串转 LocalDate
+     */
+    public static LocalDate parseDate(String date) {
+        return LocalDate.parse(date, DATE_FORMATTER);
     }
 
     /**
      * 两时间相差的分钟数
      */
-    public static long differenceMinute(LocalDateTime time1, LocalDateTime time2) {
-        long difference = timeStamp(time1) - timeStamp(time2);
-        return difference / (60 * 1000);
+    public static long differenceMinute(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return Duration.between(startDateTime, endDateTime).toMinutes();
     }
 }

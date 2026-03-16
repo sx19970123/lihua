@@ -1,5 +1,6 @@
 package com.lihua.websocket.manager;
 
+import com.lihua.common.utils.date.DateUtils;
 import com.lihua.websocket.model.WebSocketResult;
 import com.lihua.common.utils.json.JsonUtils;
 import lombok.SneakyThrows;
@@ -158,7 +159,7 @@ public class WebSocketManager extends TextWebSocketHandler {
      * websocket对象转为json
      */
     private <T> String toJson(WebSocketResult<T> result) {
-        result.setTimestamp(System.currentTimeMillis());
+        result.setTimestamp(DateUtils.nowTimeStamp());
         return JsonUtils.toJson(result);
     }
 }
