@@ -3,7 +3,15 @@ const nextUpdate = [
     {
         version: '2.0.0',
         record: [
-           
+           '1. 重构后台代码，采用模块化结构，提高项目扩展性',
+           '2. spring boot版本升级为4.x',
+           '3. 移除minio，替换为阿里云oss',
+           '4. 移除xxl-job，替换为snail-job',
+           '5. 移除knife4j，替换为spring doc',
+           '6. 移除my-excel，替换为fesod',
+           '7. 样式布局新增页脚开关',
+           '8. 个人中心新增锁屏配置',
+           '9. 其他细节优化',
         ]
     }
 ]

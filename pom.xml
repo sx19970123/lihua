@@ -6,7 +6,7 @@
 
     <groupId>com.lihua</groupId>
     <artifactId>lihua</artifactId>
-    <version>1.4.2</version>
+    <version>2.0.0</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -20,11 +20,11 @@
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
 
-        <lihua.version>1.4.2</lihua.version>
+        <lihua.version>2.0.0</lihua.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mysql.version>8.2.0</mysql.version>
         <mybatis-plus.version>3.5.16</mybatis-plus.version>
-        <jwt.version>3.10.3</jwt.version>
+        <jwt.version>4.5.1</jwt.version>
         <redisson.version>4.2.0</redisson.version>
         <oshi.version>6.6.4</oshi.version>
         <guava.version>33.5.0-jre</guava.version>
@@ -133,16 +133,16 @@
                 <artifactId>lihua-captcha</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
-<!--            api文档模块 -->
-            <dependency>
-                <groupId>com.lihua</groupId>
-                <artifactId>lihua-doc</artifactId>
-                <version>${lihua.version}</version>
-            </dependency>
 <!--            定时任务模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-job</artifactId>
+                <version>${lihua.version}</version>
+            </dependency>
+<!--            附件模块 -->
+            <dependency>
+                <groupId>com.lihua</groupId>
+                <artifactId>lihua-attachment</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
         </dependencies>
@@ -176,22 +176,6 @@
         <module>lihua-admin</module>
         <module>lihua-base</module>
         <module>lihua-biz</module>
-        <module>lihua-biz/lihua-system</module>
-        <module>lihua-biz/lihua-monitor</module>
-        <module>lihua-base/lihua-websocket</module>
-        <module>lihua-base/lihua-security</module>
-        <module>lihua-base/lihua-mybatis</module>
-        <module>lihua-base/lihua-redis</module>
-        <module>lihua-base/lihua-dict</module>
-        <module>lihua-base/lihua-log</module>
-        <module>lihua-base/lihua-job</module>
-        <module>lihua-base/lihua-common</module>
-        <module>lihua-base/lihua-sensitive</module>
-        <module>lihua-base/lihua-ip</module>
-        <module>lihua-base/lihua-doc</module>
-        <module>lihua-base/lihua-excel</module>
-        <module>lihua-base/lihua-captcha</module>
-        <module>lihua-base/lihua-web</module>
     </modules>
     <build>
         <plugins>

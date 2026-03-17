@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.lihua</groupId>
         <artifactId>lihua-biz</artifactId>
-        <version>1.4.2</version>
+        <version>2.0.0</version>
     </parent>
 
     <artifactId>lihua-system</artifactId>
@@ -23,11 +23,10 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-captcha</artifactId>
         </dependency>
+        <!--        附件-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-attachment</artifactId>
-            <version>1.4.2</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
