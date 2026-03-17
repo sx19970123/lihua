@@ -16,6 +16,8 @@ import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUser;
 import com.lihua.service.SysAuthenticationService;
 import com.lihua.service.SysSettingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ import java.util.List;
 /**
  * 用户身份验证/授权/登录数据获取/注册
  */
+@Tag(name = "身份验证、注册接口")
 @RestController
 @RequestMapping("system")
 public class SysAuthenticationController extends ApiResponseController {
@@ -41,6 +44,7 @@ public class SysAuthenticationController extends ApiResponseController {
     /**
      * 用户登录
      */
+    @Operation(summary = "用户登录")
     @PostMapping("login")
     @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password", "requestKey"}, recordResult = false)
     public ApiResponseModel<String> login(@RequestBody @Valid CurrentUser currentUser) {
@@ -63,6 +67,7 @@ public class SysAuthenticationController extends ApiResponseController {
     /**
      * 检查登录配置
      */
+    @Operation(summary = "检查登录配置")
     @GetMapping("checkLoginSetting")
     public ApiResponseModel<List<String>> checkLoginSetting() {
         return success(sysAuthenticationService.checkLoginSetting(LoginUserContext.getLoginUser()));
@@ -71,6 +76,7 @@ public class SysAuthenticationController extends ApiResponseController {
     /**
      * 从 SecurityContextHolder 中获取用户信息返回
      */
+    @Operation(summary = "获取当前登录用户信息")
     @GetMapping("info")
     public ApiResponseModel<AuthInfo> getUserInfo() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
@@ -90,6 +96,7 @@ public class SysAuthenticationController extends ApiResponseController {
     /**
      * 数据更新
      */
+    @Operation(summary = "重新加载当前登录用户信息")
     @PostMapping("reloadData")
     public ApiResponseModel<String> reloadData() {
         sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser(), true);
@@ -99,6 +106,7 @@ public class SysAuthenticationController extends ApiResponseController {
     /**
      * 检查用户名是否重复
      */
+    @Operation(summary = "检查用户名是否重复")
     @PostMapping("checkUserName/{username}")
     public ApiResponseModel<Boolean> checkUserName(@PathVariable("username") String username) {
         return success(sysAuthenticationService.checkUserName(username));
@@ -107,6 +115,7 @@ public class SysAuthenticationController extends ApiResponseController {
     /**
      * 用户注册
      */
+    @Operation(summary = "用户注册")
     @PostMapping("register")
     @Log(description = "用户注册", type = LogTypeEnum.REGISTER, excludeParams = {"password", "confirmPassword"}, recordResult = false)
     public ApiResponseModel<String> register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO) {
@@ -136,6 +145,7 @@ public class SysAuthenticationController extends ApiResponseController {
         return success(sysAuthenticationService.register(sysRegisterDTO.getUsername(), password));
     }
 
+    @Operation(summary = "获取一次性令牌")
     @GetMapping("onceToken")
     public ApiResponseModel<String> getOnceToken() {
         return success(sysAuthenticationService.getOnceToken());

@@ -10,8 +10,9 @@ import com.lihua.model.dto.SysRoleDTO;
 import com.lihua.mybatis.model.validation.MaxPageSizeLimit;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.model.CurrentRole;
-import com.lihua.service.SysMenuService;
 import com.lihua.service.SysRoleService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "角色管理")
 @RestController
 @RequestMapping("system/role")
 @Validated
@@ -27,8 +29,6 @@ public class SysRoleController extends ApiResponseController {
 
     @Resource
     private SysRoleService sysRoleService;
-    @Resource
-    private SysMenuService sysMenuService;
 
     @PostMapping("page")
     public ApiResponseModel<IPage<SysRole>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysRoleDTO sysRoleDTO) {
@@ -40,6 +40,7 @@ public class SysRoleController extends ApiResponseController {
         return success(sysRoleService.queryById(id));
     }
 
+    @Operation(summary = "保存角色信息")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     @Log(description = "保存角色信息", type = LogTypeEnum.SAVE)
@@ -47,6 +48,7 @@ public class SysRoleController extends ApiResponseController {
         return success(sysRoleService.save(sysRole));
     }
 
+    @Operation(summary = "更新状态")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
     @Log(description = "更新角色状态", type = LogTypeEnum.UPDATE_STATUS)
@@ -54,6 +56,7 @@ public class SysRoleController extends ApiResponseController {
         return success(sysRoleService.updateStatus(id, currentStatus));
     }
 
+    @Operation(summary = "批量删除")
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除角色数据", type = LogTypeEnum.DELETE)
@@ -62,6 +65,7 @@ public class SysRoleController extends ApiResponseController {
         return success();
     }
 
+    @Operation(summary = "获取角色选项")
     @GetMapping("option")
     public ApiResponseModel<List<CurrentRole>> getRoleOption() {
         return success(LoginUserContext.getRoleList().stream().filter(role -> !"ROLE_admin".equals(role.getCode())).toList());

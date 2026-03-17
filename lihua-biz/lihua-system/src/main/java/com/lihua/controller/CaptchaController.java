@@ -6,16 +6,18 @@ import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import com.lihua.captcha.enums.CaptchaTypeEnum;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Tag(name = "验证码")
 @RestController
 @RequestMapping("captcha")
 public class CaptchaController extends ApiResponseController {
@@ -23,6 +25,7 @@ public class CaptchaController extends ApiResponseController {
     @Resource
     private ImageCaptchaApplication imageCaptchaApplication;
 
+    @Operation(summary = "获取验证码")
     @PostMapping("get")
     public ApiResponse<ImageCaptchaVO> getCaptcha() {
         List<String> captchaTypes = CaptchaTypeEnum.allValue();
@@ -31,6 +34,7 @@ public class CaptchaController extends ApiResponseController {
         return imageCaptchaApplication.generateCaptcha(type);
     }
 
+    @Operation(summary = "验证码校验")
     @PostMapping("check")
     public ApiResponse<?> checkCaptcha(@RequestBody Data data) {
         ApiResponse<?> response = imageCaptchaApplication.matching(data.getId(), data.getData());

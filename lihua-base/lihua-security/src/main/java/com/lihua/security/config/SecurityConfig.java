@@ -74,9 +74,8 @@ public class SecurityConfig {
                         "/system/setting/base/**",                      // 基础设置
                         "/ws-connect/**",                               // websocket建立连接
                         "/druid/**",                                    // druid数据库监控
-                        "/doc.html",                                    // knife4文档
-                        "/webjars/**",                                  // knife4文档
-                        "/v3/api-docs/**",                              // knife4文档
+                        "/swagger-ui/**",                               // spring-doc
+                        "/v3/api-docs/**",                              // spring-doc
                         "/error"                                        // 当出现404等异常时spring内部会转发到/error，需要将其放过，否则会响应401
                 ).permitAll()
                 .anyRequest().authenticated());

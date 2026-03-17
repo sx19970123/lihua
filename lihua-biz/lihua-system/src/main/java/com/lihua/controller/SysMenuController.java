@@ -8,6 +8,8 @@ import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.validation.MenuValidation;
 import com.lihua.service.SysMenuService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -19,25 +21,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("system/menu")
+@Tag(name = "菜单管理")
 @Slf4j
 @Validated
+@RestController
+@RequestMapping("system/menu")
 public class SysMenuController extends ApiResponseController {
 
     @Resource
     private SysMenuService sysMenuService;
 
+    @Operation(summary = "列表查询")
     @PostMapping("list")
     public ApiResponseModel<List<SysMenu>> queryList(@RequestBody SysMenu sysMenu) {
         return success(sysMenuService.queryList(sysMenu));
     }
 
+    @Operation(summary = "根据id查询详情")
     @GetMapping("{id}")
     public ApiResponseModel<SysMenu> queryById(@PathVariable("id") @NotNull(message = "请选择数据") String id) {
         return success(sysMenuService.queryById(id));
     }
 
+    @Operation(summary = "保存菜单")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("directory")
     @Log(description = "保存菜单数据", type = LogTypeEnum.SAVE)
@@ -45,6 +51,7 @@ public class SysMenuController extends ApiResponseController {
         return success(sysMenuService.save(sysMenu));
     }
 
+    @Operation(summary = "保存页面")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("page")
     @Log(description = "保存页面数据", type = LogTypeEnum.SAVE)
@@ -57,6 +64,7 @@ public class SysMenuController extends ApiResponseController {
         return success(sysMenuService.save(sysMenu));
     }
 
+    @Operation(summary = "保存链接")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("link")
     @Log(description = "保存链接数据", type = LogTypeEnum.SAVE)
@@ -64,6 +72,7 @@ public class SysMenuController extends ApiResponseController {
         return success(sysMenuService.save(sysMenu));
     }
 
+    @Operation(summary = "保存权限")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("perms")
     @Log(description = "保存权限数据", type = LogTypeEnum.SAVE)
@@ -71,6 +80,7 @@ public class SysMenuController extends ApiResponseController {
         return success(sysMenuService.save(sysMenu));
     }
 
+    @Operation(summary = "修改状态")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{currentStatus}")
     @Log(description = "更新菜单状态", type = LogTypeEnum.UPDATE_STATUS)
@@ -78,6 +88,7 @@ public class SysMenuController extends ApiResponseController {
         return success(sysMenuService.updateStatus(ids, currentStatus));
     }
 
+    @Operation(summary = "批量删除")
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除菜单数据", type = LogTypeEnum.DELETE)
@@ -86,6 +97,7 @@ public class SysMenuController extends ApiResponseController {
         return success();
     }
 
+    @Operation(summary = "获取菜单树选项")
     @GetMapping("option")
     public ApiResponseModel<List<SysMenu>> menuTreeOption() {
         return success(sysMenuService.menuTreeOption());

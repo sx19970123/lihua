@@ -9,6 +9,8 @@ import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysDictTypeDTO;
 import com.lihua.mybatis.model.validation.MaxPageSizeLimit;
 import com.lihua.service.SysDictTypeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "字典类型")
 @RestController
 @RequestMapping("system/dictType")
 @Validated
@@ -25,16 +28,19 @@ public class SysDictTypeController extends ApiResponseController {
     @Resource
     private SysDictTypeService sysDictTypeService;
 
+    @Operation(summary = "分页查询")
     @PostMapping("page")
     public ApiResponseModel<IPage<SysDictType>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysDictTypeDTO dictTypeDTO) {
         return success(sysDictTypeService.queryPage(dictTypeDTO));
     }
 
+    @Operation(summary = "根据id查询详情")
     @GetMapping("{id}")
     public ApiResponseModel<SysDictType> queryById(@PathVariable("id") String id) {
         return success(sysDictTypeService.queryById(id));
     }
 
+    @Operation(summary = "保存字典类型")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     @Log(description = "保存字典类型", type = LogTypeEnum.SAVE)
@@ -42,6 +48,7 @@ public class SysDictTypeController extends ApiResponseController {
         return success(sysDictTypeService.save(sysDictType));
     }
 
+    @Operation(summary = "修改状态")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
     @Log(description = "修在字典类型状态", type = LogTypeEnum.UPDATE_STATUS)
@@ -49,6 +56,7 @@ public class SysDictTypeController extends ApiResponseController {
         return success(sysDictTypeService.updateStatus(id, currentStatus));
     }
 
+    @Operation(summary = "批量删除")
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除字典类型数据", type = LogTypeEnum.DELETE)
@@ -57,6 +65,7 @@ public class SysDictTypeController extends ApiResponseController {
         return success();
     }
 
+    @Operation(summary = "刷新缓存")
     @PostMapping("reload/cache")
     public ApiResponseModel<String> reloadCache() {
         sysDictTypeService.reloadCache();

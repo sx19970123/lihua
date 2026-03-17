@@ -88,3 +88,15 @@ aliyun:
     access-key-id: LTAI5tAVTDrjswJCAv9z16wM
     access-key-secret: W2YMUaQtOcvLOKEYGT3IF0j1i8OKkA
     bucket-name: aurevo-user-avatar
+
+ # spring doc 接口文档
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true

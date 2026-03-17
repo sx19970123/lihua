@@ -59,5 +59,10 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-excel</artifactId>
         </dependency>
+        <!--        doc 模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-doc</artifactId>
+        </dependency>
     </dependencies>
 </project>

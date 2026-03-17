@@ -9,6 +9,8 @@ import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysAttachmentDTO;
 import com.lihua.model.vo.SysAttachmentVO;
 import com.lihua.service.SysAttachmentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 
+@Tag(name = "附件管理")
 @Slf4j
 @RestController
 @RequestMapping("system/attachment")
@@ -26,16 +29,19 @@ public class SysAttachmentController extends ApiResponseController {
     @Resource
     private SysAttachmentService sysAttachmentService;
 
+    @Operation(summary = "分页查询")
     @PostMapping("page")
     public ApiResponseModel<IPage<SysAttachment>> queryPage(@RequestBody SysAttachmentDTO sysAttachmentDTO) {
         return success(sysAttachmentService.queryPage(sysAttachmentDTO));
     }
 
+    @Operation(summary = "根据id查询")
     @GetMapping("{id}")
     public ApiResponseModel<SysAttachmentVO> queryById(@PathVariable("id") String id) {
         return success(sysAttachmentService.queryById(id));
     }
 
+    @Operation(summary = "附件删除")
     @DeleteMapping
     @Log(description = "附件删除", type = LogTypeEnum.DELETE)
     @PreAuthorize("hasRole('ROLE_admin')")
@@ -44,6 +50,7 @@ public class SysAttachmentController extends ApiResponseController {
         return success();
     }
 
+    @Operation(summary = "强制删除")
     @DeleteMapping("force/{id}")
     @Log(description = "附件删除（强制）", type = LogTypeEnum.DELETE)
     @PreAuthorize("hasRole('ROLE_admin')")
@@ -52,6 +59,7 @@ public class SysAttachmentController extends ApiResponseController {
         return success();
     }
 
+    @Operation(summary = "获取下载链接")
     @GetMapping("url/{id}")
     public ApiResponseModel<String> getDownloadURL(@PathVariable("id") String id, Integer expireTime) {
         return success(sysAttachmentService.getDownloadURL(id, expireTime));
