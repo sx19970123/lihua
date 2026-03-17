@@ -1,9 +1,9 @@
 package com.lihua.attachment.utils;
 
 import com.lihua.attachment.config.AttachmentConfig;
+import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.model.AttachmentStreamAndInfoModel;
 import com.lihua.common.enums.ResultCodeEnum;
-import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.common.utils.spring.SpringUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;

@@ -46,7 +46,6 @@ import {onMounted, ref} from "vue";
 import {serverInfo} from "@/api/monitor/server/Server.ts";
 import dayjs from "dayjs";
 import Spin from "@/components/spin";
-import {ResponseError} from "@/api/global/Type.ts";
 
 const info = ref<ServerInfo>()
 // 初始化服务器信息

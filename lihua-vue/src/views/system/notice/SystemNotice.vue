@@ -245,7 +245,7 @@ import NoticePreview from "@/components/notice-preview/index.vue"
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {getUserOptionByUserIds} from "@/api/system/user/User.ts";
-import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
+import {type BaseModalActiveType} from "@/api/global/Type.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_notice_type, sys_notice_status, 	sys_notice_user_scope, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_status", "sys_notice_user_scope", "sys_notice_priority")

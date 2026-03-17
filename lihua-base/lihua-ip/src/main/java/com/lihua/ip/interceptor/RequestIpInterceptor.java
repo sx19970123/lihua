@@ -1,8 +1,8 @@
 package com.lihua.ip.interceptor;
 
-import com.lihua.redis.cache.RedisCache;
 import com.lihua.ip.exception.IpIllegalException;
 import com.lihua.ip.utils.IpUtils;
+import com.lihua.redis.cache.RedisCache;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

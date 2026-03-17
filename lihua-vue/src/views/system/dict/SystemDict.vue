@@ -212,7 +212,7 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted, reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
-import {type BaseModalActiveType, ResponseError, type ResponseType} from "@/api/global/Type.ts"
+import {type BaseModalActiveType, type ResponseType} from "@/api/global/Type.ts"
 import type {ColumnsType} from 'ant-design-vue/es/table/interface';
 import {deleteData, queryById, queryPage, reloadCache, save, updateStatus} from "@/api/system/dict/DictType.ts";
 import dayjs from "dayjs";

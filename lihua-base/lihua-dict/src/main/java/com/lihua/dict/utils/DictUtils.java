@@ -1,11 +1,12 @@
 package com.lihua.dict.utils;
 
-import com.lihua.redis.cache.RedisCache;
-import com.lihua.redis.enums.RedisKeyPrefixEnum;
+import com.lihua.common.utils.spring.SpringUtils;
 import com.lihua.dict.mapper.DictDataMapper;
 import com.lihua.dict.model.DictDataModel;
-import com.lihua.common.utils.spring.SpringUtils;
+import com.lihua.redis.cache.RedisCache;
+import com.lihua.redis.enums.RedisKeyPrefixEnum;
 import org.springframework.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

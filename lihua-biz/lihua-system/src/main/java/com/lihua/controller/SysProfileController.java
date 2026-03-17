@@ -1,18 +1,18 @@
 package com.lihua.controller;
 
-import com.lihua.log.annotation.Log;
-import com.lihua.entity.SysUser;
-import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.common.enums.ResultCodeEnum;
-import com.lihua.security.model.CurrentDept;
-import com.lihua.model.dto.SysUpdatePasswordDTO;
-import com.lihua.model.validation.ProfileValidation;
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.entity.SysUser;
+import com.lihua.log.annotation.Log;
+import com.lihua.log.enums.LogTypeEnum;
+import com.lihua.model.dto.SysUpdatePasswordDTO;
+import com.lihua.model.validation.ProfileValidation;
+import com.lihua.security.model.CurrentDept;
+import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysProfileService;
 import com.lihua.service.SysSettingService;
 import com.lihua.service.SysUserDeptService;
-import com.lihua.security.utils.SecurityUtils;
 import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

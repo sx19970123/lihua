@@ -33,7 +33,6 @@ import type {Rule} from "ant-design-vue/es/form";
 import {useUserStore} from "@/stores/user.ts";
 import {message} from "ant-design-vue";
 import PasswordInput from "@/components/password-input/index.vue";
-import {ResponseError} from "@/api/global/Type.ts";
 import {updatePassword} from "@/api/system/profile/Profile.ts";
 
 const userStore = useUserStore()

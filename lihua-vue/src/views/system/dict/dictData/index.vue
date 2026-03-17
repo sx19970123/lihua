@@ -207,7 +207,6 @@ import {cloneDeep} from 'lodash-es';
 import {initDict, reLoadDict} from "@/utils/Dict.ts";
 import dictTag from "@/components/dict-tag/index.vue"
 import type {SysDictDataType, SysDictDataTypeDTO} from "@/api/system/dict/type/SysDictDataType.ts";
-import {ResponseError} from "@/api/global/Type.ts";
 import {v4 as uuidv4} from "uuid";
 
 const props = defineProps<{

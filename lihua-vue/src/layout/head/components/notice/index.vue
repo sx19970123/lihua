@@ -118,11 +118,10 @@ import {h, onMounted, onUnmounted, ref} from "vue";
 import {MessageOutlined, NotificationOutlined} from "@ant-design/icons-vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {getDictLabel, initDict} from "@/utils/Dict.ts";
-import {userMessageList, queryUnReadCount, read, star} from "@/api/system/notice/Notice.ts";
+import {queryUnReadCount, read, star, userMessageList} from "@/api/system/notice/Notice.ts";
 import type {SysUserNoticeVO} from "@/api/system/notice/type/SysUserNotice.ts";
 import {handleTime} from "@/utils/HandleDate.ts";
 import dayjs from "dayjs";
-import {ResponseError} from "@/api/global/Type.ts";
 
 const themeStore = useThemeStore();
 

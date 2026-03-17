@@ -64,7 +64,6 @@ import type {SysNoticeVO} from "@/api/system/notice/type/SysNotice.ts";
 import dayjs from "dayjs";
 import {message} from "ant-design-vue";
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
-import {ResponseError} from "@/api/global/Type.ts";
 
 const props = defineProps<{
   noticeId: string,

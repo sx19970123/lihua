@@ -3,22 +3,24 @@ package com.lihua.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lihua.entity.SysDept;
-import com.lihua.entity.SysPost;
 import com.lihua.common.exception.ServiceException;
-import com.lihua.security.manager.LoginUserContext;
-import com.lihua.mapper.SysDeptMapper;
-import com.lihua.model.vo.SysDeptVO;
-import com.lihua.service.SysDeptService;
-import com.lihua.service.SysPostService;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.tree.TreeUtils;
+import com.lihua.entity.SysDept;
+import com.lihua.entity.SysPost;
+import com.lihua.mapper.SysDeptMapper;
+import com.lihua.model.vo.SysDeptVO;
+import com.lihua.security.manager.LoginUserContext;
+import com.lihua.service.SysDeptService;
+import com.lihua.service.SysPostService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service

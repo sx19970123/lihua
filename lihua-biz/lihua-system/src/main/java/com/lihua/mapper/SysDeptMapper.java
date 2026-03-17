@@ -2,8 +2,8 @@ package com.lihua.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lihua.entity.SysDept;
-import com.lihua.security.model.CurrentDept;
 import com.lihua.model.vo.SysDeptVO;
+import com.lihua.security.model.CurrentDept;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

@@ -328,7 +328,7 @@ import {type FormInstance, message} from "ant-design-vue";
 import {cloneDeep} from 'lodash-es';
 import {useThemeStore} from "@/stores/theme";
 import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
-import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
+import {type BaseModalActiveType} from "@/api/global/Type.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const themeStore = useThemeStore()

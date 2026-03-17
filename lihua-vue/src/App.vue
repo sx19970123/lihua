@@ -24,7 +24,6 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
-import type {GrayModel} from "@/api/system/setting/type/GrayModel.ts";
 import {theme} from "ant-design-vue";
 
 const { token } = theme.useToken()

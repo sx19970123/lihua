@@ -21,6 +21,7 @@ import {publicUpload} from "@/api/system/attachment/AttachmentStorage.ts";
 import type {SysAttachmentUrl} from "@/api/system/attachment/type/SysAttachmentUrl.ts";
 import {message} from "ant-design-vue";
 import {attachmentUrl} from "@/utils/AttachmentUrl.ts";
+
 const themeStore = useThemeStore();
 const router = useRoute()
 // 上传默认大小

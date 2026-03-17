@@ -161,7 +161,6 @@ import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysLog} from "@/api/system/log/type/SysLog.ts";
 import {queryLoginByCacheKey} from "@/api/system/log/Log.ts";
-import {ResponseError} from "@/api/global/Type.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 import DictTag from "@/components/dict-tag/index.vue";
 import {initDict} from "@/utils/Dict.ts";

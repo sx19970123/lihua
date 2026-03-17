@@ -1,13 +1,13 @@
 package com.lihua.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.lihua.log.annotation.Log;
+import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.entity.SysDictType;
+import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysDictTypeDTO;
 import com.lihua.mybatis.model.validation.MaxPageSizeLimit;
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.service.SysDictTypeService;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;

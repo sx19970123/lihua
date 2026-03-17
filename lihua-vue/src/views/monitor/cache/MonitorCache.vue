@@ -128,7 +128,6 @@ import {cacheInfo, cacheKeyGroups, cacheKeys, memoryInfo, remove} from "@/api/mo
 import {onMounted, ref} from "vue";
 import {message} from "ant-design-vue";
 import type {CacheMonitor} from "@/api/monitor/cache/type/CacheMonitor.ts";
-import {ResponseError} from "@/api/global/Type.ts";
 // 内存占用大小
 const useMemory = ref<string>('')
 // 缓存类型集合

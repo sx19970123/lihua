@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
-import { useThemeStore } from "@/stores/theme.ts";
+import {onMounted, onUnmounted, ref} from "vue";
+import {useThemeStore} from "@/stores/theme.ts";
 
 const themeStore = useThemeStore();
 

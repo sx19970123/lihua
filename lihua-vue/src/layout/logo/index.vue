@@ -17,6 +17,7 @@
 import {useThemeStore} from "@/stores/theme";
 import {useRouter} from 'vue-router'
 import {computed} from "vue";
+
 const router = useRouter()
 const themeStore = useThemeStore()
 const {showTitle = true, maxWidth, autoColor = true} = defineProps<{

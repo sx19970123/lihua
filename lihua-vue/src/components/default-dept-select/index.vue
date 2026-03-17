@@ -44,7 +44,6 @@ import {useUserStore} from "@/stores/user.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import {setDefaultDept} from "@/api/system/profile/Profile.ts";
 import {message} from "ant-design-vue";
-import {ResponseError} from "@/api/global/Type.ts";
 import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
 
 const themeStore = useThemeStore();

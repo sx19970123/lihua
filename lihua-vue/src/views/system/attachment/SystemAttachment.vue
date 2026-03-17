@@ -281,14 +281,12 @@ import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {onUnmounted, ref} from "vue";
 import type {SysAttachment, SysAttachmentDTO, SysAttachmentVO} from "@/api/system/attachment/type/SysAttachment.ts";
 import {message} from "ant-design-vue";
-import {ResponseError} from "@/api/global/Type.ts";
 import {deleteData, forceDeleteData, getDownloadURL, queryById, queryPage} from "@/api/system/attachment/Attachment.ts";
 import dayjs from "dayjs";
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import {download} from "@/utils/AttachmentDownload.ts";
 import {useThemeStore} from "@/stores/theme.ts";
-import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_attachment_status, sys_attachment_upload_mode, sys_client_type} = initDict("sys_attachment_status", "sys_attachment_upload_mode", "sys_client_type")

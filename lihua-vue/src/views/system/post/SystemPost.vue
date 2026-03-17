@@ -234,7 +234,7 @@ import {type FormInstance, message} from "ant-design-vue";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
 import Spin from "@/components/spin";
-import {type BaseModalActiveType, ResponseError} from "@/api/global/Type.ts";
+import {type BaseModalActiveType} from "@/api/global/Type.ts";
 import {downloadBlob} from "@/utils/AttachmentDownload.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 

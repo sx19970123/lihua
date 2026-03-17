@@ -24,6 +24,7 @@ import {message} from "ant-design-vue";
 import {isAdmin} from "@/utils/Auth.ts";
 import {save} from "@/api/system/setting/Setting.ts";
 import {useSettingStore} from "@/stores/setting.ts";
+
 const settingStore = useSettingStore();
 
 const componentName = getCurrentInstance()?.type.__name

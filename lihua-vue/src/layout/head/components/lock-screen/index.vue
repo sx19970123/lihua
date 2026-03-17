@@ -98,7 +98,8 @@ import {
   getLockKey,
   getLockScreenInfo,
   isLocked,
-  screenLock, screenLogout,
+  screenLock,
+  screenLogout,
   screenUnlock
 } from "@/utils/LockScreenUtils.ts";
 import {message} from "ant-design-vue";
