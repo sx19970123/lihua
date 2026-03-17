@@ -111,6 +111,22 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
     }
 
     @Override
+    public int getMaxConcurrentLogins() {
+
+        SysSetting captchaSetting = getSysSettingByKey(SysSettingEnum.SAME_ACCOUNT_LOGIN.getKey());
+        if (captchaSetting == null) {
+            return -1;
+        }
+
+        SysSettingDTO.SameAccountLoginSetting setting = JsonUtils.toObject(captchaSetting.getJson(), SysSettingDTO.SameAccountLoginSetting.class);
+        if (!setting.isEnable()) {
+            return -1;
+        }
+
+        return setting.getMaximum() > 0 ? setting.getMaximum() : 1;
+    }
+
+    @Override
     public SysSettingDTO.SignInSetting getSignInSetting() {
         SysSetting setting = getSysSettingByKey(SysSettingEnum.SIGN_UP.getKey());
 
@@ -120,6 +136,16 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
 
         // 自助注册配置
         return JsonUtils.toObject(setting.getJson(), SysSettingDTO.SignInSetting.class);
+    }
+
+    @Override
+    public SysSettingDTO.IntervalUpdatePasswordSetting getIntervalUpdatePasswordSetting() {
+        SysSetting intervalUpdatePasswordSetting = getSysSettingByKey(SysSettingEnum.INTERVAL_UPDATE_PASSWORD.getKey());
+        if (intervalUpdatePasswordSetting == null) {
+            return null;
+        }
+
+        return JsonUtils.toObject(intervalUpdatePasswordSetting.getJson(), SysSettingDTO.IntervalUpdatePasswordSetting.class);
     }
 
     @Override

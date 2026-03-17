@@ -31,9 +31,20 @@ public interface SysSettingService {
     boolean enableSignUp();
 
     /**
+     * 获取同时登录最大数量配置
+     * @return -1 无限制
+     */
+    int getMaxConcurrentLogins();
+
+    /**
      * 获取自助注册配置
      */
     SysSettingDTO.SignInSetting getSignInSetting();
+
+    /**
+     * 获取定期修改密码配置
+     */
+    SysSettingDTO.IntervalUpdatePasswordSetting getIntervalUpdatePasswordSetting();
 
     /**
      * 获取默认密码

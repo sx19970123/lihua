@@ -33,6 +33,13 @@
 }
 
 /**
+    问号提示距离标题的距离
+ */
+.question-icon {
+    margin-left: var(--lihua-space-xs) !important;
+}
+
+/**
     顶部导航模式下，使用该css可使内容居中
  */
 [layout-type='top-navigation'] {

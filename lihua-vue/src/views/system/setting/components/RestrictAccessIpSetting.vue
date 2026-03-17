@@ -11,7 +11,7 @@
             <template #title>
               配置禁止访问ip地址，支持 ? * 通配符
             </template>
-            <QuestionCircleOutlined style="margin-left: var(--lihua-space-xs)"/>
+            <QuestionCircleOutlined class="question-icon"/>
           </a-tooltip>
         </template>
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>

@@ -162,19 +162,13 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Override
     public void checkSameAccount(String token) {
-        // 获取最大登录用户配置信息
-        SysSetting sameAccountLoginSetting = sysSettingService.getSysSettingByKey(SysSettingEnum.SAME_ACCOUNT_LOGIN.getKey());
+        // 获取最大登录用户配置信息，-1为未配置
+        int limitSize = sysSettingService.getMaxConcurrentLogins();
 
-        if (sameAccountLoginSetting == null) {
+        if (limitSize == -1) {
             return;
         }
-        SysSettingDTO.SameAccountLoginSetting setting = JsonUtils.toObject(sameAccountLoginSetting.getJson(), SysSettingDTO.SameAccountLoginSetting.class);
-        // 是否启用
-        if (!setting.isEnable()) {
-            return;
-        }
-        // 获取设定最大登录用户数
-        int limitSize = setting.getMaximum() > 0 ? setting.getMaximum() : 1;
+
         // 获取用户id
         String userId = LoginUserManager.getUserIdByCacheKey(JwtUtils.decode(token));
 
