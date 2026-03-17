@@ -63,16 +63,18 @@
             <!-- 提示 -->
             <div class="tips">
               <a-typography-text type="secondary">
-                <div v-if="status === 'reset'">
-                  <DoubleRightOutlined style="transform: rotate(90deg);"/>
-                  向下滑动锁定
-                </div>
-                <div v-if="status === 'close'">
-                  <UnlockOutlined /> 取消锁屏
-                </div>
-                <div v-if="status === 'lockable'">
-                  <LockOutlined /> 锁定屏幕
-                </div>
+                <transition name="fast-fade" mode="out-in">
+                  <div v-if="status === 'reset'">
+                    <DoubleRightOutlined style="transform: rotate(90deg);"/>
+                    向下滑动锁定
+                  </div>
+                  <div v-else-if="status === 'close'">
+                    <UnlockOutlined /> 取消锁屏
+                  </div>
+                  <div v-else-if="status === 'lockable'">
+                    <LockOutlined /> 锁定屏幕
+                  </div>
+                </transition>
               </a-typography-text>
             </div>
           </div>
@@ -620,5 +622,18 @@ onUnmounted(() => {
 .shake {
   animation: shake 0.4s ease;
   transform-origin: center;
+}
+
+.fast-fade-enter-active {
+  transition: all 0.1s ease-in;
+}
+.fast-fade-leave-active {
+  transition: all 0.1s ease-out;
+}
+.fast-fade-enter-from {
+  opacity: 0;
+}
+.fast-fade-leave-to {
+  opacity: 0;
 }
 </style>
