@@ -134,6 +134,7 @@ export const useThemeStore = defineStore('theme',{
             this.changeAffixHead()
             this.changeGroundGlass()
             this.changeShowViewTabs()
+            this.changeFooter()
             this.$state.isServerLoad = true
         },
         // 通过json数据初始化state
@@ -190,6 +191,15 @@ export const useThemeStore = defineStore('theme',{
                 document.documentElement.setAttribute("view-tabs", "show")
             } else {
                 document.documentElement.setAttribute("view-tabs", "hide")
+            }
+        },
+        // 显示页脚
+        changeFooter() {
+            const showFooter = this.$state.showFooter
+            if (showFooter) {
+                document.documentElement.setAttribute("footer", "show")
+            } else {
+                document.documentElement.setAttribute("footer", "hide")
             }
         },
         // 修改导航宽度时同时修改原始值

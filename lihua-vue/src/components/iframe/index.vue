@@ -73,19 +73,34 @@ onUnmounted(() =>  sessionStorage.removeItem('isRefreshed' + src.value))
  54px：view-tabs高度
  3px：微调偏移量
  */
-[layout='show'][view-tabs='show'] {
-  .lihua-iframe {
-    height: calc(100vh - var(--lihua-layout-height) - var(--lihua-space-base) - var(--lihua-space-base) - 54px - 3px);
-  }
+
+:root {
+  --tab-height: 54px;
+  --border-width: 3px;
 }
-[layout='hide'][view-tabs='show'] {
-  .lihua-iframe {
-    height: calc(100vh - var(--lihua-space-base) - var(--lihua-space-base) - 54px - 3px);
-  }
+
+[footer='show'] {
+  --footer-display-height: var(--footer-height);
 }
-[layout='show'][view-tabs='hide'] {
-  .lihua-iframe {
-    height: calc(100vh - var(--lihua-layout-height) - var(--lihua-space-base) - var(--lihua-space-base) - 3px);
-  }
+[footer='hide'] {
+  --footer-display-height: 0px;
+}
+
+[view-tabs='show'] {
+  --tab-display-height: var(--tab-height);
+}
+[view-tabs='hide'] {
+  --tab-display-height: 0px;
+}
+
+[layout='show'] {
+  --layout-display-height: var(--lihua-layout-height);
+}
+[layout='hide'] {
+  --layout-display-height: 0px;
+}
+
+.lihua-iframe {
+  height: calc(100vh - var(--layout-display-height) - var(--tab-display-height) - var(--lihua-space-base) - var(--lihua-space-base) - var(--border-width) - var(--footer-display-height));
 }
 </style>
