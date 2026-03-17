@@ -1,9 +1,9 @@
 package com.lihua.security.manager;
 
 import com.lihua.redis.cache.RedisCache;
-import com.lihua.common.config.LihuaConfig;
 import com.lihua.redis.enums.RedisKeyPrefixEnum;
 import com.lihua.common.exception.ServiceException;
+import com.lihua.security.config.TokenConfig;
 import com.lihua.security.model.LoginUser;
 import com.lihua.security.utils.JwtUtils;
 import com.lihua.common.utils.web.WebUtils;
@@ -23,12 +23,7 @@ public class LoginUserManager {
 
     private static final RedisCache redisCache = SpringUtils.getBean(RedisCache.class);
 
-    /**
-     * 获取spring容器中的配置信息
-     */
-    private static LihuaConfig lihuaConfig() {
-        return SpringUtils.getBean(LihuaConfig.class);
-    }
+    private static final TokenConfig  tokenConfig = SpringUtils.getBean(TokenConfig.class);
 
     /**
      * 根据 token 获取用户信息
@@ -56,8 +51,8 @@ public class LoginUserManager {
      */
     public static void verifyLoginUserCache() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
-        if (DateUtils.differenceMinute(DateUtils.now(), loginUser.getExpirationTime()) < lihuaConfig().getRefreshThreshold()) {
-            redisCache.setExpire(loginUser.getCacheKey(), Duration.ofMinutes(lihuaConfig().getTokenExpireTime()));
+        if (DateUtils.differenceMinute(DateUtils.now(), loginUser.getExpirationTime()) < tokenConfig.getRefreshThreshold()) {
+            redisCache.setExpire(loginUser.getCacheKey(), Duration.ofMinutes(tokenConfig.getTokenExpireTime()));
         }
     }
 
@@ -68,7 +63,7 @@ public class LoginUserManager {
      */
     public static String setLoginUserCache(LoginUser loginUser) {
         // 记录过期时间
-        loginUser.setExpirationTime(DateUtils.now().plusMinutes(lihuaConfig().getTokenExpireTime()));
+        loginUser.setExpirationTime(DateUtils.now().plusMinutes(tokenConfig.getTokenExpireTime()));
         // 隐藏用户密码
         loginUser.getUser().setPassword(null);
         // 登录客户端类型
@@ -83,7 +78,7 @@ public class LoginUserManager {
         // 设置缓存
         redisCache.setCacheObject(cacheKey,
                 loginUser,
-                Duration.ofMinutes(lihuaConfig().getTokenExpireTime()));
+                Duration.ofMinutes(tokenConfig.getTokenExpireTime()));
 
         // 缓存key
         return cacheKey;

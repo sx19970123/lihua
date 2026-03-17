@@ -2,6 +2,9 @@ server:
   port: 8080
   forward-headers-strategy: framework
 spring:
+  application:
+    name: lihua
+    version: 1.4.2
   profiles:
     # 切换开发/生产环境
     active: dev
@@ -13,9 +16,6 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
-
-  application:
-    name: lihua
 
   banner:
     location: classpath:banner.txt

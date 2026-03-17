@@ -1,7 +1,7 @@
 package com.lihua.service.impl;
 
-import com.lihua.common.config.LihuaConfig;
 import com.lihua.mapper.SysUserMapper;
+import com.lihua.security.config.TokenConfig;
 import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUser;
 import com.lihua.common.utils.date.DateUtils;
@@ -18,7 +18,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
     private SysUserMapper sysUserMapper;
 
     @Resource
-    private LihuaConfig lihuaConfig;
+    private TokenConfig tokenConfig;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -27,7 +27,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("用户名未找到");
         }
         // 创建 LoginUser 包含登录的用户信息 和 过期时间
-        return new LoginUser(user, DateUtils.now().plusMinutes(lihuaConfig.getTokenExpireTime()));
+        return new LoginUser(user, DateUtils.now().plusMinutes(tokenConfig.getTokenExpireTime()));
     }
 }
 
