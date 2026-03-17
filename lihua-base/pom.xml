@@ -13,6 +13,20 @@
     <packaging>pom</packaging>
     <modules>
         <module>lihua-attachment</module>
+        <module>lihua-captcha</module>
+        <module>lihua-common</module>
+        <module>lihua-dict</module>
+        <module>lihua-doc</module>
+        <module>lihua-excel</module>
+        <module>lihua-ip</module>
+        <module>lihua-job</module>
+        <module>lihua-log</module>
+        <module>lihua-mybatis</module>
+        <module>lihua-redis</module>
+        <module>lihua-security</module>
+        <module>lihua-sensitive</module>
+        <module>lihua-web</module>
+        <module>lihua-websocket</module>
     </modules>
 
     <properties>
@@ -22,12 +36,6 @@
     </properties>
 
     <dependencies>
-        <!--         web-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webmvc</artifactId>
-        </dependency>
-
         <!--        参数校验-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

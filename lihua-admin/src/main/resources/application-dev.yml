@@ -82,12 +82,22 @@ logging:
     com.lihua: debug
     org.springframework: info
 
+# oss
 aliyun:
   oss:
     endpoint: oss-cn-beijing.aliyuncs.com
     access-key-id: LTAI5tAVTDrjswJCAv9z16wM
     access-key-secret: W2YMUaQtOcvLOKEYGT3IF0j1i8OKkA
     bucket-name: aurevo-user-avatar
+
+# 定时任务
+snail-job:
+  server:
+    host: 127.0.0.1
+    port: 17888
+  namespace: bQwRjnB6bksnbBrLG_0qcDcvsAF25-9p
+  group: lihua-group
+  token: SJ_yeCripNU8DrZraf6G5Po7f3nawIXSFvE
 
  # spring doc 接口文档
 springdoc:

@@ -35,6 +35,7 @@
         <fesod.version>2.0.1-incubating</fesod.version>
         <oss.version>3.18.5</oss.version>
         <spring-doc.version>3.0.2</spring-doc.version>
+        <snail-job.version>1.10.0-beta1</snail-job.version>
     </properties>
 
     <dependencyManagement>
@@ -132,6 +133,18 @@
                 <artifactId>lihua-captcha</artifactId>
                 <version>${lihua.version}</version>
             </dependency>
+<!--            api文档模块 -->
+            <dependency>
+                <groupId>com.lihua</groupId>
+                <artifactId>lihua-doc</artifactId>
+                <version>${lihua.version}</version>
+            </dependency>
+<!--            定时任务模块 -->
+            <dependency>
+                <groupId>com.lihua</groupId>
+                <artifactId>lihua-job</artifactId>
+                <version>${lihua.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -145,6 +158,11 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <!--         web-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
         <!--        mysql-->
         <dependency>
@@ -166,6 +184,7 @@
         <module>lihua-base/lihua-redis</module>
         <module>lihua-base/lihua-dict</module>
         <module>lihua-base/lihua-log</module>
+        <module>lihua-base/lihua-job</module>
         <module>lihua-base/lihua-common</module>
         <module>lihua-base/lihua-sensitive</module>
         <module>lihua-base/lihua-ip</module>

@@ -92,6 +92,11 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-web</artifactId>
         </dependency>
+        <!--            定时任务模块 -->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-job</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
