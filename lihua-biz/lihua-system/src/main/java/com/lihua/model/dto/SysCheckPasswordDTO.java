@@ -13,9 +13,4 @@ public class SysCheckPasswordDTO {
      */
     @NotNull(message = "密码不能为空")
     private String password;
-
-    /**
-     * 密码请求key
-     */
-    private String passwordRequestKey;
 }

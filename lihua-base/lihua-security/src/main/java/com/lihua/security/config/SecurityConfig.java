@@ -58,6 +58,7 @@ public class SecurityConfig {
                         "/system/attachment/storage/download/**",       // 附件下载
                         "/system/setting/GrayModelSetting",             // 灰色模式设置
                         "/system/checkUserName/**",                     // 检查用户名
+                        "/system/setting/base/**",                      // 基础设置
                         "/system/register/**"                           // 注册
                 ).permitAll()
                 // app接口配置
@@ -66,12 +67,12 @@ public class SecurityConfig {
                         "/app/system/publicKey/**",                         // 获取公钥
                         "/app/system/attachment/storage/download/**",       // 附件下载
                         "/app/system/checkUserName/**",                     // 检查用户名
+                        "/app/system/setting/base/**",                      // 基础设置
                         "/app/system/register/**"                           // 注册
                 ).permitAll()
                 // 系统其他接口配置
                 .requestMatchers(
                         "/captcha/**",                                  // 验证码
-                        "/system/setting/base/**",                      // 基础设置
                         "/ws-connect/**",                               // websocket建立连接
                         "/druid/**",                                    // druid数据库监控
                         "/swagger-ui/**",                               // spring-doc

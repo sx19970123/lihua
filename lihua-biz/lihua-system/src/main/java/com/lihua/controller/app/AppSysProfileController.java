@@ -92,7 +92,7 @@ public class AppSysProfileController extends ApiResponseController {
 
     @Operation(summary = "验证密码")
     @PostMapping("checkPassword")
-    @Log(description = "验证密码", type = LogTypeEnum.OTHER, excludeParams = {"password", "passwordRequestKey"})
+    @Log(description = "验证密码", type = LogTypeEnum.OTHER, excludeParams = {"password"})
     public ApiResponseModel<Boolean> checkPassword(@RequestBody SysCheckPasswordDTO sysCheckPasswordDTO) {
         return success(sysProfileService.checkPassword(sysCheckPasswordDTO));
     }
