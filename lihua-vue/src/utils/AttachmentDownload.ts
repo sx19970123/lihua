@@ -3,22 +3,15 @@ const origin = window.location.origin
 
 /**
  * 通用下载，根据传入参数不同自动调用不同的下载函数
- * @param data 链接 | id
+ * @param data 连接｜blob
  * @param fileName 附件名称
  */
-export const download = (data: string, fileName?: string) => {
-    if (data.startsWith(baseURL) || data.startsWith(origin) || data.startsWith("http")) {
-        // 传入的是链接（需自行拼接 baseURL或origin）
+export const download = (data: string | Blob, fileName?: string) => {
+    if (data instanceof Blob) {
+        downloadBlob(data, fileName);
+    } else if (data.startsWith(baseURL) || data.startsWith(origin) || data.startsWith("http")) {
         downloadFromUrl(data, fileName)
-    } else {
-        // 传入的是id（仅公开数据可通过id下载）
-        downloadPublic(data, fileName)
     }
-}
-
-// 根据附件id下载（仅公开数据可通过id下载）
-export const downloadPublic = (id: string, fileName?: string) =>  {
-    downloadFromUrl(import.meta.env.VITE_APP_BASE_API + `/system/attachment/storage/download/p/${id}?fileName=${fileName?encodeURIComponent(fileName):''}`, fileName)
 }
 
 // 下载blob附件

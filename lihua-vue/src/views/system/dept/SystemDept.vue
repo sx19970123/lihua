@@ -245,7 +245,7 @@ import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import Spin from "@/components/spin";
 import {type BaseModalActiveType} from "@/api/global/Type.ts";
-import {downloadBlob} from "@/utils/AttachmentDownload.ts";
+import {download} from "@/utils/AttachmentDownload.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_status} = initDict("sys_status")
@@ -662,7 +662,7 @@ const handleExportExcel = async () => {
   });
   try {
     const blob = await exportExcel(deptQuery.value)
-    downloadBlob(blob, "系统部门")
+    download(blob, "系统部门")
   } catch (e) {
     message.error("导出失败")
   } finally {

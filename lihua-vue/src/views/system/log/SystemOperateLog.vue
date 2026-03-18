@@ -206,7 +206,7 @@ import DictTag from "@/components/dict-tag/index.vue";
 import type {SysLog, SysLogDTO} from "@/api/system/log/type/SysLog.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import dayjs from "dayjs";
-import {downloadBlob} from "@/utils/AttachmentDownload.ts";
+import {download} from "@/utils/AttachmentDownload.ts";
 import Spin from "@/components/spin";
 import TableSetting from "@/components/table-setting/index.vue";
 
@@ -497,7 +497,7 @@ const handleExportExcel = async () => {
     tip: '努力加载中...'
   });
   const blob = await excelOperateExport(logQuery.value)
-  downloadBlob(blob, "操作日志")
+  download(blob, "操作日志")
   spinInstance.close()
 }
 </script>

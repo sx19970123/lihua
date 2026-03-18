@@ -373,7 +373,7 @@ import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useSettingStore} from "@/stores/setting.ts";
 import {type BaseModalActiveType} from "@/api/global/Type.ts";
-import {downloadBlob} from "@/utils/AttachmentDownload.ts";
+import {download} from "@/utils/AttachmentDownload.ts";
 import {useUserStore} from "@/stores/user.ts";
 import {refreshUserData} from "@/utils/AppInit.ts";
 import {useRoute} from "vue-router";
@@ -1021,7 +1021,7 @@ const initExcel = () => {
       tip: '努力加载中...'
     });
     const blob = await excelTemplate()
-    downloadBlob(blob, "用户导入模板")
+    download(blob, "用户导入模板")
     spinInstance.close()
   }
 
@@ -1033,7 +1033,7 @@ const initExcel = () => {
     try {
       // blob转为url后进行下载
       const blob = await exportExcel(userQuery.value)
-      downloadBlob(blob, "导出用户")
+      download(blob, "导出用户")
     } catch (err) {
       message.error("导出失败")
     } finally {

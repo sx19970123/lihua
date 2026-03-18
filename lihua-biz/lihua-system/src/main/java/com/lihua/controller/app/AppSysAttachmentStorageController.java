@@ -49,6 +49,13 @@ public class AppSysAttachmentStorageController extends ApiResponseController {
         return success(sysAttachmentStorageService.existsAttachmentByMd5(sysAttachment.getMd5(), sysAttachment.getOriginalName()));
     }
 
+    @Operation(summary = "公开附件上传")
+    @PostMapping("public/upload")
+    @Log(description = "公开附件上传", type = LogTypeEnum.UPLOAD)
+    public ApiResponseModel<String> publicUpload(@RequestParam("file") MultipartFile file, @RequestParam("businessCode") String businessCode) {
+        return success(sysAttachmentStorageService.publicUpload(file, businessCode));
+    }
+
     @Operation(summary = "附件上传")
     @PostMapping("upload")
     @Log(description = "附件上传", type = LogTypeEnum.UPLOAD)

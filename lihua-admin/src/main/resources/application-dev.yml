@@ -10,7 +10,7 @@ attachment:
   # 附件下载生成链接过期时间（分钟）
   fileDownloadExpireTime: 30
   # 文件上传服务类型：LOCAL（传统本地上传）、ALIYUN-OSS（阿里云oss）
-  uploadFileModel: ALIYUN-OSS
+  uploadFileModel: ALIYUN-OSS # ALIYUN-OSS
   # 公开文件的业务编码
   uploadPublicBusinessCode: [UserAvatar, SystemNotice, EditorIndex]
   # 上传文件路径 mac windows 注意目录切换
