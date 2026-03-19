@@ -17,27 +17,24 @@ import Editor from '@tinymce/tinymce-vue'
 import {useThemeStore} from "@/stores/theme.ts";
 import {v4 as uuidv4} from "uuid";
 import {useRoute} from "vue-router";
-import {upload, urlUpload} from "@/api/system/attachment/AttachmentStorage.ts";
+import {publicUpload} from "@/api/system/attachment/AttachmentStorage.ts";
 import type {SysAttachmentUrl} from "@/api/system/attachment/type/SysAttachmentUrl.ts";
 import {message} from "ant-design-vue";
-import {ResponseError} from "@/api/global/Type.ts";
+import {attachmentUrl} from "@/utils/AttachmentUrl.ts";
+
 const themeStore = useThemeStore();
 const router = useRoute()
 // 上传默认大小
 const defaultSize = 1024 * 1024 * 2
-const {modelValue, autoDownloadPasteImg = false, height = '50vh',attachmentURLPrefix = "origin", businessCode, businessName, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
+const {modelValue, autoDownloadPasteImg = true, height = '50vh', businessCode, imageType = [], mediaType = [], fileType = [], imageMaxSize = defaultSize, mediaMaxSize = defaultSize, fileMaxSize = defaultSize} = defineProps<{
   // 双向绑定
   modelValue?: string,
   // 编辑器高度
   height?: string | number,
   // 自动下载剪贴板中的图片
   autoDownloadPasteImg?: boolean,
-  // 保存附件前缀
-  attachmentURLPrefix?: "baseURL" | "origin",
   // 业务编码
   businessCode?: string,
-  // 业务名称
-  businessName?: string,
   // 图片后缀及最大尺寸
   imageType?: string[],
   imageMaxSize?: number
@@ -53,11 +50,7 @@ const emits = defineEmits(['update:modelValue'])
 
 // 附件业务编码
 const bCode = businessCode ?? router.name?.toString()
-// 附件业务名称
-const bName = businessName ?? router.meta.label as string
-// 附件上传后保存前缀（/prod-api 或 http://xxx:xx/prod-api）
-const url = import.meta.env.VITE_APP_BASE_API + "/system/attachment/storage/download/p/"
-const fileDownloadBaseURL = attachmentURLPrefix === "baseURL" ? url : window.location.origin + url
+
 // 切换主题重新加载组件
 const editKey = ref<string>(uuidv4())
 // 加载中
@@ -165,17 +158,10 @@ const editorConfig = computed(() => ({
           }
         }
       });
-    } catch (error) {
-      if (error instanceof ResponseError) {
-        message.error(error.msg)
-      } else {
-        console.error(error)
-      }
     } finally {
       notif.close();
     }
   }
-
 }))
 
 // 双向绑定
@@ -186,36 +172,27 @@ const content = ref<string | undefined>(modelValue)
  * @param url
  */
 const handleLinkImageUpload = async (url?: string): Promise<SysAttachmentUrl | false> => {
-  // 业务编码｜业务名称不存在，则返回原url
-  if (!bCode || !bName || !url) {
+  if (!url) {
     return false
   }
-  try {
-    // url上传
-    const resp = await urlUpload(url, bCode, bName)
-    if (resp.code === 200) {
-      const data = resp.data
-      // 组合url
-      data.url = fileDownloadBaseURL + data.id
-      return data
-    } else {
-      message.error(resp.msg)
-      return false
+  // 拿到url对应的二进制附件
+  const resp = await fetch(url)
+  const blob = await resp.blob()
+  const file = new File([blob], `editor_${uuidv4()}.png`, {type: blob.type})
+  const fileResp = await handleUpload(file, 'image');
+  if (fileResp) {
+    return {
+      url: fileResp.url,
+      originalURL: url
     }
-  } catch (error) {
-    if (error instanceof ResponseError) {
-      message.error(error.msg)
-    } else {
-      console.error(error)
-    }
-    return false
   }
+  return false;
 }
 
 /**
  * 处理附件上传
  */
-const handleUpload = async (files: FileList | null, type: "file" | "image" | "media") => {
+const handleUpload = async (files: FileList | File | null, type: "file" | "image" | "media") => {
   // 附件类型
   const fileTypes: string[] = []
   // 附件大小
@@ -230,9 +207,15 @@ const handleUpload = async (files: FileList | null, type: "file" | "image" | "me
     fileTypes.push(...fileType)
     maxSize = fileMaxSize
   }
-  // 拿到附件
-  const file = files?.item(0)
 
+  // 获取file
+  let file: File | null = null
+  if (files instanceof FileList) {
+    file = files?.item(0)
+  }
+  if (files instanceof File) {
+    file = files
+  }
   // 附件不存在
   if (!file) {
     message.error("附件不存在")
@@ -253,18 +236,18 @@ const handleUpload = async (files: FileList | null, type: "file" | "image" | "me
   }
 
   // 业务参数不存在
-  if (!bCode || !bName) {
-    message.error("业务参数不存在")
+  if (!bCode) {
+    message.error("业务编码不存在")
     return false
   }
 
   try {
     // 进行附件上传
-    const resp = await upload(file, bCode, bName)
+    const resp = await publicUpload(file, bCode)
     // 上传成功
     if (resp.code === 200) {
       return {
-        url: fileDownloadBaseURL + resp.data,
+        url: attachmentUrl(resp.data),
         name: file.name,
       }
     } else {
@@ -272,11 +255,6 @@ const handleUpload = async (files: FileList | null, type: "file" | "image" | "me
       return false
     }
   } catch (error) {
-    if (error instanceof ResponseError) {
-      message.error(error.msg)
-    } else {
-      console.error(error)
-    }
     return false
   }
 }

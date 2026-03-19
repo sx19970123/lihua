@@ -7,7 +7,7 @@ export default {
     /**
      * 系统版本
      */
-    version: "1.4.2",
+    version: "2.0.0",
 
     /**
      * 暗色模式 true； 亮色模式 false
@@ -91,6 +91,11 @@ export default {
      * 显示多窗口标签
      */
     showViewTabs: true,
+
+    /**
+     * 是否显示页脚
+     */
+    showFooter: true,
 
     /**
      * 侧边颜色 light / dark

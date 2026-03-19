@@ -128,7 +128,6 @@ import {cacheInfo, cacheKeyGroups, cacheKeys, memoryInfo, remove} from "@/api/mo
 import {onMounted, ref} from "vue";
 import {message} from "ant-design-vue";
 import type {CacheMonitor} from "@/api/monitor/cache/type/CacheMonitor.ts";
-import {ResponseError} from "@/api/global/Type.ts";
 // 内存占用大小
 const useMemory = ref<string>('')
 // 缓存类型集合
@@ -148,37 +147,21 @@ const loadingInfo = ref<boolean>(false)
 
 // 加载内存占用
 const initMemoryInfo = async () => {
-  try {
-    const resp = await memoryInfo()
-    if (resp.code === 200) {
-      useMemory.value = resp.data + ' MB'
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  const resp = await memoryInfo()
+  if (resp.code === 200) {
+    useMemory.value = resp.data + ' MB'
+  } else {
+    message.error(resp.msg)
   }
 }
 
 // 加载缓存类型
 const initCacheKeyGroups = async () => {
-  try {
-    const resp = await cacheKeyGroups()
-    if (resp.code === 200) {
-      keyTypeList.value = resp.data
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.log(e)
-    }
+  const resp = await cacheKeyGroups()
+  if (resp.code === 200) {
+    keyTypeList.value = resp.data
+  } else {
+    message.error(resp.msg)
   }
 }
 
@@ -210,12 +193,6 @@ const loadKeyList = async (item: CacheMonitor) => {
     } else {
       message.error(resp.msg)
     }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
   } finally {
     loadingKeys.value = false
   }
@@ -245,12 +222,6 @@ const loadCacheInfo = async (key: string) => {
     } else {
       message.error(resp.msg)
     }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
   } finally {
     loadingInfo.value = false
   }
@@ -258,22 +229,14 @@ const loadCacheInfo = async (key: string) => {
 
 // 删除缓存
 const removeCacheInfo = async (key: string) => {
-  try {
-    const resp = await remove(key);
-    if (resp.code === 200) {
-      message.success(resp.msg)
-      if (targetKeyType.value) {
-        await loadKeyList(targetKeyType.value)
-      }
-    } else {
-      message.error(resp.msg)
+  const resp = await remove(key);
+  if (resp.code === 200) {
+    message.success(resp.msg)
+    if (targetKeyType.value) {
+      await loadKeyList(targetKeyType.value)
     }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  } else {
+    message.error(resp.msg)
   }
 }
 

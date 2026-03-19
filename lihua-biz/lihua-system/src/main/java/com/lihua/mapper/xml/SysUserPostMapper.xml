@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lihua.mapper.SysUserPostMapper">
+
+
+    <select id="queryPostByUserIds" resultType="com.lihua.model.vo.SysPostVO">
+        SELECT
+            sys_post.`name`,
+            sys_post.dept_id,
+            sys_user_post.user_id
+        FROM
+            sys_post
+        INNER JOIN sys_user_post ON sys_user_post.post_id = sys_post.id
+        WHERE
+        sys_post.del_flag = '0' AND
+        user_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+</mapper>

@@ -44,6 +44,9 @@
     --lihua-font-size-xl: 20px;
     --lihua-font-size-xxl: 24px;
 
+    /* ===============================页脚=============================== */
+    --footer-height: 24px;
+
     /* ==============================滚动条============================== */
     --lihua-scrollbar-thumb-color: rgb(227,227,227) transparent;
     --lihua-sider-scrollbar-thumb-color: rgb(66,66,66) transparent;

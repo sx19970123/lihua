@@ -1,12 +1,10 @@
 <template>
   <a-dropdown :trigger="['contextmenu', 'click']" overlayClassName="enable-glass">
-    <a-button type="text" size="large" style="padding: 0">
-      <template #icon>
-        <a-tooltip title="个人中心" placement="bottom">
-          <user-avatar :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
-        </a-tooltip>
-      </template>
-    </a-button>
+    <a-tooltip title="个人中心" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
+      <a-button type="link" class="btn">
+        <user-avatar class="avatar" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
+      </a-button>
+    </a-tooltip>
     <template #overlay>
       <a-menu class="user-card" @click="handleClickMenu"  v-rollDisable="true">
         <a-menu-item key="user-overview">
@@ -117,5 +115,14 @@ const logout = async () => {
 .user-card {
   width: 220px;
   box-shadow: var(--lihua-box-shadow);
+}
+.btn {
+  padding: 0 0 0 8px
+}
+.avatar {
+  transition: transform .2s;
+}
+.avatar:hover {
+  transform: scale(1.15);
 }
 </style>

@@ -46,7 +46,6 @@ import {onMounted, ref} from "vue";
 import {serverInfo} from "@/api/monitor/server/Server.ts";
 import dayjs from "dayjs";
 import Spin from "@/components/spin";
-import {ResponseError} from "@/api/global/Type.ts";
 
 const info = ref<ServerInfo>()
 // 初始化服务器信息
@@ -62,12 +61,6 @@ const init = async () => {
      info.value = resp.data
    } else {
      message.error(resp.msg)
-   }
- } catch (e) {
-   if (e instanceof ResponseError) {
-     message.error(e.msg)
-   } else {
-     console.error(e)
    }
  } finally {
    spinInstance.close()

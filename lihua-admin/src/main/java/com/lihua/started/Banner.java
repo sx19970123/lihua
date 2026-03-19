@@ -1,5 +1,6 @@
 package com.lihua.started;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Banner implements ApplicationRunner {
     @Override
-    public void run(ApplicationArguments args) {
+    public void run(@NonNull ApplicationArguments args) {
         System.out.println("""
 
                      __   _____ _______   _      _____  _______    _____ _    _  _____ _____ ______  _____ _____       __

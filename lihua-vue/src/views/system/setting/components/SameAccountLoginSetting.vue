@@ -7,7 +7,7 @@
             <template #title>
               同一账号最多允许 X 人同时登录，超出后先登录的用户将被强制下线
             </template>
-            <QuestionCircleOutlined style="margin-left: var(--lihua-space-xs)"/>
+            <QuestionCircleOutlined class="question-icon"/>
           </a-tooltip>
         </template>
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
@@ -34,11 +34,12 @@
 import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
 import type {SameAccountLoginSetting} from "@/api/system/setting/type/SameAccountLoginSetting.ts";
-import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
+import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import {message} from "ant-design-vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {isAdmin} from "@/utils/Auth.ts";
+import {save} from "@/api/system/setting/Setting.ts";
 
 const themeStore = useThemeStore()
 const settingStore = useSettingStore();
@@ -46,11 +47,9 @@ const componentName = getCurrentInstance()?.type.__name
 const submitLoading = ref<boolean>(false);
 
 const init = async () => {
-  const resp = await settingStore.getSetting<SameAccountLoginSetting>(componentName);
-  if (!resp) {
-    await settingStore.save(setting.value)
-  } else {
-    settingForm.value = resp
+  const settingData = await settingStore.getSettingInfo<SameAccountLoginSetting>(componentName);
+  if (settingData) {
+    settingForm.value = settingData
   }
 }
 
@@ -61,10 +60,9 @@ const settingForm = ref<SameAccountLoginSetting>({
 })
 
 // 保存到数据库中的对象
-const setting = ref<SystemSetting>({
-  settingName: '同账号登录限制',
-  settingComponentName: componentName,
-  settingJson: JSON.stringify(settingForm.value)
+const setting = ref<SysSetting>({
+  settingKey: componentName,
+  json: JSON.stringify(settingForm.value)
 })
 
 
@@ -97,10 +95,11 @@ const rules: Record<string, Rule[]> = {
 
 // 处理保存设置
 const handleFinish = async () => {
-  submitLoading.value = true
-  setting.value.settingJson = JSON.stringify(settingForm.value)
+
   try {
-    const resp = await settingStore.save(setting.value)
+    submitLoading.value = true
+    setting.value.json = JSON.stringify(settingForm.value)
+    const resp = await save(setting.value)
 
     if (resp.code === 200) {
       message.success(resp.msg)

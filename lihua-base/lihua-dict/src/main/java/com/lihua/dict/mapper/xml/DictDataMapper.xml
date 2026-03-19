@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lihua.dict.mapper.DictDataMapper">
+
+    <select id="queryByDictTypeCode" resultType="com.lihua.dict.model.DictDataModel">
+        SELECT
+            sys_dict_data.id,
+            sys_dict_data.parent_id,
+            sys_dict_data.dict_type_code,
+            sys_dict_data.label,
+            sys_dict_data.value,
+            sys_dict_data.sort,
+            sys_dict_data.tag_style,
+            sys_dict_data.remark
+        FROM
+            sys_dict_data
+        WHERE
+            sys_dict_data.status = '0' AND
+            sys_dict_data.del_flag = '0' AND
+            sys_dict_data.dict_type_code IN
+            <foreach collection="dictTypeCodeList" item="code" open="(" separator="," close=")">
+                #{code}
+            </foreach>
+    </select>
+</mapper>

@@ -63,14 +63,12 @@ import PasswordInput from "@/components/password-input/index.vue"
 import type {Rule} from "ant-design-vue/es/form";
 import {checkUserName, register} from "@/api/system/login/Login.ts";
 import {message} from "ant-design-vue";
-import {rasEncryptPassword} from "@/utils/Crypto.ts";
-import {ResponseError} from "@/api/global/Type.ts";
 import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
-
+import {useSettingStore} from "@/stores/setting.ts";
+// 系统设置
+const settingStore = useSettingStore();
 const registerLoading = ref<boolean>()
-const {enableCaptcha} = defineProps<{
-  enableCaptcha: boolean
-}>()
+
 // 向父组件抛出切登录方法
 const emits = defineEmits(['changeComponent'])
 
@@ -117,12 +115,7 @@ const handleCheckUsername = async (_rule: Rule, value: string) => {
         return Promise.reject(resp.msg)
       }
     } catch (e) {
-      if (e instanceof ResponseError) {
-        return Promise.reject(e.msg)
-      } else {
-        console.error(e)
-        return Promise.reject("未知异常")
-      }
+      return Promise.reject("业务异常")
     }
   }
 }
@@ -146,7 +139,7 @@ const rules: Record<string, Rule[]> = {
 
 // 触发注册
 const handleFinish = () => {
-  if (enableCaptcha) {
+  if (settingStore.enableCaptcha) {
     showVerify()
   } else {
     handleRegister("registerCaptcha")
@@ -166,37 +159,19 @@ const handleRegister = async (captchaVerification: string) => {
   registerLoading.value = true
   const {username, password, confirmPassword} = userRegister.value
   try {
-    // 对密码加密处理
-    const passwordEncrypt = await rasEncryptPassword(password)
-    // 对确认密码加密处理
-    const confirmPasswordEncrypt = await rasEncryptPassword(confirmPassword)
     // 用户注册
-    const resp = await register(
-        username,
-        passwordEncrypt.ciphertext,
-        passwordEncrypt.requestKey,
-        confirmPasswordEncrypt.ciphertext,
-        confirmPasswordEncrypt.requestKey,
-        captchaVerification)
-
+    const resp = await register(username, password, confirmPassword, captchaVerification)
     if (resp.code === 200) {
       message.success("注册成功，即将前往登录")
       if (registerUsername) {
         registerUsername.value = username
       }
-      setTimeout(() => {
-        handleChangeComponent('login')
-        registerLoading.value = false
-      },1000)
+
+      handleChangeComponent('login')
     } else {
       message.error(resp.msg)
     }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  } finally {
     registerLoading.value = false
   }
 }

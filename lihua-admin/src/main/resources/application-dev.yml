@@ -1,25 +1,20 @@
  # 系统配置
-lihua:
-  # 系统版本
-  version: 1.4.2
+token:
   # 令牌过期时间（分钟）
   tokenExpireTime: 60
   # 令牌刷新阈值（分钟）距令牌过期15分钟内时，有新请求时对令牌进行刷新
   refreshThreshold: 15
+
+# 附件配置
+attachment:
   # 附件下载生成链接过期时间（分钟）
   fileDownloadExpireTime: 30
-  # 允许跨域的最长时间
-  corsMaxAge: 3600
-  # sse 过期时长（28800000 毫秒 8小时），超过连接时长前端在线情况会自动发起重连
-  sseExpireTime: 28800000
-  # 文件上传服务类型：LOCAL（传统本地上传）、MINIO（Minio对象存储）
+  # 文件上传服务类型：LOCAL（传统本地上传）、ALIYUN-OSS（阿里云oss）
   uploadFileModel: LOCAL
-  # 公开文件的业务编码，publicLocalDownload 中判断包含业务编码的文件才会进行返回
+  # 公开文件的业务编码
   uploadPublicBusinessCode: [UserAvatar, SystemNotice, EditorIndex]
-  # 上传文件路径 mac windows 注意目录切换
-  uploadFilePath: /Users/yukino/my-project/data/lihua/
-  # 文件导出路径
-  exportFilePath: /Users/yukino/my-project/data/lihua/export/
+  # 上传文件路径，LOCAL模式下为服务器目录；ALIYUN-OSS模式下为桶下目录
+  uploadFilePath: lihua
 
 spring:
   # 数据源配置
@@ -44,7 +39,8 @@ spring:
             idle-timeout: 120000
             # 连接生命时长（毫秒）
             max-lifetime: 1800000
-# 多数据源配置，使用dynamic-datasource实现，具体文档请参考：https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611
+
+  # 多数据源配置，使用dynamic-datasource实现，官方文档：https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611
 #        slave_1:
 #          driver-class-name: com.mysql.cj.jdbc.Driver
 #          url: jdbc:mysql://localhost:3306/dynamic
@@ -61,27 +57,23 @@ spring:
 #            idle-timeout: 0
 #            # 连接生命时长（毫秒）
 #            max-lifetime: 25800
-  # redis配置
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6379
-      # 读取超时
-      timeout: 3000
-      # 连接超时
-      connectTimeout: 5000
-      # lettuce连接池
-      lettuce:
-        pool:
-          # 最小空闲连接
-          min-idle: 5
-          # 最大空闲连接
-          max-idle: 10
-          # 最大连接数
-          max-active: 100
-          # 连接分配应该阻塞的最大时间
-          max-wait: 2000
-
+  # redisson配置，官方文档：https://redisson.pro/docs/integration-with-spring/#spring-boot-starter
+  redis:
+    redisson:
+      config: |
+        singleServerConfig:
+          address: "redis://127.0.0.1:6379"
+          database: 0
+          # 命令超时时间
+          timeout: 3000
+          # 连接超时时间
+          connectTimeout: 10000
+          # 连接池最大连接数
+          connectionPoolSize: 64
+          # 最小空闲连接数
+          connectionMinimumIdleSize: 10
+        # 自定义序列化器
+        codec: !<com.lihua.redis.config.TypedRedissonJsonCodec> {}
 # 日志配置
 logging:
   file:
@@ -90,43 +82,33 @@ logging:
     com.lihua: debug
     org.springframework: info
 
-xxl-job:
-  # 是否启用定时任务
-  enable: false
-  # 调度中心部署地址
-  adminAddress: http://127.0.0.1:8081/xxl-job-admin
-  # 执行器通讯token
-  accessToken: default_token
-  # 执行器应用名称
-  appName: lihua
-  # 执行器注册地址
-  address:
-  # 执行器ip
-  ip:
-  # 执行器端口号
-  port: 0
-  # 执行器日志保存目录
-  logPath: D:/home/lihua/job-logs
-  # 执行器日志保存天数
-  logRetentionDays: 30
+# oss
+# 需要attachment配置中uploadFileModel为【ALIYUN-OSS】，同配置项 uploadFilePath 为桶下目录
+aliyun:
+  oss:
+    endpoint:
+    access-key-id:
+    access-key-secret:
+    bucket-name:
 
-# minio 相关配置（若要启用minio需在lihua-uploadFileModel中设置值为MINIO）
-minio:
-  endpoint: http://localhost:9000
-  accessKey: lihua
-  secretKey: 123456789
-  bucketName: lihua-bucket
+# 定时任务
+# 如需启用需要从启动类【com/lihua/LiHuaApplication.java】中将 @EnableSnailJob 注释解除
+snail-job:
+  server:
+    host: 127.0.0.1
+    port: 17888
+  namespace: ''
+  group: ''
+  token: ''
 
- # springdoc-openapi项目配置
+ # spring doc 接口文档
 springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: alpha
   api-docs:
+    enabled: true
     path: /v3/api-docs
- # knife4j的增强配置，不需要增强可以不配
-knife4j:
-  enable: true
-  setting:
-    language: zh_cn
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true

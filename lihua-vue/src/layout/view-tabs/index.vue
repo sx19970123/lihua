@@ -8,7 +8,6 @@
             ref="viewTabRef"
             @edit="closeTab"
             @change="routeSkip"
-            :key="tabsRenderKey"
     >
       <a-tab-pane v-for="(tab,index) in viewTabs" :key="tab.routerPathKey" class="enable-glass">
         <!--每个tab的下拉菜单-->
@@ -34,7 +33,7 @@
 <script lang="ts" setup>
 import TabPaneMenu from "@/layout/view-tabs/components/TabPaneMenu.vue";
 import TabRightMenu from "@/layout/view-tabs/components/TabRightMenu.vue";
-import {type ComponentPublicInstance, computed, nextTick, onMounted, type Ref, ref, useTemplateRef, watch} from "vue";
+import {type ComponentPublicInstance, computed, onMounted, type Ref, ref, useTemplateRef, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useViewTabsStore} from "@/stores/viewTabs";
 import {type DraggableEvent, useDraggable} from 'vue-draggable-plus';
@@ -126,8 +125,6 @@ const routeSkip = (path: string, query?: string) => {
  * 初始化拖拽排序
  */
 const initDrag = () => {
-  // 排序后触发重新渲染 a-tabs
-  const tabsRenderKey = ref(0)
   // 开始排序
   const startDrag = () => {
     // 移动端不加载拖拽
@@ -147,12 +144,6 @@ const initDrag = () => {
         if (tabRightMenuRef.value) {
           tabRightMenuRef.value.setCache()
         }
-        setTimeout(() => {
-          // 重新渲染tab组件
-          tabsRenderKey.value++
-          // 重新渲染a-tabs后再次加载排序
-          nextTick(() => startDrag())
-        }, 250)
       },
     }) as Ref
 
@@ -163,12 +154,11 @@ const initDrag = () => {
   }
 
   return {
-    tabsRenderKey,
     startDrag
   }
 }
 
-const {tabsRenderKey, startDrag} = initDrag()
+const {startDrag} = initDrag()
 
 onMounted(() => {
   // 加载拖拽

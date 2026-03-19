@@ -47,40 +47,6 @@
                 基础框架为Vue 3 + TypeScript，内置pinia，支持请求路由拦截，与web端开发体验一致。
                 <a href="https://gitee.com/yukino_git/lihua-app" target="_blank">项目仓库</a>
               </p>
-              <p style="text-indent: 2em">
-                下面是系统基础目录结构
-              </p>
-            </a-typography-text>
-            <a-typography-text>
-
-          <pre>
-├── .env.development                # 开发环境配置文件
-├── .env.production                 # 生产环境配置文件
-├── .gitignore                      # Git 忽略文件配置
-├── LICENSE                         # 项目许可证
-├── index.html                      # 入口 HTML 文件
-├── package.json                    # 项目依赖和脚本配置
-├── plugins/buildIcons.ts           # 图标构建脚本
-├── shims-uni.d.ts                  # Uni-app 类型声明文件
-├── src/                            # 源代码目录
-│   ├── App.vue                     # 根 Vue 组件
-│   ├── AppRoot.vue                 # 应用根组件
-│   ├── api/                        # API 接口定义
-│   ├── components/                 # 公共组件
-│   ├── env.d.ts                    # 环境变量类型定义
-│   ├── main.ts                     # 应用入口文件
-│   ├── manifest.json               # 应用清单文件
-│   ├── pages.json                  # 页面配置文件
-│   ├── pages/                      # 页面组件
-│   ├── router/                     # 路由配置
-│   ├── shime-uni.d.ts              # Uni-app 类型声明文件
-│   ├── static/                     # 静态资源
-│   ├── stores/                     # 状态管理
-│   ├── subpackages/                # 子包模块
-│   ├── theme.json                  # 主题配置文件
-│   ├── uni.scss                    # 全局样式文件
-│   ├── utils/                      # 工具函数
-│   └── vite.config.ts              # Vite 配置文件</pre>
             </a-typography-text>
             <a-typography-title :level="5">
               项目依赖

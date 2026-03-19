@@ -3,10 +3,12 @@
     <a-row :gutter="8">
       <a-col :xxl="{span: 4}" :xl="{span: 5}" :lg="{span: 6}" :md="{span: 6}" :sm="{span: 6}" :xs="{span: 6}">
         <a-card style="height: 100%" :body-style="{padding: '22px'}">
-          <a-menu v-model:selectedKeys="selectedKeys" @click="handleChangeUserMenu" style="border: 0;width: 100%" :inlineCollapsed="collapsed">
-            <a-menu-item key="Individuation"> <SkinOutlined /> <span>样式布局</span></a-menu-item>
+          <a-menu v-model:selectedKeys="selectedKeys" @click="handleChangeUserMenu" style="border: 0;width: 100%" :inlineCollapsed="themeStore.isSmallWindow">
             <a-menu-item key="Basic"> <UserOutlined /> <span>个人资料</span></a-menu-item>
-            <a-menu-item key="Security"> <LockOutlined /> <span>安全设置</span></a-menu-item>
+            <a-menu-item key="Security"> <SafetyCertificateOutlined /> <span>登录密码</span></a-menu-item>
+            <a-menu-item key="LockScreen"> <LockOutlined /> <span>锁屏设置</span></a-menu-item>
+            <a-menu-divider/>
+            <a-menu-item key="Individuation"> <SkinOutlined /> <span>样式布局</span></a-menu-item>
           </a-menu>
         </a-card>
       </a-col>
@@ -22,11 +24,11 @@
 <script setup lang="ts">
 import Basic from './components/ProfileBasicSetting.vue'
 import Individuation from './components/ProfileIndividuation.vue'
-import Security from './components/ProfileSecurity.vue'
-import {markRaw, onMounted, onUnmounted, ref} from "vue";
-import {useThemeStore} from "@/stores/theme";
+import ProfileSecurity from './components/ProfileSecurity.vue'
+import ProfileLockScreen from './components/ProfileLockScreen.vue'
+import {markRaw, ref} from "vue";
+import {useThemeStore} from "@/stores/theme"
 
-const collapsed = ref<boolean>(false)
 const themeStore = useThemeStore()
 // 注册子组件
 const allComponents = ref([
@@ -40,30 +42,20 @@ const allComponents = ref([
   },
   {
     name: 'Security',
-    com: markRaw(Security)
+    com: markRaw(ProfileSecurity)
+  },
+  {
+    name: 'LockScreen',
+    com: markRaw(ProfileLockScreen)
   }
 ])
 // 默认选中组件
-const activeComponent = ref(markRaw(Individuation))
+const activeComponent = ref(markRaw(Basic))
 // 设置回显
-const selectedKeys = ref(['Individuation'])
+const selectedKeys = ref(['Basic'])
 // 点击菜单切换组件
 const handleChangeUserMenu = ({key}: {key: string}) => {
   const target = allComponents.value.filter(item => item.name === key)[0]
   activeComponent.value = target.com
 }
-// 处理屏幕宽度变化
-const handleChangeInnerWidth = () => {
-  const width = window.innerWidth
-  collapsed.value = width <= 992;
-}
-
-onMounted(() => {
-  handleChangeInnerWidth()
-  window.addEventListener('resize', handleChangeInnerWidth)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', handleChangeInnerWidth)
-})
 </script>

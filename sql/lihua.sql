@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 08/12/2025 09:07:17
+ Date: 17/03/2026 09:02:05
 */
 
 SET NAMES utf8mb4;
@@ -38,10 +38,12 @@ CREATE TABLE `sys_attachment` (
   `md5` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '文件md5值',
   `create_id` bigint DEFAULT NULL COMMENT '上传人id',
   `create_time` datetime DEFAULT NULL COMMENT '上传时间',
+  `update_id` bigint DEFAULT NULL COMMENT '更新人id',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '删除标识',
   `error_msg` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '上传失败原因',
   `url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '原url（通过url上传有该字段）',
-  `client_type` varchar(20) DEFAULT NULL COMMENT '客户端类型',
+  `client_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '客户端类型',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='系统附件表';
 
@@ -243,8 +245,8 @@ CREATE TABLE `sys_login_log` (
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '逻辑删除',
   `execute_status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '日志执行状态',
   `cache_key` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户缓存key',
-  `client_type` varchar(20) DEFAULT NULL COMMENT '客户端类型',
-  `region` varchar(50) DEFAULT NULL COMMENT 'ip归属地',
+  `client_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '客户端类型',
+  `region` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'ip归属地',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `cache_key` (`cache_key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='系统登录日志';
@@ -353,7 +355,7 @@ CREATE TABLE `sys_notice` (
   `release_time` datetime DEFAULT NULL COMMENT '发布时间',
   `release_id` bigint DEFAULT NULL COMMENT '发布人id',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '备注',
-  `icon` varchar(100) DEFAULT NULL COMMENT '类型对应的图标',
+  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '类型对应的图标',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='系统通知公告表';
 
@@ -391,8 +393,8 @@ CREATE TABLE `sys_operate_log` (
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '逻辑删除',
   `execute_status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '日志执行状态',
   `cache_key` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户缓存key',
-  `client_type` varchar(20) DEFAULT NULL COMMENT '客户端类型',
-  `region` varchar(50) DEFAULT NULL COMMENT 'ip归属地',
+  `client_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '客户端类型',
+  `region` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'ip归属地',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='系统登录日志';
 
@@ -539,23 +541,20 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_setting`;
 CREATE TABLE `sys_setting` (
-  `setting_component_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '设置组件名称',
-  `setting_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '设置名称',
-  `setting_json` varbinary(2000) DEFAULT NULL COMMENT '设置参数',
-  PRIMARY KEY (`setting_component_name`) USING BTREE
+  `setting_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '设置key（主键）',
+  `json` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '设置参数',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_id` bigint DEFAULT NULL COMMENT '创建人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `update_id` bigint DEFAULT NULL COMMENT '更新id',
+  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '删除标识',
+  PRIMARY KEY (`setting_key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='用户和登录后设置关联表';
 
 -- ----------------------------
 -- Records of sys_setting
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_setting` (`setting_component_name`, `setting_name`, `setting_json`) VALUES ('DefaultPasswordSetting', '默认密码', 0x7B2264656661756C7450617373776F7264223A2236354336344A695734597A6C366C4D6F4362584B51413D3D227D);
-INSERT INTO `sys_setting` (`setting_component_name`, `setting_name`, `setting_json`) VALUES ('GrayModelSetting', '灰色模式', 0x7B22656E61626C65223A66616C73657D);
-INSERT INTO `sys_setting` (`setting_component_name`, `setting_name`, `setting_json`) VALUES ('IntervalUpdatePasswordSetting', '定期修改密码', 0x7B22656E61626C65223A66616C73652C22756E6974223A226D6F6E7468227D);
-INSERT INTO `sys_setting` (`setting_component_name`, `setting_name`, `setting_json`) VALUES ('RestrictAccessIpSetting', '限制访问IP', 0x7B22656E61626C65223A66616C73652C2269704C697374223A5B22225D7D);
-INSERT INTO `sys_setting` (`setting_component_name`, `setting_name`, `setting_json`) VALUES ('SameAccountLoginSetting', '同账号登录限制', 0x7B22656E61626C65223A66616C73652C226D6178696D756D223A317D);
-INSERT INTO `sys_setting` (`setting_component_name`, `setting_name`, `setting_json`) VALUES ('SignInSetting', '自助注册', 0x7B22656E61626C65223A747275652C2264657074496473223A5B2231383130323236323034373930363537303235222C2231383432313238343039363030393137353035225D2C2264656661756C74446570744964223A6E756C6C2C22706F7374496473223A5B2231383432313838303839333932303431393836225D2C22726F6C65496473223A5B2231383432313439383531303637353134383831225D7D);
-INSERT INTO `sys_setting` (`setting_component_name`, `setting_name`, `setting_json`) VALUES ('VerificationCodeSetting', '验证码', 0x7B22656E61626C65223A66616C73657D);
 COMMIT;
 
 -- ----------------------------

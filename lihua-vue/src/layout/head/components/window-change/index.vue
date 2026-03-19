@@ -1,22 +1,19 @@
 <template>
   <div v-if="!themeStore.isSmallWindow">
-    <a-button type="text" @click="toggleFullscreen">
-      <template #icon>
-        <a-tooltip
-            placement="bottom"
-            :title="isFullscreen ? '退出全屏' : '进入全屏'"
-        >
+    <a-tooltip placement="bottom" :title="isFullscreen ? '退出全屏' : '进入全屏'" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
+      <a-button type="text" @click="toggleFullscreen">
+        <template #icon>
           <FullscreenExitOutlined class="icon-default-color" v-if="isFullscreen"/>
           <FullscreenOutlined class="icon-default-color" v-else/>
-        </a-tooltip>
-      </template>
-    </a-button>
+        </template>
+      </a-button>
+    </a-tooltip>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
-import { useThemeStore } from "@/stores/theme.ts";
+import {onMounted, onUnmounted, ref} from "vue";
+import {useThemeStore} from "@/stores/theme.ts";
 
 const themeStore = useThemeStore();
 

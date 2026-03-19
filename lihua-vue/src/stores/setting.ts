@@ -1,60 +1,111 @@
 import {defineStore} from "pinia";
-import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
-import {insert, querySysSettingByComponentName} from "@/api/system/setting/Setting.ts";
+import {
+    enableCaptcha,
+    enableGrayMode,
+    enableSignUp,
+    getDefaultPassword,
+    getSysSettingByKey
+} from "@/api/system/setting/Setting.ts";
 import {message} from "ant-design-vue";
-import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
 
 export const useSettingStore = defineStore('setting', {
     state:() => {
-        // 配置集合
-        const map = new Map();
+        /**
+         * 是否连接后台服务器
+         */
+        const isServerConnected: boolean = true;
+
+        /**
+         * 是否启用验证码
+         */
+        const enableCaptcha: boolean = true;
+
+        /**
+         * 是否启用灰色模式
+         */
+        const enableGrayMode: boolean = false;
+
+        /**
+         * 是否启用自助注册
+         */
+        const enableSignUp: boolean = false;
+
         return {
-            map
+            enableCaptcha,
+            enableGrayMode,
+            enableSignUp,
+            isServerConnected
         }
     },
     actions: {
-        // 保存系统配置
-        save(setting: SystemSetting):Promise<ResponseType<String>> {
-            return new Promise((resolve, reject) => {
-                insert(setting).then(resp => {
-                    this.map.delete(setting.settingComponentName)
-                    resolve(resp as ResponseType<String>)
-                }).catch((e) => {
-                    if (e instanceof ResponseError) {
-                        message.error(e.msg)
-                    } else {
-                        console.error(e)
-                    }
-                    reject(e)
-                })
-            })
-        },
-        // 根据组件名称获取配置信息
-        async getSetting<T>(componentName?: string) {
-            if (!componentName) {
-                return undefined;
+        /**
+         * 获取配置信息
+         */
+        async getSettingInfo<T> (key?: string)  {
+            if (!key) {
+                return
             }
-            // 从state中获取配置信息
-            if (this.map.has(componentName)) {
-                return JSON.parse(this.map.get(componentName)) as T
-            }
-            try {
-                const resp = await querySysSettingByComponentName(componentName)
-                if (resp.code === 200) {
-                    // 判断返回的settingJson是否存在
-                    const data = resp.data?.settingJson
-                    if (data) {
-                        this.map.set(componentName, data)
-                        return JSON.parse(data) as T
-                    }
-                    return undefined;
-                } else {
-                    message.error(resp.msg)
-                    return undefined
+
+            // 获取系统配置
+            const resp = await getSysSettingByKey(key)
+            if (resp.code === 200) {
+                const setting = resp.data
+                if (!setting) {
+                    return
                 }
-            } catch (e) {
-                console.error(e)
-                return undefined
+                return JSON.parse(setting.json) as T
+            } else {
+                message.error(resp.msg)
+            }
+        },
+        /**
+         * 初始化基础设置
+         */
+        async initBaseSetting() {
+            try {
+                await this.fetchEnableGrayMode()
+                await this.fetchEnableSignUp()
+                await this.fetchEnableCaptcha()
+            } catch (error) {
+                this.isServerConnected = false
+            }
+        },
+        /**
+         * 获取默认密码
+         */
+        async fetchDefaultPassword() {
+            const resp = await getDefaultPassword()
+            if (resp.code === 200) {
+                return resp.data
+            } else {
+                message.error(resp.msg)
+            }
+        },
+        /**
+         * 获取是否开启验证码
+         */
+        async fetchEnableCaptcha() {
+            const resp = await enableCaptcha()
+            if (resp.code === 200) {
+                this.$state.enableCaptcha = resp.data
+            }
+        },
+        /**
+         * 获取是否开启灰色模式
+         */
+        async fetchEnableGrayMode() {
+            const resp = await enableGrayMode()
+            if (resp.code === 200) {
+                this.$state.enableGrayMode = resp.data
+            }
+        },
+        /**
+         * 获取是否开启自助注册
+         */
+        async fetchEnableSignUp() {
+            const resp = await enableSignUp()
+            if (resp.code === 200) {
+                this.$state.enableSignUp = resp.data
             }
         }
     }

@@ -85,15 +85,15 @@
       </template>
 <!--                      通知公告主体-->
       <div @click="() => open = true">
-          <a-badge :count="unReadCount" :offset="[-5,5]" style="color: #FFFFFF">
+        <a-badge :count="unReadCount" :offset="[-5,5]" style="color: #FFFFFF">
+          <a-tooltip title="通知公告" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
             <a-button type="text">
               <template #icon>
-                <a-tooltip title="通知公告" placement="bottom">
                   <BellOutlined class="icon-default-color"/>
-                </a-tooltip>
               </template>
             </a-button>
-          </a-badge>
+          </a-tooltip>
+        </a-badge>
       </div>
     </a-dropdown>
 <!--                      详情dialog-->
@@ -118,11 +118,10 @@ import {h, onMounted, onUnmounted, ref} from "vue";
 import {MessageOutlined, NotificationOutlined} from "@ant-design/icons-vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {getDictLabel, initDict} from "@/utils/Dict.ts";
-import {userMessageList, queryUnReadCount, read, star} from "@/api/system/notice/Notice.ts";
+import {queryUnReadCount, read, star, userMessageList} from "@/api/system/notice/Notice.ts";
 import type {SysUserNoticeVO} from "@/api/system/notice/type/SysUserNotice.ts";
 import {handleTime} from "@/utils/HandleDate.ts";
 import dayjs from "dayjs";
-import {ResponseError} from "@/api/global/Type.ts";
 
 const themeStore = useThemeStore();
 
@@ -133,19 +132,11 @@ const {sys_notice_type, sys_notice_priority} = initDict("sys_notice_type", "sys_
 const unReadCount = ref<number>(0)
 // 查询未读数量
 const handleUnReadCount = async () => {
-  try {
-    const resp = await queryUnReadCount()
-    if (resp.code === 200) {
-      unReadCount.value = resp.data
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  const resp = await queryUnReadCount()
+  if (resp.code === 200) {
+    unReadCount.value = resp.data
+  } else {
+    message.error(resp.msg)
   }
 }
 
@@ -258,12 +249,6 @@ const initList = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       loading.value = false
     }
@@ -311,19 +296,11 @@ const {noticeId, readNoticeDetail, showNoticeDetail} = initNoticeDetail()
 
 // 处理标星
 const handleStar = async (noticeId: string, value: number) => {
-  try {
-    const resp = await star(noticeId, value.toString())
-    if (resp.code === 200) {
-      message.success(resp.msg)
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  const resp = await star(noticeId, value.toString())
+  if (resp.code === 200) {
+    message.success(resp.msg)
+  } else {
+    message.error(resp.msg)
   }
 }
 // 处理已读
@@ -333,12 +310,6 @@ const handleRead = (id: string) => {
       handleUnReadCount()
     } else {
       message.error(resp.msg)
-    }
-  }).catch(e => {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
     }
   })
 }

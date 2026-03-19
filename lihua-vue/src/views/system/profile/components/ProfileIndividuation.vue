@@ -41,6 +41,9 @@
       <a-form-item label="多任务栏" v-if="viewTabsStore.$state.showLayout && !isMiniWindow">
         <a-switch v-model:checked="themeStore.showViewTabs" @change="themeStore.changeShowViewTabs"/>
       </a-form-item>
+      <a-form-item label="显示页脚">
+        <a-switch v-model:checked="themeStore.showFooter"  @change="themeStore.changeFooter"/>
+      </a-form-item>
       <a-divider/>
 
       <!-- 其他设置 -->

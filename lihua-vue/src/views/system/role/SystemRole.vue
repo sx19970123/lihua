@@ -206,9 +206,8 @@ import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
 import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRole.ts";
-import {ResponseError} from "@/api/global/Type.ts";
+import {type BaseModalActiveType} from "@/api/global/Type.ts";
 import {useThemeStore} from "@/stores/theme.ts";
-import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_status,sys_menu_type} = initDict("sys_status","sys_menu_type")
@@ -291,7 +290,7 @@ const initSearch = () => {
       align: 'center',
       key: 'action',
       width: '182px',
-      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
+      fixed: 'right',
     },
   ])
   // 查询条件
@@ -324,12 +323,6 @@ const initSearch = () => {
         })
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       tableLoad.value = false
@@ -365,13 +358,7 @@ const {roleQuery,roleTotal,roleColumn,roleList,tableLoad,selectedIds,roleRowSele
 
 // 数据保存相关
 const initSave = () => {
-  // modal 相关属性定义
-  type modalActiveType = {
-    open: boolean, // 模态框开关
-    saveLoading: boolean, // 点击保存按钮加载
-    title: string, // 模态框标题
-  }
-  const modalActive = reactive<modalActiveType>({
+  const modalActive = reactive<BaseModalActiveType>({
     open: false,
     saveLoading: false,
     title: ''
@@ -386,7 +373,7 @@ const initSave = () => {
     }
     if (modalActive.open) {
       // 加载菜单树
-      await initMenuTree()
+      initMenuTree()
       // 重置表单
       resetForm()
     }
@@ -405,20 +392,12 @@ const initSave = () => {
   // 根据id获取角色，打开模态框
   const getRole = async (event:MouseEvent ,id: string) => {
     event.stopPropagation()
-    try {
-      const resp = await queryById(id)
-      if (resp.code === 200 && resp.data) {
-        await handleModelStatus("修改角色")
-        role.value = resp.data
-      } else {
-        console.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await queryById(id)
+    if (resp.code === 200 && resp.data) {
+      await handleModelStatus("修改角色")
+      role.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
   // 重置表单
@@ -446,13 +425,6 @@ const initSave = () => {
         await initPage()
       } else {
         message.error(resp.msg)
-        console.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       modalActive.saveLoading = false
@@ -462,21 +434,14 @@ const initSave = () => {
   // 修改角色状态
   const handleUpdateStatus = async (event:MouseEvent, id: string, status: string) => {
     event.stopPropagation()
-    let newStatus: string = ''
+    let newStatus: string = status
     try {
       const resp = await updateStatus(id, status)
       if (resp.code === 200) {
         newStatus = resp.data
         message.success(resp.msg)
       } else {
-        newStatus = status
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       // 重新赋值
@@ -512,12 +477,6 @@ const initMenuTree = () => {
       menuTreeOption.value = resp.data
     } else {
       message.error(resp.msg)
-    }
-  }).catch((e) => {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
     }
   })
   return {
@@ -563,12 +522,6 @@ const initDelete = () => {
         }
       } else {
         message.warning("请勾选数据")
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       closePopconfirm()

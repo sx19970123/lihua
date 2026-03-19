@@ -2,7 +2,7 @@
   <a-flex vertical :gap="8">
     <a-typography-title :level="4">分片上传</a-typography-title>
     <a-typography-text>绑定数据：{{modelValue}}</a-typography-text>
-    <attachment-upload v-model="modelValue" :max-size="100" chunk :chunk-size="8" :chunk-upload-count="2"/>
+    <attachment-upload v-model="modelValue" :max-size="10000" chunk :chunk-size="5" :chunk-upload-count="4"/>
   </a-flex>
 </template>
 

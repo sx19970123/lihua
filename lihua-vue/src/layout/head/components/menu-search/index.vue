@@ -1,22 +1,22 @@
 <template>
   <div>
     <div @click="open = true" v-show="!open">
-      <a-input placeholder="搜索" readonly class="title-search-input" v-if="!themeStore.isSmallWindow">
-        <template #prefix>
-          <SearchOutlined class="icon-default-color"/>
-        </template>
-        <template #suffix>
-          <a-tag class="title-search-tag" style="margin-right: var(--lihua-space-xs)">{{osType() === 'MacOS' ? '⌘' : 'ctrl'}}</a-tag>
-          <a-tag class="title-search-tag" style="margin-right: 0">k</a-tag>
-        </template>
-      </a-input>
-      <a-button type="text" v-else>
-        <template #icon>
-          <a-tooltip title="菜单搜索" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
+      <a-tooltip title="菜单搜索" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
+        <a-input placeholder="搜索" readonly class="title-search-input" v-if="!themeStore.isSmallWindow">
+          <template #prefix>
             <SearchOutlined class="icon-default-color"/>
-          </a-tooltip>
-        </template>
-      </a-button>
+          </template>
+          <template #suffix>
+            <a-tag class="title-search-tag" style="margin-right: var(--lihua-space-xs)">{{osType() === 'MacOS' ? '⌘' : 'ctrl'}}</a-tag>
+            <a-tag class="title-search-tag" style="margin-right: 0">k</a-tag>
+          </template>
+        </a-input>
+        <a-button type="text" v-else>
+          <template #icon>
+            <SearchOutlined class="icon-default-color"/>
+          </template>
+        </a-button>
+      </a-tooltip>
     </div>
 
 <!--    菜单搜索dialog-->

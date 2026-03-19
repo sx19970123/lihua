@@ -1,10 +1,10 @@
 <template>
   <a-dropdown v-model:open="open" :trigger="['contextmenu', 'click']">
-    <a-button type="text" style="max-width: 130px">
-      <a-tooltip title="默认部门" placement="bottom">
+    <a-tooltip title="默认部门" placement="bottom" :get-popup-container="(triggerNode: HTMLElement) => triggerNode.parentNode">
+      <a-button type="text" class="btn">
         <a-typography-text ellipsis class="text-default-color" :type="userStore.defaultDeptName ? '' : 'secondary'" :content="userStore.defaultDeptName ? userStore.defaultDeptName : '设置默认部门'"/>
-      </a-tooltip>
-    </a-button>
+      </a-button>
+    </a-tooltip>
     <template #overlay>
       <div class="default-dept-card">
         <default-dept @dept-select="handleDeptSelect"/>
@@ -36,6 +36,10 @@ const handleDeptSelect = (resp: ResponseType<SysDept>) => {
   max-height: 500px;
   box-shadow: var(--lihua-box-shadow);
   border-radius: var(--lihua-radius-sm);
+}
+.btn {
+  max-width: 130px;
+  padding: 4px 8px 4px 8px
 }
 </style>
 

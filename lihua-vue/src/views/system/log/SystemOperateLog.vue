@@ -206,7 +206,6 @@ import DictTag from "@/components/dict-tag/index.vue";
 import type {SysLog, SysLogDTO} from "@/api/system/log/type/SysLog.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import dayjs from "dayjs";
-import {ResponseError} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
 import Spin from "@/components/spin";
 import TableSetting from "@/components/table-setting/index.vue";
@@ -218,19 +217,11 @@ const initSearch = () => {
   // 操作类型选项
   const logTypeOption = ref<Array<{ value: string, label: string }>>([])
   const initLogTypeOption = async () => {
-    try {
-      const resp = await getLogTypeOption();
-      if (resp.code === 200) {
-        logTypeOption.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await getLogTypeOption();
+    if (resp.code === 200) {
+      logTypeOption.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
   initLogTypeOption()
@@ -354,12 +345,6 @@ const initSearch = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       tableLoad.value = false
     }
@@ -394,21 +379,13 @@ const initLogInfo = () => {
   const selectById = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
 
-    try {
-      const resp = await queryOperateById(id)
-      if (resp.code === 200) {
-        logInfo.value = resp.data
-        closePopconfirm()
-        openModal.value = true
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await queryOperateById(id)
+    if (resp.code === 200) {
+      logInfo.value = resp.data
+      closePopconfirm()
+      openModal.value = true
+    } else {
+      message.error(resp.msg)
     }
   }
 
@@ -453,12 +430,6 @@ const initDelete = () => {
       } else {
         message.warning("请勾选数据")
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       closePopconfirm()
     }
@@ -500,21 +471,13 @@ const initClear = () => {
 
   // 处理清除数据
   const handleClear = async () => {
-    try {
-      const resp = await clearOperateLog()
-      if (resp.code === 200) {
-        message.success(resp.msg);
-        selectedIds.value = []
-        await initPage()
-      } else {
-        message.error(resp.msg);
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await clearOperateLog()
+    if (resp.code === 200) {
+      message.success(resp.msg);
+      selectedIds.value = []
+      await initPage()
+    } else {
+      message.error(resp.msg);
     }
   }
 
@@ -533,12 +496,8 @@ const handleExportExcel = async () => {
   const spinInstance = Spin.service({
     tip: '努力加载中...'
   });
-  const resp = await excelOperateExport(logQuery.value)
-  if (resp.code === 200) {
-    download(resp.data)
-  } else {
-    message.error(resp.msg)
-  }
+  const blob = await excelOperateExport(logQuery.value)
+  download(blob, "操作日志")
   spinInstance.close()
 }
 </script>

@@ -1,7 +1,6 @@
-import request from "@/utils/Request.ts";
-import type {ExcelImportResult, MapResponseType, PageResponseType} from "@/api/global/Type.ts";
+import request, {blobRequest} from "@/utils/Request.ts";
+import type {MapResponseType, PageResponseType} from "@/api/global/Type.ts";
 import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
-import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 
 /**
  * 分页查询
@@ -79,27 +78,9 @@ export const getPostOptionByDeptId = (deptIds: string[]) => {
  * @param data
  */
 export const exportExcel = (data: SysPostDTO) => {
-    return request<string>({
+    return blobRequest({
         url: 'system/post/export',
         method: 'post',
         data: data
-    })
-}
-
-/**
- * excel 导入
- * @param file
- */
-export const importExcel = (file:  string | Blob | RcFile) => {
-    const formData = new FormData()
-    formData.append('file', file)
-
-    return request<ExcelImportResult>({
-        url: 'system/post/import',
-        method: 'post',
-        data: formData,
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
     })
 }

@@ -10,13 +10,10 @@
         scrollbar-color: var(--lihua-sider-scrollbar-thumb-color);
     }
 }
-/* 混合模式在暗色导航下，大屏模式下也是白色导航条 */
-[sider-dark = 'dark'][layout-type = 'mix-navigation'][is-small-window = 'false'] {
-    .sider-scrollbar {
-        scrollbar-color: var(--lihua-scrollbar-thumb-color);
-    }
-}
 
+/**
+    input 框前缀图标颜色
+ */
 .input-prefix-icon-color {
     color: var(--lihua-input-icon-color);
 }
@@ -33,6 +30,13 @@
  */
 .default-input-width {
     width: 196px !important
+}
+
+/**
+    问号提示距离标题的距离
+ */
+.question-icon {
+    margin-left: var(--lihua-space-xs) !important;
 }
 
 /**

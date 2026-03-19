@@ -21,8 +21,6 @@ import UserAvatar from '@/components/user-avatar/index.vue'
 import {useUserStore} from "@/stores/user.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import {ref} from "vue";
-import {ResponseError} from "@/api/global/Type.ts";
-import {message} from "ant-design-vue";
 import {publicAttachmentDownload} from "@/api/system/attachment/AttachmentStorage.ts";
 
 const userStore = useUserStore();
@@ -40,12 +38,6 @@ try {
     if (avatar.value.value && avatar.value.type === 'image') {
       publicAttachmentDownload(avatar.value.value).then((resp:Blob) => {
         avatar.value.url = URL.createObjectURL(resp)
-      }).catch(e => {
-        if (e instanceof ResponseError) {
-          message.error(e.msg)
-        } else {
-          console.error(e)
-        }
       })
     }
   } else {

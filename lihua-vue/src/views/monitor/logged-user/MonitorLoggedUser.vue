@@ -161,10 +161,10 @@ import {message} from "ant-design-vue";
 import dayjs from "dayjs";
 import type {SysLog} from "@/api/system/log/type/SysLog.ts";
 import {queryLoginByCacheKey} from "@/api/system/log/Log.ts";
-import {ResponseError} from "@/api/global/Type.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 import DictTag from "@/components/dict-tag/index.vue";
 import {initDict} from "@/utils/Dict.ts";
+
 const {sys_client_type} = initDict( "sys_client_type")
 const initSearch = () => {
   // 选中的数据id集合
@@ -281,12 +281,6 @@ const initSearch = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       queryLoading.value = false
     }
@@ -370,12 +364,6 @@ const handleConfirm = async (cacheKey?: string) => {
     } else {
       message.error(resp.msg)
     }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
   } finally {
     openLogoutPopconfirm.value = false
   }
@@ -391,26 +379,18 @@ const initLogInfo = () => {
   // 根据id查询日志详情
   const selectByCacheKey = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
-    try {
-      const resp = await queryLoginByCacheKey(id)
-      if (resp.code === 200) {
-        logInfo.value = resp.data
+    const resp = await queryLoginByCacheKey(id)
+    if (resp.code === 200) {
+      logInfo.value = resp.data
 
-        if (!resp.data) {
-          message.error('用户信息不存在')
-        } else {
-          openModal.value = true
-        }
+      if (!resp.data) {
+        message.error('用户信息不存在')
+      } else {
+        openModal.value = true
+      }
 
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    } else {
+      message.error(resp.msg)
     }
   }
 

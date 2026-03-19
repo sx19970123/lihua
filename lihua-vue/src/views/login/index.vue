@@ -11,7 +11,7 @@
               <a-tag :bordered="false">{{ settings.version }}</a-tag>
             </a-typography-title>
             <a-typography-title :level="2">
-              基于SpringBoot 3.x 和 vue3.x
+              基于SpringBoot 4.x 和 vue3.x
             </a-typography-title>
           </div>
         </transition>
@@ -22,12 +22,7 @@
           <a-card class="login-card">
             <transition name="form" mode="out-in" v-show="showCard">
               <!-- 用户登录/注册等卡片内表单在这儿通过组件形式切换 -->
-              <component :is="activeComponent"
-                         :enable-captcha="enableCaptcha"
-                         :error-message="errorMessage"
-                         @change-component="handleChangeComponent"
-                         @show-login-setting="startLoginSetting"
-              />
+              <component :is="activeComponent" @change-component="handleChangeComponent" @show-login-setting="startLoginSetting"/>
             </transition>
           </a-card>
         </transition>
@@ -46,23 +41,18 @@
 
 <script setup lang="ts">
 import {markRaw, onMounted, provide, ref} from "vue"
-import {enable} from "@/api/system/captcha/Captcha.ts";
 import HeadThemeSwitch from "@/components/light-dark-switch/index.vue"
 import LoginSetting from "@/components/login-setting/index.vue"
 import UserRegister from "@/views/login/components/Register.vue"
 import UserLogin from "@/views/login/components/Login.vue"
-import {message} from "ant-design-vue";
-import {ResponseError} from "@/api/global/Type.ts";
 import settings from "@/settings"
+import {screenUnlock} from "@/utils/LockScreenUtils.ts";
 
 // 显示登录卡片
 const showCard = ref<boolean>(false)
 // 显示左侧title
 const showTitle = ref<boolean>(false)
-// 验证码
-const enableCaptcha = ref<boolean>(false)
-// 错误信息
-const errorMessage = ref<string>()
+
 // 注册的用户数据，定义registerUsername后，注册组件通过inject接收值，并在注册成功后赋值为用户名，登录组件可获取后进行处理
 provide("registerUsername",ref<string>())
 
@@ -144,34 +134,6 @@ const initLoginSetting = () => {
 }
 const {showSetting, settingComponentNames, startLoginSetting, routerCheckLoginSetting, handleGoLogin} = initLoginSetting()
 
-
-// 是否启用验证码
-const captcha = async () => {
-  try {
-    const resp = await enable()
-    if (resp.code === 200) {
-      enableCaptcha.value = resp.data
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      errorMessage.value = '无法访问服务器'
-    } else {
-      console.error(e)
-    }
-  }
-}
-
-// 判断重定向回来的参数，给用户合适的提示
-// 提示信息显示完成后销毁，刷新页面时不再提示
-const handleRedirect = () => {
-  if (history.state.msg) {
-    message.error(history.state.msg)
-    history.state.msg = undefined
-  }
-}
-
 // 显示卡片
 const handleShowCard = () => {
   showCard.value = false
@@ -182,12 +144,10 @@ const handleShowCard = () => {
 onMounted(() => {
   // 默认显示login
   handleChangeComponent("login")
-  // 是否启用验证码
-  captcha()
   // 检查history.state中是否存在登录后配置
   routerCheckLoginSetting()
-  // 检查history.state中是否存在异常提示
-  handleRedirect()
+  // 进入登录页的用户关闭锁屏
+  screenUnlock()
 })
 </script>
 

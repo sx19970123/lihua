@@ -24,7 +24,6 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
-import type {GrayModel} from "@/api/system/setting/type/GrayModel.ts";
 import {theme} from "ant-design-vue";
 
 const { token } = theme.useToken()
@@ -61,16 +60,6 @@ const showOldBrowserAlert = () => {
     default: {
       return true
     }
-  }
-}
-
-// 加载灰色模式
-const initGrayModel = async () => {
-  const grayModel = await settingStore.getSetting<GrayModel>('GrayModelSetting');
-  if (grayModel?.closeTime && dayjs() > dayjs(grayModel.closeTime)) {
-    themeStore.enableGrayModel(false)
-  } else {
-    themeStore.enableGrayModel(grayModel?.enable)
   }
 }
 
@@ -123,11 +112,16 @@ watch(() => themeStore.followSystemTheme && themeStore.$state.isServerLoad, () =
   handleFollowSystemTheme()
 })
 
+// 监听灰色模式
+watch(() => settingStore.enableGrayMode, () => {
+  themeStore.enableGrayModel(settingStore.enableGrayMode)
+})
+
 onMounted(() => {
+  // 初始化基础设置
+  settingStore.initBaseSetting()
   // 主题跟随系统
   handleFollowSystemTheme()
-  // 灰色模式
-  initGrayModel()
   // 启用监听storage以同步标签页间主题
   window.addEventListener('storage', syncTabTheme)
 })

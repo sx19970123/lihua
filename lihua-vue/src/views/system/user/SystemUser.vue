@@ -99,47 +99,28 @@
                 <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: var(--lihua-space-xs)"> {{selectedIds.length}} 项</span>
               </a-button>
             </a-popconfirm>
-            <div v-show="showMore">
-              <a-flex :gap="8">
-                <a-button ghost type="primary" @click="handleExportExcel">
-                  <template #icon>
-                    <ExportOutlined />
-                  </template>
-                  导出
-                </a-button>
-                <a-popover title="导入说明">
-                  <template #content>
-                    <a-space direction="vertical">
-                      <a-typography-text>1. 请参考“导出功能”下载的Excel作为导入模板</a-typography-text>
-                      <a-typography-text>2. 以用户名为准，保证全局唯一性。遇到重复数据将无法导入</a-typography-text>
-                      <a-typography-text>3. 带有*标记的为必填字段</a-typography-text>
-                      <a-typography-text>4. 涉及到角色、部门信息、岗位信息请确保系统中录入了对应数据</a-typography-text>
-                      <a-typography-text>5. 无法导入的数据会被收集并导出，同时标记错误信息，修改后可重新导入</a-typography-text>
-                    </a-space>
-                  </template>
-                  <a-upload :customRequest="handleCustomRequest"
-                            :beforeUpload="handleBeforeUpdate"
-                            :showUploadList="false"
-                            accept=".xlsx,.xls"
-                  >
-
-                      <a-button ghost type="primary">
-                        <template #icon>
-                          <ImportOutlined />
-                        </template>
-                        导入
-                      </a-button>
-                  </a-upload>
-                </a-popover>
-              </a-flex>
-            </div>
-            <a-button ghost type="primary" @click="showMore = !showMore">
-              <template #icon>
-                <DoubleLeftOutlined v-if="showMore" />
-                <DoubleRightOutlined v-else />
+            <a-dropdown>
+              <a-button type="primary" ghost>
+                更多
+                <DownOutlined />
+              </a-button>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item key="export" @click="handleExportExcel">批量导出</a-menu-item>
+                  <a-menu-item key="import">
+                    <a-upload :customRequest="handleCustomRequest"
+                              :beforeUpload="handleBeforeUpdate"
+                              :showUploadList="false"
+                              accept=".xlsx,.xls"
+                              style="width: 100%;"
+                    >
+                      批量导入
+                    </a-upload>
+                  </a-menu-item>
+                  <a-menu-item @click="handleDownloadExcelTemplate">模板下载</a-menu-item>
+                </a-menu>
               </template>
-            </a-button>
-
+            </a-dropdown>
             <!--            表格设置-->
             <table-setting v-model="userColumn"/>
           </a-flex>
@@ -359,6 +340,7 @@
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {
   deleteByIds,
+  excelTemplate,
   exportExcel,
   importExcel,
   queryById,
@@ -368,7 +350,7 @@ import {
   updateStatus
 } from "@/api/system/user/User.ts"
 import {initDict} from "@/utils/Dict.ts"
-import {createVNode, onMounted, reactive, ref, useTemplateRef} from "vue";
+import {h, onMounted, reactive, ref, useTemplateRef} from "vue";
 import SelectableCard from "@/components/selectable-card/index.vue"
 import PasswordInput from "@/components/password-input/index.vue"
 import DictTag from "@/components/dict-tag/index.vue"
@@ -390,11 +372,8 @@ import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useSettingStore} from "@/stores/setting.ts";
-import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
-import {defaultPasswordDecrypt, rasEncryptPassword} from "@/utils/Crypto.ts";
-import {ResponseError} from "@/api/global/Type.ts";
+import {type BaseModalActiveType} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
-import settings from "@/settings.ts";
 import {useUserStore} from "@/stores/user.ts";
 import {refreshUserData} from "@/utils/AppInit.ts";
 import {useRoute} from "vue-router";
@@ -404,10 +383,8 @@ const settingStore = useSettingStore()
 const userStore = useUserStore()
 const route = useRoute()
 const {sys_status, user_gender, sys_user_register_type} = initDict("sys_status", "user_gender", "sys_user_register_type")
-// 显示更多按钮
-const showMore = ref<boolean>(false)
 // 默认密码
-const defaultPassword = ref<string>('')
+const defaultPassword = ref<string>()
 // 列表查询
 const initSearch = () => {
   // 选中的数据id集合
@@ -501,7 +478,7 @@ const initSearch = () => {
       dataIndex: 'action',
       align: 'center',
       width: '292px',
-      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
+      fixed: 'right'
     }
   ])
 
@@ -536,16 +513,9 @@ const initSearch = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       queryLoading.value = false
     }
-
   }
 
   // 条件检索初始页码设置为0
@@ -616,10 +586,7 @@ const initSave = () => {
   })
 
   // 表单滑块选项
-  const segmentedOption = reactive<Array<{
-    value: 'basic' | 'dept' | 'post',
-    label: string
-  }>>([{
+  const segmentedOption = [{
     value: 'basic',
     label: '基础信息',
   }, {
@@ -628,19 +595,12 @@ const initSave = () => {
   }, {
     value: 'post',
     label: '岗位&默认部门'
-  }])
+  }]
 
   const segmented = ref<string>(segmentedOption[0].value)
 
-  // modal 相关属性定义
-  type modalActiveType = {
-    open: boolean, // 模态框开关
-    saveLoading: boolean, // 点击保存按钮加载
-    title: string, // 模态框标题
-  }
-
   // 模态框状态
-  const modalActive = reactive<modalActiveType>({
+  const modalActive = reactive<BaseModalActiveType>({
     open: false,
     saveLoading: false,
     title: ''
@@ -666,7 +626,7 @@ const initSave = () => {
   }
 
   // 前往下一表单页面
-  const toNextForm = (nextSegmentedValue?: 'basic' | 'dept' | 'post') => {
+  const toNextForm = (nextSegmentedValue?: string) => {
     if (nextSegmentedValue) {
       if (nextSegmentedValue === 'post') {
         toPostForm()
@@ -686,7 +646,7 @@ const initSave = () => {
     }
     // 分段器设置为默认
     segmented.value = 'basic'
-    // 重制部门岗位
+    // 重置部门岗位
     initPostByDeptIds([])
     initPostTag([])
     // 重置树形选择组件
@@ -695,29 +655,27 @@ const initSave = () => {
 
   // 保存用户信息
   const saveUser = async () => {
+    modalActive.saveLoading = true
+
+    // 表单验证
     try {
       await formRef.value?.validate()
-      modalActive.saveLoading = true
-      const userDTO = cloneDeep(sysUserDTO.value)
-      // 处理用户部门、手机号、邮箱
-      userDTO.deptIdList = sysUserDTO.value.deptIdList
-      userDTO.phoneNumber === "" ? sysUserDTO.value.phoneNumber = undefined : sysUserDTO.value.phoneNumber
-      userDTO.email === "" ? sysUserDTO.value.email = undefined : sysUserDTO.value.email
+    } catch (error) {
+      // 出现表单验证信息后跳转到表单首页
+      toNextForm('basic')
+      return
+    } finally {
+      modalActive.saveLoading = false
+    }
 
-      const userId = sysUserDTO.value.id
-      const password = sysUserDTO.value.password
+    const userDTO = cloneDeep(sysUserDTO.value)
+    // 处理用户部门、手机号、邮箱
+    userDTO.deptIdList = sysUserDTO.value.deptIdList
+    userDTO.phoneNumber === "" ? sysUserDTO.value.phoneNumber = undefined : sysUserDTO.value.phoneNumber
+    userDTO.email === "" ? sysUserDTO.value.email = undefined : sysUserDTO.value.email
 
-      // 操作为新增用户时，进行密码加密
-      if (!userId && password) {
-        try {
-          const passwordEncrypt = await rasEncryptPassword(password)
-          userDTO.password = passwordEncrypt.ciphertext
-          userDTO.passwordRequestKey = passwordEncrypt.requestKey
-        } catch (error) {
-          message.success(error as string)
-        }
-      }
-
+    const userId = sysUserDTO.value.id
+    try {
       // 调用保存接口
       const resp = await save(userDTO)
       if (resp.code === 200) {
@@ -732,14 +690,6 @@ const initSave = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
-      // 出现表单验证信息后跳转到表单首页
-      toNextForm('basic')
     } finally {
       modalActive.saveLoading = false
     }
@@ -748,67 +698,51 @@ const initSave = () => {
   // 处理改变状态
   const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
     event.stopPropagation()
-    let newStatus: string = ''
+    let newStatus: string = status
     try {
       const resp = await updateStatus(id, status)
       if (resp.code === 200) {
         newStatus = resp.data
         message.success(resp.msg)
       } else {
-        newStatus = status
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       // 重新赋值
       userList.value.some(user => {
         if (user.id === id) {
           user.status = newStatus
-          user.statusIsNormal =  user.status === '0'
+          user.statusIsNormal = user.status === '0'
           user.updateStatusLoading = false
           return
         }
       })
     }
-
   }
 
   // 根据id查询用户信息
   const getUserInfo = async (event: MouseEvent, userId: string) => {
     event.stopPropagation()
-    try {
-      const resp = await queryById(userId)
-      if (resp.code === 200) {
-        handleModelStatus("编辑用户")
-        // 表单数据赋值
-        sysUserDTO.value = cloneDeep(resp.data)
-        // 默认部门 / 岗位 回显
-        const deptIds = sysUserDTO.value.deptIdList
-        const postIds = sysUserDTO.value.postIdList
-        // 加载部门
-        if (deptIds) {
-          await initPostByDeptIds(deptIds)
-        }
-        // 岗位标签回显
-        if (postIds) {
-          initPostTag(postIds)
-        }
-        // 默认部门回显
-        sysUserDTO.value.defaultDeptId = resp.data.defaultDeptId
-      } else {
-        message.error(resp.msg)
+    const resp = await queryById(userId)
+    if (resp.code === 200) {
+      handleModelStatus("编辑用户")
+      // 表单数据赋值
+      sysUserDTO.value = cloneDeep(resp.data)
+      // 默认部门 / 岗位 回显
+      const deptIds = sysUserDTO.value.deptIdList
+      const postIds = sysUserDTO.value.postIdList
+      // 加载部门
+      if (deptIds) {
+        await initPostByDeptIds(deptIds)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
+      // 岗位标签回显
+      if (postIds) {
+        initPostTag(postIds)
       }
+      // 默认部门回显
+      sysUserDTO.value.defaultDeptId = resp.data.defaultDeptId
+    } else {
+      message.error(resp.msg)
     }
   }
   return {
@@ -835,17 +769,11 @@ const initRoleData = () => {
   const sysRoleList = ref<Array<SysRole>>([])
   // 加载角色信息
   const initRole = async () => {
-    try {
-      const resp = await getRoleOption()
-      if (resp.code === 200) {
-        sysRoleList.value = resp.data
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await getRoleOption()
+    if (resp.code === 200) {
+      sysRoleList.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
   initRole()
@@ -861,20 +789,12 @@ const initDeptData = () => {
   const sysDeptList = ref<Array<SysDept>>([])
   // 加载部门信息
   const initDept = async () => {
-    try {
-      const resp = await getDeptOption()
-      if (resp.code === 200) {
-        // 单位树
-        sysDeptList.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await getDeptOption()
+    if (resp.code === 200) {
+      // 单位树
+      sysDeptList.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
   initDept()
@@ -911,24 +831,32 @@ const initPostData = () => {
         postLoading.value = true
         await initPostByDeptIds(sysUserDTO.value.deptIdList)
       }
-    } catch (error) {
-      console.error(error)
     } finally {
       postLoading.value = false
     }
   }
 
-  // 通过部门id获取部门名称用于回显
-  const initPostByDeptIds = async (value: Array<string>) => {
-    const option:Array<{
-      value: string,
-      label: string
-    }> = []
-    // 组合option
-    value.forEach(item => {
+  // 根据部门ID初始化岗位
+  const initPostByDeptIds = async (deptIds: string[]) => {
+    if (!deptIds.length) {
+      sysPostList.value = []
+      return
+    }
+
+    // 获取部门id｜名称集合
+    const deptOptions = getDeptOptions(deptIds)
+
+    await updatePostList(deptIds, deptOptions)
+  }
+
+  // 获取部门选项集合
+  const getDeptOptions = (deptIds: string[]) => {
+    const options: { value: string; label: string }[] = []
+
+    deptIds.forEach(id => {
       traverse(sysDeptList.value, (dept) => {
-        if (dept.id === item && dept.name) {
-          option.push({
+        if (dept.id === id && dept.name) {
+          options.push({
             value: dept.id,
             label: dept.name
           })
@@ -937,72 +865,49 @@ const initPostData = () => {
       })
     })
 
-    if (value.length > 0) {
-      await initPostByDeptIdOption(value, option)
-    } else {
-      sysPostList.value = []
-    }
+    return options
   }
 
-  // 加载岗位信息，通过 选中部门/表单回显写入部门id 进行加载
-  const initPostByDeptIdOption = async (deptIds: string[], option: Array<{label: string, value: string}>) => {
-    // 记录原始部门ID集合
-    const originDeptIds = sysPostList.value.map(post => post.deptId)
-    // 删除没有被选中的id
-    originDeptIds.forEach(deptId => {
-      if (!deptIds.includes(deptId)) {
-        const index = sysPostList.value.findIndex(item => item.deptId === deptId)
-        if (index > -1) {
-          sysPostList.value.splice(index, 1)
-        }
-      }
-    })
+  // 更新岗位列表
+  const updatePostList = async ( deptIds: string[], deptOptions: { label: string; value: string }[] ) => {
 
-    // 如果新旧ID集合长度相同，直接返回
-    if (deptIds.length === sysPostList.value.length) {
-      return;
+    const originDeptIds = sysPostList.value.map(p => p.deptId)
+
+    // 需要删除的部门
+    const removeDeptIds = originDeptIds.filter(id => !deptIds.includes(id))
+    // 删除旧数据
+    sysPostList.value = sysPostList.value.filter(item => !removeDeptIds.includes(item.deptId))
+    // 新增部门
+    const newDeptIds = deptIds.filter(id => !originDeptIds.includes(id))
+
+    if (!newDeptIds.length) return
+
+    const resp = await getPostOptionByDeptId(newDeptIds)
+
+    if (resp.code !== 200) {
+      message.error(resp.msg)
+      return
     }
 
-    // 新选中的部门id集合
-    const newDeptIds = deptIds.filter(item => !originDeptIds.includes(item))
+    newDeptIds.forEach(deptId => {
+      const dept = deptOptions.find(d => d.value === deptId)
 
-    // 后端查询新部门及岗位数据
-    try {
-      const resp = await getPostOptionByDeptId(newDeptIds)
-      if (resp.code === 200) {
-        const data = resp.data
-        newDeptIds.forEach(deptId => {
-          sysPostList.value.push({
-            deptId: deptId,
-            deptName: cloneDeep(option).find((item:{label: string, value: string}) => item.value === deptId).label,
-            postList: sysPostsToPostOptional(data[deptId])
-          })
-        })
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
-    }
-  }
-
-  // 将 SysPost 集合  转换为 PostOptional 集合
-  const sysPostsToPostOptional = (postList: Array<SysPost>): Array<PostOptional> => {
-    const resp: Array<PostOptional> = []
-    if (postList) {
-      postList.forEach(post => {
-        resp.push({
-          id: post.id,
-          name: post.name,
-          checked: false
-        })
+      sysPostList.value.push({
+        deptId,
+        deptName: dept?.label ?? '',
+        postList: toPostOptional(resp.data[deptId])
       })
-    }
-    return resp
+    })
+  }
+
+  const toPostOptional = (postList?: SysPost[]): PostOptional[] => {
+    if (!postList) return []
+
+    return postList.map(post => ({
+      id: post.id,
+      name: post.name,
+      checked: false
+    }))
   }
 
   // 处理选中/取消选中 岗位标签
@@ -1069,33 +974,29 @@ const intiDelete = () => {
   const closePopconfirm = () => {
     openDeletePopconfirm.value = false
   }
+
   // 处理删除逻辑
   const handleDelete = async (id?: string) => {
     const deleteIds = id ? [id] : [...selectedIds.value];
 
+    if (deleteIds.length === 0) {
+      message.warning("请勾选数据")
+      return
+    }
+
     try {
-      if (deleteIds.length > 0) {
-        const resp = await deleteByIds(deleteIds)
-        if (resp.code === 200) {
-          message.success(resp.msg);
-          // id 不存在则清空选中数据
-          if (!id) {
-            selectedIds.value = []
-          } else {
-            selectedIds.value = selectedIds.value.filter(item => item !== id)
-          }
-          await initPage()
+      const resp = await deleteByIds(deleteIds)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        // id 不存在则清空选中数据
+        if (!id) {
+          selectedIds.value = []
         } else {
-          message.error(resp.msg)
+          selectedIds.value = selectedIds.value.filter(item => item !== id)
         }
+        await initPage()
       } else {
-        message.warning("请勾选数据")
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
+        message.error(resp.msg)
       }
     } finally {
       closePopconfirm()
@@ -1113,19 +1014,33 @@ const {handleDelete,closePopconfirm,openPopconfirm,openDeletePopconfirm} = intiD
 
 // 初始化excel导入导出相关操作
 const initExcel = () => {
+
+  // 下载excel模板
+  const handleDownloadExcelTemplate = async () => {
+    const spinInstance = Spin.service({
+      tip: '努力加载中...'
+    });
+    const blob = await excelTemplate()
+    download(blob, "用户导入模板")
+    spinInstance.close()
+  }
+
   // 导出excel
   const handleExportExcel = async () => {
     const spinInstance = Spin.service({
       tip: '努力加载中...'
     });
-    const resp = await exportExcel(userQuery.value)
-    if (resp.code === 200) {
-      download(resp.data)
-    } else {
-      message.error(resp.msg)
+    try {
+      // blob转为url后进行下载
+      const blob = await exportExcel(userQuery.value)
+      download(blob, "导出用户")
+    } catch (err) {
+      message.error("导出失败")
+    } finally {
+      spinInstance.close()
     }
-    spinInstance.close()
   }
+
   // 文件上传前校验格式
   const handleBeforeUpdate = (file: File) => {
     const fileName = file.name
@@ -1134,6 +1049,7 @@ const initExcel = () => {
       return false
     }
   }
+
   // excel批量导入
   const handleCustomRequest = async (uploadRequest: UploadRequestOption) => {
     if (!uploadRequest) {
@@ -1146,46 +1062,32 @@ const initExcel = () => {
     try {
       const resp = await importExcel(uploadRequest.file)
       if (resp.code === 200) {
-        const data = resp.data
-        // 是否完全导入成功
-        if (data.allSuccess) {
-          message.success(resp.msg);
-        } else {
-          // 部分成功可下载导入失败的数据集
-          Modal.confirm({
-            title: '导入完成，部分数据未成功导入',
-            icon: createVNode(ExclamationCircleOutlined),
-            content: `共解析到 ${data.readCount} 条数据，成功导入 ${data.successCount} 条，失败 ${data.errorCount} 条。点击“确定”下载失败数据集。`,
-            onOk: () => {
-              // 下载导入失败excel
-              download(data.errorExcelPath)
-            }
-          })
-        }
-        // 导入完成后刷新页面
         await initPage()
+      } else if (resp.code === 510) {
+        const errMsgList = JSON.parse(resp.data) as string[]
+        Modal.confirm({
+          title: '导入失败',
+          icon: h(ExclamationCircleOutlined),
+          width: 600,
+          content: h('div', errMsgList.map(item => h('div', item))),
+          okCancel: false
+        })
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       spinInstance.close()
     }
-
   }
 
   return {
+    handleDownloadExcelTemplate,
     handleExportExcel,
     handleBeforeUpdate,
     handleCustomRequest
   }
 }
-const { handleExportExcel, handleBeforeUpdate, handleCustomRequest } = initExcel()
+const { handleDownloadExcelTemplate, handleExportExcel, handleBeforeUpdate, handleCustomRequest } = initExcel()
 
 // 重置密码
 const initResetPassword = () => {
@@ -1217,11 +1119,7 @@ const initResetPassword = () => {
     ]
   }
   // 重置密码表单
-  const resetPasswordForm = ref<{
-    password?: string
-  }>({
-    password: ''
-  })
+  const resetPasswordForm = ref<{password?: string}>({password: ''})
   // 触发打开模态框
   const handleOpenResetPasswordModel = (event: MouseEvent, targetUser: SysUserVO) => {
     event.stopPropagation()
@@ -1237,22 +1135,14 @@ const initResetPassword = () => {
     const id = targetUserInfo.value.id
     try {
       if (password && id) {
-        // 密码加密处理
-        const passwordEncrypt = await rasEncryptPassword(password)
         // 修改密码
-        const resp = await resetPassword(id, passwordEncrypt.ciphertext, passwordEncrypt.requestKey)
+        const resp = await resetPassword(id, password)
         if (resp.code === 200) {
           showResetPassword.value = false
           message.success(resp.msg)
         } else {
           message.error(resp.msg)
         }
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       resetPasswordLoading.value = false
@@ -1275,10 +1165,7 @@ const {showResetPassword, targetUserInfo, resetPasswordForm, useDefaultPassword,
 
 // 加载默认密码
 const initDefaultPassword = async () => {
-  const resp = await settingStore.getSetting<DefaultPassword>("DefaultPasswordSetting")
-  if (resp) {
-    defaultPassword.value = defaultPasswordDecrypt(resp.defaultPassword)
-  }
+  defaultPassword.value = await settingStore.fetchDefaultPassword()
 }
 
 onMounted(() => {

@@ -1,5 +1,5 @@
-import request from "@/utils/Request.ts";
-import type {ExcelImportResult, PageResponseType} from "@/api/global/Type.ts";
+import request, {blobRequest} from "@/utils/Request.ts";
+import type {PageResponseType} from "@/api/global/Type.ts";
 import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
 import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 
@@ -47,14 +47,13 @@ export const deleteByIds = (ids: string[]) => {
 }
 
 // 重置密码
-export const resetPassword = (userId: string,  password: string, passwordRequestKey: string) => {
+export const resetPassword = (userId: string, password: string) => {
     return request<string>({
         url: 'system/user/resetPassword',
         method: 'post',
         data: {
             userId: userId,
-            password: password,
-            passwordRequestKey: passwordRequestKey
+            password: password
         }
     })
 }
@@ -76,12 +75,20 @@ export const getUserOptionByUserIds = (userIds: String[]) => {
     })
 }
 
+// 下载用户导入模板
+export const excelTemplate = () => {
+    return blobRequest({
+        url: 'system/user/exportTemplate',
+        method: "get"
+    })
+}
+
 // excel导出
 export const exportExcel = (data: SysUserDTO) => {
-    return request<string>({
+    return blobRequest({
         url: 'system/user/export',
         method: "post",
-        data: data,
+        data: data
     })
 }
 
@@ -89,8 +96,7 @@ export const exportExcel = (data: SysUserDTO) => {
 export const importExcel = (file:  string | Blob | RcFile) => {
     const formData = new FormData()
     formData.append('file', file)
-
-    return request<ExcelImportResult>({
+    return request<string>({
         url: 'system/user/import',
         method: 'post',
         data: formData,

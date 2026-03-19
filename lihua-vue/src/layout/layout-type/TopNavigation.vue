@@ -1,11 +1,12 @@
 <template>
-  <a-layout>
+  <a-layout class="layout">
     <div class="top-navigation-header">
       <transition :name="themeStore.routeTransition" mode="out-in">
         <a-layout-header class="top-navigation-layout-header"
                          :class="themeStore.siderTheme === 'light' ? 'background-glass' : ''"
                          v-show="props.showLayout">
-          <a-flex align="center" justify="space-between" style="margin: 0 var(--lihua-layout-head-space) 0 var(--lihua-layout-head-space)">
+          <a-flex align="center"
+                  style="margin: 0 var(--lihua-layout-head-space) 0 var(--lihua-layout-head-space)">
             <!--logo-->
             <Logo class="logo"/>
             <!--导航-->
@@ -22,12 +23,17 @@
       <!--内容-->
       <div id="lihua-layout-content" class="layout-content" />
     </a-layout-content>
+    <!--页脚-->
+    <a-layout-footer class="layout-footer" v-if="themeStore.$state.showFooter">
+      <page-footer/>
+    </a-layout-footer>
   </a-layout>
 </template>
 
 <script setup lang="ts">
 import ViewTabs from "@/layout/view-tabs/index.vue";
-import Side from "@/layout/sider/index.vue"
+import Side from "@/layout/sider/index.vue";
+import PageFooter from "@/layout/footer/index.vue";
 import Logo from "@/layout/logo/index.vue";
 import {useThemeStore} from "@/stores/theme";
 

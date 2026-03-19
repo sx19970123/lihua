@@ -64,7 +64,6 @@ import type {SysNoticeVO} from "@/api/system/notice/type/SysNotice.ts";
 import dayjs from "dayjs";
 import {message} from "ant-design-vue";
 import type {SysUser} from "@/api/system/user/type/SysUser.ts";
-import {ResponseError} from "@/api/global/Type.ts";
 
 const props = defineProps<{
   noticeId: string,
@@ -85,52 +84,36 @@ const handlePreview = async () => {
   spinning.value = true
   const noticeId = props.noticeId
   // 后端查询预览
-  try {
-    const resp = await preview(noticeId)
-    if (resp.code === 200) {
-      notice.value = resp.data
-      spinning.value = false
-      // 已读/未读回显
-      if (props.showReadUser) {
-        await handleReadInfo(noticeId)
-      }
-    } else {
-      message.error(resp.msg)
+  const resp = await preview(noticeId)
+  if (resp.code === 200) {
+    notice.value = resp.data
+    spinning.value = false
+    // 已读/未读回显
+    if (props.showReadUser) {
+      await handleReadInfo(noticeId)
     }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  } else {
+    message.error(resp.msg)
   }
 }
 
 // 处理已读未读用户显示
 const handleReadInfo = async (noticeId: string) => {
-  try {
-    const resp = await queryReadInfo(noticeId)
-    if (resp.code === 200) {
-      const readInfoData = resp.data
-      const unRead = readInfoData["0"] as SysUser[]
-      const read = readInfoData["1"] as SysUser[]
-      // 未读
-      if (unRead) {
-        unreadUserList.value = unRead
-      }
-      // 已读
-      if (read) {
-        readUserList.value = read
-      }
-    } else {
-      message.error(resp.msg)
+  const resp = await queryReadInfo(noticeId)
+  if (resp.code === 200) {
+    const readInfoData = resp.data
+    const unRead = readInfoData["0"] as SysUser[]
+    const read = readInfoData["1"] as SysUser[]
+    // 未读
+    if (unRead) {
+      unreadUserList.value = unRead
     }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.log(e)
+    // 已读
+    if (read) {
+      readUserList.value = read
     }
+  } else {
+    message.error(resp.msg)
   }
 }
 

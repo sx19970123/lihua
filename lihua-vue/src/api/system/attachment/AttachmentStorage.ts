@@ -1,7 +1,5 @@
-import request from "@/utils/Request.ts";
+import request, {blobRequest} from "@/utils/Request.ts";
 import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
-import type {SysAttachmentUrl} from "@/api/system/attachment/type/SysAttachmentUrl.ts";
-
 
 // 根据md5查询附件是否存在
 export const existsAttachmentByMd5 = (md5: string, originFileName: string) => {
@@ -81,21 +79,27 @@ export const upload = (file: File, businessCode: string, businessName: string) =
     })
 }
 
+// 公开附件上传
+export const publicUpload = (file: File, businessCode: string) => {
+    const formData = new FormData();
+    formData.append('file', file)
+    formData.append('businessCode', businessCode)
+    return request<string>({
+        url: "system/attachment/storage/public/upload",
+        method: "post",
+        data: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+}
+
 // 文件秒传
 export const fastUpload = (data: SysAttachment) => {
     return request<string>({
         url: "system/attachment/storage/fast/upload",
         method: "post",
         data: data
-    })
-}
-
-// 上传url附件
-export const urlUpload = (url: string, businessCode: string, businessName: string) => {
-    return request<SysAttachmentUrl>({
-        url: `system/attachment/storage/url/upload`,
-        method: "post",
-        data: {url, businessCode, businessName},
     })
 }
 
@@ -113,7 +117,7 @@ export const chunksUpload = (file: Blob, uploadId: string, md5: string, index: n
         },
         onUploadProgress: (progressEvent) => {
             callback(progressEvent.bytes)
-        },
+        }
     })
 }
 
@@ -128,9 +132,8 @@ export const chunksMerge = (data: SysAttachment, index: number) => {
 
 // 公开附件下载
 export const publicAttachmentDownload = (id: string) => {
-    return request<Blob>({
+    return blobRequest({
         url: `system/attachment/storage/download/p/${id}`,
-        method: 'get',
-        responseType: 'blob'
+        method: 'get'
     })
 }

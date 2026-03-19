@@ -47,6 +47,7 @@
         <a-input v-if="avatarType === 'text'" v-model:value="avatarText" style="max-width: 260px;" size="large" placeholder="请输入头像文本"/>
         <!--        头像编辑-->
         <image-cropper v-if="avatarType === 'image'"
+                       :key="imageCropperWight"
                        ref="imageCropperRef"
                        v-model:realTime="avatarImg"
                        v-model:img="avatarUrl"
@@ -73,10 +74,10 @@ import {useUserStore} from "@/stores/user";
 import {message, Modal} from 'ant-design-vue';
 import settings from "@/settings";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
-import {cloneDeep} from 'lodash-es'
+import {cloneDeep, debounce} from 'lodash-es'
 import {useThemeStore} from "@/stores/theme.ts";
 import {ResponseError} from "@/api/global/Type.ts";
-import {deleteFromBusiness, upload} from "@/api/system/attachment/AttachmentStorage.ts";
+import {publicUpload} from "@/api/system/attachment/AttachmentStorage.ts";
 import {v4 as uuidv4} from "uuid";
 
 const themeStore = useThemeStore()
@@ -85,6 +86,13 @@ const userStore = useUserStore()
 const props = defineProps(['modelValue'])
 // 双向绑定修改方法
 const emits = defineEmits(['update:modelValue','change'])
+
+let updatedData: AvatarType = {
+  type :'',
+  backgroundColor :'',
+  value :''
+};
+
 const init = () => {
   // 控制modal开关
   const open = ref<boolean>(false)
@@ -159,15 +167,7 @@ const init = () => {
     }
   }
 
-  // 删除上一个图片头像
-  const removeLastImage = () => {
-    if (lastImageId) {
-      deleteFromBusiness([lastImageId])
-    }
-  }
-
   handleWindowWith()
-
   return {
     open,
     avatarType,
@@ -180,7 +180,6 @@ const init = () => {
     iconSize,
     imageCropperWight,
     handleWindowWith,
-    removeLastImage,
     openModal
   }
 }
@@ -196,7 +195,6 @@ const {
   iconSize,
   imageCropperWight,
   handleWindowWith,
-  removeLastImage,
   openModal
 } = init()
 
@@ -207,11 +205,6 @@ const imageCropperRef = useTemplateRef<InstanceType<typeof ImageCropper>>("image
  * 处理确认数据
  */
 const handleOk = async () => {
-  let updatedData: AvatarType = {
-    type :'',
-    backgroundColor :'',
-    value :''
-  };
   try {
     switch (avatarType.value) {
       case "image": {
@@ -232,9 +225,9 @@ const handleOk = async () => {
           throw new Error('头像不能超过 2MB');
         }
 
-        const resp = await upload(new File([blob],uuidv4() + ".png", { type: "image/png" }), "UserAvatar", "用户头像");
+        const resp = await publicUpload(new File([blob],uuidv4() + ".png", { type: "image/png" }), "UserAvatar");
         if (resp.code !== 200) {
-          throw new Error('头像上传失败');
+          throw new Error(resp.msg);
         }
         updatedData = {
           url: URL.createObjectURL(blob),
@@ -265,7 +258,6 @@ const handleOk = async () => {
       delete cloneData.url;
       // 触发change事件
       emits('change', JSON.stringify(cloneData));
-      removeLastImage()
       open.value = false;
     } else {
       if (avatarType.value === 'image') {
@@ -296,6 +288,7 @@ const close = () => {
   open.value = true;
   showConfirm()
 };
+
 const showConfirm = () => {
   Modal.confirm({
     title: '提 示',
@@ -309,13 +302,19 @@ const showConfirm = () => {
   });
 };
 
+// 拖动窗口防抖
+const debounceChangeWith = debounce(handleWindowWith, 300)
+
 // 组件创建完成后获取抽屉展开宽度
 onMounted(() => {
-  window.addEventListener('resize', handleWindowWith)
+  window.addEventListener('resize', debounceChangeWith)
 })
 // 组件销毁后删除监听
 onUnmounted(() => {
-  window.removeEventListener('resize', handleWindowWith)
+  if (updatedData.url) {
+    URL.revokeObjectURL(updatedData?.url)
+  }
+  window.removeEventListener('resize', debounceChangeWith)
 })
 
 </script>

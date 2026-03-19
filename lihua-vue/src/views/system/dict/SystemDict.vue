@@ -212,7 +212,7 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted, reactive, ref} from "vue";
 import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
-import {ResponseError, type ResponseType} from "@/api/global/Type.ts"
+import {type BaseModalActiveType, type ResponseType} from "@/api/global/Type.ts"
 import type {ColumnsType} from 'ant-design-vue/es/table/interface';
 import {deleteData, queryById, queryPage, reloadCache, save, updateStatus} from "@/api/system/dict/DictType.ts";
 import dayjs from "dayjs";
@@ -221,7 +221,6 @@ import {message} from "ant-design-vue";
 import DictData from "./dictData/index.vue"
 import {initDict} from "@/utils/Dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
-import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const { sys_status,sys_dict_type } = initDict("sys_status","sys_dict_type")
@@ -304,7 +303,7 @@ const initSearch = () => {
       align: 'center',
       key: 'action',
       width: '292px',
-      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
+      fixed: 'right'
     },
   ])
   // 查询条件定义
@@ -354,12 +353,6 @@ const initSearch = () => {
       } else {
         message.error(resp.msg)
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       tableLoad.value = false
     }
@@ -397,13 +390,8 @@ const initSave = () => {
         { pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/, message: '字典编码支持字母、数字、下划线，并且不能以数字开头', trigger: 'change' },
     ],
   }
-  // modal 相关属性定义
-  type modalActiveType = {
-    open: boolean, // 模态框开关
-    saveLoading: boolean, // 点击保存按钮加载
-    title: string, // 模态框标题
-  }
-  const modalActive = reactive<modalActiveType>( {
+
+  const modalActive = reactive<BaseModalActiveType>( {
     open: false,
     saveLoading: false,
     title: ''
@@ -438,12 +426,6 @@ const initSave = () => {
         } else {
           message.error(resp.msg)
         }
-      } catch (e) {
-        if (e instanceof ResponseError) {
-          message.error(e.msg)
-        } else {
-          console.error(e)
-        }
       } finally {
         modalActive.saveLoading = false
       }
@@ -451,25 +433,17 @@ const initSave = () => {
 
   const getDictType = async (event: MouseEvent,id: string) => {
     event.stopPropagation()
-    try {
-      const resp: ResponseType<SysDictType> = await queryById(id)
-      if (resp.code === 200) {
-        handleModelStatus('编辑字典')
-        dictTypeData.id = resp.data.id
-        dictTypeData.name = resp.data.name
-        dictTypeData.code = resp.data.code
-        dictTypeData.type = resp.data.type
-        dictTypeData.status = resp.data.status
-        dictTypeData.remark = resp.data.remark
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp: ResponseType<SysDictType> = await queryById(id)
+    if (resp.code === 200) {
+      handleModelStatus('编辑字典')
+      dictTypeData.id = resp.data.id
+      dictTypeData.name = resp.data.name
+      dictTypeData.code = resp.data.code
+      dictTypeData.type = resp.data.type
+      dictTypeData.status = resp.data.status
+      dictTypeData.remark = resp.data.remark
+    } else {
+      message.error(resp.msg)
     }
   }
 
@@ -485,21 +459,14 @@ const initSave = () => {
   // 修改角色状态
   const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
     event.stopPropagation();
-    let newStatus: string = ''
+    let newStatus: string = status
     try {
       const resp = await updateStatus(id, status)
       if (resp.code === 200) {
         newStatus = resp.data
         message.success(resp.msg)
       } else {
-        newStatus = status
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       // 重新赋值
@@ -548,26 +515,18 @@ const initDelete = () => {
     const deleteIds = id ? [id] : [...selectedIds.value];
 
     if (deleteIds.length > 0) {
-      try {
-        const resp = await deleteData(deleteIds)
-        if (resp.code === 200) {
-          message.success(resp.msg);
-          // id 不存在则清空选中数据
-          if (!id) {
-            selectedIds.value = []
-          } else {
-            selectedIds.value = selectedIds.value.filter(item => item !== id)
-          }
-          await initPage()
+      const resp = await deleteData(deleteIds)
+      if (resp.code === 200) {
+        message.success(resp.msg);
+        // id 不存在则清空选中数据
+        if (!id) {
+          selectedIds.value = []
         } else {
-          message.error(resp.msg)
+          selectedIds.value = selectedIds.value.filter(item => item !== id)
         }
-      } catch (e) {
-        if (e instanceof ResponseError) {
-          message.error(e.msg)
-        } else {
-          console.error(e)
-        }
+        await initPage()
+      } else {
+        message.error(resp.msg)
       }
     } else {
       message.warning("请勾选数据")
@@ -637,12 +596,6 @@ const initLoadCache = () => {
         message.success(resp.msg)
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       loadCache.value = false

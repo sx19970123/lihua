@@ -1,4 +1,4 @@
-import request from "@/utils/Request.ts";
+import request, {blobRequest} from "@/utils/Request.ts";
 import type {SysLog, SysLogDTO} from "@/api/system/log/type/SysLog.ts";
 import type {PageResponseType} from "@/api/global/Type.ts";
 
@@ -46,7 +46,7 @@ export const clearOperateLog = () => {
 
 // 导出操作日志
 export const excelOperateExport = (data: SysLogDTO) => {
-    return request<string>({
+    return blobRequest({
         url: 'system/log/operate/export',
         method: 'post',
         data: data
@@ -56,7 +56,7 @@ export const excelOperateExport = (data: SysLogDTO) => {
 
 // 导出登录日志
 export const excelLoginExport = (data: SysLogDTO) => {
-    return request<string>({
+    return blobRequest({
         url: 'system/log/login/export',
         method: 'post',
         data: data

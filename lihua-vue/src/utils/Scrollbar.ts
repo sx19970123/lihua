@@ -24,6 +24,16 @@ export const hasScrollbar = (): boolean => {
     return document.documentElement.scrollHeight > window.innerHeight;
 };
 
+// 强制关闭y轴滚动条
+export const disableOverflowY = () => {
+    document.documentElement.style.overflow = 'hidden'
+}
+
+// 启用y轴滚动条
+export const enableOverflowY = () => {
+    document.documentElement.style.overflow = ''
+}
+
 // 获取滚动条宽度
 const getScrollbarWidth = (): number => {
     const div = document.createElement('div');

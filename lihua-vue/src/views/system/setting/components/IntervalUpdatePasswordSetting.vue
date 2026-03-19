@@ -7,7 +7,7 @@
             <template #title>
               设置系统用户多长时间需要修改密码
             </template>
-            <QuestionCircleOutlined style="margin-left: var(--lihua-space-xs)"/>
+            <QuestionCircleOutlined class="question-icon"/>
           </a-tooltip>
         </template>
         <a-switch v-model:checked="settingForm.enable" @change="handleChangeSwitch"></a-switch>
@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import type {SystemSetting} from "@/api/system/setting/type/SystemSetting.ts";
+import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
 import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
 import type {IntervalUpdatePassword} from "@/api/system/setting/type/IntervalUpdatePassword.ts";
@@ -48,17 +48,16 @@ import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {isAdmin} from "@/utils/Auth.ts";
+import {save} from "@/api/system/setting/Setting.ts";
 
 const themeStore = useThemeStore()
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();
 const submitLoading = ref<boolean>(false);
 const init = async () => {
-  const resp = await settingStore.getSetting<IntervalUpdatePassword>(componentName);
-  if (!resp) {
-    await settingStore.save(setting.value)
-  } else {
-    settingForm.value = resp
+  const settingData = await settingStore.getSettingInfo<IntervalUpdatePassword>(componentName);
+  if (settingData) {
+    settingForm.value = settingData
   }
 }
 
@@ -69,10 +68,9 @@ const settingForm = ref<IntervalUpdatePassword>({
 })
 
 // 保存到数据库中的对象
-const setting = ref<SystemSetting>({
-  settingName: '定期修改密码',
-  settingComponentName: componentName,
-  settingJson: JSON.stringify(settingForm.value)
+const setting = ref<SysSetting>({
+  settingKey: componentName,
+  json: JSON.stringify(settingForm.value)
 })
 
 // 表单验证
@@ -104,10 +102,10 @@ const handleChangeSwitch = async () => {
 
 // 处理保存设置
 const handleFinish = async () => {
-  submitLoading.value = true
-  setting.value.settingJson = JSON.stringify(settingForm.value)
   try {
-    const resp = await settingStore.save(setting.value)
+    submitLoading.value = true
+    setting.value.json = JSON.stringify(settingForm.value)
+    const resp = await save(setting.value)
 
     if (resp.code === 200) {
       message.success(resp.msg)

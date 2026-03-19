@@ -44,7 +44,6 @@ import {useUserStore} from "@/stores/user.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import {setDefaultDept} from "@/api/system/profile/Profile.ts";
 import {message} from "ant-design-vue";
-import {ResponseError} from "@/api/global/Type.ts";
 import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
 
 const themeStore = useThemeStore();
@@ -71,21 +70,13 @@ const handleMouseLeave = () => {
 
 // 设置默认部门
 const handleSetDefaultDept = async (deptId: string) => {
-  try {
-    const resp = await setDefaultDept(deptId)
-    if (resp.code === 200) {
-      // 更新默认部门
-      userStore.updateDefaultDept(resp.data)
-      emits('deptSelect', resp)
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
+  const resp = await setDefaultDept(deptId)
+  if (resp.code === 200) {
+    // 更新默认部门
+    userStore.updateDefaultDept(resp.data)
+    emits('deptSelect', resp)
+  } else {
+    message.error(resp.msg)
   }
 }
 </script>

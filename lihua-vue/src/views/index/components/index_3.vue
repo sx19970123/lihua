@@ -37,25 +37,11 @@
           </a-typography-title>
           <a-typography-text>
             <p style="text-indent: 2em">
-              后端采用了 Spring Boot 3.x 框架进行开发，Java 版本为 21，
+              后端采用了 Spring Boot 4.x 框架进行开发，Java 版本为 25，
               使用 Spring Security 进行权限管理。
               持久层框架采用 MyBatis-Plus，理论上支持 MP 所支持的所有数据库类型，当前使用的是 MySQL 数据库。
             </p>
-            <p style="text-indent: 2em">
-              下面是系统基础目录结构
-            </p>
           </a-typography-text>
-          <a-typography-text>
-
-          <pre>
-lihua
-├── lihua-admin    // 后台服务启动类&系统模块controller层
-├── lihua-captcha  // 验证码
-├── lihua-common   // 系统通用模块，包括自定义注解和工具类等
-├── lihua-core     // 系统核心模块，包含各种配置及过滤器、拦截器、AOP
-├── lihua-service  // 系统服务模块，系统功能业务实现</pre>
-          </a-typography-text>
-
           <a-typography-title :level="5">
             项目依赖
           </a-typography-title>
@@ -71,10 +57,10 @@ lihua
             <a-descriptions-item label="系统缓存">spring-integration-redis</a-descriptions-item>
             <a-descriptions-item label="令牌工具">java-jwt</a-descriptions-item>
             <a-descriptions-item label="接口限流">guava</a-descriptions-item>
-            <a-descriptions-item label="excel导入导出">myexcel</a-descriptions-item>
+            <a-descriptions-item label="excel导入导出">fesod</a-descriptions-item>
             <a-descriptions-item label="表单验证">spring-boot-starter-validation</a-descriptions-item>
             <a-descriptions-item label="服务器信息">oshi-core</a-descriptions-item>
-            <a-descriptions-item label="定时任务">xxl-job-core</a-descriptions-item>
+            <a-descriptions-item label="定时任务">Snail Job</a-descriptions-item>
           </a-descriptions>
         </div>
       </a-card>

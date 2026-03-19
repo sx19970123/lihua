@@ -90,45 +90,12 @@
                 <span v-if="selectedIds && selectedIds.length > 0" style="margin-left: var(--lihua-space-xs)"> {{selectedIds.length}} 项</span>
               </a-button>
             </a-popconfirm>
-            <div v-show="showMore">
-              <a-flex :gap="8">
-                <a-button ghost type="primary" @click="handleExportExcel">
-                  <template #icon>
-                    <ExportOutlined />
-                  </template>
-                  导出
-                </a-button>
-                <a-popover title="导入说明">
-                  <template #content>
-                    <a-space direction="vertical">
-                      <a-typography-text>1. 请参考“导出功能”下载的Excel作为导入模板</a-typography-text>
-                      <a-typography-text>2. 以名称和编码为准，保证全局唯一性。遇到重复数据将无法导入</a-typography-text>
-                      <a-typography-text>3. 带有*标记的为必填字段</a-typography-text>
-                      <a-typography-text>4. 无法导入的数据会被收集并导出，同时标记错误信息，修改后可重新导入</a-typography-text>
-                    </a-space>
-                  </template>
-                  <a-upload :customRequest="handleCustomRequest"
-                            :beforeUpload="handleBeforeUpdate"
-                            :showUploadList="false"
-                            accept=".xlsx,.xls"
-                  >
-                    <a-button ghost type="primary">
-                      <template #icon>
-                        <ImportOutlined />
-                      </template>
-                      导入
-                    </a-button>
-                  </a-upload>
-                </a-popover>
-              </a-flex>
-            </div>
-            <a-button ghost type="primary" @click="showMore = !showMore">
+            <a-button ghost type="primary" @click="handleExportExcel">
               <template #icon>
-                <DoubleLeftOutlined v-if="showMore" />
-                <DoubleRightOutlined v-else />
+                <ExportOutlined />
               </template>
+              导出
             </a-button>
-
             <!--            表格设置-->
             <table-setting v-model="postColumn"/>
           </a-flex>
@@ -256,37 +223,23 @@
 <script setup lang="ts">
 
 import {getDeptOption} from "@/api/system/dept/Dept.ts";
-import {createVNode, reactive, ref, useTemplateRef, watch} from "vue";
+import {reactive, ref, useTemplateRef, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {initDict} from "@/utils/Dict.ts";
-import {
-  deleteData,
-  exportExcel,
-  importExcel,
-  queryById,
-  queryPage,
-  save,
-  updateStatus
-} from "@/api/system/post/Post.ts";
+import {deleteData, exportExcel, queryById, queryPage, save, updateStatus} from "@/api/system/post/Post.ts";
 import {useRoute} from "vue-router";
 import type {Rule} from "ant-design-vue/es/form";
 import {flattenTree} from "@/utils/Tree.ts";
-import {type FormInstance, message, Modal} from "ant-design-vue";
+import {type FormInstance, message} from "ant-design-vue";
 import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
 import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
-import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
-import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import Spin from "@/components/spin";
-import {ResponseError} from "@/api/global/Type.ts";
+import {type BaseModalActiveType} from "@/api/global/Type.ts";
 import {download} from "@/utils/AttachmentDownload.ts";
-import settings from "@/settings.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_status} = initDict("sys_status")
 const route = useRoute();
-
-// 显示更多按钮
-const showMore = ref<boolean>(false)
 
 // 监听传入deptId变化进行部门赋值
 watch(() => route.query.deptId, (value) => {
@@ -299,19 +252,11 @@ watch(() => route.query.deptId, (value) => {
 const initDept = () => {
   const deptTree = ref<Array<SysDept>>([])
   const initDeptTree = async () => {
-    try {
-      const resp = await getDeptOption()
-      if (resp.code === 200 ) {
-        deptTree.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await getDeptOption()
+    if (resp.code === 200 ) {
+      deptTree.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
   initDeptTree()
@@ -392,7 +337,7 @@ const initSearch = () => {
       key: 'action',
       align: 'center',
       width: '182px',
-      fixed: document.body.offsetWidth > settings.menuToggleWidth ? 'right' : false
+      fixed: 'right'
     }
   ])
 
@@ -432,12 +377,6 @@ const initSearch = () => {
         })
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       tableLoad.value = false
@@ -495,13 +434,7 @@ const initSave = () => {
     ]
   }
 
-  // 模态框状态
-  type modalActiveType = {
-    open: boolean,
-    saveLoading: boolean,
-    title: string,
-  }
-  const modalActive = reactive<modalActiveType>({
+  const modalActive = reactive<BaseModalActiveType>({
     open: false,
     saveLoading: false,
     title: ''
@@ -522,26 +455,19 @@ const initSave = () => {
 
   const selectById = async (event:MouseEvent, id: string) => {
     event.stopPropagation()
-    try {
-      const resp = await queryById(id)
-      if (resp.code === 200) {
-        handleModalStatus('修改岗位')
-        sysPost.value = resp.data
-      } else {
-        message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
+    const resp = await queryById(id)
+    if (resp.code === 200) {
+      handleModalStatus('修改岗位')
+      sysPost.value = resp.data
+    } else {
+      message.error(resp.msg)
     }
   }
 
   // 保存岗位数据
   const savePost = async () => {
     await formRef.value?.validate()
+    modalActive.saveLoading = true
 
     // 设置岗位编码
     const flattenTreeList = flattenTree(deptTree.value)
@@ -550,7 +476,7 @@ const initSave = () => {
         sysPost.value.deptCode = item.code
       }
     })
-    modalActive.saveLoading = true
+
     try {
       const resp = await save(sysPost.value)
       if (resp.code === 200) {
@@ -559,12 +485,6 @@ const initSave = () => {
         await initPage()
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       modalActive.saveLoading = false
@@ -575,21 +495,14 @@ const initSave = () => {
   // 修改角色状态
   const handleUpdateStatus = async (event: MouseEvent, id: string, status: string) => {
     event.stopPropagation()
-    let newStatus: string = ''
+    let newStatus: string = status
     try {
       const resp = await updateStatus(id, status)
       if (resp.code === 200) {
         newStatus = resp.data
         message.success(resp.msg)
       } else {
-        newStatus = status
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       // 重新赋值
@@ -602,9 +515,7 @@ const initSave = () => {
         }
       })
     }
-
   }
-
 
   return {
     modalActive,
@@ -657,12 +568,6 @@ const initDelete = () => {
       } else {
         message.warning("请勾选数据")
       }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
-      }
     } finally {
       closePopconfirm()
     }
@@ -679,75 +584,21 @@ const initDelete = () => {
 
 const {openDeletePopconfirm,closePopconfirm,handleDelete,openPopconfirm} = initDelete()
 
-// 初始化excel导入导出相关操作
-const initExcel = () => {
-  // 导出excel
-  const handleExportExcel = async () => {
-    const spinInstance = Spin.service({
-      tip: '努力加载中...'
-    });
-    const resp = await exportExcel(postQuery.value)
-    if (resp.code === 200) {
-      download(resp.data)
-    } else {
-      message.error(resp.msg)
-    }
+// 导出excel
+const handleExportExcel = async () => {
+  const spinInstance = Spin.service({
+    tip: '努力加载中...'
+  });
+
+  try {
+    const blob = await exportExcel(postQuery.value)
+    download(blob, "系统部门")
+  } catch (e) {
+    message.error("导出失败")
+  } finally {
     spinInstance.close()
   }
-  // 文件上传前校验格式
-  const handleBeforeUpdate = (file: File) => {
-    const fileName = file.name
-    if (!fileName.endsWith(".xls") && !fileName.endsWith(".xlsx")) {
-      message.warn("请上传 .xls 或 .xlsx 类型的文件")
-      return false
-    }
-  }
-  // excel批量导入
-  const handleCustomRequest = async (uploadRequest: UploadRequestOption) => {
-    if (!uploadRequest) {
-      return
-    }
-    const spinInstance = Spin.service({
-      tip: '数据处理中，请稍等...'
-    })
-
-    // 将文件上传至后端
-    try {
-      const resp = await importExcel(uploadRequest.file)
-      if (resp.code === 200) {
-        const data = resp.data
-        // 是否完全导入成功
-        if (data.allSuccess) {
-          message.success(resp.msg);
-        } else {
-          // 部分成功可下载导入失败的数据集
-          Modal.confirm({
-            title: '导入完成，部分数据未成功导入',
-            icon: createVNode(ExclamationCircleOutlined),
-            content: `共解析到 ${data.readCount} 条数据，成功导入 ${data.successCount} 条，失败 ${data.errorCount} 条。点击“确定”下载失败数据集。`,
-            onOk: () => {
-              // 下载导入失败excel
-              download(data.errorExcelPath)
-            }
-          })
-        }
-        // 导入完成后刷新页面
-        await initPage()
-      } else {
-        message.error(resp.msg)
-      }
-    } finally {
-      spinInstance.close()
-    }
-  }
-  return {
-    handleExportExcel,
-    handleBeforeUpdate,
-    handleCustomRequest
-  }
 }
-
-const { handleExportExcel, handleBeforeUpdate, handleCustomRequest } = initExcel()
 </script>
 
 <style scoped>

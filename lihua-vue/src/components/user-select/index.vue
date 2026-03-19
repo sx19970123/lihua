@@ -102,7 +102,6 @@ import type {SysUser} from "@/api/system/user/type/SysUser.ts";
 import UserShow from "@/components/user-show/index.vue"
 import {getUserOption, getUserOptionByUserIds} from "@/api/system/user/User.ts";
 import {message} from "ant-design-vue";
-import {ResponseError} from "@/api/global/Type.ts";
 
 const themeStore = useThemeStore();
 
@@ -176,12 +175,6 @@ const initDeptTree = () => {
         handleDeptData(resp.data)
       } else {
         message.error(resp.msg)
-      }
-    } catch (e) {
-      if (e instanceof ResponseError) {
-        message.error(e.msg)
-      } else {
-        console.error(e)
       }
     } finally {
       loadingTree.value = false
@@ -310,12 +303,6 @@ const initUserTable = () => {
         } else {
           message.error(resp.msg)
         }
-      } catch (e) {
-        if (e instanceof ResponseError) {
-          message.error(e.msg)
-        } else {
-          console.error(e)
-        }
       } finally {
         loadingUser.value = false
       }
@@ -349,20 +336,12 @@ const initModelUserId = async () => {
   }
 
   // 根据id获取用户信息（id、昵称、头像、部门）
-  try {
-    const resp = await getUserOptionByUserIds(userIds)
-    if (resp.code === 200) {
-      userList.value = resp.data
-      selectedIds.value = resp.data.filter(user => user.id !== undefined).map(user => user.id) as string[]
-    } else {
-      message.error(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.log(e)
-    }
+  const resp = await getUserOptionByUserIds(userIds)
+  if (resp.code === 200) {
+    userList.value = resp.data
+    selectedIds.value = resp.data.filter(user => user.id !== undefined).map(user => user.id) as string[]
+  } else {
+    message.error(resp.msg)
   }
 }
 
