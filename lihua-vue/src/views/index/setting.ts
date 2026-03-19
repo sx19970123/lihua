@@ -1,18 +1,8 @@
 // 下一版本更新记录
 const nextUpdate = [
     {
-        version: '2.0.0',
+        version: '2.0.1',
         record: [
-           '1. 重构后台代码，采用模块化结构，提高项目扩展性',
-           '2. spring boot版本升级为4.x',
-           '3. 移除minio，替换为阿里云oss',
-           '4. 移除xxl-job，替换为snail-job',
-           '5. 移除knife4j，替换为spring doc',
-           '6. 移除my-excel，替换为fesod',
-           '7. 样式布局新增页脚开关',
-           '8. 个人中心新增锁屏配置',
-           '9. 分片上传新增进度条',
-           '10. 其他细节优化及bug修复',
         ]
     }
 ]
@@ -22,10 +12,28 @@ const nextUpdate = [
  * 项目开发可以将 views/index 中内容删除，在 router 中重新配置首页即可
  */
 export const versionInfo = {
-    springBootVersion: ' 3.5.8',
-    vueVersion: ' 3.5.22',
+    springBootVersion: ' 4.0.3',
+    vueVersion: ' 3.5.30',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '2.0.0',
+            updateDate: '2026-03-19',
+            title: "🎉🎉2.0.0 版本重构了后台代码，升级spring boot版本到4.0.x，同时替换了多个后台依赖。",
+            updateContent: [
+                '1. 重构后台代码，采用模块化结构，提高项目扩展性',
+                '2. spring boot版本升级为4.x',
+                '3. 移除minio，替换为阿里云oss',
+                '4. 移除xxl-job，替换为snail-job',
+                '5. 移除knife4j，替换为spring doc',
+                '6. 移除my-excel，替换为fesod',
+                '7. redis客户端替换为redisson',
+                '8. 样式布局新增页脚开关',
+                '9. 个人中心新增锁屏配置',
+                '10. 分片上传新增进度条',
+                '11. 其他细节优化及bug修复',
+            ]
+        },
         {
             version: '1.4.2',
             updateDate: '2026-02-01',
