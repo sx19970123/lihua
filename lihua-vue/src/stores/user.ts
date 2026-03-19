@@ -13,7 +13,7 @@ import type {SysPost} from "@/api/system/post/type/SysPost.ts";
 import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
 import {closeConnect} from "@/utils/WebSocket.ts";
 import router from "@/router";
-import {attachmentUrl} from "@/utils/AttachmentUrl.ts";
+import {attachmentUrl, getTemporaryPath} from "@/utils/AttachmentUrl.ts";
 
 export const useUserStore = defineStore('user', {
     state: () => {
@@ -183,12 +183,12 @@ export const useUserStore = defineStore('user', {
             })
         },
         // 处理头像
-        handleAvatar() {
+        async handleAvatar() {
             const avatar = this.$state.avatar
             if (avatar.type === 'image') {
                 // 当头像类型为 image 但 image不存在时，赋值默认头像
                 if (avatar.value) {
-                    avatar.url = attachmentUrl(avatar.value)
+                    avatar.url = await getTemporaryPath(attachmentUrl(avatar.value))
                 } else {
                     this.$state.avatar = this.getDefaultAvatar()
                 }
