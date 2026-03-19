@@ -118,7 +118,9 @@ public class SensitiveAspect {
                 Sensitive annotation = field.getAnnotation(Sensitive.class);
                 // 根据角色编码忽略数据脱敏
                 String[] ignoreRoleCodes = annotation.ignoreRoleCodes();
-                boolean ignore = new HashSet<>(Arrays.stream(ignoreRoleCodes).toList()).containsAll(LoginUserContext.getRoleCodeList());
+                List<String> roleCodeList = LoginUserContext.getRoleCodeList();
+                // 判断忽略的角色编码与当前用户角色编码是否重合
+                boolean ignore = !Collections.disjoint(Arrays.asList(ignoreRoleCodes), roleCodeList);
                 if (!ignore) {
                     Object value = null;
                     try {
