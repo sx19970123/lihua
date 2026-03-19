@@ -2,6 +2,7 @@ package com.lihua.log.handle;
 
 import com.lihua.common.model.bridge.log.LogModel;
 import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.ip.utils.IpUtils;
 import com.lihua.log.annotation.Log;
@@ -153,6 +154,8 @@ public class HandleRecodeLog {
             }
         }
 
+        logModel.setCreateTime(DateUtils.now());
+        logModel.setDelFlag("0");
         // 使用publishEvent进行事件推送，由sysLogService进行处理保存
         applicationEventPublisher.publishEvent(logModel);
     }
