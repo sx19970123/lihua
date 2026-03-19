@@ -10,10 +10,10 @@ attachment:
   # 附件下载生成链接过期时间（分钟）
   fileDownloadExpireTime: 30
   # 文件上传服务类型：LOCAL（传统本地上传）、ALIYUN-OSS（阿里云oss）
-  uploadFileModel: ALIYUN-OSS # ALIYUN-OSS
+  uploadFileModel: LOCAL
   # 公开文件的业务编码
   uploadPublicBusinessCode: [UserAvatar, SystemNotice, EditorIndex]
-  # 上传文件路径 mac windows 注意目录切换
+  # 上传文件路径，LOCAL模式下为服务器目录；ALIYUN-OSS模式下为桶下目录
   uploadFilePath: lihua
 
 spring:
@@ -83,21 +83,23 @@ logging:
     org.springframework: info
 
 # oss
+# 需要attachment配置中uploadFileModel为【ALIYUN-OSS】，同配置项 uploadFilePath 为桶下目录
 aliyun:
   oss:
-    endpoint: oss-cn-beijing.aliyuncs.com
-    access-key-id: LTAI5tAVTDrjswJCAv9z16wM
-    access-key-secret: W2YMUaQtOcvLOKEYGT3IF0j1i8OKkA
-    bucket-name: aurevo-user-avatar
+    endpoint:
+    access-key-id:
+    access-key-secret:
+    bucket-name:
 
 # 定时任务
+# 如需启用需要从启动类【com/lihua/LiHuaApplication.java】中将 @EnableSnailJob 注释解除
 snail-job:
   server:
     host: 127.0.0.1
     port: 17888
-  namespace: bQwRjnB6bksnbBrLG_0qcDcvsAF25-9p
-  group: lihua-group
-  token: SJ_yeCripNU8DrZraf6G5Po7f3nawIXSFvE
+  namespace: ''
+  group: ''
+  token: ''
 
  # spring doc 接口文档
 springdoc:

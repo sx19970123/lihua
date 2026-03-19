@@ -4,8 +4,8 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.*;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.common.utils.date.DateUtils;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +21,7 @@ import java.util.List;
 @Component("ALIYUN-OSS")
 public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
 
-    @Resource
+    @Autowired(required = false)
     private OSS ossClient;
 
     @Value("${aliyun.oss.bucket-name}")

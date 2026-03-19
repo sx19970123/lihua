@@ -77,7 +77,7 @@ import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import {cloneDeep, debounce} from 'lodash-es'
 import {useThemeStore} from "@/stores/theme.ts";
 import {ResponseError} from "@/api/global/Type.ts";
-import {deleteFromBusiness, publicUpload} from "@/api/system/attachment/AttachmentStorage.ts";
+import {publicUpload} from "@/api/system/attachment/AttachmentStorage.ts";
 import {v4 as uuidv4} from "uuid";
 
 const themeStore = useThemeStore()
@@ -167,15 +167,7 @@ const init = () => {
     }
   }
 
-  // 删除上一个图片头像
-  const removeLastImage = () => {
-    if (lastImageId) {
-      deleteFromBusiness([lastImageId])
-    }
-  }
-
   handleWindowWith()
-
   return {
     open,
     avatarType,
@@ -188,7 +180,6 @@ const init = () => {
     iconSize,
     imageCropperWight,
     handleWindowWith,
-    removeLastImage,
     openModal
   }
 }
@@ -204,7 +195,6 @@ const {
   iconSize,
   imageCropperWight,
   handleWindowWith,
-  removeLastImage,
   openModal
 } = init()
 
@@ -268,7 +258,6 @@ const handleOk = async () => {
       delete cloneData.url;
       // 触发change事件
       emits('change', JSON.stringify(cloneData));
-      removeLastImage()
       open.value = false;
     } else {
       if (avatarType.value === 'image') {

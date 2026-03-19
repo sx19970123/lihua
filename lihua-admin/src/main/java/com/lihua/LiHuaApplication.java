@@ -8,8 +8,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+// @EnableSnailJob
 @SpringBootApplication
-@EnableSnailJob
 @EnableAsync(proxyTargetClass = true)
 @EnableAspectJAutoProxy(exposeProxy = true)
 @MapperScan({"com.lihua.**.mapper"})
