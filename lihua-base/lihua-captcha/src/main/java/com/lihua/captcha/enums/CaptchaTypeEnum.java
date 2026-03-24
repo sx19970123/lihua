@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Getter
 @AllArgsConstructor
@@ -27,5 +28,11 @@ public enum CaptchaTypeEnum {
         return Arrays.stream(values())
                 .map(CaptchaTypeEnum::getValue)
                 .toList();
+    }
+
+    // 随机获取验证码类型
+    public static String randomType() {
+        List<String> allValue = allValue();
+        return allValue.get(ThreadLocalRandom.current().nextInt(allValue.size()));
     }
 }

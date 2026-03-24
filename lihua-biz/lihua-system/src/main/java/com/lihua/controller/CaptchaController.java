@@ -28,10 +28,8 @@ public class CaptchaController extends ApiResponseController {
     @Operation(summary = "获取验证码")
     @PostMapping("get")
     public ApiResponse<ImageCaptchaVO> getCaptcha() {
-        List<String> captchaTypes = CaptchaTypeEnum.allValue();
-        // 获取随机验证码类型
-        String type = captchaTypes.get(ThreadLocalRandom.current().nextInt(captchaTypes.size()));
-        return imageCaptchaApplication.generateCaptcha(type);
+        // 随机获取验证码类型
+        return imageCaptchaApplication.generateCaptcha(CaptchaTypeEnum.randomType());
     }
 
     @Operation(summary = "验证码校验")
