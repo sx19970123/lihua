@@ -85,7 +85,6 @@ closeSide()
   height: auto;
   padding: 0;
   backdrop-filter: var(--lihua-backdrop-filter-lg);
-  -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
   line-height: var(--lihua-layout-height);
 }
 .drawer-navigation-head {

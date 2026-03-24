@@ -6,7 +6,7 @@
 
     <groupId>com.lihua</groupId>
     <artifactId>lihua</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -20,7 +20,7 @@
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
 
-        <lihua.version>2.0.0</lihua.version>
+        <version>2.0.1</version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mysql.version>8.2.0</mysql.version>
         <mybatis-plus.version>3.5.16</mybatis-plus.version>
@@ -41,17 +41,22 @@
     <dependencyManagement>
         <dependencies>
 <!--            业务依赖=============================================-->
+            <dependency>
+                <groupId>com.lihua</groupId>
+                <artifactId>lihua-biz</artifactId>
+                <version>${version}</version>
+            </dependency>
 <!--            系统监控 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-monitor</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            系统业务 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-system</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 
 <!--            基础依赖=============================================-->
@@ -59,91 +64,91 @@
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-common</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            字典模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-dict</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            文档模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-doc</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            excel导入导出模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-excel</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            ip处理模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-ip</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            日志模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-log</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            mybatis持久层模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-mybatis</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            缓存模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-redis</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            安全模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-security</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            数据脱敏模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-sensitive</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            websocket模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-websocket</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
             <!--            web模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-web</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            验证码模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-captcha</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            定时任务模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-job</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
 <!--            附件模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
                 <artifactId>lihua-attachment</artifactId>
-                <version>${lihua.version}</version>
+                <version>${version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

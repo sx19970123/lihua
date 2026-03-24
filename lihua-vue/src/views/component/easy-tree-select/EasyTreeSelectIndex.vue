@@ -1,7 +1,7 @@
 <template>
   <a-card>
     <template #title>
-      <a-typography-link :href="baseDocApi + '/doc-web/components/easy-tree-select'" target="_blank">组件文档</a-typography-link>
+      <a-typography-link :href="baseDocApi + '2.0/doc-web/components/easy-tree-select'" target="_blank">组件文档</a-typography-link>
     </template>
     <a-flex vertical :gap="16" style="margin-top: var(--lihua-space-base)">
       <demo1/>

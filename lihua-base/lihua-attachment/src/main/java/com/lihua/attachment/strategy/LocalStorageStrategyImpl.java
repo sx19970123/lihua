@@ -17,13 +17,9 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.nio.file.*;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -67,37 +63,100 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
 
     @Override
     public void chunksUploadFile(MultipartFile file, String fullFilePath, Integer index, String uploadId) {
-        FileUtils.upload(file, TEMPORARY_PATH + uploadId + "/" + index);
+        FileUtils.upload(file, Paths.get(TEMPORARY_PATH, uploadId, String.valueOf(index)).toString());
     }
 
-    @SneakyThrows
     @Override
     public void chunksMerge(String fullFilePath, String md5, String uploadId, Integer total) {
-        Path temporaryPath = Paths.get(TEMPORARY_PATH, uploadId);
 
-        // 校验临时文件数量
-        try (Stream<Path> temporaryListStream = Files.list(temporaryPath)) {
-            if (temporaryListStream.count() != total) {
-                throw new AttachmentException("附件合并失败，缺少数据项");
+        Path tempDir = Paths.get(TEMPORARY_PATH, uploadId);
+        Path targetPath = Paths.get(fullFilePath);
+
+        try {
+            // 1. 校验临时目录是否存在
+            if (!Files.exists(tempDir)) {
+                throw new AttachmentException("临时目录不存在");
             }
-        }
 
-        // 数据合并
-        try (FileChannel outPutChannel = new FileOutputStream(fullFilePath).getChannel()) {
-            for (int i = 1; i <= total ; i++) {
-                String temporaryFilePath = Paths.get(TEMPORARY_PATH, uploadId, String.valueOf(i)).toString();
-                File temporaryFile = new File(temporaryFilePath);
-                try(FileChannel inputChannel = new FileInputStream(temporaryFile).getChannel()) {
-                    // 通过transferFrom实现零拷贝合并数据
-                    inputChannel.transferTo(0, temporaryFile.length(), outPutChannel);
+            // 2. 校验分片完整性（强校验）
+            Set<String> fileNames;
+            try (Stream<Path> stream = Files.list(tempDir)) {
+                fileNames = stream
+                        .map(p -> p.getFileName().toString())
+                        .collect(Collectors.toSet());
+            }
+
+            if (fileNames.size() != total) {
+                throw new AttachmentException("附件合并失败，分片数量不一致");
+            }
+
+            for (int i = 1; i <= total; i++) {
+                if (!fileNames.contains(String.valueOf(i))) {
+                    throw new AttachmentException("附件合并失败，缺少分片：" + i);
                 }
-                // 删除临时文件
-                temporaryFile.delete();
             }
-            // 删除文件夹
-            Files.delete(temporaryPath);
+
+            // 3. 创建目标目录
+            Path parent = targetPath.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+
+            // 4. 合并文件（零拷贝 + 循环保证完整）
+            try (FileChannel outChannel = FileChannel.open(
+                    targetPath,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.WRITE,
+                    StandardOpenOption.TRUNCATE_EXISTING
+            )) {
+
+                for (int i = 1; i <= total; i++) {
+                    Path partPath = tempDir.resolve(String.valueOf(i));
+
+                    try (FileChannel inChannel = FileChannel.open(partPath, StandardOpenOption.READ)) {
+
+                        long size = inChannel.size();
+                        long position = 0;
+
+                        while (position < size) {
+                            long transferred = inChannel.transferTo(position, size - position, outChannel);
+                            if (transferred <= 0) {
+                                break; // 防止死循环
+                            }
+                            position += transferred;
+                        }
+                    }
+
+                    // 删除分片文件
+                    Files.deleteIfExists(partPath);
+                }
+            }
+
+            // 5. MD5 校验（强一致性）
+            if (md5 != null && !md5.isEmpty()) {
+                String fileMd5;
+                try (InputStream is = Files.newInputStream(targetPath)) {
+                    fileMd5 = org.apache.commons.codec.digest.DigestUtils.md5Hex(is);
+                }
+
+                if (!md5.equalsIgnoreCase(fileMd5)) {
+                    Files.deleteIfExists(targetPath);
+                    throw new AttachmentException("文件校验失败，MD5不一致");
+                }
+            }
+
+            // 6. 删除临时目录（递归）
+            deleteDirectory(tempDir);
+
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            // 7. 异常回滚（删除目标文件）
+            try {
+                Files.deleteIfExists(targetPath);
+            } catch (IOException ex) {
+                log.warn("删除失败文件异常: {}", targetPath, ex);
+            }
+
+            log.error("附件合并失败", e);
             throw new AttachmentException("附件合并失败");
         }
     }
@@ -135,6 +194,26 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     // 项目启动时将TEMPORARY_PATH初始化
     @PostConstruct
     void initTemporaryPath() {
-        TEMPORARY_PATH = attachmentConfig.getUploadFilePath() + "temporary/";
+        TEMPORARY_PATH = Paths.get(attachmentConfig.getUploadFilePath(),"temporary").toString();
+    }
+
+    // 删除目录
+    private void deleteDirectory(Path path) {
+        if (!Files.exists(path)) {
+            return;
+        }
+
+        try (Stream<Path> walk = Files.walk(path)) {
+            walk.sorted(Comparator.reverseOrder())
+                    .forEach(p -> {
+                        try {
+                            Files.deleteIfExists(p);
+                        } catch (IOException e) {
+                            log.warn("删除失败: {}", p, e);
+                        }
+                    });
+        } catch (IOException e) {
+            log.warn("删除目录失败: {}", path, e);
+        }
     }
 }

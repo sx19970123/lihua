@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.lihua</groupId>
         <artifactId>lihua</artifactId>
-        <version>2.0.0</version>
+        <version>2.0.1</version>
     </parent>
 
     <artifactId>lihua-admin</artifactId>
@@ -18,8 +18,11 @@
     </properties>
 
     <dependencies>
-        <!--            业务依赖=============================================-->
-
+        <!--            biz依赖-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-biz</artifactId>
+        </dependency>
         <!--            系统监控-->
         <dependency>
             <groupId>com.lihua</groupId>
@@ -30,69 +33,7 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-system</artifactId>
         </dependency>
-
-        <!--            基础依赖=============================================-->
-        <!--            公共模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-common</artifactId>
-        </dependency>
-        <!--            字典模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-dict</artifactId>
-        </dependency>
-        <!--            文档模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-doc</artifactId>
-        </dependency>
-        <!--            excel导入导出模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-excel</artifactId>
-        </dependency>
-        <!--            ip处理模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-ip</artifactId>
-        </dependency>
-        <!--            日志模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-log</artifactId>
-        </dependency>
-        <!--            mybatis持久层模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-mybatis</artifactId>
-        </dependency>
-        <!--            缓存模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-redis</artifactId>
-        </dependency>
-        <!--            安全模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-security</artifactId>
-        </dependency>
-        <!--            数据脱敏模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-sensitive</artifactId>
-        </dependency>
-        <!--            websocket模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-websocket</artifactId>
-        </dependency>
-        <!--            web模块 -->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-web</artifactId>
-        </dependency>
-        <!--            定时任务模块 -->
+        <!--            定时任务-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-job</artifactId>

@@ -577,7 +577,6 @@ onUnmounted(() => {
 .lihua-lock-mask {
   will-change: backdrop-filter;
   backdrop-filter: var(--lihua-backdrop-filter-sm);
-  -webkit-backdrop-filter: var(--lihua-backdrop-filter-sm);
 }
 
 .content {

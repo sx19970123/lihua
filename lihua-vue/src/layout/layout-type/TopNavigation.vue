@@ -44,7 +44,6 @@ const props = defineProps<{showLayout: boolean }>()
 <style scoped>
 .top-navigation-header {
   backdrop-filter: var(--lihua-backdrop-filter-lg);
-  -webkit-backdrop-filter: var(--lihua-backdrop-filter-lg);
   position: relative;
   z-index: 10;
 }

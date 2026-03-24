@@ -1,7 +1,7 @@
 // 下一版本更新记录
 const nextUpdate = [
     {
-        version: '2.0.1',
+        version: '2.0.2',
         record: [
         ]
     }
@@ -16,6 +16,18 @@ export const versionInfo = {
     vueVersion: ' 3.5.30',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '2.0.1',
+            updateDate: '2026-03-24',
+            updateContent: [
+                '1. 修复分片合并时没有上级目录报错的bug',
+                '2. 系统组件文档链接替换为2.0版本',
+                '3. vite升级到8.0.2',
+                '4. 优化后台admin依赖',
+                '5. 后端resources下静态资源由base下子模块管理',
+                '6. 其他细节优化及bug修复',
+            ]
+        },
         {
             version: '2.0.0',
             updateDate: '2026-03-19',

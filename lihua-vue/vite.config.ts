@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => {
       preprocessorOptions: {
         less: {
           javascriptEnabled: true
-        }
+        },
       }
     },
     build: {
