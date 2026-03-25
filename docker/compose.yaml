@@ -15,8 +15,6 @@ services:
       - REDIS_HOST=lihua-redis                        # redis地址，默认使用redis容器名即可
       - REDIS_PORT=6379                               # redis端口，根据dockerfile暴露端口配置
       - REDIS_PASSWORD=password                       # redis密码
-      - XXL_JOB_HOST=lihua-xxl-job                    # xxl-job地址，默认使用xxl-job容器名即可
-      - XXL_JOB_PORT=8081                             # xxl-job端口，根据dockerfile暴露端口配置
       - TZ=Asia/Shanghai                              # 设置容器时区
     networks:                                       # 同主机下共享的自定义网络
       - network
@@ -64,25 +62,6 @@ services:
     ports:                                          # 端口映射，将容器6379端口映射到主机6379端口
       - "6379:6379"
 
-  # xxl-job定时任务
-  xxl-job:
-    container_name: lihua-xxl-job                   # 启动容器名
-    build:                                          # 通过./xxl-job中的dockerfile构建镜像
-      context: ./xxl-job
-      dockerfile: dockerfile
-    environment:                                    # 配置环境变量
-      - DB_HOST=lihua-mysql                           # mysql地址，默认使用mysql容器名即可
-      - DB_PORT=3306                                  # mysql端口，根据dockerfile暴露端口配置
-      - DB_USERNAME=username                          # mysql用户名
-      - DB_PASSWORD=password                          # mysql密码
-      - TZ=Asia/Shanghai                              # 设置容器时区
-    networks:                                       # 同主机下共享的自定义网络
-      - network
-    ports:                                          # 端口映射，将容器8081端口映射到主机8081端口
-      - "8081:8081"
-    volumes:
-      - xxl-job-resource:/app/
-
 # 容器间共享网络
 networks:
   network:
@@ -95,4 +74,3 @@ volumes:
   server-data:
   jar-resource:
   dist-resource:
-  xxl-job-resource:

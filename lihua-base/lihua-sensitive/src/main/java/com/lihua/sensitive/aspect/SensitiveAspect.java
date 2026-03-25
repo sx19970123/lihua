@@ -84,7 +84,7 @@ public class SensitiveAspect {
         return fieldList;
     }
 
-    // 深度获取目标字段，汉父类
+    // 深度获取目标字段，含父类
     private void getDeepField(Class<?> objectClass, List<Field> fieldList) {
         // 从缓存中获取Field集合，不存在就添加
         List<Field> fields = null;
