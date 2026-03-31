@@ -8,7 +8,7 @@ import com.lihua.entity.SysSetting;
 import com.lihua.enums.SysSettingEnum;
 import com.lihua.mapper.SysSettingMapper;
 import com.lihua.model.dto.SysSettingDTO;
-import com.lihua.redis.cache.RedisCache;
+import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.service.SysSettingService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -18,15 +18,15 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
-import static com.lihua.redis.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
-import static com.lihua.redis.enums.RedisKeyPrefixEnum.SYSTEM_SETTING_REDIS_PREFIX;
+import static com.lihua.cache.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
+import static com.lihua.cache.enums.RedisKeyPrefixEnum.SYSTEM_SETTING_REDIS_PREFIX;
 
 @Service
 @Slf4j
 public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSetting> implements SysSettingService {
 
     @Resource
-    private RedisCache redisCache;
+    private RedisCacheManager redisCacheManager;
 
     private final String REDIS_SETTING_KEY = SYSTEM_SETTING_REDIS_PREFIX.getValue();
 
@@ -36,8 +36,8 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
     public String saveSetting(SysSetting sysSetting) {
         // 保存数据
         saveOrUpdate(sysSetting);
-        // 删除 redis map 中对应属性
-        redisCache.removeMapItem(REDIS_SETTING_KEY, sysSetting.getSettingKey());
+        // 删除 manager map 中对应属性
+        redisCacheManager.removeMapItem(REDIS_SETTING_KEY, sysSetting.getSettingKey());
         // 修改黑名单相关配置时，重新缓存ip黑名单
         if (SysSettingEnum.RESTRICT_ACCESS_IP.getKey().equals(sysSetting.getSettingKey())) {
             cacheIpBlackList(null);
@@ -47,13 +47,13 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
 
     @Override
     public SysSetting getSysSettingByKey(String key) {
-        SysSetting sysSetting = redisCache.getCacheMapItem(REDIS_SETTING_KEY, key, SysSetting.class);
+        SysSetting sysSetting = redisCacheManager.getCacheMapItem(REDIS_SETTING_KEY, key, SysSetting.class);
         // 从缓存中获取配置不存在时，从数据库查询对应配置
         if (sysSetting == null) {
             SysSetting setting = queryByKey(key);
             // 查询到对应配置后，设置缓存并返回
             if (setting != null) {
-                redisCache.setCacheMapItem(REDIS_SETTING_KEY, setting.getSettingKey(), setting);
+                redisCacheManager.setCacheMapItem(REDIS_SETTING_KEY, setting.getSettingKey(), setting);
             }
 
             return setting;
@@ -162,7 +162,7 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
     // 缓存ip黑名单
     @EventListener
     public void cacheIpBlackList(CacheBlackIp cacheBlackIp) {
-        redisCache.delete(IP_BLACKLIST_KEY);
+        redisCacheManager.delete(IP_BLACKLIST_KEY);
         // 系统中配置的禁止访问ip
         SysSetting restrictAccessIpSetting = getSysSettingByKey(SysSettingEnum.RESTRICT_ACCESS_IP.getKey());
         // 没有此配置项直接返回
@@ -174,7 +174,7 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
         if (!ipSetting.isEnable()) {
             return;
         }
-        redisCache.setCacheList(IP_BLACKLIST_KEY, ipSetting.getIpList());
+        redisCacheManager.setCacheList(IP_BLACKLIST_KEY, ipSetting.getIpList());
     }
 
     /**

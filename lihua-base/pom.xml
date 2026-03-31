@@ -22,7 +22,7 @@
         <module>lihua-job</module>
         <module>lihua-log</module>
         <module>lihua-mybatis</module>
-        <module>lihua-redis</module>
+        <module>lihua-cache</module>
         <module>lihua-security</module>
         <module>lihua-sensitive</module>
         <module>lihua-web</module>

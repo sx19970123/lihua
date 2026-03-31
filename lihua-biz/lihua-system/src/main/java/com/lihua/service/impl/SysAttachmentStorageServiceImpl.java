@@ -15,8 +15,8 @@ import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysAttachment;
 import com.lihua.mapper.SysAttachmentMapper;
 import com.lihua.model.vo.SysAttachmentChunkVO;
-import com.lihua.redis.cache.RedisCache;
-import com.lihua.redis.enums.RedisKeyPrefixEnum;
+import com.lihua.cache.manager.RedisCacheManager;
+import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.service.SysAttachmentStorageService;
 import jakarta.annotation.Resource;
@@ -44,7 +44,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     private Map<String, AttachmentStorageStrategy> attachmentStorageStrategyMap;
 
     @Resource
-    private RedisCache redisCache;
+    private RedisCacheManager redisCacheManager;
 
     @Resource
     private AttachmentConfig attachmentConfig;
@@ -198,7 +198,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             throw new AttachmentException("附件合并失败");
         } finally {
             // 删除redis缓存
-            redisCache.delete(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId);
+            redisCacheManager.delete(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId);
         }
     }
 
@@ -320,14 +320,14 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     // 分片上传中通过uploadId获取fullFilePath
     private String getChunksFullPathByUploadId(String uploadId) {
         // 通过uploadId获取fullFilePath
-        String fullFilePath = redisCache.getCacheObject(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, String.class);
+        String fullFilePath = redisCacheManager.getCacheObject(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, String.class);
         if (!StringUtils.hasText(fullFilePath)) {
             List<SysAttachment> list = lambdaQuery().select(SysAttachment::getPath).eq(SysAttachment::getUploadId, uploadId).list();
             if (list.isEmpty()) {
                 throw new AttachmentException("获取分片路径失败");
             }
             fullFilePath = list.get(0).getPath();
-            redisCache.setCacheObject(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, fullFilePath);
+            redisCacheManager.setCacheObject(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, fullFilePath);
         }
 
         return fullFilePath;
@@ -338,7 +338,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         AttachmentStorageStrategy attachmentStorageStrategy = getStrategy();
         String uploadId = attachmentStorageStrategy.getUploadId(fullFilePath);
         // uploadId和fullFilePath保存到redis
-        redisCache.setCacheObject(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, fullFilePath);
+        redisCacheManager.setCacheObject(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX + uploadId, fullFilePath);
         return uploadId;
     }
 

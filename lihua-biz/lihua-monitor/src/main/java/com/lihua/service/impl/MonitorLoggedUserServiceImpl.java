@@ -2,8 +2,8 @@ package com.lihua.service.impl;
 
 import com.lihua.ip.utils.IpUtils;
 import com.lihua.model.LoggedUser;
-import com.lihua.redis.cache.RedisCache;
-import com.lihua.redis.enums.RedisKeyPrefixEnum;
+import com.lihua.cache.manager.RedisCacheManager;
+import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUser;
@@ -20,18 +20,18 @@ import java.util.Set;
 public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
 
     @Resource
-    private RedisCache redisCache;
+    private RedisCacheManager redisCacheManager;
 
     @Override
     public List<LoggedUser> queryList(String username, String nickName, String clientType) {
 
         // 获取登录中用户所有key
-        Set<String> keys = redisCache.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue());
+        Set<String> keys = redisCacheManager.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue());
 
         // 取出所有登录用户信息
         List<LoginUser> loginUsers = new ArrayList<>();
         for (String key : keys) {
-            loginUsers.add(redisCache.getCacheObject(key, LoginUser.class));
+            loginUsers.add(redisCacheManager.getCacheObject(key, LoginUser.class));
         }
 
         // 根据用户名过滤
@@ -73,6 +73,6 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
 
     @Override
     public void forceLogout(List<String> cacheKeys) {
-        cacheKeys.forEach(cacheKey -> redisCache.delete(cacheKey));
+        cacheKeys.forEach(cacheKey -> redisCacheManager.delete(cacheKey));
     }
 }

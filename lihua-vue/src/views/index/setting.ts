@@ -6,6 +6,8 @@ const nextUpdate = [
             '1. 优化TreeUtils，使用ConcurrentHashMap缓存反射方法',
             '2. 优化SensitiveAspect，使用ConcurrentHashMap缓存反射字段',
             '3. 移除项目Guava依赖',
+            '4. lihua-redis模块更名为lihua-cache模块',
+            '5. RedisCache更名为RedisCacheManager',
         ]
     }
 ]

@@ -22,10 +22,10 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-mybatis</artifactId>
         </dependency>
-        <!--        redis 缓存-->
+        <!--        manager 缓存-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-redis</artifactId>
+            <artifactId>lihua-cache</artifactId>
         </dependency>
     </dependencies>
 

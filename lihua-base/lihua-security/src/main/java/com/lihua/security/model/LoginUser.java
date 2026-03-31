@@ -66,7 +66,7 @@ public class LoginUser implements UserDetails {
     private LocalDateTime expirationTime;
 
     /**
-     * redis 中对应的缓存key
+     * manager 中对应的缓存key
      */
     private String cacheKey;
 

@@ -7,7 +7,7 @@ import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysUser;
 import com.lihua.mapper.SysUserMapper;
 import com.lihua.model.dto.SysCheckPasswordDTO;
-import com.lihua.redis.cache.RedisCache;
+import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.CurrentUser;
@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static com.lihua.redis.enums.RedisKeyPrefixEnum.CHECK_PASSWORD_REDIS_PREFIX;
+import static com.lihua.cache.enums.RedisKeyPrefixEnum.CHECK_PASSWORD_REDIS_PREFIX;
 
 @Service
 public class SysProfileServiceImpl implements SysProfileService {
@@ -37,7 +37,7 @@ public class SysProfileServiceImpl implements SysProfileService {
     private SysUserService sysUserService;
 
     @Resource
-    private RedisCache redisCache;
+    private RedisCacheManager redisCacheManager;
 
     @Override
     public String saveBasics(SysUser sysUser) {
@@ -139,7 +139,7 @@ public class SysProfileServiceImpl implements SysProfileService {
     @Override
     @Transactional
     public void accountDeactivate() {
-        String cache = redisCache.getCacheObject(CHECK_PASSWORD_REDIS_PREFIX.getValue() + LoginUserContext.getUserId(), String.class);
+        String cache = redisCacheManager.getCacheObject(CHECK_PASSWORD_REDIS_PREFIX.getValue() + LoginUserContext.getUserId(), String.class);
 
         if (!StringUtils.hasText(cache)) {
             throw new ServiceException("等待超时，请重新进行身份验证");
@@ -160,7 +160,7 @@ public class SysProfileServiceImpl implements SysProfileService {
 
         if (checked) {
             // 验证成功后向redis记录1分钟缓存
-            redisCache.setCacheObject(CHECK_PASSWORD_REDIS_PREFIX.getValue() + LoginUserContext.getUserId(), "1", Duration.ofMinutes(1));
+            redisCacheManager.setCacheObject(CHECK_PASSWORD_REDIS_PREFIX.getValue() + LoginUserContext.getUserId(), "1", Duration.ofMinutes(1));
         }
         return checked;
     }

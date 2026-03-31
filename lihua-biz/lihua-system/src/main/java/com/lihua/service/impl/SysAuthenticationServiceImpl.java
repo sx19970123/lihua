@@ -7,8 +7,8 @@ import com.lihua.entity.SysUser;
 import com.lihua.mapper.SysRoleMapper;
 import com.lihua.mapper.SysUserMapper;
 import com.lihua.model.dto.SysSettingDTO;
-import com.lihua.redis.cache.RedisCache;
-import com.lihua.redis.enums.RedisKeyPrefixEnum;
+import com.lihua.cache.manager.RedisCacheManager;
+import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.CurrentUser;
@@ -55,7 +55,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     private SysUserMapper sysUserMapper;
 
     @Resource
-    private RedisCache redisCache;
+    private RedisCacheManager redisCacheManager;
 
     @Resource
     private List<CacheLoginUserStrategy> cacheLoginUserStrategyList;
@@ -174,7 +174,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         }
 
         // 获取所有用户登录 key
-        Set<String> keys = redisCache.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId);
+        Set<String> keys = redisCacheManager.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId);
 
         int count = keys.size() - limitSize;
         if (count < 0) {
@@ -185,13 +185,13 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         keys.stream()
             .sorted(Comparator.comparingLong(LoginUserManager::getLoginTimestampByCacheKey))
             .limit(count)
-            .forEach(key -> redisCache.delete(key));
+            .forEach(key -> redisCacheManager.delete(key));
     }
 
     @Override
     public String getOnceToken() {
         String uuid = UUID.randomUUID().toString();
-        redisCache.setCacheObject(RedisKeyPrefixEnum.ONCE_TOKEN_REDIS_PREFIX.getValue() + uuid, LoginUserContext.getUserId(), Duration.ofMinutes(1));
+        redisCacheManager.setCacheObject(RedisKeyPrefixEnum.ONCE_TOKEN_REDIS_PREFIX.getValue() + uuid, LoginUserContext.getUserId(), Duration.ofMinutes(1));
         return uuid;
     }
 

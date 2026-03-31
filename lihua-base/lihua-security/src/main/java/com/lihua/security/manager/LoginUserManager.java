@@ -4,8 +4,8 @@ import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.spring.SpringUtils;
 import com.lihua.common.utils.web.WebUtils;
-import com.lihua.redis.cache.RedisCache;
-import com.lihua.redis.enums.RedisKeyPrefixEnum;
+import com.lihua.cache.manager.RedisCacheManager;
+import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.config.TokenConfig;
 import com.lihua.security.model.LoginUser;
 import com.lihua.security.utils.JwtUtils;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Slf4j
 public class LoginUserManager {
 
-    private static final RedisCache redisCache = SpringUtils.getBean(RedisCache.class);
+    private static final RedisCacheManager REDIS_CACHE_MANAGER = SpringUtils.getBean(RedisCacheManager.class);
 
     private static final TokenConfig  tokenConfig = SpringUtils.getBean(TokenConfig.class);
 
@@ -34,7 +34,7 @@ public class LoginUserManager {
         log.debug("\ntoken：【{}】\ndecode：【{}】", token, decode);
 
         try {
-            LoginUser loginUser = redisCache.getCacheObject(decode, LoginUser.class);
+            LoginUser loginUser = REDIS_CACHE_MANAGER.getCacheObject(decode, LoginUser.class);
             if (loginUser == null) {
                 return null;
             }
@@ -52,12 +52,12 @@ public class LoginUserManager {
     public static void verifyLoginUserCache() {
         LoginUser loginUser = LoginUserContext.getLoginUser();
         if (DateUtils.differenceMinute(DateUtils.now(), loginUser.getExpirationTime()) < tokenConfig.getRefreshThreshold()) {
-            redisCache.setExpire(loginUser.getCacheKey(), Duration.ofMinutes(tokenConfig.getTokenExpireTime()));
+            REDIS_CACHE_MANAGER.setExpire(loginUser.getCacheKey(), Duration.ofMinutes(tokenConfig.getTokenExpireTime()));
         }
     }
 
     /**
-     * 设置 redis 缓存
+     * 设置 manager 缓存
      * @param loginUser 登录用户信息
      * @return redis缓存key
      */
@@ -76,7 +76,7 @@ public class LoginUserManager {
         }
         loginUser.setCacheKey(cacheKey);
         // 设置缓存
-        redisCache.setCacheObject(cacheKey,
+        REDIS_CACHE_MANAGER.setCacheObject(cacheKey,
                 loginUser,
                 Duration.ofMinutes(tokenConfig.getTokenExpireTime()));
 
@@ -89,11 +89,11 @@ public class LoginUserManager {
      */
     public static void removeLoginUserCache(String token) {
         String decode = JwtUtils.decode(token);
-        redisCache.delete(decode);
+        REDIS_CACHE_MANAGER.delete(decode);
     }
 
     /**
-     * 获取 redis 存储的用户key
+     * 获取 manager 存储的用户key
      * 用户key由四部分组成 1.固定前缀 2.用户id 3.当前时间戳 4.uuid随机数，中间由:连接
      */
     private static String getLoginUserKey(String userId) {

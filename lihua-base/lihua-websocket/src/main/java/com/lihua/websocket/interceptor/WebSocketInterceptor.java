@@ -1,7 +1,7 @@
 package com.lihua.websocket.interceptor;
 
-import com.lihua.redis.cache.RedisCache;
-import com.lihua.redis.enums.RedisKeyPrefixEnum;
+import com.lihua.cache.manager.RedisCacheManager;
+import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class WebSocketInterceptor implements HandshakeInterceptor {
 
     @Resource
-    private RedisCache redisCache;
+    private RedisCacheManager redisCacheManager;
 
     /**
      * 握手前处理
@@ -36,7 +36,7 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
 
         // 从参数中解析拿到token
         String key = RedisKeyPrefixEnum.ONCE_TOKEN_REDIS_PREFIX.getValue() + params.getFirst("token");
-        String userId = redisCache.getCacheObject(key, String.class);
+        String userId = redisCacheManager.getCacheObject(key, String.class);
 
         if (!StringUtils.hasText(userId)) {
             log.error("webSocket握手失败，不存在的token");
@@ -44,7 +44,7 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
         }
 
         // 删除一次性token
-        redisCache.delete(key);
+        redisCacheManager.delete(key);
 
         // 从参数拿到用户id、客户端id、客户端类型
         attributes.put("userId", userId);

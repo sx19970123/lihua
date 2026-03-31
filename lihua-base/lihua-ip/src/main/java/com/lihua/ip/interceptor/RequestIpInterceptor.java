@@ -2,7 +2,7 @@ package com.lihua.ip.interceptor;
 
 import com.lihua.ip.exception.IpIllegalException;
 import com.lihua.ip.utils.IpUtils;
-import com.lihua.redis.cache.RedisCache;
+import com.lihua.cache.manager.RedisCacheManager;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.lihua.redis.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
+import static com.lihua.cache.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
 
 @Component
 @Slf4j
 public class RequestIpInterceptor implements HandlerInterceptor {
 
     @Resource
-    private RedisCache redisCache;
+    private RedisCacheManager redisCacheManager;
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
@@ -32,7 +32,7 @@ public class RequestIpInterceptor implements HandlerInterceptor {
 
     // ip 匹配
     private void ipMatch() {
-        List<String> prohibitIpList = redisCache.getCacheList(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue(), String.class);
+        List<String> prohibitIpList = redisCacheManager.getCacheList(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue(), String.class);
         if (!prohibitIpList.isEmpty()) {
             prohibitIpList.forEach(ip -> {
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class TokenConfig {
 
     /**
-     * redis 中 token 过期时间
+     * manager 中 token 过期时间
      */
     private Long tokenExpireTime;
 

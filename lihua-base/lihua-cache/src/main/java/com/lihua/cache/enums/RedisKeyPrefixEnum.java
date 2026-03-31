@@ -1,4 +1,4 @@
-package com.lihua.redis.enums;
+package com.lihua.cache.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,7 +38,7 @@ public enum RedisKeyPrefixEnum {
 
     ONCE_TOKEN_REDIS_PREFIX("REDIS_CACHE_ONCE_TOKEN:", "一次性令牌"),
 
-    // 业务需要，非真实 redis key
+    // 业务需要，非真实 manager key
     OTHER("OTHER", "其他");
 
     private final String value;

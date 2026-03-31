@@ -1,4 +1,4 @@
-package com.lihua.redis.cache;
+package com.lihua.cache.manager;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class RedisCache {
+public class RedisCacheManager {
 
     @Resource
     private RedissonClient redissonClient;
@@ -80,7 +80,7 @@ public class RedisCache {
 
     /**
      * 获取redis hash key 对应的 value
-     * @param key redis key
+     * @param key manager key
      * @param mapKey hash key
      * @param clazz key 对应 value 的类型
      */
@@ -94,8 +94,8 @@ public class RedisCache {
     }
 
     /**
-     * 删除 redis hash 指定的 key
-     * @param key redis key
+     * 删除 manager hash 指定的 key
+     * @param key manager key
      * @param mapKey map对应的key
      */
     public void removeMapItem(String key, String mapKey) {
@@ -168,7 +168,7 @@ public class RedisCache {
 
     /**
      * 按规则匹配 redisKeys
-     * @param pattern redis 匹配规则
+     * @param pattern manager 匹配规则
      * @return 目标keys
      */
     public Set<String> scanKeys(String pattern) {

@@ -1,4 +1,4 @@
-package com.lihua.redis.config;
+package com.lihua.cache.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;

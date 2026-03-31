@@ -4,8 +4,8 @@ import com.lihua.common.utils.spring.SpringUtils;
 import com.lihua.common.utils.tree.TreeUtils;
 import com.lihua.common.utils.web.WebUtils;
 import com.lihua.ip.utils.IpUtils;
-import com.lihua.redis.cache.RedisCache;
-import com.lihua.redis.enums.RedisKeyPrefixEnum;
+import com.lihua.cache.manager.RedisCacheManager;
+import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -23,7 +23,7 @@ import java.util.Set;
 @Slf4j
 public class LoginUserContext implements Serializable {
 
-    private static final RedisCache redisCache = SpringUtils.getBean(RedisCache.class);
+    private static final RedisCacheManager REDIS_CACHE_MANAGER = SpringUtils.getBean(RedisCacheManager.class);
 
     /**
      * 获取当前登录用户 id
@@ -161,7 +161,7 @@ public class LoginUserContext implements Serializable {
         }
 
         // 根据redisKey规则，通过前缀+userId+: 获取用户登录key
-        Set<String> keys = redisCache.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId + ":");
+        Set<String> keys = REDIS_CACHE_MANAGER.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId + ":");
 
         return !keys.isEmpty();
     }

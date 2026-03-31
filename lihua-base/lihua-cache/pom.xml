@@ -9,7 +9,7 @@
         <version>2.0.1</version>
     </parent>
 
-    <artifactId>lihua-redis</artifactId>
+    <artifactId>lihua-cache</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>

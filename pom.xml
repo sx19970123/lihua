@@ -104,7 +104,7 @@
 <!--            缓存模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-redis</artifactId>
+                <artifactId>lihua-cache</artifactId>
                 <version>${version}</version>
             </dependency>
 <!--            安全模块 -->

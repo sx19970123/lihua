@@ -32,7 +32,7 @@
         <!--        缓存模块-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-redis</artifactId>
+            <artifactId>lihua-cache</artifactId>
         </dependency>
         <!--        公共模块-->
         <dependency>
