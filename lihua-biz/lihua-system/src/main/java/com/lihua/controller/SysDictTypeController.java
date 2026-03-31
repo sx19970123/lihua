@@ -36,7 +36,7 @@ public class SysDictTypeController extends ApiResponseController {
 
     @Operation(summary = "根据id查询详情")
     @GetMapping("{id}")
-    public ApiResponseModel<SysDictType> queryById(@PathVariable("id") String id) {
+    public ApiResponseModel<SysDictType> queryById(@PathVariable String id) {
         return success(sysDictTypeService.queryById(id));
     }
 
@@ -52,7 +52,7 @@ public class SysDictTypeController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("updateStatus/{id}/{currentStatus}")
     @Log(description = "修在字典类型状态", type = LogTypeEnum.UPDATE_STATUS)
-    public ApiResponseModel<String> updateStatus(@PathVariable("id") String id, @PathVariable("currentStatus") String currentStatus) {
+    public ApiResponseModel<String> updateStatus(@PathVariable String id, @PathVariable String currentStatus) {
         return success(sysDictTypeService.updateStatus(id, currentStatus));
     }
 

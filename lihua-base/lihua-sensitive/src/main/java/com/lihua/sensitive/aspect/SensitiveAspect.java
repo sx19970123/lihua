@@ -1,8 +1,6 @@
 package com.lihua.sensitive.aspect;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.sensitive.annotation.ApplySensitive;
 import com.lihua.sensitive.annotation.DeepSensitive;
@@ -14,10 +12,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-
+import org.springframework.util.ClassUtils;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -26,8 +24,7 @@ import java.util.stream.Collectors;
 @Component
 public class SensitiveAspect {
 
-    private static final Cache<Class<?>, List<Field>> FIELD_CACHE = CacheBuilder.newBuilder().maximumSize(1000).build();
-
+    private static final ConcurrentHashMap<Class<?>, List<Field>> FIELD_CACHE = new ConcurrentHashMap<>();
 
     @SneakyThrows
     @Around("@annotation(applySensitive)")
@@ -79,7 +76,7 @@ public class SensitiveAspect {
     private List<Field> getTargetFileList(Object object) {
         List<Field> fieldList = new ArrayList<>();
         // 获取当前及父级所有字段
-        getDeepField(object.getClass(), fieldList);
+        getDeepField(ClassUtils.getUserClass(object), fieldList);
         // 返回目标字段
         return fieldList;
     }
@@ -87,14 +84,10 @@ public class SensitiveAspect {
     // 深度获取目标字段，含父类
     private void getDeepField(Class<?> objectClass, List<Field> fieldList) {
         // 从缓存中获取Field集合，不存在就添加
-        List<Field> fields = null;
-        try {
-            fields = FIELD_CACHE.get(objectClass, () -> Arrays.stream(objectClass.getDeclaredFields())
-                    .filter(field -> field.isAnnotationPresent(Sensitive.class) || field.isAnnotationPresent(DeepSensitive.class))
-                    .collect(Collectors.toList()));
-        } catch (ExecutionException e) {
-            throw new SensitiveException("获取Fields失败");
-        }
+        List<Field> fields = FIELD_CACHE.computeIfAbsent(objectClass, key ->
+                Arrays.stream(objectClass.getDeclaredFields())
+                        .filter(field -> field.isAnnotationPresent(Sensitive.class) || field.isAnnotationPresent(DeepSensitive.class))
+                        .collect(Collectors.toList()));
         // 向集合中插入
         fieldList.addAll(fields);
         // 获取父类
@@ -168,6 +161,7 @@ public class SensitiveAspect {
     }
 
     // 集合类型脱敏，新集合缓存脱敏的值后旧集合清空后通过addAll存入
+    @SuppressWarnings("unchecked")
     private void sensitiveCollection(Function<String, String> function, String fieldName, Collection<?> collection) {
         // 集合类型先将collection处理后保存为list，collection清空后将list元素设置到collection中
         List list = collection.stream().map(val -> {
@@ -185,6 +179,7 @@ public class SensitiveAspect {
     }
 
     // map类型脱敏，新map缓存脱敏的值后map清空后通过putAll存入
+    @SuppressWarnings("unchecked")
     private void sensitiveMap(Function<String, String> function, String fieldName, Map map) {
         Map hashMap = new HashMap(map.size());
         // map 类型遍历重新赋值

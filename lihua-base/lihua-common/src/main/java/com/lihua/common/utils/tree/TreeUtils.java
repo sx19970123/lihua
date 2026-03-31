@@ -1,16 +1,17 @@
 package com.lihua.common.utils.tree;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.common.utils.string.StringUtils;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.util.ClassUtils;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * 通用构建树方法
@@ -22,9 +23,9 @@ public class TreeUtils {
     private static final String DEFAULT_CHILDREN = "Children";
 
     // Set方法缓存
-    private static final Cache<Class<?>, Method> SET_METHOD_CACHE = CacheBuilder.newBuilder().maximumSize(600).build();
+    private static final ConcurrentHashMap<Class<?>, Map<String, BiConsumer<Object, Object>>> SET_METHOD_CACHE = new ConcurrentHashMap<>();
     // Get方法缓存
-    private static final Cache<Class<?>, Map<String,Method>> GET_METHOD_CACHE = CacheBuilder.newBuilder().maximumSize(1800).build();
+    private static final ConcurrentHashMap<Class<?>, Map<String, Function<Object, Object>>> GET_METHOD_CACHE = new ConcurrentHashMap<>();
 
     /**
      * 通过lambda表达式构建
@@ -172,9 +173,9 @@ public class TreeUtils {
      * 通过反射调用 get 方法，返回对象
      */
     private static <T,K> K get(T item, String prop) {
-        Method method = getGetMethod(item, prop);
+        Function<T, K> getter = getGetMethod(item, prop);
         try {
-            return (K) method.invoke(item);
+            return getter.apply(item);
         } catch (Exception e) {
             throw new RuntimeException("TreeUtils 通过反射调用get方法发生异常");
         }
@@ -183,12 +184,12 @@ public class TreeUtils {
     /**
      * 通过反射调用 get 方法，返回集合
      */
-    @SneakyThrows
+    @SuppressWarnings("unchecked")
     private static <T,K> List<K> getList(T item, String prop) {
-        Method method = getGetMethod(item, prop);
+        Function<T, Object> getter = getGetMethod(item, prop);
         Object invoke;
         try {
-            invoke = method.invoke(item);
+            invoke = getter.apply(item);
             if (invoke != null) {
                 return (List<K>) invoke;
             }
@@ -203,9 +204,9 @@ public class TreeUtils {
      * 通过反射调用set方法
      */
     private static <T,V> void set(T item, String prop, V value) {
-        Method method = getSetMethod(item, prop);
+        BiConsumer<T, V> setter = getSetMethod(item, prop);
         try {
-            method.invoke(item, value);
+            setter.accept(item, value);
         } catch (Exception e) {
             throw new ServiceException("TreeUtils 通过反射调用set方法发生异常");
         }
@@ -214,37 +215,56 @@ public class TreeUtils {
     /**
      * 从缓存中获取目标set方法
      */
-    private static <T> Method getSetMethod(T item, String prop) {
-        Class<?> cls = item.getClass();
-        try {
-            return SET_METHOD_CACHE.get(cls, () -> Arrays.stream(cls.getMethods()).filter(mtd -> mtd.getName().equals("set" + prop)).findFirst().get());
-        } catch (ExecutionException e) {
-            log.error(e.getMessage(), e);
-            throw new ServiceException("TreeUtils 通过SET_METHOD_CACHE获取set方法发生异常");
-        }
+    @SuppressWarnings("unchecked")
+    private static <T, V> BiConsumer<T, V> getSetMethod(T item, String prop) {
+        Class<?> cls = ClassUtils.getUserClass(item);
+        Map<String, BiConsumer<Object, Object>> methodMap = SET_METHOD_CACHE.computeIfAbsent(cls, key -> new ConcurrentHashMap<>());
+        return (BiConsumer<T, V>) methodMap.computeIfAbsent(prop, key -> {
+            Method method = Arrays.stream(cls.getMethods())
+                    .filter(mtd -> mtd.getName().equals("set" + prop))
+                    .findFirst()
+                    .orElseThrow(() -> new ServiceException("TreeUtils 未找到set方法: set" + prop));
+            try {
+                MethodHandle methodHandle = MethodHandles.lookup().unreflect(method);
+                return (obj, value) -> {
+                    try {
+                        methodHandle.invoke(obj, value);
+                    } catch (Throwable throwable) {
+                        throw new ServiceException("TreeUtils 通过SET_METHOD_CACHE获取set方法发生异常");
+                    }
+                };
+            } catch (IllegalAccessException e) {
+                log.error(e.getMessage(), e);
+                throw new ServiceException("TreeUtils 通过SET_METHOD_CACHE获取set方法发生异常");
+            }
+        });
     }
 
     /**
      * 从缓存中获取目标get方法
      */
-    private static <T> Method getGetMethod(T item, String prop) {
-        Class<?> cls = item.getClass();
-        Map<String, Method> methodMap;
-        try {
-            methodMap = GET_METHOD_CACHE.get(cls, () -> {
-                Map<String, Method> map = new HashMap<>();
-                map.put(prop, Arrays.stream(cls.getMethods()).filter(mtd -> mtd.getName().equals("get" + prop)).findFirst().get());
-                return map;
-            });
-        } catch (ExecutionException e) {
-            throw new ServiceException("TreeUtils 通过SET_METHOD_CACHE获取get方法发生异常");
-        }
-
-        if (methodMap.get(prop) == null) {
-            methodMap.put(prop, Arrays.stream(cls.getMethods()).filter(mtd -> mtd.getName().equals("get" + prop)).findFirst().get());
-            GET_METHOD_CACHE.put(cls, methodMap);
-        }
-
-        return methodMap.get(prop);
+    @SuppressWarnings("unchecked")
+    private static <T, K> Function<T, K> getGetMethod(T item, String prop) {
+        Class<?> cls = ClassUtils.getUserClass(item);
+        Map<String, Function<Object, Object>> methodMap = GET_METHOD_CACHE.computeIfAbsent(cls, key -> new ConcurrentHashMap<>());
+        return (Function<T, K>) methodMap.computeIfAbsent(prop, key -> {
+            Method method = Arrays.stream(cls.getMethods())
+                    .filter(mtd -> mtd.getName().equals("get" + prop))
+                    .findFirst()
+                    .orElseThrow(() -> new ServiceException("TreeUtils 未找到get方法: get" + prop));
+            try {
+                MethodHandle methodHandle = MethodHandles.lookup().unreflect(method);
+                return obj -> {
+                    try {
+                        return methodHandle.invoke(obj);
+                    } catch (Throwable throwable) {
+                        throw new ServiceException("TreeUtils 通过GET_METHOD_CACHE获取get方法发生异常");
+                    }
+                };
+            } catch (IllegalAccessException e) {
+                log.error(e.getMessage(), e);
+                throw new ServiceException("TreeUtils 通过GET_METHOD_CACHE获取get方法发生异常");
+            }
+        });
     }
 }

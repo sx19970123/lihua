@@ -3,6 +3,9 @@ const nextUpdate = [
     {
         version: '2.0.2',
         record: [
+            '1. 优化TreeUtils，使用ConcurrentHashMap缓存反射方法',
+            '2. 优化SensitiveAspect，使用ConcurrentHashMap缓存反射字段',
+            '3. 移除项目Guava依赖',
         ]
     }
 ]

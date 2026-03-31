@@ -27,7 +27,6 @@
         <jwt.version>4.5.1</jwt.version>
         <redisson.version>4.2.0</redisson.version>
         <oshi.version>6.6.4</oshi.version>
-        <guava.version>33.5.0-jre</guava.version>
         <tianai-captcha.version>1.5.5</tianai-captcha.version>
         <ipaddress.version>5.5.1</ipaddress.version>
         <ip2region.version>3.2.0</ip2region.version>
