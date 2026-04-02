@@ -5,7 +5,7 @@ const nextUpdate = [
         record: [
             '1. lihua-redis模块更名为lihua-cache模块',
             '2. cache模块新增本地缓存，支持统一对redis增加本地二级缓存',
-            '3. 获取登录用户上下文适配本地缓存',
+            '3. 获取登录用户上下文、系统字典、黑名单 适配本地缓存',
             '4. 优化TreeUtils，使用ConcurrentHashMap缓存反射方法',
             '5. 优化SensitiveAspect，使用ConcurrentHashMap缓存反射字段',
             '6. 移除项目Guava依赖',
