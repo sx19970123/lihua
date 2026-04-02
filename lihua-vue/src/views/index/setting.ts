@@ -8,7 +8,7 @@ const nextUpdate = [
             '3. 获取登录用户上下文、系统字典、黑名单 适配本地缓存',
             '4. 优化TreeUtils，使用ConcurrentHashMap缓存反射方法',
             '5. 优化SensitiveAspect，使用ConcurrentHashMap缓存反射字段',
-            '6. 移除项目Guava依赖',
+            '6. 移除项目Guava依赖，替换为caffeine',
             '7. RedisCache更名为RedisCacheManager',
             '8. spring boot版本升级为4.0.5',
             '9. vue版本升级为3.5.31',
