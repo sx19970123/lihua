@@ -17,7 +17,7 @@ public enum RedisKeyPrefixEnum {
 
     LOGIN_USER_REDIS_PREFIX("REDIS_CACHE_LOGIN_USER:", "登录用户", 10L),
 
-    DICT_DATA_REDIS_PREFIX("REDIS_CACHE_DICT_DATA:", "系统字典", null),
+    DICT_DATA_REDIS_PREFIX("REDIS_CACHE_DICT_DATA:", "系统字典", 100L),
 
     SYSTEM_SETTING_REDIS_PREFIX("REDIS_CACHE_SYSTEM_SETTING:", "系统设置", null),
 
@@ -53,6 +53,7 @@ public enum RedisKeyPrefixEnum {
     /**
      * 本地缓存时长（秒）
      * null 为不设置本地缓存
+     * 不设置本地缓存的key应用了二级缓存，默认10s ttl
      */
     private final Long localTTL;
 

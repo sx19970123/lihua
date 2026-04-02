@@ -1,12 +1,15 @@
 package com.lihua.dict.utils;
 
+import com.lihua.cache.enums.RedisTopicEnum;
+import com.lihua.cache.manager.LocalCacheManager;
+import com.lihua.cache.publisher.RedisPublisher;
 import com.lihua.common.utils.spring.SpringUtils;
 import com.lihua.dict.mapper.DictDataMapper;
 import com.lihua.dict.model.DictDataModel;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import org.springframework.util.StringUtils;
-
+import tools.jackson.core.type.TypeReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +24,10 @@ public class DictUtils {
     private static final DictDataMapper DICT_DATA_MAPPER = SpringUtils.getBean(DictDataMapper.class);
 
     private static final RedisCacheManager REDIS_CACHE_MANAGER = SpringUtils.getBean(RedisCacheManager.class);
+
+    private static final LocalCacheManager LOCAL_CACHE_MANAGER = SpringUtils.getBean(LocalCacheManager.class);
+
+    private static final RedisPublisher REDIS_PUBLISHER = SpringUtils.getBean(RedisPublisher.class);
 
     /**
      * 根据字典 value 和 字典type_code 获取字典label
@@ -62,7 +69,9 @@ public class DictUtils {
      * 设置字典缓存
      */
     public static void setDictCache(String dictTypeCode, List<DictDataModel> dictValue) {
-        REDIS_CACHE_MANAGER.setCacheList(RedisKeyPrefixEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode, dictValue);
+        String key = RedisKeyPrefixEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode;
+        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), key);
+        REDIS_CACHE_MANAGER.setCacheList(key, dictValue);
     }
 
 
@@ -70,6 +79,8 @@ public class DictUtils {
      * 删除字典缓存
      */
     public static void removeDictCache(String dictTypeCode) {
+        String key = RedisKeyPrefixEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode;
+        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), key);
         REDIS_CACHE_MANAGER.delete(RedisKeyPrefixEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode);
     }
 
@@ -77,7 +88,10 @@ public class DictUtils {
      * 获取字典缓存数据
      */
     public static List<DictDataModel> getDictData(String dictTypeCode) {
-        List<DictDataModel> dictCache = REDIS_CACHE_MANAGER.getCacheList(RedisKeyPrefixEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode, DictDataModel.class);
+        String cacheKey = RedisKeyPrefixEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode;
+        // 获取本地缓存
+        List<DictDataModel> dictCache = LOCAL_CACHE_MANAGER.getWithFallback(cacheKey, new TypeReference<>(){}, () -> REDIS_CACHE_MANAGER.getCacheList(cacheKey, DictDataModel.class));
+
         // 缓存数据为空时，尝试从数据库再次获取，数据库未查询到数据时，返回空集合
         // 查询到数据时，再次调用自身返回字典数据
         if (dictCache == null || dictCache.isEmpty()) {

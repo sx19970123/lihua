@@ -21,4 +21,13 @@ public class RedisPublisher {
         rTopic.publish(msg);
     }
 
+    /**
+     * 发布消息
+     * @param topic 主题
+     * @param msg 消息
+     */
+    public <T> void send(String topic, T msg) {
+        RTopic rTopic = redissonClient.getTopic(topic);
+        rTopic.publish(msg);
+    }
 }
