@@ -1,6 +1,8 @@
 package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lihua.cache.enums.RedisTopicEnum;
+import com.lihua.cache.publisher.RedisPublisher;
 import com.lihua.common.model.bridge.setting.CacheBlackIp;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.json.JsonUtils;
@@ -27,6 +29,9 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
 
     @Resource
     private RedisCacheManager redisCacheManager;
+
+    @Resource
+    private RedisPublisher redisPublisher;
 
     private final String REDIS_SETTING_KEY = SYSTEM_SETTING_REDIS_PREFIX.getValue();
 
@@ -162,6 +167,9 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
     // 缓存ip黑名单
     @EventListener
     public void cacheIpBlackList(CacheBlackIp cacheBlackIp) {
+        // 清除本地缓存
+        redisPublisher.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), IP_BLACKLIST_KEY);
+
         redisCacheManager.delete(IP_BLACKLIST_KEY);
         // 系统中配置的禁止访问ip
         SysSetting restrictAccessIpSetting = getSysSettingByKey(SysSettingEnum.RESTRICT_ACCESS_IP.getKey());

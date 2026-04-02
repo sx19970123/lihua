@@ -1,5 +1,6 @@
 package com.lihua.service.impl;
 
+import com.lihua.common.exception.ServiceException;
 import com.lihua.common.model.bridge.setting.CacheBlackIp;
 import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.model.CacheMonitor;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.lihua.cache.enums.RedisKeyPrefixEnum.CAPTCHA_TYPE_VALUE_REDIS_PREFIX;
 
 @Service
 public class MonitorCacheServiceImpl implements MonitorCacheService {
@@ -85,6 +88,10 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
 
     @Override
     public void remove(String keyPrefix) {
+        if (keyPrefix.startsWith(CAPTCHA_TYPE_VALUE_REDIS_PREFIX.getValue())) {
+            throw new ServiceException("验证码缓存不可删除");
+        }
+
         Set<String> keys = cacheKeys(keyPrefix);
         redisCacheManager.delete(keys);
 
