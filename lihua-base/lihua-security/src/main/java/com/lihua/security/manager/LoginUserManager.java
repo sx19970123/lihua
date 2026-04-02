@@ -1,5 +1,8 @@
 package com.lihua.security.manager;
 
+import com.lihua.cache.enums.RedisTopicEnum;
+import com.lihua.cache.manager.LocalCacheManager;
+import com.lihua.cache.publisher.RedisPublisher;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.spring.SpringUtils;
@@ -11,7 +14,6 @@ import com.lihua.security.model.LoginUser;
 import com.lihua.security.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -22,6 +24,10 @@ import java.util.UUID;
 public class LoginUserManager {
 
     private static final RedisCacheManager REDIS_CACHE_MANAGER = SpringUtils.getBean(RedisCacheManager.class);
+
+    private static final LocalCacheManager LOCAL_CACHE_MANAGER = SpringUtils.getBean(LocalCacheManager.class);
+
+    private static final RedisPublisher REDIS_PUBLISHER = SpringUtils.getBean(RedisPublisher.class);
 
     private static final TokenConfig  tokenConfig = SpringUtils.getBean(TokenConfig.class);
 
@@ -34,7 +40,8 @@ public class LoginUserManager {
         log.debug("\ntoken：【{}】\ndecode：【{}】", token, decode);
 
         try {
-            LoginUser loginUser = REDIS_CACHE_MANAGER.getCacheObject(decode, LoginUser.class);
+            // 优先使用本地缓存
+            LoginUser loginUser = LOCAL_CACHE_MANAGER.getWithFallback(decode, LoginUser.class, REDIS_CACHE_MANAGER::getCacheObject);
             if (loginUser == null) {
                 return null;
             }
@@ -75,6 +82,8 @@ public class LoginUserManager {
             cacheKey = getLoginUserKey(loginUser.getUser().getId());
         }
         loginUser.setCacheKey(cacheKey);
+        // 发送缓存失效广播
+        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), cacheKey);
         // 设置缓存
         REDIS_CACHE_MANAGER.setCacheObject(cacheKey,
                 loginUser,
@@ -89,6 +98,8 @@ public class LoginUserManager {
      */
     public static void removeLoginUserCache(String token) {
         String decode = JwtUtils.decode(token);
+        // 发送缓存失效广播
+        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), decode);
         REDIS_CACHE_MANAGER.delete(decode);
     }
 

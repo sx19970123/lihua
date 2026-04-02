@@ -2,7 +2,6 @@ package com.lihua.cache.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,33 +15,46 @@ import java.util.List;
 @AllArgsConstructor
 public enum RedisKeyPrefixEnum {
 
-    LOGIN_USER_REDIS_PREFIX("REDIS_CACHE_LOGIN_USER:", "登录用户"),
+    LOGIN_USER_REDIS_PREFIX("REDIS_CACHE_LOGIN_USER:", "登录用户", 10L),
 
-    DICT_DATA_REDIS_PREFIX("REDIS_CACHE_DICT_DATA:", "系统字典"),
+    DICT_DATA_REDIS_PREFIX("REDIS_CACHE_DICT_DATA:", "系统字典", null),
 
-    SYSTEM_SETTING_REDIS_PREFIX("REDIS_CACHE_SYSTEM_SETTING:", "系统设置"),
+    SYSTEM_SETTING_REDIS_PREFIX("REDIS_CACHE_SYSTEM_SETTING:", "系统设置", null),
 
-    SYSTEM_IP_BLACKLIST_REDIS_PREFIX("REDIS_CACHE_IP_BLACKLIST:", "IP黑名单"),
+    SYSTEM_IP_BLACKLIST_REDIS_PREFIX("REDIS_CACHE_IP_BLACKLIST:", "IP黑名单", null),
 
-    PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX("REDIS_CACHE_REQUEST_SUBMIT:", "防重复提交"),
+    PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX("REDIS_CACHE_REQUEST_SUBMIT:", "防重复提交", null),
 
-    CAPTCHA_TYPE_VALUE_REDIS_PREFIX("captcha:config:", "验证码缓存"),
+    CAPTCHA_TYPE_VALUE_REDIS_PREFIX("captcha:config:", "验证码缓存", null),
 
-    CAPTCHA_REDIS_PREFIX("REDIS_CACHE_CAPTCHA:", "验证码验证中"),
+    CAPTCHA_REDIS_PREFIX("REDIS_CACHE_CAPTCHA:", "验证码验证中", null),
 
-    SECONDARY_CAPTCHA_REDIS_PREFIX("REDIS_CACHE_SECONDARY_CAPTCHA:", "验证码二次验证"),
+    SECONDARY_CAPTCHA_REDIS_PREFIX("REDIS_CACHE_SECONDARY_CAPTCHA:", "验证码二次验证", null),
 
-    CHUNK_UPLOAD_ID_REDIS_PREFIX("REDIS_CACHE_CHUNK_UPLOAD_ID:", "分片上传uploadId"),
+    CHUNK_UPLOAD_ID_REDIS_PREFIX("REDIS_CACHE_CHUNK_UPLOAD_ID:", "分片上传uploadId", null),
 
-    CHECK_PASSWORD_REDIS_PREFIX("REDIS_CACHE_CHECK_PASSWORD:", "检测密码"),
+    CHECK_PASSWORD_REDIS_PREFIX("REDIS_CACHE_CHECK_PASSWORD:", "检测密码", null),
 
-    ONCE_TOKEN_REDIS_PREFIX("REDIS_CACHE_ONCE_TOKEN:", "一次性令牌"),
+    ONCE_TOKEN_REDIS_PREFIX("REDIS_CACHE_ONCE_TOKEN:", "一次性令牌", null),
 
     // 业务需要，非真实 manager key
-    OTHER("OTHER", "其他");
+    OTHER("OTHER", "其他", null);
 
+    /**
+     * 缓存前缀
+     */
     private final String value;
+
+    /**
+     * 缓存标签，供页面显示缓存信息
+     */
     private final String label;
+
+    /**
+     * 本地缓存时长（秒）
+     * null 为不设置本地缓存
+     */
+    private final Long localTTL;
 
     /**
      * 获取全部枚举

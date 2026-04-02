@@ -3,11 +3,15 @@ const nextUpdate = [
     {
         version: '2.0.2',
         record: [
-            '1. 优化TreeUtils，使用ConcurrentHashMap缓存反射方法',
-            '2. 优化SensitiveAspect，使用ConcurrentHashMap缓存反射字段',
-            '3. 移除项目Guava依赖',
-            '4. lihua-redis模块更名为lihua-cache模块',
-            '5. RedisCache更名为RedisCacheManager',
+            '1. lihua-redis模块更名为lihua-cache模块',
+            '2. cache模块新增本地缓存，支持统一对redis增加本地二级缓存',
+            '3. 获取登录用户上下文适配本地缓存',
+            '4. 优化TreeUtils，使用ConcurrentHashMap缓存反射方法',
+            '5. 优化SensitiveAspect，使用ConcurrentHashMap缓存反射字段',
+            '6. 移除项目Guava依赖',
+            '7. RedisCache更名为RedisCacheManager',
+            '8. spring boot版本升级为4.0.5',
+            '9. vue版本升级为3.5.31',
         ]
     }
 ]
@@ -17,8 +21,8 @@ const nextUpdate = [
  * 项目开发可以将 views/index 中内容删除，在 router 中重新配置首页即可
  */
 export const versionInfo = {
-    springBootVersion: ' 4.0.3',
-    vueVersion: ' 3.5.30',
+    springBootVersion: ' 4.0.5',
+    vueVersion: ' 3.5.31',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
         {
