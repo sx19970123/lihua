@@ -1,17 +1,9 @@
 // 下一版本更新记录
 const nextUpdate = [
     {
-        version: '2.0.2',
+        version: '2.0.3',
         record: [
-            '1. lihua-redis模块更名为lihua-cache模块',
-            '2. cache模块新增本地缓存，支持统一对redis增加本地二级缓存',
-            '3. 获取登录用户上下文、系统字典、黑名单 适配本地缓存',
-            '4. 优化TreeUtils，使用ConcurrentHashMap缓存反射方法',
-            '5. 优化SensitiveAspect，使用ConcurrentHashMap缓存反射字段',
-            '6. 移除项目Guava依赖，替换为caffeine',
-            '7. RedisCache更名为RedisCacheManager',
-            '8. spring boot版本升级为4.0.5',
-            '9. vue版本升级为3.5.31',
+
         ]
     }
 ]
@@ -25,6 +17,22 @@ export const versionInfo = {
     vueVersion: ' 3.5.31',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '2.0.2',
+            updateDate: '2026-04-03',
+            updateContent: [
+                '1. lihua-redis模块更名为lihua-cache模块',
+                '2. cache模块新增本地缓存，支持统一对redis增加本地缓存',
+                '3. 获取登录用户上下文、系统字典、黑名单 适配本地缓存',
+                '4. 优化TreeUtils，使用ConcurrentHashMap缓存反射方法',
+                '5. 优化SensitiveAspect，使用ConcurrentHashMap缓存反射字段',
+                '6. 移除项目Guava依赖，替换为caffeine',
+                '7. RedisCache更名为RedisCacheManager',
+                '8. spring boot版本升级为4.0.5',
+                '9. vue版本升级为3.5.31',
+                '10. 面包屑显示/隐藏添加过渡动画',
+            ]
+        },
         {
             version: '2.0.1',
             updateDate: '2026-03-24',
