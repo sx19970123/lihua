@@ -18,11 +18,6 @@
     </properties>
 
     <dependencies>
-        <!--            biz依赖-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-biz</artifactId>
-        </dependency>
         <!--            系统监控-->
         <dependency>
             <groupId>com.lihua</groupId>
