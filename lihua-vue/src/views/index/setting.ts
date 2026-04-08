@@ -3,7 +3,7 @@ const nextUpdate = [
     {
         version: '2.0.3',
         record: [
-
+            '1. 整理pom依赖关系'
         ]
     }
 ]

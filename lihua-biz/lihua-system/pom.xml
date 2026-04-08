@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.lihua</groupId>
         <artifactId>lihua-biz</artifactId>
-        <version>2.0.2</version>
+        <version>2.0.3</version>
     </parent>
 
     <artifactId>lihua-system</artifactId>
@@ -27,6 +27,31 @@
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-attachment</artifactId>
+        </dependency>
+        <!--            定时任务-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-job</artifactId>
+        </dependency>
+        <!--            orm持久化-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-mybatis</artifactId>
+        </dependency>
+        <!--            excel导入导出-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-excel</artifactId>
+        </dependency>
+        <!--            数据脱敏模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-sensitive</artifactId>
+        </dependency>
+        <!--            websocket-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-websocket</artifactId>
         </dependency>
     </dependencies>
 </project>
