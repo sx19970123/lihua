@@ -31,4 +31,16 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <!--        将验证码字体、背景图片打入包中-->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>captcha-images/**</include>
+                    <include>captcha-font/**</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 </project>

@@ -35,4 +35,15 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <!--        将ip2region下文件打入包中-->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>ip2region/**</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 </project>

@@ -156,15 +156,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <classifier>exec</classifier>
-                    <finalName>${project.artifactId}</finalName>
-                    <mainClass>com.lihua.LiHuaApplication</mainClass>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <compilerArgs>
@@ -190,9 +181,6 @@
                     <include>**/*.txt</include>
                     <include>META-INF/services/*</include>
                     <include>META-INF/spring/*</include>
-                    <include>captcha-images/**</include>
-                    <include>captcha-font/**</include>
-                    <include>ip2region/**</include>
                 </includes>
             </resource>
             <resource>
