@@ -47,6 +47,7 @@ import UserRegister from "@/views/login/components/Register.vue"
 import UserLogin from "@/views/login/components/Login.vue"
 import settings from "@/settings"
 import {screenUnlock} from "@/utils/LockScreenUtils.ts";
+import {enableOverflowY} from "@/utils/Scrollbar.ts";
 
 // 显示登录卡片
 const showCard = ref<boolean>(false)
@@ -148,6 +149,8 @@ onMounted(() => {
   routerCheckLoginSetting()
   // 进入登录页的用户关闭锁屏
   screenUnlock()
+  // 启用y轴滚动条，防止锁屏状态下登录失效后滚动条消失的问题
+  enableOverflowY()
 })
 </script>
 

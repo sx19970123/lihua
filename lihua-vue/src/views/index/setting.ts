@@ -3,7 +3,8 @@ const nextUpdate = [
     {
         version: '2.0.3',
         record: [
-            '1. 整理pom依赖关系'
+            '1. 整理pom依赖关系',
+            '2. 修复锁屏状态下登录失效后再次登录导致的侧边滚动条消失的bug'
         ]
     }
 ]
