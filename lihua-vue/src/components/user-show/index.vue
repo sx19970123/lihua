@@ -22,6 +22,7 @@ import {useUserStore} from "@/stores/user.ts";
 import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
 import {ref} from "vue";
 import {publicAttachmentDownload} from "@/api/system/attachment/AttachmentStorage.ts";
+import {attachmentUrl, getTemporaryPath} from "@/utils/AttachmentUrl.ts";
 
 const userStore = useUserStore();
 
@@ -36,8 +37,8 @@ try {
     avatar.value = JSON.parse(props.avatarJson)
     // 处理图片类型头像
     if (avatar.value.value && avatar.value.type === 'image') {
-      publicAttachmentDownload(avatar.value.value).then((resp:Blob) => {
-        avatar.value.url = URL.createObjectURL(resp)
+      getTemporaryPath(attachmentUrl(avatar.value.value)).then(path => {
+        avatar.value.url = path
       })
     }
   } else {
