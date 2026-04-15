@@ -124,8 +124,10 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     @Override
     public List<SysDept> deptTreeOption() {
-        List<SysDept> list = queryList(new SysDept());
-        return TreeUtils.buildTree(list);
+        QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysDept::getStatus, "0").orderByAsc(SysDept::getSort);
+        List<SysDept> sysDeptList = sysDeptMapper.selectList(queryWrapper);
+        return TreeUtils.buildTree(sysDeptList);
     }
 
     @Override
