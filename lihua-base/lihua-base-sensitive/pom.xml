@@ -9,38 +9,29 @@
         <version>2.0.3</version>
     </parent>
 
-    <artifactId>lihua-captcha</artifactId>
+    <artifactId>lihua-base-sensitive</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <dependencies>
-        <!-- tianai-captcha 验证码 -->
-        <dependency>
-            <groupId>cloud.tianai.captcha</groupId>
-            <artifactId>tianai-captcha-springboot-starter</artifactId>
-            <version>${tianai-captcha.version}</version>
-        </dependency>
-        <!-- 缓存模块 -->
+        <!--        安全模块-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-cache</artifactId>
+            <artifactId>lihua-base-security</artifactId>
+        </dependency>
+        <!--        持久化模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-mybatis</artifactId>
+        </dependency>
+        <!--        公共模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-common</artifactId>
         </dependency>
     </dependencies>
 
-    <build>
-        <!--        将验证码字体、背景图片打入包中-->
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>captcha-images/**</include>
-                    <include>captcha-font/**</include>
-                </includes>
-            </resource>
-        </resources>
-    </build>
 </project>

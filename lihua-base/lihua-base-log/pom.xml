@@ -9,24 +9,28 @@
         <version>2.0.3</version>
     </parent>
 
-    <artifactId>lihua-websocket</artifactId>
+    <artifactId>lihua-base-log</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <dependencies>
-        <!--         websocket-->
+        <!--        aop-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
         </dependency>
-        <!--         缓存模块-->
+        <!--        公共模块-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-cache</artifactId>
+            <artifactId>lihua-base-common</artifactId>
+        </dependency>
+        <!--        安全模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-security</artifactId>
         </dependency>
     </dependencies>
 

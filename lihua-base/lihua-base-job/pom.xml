@@ -9,7 +9,7 @@
         <version>2.0.3</version>
     </parent>
 
-    <artifactId>lihua-excel</artifactId>
+    <artifactId>lihua-base-job</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -18,23 +18,25 @@
     </properties>
 
     <dependencies>
-        <!--        excel 导入导出工具-->
+        <!-- 核心依赖 -->
         <dependency>
-            <groupId>org.apache.fesod</groupId>
-            <artifactId>fesod-sheet</artifactId>
-            <version>${fesod.version}</version>
+            <groupId>com.aizuda</groupId>
+            <artifactId>snail-job-client-starter</artifactId>
+            <version>${snail-job.version}</version>
         </dependency>
 
-        <!--        公共模块-->
+        <!-- 重试模块(若不需要可以不引入) -->
         <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-common</artifactId>
+            <groupId>com.aizuda</groupId>
+            <artifactId>snail-job-client-retry-core</artifactId>
+            <version>${snail-job.version}</version>
         </dependency>
 
-        <!--        字典模块-->
+        <!-- 定时任务(若不需要可以不引入) -->
         <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-dict</artifactId>
+            <groupId>com.aizuda</groupId>
+            <artifactId>snail-job-client-job-core</artifactId>
+            <version>${snail-job.version}</version>
         </dependency>
     </dependencies>
 </project>

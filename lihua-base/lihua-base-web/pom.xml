@@ -9,7 +9,7 @@
         <version>2.0.3</version>
     </parent>
 
-    <artifactId>lihua-security</artifactId>
+    <artifactId>lihua-base-web</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -18,36 +18,15 @@
     </properties>
 
     <dependencies>
-        <!--        security-->
+        <!--        公共模块-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <!--        jwt-->
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>${jwt.version}</version>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-common</artifactId>
         </dependency>
         <!--        参数校验-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        <!--        缓存模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-cache</artifactId>
-        </dependency>
-        <!--        公共模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-common</artifactId>
-        </dependency>
-        <!--        ip处理模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-ip</artifactId>
         </dependency>
     </dependencies>
 

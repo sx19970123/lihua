@@ -9,7 +9,7 @@
         <version>2.0.3</version>
     </parent>
 
-    <artifactId>lihua-mybatis</artifactId>
+    <artifactId>lihua-base-mybatis</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -56,7 +56,7 @@
         <!--       安全模块 -->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-security</artifactId>
+            <artifactId>lihua-base-security</artifactId>
         </dependency>
     </dependencies>
 </project>

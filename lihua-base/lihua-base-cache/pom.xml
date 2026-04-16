@@ -9,7 +9,7 @@
         <version>2.0.3</version>
     </parent>
 
-    <artifactId>lihua-cache</artifactId>
+    <artifactId>lihua-base-cache</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -38,7 +38,7 @@
         <!--        公共模块-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-common</artifactId>
+            <artifactId>lihua-base-common</artifactId>
         </dependency>
     </dependencies>
 </project>

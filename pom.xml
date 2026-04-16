@@ -57,91 +57,91 @@
 <!--            公共模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-common</artifactId>
+                <artifactId>lihua-base-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            字典模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-dict</artifactId>
+                <artifactId>lihua-base-dict</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            文档模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-doc</artifactId>
+                <artifactId>lihua-base-doc</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            excel导入导出模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-excel</artifactId>
+                <artifactId>lihua-base-excel</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            ip处理模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-ip</artifactId>
+                <artifactId>lihua-base-ip</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            日志模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-log</artifactId>
+                <artifactId>lihua-base-log</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            mybatis持久层模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-mybatis</artifactId>
+                <artifactId>lihua-base-mybatis</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            缓存模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-cache</artifactId>
+                <artifactId>lihua-base-cache</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            安全模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-security</artifactId>
+                <artifactId>lihua-base-security</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            数据脱敏模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-sensitive</artifactId>
+                <artifactId>lihua-base-sensitive</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            websocket模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-websocket</artifactId>
+                <artifactId>lihua-base-websocket</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!--            web模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-web</artifactId>
+                <artifactId>lihua-base-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            验证码模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-captcha</artifactId>
+                <artifactId>lihua-base-captcha</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            定时任务模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-job</artifactId>
+                <artifactId>lihua-base-job</artifactId>
                 <version>${project.version}</version>
             </dependency>
 <!--            附件模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-attachment</artifactId>
+                <artifactId>lihua-base-attachment</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

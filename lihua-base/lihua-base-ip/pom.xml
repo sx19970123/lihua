@@ -9,7 +9,7 @@
         <version>2.0.3</version>
     </parent>
 
-    <artifactId>lihua-ip</artifactId>
+    <artifactId>lihua-base-ip</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -20,12 +20,12 @@
         <!--        公共模块-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-common</artifactId>
+            <artifactId>lihua-base-common</artifactId>
         </dependency>
         <!--        缓存模块-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-cache</artifactId>
+            <artifactId>lihua-base-cache</artifactId>
         </dependency>
         <!--        ip归属地-->
         <dependency>

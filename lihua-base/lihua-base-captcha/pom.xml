@@ -9,24 +9,38 @@
         <version>2.0.3</version>
     </parent>
 
-    <artifactId>lihua-attachment</artifactId>
+    <artifactId>lihua-base-captcha</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <dependencies>
-        <!--    阿里云oss    -->
-        <dependency>
-            <groupId>com.aliyun.oss</groupId>
-            <artifactId>aliyun-sdk-oss</artifactId>
-            <version>${oss.version}</version>
-        </dependency>
 
+    <dependencies>
+        <!-- tianai-captcha 验证码 -->
+        <dependency>
+            <groupId>cloud.tianai.captcha</groupId>
+            <artifactId>tianai-captcha-springboot-starter</artifactId>
+            <version>${tianai-captcha.version}</version>
+        </dependency>
+        <!-- 缓存模块 -->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-common</artifactId>
+            <artifactId>lihua-base-cache</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <!--        将验证码字体、背景图片打入包中-->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>captcha-images/**</include>
+                    <include>captcha-font/**</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 </project>

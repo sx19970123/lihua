@@ -27,17 +27,17 @@
         <!--        公共模块-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-common</artifactId>
+            <artifactId>lihua-base-common</artifactId>
         </dependency>
         <!--        日志模块-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-log</artifactId>
+            <artifactId>lihua-base-log</artifactId>
         </dependency>
         <!--        接口文档-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-doc</artifactId>
+            <artifactId>lihua-base-doc</artifactId>
         </dependency>
     </dependencies>
 </project>

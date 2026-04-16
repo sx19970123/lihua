@@ -21,37 +21,37 @@
         <!--        验证码-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-captcha</artifactId>
+            <artifactId>lihua-base-captcha</artifactId>
         </dependency>
         <!--        附件-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-attachment</artifactId>
+            <artifactId>lihua-base-attachment</artifactId>
         </dependency>
         <!--            定时任务-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-job</artifactId>
+            <artifactId>lihua-base-job</artifactId>
         </dependency>
         <!--            orm持久化-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-mybatis</artifactId>
+            <artifactId>lihua-base-mybatis</artifactId>
         </dependency>
         <!--            excel导入导出-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-excel</artifactId>
+            <artifactId>lihua-base-excel</artifactId>
         </dependency>
         <!--            数据脱敏模块-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-sensitive</artifactId>
+            <artifactId>lihua-base-sensitive</artifactId>
         </dependency>
         <!--            websocket-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-websocket</artifactId>
+            <artifactId>lihua-base-websocket</artifactId>
         </dependency>
     </dependencies>
 </project>

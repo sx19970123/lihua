@@ -9,7 +9,7 @@
         <version>2.0.3</version>
     </parent>
 
-    <artifactId>lihua-common</artifactId>
+    <artifactId>lihua-base-excel</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -18,15 +18,23 @@
     </properties>
 
     <dependencies>
-        <!--         web-->
+        <!--        excel 导入导出工具-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webmvc</artifactId>
+            <groupId>org.apache.fesod</groupId>
+            <artifactId>fesod-sheet</artifactId>
+            <version>${fesod.version}</version>
         </dependency>
-        <!--        lombok-->
+
+        <!--        公共模块-->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-common</artifactId>
+        </dependency>
+
+        <!--        字典模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-dict</artifactId>
         </dependency>
     </dependencies>
 </project>

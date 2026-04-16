@@ -12,21 +12,21 @@
     <artifactId>lihua-base</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>lihua-attachment</module>
-        <module>lihua-captcha</module>
-        <module>lihua-common</module>
-        <module>lihua-dict</module>
-        <module>lihua-doc</module>
-        <module>lihua-excel</module>
-        <module>lihua-ip</module>
-        <module>lihua-job</module>
-        <module>lihua-log</module>
-        <module>lihua-mybatis</module>
-        <module>lihua-cache</module>
-        <module>lihua-security</module>
-        <module>lihua-sensitive</module>
-        <module>lihua-web</module>
-        <module>lihua-websocket</module>
+        <module>lihua-base-attachment</module>
+        <module>lihua-base-captcha</module>
+        <module>lihua-base-common</module>
+        <module>lihua-base-dict</module>
+        <module>lihua-base-doc</module>
+        <module>lihua-base-excel</module>
+        <module>lihua-base-ip</module>
+        <module>lihua-base-job</module>
+        <module>lihua-base-log</module>
+        <module>lihua-base-mybatis</module>
+        <module>lihua-base-cache</module>
+        <module>lihua-base-security</module>
+        <module>lihua-base-sensitive</module>
+        <module>lihua-base-web</module>
+        <module>lihua-base-websocket</module>
     </modules>
 
     <properties>
