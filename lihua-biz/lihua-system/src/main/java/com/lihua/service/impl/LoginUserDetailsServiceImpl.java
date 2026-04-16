@@ -2,7 +2,7 @@ package com.lihua.service.impl;
 
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.mapper.SysUserMapper;
-import com.lihua.security.config.TokenConfig;
+import com.lihua.security.config.TokenProperties;
 import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUserSession;
 import jakarta.annotation.Resource;
@@ -18,7 +18,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
     private SysUserMapper sysUserMapper;
 
     @Resource
-    private TokenConfig tokenConfig;
+    private TokenProperties tokenProperties;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -27,7 +27,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("用户名未找到");
         }
         // 创建 LoginUserSession 包含登录的用户信息 和 过期时间
-        return new LoginUserSession(user, DateUtils.now().plusMinutes(tokenConfig.getTokenExpireTime()));
+        return new LoginUserSession(user, DateUtils.now().plusMinutes(tokenProperties.getTokenExpireTime()));
     }
 }
 

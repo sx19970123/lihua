@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Component
 @ConfigurationProperties(prefix = "attachment")
-public class AttachmentConfig {
+public class AttachmentProperties {
     /**
      * 下载附件链接过期时间
      */

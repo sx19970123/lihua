@@ -32,7 +32,7 @@ public class AliyunOssConfig {
      * 附件配置
      */
     @Resource
-    private AttachmentConfig attachmentConfig;
+    private AttachmentProperties attachmentProperties;
 
     /**
      * 向 bean 中加入 oss 客户端
@@ -40,7 +40,7 @@ public class AliyunOssConfig {
     @Bean
     public OSS ossClient() {
         // 仅启用ALIYUN-OSS下加载OSS客户端
-        if (!"ALIYUN-OSS".equals(attachmentConfig.getUploadFileModel())) {
+        if (!"ALIYUN-OSS".equals(attachmentProperties.getUploadFileModel())) {
             return null;
         }
 

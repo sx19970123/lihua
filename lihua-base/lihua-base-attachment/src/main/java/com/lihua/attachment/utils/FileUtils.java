@@ -1,6 +1,6 @@
 package com.lihua.attachment.utils;
 
-import com.lihua.attachment.config.AttachmentConfig;
+import com.lihua.attachment.config.AttachmentProperties;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.model.AttachmentStreamAndInfoModel;
 import com.lihua.common.enums.ResultCodeEnum;
@@ -34,7 +34,7 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 public class FileUtils {
 
-    private static final AttachmentConfig attachmentConfig = SpringUtils.getBean(AttachmentConfig.class);
+    private static final AttachmentProperties ATTACHMENT_PROPERTIES = SpringUtils.getBean(AttachmentProperties.class);
 
     private static final Map<String, Path> map = new ConcurrentHashMap<>();
 
@@ -349,6 +349,6 @@ public class FileUtils {
     // 生成附件路径，与附件名拼接
     private static String generateFilePath(String fileName) {
         // 业务编码为空时直接拼接日期和附件名
-        return Paths.get(attachmentConfig.getUploadFilePath(), fileName).toString();
+        return Paths.get(ATTACHMENT_PROPERTIES.getUploadFilePath(), fileName).toString();
     }
 }

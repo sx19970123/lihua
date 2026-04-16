@@ -1,6 +1,6 @@
 package com.lihua.attachment.strategy;
 
-import com.lihua.attachment.config.AttachmentConfig;
+import com.lihua.attachment.config.AttachmentProperties;
 import com.lihua.attachment.enums.AttachmentEnum;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.utils.FileUtils;
@@ -8,7 +8,6 @@ import com.lihua.common.utils.crypt.AesUtils;
 import com.lihua.common.utils.date.DateUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +26,7 @@ import java.util.stream.Stream;
 public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
 
     @Resource
-    private AttachmentConfig attachmentConfig;
+    private AttachmentProperties attachmentProperties;
 
     private String TEMPORARY_PATH;
 
@@ -182,7 +181,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     public InputStream download(String fullFilePath) {
         try {
             // 路径检查
-            if (FileUtils.checkPath(fullFilePath, attachmentConfig.getUploadFilePath())) {
+            if (FileUtils.checkPath(fullFilePath, attachmentProperties.getUploadFilePath())) {
                 return Files.newInputStream(Path.of(fullFilePath));
             }
         } catch (IOException e) {
@@ -194,7 +193,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     // 项目启动时将TEMPORARY_PATH初始化
     @PostConstruct
     void initTemporaryPath() {
-        TEMPORARY_PATH = Paths.get(attachmentConfig.getUploadFilePath(),"temporary").toString();
+        TEMPORARY_PATH = Paths.get(attachmentProperties.getUploadFilePath(),"temporary").toString();
     }
 
     // 删除目录

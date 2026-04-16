@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "token")
-public class TokenConfig {
+public class TokenProperties {
 
     /**
      * manager 中 token 过期时间

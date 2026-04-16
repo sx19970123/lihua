@@ -3,7 +3,7 @@ package com.lihua.service.impl;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lihua.attachment.config.AttachmentConfig;
+import com.lihua.attachment.config.AttachmentProperties;
 import com.lihua.attachment.enums.AttachmentEnum;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.model.AttachmentResponse;
@@ -47,7 +47,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     private RedisCacheManager redisCacheManager;
 
     @Resource
-    private AttachmentConfig attachmentConfig;
+    private AttachmentProperties attachmentProperties;
 
     @Resource
     private SysAttachmentMapper sysAttachmentMapper;
@@ -118,7 +118,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
     @Override
     public String publicUpload(MultipartFile file, String businessCode) {
-        boolean contains = attachmentConfig.getUploadPublicBusinessCode().contains(businessCode);
+        boolean contains = attachmentProperties.getUploadPublicBusinessCode().contains(businessCode);
         if (!contains) {
             log.error("请检查配置文件，是否将此业务编码 " + businessCode + " 配置在 uploadPublicBusinessCode");
             throw new AttachmentException("当前附件业务编码不为公开访问附件，无法上传");
@@ -147,7 +147,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     @Override
     public SysAttachmentChunkVO chunksUploadAttachmentStart(SysAttachment sysAttachment) {
         String path = Paths.get(
-                attachmentConfig.getUploadFilePath(),
+                attachmentProperties.getUploadFilePath(),
                 sysAttachment.getBusinessCode(),
                 FileUtils.generateUUIDFileName(sysAttachment.getOriginalName())
         ).toString();
@@ -228,13 +228,13 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     @Override
     public String getAttachmentURL(String path, String originalName, Integer expireTime) {
         AttachmentStorageStrategy strategy = getStrategy();
-        return strategy.getDownloadURL(path, originalName, expireTime != null && expireTime != 0 ? expireTime : attachmentConfig.getFileDownloadExpireTime());
+        return strategy.getDownloadURL(path, originalName, expireTime != null && expireTime != 0 ? expireTime : attachmentProperties.getFileDownloadExpireTime());
     }
 
 
     @Override
     public ResponseEntity<StreamingResponseBody> localDownload(String key, String originName) {
-        if (!"LOCAL".equals(attachmentConfig.getUploadFileModel())) {
+        if (!"LOCAL".equals(attachmentProperties.getUploadFileModel())) {
             throw new AttachmentException("存储模式不受支持");
         }
         String params;
@@ -261,7 +261,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         String filePath = splitParams[0];
 
         // 校验路径
-        if (FileUtils.checkPath(filePath, attachmentConfig.getUploadFilePath())) {
+        if (FileUtils.checkPath(filePath, attachmentProperties.getUploadFilePath())) {
             return AttachmentResponse.success(new File(filePath), originName);
         }
 
@@ -270,8 +270,8 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
     @Override
     public ResponseEntity<StreamingResponseBody> download(String fullPath) {
-        List<String> uploadPublicBusinessCode = attachmentConfig.getUploadPublicBusinessCode();
-        String uploadFilePath = attachmentConfig.getUploadFilePath();
+        List<String> uploadPublicBusinessCode = attachmentProperties.getUploadPublicBusinessCode();
+        String uploadFilePath = attachmentProperties.getUploadFilePath();
 
         Path targetPath = Paths.get(fullPath).normalize();
 
@@ -294,7 +294,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         // 获取新的附件名称
         String uuidFileName = FileUtils.generateUUIDFileName(file.getOriginalFilename());
         // 通过指定路径拼接附件全路径
-        String fullFilePath = Paths.get(attachmentConfig.getUploadFilePath(), businessCode, uuidFileName).toString();
+        String fullFilePath = Paths.get(attachmentProperties.getUploadFilePath(), businessCode, uuidFileName).toString();
         fullFilePath = fullFilePath.replace("\\", "/");
         // 附件上传
         strategy.uploadFile(file, fullFilePath);
@@ -306,7 +306,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         sysAttachment
                 .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
                 .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
-                .setStorageLocation(attachmentConfig.getUploadFileModel())
+                .setStorageLocation(attachmentProperties.getUploadFileModel())
                 .setClientType(LoginUserContext.getClientType());
         // 保存附件信息
         if (StringUtils.hasText(sysAttachment.getId())) {
@@ -358,7 +358,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
     // 获取 AttachmentStorageStrategy 对应实现
     private AttachmentStorageStrategy getStrategy() {
-        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(attachmentConfig.getUploadFileModel());
+        AttachmentStorageStrategy attachmentStorageStrategy = attachmentStorageStrategyMap.get(attachmentProperties.getUploadFileModel());
         if (attachmentStorageStrategy == null) {
             log.error("获取附件实现策略失败，请检查uploadFileModel策略配置，可选参数" + attachmentStorageStrategyMap.keySet());
             throw new ServiceException("获取附件实现策略失败");
