@@ -1,20 +1,23 @@
 package com.lihua.security.filter;
 
+import com.lihua.common.utils.web.WebUtils;
+import com.lihua.ip.utils.IpUtils;
 import com.lihua.security.manager.LoginUserManager;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
+import com.lihua.security.model.RequestContext;
 import com.lihua.security.utils.TokenUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 
 /**
@@ -25,14 +28,19 @@ import java.io.IOException;
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         // 获取token
         String token = TokenUtils.getToken(request);
 
         if (StringUtils.hasText(token)) {
-            LoginUser loginUser = LoginUserManager.getLoginUser(token);
-            if (loginUser != null) {
-                PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(loginUser, null, loginUser.getPermissionList().stream().map(SimpleGrantedAuthority::new).toList());
+            LoginUserSession loginUserSession = LoginUserManager.getLoginUser(token);
+            if (loginUserSession != null) {
+                PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(
+                        loginUserSession,
+                        null,
+                        loginUserSession.getPermissionList().stream().map(SimpleGrantedAuthority::new).toList());
+                // 设置请求上下文信息
+                authentication.setDetails(new RequestContext(IpUtils.getIpAddress(request), WebUtils.getClientType(request), token));
                 // 将用户信息存入上下文
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 // 判断过期时间进行重新缓存

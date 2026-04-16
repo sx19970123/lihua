@@ -6,13 +6,13 @@ import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysUser;
 import com.lihua.mapper.SysRoleMapper;
 import com.lihua.mapper.SysUserMapper;
+import com.lihua.model.dto.SysLoginUserDTO;
 import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
-import com.lihua.security.model.CurrentUser;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import com.lihua.security.utils.JwtUtils;
 import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysAuthenticationService;
@@ -30,7 +30,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -68,24 +67,24 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
 
     @Override
-    public LoginUser login(CurrentUser currentUser) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(currentUser.getUsername(), currentUser.getPassword()));
-        return (LoginUser) authenticate.getPrincipal();
+    public LoginUserSession login(SysLoginUserDTO loginUserDTO) {
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDTO.getUsername(), loginUserDTO.getPassword()));
+        return (LoginUserSession) authenticate.getPrincipal();
     }
 
 
     @Override
-    public List<String> checkLoginSetting(LoginUser loginUser) {
+    public List<String> checkLoginSetting(LoginUserSession loginUserSession) {
         // 需要进行登录后设置的组件名集合
         List<String> loginSettingComponentNameList = new ArrayList<>();
 
         // 将密码设置到LoginUser对象中
         String password = sysProfileService.getPassword();
-        loginUser.getUser().setPassword(password);
+        loginUserSession.getUser().setPassword(password);
 
         // 循环检查是否需要进行登录后配置
         checkLoginSettingStrategyList.forEach(strategy -> {
-            String componentName = strategy.checkSetting(loginUser);
+            String componentName = strategy.checkSetting(loginUserSession);
             if (StringUtils.hasText(componentName)) {
                 loginSettingComponentNameList.add(componentName);
             }
@@ -96,22 +95,22 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
 
     @Override
-    public String cacheLoginUserInfo(LoginUser loginUser, boolean isReload) {
+    public String cacheLoginUserInfo(LoginUserSession loginUserSession, boolean isReload) {
         // 当前用户是否为管理员
-        boolean isAdmin = isAdmin(loginUser.getUser().getId());
+        boolean isAdmin = isAdmin(loginUserSession.getUser().getId());
         // 执行各个模块的缓存设置
         cacheLoginUserStrategyList
                 .stream()
                 // 根据 isReload 标识判断是否执行 CacheUserStrategyImpl，否则登录时会查询两次
                 .filter(strategy -> isReload || !(strategy instanceof CacheUserStrategyImpl))
-                .forEach(strategy -> strategy.cacheLoginUser(loginUser, isAdmin));
+                .forEach(strategy -> strategy.cacheLoginUser(loginUserSession, isAdmin));
         // 设置redis缓存
-        return LoginUserManager.setLoginUserCache(loginUser);
+        return LoginUserManager.setLoginUserCache(loginUserSession);
     }
 
     @Override
-    public String cacheAndCreateToken(LoginUser loginUser) {
-        String redisKey = cacheLoginUserInfo(loginUser, false);
+    public String cacheAndCreateToken(LoginUserSession loginUserSession) {
+        String redisKey = cacheLoginUserInfo(loginUserSession, false);
         return JwtUtils.create(redisKey);
     }
 

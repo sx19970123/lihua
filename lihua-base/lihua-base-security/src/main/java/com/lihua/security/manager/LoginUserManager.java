@@ -10,7 +10,7 @@ import com.lihua.common.utils.web.WebUtils;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.config.TokenConfig;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import com.lihua.security.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -29,24 +29,24 @@ public class LoginUserManager {
 
     private static final RedisPublisher REDIS_PUBLISHER = SpringUtils.getBean(RedisPublisher.class);
 
-    private static final TokenConfig  tokenConfig = SpringUtils.getBean(TokenConfig.class);
+    private static final TokenConfig tokenConfig = SpringUtils.getBean(TokenConfig.class);
 
     /**
      * 根据 token 获取用户信息
      */
-    public static LoginUser getLoginUser(String token) {
+    public static LoginUserSession getLoginUser(String token) {
 
         String decode = JwtUtils.decode(token);
         log.debug("\ntoken：【{}】\ndecode：【{}】", token, decode);
 
         try {
             // 优先使用本地缓存
-            LoginUser loginUser = LOCAL_CACHE_MANAGER.getWithFallback(decode, LoginUser.class, REDIS_CACHE_MANAGER::getCacheObject);
-            if (loginUser == null) {
+            LoginUserSession loginUserSession = LOCAL_CACHE_MANAGER.getWithFallback(decode, LoginUserSession.class, REDIS_CACHE_MANAGER::getCacheObject);
+            if (loginUserSession == null) {
                 return null;
             }
-            loginUser.setCacheKey(decode);
-            return loginUser;
+            loginUserSession.setCacheKey(decode);
+            return loginUserSession;
         } catch (Exception e) {
             log.error("从redis获取LoginUser发生异常，请检查redis状态", e);
         }
@@ -57,36 +57,36 @@ public class LoginUserManager {
      * 过期时间小于指定时间时进行刷新
      */
     public static void verifyLoginUserCache() {
-        LoginUser loginUser = LoginUserContext.getLoginUser();
-        if (DateUtils.differenceMinute(DateUtils.now(), loginUser.getExpirationTime()) < tokenConfig.getRefreshThreshold()) {
-            REDIS_CACHE_MANAGER.setExpire(loginUser.getCacheKey(), Duration.ofMinutes(tokenConfig.getTokenExpireTime()));
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+        if (DateUtils.differenceMinute(DateUtils.now(), loginUserSession.getExpirationTime()) < tokenConfig.getRefreshThreshold()) {
+            REDIS_CACHE_MANAGER.setExpire(loginUserSession.getCacheKey(), Duration.ofMinutes(tokenConfig.getTokenExpireTime()));
         }
     }
 
     /**
      * 设置 manager 缓存
-     * @param loginUser 登录用户信息
+     * @param loginUserSession 登录用户信息
      * @return redis缓存key
      */
-    public static String setLoginUserCache(LoginUser loginUser) {
+    public static String setLoginUserCache(LoginUserSession loginUserSession) {
         // 记录过期时间
-        loginUser.setExpirationTime(DateUtils.now().plusMinutes(tokenConfig.getTokenExpireTime()));
+        loginUserSession.setExpirationTime(DateUtils.now().plusMinutes(tokenConfig.getTokenExpireTime()));
         // 隐藏用户密码
-        loginUser.getUser().setPassword(null);
+        loginUserSession.getUser().setPassword(null);
         // 登录客户端类型
-        loginUser.setClientType(WebUtils.getClientType());
+        loginUserSession.setClientType(WebUtils.getClientType());
 
-        // 当 loginUser 的 cacheKey 不存在，即为新登录用户，重新生成cacheKey，其余情况均为刷新缓存
-        String cacheKey = loginUser.getCacheKey();
+        // 当 loginUserSession 的 cacheKey 不存在，即为新登录用户，重新生成cacheKey，其余情况均为刷新缓存
+        String cacheKey = loginUserSession.getCacheKey();
         if (!StringUtils.hasText(cacheKey)) {
-            cacheKey = getLoginUserKey(loginUser.getUser().getId());
+            cacheKey = getLoginUserKey(loginUserSession.getUser().getId());
         }
-        loginUser.setCacheKey(cacheKey);
+        loginUserSession.setCacheKey(cacheKey);
         // 发送缓存失效广播
         REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), cacheKey);
         // 设置缓存
         REDIS_CACHE_MANAGER.setCacheObject(cacheKey,
-                loginUser,
+                loginUserSession,
                 Duration.ofMinutes(tokenConfig.getTokenExpireTime()));
 
         // 缓存key

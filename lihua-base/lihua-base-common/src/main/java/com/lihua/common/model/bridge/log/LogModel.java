@@ -2,7 +2,6 @@ package com.lihua.common.model.bridge.log;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -116,7 +115,6 @@ public class LogModel implements Serializable {
      * 异常堆栈信息
      */
     private String errorStack;
-
 
     /**
      * 删除标识

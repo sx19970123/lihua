@@ -2,7 +2,7 @@ package com.lihua.strategy.cacheloginuser;
 
 import com.lihua.mapper.SysRoleMapper;
 import com.lihua.security.model.CurrentRole;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -20,8 +20,8 @@ public class CacheRoleStrategyImpl implements CacheLoginUserStrategy {
     private SysRoleMapper sysRoleMapper;
 
     @Override
-    public void cacheLoginUser(LoginUser loginUser, boolean isAdmin) {
-        String id = loginUser.getUser().getId();
+    public void cacheLoginUser(LoginUserSession loginUserSession, boolean isAdmin) {
+        String id = loginUserSession.getUser().getId();
 
         List<CurrentRole> roleList;
         if (isAdmin) {
@@ -33,14 +33,14 @@ public class CacheRoleStrategyImpl implements CacheLoginUserStrategy {
         // 处理权限
         List<String> authorities = getAuthorities(roleList);
         // 设置权限
-        List<String> permissionList = loginUser.getPermissionList();
+        List<String> permissionList = loginUserSession.getPermissionList();
         if (permissionList == null) {
-            loginUser.setPermissionList(authorities);
+            loginUserSession.setPermissionList(authorities);
         } else {
             permissionList.addAll(authorities);
-            loginUser.setPermissionList(permissionList);
+            loginUserSession.setPermissionList(permissionList);
         }
-        loginUser.setRoleList(roleList);
+        loginUserSession.setRoleList(roleList);
     }
 
     // 获取roleList中的角色数据

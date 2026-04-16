@@ -7,11 +7,11 @@ import com.lihua.ip.utils.IpUtils;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.model.*;
+import com.lihua.security.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,10 +146,17 @@ public class LoginUserContext implements Serializable {
     }
 
     /**
-     * 获取当前登录用户 LoginUser 信息
+     * 获取当前登录用户 LoginUserSession 信息
      */
-     public static LoginUser getLoginUser() {
-         return (LoginUser) getAuthentication().getPrincipal();
+     public static LoginUserSession getLoginUser() {
+         return (LoginUserSession) getAuthentication().getPrincipal();
+    }
+
+    /**
+     * 获取请求上下文
+     */
+    public static RequestContext getRequestContext() {
+         return (RequestContext) getAuthentication().getDetails();
     }
 
     /**
@@ -170,6 +177,11 @@ public class LoginUserContext implements Serializable {
      * 获取当前请求客户端类型
      */
     public static String getClientType() {
+        RequestContext requestContext = getRequestContext();
+        if (requestContext != null) {
+            return requestContext.getClientType();
+        }
+
         return WebUtils.getClientType();
     }
 
@@ -177,7 +189,24 @@ public class LoginUserContext implements Serializable {
      * 获取当前请求ip
      */
     public static String getIpAddress() {
+        RequestContext requestContext = getRequestContext();
+        if (requestContext != null) {
+            return requestContext.getIpAddress();
+        }
+
         return IpUtils.getIpAddress();
+    }
+
+    /**
+     * 获取当前请求token
+     */
+    public static String getToken() {
+        RequestContext requestContext = getRequestContext();
+        if (requestContext != null) {
+            return requestContext.getToken();
+        }
+
+        return TokenUtils.getToken(WebUtils.getCurrentRequest());
     }
 
     /**

@@ -8,13 +8,10 @@ import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.common.utils.tree.TreeUtils;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
+import com.lihua.model.dto.SysLoginUserDTO;
 import com.lihua.model.dto.SysRegisterDTO;
-import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.security.manager.LoginUserContext;
-import com.lihua.security.model.AuthInfo;
-import com.lihua.security.model.CurrentDept;
-import com.lihua.security.model.CurrentUser;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.*;
 import com.lihua.service.SysAuthenticationService;
 import com.lihua.service.SysSettingService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,18 +43,18 @@ public class AppSysAuthenticationController extends ApiResponseController {
      */
     @Operation(summary = "用户登录")
     @PostMapping("login")
-    @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password", "requestKey"}, recordResult = false)
-    public ApiResponseModel<String> login(@RequestBody @Valid CurrentUser currentUser) {
+    @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password"}, recordResult = false)
+    public ApiResponseModel<String> login(@RequestBody @Valid SysLoginUserDTO loginUserDTO) {
         // 校验验证码
-        boolean checked = checkCaptcha(currentUser.getCaptchaVerification());
+        boolean checked = checkCaptcha(loginUserDTO.getCaptchaVerification());
         if (!checked) {
             return error(ResultCodeEnum.CAPTCHA_ERROR);
         }
 
         // 1.用户登录
-        LoginUser loginUser = sysAuthenticationService.login(currentUser);
+        LoginUserSession loginUserSession = sysAuthenticationService.login(loginUserDTO);
         // 2.生成token
-        String token = sysAuthenticationService.cacheAndCreateToken(loginUser);
+        String token = sysAuthenticationService.cacheAndCreateToken(loginUserSession);
         // 3.检查是否配置了同账号最大同时登录数，超出数量后首先登录的用户会被踢下线
         sysAuthenticationService.checkSameAccount(token);
 
@@ -70,14 +67,14 @@ public class AppSysAuthenticationController extends ApiResponseController {
     @Operation(summary = "获取当前登录用户信息")
     @GetMapping("info")
     public ApiResponseModel<AuthInfo> getUserInfo() {
-        LoginUser loginUser = LoginUserContext.getLoginUser();
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
         // 前端 store 用户数据
         AuthInfo authInfo = new AuthInfo();
-        authInfo.setUserInfo(loginUser.getUser() != null ? loginUser.getUser() : new CurrentUser());
-        authInfo.setDepts(TreeUtils.buildTree(loginUser.getDeptList()));
-        authInfo.setPosts(loginUser.getPostList());
-        authInfo.setRoles(loginUser.getRoleList());
-        authInfo.setPermissions(loginUser.getPermissionList().stream().filter(item -> !item.startsWith("ROLE_")).toList());
+        authInfo.setUserInfo(loginUserSession.getUser() != null ? loginUserSession.getUser() : new CurrentUser());
+        authInfo.setDepts(TreeUtils.buildTree(loginUserSession.getDeptList()));
+        authInfo.setPosts(loginUserSession.getPostList());
+        authInfo.setRoles(loginUserSession.getRoleList());
+        authInfo.setPermissions(loginUserSession.getPermissionList().stream().filter(item -> !item.startsWith("ROLE_")).toList());
         authInfo.setDefaultDept(LoginUserContext.getDefaultDept() != null ? LoginUserContext.getDefaultDept() : new CurrentDept());
         return success(authInfo);
     }

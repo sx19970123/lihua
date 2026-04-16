@@ -10,7 +10,7 @@ import com.lihua.mapper.SysUserDeptMapper;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.CurrentDept;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import com.lihua.service.SysUserDeptService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -51,8 +51,8 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
 
     @Override
     public CurrentDept setDefaultDept(String deptId) {
-        LoginUser loginUser = LoginUserContext.getLoginUser();
-        String userId = loginUser.getUser().getId();
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+        String userId = loginUserSession.getUser().getId();
 
         // 超级管理员将关联表数据删除后再新增
         if (LoginUserContext.isAdmin()) {
@@ -84,7 +84,7 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
 
     // 重新设置部门相关redis缓存
     private void resetLoginUserDeptCache() {
-        LoginUser loginUser = LoginUserContext.getLoginUser();
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
         // 部门信息
         List<CurrentDept> deptList;
         String userId = LoginUserContext.getUserId();
@@ -93,8 +93,8 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
         } else {
             deptList = sysDeptMapper.selectByUserId(userId);
         }
-        loginUser.setDeptList(deptList);
+        loginUserSession.setDeptList(deptList);
 
-        LoginUserManager.setLoginUserCache(loginUser);
+        LoginUserManager.setLoginUserCache(loginUserSession);
     }
 }

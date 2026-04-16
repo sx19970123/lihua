@@ -1,7 +1,7 @@
 package com.lihua.service;
 
-import com.lihua.security.model.CurrentUser;
-import com.lihua.security.model.LoginUser;
+import com.lihua.model.dto.SysLoginUserDTO;
+import com.lihua.security.model.LoginUserSession;
 
 import java.util.List;
 
@@ -10,27 +10,27 @@ public interface SysAuthenticationService {
     /**
      * 用户登录
      */
-    LoginUser login(CurrentUser currentUser);
+    LoginUserSession login(SysLoginUserDTO loginUserDTO);
 
     /**
      * 登录后必要信息校验，对应于前端 components/login-setting 下的组件进行处理
      */
-    List<String> checkLoginSetting(LoginUser loginUser);
+    List<String> checkLoginSetting(LoginUserSession loginUserSession);
 
     /**
      * 缓存用户信息
-     * @param loginUser 登录用户缓存数据
+     * @param loginUserSession 登录用户缓存数据
      * @param isReload 是否刷新数据
      * @return redis缓存key
      */
-    String cacheLoginUserInfo(LoginUser loginUser, boolean isReload);
+    String cacheLoginUserInfo(LoginUserSession loginUserSession, boolean isReload);
 
     /**
      * 缓存用户信息并返回token
-     * @param loginUser 登录用户信息
+     * @param loginUserSession 登录用户信息
      * @return token
      */
-    String cacheAndCreateToken(LoginUser loginUser);
+    String cacheAndCreateToken(LoginUserSession loginUserSession);
 
     /**
      * 检查用户名是否重复

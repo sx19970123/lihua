@@ -10,7 +10,7 @@ import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.CurrentUser;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import jakarta.annotation.Resource;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -18,17 +18,13 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * 处理日志对象的构建及调用对应 service保存至数据库
@@ -123,35 +119,25 @@ public class HandleRecodeLog {
 
         // 日志插入数据库
         // 登录日志单独保存
+        LoginUserSession loginUser = null;
         if ("LOGIN".equals(type.getCode())) {
             // 从登录成功的返回值中获取token，拿到用户信息
             if (result != null && "0".equals(logModel.getExecuteStatus())) {
                 Matcher matcher = DATA_PATTERN.matcher(result);
                 if (matcher.find()) {
-                    LoginUser loginUser = LoginUserManager.getLoginUser(matcher.group(1));
-                    if (loginUser != null) {
-                        logModel.setCreateId(loginUser.getUser().getId());
-                        logModel.setCreateName(loginUser.getUser().getNickname());
-                        logModel.setCacheKey(loginUser.getCacheKey());
-                    }
+                    loginUser = LoginUserManager.getLoginUser(matcher.group(1));
                 }
             }
-            // 登录参数中获取 username
-            List<Object> currentUserList = Stream.of(joinPoint.getArgs())
-                    .filter(arg -> arg instanceof CurrentUser)
-                    .toList();
-            if (!currentUserList.isEmpty()) {
-                CurrentUser currentUser = (CurrentUser) currentUserList.get(0);
-                logModel.setUsername(currentUser.getUsername());
-            }
         } else {
-            CurrentUser user = LoginUserContext.getUser();
-            if (StringUtils.hasText(user.getId())) {
-                logModel.setCreateId(user.getId());
-                logModel.setCreateName(user.getNickname());
-                logModel.setUsername(user.getUsername());
-                logModel.setCacheKey(LoginUserContext.getLoginUser().getCacheKey());
-            }
+            loginUser = LoginUserContext.getLoginUser();
+        }
+
+        if (loginUser != null) {
+            CurrentUser user = loginUser.getUser();
+            logModel.setCreateId(user.getId());
+            logModel.setCreateName(user.getNickname());
+            logModel.setUsername(user.getUsername());
+            logModel.setCacheKey(loginUser.getCacheKey());
         }
 
         logModel.setCreateTime(DateUtils.now());

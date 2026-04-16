@@ -2,7 +2,7 @@ package com.lihua.strategy.checkloginsetting;
 
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.model.dto.SysSettingDTO;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysSettingService;
 import jakarta.annotation.Resource;
@@ -24,10 +24,10 @@ public class CheckUpdatePasswordStrategyImpl implements CheckLoginSettingStrateg
     final String COMPONENT_NAME = "LoginSettingResetPassword";
 
     @Override
-    public String checkSetting(LoginUser loginUser) {
+    public String checkSetting(LoginUserSession loginUserSession) {
 
         // 用户密码与默认密码相同
-        if (SecurityUtils.matchesPassword(sysSettingService.getDefaultPassword(), loginUser.getPassword())) {
+        if (SecurityUtils.matchesPassword(sysSettingService.getDefaultPassword(), loginUserSession.getPassword())) {
             return COMPONENT_NAME;
         }
 
@@ -49,7 +49,7 @@ public class CheckUpdatePasswordStrategyImpl implements CheckLoginSettingStrateg
         String unit = updatePasswordSetting.getUnit();
 
         // 上次更新密码时间
-        LocalDateTime passwordUpdateTime = loginUser.getUser().getPasswordUpdateTime();
+        LocalDateTime passwordUpdateTime = loginUserSession.getUser().getPasswordUpdateTime();
 
         LocalDateTime targetTime = null;
         switch (unit) {

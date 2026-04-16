@@ -6,12 +6,11 @@ import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.CurrentUser;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import com.lihua.service.MonitorLoggedUserService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -29,34 +28,34 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
         Set<String> keys = redisCacheManager.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue());
 
         // 取出所有登录用户信息
-        List<LoginUser> loginUsers = new ArrayList<>();
+        List<LoginUserSession> loginUserSessions = new ArrayList<>();
         for (String key : keys) {
-            loginUsers.add(redisCacheManager.getCacheObject(key, LoginUser.class));
+            loginUserSessions.add(redisCacheManager.getCacheObject(key, LoginUserSession.class));
         }
 
         // 根据用户名过滤
         if (StringUtils.hasText(username)) {
-            loginUsers = loginUsers.stream()
+            loginUserSessions = loginUserSessions.stream()
                     .filter(user -> StringUtils.hasText(user.getUsername()) && user.getUsername().contains(username))
                     .toList();
         }
 
         // 根据用户nickname过滤
         if (StringUtils.hasText(nickName)) {
-            loginUsers = loginUsers.stream()
+            loginUserSessions = loginUserSessions.stream()
                     .filter(user -> StringUtils.hasText(user.getUser().getNickname()) && user.getUser().getNickname().contains(nickName))
                     .toList();
         }
 
         // 根据用户登录客户端过滤
         if (StringUtils.hasText(clientType)) {
-            loginUsers = loginUsers.stream()
+            loginUserSessions = loginUserSessions.stream()
                     .filter(user -> StringUtils.hasText(user.getClientType()) && user.getClientType().contains(clientType))
                     .toList();
         }
 
         // 转为 LoggedUser 对象返回
-        return loginUsers.stream().map(user -> {
+        return loginUserSessions.stream().map(user -> {
             String cacheKey = user.getCacheKey();
             CurrentUser currentUser = user.getUser();
             LoggedUser loggedUser = new LoggedUser();

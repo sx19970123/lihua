@@ -45,6 +45,13 @@ public class WebUtils {
      */
     public static String getClientType() {
         HttpServletRequest request = getCurrentRequest();
+        return getClientType(request);
+    }
+
+    /**
+     * 根据request获取客户端类型
+     */
+    public static String getClientType(HttpServletRequest request) {
         return request.getHeader("Client-Type");
     }
 

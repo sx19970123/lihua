@@ -4,7 +4,7 @@ import com.lihua.common.utils.date.DateUtils;
 import com.lihua.mapper.SysUserMapper;
 import com.lihua.security.config.TokenConfig;
 import com.lihua.security.model.CurrentUser;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import jakarta.annotation.Resource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,8 +26,8 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("用户名未找到");
         }
-        // 创建 LoginUser 包含登录的用户信息 和 过期时间
-        return new LoginUser(user, DateUtils.now().plusMinutes(tokenConfig.getTokenExpireTime()));
+        // 创建 LoginUserSession 包含登录的用户信息 和 过期时间
+        return new LoginUserSession(user, DateUtils.now().plusMinutes(tokenConfig.getTokenExpireTime()));
     }
 }
 

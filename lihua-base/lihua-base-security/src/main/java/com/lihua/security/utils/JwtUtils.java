@@ -23,10 +23,7 @@ public class JwtUtils {
      * decode jwt
      */
     public static String decode(String jwtToken) {
-        return JWT
-                .decode(jwtToken)
-                .getAudience()
-                .get(0);
+        return JWT.decode(jwtToken).getAudience().get(0);
     }
 
     /**

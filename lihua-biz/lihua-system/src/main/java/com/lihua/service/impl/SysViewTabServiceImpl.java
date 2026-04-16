@@ -8,7 +8,7 @@ import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.CurrentRouter;
 import com.lihua.security.model.CurrentViewTab;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import com.lihua.service.SysViewTabService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -114,8 +114,8 @@ public class SysViewTabServiceImpl implements SysViewTabService {
 
         // 重新设置loginUserContext
         CurrentViewTab starView = null;
-        LoginUser loginUser = LoginUserContext.getLoginUser();
-        for (CurrentViewTab starViewVO : loginUser.getViewTabList()) {
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+        for (CurrentViewTab starViewVO : loginUserSession.getViewTabList()) {
             if (starViewVO.getMenuId().equals(sysStarView.getMenuId())) {
                 starViewVO.setAffix("1".equals(sysStarView.getAffix()))
                         .setStar("1".equals(sysStarView.getStar()));
@@ -123,7 +123,7 @@ public class SysViewTabServiceImpl implements SysViewTabService {
             }
         }
         // 更新LoginUser缓存
-        LoginUserManager.setLoginUserCache(loginUser);
+        LoginUserManager.setLoginUserCache(loginUserSession);
         return starView;
     }
 }

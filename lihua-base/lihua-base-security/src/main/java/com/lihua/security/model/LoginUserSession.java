@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +17,7 @@ import java.util.List;
 @Accessors(chain = true)
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LoginUser implements UserDetails {
+public class LoginUserSession implements UserDetails {
 
     /**
      * 当前登录用户信息
@@ -128,7 +127,7 @@ public class LoginUser implements UserDetails {
         return "0".equals(user.getStatus());
     }
 
-    public LoginUser(CurrentUser currentUser, LocalDateTime expirationTime) {
+    public LoginUserSession(CurrentUser currentUser, LocalDateTime expirationTime) {
         this.user = currentUser;
         this.expirationTime = expirationTime;
     }

@@ -11,7 +11,7 @@ import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.CurrentUser;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysProfileService;
 import com.lihua.service.SysUserService;
@@ -101,9 +101,9 @@ public class SysProfileServiceImpl implements SysProfileService {
             if (StringUtils.hasText(sysUser.getGender())) {
                 currentUser.setGender(sysUser.getGender());
             }
-            LoginUser loginUser = LoginUserContext.getLoginUser();
-            loginUser.setUser(currentUser);
-            LoginUserManager.setLoginUserCache(loginUser);
+            LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+            loginUserSession.setUser(currentUser);
+            LoginUserManager.setLoginUserCache(loginUserSession);
         }
 
         return currentUser.getId();
@@ -112,9 +112,9 @@ public class SysProfileServiceImpl implements SysProfileService {
     @Override
     public String updatePassword(String newPassword) {
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
-        LoginUser loginUser = LoginUserContext.getLoginUser();
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
         LocalDateTime now = DateUtils.now();
-        CurrentUser currentUser = loginUser.getUser();
+        CurrentUser currentUser = loginUserSession.getUser();
         String password = SecurityUtils.encryptPassword(newPassword);
         updateWrapper.lambda().eq(SysUser::getId,currentUser.getId())
                 .set(SysUser::getPassword, password)
@@ -126,7 +126,7 @@ public class SysProfileServiceImpl implements SysProfileService {
         if (update == 1) {
             currentUser.setPassword(password);
             currentUser.setPasswordUpdateTime(now);
-            LoginUserManager.setLoginUserCache(loginUser);
+            LoginUserManager.setLoginUserCache(loginUserSession);
         }
         return currentUser.getId();
     }
@@ -168,15 +168,15 @@ public class SysProfileServiceImpl implements SysProfileService {
     @Override
     public String saveTheme(String theme) {
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
-        LoginUser loginUser = LoginUserContext.getLoginUser();
-        CurrentUser currentUser = loginUser.getUser();
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+        CurrentUser currentUser = loginUserSession.getUser();
         updateWrapper.lambda().eq(SysUser::getId,currentUser.getId())
                 .set(SysUser::getTheme,theme)
                 .set(SysUser::getUpdateTime, DateUtils.now());
         int update = sysUserMapper.update(updateWrapper);
         if (update == 1) {
             currentUser.setTheme(theme);
-            LoginUserManager.setLoginUserCache(loginUser);
+            LoginUserManager.setLoginUserCache(loginUserSession);
         }
         return currentUser.getId();
     }

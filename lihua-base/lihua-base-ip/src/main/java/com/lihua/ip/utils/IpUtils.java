@@ -13,7 +13,13 @@ public class IpUtils {
      * @return ip地址
      */
     public static String getIpAddress() {
-        HttpServletRequest request = WebUtils.getCurrentRequest();
+        return getIpAddress(WebUtils.getCurrentRequest());
+    }
+
+    /**
+     * 根据请求获取ip
+     */
+    public static String getIpAddress(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
         if (!StringUtils.hasText(ip) || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("X-Real-IP");

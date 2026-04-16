@@ -4,7 +4,7 @@ import com.lihua.common.utils.tree.TreeUtils;
 import com.lihua.mapper.SysMenuMapper;
 import com.lihua.security.model.CurrentRouter;
 import com.lihua.security.model.CurrentViewTab;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import com.lihua.service.SysViewTabService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
@@ -30,8 +30,8 @@ public class CacheMenuStrategyImpl implements CacheLoginUserStrategy {
     private final String patternComponentName =  "([^/]+)\\.vue$";
 
     @Override
-    public void cacheLoginUser(LoginUser loginUser, boolean isAdmin) {
-        String id = loginUser.getUser().getId();
+    public void cacheLoginUser(LoginUserSession loginUserSession, boolean isAdmin) {
+        String id = loginUserSession.getUser().getId();
 
         // 菜单/权限信息
         List<CurrentRouter> menuList;
@@ -51,15 +51,15 @@ public class CacheMenuStrategyImpl implements CacheLoginUserStrategy {
         // 处理权限
         List<String> authorities = getAuthorities(menuList);
         // 设置权限
-        List<String> permissionList = loginUser.getPermissionList();
+        List<String> permissionList = loginUserSession.getPermissionList();
         if (permissionList == null) {
-            loginUser.setPermissionList(authorities);
+            loginUserSession.setPermissionList(authorities);
         } else {
             permissionList.addAll(authorities);
-            loginUser.setPermissionList(permissionList);
+            loginUserSession.setPermissionList(permissionList);
         }
 
-        loginUser
+        loginUserSession
                 .setRouterList(routerList)
                 .setViewTabList(viewTabList);
     }

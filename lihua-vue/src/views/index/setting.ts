@@ -8,6 +8,8 @@ const nextUpdate = [
             '3. 修复用户展示组件中无法显示图片头像的bug',
             '4. 修复部门停用后，用户管理还可以查询到的bug',
             '5. 修复点击数据刷新后部门数据不更新的bug',
+            '6. LoginUser更新为LoginUserSession',
+            '7. Security过滤器details存储当前请求上下文（ip、token、clientType）',
         ]
     }
 ]

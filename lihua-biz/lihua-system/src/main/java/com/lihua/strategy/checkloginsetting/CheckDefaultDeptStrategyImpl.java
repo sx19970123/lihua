@@ -1,7 +1,7 @@
 package com.lihua.strategy.checkloginsetting;
 
 import com.lihua.security.model.CurrentDept;
-import com.lihua.security.model.LoginUser;
+import com.lihua.security.model.LoginUserSession;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +17,8 @@ public class CheckDefaultDeptStrategyImpl implements CheckLoginSettingStrategy {
     final String COMPONENT_NAME = "LoginSettingDefaultDept";
 
     @Override
-    public String checkSetting(LoginUser loginUser) {
-        List<CurrentDept> deptList = loginUser.getDeptList();
+    public String checkSetting(LoginUserSession loginUserSession) {
+        List<CurrentDept> deptList = loginUserSession.getDeptList();
 
         // 没有配置部门的用户
         if (deptList.isEmpty()) {
