@@ -134,8 +134,6 @@ let latestClientY = 0
 let startY = 0
 // 偏移的坐标
 let startOffset = 0
-// 上次滑动的y值
-let lastY = 0
 
 // 点击进入预锁屏状态
 const preLock = () => {
@@ -336,7 +334,6 @@ const moving = (e: MouseEvent) => {
 
     // 更新位置
     offsetY.value = offset
-    lastY = latestClientY
 
     // 计算当前比例
     const value = (offset + innerHeight / 2) / innerHeight

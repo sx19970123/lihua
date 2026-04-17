@@ -11,9 +11,9 @@
           <a-flex align="center" :gap="12">
             <user-avatar :size="48" :value="userStore.avatar.value" :background-color="userStore.avatar.backgroundColor" :type="userStore.avatar.type" :url="userStore.avatar.url"/>
             <a-flex vertical>
-              <a-typography-text ellipsis :copyable="{ tooltip: false }" strong v-model:content="userStore.$state.nickname" style="max-width: 120px"/>
-              <a-tooltip :title="userStore.$state.userId" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
-                <a-typography-text ellipsis :copyable="{ tooltip: false }" v-model:content="userStore.$state.userId" style="max-width: 120px"/>
+              <a-typography-text class="user-info" ellipsis :copyable="{ tooltip: false }" strong v-model:content="userStore.$state.nickname"/>
+              <a-tooltip :title="'UID：' + userStore.$state.userId" placement="bottom" :getPopupContainer="(triggerNode:Document) => triggerNode.parentNode">
+                <a-typography-text class="user-info" ellipsis :copyable="{ tooltip: false }" v-model:content="userStore.$state.userId"/>
               </a-tooltip>
             </a-flex>
             <RightOutlined class="input-prefix-icon-color" style="position: absolute; right: var(--lihua-space-sm)"/>
@@ -115,6 +115,9 @@ const logout = async () => {
 .user-card {
   width: 220px;
   box-shadow: var(--lihua-box-shadow);
+}
+.user-info {
+  max-width: 100px;
 }
 .btn {
   padding: 0 0 0 8px
