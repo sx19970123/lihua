@@ -639,7 +639,7 @@ onUnmounted(() => {
   left: 0;
   z-index: 2147483647;
   background: var(--lihua-backdrop-filter-on-color);
-  border-radius: var(--lihua-radius-sm);
+  border-radius: var(--lihua-radius-base);
   box-shadow: var(--lihua-secondary-box-shadow);
 }
 
