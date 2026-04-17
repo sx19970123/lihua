@@ -16,6 +16,6 @@ public class BaseResponseController {
     }
 
     protected static <T> ApiResponseModel<T> response(ResultCodeEnum resultCodeEnum, String msg, T data) {
-        return ApiResponseModel.<T>builder().code(resultCodeEnum.getCode()).msg(msg).data(data).build();
+        return new ApiResponseModel<T>(resultCodeEnum.getCode(), msg, data);
     }
 }

@@ -1,14 +1,16 @@
 package com.lihua.common.model.response;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 封装返回统一响应数据
  * @param <T>
  */
-@Builder
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class ApiResponseModel<T> {
     /**
      * code 编码
