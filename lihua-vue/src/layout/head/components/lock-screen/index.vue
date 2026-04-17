@@ -13,17 +13,27 @@
     <Teleport v-if="openLock" to="body">
       <div class="unselectable">
         <!--  锁屏页面  -->
-        <div class="lock lihua-lock-mask" ref="lockMaskRef" :style="{ transform: `translateY(calc(${startLocation} + ${offsetY}px))`}">
+        <div class="lock lihua-lock-mask" ref="lockMaskRef" :style="{ transform: `translateY(calc(${startLocation} + ${offsetY + breatheOffsetY}px))`}">
           <div class="content">
             <!-- 日期时间 -->
-            <div class="date-time">
-              <a-typography-title :level="3"> {{nowDate}} {{nowWeek}}</a-typography-title>
-              <a-typography-title class="time"> {{nowTime}} </a-typography-title>
-            </div>
+            <transition name="lock-layout-fade" mode="out-in">
+              <div class="date-time" v-if="!isCompactLockedLayout">
+                <a-typography-title :level="3"> {{nowDate}} {{nowWeek}}</a-typography-title>
+                <a-typography-title class="time"> {{nowTime}} </a-typography-title>
+              </div>
+            </transition>
 
             <!-- 用户头像 ｜ 昵称 ｜ 密码框 -->
-            <transition name="fade" mode="out-in">
-              <a-flex vertical gap="8" class="user" align="center" v-if="status === 'locked'">
+            <transition name="lock-layout-fade" mode="out-in">
+              <a-flex
+                  vertical
+                  gap="8"
+                  :key="isCompactLockedLayout"
+                  class="user"
+                  :class="{ 'user-compact': isCompactLockedLayout }"
+                  align="center"
+                  v-if="status === 'locked'"
+              >
                 <user-avatar
                     :value="userStore.avatar.value"
                     :type="userStore.avatar.type"
@@ -88,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick, onMounted, onUnmounted, ref, useTemplateRef} from "vue";
+import {computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef} from "vue";
 import UserAvatar from "@/components/user-avatar/index.vue";
 import {useUserStore} from "@/stores/user.ts";
 import dayjs from "dayjs";
@@ -116,10 +126,17 @@ const nowDate = ref<string>()
 const nowWeek = ref<string>()
 const nowTime = ref<string>()
 
+// 锁屏高度阈值，vh小于此阈值将不显示锁屏时间信息
+const lockCompactThreshold = 550
+const viewportHeight = ref(0)
+const isCompactLockedLayout = computed(() => viewportHeight.value < lockCompactThreshold)
+
 // 鼠标按下
 const mouseDown = ref(false)
 // Y轴移动距离
 const offsetY = ref(0)
+// 预锁屏呼吸位移
+const breatheOffsetY = ref(0)
 // 是否打开锁屏页面
 const openLock = ref<boolean>(false)
 // 锁屏元素
@@ -129,6 +146,8 @@ const status = ref<'close' | 'reset' | 'lockable' | 'locked' | 'autoLock'>('rese
 
 let rafId: number | null = null
 let latestClientY = 0
+let breatheRafId: number | null = null
+let breatheStartTime = 0
 
 // 开始的坐标
 let startY = 0
@@ -164,14 +183,55 @@ const preLock = () => {
       window.addEventListener("pointerup", moveEnd)
       // 鼠标滑动
       window?.addEventListener("pointermove", moving)
+      // 预锁屏呼吸效果
+      startBreathing()
 
       animation?.cancel()
     })
   })
 }
 
+// 开启预锁屏呼吸效果
+const startBreathing = () => {
+  if (breatheRafId !== null || status.value !== 'reset' || mouseDown.value) {
+    return
+  }
+
+  // 上下均匀呼吸：振幅 16px，完整周期 4s
+  const amplitude = 16
+  const period = 4000
+  breatheStartTime = performance.now()
+
+  const frame = (time: number) => {
+    if (status.value !== 'reset' || mouseDown.value) {
+      breatheRafId = null
+      return
+    }
+
+    const progress = ((time - breatheStartTime) % period) / period
+    breatheOffsetY.value = Math.sin(progress * Math.PI * 2) * amplitude
+    breatheRafId = requestAnimationFrame(frame)
+  }
+
+  breatheRafId = requestAnimationFrame(frame)
+}
+
+// 停止预锁屏呼吸效果
+const stopBreathing = (mergeCurrentOffset = false) => {
+  if (breatheRafId !== null) {
+    cancelAnimationFrame(breatheRafId)
+    breatheRafId = null
+  }
+
+  if (mergeCurrentOffset) {
+    offsetY.value += breatheOffsetY.value
+  }
+  breatheOffsetY.value = 0
+}
+
 // 从当前位置回到预锁屏状态
 const resetPreLock = () => {
+  stopBreathing()
   const element = lockMaskRef.value
   // 播放关闭动画
   const animation = element?.animate(
@@ -186,12 +246,14 @@ const resetPreLock = () => {
   animation?.finished.finally(() => {
     // 初始化数据
     clear()
+    startBreathing()
     animation?.cancel()
   })
 }
 
 // 解锁
 const unlock = () => {
+  stopBreathing()
   enableOverflowY()
   const element = lockMaskRef.value
   // 播放关闭动画，关闭时移动到-120vh位置，防止快速滑动时阴影闪现
@@ -214,6 +276,7 @@ const unlock = () => {
 
 // 锁屏
 const lock = () => {
+  stopBreathing()
   disableOverflowY()
   const element = lockMaskRef.value
   // 播放关闭动画
@@ -281,12 +344,14 @@ const clear = () => {
   startY = 0
   startOffset = 0
   offsetY.value = 0
+  breatheOffsetY.value = 0
   status.value = 'reset'
 }
 
 // 开始拖动
 const moveStart = (e: MouseEvent) => {
   mouseDown.value = true
+  stopBreathing(true)
   startY = e.clientY
   startOffset = offsetY.value
 }
@@ -525,8 +590,14 @@ const initAutoLock = () => {
 
 const {handleAutoLock, clearAutoLock, refreshAutoLockConfig} = initAutoLock()
 
+const updateViewportHeight = () => {
+  viewportHeight.value = window.innerHeight
+}
 
 onMounted(() => {
+  updateViewportHeight()
+  window.addEventListener('resize', updateViewportHeight)
+
   // 获取当前时间
   initTime()
   // 10秒刷新一次时间和自动锁屏配置
@@ -544,6 +615,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  window.removeEventListener('resize', updateViewportHeight)
   clearAutoLock()
 })
 </script>
@@ -592,7 +664,15 @@ onUnmounted(() => {
 .user {
   position: absolute;
   bottom: 64px;
-  width: 100vw
+  width: 100vw;
+}
+
+.user-compact {
+  top: 50%;
+  left: 50%;
+  bottom: auto;
+  width: min(100vw, 360px);
+  transform: translate(-50%, -50%);
 }
 
 .pwd {
@@ -631,6 +711,16 @@ onUnmounted(() => {
   opacity: 0;
 }
 .fast-fade-leave-to {
+  opacity: 0;
+}
+
+.lock-layout-fade-enter-active,
+.lock-layout-fade-leave-active {
+  transition: opacity 0.28s ease;
+}
+
+.lock-layout-fade-enter-from,
+.lock-layout-fade-leave-to {
   opacity: 0;
 }
 </style>

@@ -4,12 +4,14 @@ const nextUpdate = [
         version: '2.0.3',
         record: [
             '1. 整理pom依赖关系',
-            '2. 修复锁屏状态下登录失效后再次登录导致的侧边滚动条消失的bug',
-            '3. 修复用户展示组件中无法显示图片头像的bug',
-            '4. 修复部门停用后，用户管理还可以查询到的bug',
-            '5. 修复点击数据刷新后部门数据不更新的bug',
-            '6. LoginUser更新为LoginUserSession',
-            '7. Security过滤器details存储当前请求上下文（ip、token、clientType）',
+            '2. 锁屏新增预锁屏期间的呼吸动画',
+            '3. 锁屏新增根据视口高度动态显示时钟',
+            '4. 修复锁屏状态下登录失效后再次登录导致的侧边滚动条消失的bug',
+            '5. 修复用户展示组件中无法显示图片头像的bug',
+            '6. 修复部门停用后，用户管理还可以查询到的bug',
+            '7. 修复点击数据刷新后部门数据不更新的bug',
+            '8. LoginUser更新为LoginUserSession',
+            '9. Security过滤器details存储当前请求上下文（ip、token、clientType）',
         ]
     }
 ]
