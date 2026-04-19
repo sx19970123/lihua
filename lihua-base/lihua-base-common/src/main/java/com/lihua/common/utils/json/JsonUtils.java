@@ -26,7 +26,6 @@ public class JsonUtils {
 
     // 序列化排除空值/空集合/''字符串的jsonMapper
     private static final JsonMapper excludeNullWriter = JsonMapper.builder()
-            .enable(JsonWriteFeature.ESCAPE_NON_ASCII)
             .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
             .build();
 
