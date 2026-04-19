@@ -39,6 +39,7 @@ public class RequestIpInterceptor implements HandlerInterceptor {
         String key = SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue();
         List<String> prohibitIpList = localCacheManager.getWithFallback(key, new TypeReference<>(){}, () -> redisCacheManager.getCacheList(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue(), String.class));
         if (!prohibitIpList.isEmpty()) {
+            String currentIp = IpUtils.getIpAddress();
             prohibitIpList.forEach(ip -> {
 
                 String regex = ip
@@ -47,8 +48,6 @@ public class RequestIpInterceptor implements HandlerInterceptor {
                         .replace("?", ".");
 
                 regex = "^" + regex + "$";
-
-                String currentIp = IpUtils.getIpAddress();
                 Pattern compiledPattern = Pattern.compile(regex);
                 Matcher matcher = compiledPattern.matcher(currentIp);
 

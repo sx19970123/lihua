@@ -3,6 +3,7 @@ package com.lihua.common.utils.web;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -29,14 +30,22 @@ public class WebUtils {
      * 获取当前请求的 HttpServletRequest
      */
     public static HttpServletRequest getCurrentRequest() {
-        return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes == null) {
+            return null;
+        }
+        return ((ServletRequestAttributes) Objects.requireNonNull(requestAttributes)).getRequest();
     }
 
     /**
      * 获取当前请求的 HttpServletResponse
      */
     public static HttpServletResponse getCurrentResponse() {
-        return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getResponse();
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes == null) {
+            return null;
+        }
+        return ((ServletRequestAttributes) Objects.requireNonNull(requestAttributes)).getResponse();
     }
 
     /**
