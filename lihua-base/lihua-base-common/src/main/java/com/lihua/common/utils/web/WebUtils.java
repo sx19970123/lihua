@@ -20,6 +20,9 @@ public class WebUtils {
     @SneakyThrows
     public static void renderJson(String json) {
         HttpServletResponse response = getCurrentResponse();
+        if (response == null) {
+            return;
+        }
         response.setStatus(200);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

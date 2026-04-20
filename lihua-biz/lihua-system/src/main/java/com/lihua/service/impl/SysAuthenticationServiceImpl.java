@@ -195,7 +195,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     }
 
     /**
-     * 判断当前登录用户是否为超级管理员
+     * 是否为超级管理员
      */
     private boolean isAdmin(String userId) {
         List<String> roleCodes = sysRoleMapper.selectCodeByUserId(userId);

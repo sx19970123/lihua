@@ -103,6 +103,9 @@ public class ExcelUtils {
     private static HttpServletResponse getExcelResponse() {
         // 处理响应信息
         HttpServletResponse response = WebUtils.getCurrentResponse();
+        if (response == null) {
+            return  null;
+        }
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
         response.setHeader("Content-disposition", "attachment");
