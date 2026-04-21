@@ -16,7 +16,7 @@ public class CacheUserStrategyImpl implements CacheLoginUserStrategy {
     public void cacheLoginUser(LoginUserSession loginUserSession, boolean isAdmin) {
         CurrentUser user = loginUserSession.getUser();
         // 重新查询user
-        user = sysUserMapper.loginSelect(user.getUsername());
+        user = sysUserMapper.queryProfile(user.getUsername());
         // 重新设置user
         loginUserSession.setUser(user);
     }

@@ -85,7 +85,7 @@ public class AppSysAuthenticationController extends ApiResponseController {
     @Operation(summary = "重新加载当前登录用户信息")
     @PostMapping("reloadData")
     public ApiResponseModel<String> reloadData() {
-        sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser(), true);
+        sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser());
         return success();
     }
 

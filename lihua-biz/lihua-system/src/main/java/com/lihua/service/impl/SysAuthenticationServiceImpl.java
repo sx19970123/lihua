@@ -19,7 +19,6 @@ import com.lihua.service.SysAuthenticationService;
 import com.lihua.service.SysProfileService;
 import com.lihua.service.SysSettingService;
 import com.lihua.strategy.cacheloginuser.CacheLoginUserStrategy;
-import com.lihua.strategy.cacheloginuser.CacheUserStrategyImpl;
 import com.lihua.strategy.checkloginsetting.CheckLoginSettingStrategy;
 import com.lihua.strategy.saveuserregister.SaveRegisterUserAssociatedStrategy;
 import jakarta.annotation.Resource;
@@ -95,22 +94,18 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
 
     @Override
-    public String cacheLoginUserInfo(LoginUserSession loginUserSession, boolean isReload) {
+    public String cacheLoginUserInfo(LoginUserSession loginUserSession) {
         // 当前用户是否为管理员
         boolean isAdmin = isAdmin(loginUserSession.getUser().getId());
         // 执行各个模块的缓存设置
-        cacheLoginUserStrategyList
-                .stream()
-                // 根据 isReload 标识判断是否执行 CacheUserStrategyImpl，否则登录时会查询两次
-                .filter(strategy -> isReload || !(strategy instanceof CacheUserStrategyImpl))
-                .forEach(strategy -> strategy.cacheLoginUser(loginUserSession, isAdmin));
+        cacheLoginUserStrategyList.forEach(strategy -> strategy.cacheLoginUser(loginUserSession, isAdmin));
         // 设置redis缓存
         return LoginUserManager.setLoginUserCache(loginUserSession);
     }
 
     @Override
     public String cacheAndCreateToken(LoginUserSession loginUserSession) {
-        String redisKey = cacheLoginUserInfo(loginUserSession, false);
+        String redisKey = cacheLoginUserInfo(loginUserSession);
         return JwtUtils.create(redisKey);
     }
 

@@ -18,6 +18,9 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     // 用户登录查询
     CurrentUser loginSelect(@Param("username") String username);
 
+    // 用户个人信息查询
+    CurrentUser queryProfile(@Param("username") String username);
+
     // 列表查询
     IPage<SysUserVO> queryPage(@Param("iPage") IPage<SysUserVO> iPage, @Param(Constants.WRAPPER) QueryWrapper<SysUser> queryWrapper);
 

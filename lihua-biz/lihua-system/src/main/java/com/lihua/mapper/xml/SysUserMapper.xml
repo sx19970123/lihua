@@ -50,6 +50,17 @@
             id,
             username,
             password,
+            status
+        FROM
+            sys_user
+        WHERE
+            del_flag = '0' AND username = #{username}
+    </select>
+
+    <select id="queryProfile" resultType="com.lihua.security.model.CurrentUser">
+        SELECT
+            id,
+            username,
             nickname,
             avatar,
             gender,

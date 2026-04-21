@@ -6,6 +6,7 @@ import com.lihua.security.config.TokenProperties;
 import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUserSession;
 import jakarta.annotation.Resource;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +22,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
     private TokenProperties tokenProperties;
 
     @Override
+    @NullMarked
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         CurrentUser user = sysUserMapper.loginSelect(username);
         if (user == null) {
