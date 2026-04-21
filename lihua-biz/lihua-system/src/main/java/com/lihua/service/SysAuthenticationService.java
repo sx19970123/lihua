@@ -15,7 +15,7 @@ public interface SysAuthenticationService {
     /**
      * 登录后必要信息校验，对应于前端 components/login-setting 下的组件进行处理
      */
-    List<String> postLoginCheck(LoginUserSession loginUserSession);
+    List<String> postLoginCheck();
 
     /**
      * 缓存用户信息

@@ -59,8 +59,15 @@ public class LoginUserManager {
     public static void verifyLoginUserCache() {
         LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
         if (DateUtils.differenceMinute(DateUtils.now(), loginUserSession.getExpirationTime()) < TOKEN_PROPERTIES.getRefreshThreshold()) {
-            REDIS_CACHE_MANAGER.setExpire(loginUserSession.getCacheKey(), Duration.ofMinutes(TOKEN_PROPERTIES.getTokenExpireTime()));
+            refreshToken();
         }
+    }
+
+    /**
+     * 刷新token时间
+     */
+    public static void refreshToken() {
+        REDIS_CACHE_MANAGER.setExpire(LoginUserContext.getLoginUser().getCacheKey(), Duration.ofMinutes(TOKEN_PROPERTIES.getTokenExpireTime()));
     }
 
     /**

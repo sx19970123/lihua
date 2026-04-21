@@ -11,11 +11,11 @@ import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysLoginUserDTO;
 import com.lihua.model.dto.SysRegisterDTO;
 import com.lihua.security.manager.LoginUserContext;
+import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.AuthInfo;
 import com.lihua.security.model.CurrentDept;
 import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUserSession;
-import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysAuthenticationService;
 import com.lihua.service.SysSettingService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,7 +71,7 @@ public class SysAuthenticationController extends ApiResponseController {
     @Operation(summary = "检查登录配置")
     @GetMapping("postLoginCheck")
     public ApiResponseModel<List<String>> postLoginCheck() {
-        return success(sysAuthenticationService.postLoginCheck(LoginUserContext.getLoginUser()));
+        return success(sysAuthenticationService.postLoginCheck());
     }
 
     /**
@@ -101,6 +101,7 @@ public class SysAuthenticationController extends ApiResponseController {
     @PostMapping("reloadData")
     public ApiResponseModel<String> reloadData() {
         sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser());
+        LoginUserManager.refreshToken();
         return success();
     }
 
