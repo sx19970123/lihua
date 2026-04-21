@@ -1,5 +1,5 @@
-import request from "@/utils/Request.ts";
-import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
+import request from "@/utils/request.ts";
+import type {StarViewType} from "@/api/system/view-tab/type/sys-view-tab.ts";
 
 export const viewTab = (menuId:string , affix: string , star: string) => {
  return request<StarViewType>({

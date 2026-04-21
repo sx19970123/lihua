@@ -24,7 +24,7 @@
 import {ref, useTemplateRef} from "vue";
 import type {CarouselRef} from "ant-design-vue/es/carousel";
 import {useUserStore} from "@/stores/user.ts";
-import Token from "@/utils/Token.ts";
+import Token from "@/helpers/token.ts";
 import router from "@/router";
 
 const emits = defineEmits(['goLogin'])

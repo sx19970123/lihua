@@ -317,18 +317,18 @@
 
 // 列表查询相关
 import type {ColumnsType} from 'ant-design-vue/es/table/interface';
-import {deleteData, queryById, queryList, queryMenuTreeOption, save, updateStatus} from "@/api/system/menu/Menu.ts";
+import {deleteData, queryById, queryList, queryMenuTreeOption, save, updateStatus} from "@/api/system/menu/menu.ts";
 import {reactive, ref, useTemplateRef} from "vue";
-import {initDict} from "@/utils/Dict.ts";
+import {initDict} from "@/helpers/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import IconSelect from "@/components/icon-select/index.vue"
-import {flattenTree} from "@/utils/Tree.ts"
+import {flattenTree} from "@/utils/tree.ts"
 import type {Rule} from "ant-design-vue/es/form";
 import {type FormInstance, message} from "ant-design-vue";
 import {cloneDeep} from 'lodash-es';
 import {useThemeStore} from "@/stores/theme";
-import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
-import {type BaseModalActiveType} from "@/api/global/Type.ts";
+import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/sys-menu.ts";
+import {type BaseModalActiveType} from "@/api/global/type.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const themeStore = useThemeStore()

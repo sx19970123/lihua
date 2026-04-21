@@ -18,8 +18,8 @@ import {useUserStore} from "@/stores/user.ts";
 import DefaultDept from "@/components/default-dept-select/index.vue"
 import {ref} from "vue";
 import {message} from "ant-design-vue";
-import type {ResponseType} from "@/api/global/Type.ts";
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+import type {ResponseType} from "@/api/global/type.ts";
+import type {SysDept} from "@/api/system/dept/type/sys-dept.ts";
 
 const userStore = useUserStore();
 const open = ref<boolean>(false)

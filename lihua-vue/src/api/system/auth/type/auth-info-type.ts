@@ -1,7 +1,7 @@
-import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
-import type {SysRole} from "@/api/system/role/type/SysRole.ts";
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
-import type {SysPost} from "@/api/system/post/type/SysPost.ts";
+import type {StarViewType} from "@/api/system/view-tab/type/sys-view-tab.ts";
+import type {SysRole} from "@/api/system/role/type/sys-role.ts";
+import type {SysDept} from "@/api/system/dept/type/sys-dept.ts";
+import type {SysPost} from "@/api/system/post/type/sys-post.ts";
 
 /**
  * 登录成功后的认证数据信息，包含用户、角色、部门、岗位等所有信息

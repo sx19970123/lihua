@@ -1,17 +1,19 @@
 import router from "@/router";
 import {useUserStore} from "@/stores/user.ts";
 import {usePermissionStore} from "@/stores/permission.ts";
-import {useViewTabsStore} from "@/stores/viewTabs.ts";
+import {useViewTabsStore} from "@/stores/view-tabs.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import {useDictStore} from "@/stores/dict.ts";
 import {cloneDeep} from 'lodash-es'
-import {reloadData} from "@/api/system/auth/Auth.ts";
+import {reloadData} from "@/api/system/auth/auth.ts";
 import {message} from "ant-design-vue";
-import {ResponseError} from "@/api/global/Type.ts";
+import {ResponseError} from "@/api/global/type.ts";
 import {type RouteLocationNormalizedLoaded} from "vue-router";
 
-// 认证通过后加载系统所需的各种数据
-export const init = () => {
+/**
+ * 初始化应用
+ */
+export const initApp = () => {
   const userStore = useUserStore()
   const permissionStore = usePermissionStore()
   const viewTabsStore = useViewTabsStore()
@@ -57,35 +59,29 @@ export const init = () => {
 }
 
 /**
- * 刷新用户数据
+ * 刷新应用
  * @param route 判断菜单权限
  */
-export const refreshUserData = async (route: RouteLocationNormalizedLoaded) => {
+export const refreshApp = async (route: RouteLocationNormalizedLoaded) => {
     const viewTabsStore = useViewTabsStore()
-    try {
-        const resp = await reloadData()
-        if (resp.code === 200) {
-            init().then(() => {
-                // 重新生成key
-                viewTabsStore.regenerateComponentKey()
-                // 校验当前菜单是否拥有权限
-                const match = viewTabsStore.$state.totalViewTabs.some(tab => tab.routerPathKey === route.fullPath)
-                if (match) {
-                    // 重新加载ViewTab
-                    viewTabsStore.init(route)
-                } else {
-                    // 跳转到首页
-                    router.push('/')
-                }
-            })
-        } else {
-            message.error(resp.msg)
-        }
-    } catch (e) {
-        if (e instanceof ResponseError) {
-            message.error(e.msg)
-        } else {
-            console.error(e)
-        }
+    const resp = await reloadData()
+
+    if (resp.code !== 200) {
+        message.error(resp.msg)
+        return
+    }
+
+    // 重新加载应用
+    await initApp()
+    // 重新生成key
+    viewTabsStore.regenerateComponentKey()
+    // 校验当前菜单是否拥有权限
+    const match = viewTabsStore.$state.totalViewTabs.some(tab => tab.routerPathKey === route.fullPath)
+    if (match) {
+        // 重新加载ViewTab
+        viewTabsStore.init(route)
+    } else {
+        // 跳转到首页
+        await router.push('/')
     }
 }

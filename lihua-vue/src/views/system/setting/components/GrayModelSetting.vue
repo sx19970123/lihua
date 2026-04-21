@@ -38,12 +38,12 @@
 import {useSettingStore} from "@/stores/setting.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
-import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
-import type {GrayModel} from "@/api/system/setting/type/GrayModel.ts";
+import type {SysSetting} from "@/api/system/setting/type/sys-setting.ts";
+import type {GrayModel} from "@/api/system/setting/type/gray-model.ts";
 import {message} from "ant-design-vue";
 import dayjs, {type Dayjs} from "dayjs";
-import {isAdmin} from "@/utils/Auth.ts";
-import {save} from "@/api/system/setting/Setting.ts";
+import {isAdmin} from "@/helpers/auth.ts";
+import {save} from "@/api/system/setting/setting.ts";
 
 const themeStore = useThemeStore();
 const settingStore = useSettingStore();

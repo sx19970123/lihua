@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType.ts";
+import type {SysDictDataType} from "@/api/system/dict/type/sys-dict-data-type.ts";
 
 
 export const useDictStore = defineStore('dict', {

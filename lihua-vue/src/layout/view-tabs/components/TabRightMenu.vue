@@ -81,11 +81,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import {useViewTabsStore} from "@/stores/viewTabs";
+import {useViewTabsStore} from "@/stores/view-tabs.ts";
 import {useUserStore} from "@/stores/user.ts";
 import {ref, watch} from "vue";
-import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
-import {handleTime} from "@/utils/HandleDate.ts";
+import type {RecentType, StarViewType} from "@/api/system/view-tab/type/sys-view-tab.ts";
+import {handleTime} from "@/utils/handle-date.ts";
 import {isEqual} from "lodash-es";
 
 const viewTabsStore = useViewTabsStore()

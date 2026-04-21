@@ -1,5 +1,5 @@
-import request from "@/utils/Request.ts"
-import type {ServerInfo} from "@/api/monitor/server/type/ServerInfo.ts";
+import request from "@/utils/request.ts"
+import type {ServerInfo} from "@/api/monitor/server/type/server-info.ts";
 
 // 获取服务器信息
 export const serverInfo = () => {

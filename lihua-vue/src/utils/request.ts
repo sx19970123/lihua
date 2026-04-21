@@ -1,6 +1,6 @@
 import axios, {type AxiosRequestConfig} from 'axios';
-import token from "@/utils/Token.ts"
-import {ResponseError, type ResponseType} from "@/api/global/Type.ts"
+import token from "@/helpers/token.ts"
+import {ResponseError, type ResponseType} from "@/api/global/type.ts"
 import {useUserStore} from "@/stores/user";
 import router from "@/router";
 

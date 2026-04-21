@@ -1,6 +1,6 @@
-import request from "@/utils/Request.ts";
-import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
-import type {PageResponseType} from "@/api/global/Type.ts";
+import request from "@/utils/request.ts";
+import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/sys-dict-type.ts";
+import type {PageResponseType} from "@/api/global/type.ts";
 
 /**
  * 列表页查询

@@ -2,10 +2,10 @@ import {defineStore} from "pinia";
 import Layout from "@/layout/index.vue";
 import MiddleView from "@/components/middle-view/index.vue";
 import Iframe from "@/components/iframe/index.vue";
-import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts"
+import type {RecentType, StarViewType} from "@/api/system/view-tab/type/sys-view-tab.ts"
 import dayjs from "dayjs";
 import type {RouteLocationNormalizedLoaded} from "vue-router";
-import {hasRouteRole} from "@/utils/Auth.ts"
+import {hasRouteRole} from "@/helpers/auth.ts"
 import {cloneDeep, isEqual} from "lodash-es"
 import {v4 as uuidv4} from "uuid";
 

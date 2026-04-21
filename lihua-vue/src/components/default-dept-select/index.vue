@@ -38,11 +38,11 @@
 </template>
 
 <script setup lang="ts">
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+import type {SysDept} from "@/api/system/dept/type/sys-dept.ts";
 import {ref} from "vue";
 import {useUserStore} from "@/stores/user.ts";
 import {useThemeStore} from "@/stores/theme.ts";
-import {setDefaultDept} from "@/api/system/profile/Profile.ts";
+import {setDefaultDept} from "@/api/system/profile/profile.ts";
 import {message} from "ant-design-vue";
 import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
 

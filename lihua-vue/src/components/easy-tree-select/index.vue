@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import {nextTick, onMounted, ref, useSlots, useTemplateRef, watch} from "vue";
 import ATree from "ant-design-vue/es/tree/Tree"
-import {traverse} from "@/utils/Tree.ts";
+import {traverse} from "@/utils/tree.ts";
 import {cloneDeep} from 'lodash-es'
 import {useThemeStore} from "@/stores/theme.ts";
 

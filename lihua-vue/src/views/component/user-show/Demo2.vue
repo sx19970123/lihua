@@ -14,9 +14,9 @@
 
 <script setup lang="ts">
 import UserShow from "@/components/user-show/index.vue"
-import {queryPage} from "@/api/system/user/User.ts";
+import {queryPage} from "@/api/system/user/user.ts";
 import {onMounted, ref} from "vue";
-import type {SysUserVO} from "@/api/system/user/type/SysUser.ts";
+import type {SysUserVO} from "@/api/system/user/type/sys-user.ts";
 
 const userList = ref<SysUserVO[]>([])
 onMounted(async () => {

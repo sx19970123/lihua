@@ -1,5 +1,5 @@
-import request from "@/utils/Request.ts"
-import type {CacheMonitor} from "@/api/monitor/cache/type/CacheMonitor.ts";
+import request from "@/utils/request.ts"
+import type {CacheMonitor} from "@/api/monitor/cache/type/cache-monitor.ts";
 
 // 内存占用
 export const memoryInfo = () => {

@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import {useThemeStore} from "@/stores/theme";
-import {useViewTabsStore} from "@/stores/viewTabs";
+import {useViewTabsStore} from "@/stores/view-tabs.ts";
 
 const themeStore = useThemeStore()
 const viewTabsStore = useViewTabsStore()

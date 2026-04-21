@@ -77,10 +77,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         // 需要进行登录后设置的组件名集合
         List<String> loginSettingComponentNameList = new ArrayList<>();
 
-        // 将密码设置到LoginUser对象中
-        String password = sysProfileService.getPassword();
-        loginUserSession.getUser().setPassword(password);
-
         // 循环检查是否需要进行登录后配置
         checkLoginSettingStrategyList.forEach(strategy -> {
             String componentName = strategy.checkSetting(loginUserSession);

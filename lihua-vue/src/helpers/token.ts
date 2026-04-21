@@ -1,4 +1,4 @@
-import {decrypt, encrypt} from "@/utils/Crypto.ts"
+import {decrypt, encrypt} from "@/utils/crypto.ts"
 import {useStorage} from "@vueuse/core";
 
 const TOKEN_KEY: string = "lihua_token"

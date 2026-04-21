@@ -1,5 +1,5 @@
-import {getOnceToken} from "@/api/system/auth/Auth.ts";
-import {createBrowserId} from "@/utils/BrowserId.ts";
+import {getOnceToken} from "@/api/system/auth/auth.ts";
+import {createBrowserId} from "@/utils/browser-id.ts";
 
 // 连接
 export const connect = async () => {

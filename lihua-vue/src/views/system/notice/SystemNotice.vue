@@ -230,11 +230,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import {initDict} from "@/utils/Dict.ts";
+import {initDict} from "@/helpers/dict.ts";
 import {reactive, ref, useTemplateRef} from "vue";
-import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/notice/type/SysNotice.ts";
+import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/notice/type/sys-notice.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {deleteByIds, queryById, queryPage, release, revoke, save} from "@/api/system/notice/Notice.ts";
+import {deleteByIds, queryById, queryPage, release, revoke, save} from "@/api/system/notice/notice.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import {type FormInstance, message} from "ant-design-vue";
 import dayjs from "dayjs";
@@ -242,10 +242,10 @@ import Editor from "@/components/tinymce-editor/index.vue"
 import ColorSelect from "@/components/color-select/index.vue"
 import UserSelect from "@/components/user-select/index.vue"
 import NoticePreview from "@/components/notice-preview/index.vue"
-import type {SysUser} from "@/api/system/user/type/SysUser.ts";
+import type {SysUser} from "@/api/system/user/type/sys-user.ts";
 import type {Rule} from "ant-design-vue/es/form";
-import {getUserOptionByUserIds} from "@/api/system/user/User.ts";
-import {type BaseModalActiveType} from "@/api/global/Type.ts";
+import {getUserOptionByUserIds} from "@/api/system/user/user.ts";
+import {type BaseModalActiveType} from "@/api/global/type.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_notice_type, sys_notice_status, 	sys_notice_user_scope, sys_notice_priority} = initDict("sys_notice_type", "sys_notice_status", "sys_notice_user_scope", "sys_notice_priority")

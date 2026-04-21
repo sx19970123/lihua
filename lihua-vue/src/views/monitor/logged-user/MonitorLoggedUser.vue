@@ -155,15 +155,15 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import type {LoggedUserQueryParams, LoggedUserType} from "@/api/monitor/logged-user/type/LoggedUserType.ts";
-import {forceLogout, queryList} from "@/api/monitor/logged-user/LoggedUser.ts";
+import type {LoggedUserQueryParams, LoggedUserType} from "@/api/monitor/logged-user/type/logged-user-type.ts";
+import {forceLogout, queryList} from "@/api/monitor/logged-user/logged-user.ts";
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
-import type {SysLog} from "@/api/system/log/type/SysLog.ts";
-import {queryLoginByCacheKey} from "@/api/system/log/Log.ts";
+import type {SysLog} from "@/api/system/log/type/sys-log.ts";
+import {queryLoginByCacheKey} from "@/api/system/log/log.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 import DictTag from "@/components/dict-tag/index.vue";
-import {initDict} from "@/utils/Dict.ts";
+import {initDict} from "@/helpers/dict.ts";
 
 const {sys_client_type} = initDict( "sys_client_type")
 const initSearch = () => {

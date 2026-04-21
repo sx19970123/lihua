@@ -196,17 +196,17 @@
 <script setup lang="ts">
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {reactive, ref, useTemplateRef} from "vue";
-import {deleteData, queryById, queryPage, save, updateStatus} from "@/api/system/role/Role.ts";
-import {initDict} from "@/utils/Dict.ts";
+import {deleteData, queryById, queryPage, save, updateStatus} from "@/api/system/role/role.ts";
+import {initDict} from "@/helpers/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue";
 import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
-import {queryMenuTreeOption} from "@/api/system/menu/Menu.ts";
+import {queryMenuTreeOption} from "@/api/system/menu/menu.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import dayjs from "dayjs";
-import type {SysMenu} from "@/api/system/menu/type/SysMenu.ts";
-import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRole.ts";
-import {type BaseModalActiveType} from "@/api/global/Type.ts";
+import type {SysMenu} from "@/api/system/menu/type/sys-menu.ts";
+import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/sys-role.ts";
+import {type BaseModalActiveType} from "@/api/global/type.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 

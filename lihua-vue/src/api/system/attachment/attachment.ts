@@ -1,6 +1,6 @@
-import request from "@/utils/Request.ts";
-import type {SysAttachment, SysAttachmentDTO, SysAttachmentVO} from "@/api/system/attachment/type/SysAttachment.ts";
-import type {PageResponseType} from "@/api/global/Type.ts";
+import request from "@/utils/request.ts";
+import type {SysAttachment, SysAttachmentDTO, SysAttachmentVO} from "@/api/system/attachment/type/sys-attachment.ts";
+import type {PageResponseType} from "@/api/global/type.ts";
 
 // 分页查询附件列表
 export const queryPage = (data: SysAttachmentDTO) => {

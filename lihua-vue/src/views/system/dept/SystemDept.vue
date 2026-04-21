@@ -233,19 +233,19 @@ import {
   queryList,
   save,
   updateStatus
-} from "@/api/system/dept/Dept.ts";
+} from "@/api/system/dept/dept.ts";
 import {reactive, ref, useTemplateRef} from "vue";
 import {type FormInstance, message} from "ant-design-vue";
-import {initDict} from "@/utils/Dict.ts";
+import {initDict} from "@/helpers/dict.ts";
 import {cloneDeep} from "lodash-es";
 import type {Rule} from "ant-design-vue/es/form";
 import {useRouter} from "vue-router";
-import {flattenTree} from "@/utils/Tree.ts";
-import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
-import type {SysPost} from "@/api/system/post/type/SysPost.ts";
+import {flattenTree} from "@/utils/tree.ts";
+import type {SysDept, SysDeptVO} from "@/api/system/dept/type/sys-dept.ts";
+import type {SysPost} from "@/api/system/post/type/sys-post.ts";
 import Spin from "@/components/spin";
-import {type BaseModalActiveType} from "@/api/global/Type.ts";
-import {download} from "@/utils/AttachmentDownload.ts";
+import {type BaseModalActiveType} from "@/api/global/type.ts";
+import {download} from "@/utils/attachment-download.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_status} = initDict("sys_status")

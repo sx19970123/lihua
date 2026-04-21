@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import dictTag from "@/components/dict-tag/index.vue"
-import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType.ts";
+import type {SysDictDataType} from "@/api/system/dict/type/sys-dict-data-type.ts";
 // 从父组件接收参数
 const props = defineProps({
   // 字典data集合

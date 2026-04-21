@@ -1,5 +1,5 @@
-import request from "@/utils/Request.ts"
-import type {LoggedUserQueryParams, LoggedUserType} from "@/api/monitor/logged-user/type/LoggedUserType.ts";
+import request from "@/utils/request.ts"
+import type {LoggedUserQueryParams, LoggedUserType} from "@/api/monitor/logged-user/type/logged-user-type.ts";
 
 // 查询登录用户列表
 export const queryList = (params: LoggedUserQueryParams) => {

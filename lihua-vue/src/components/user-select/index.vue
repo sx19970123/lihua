@@ -90,17 +90,17 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {getDeptOption} from "@/api/system/dept/Dept.ts";
-import {flattenTree} from "@/utils/Tree.ts";
+import {getDeptOption} from "@/api/system/dept/dept.ts";
+import {flattenTree} from "@/utils/tree.ts";
 import {onMounted, ref, watch} from "vue";
 import {useThemeStore} from "@/stores/theme.ts";
 import {useUserStore} from "@/stores/user.ts";
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+import type {SysDept} from "@/api/system/dept/type/sys-dept.ts";
 import {cloneDeep} from "lodash-es";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import type {SysUser} from "@/api/system/user/type/SysUser.ts";
+import type {SysUser} from "@/api/system/user/type/sys-user.ts";
 import UserShow from "@/components/user-show/index.vue"
-import {getUserOption, getUserOptionByUserIds} from "@/api/system/user/User.ts";
+import {getUserOption, getUserOptionByUserIds} from "@/api/system/user/user.ts";
 import {message} from "ant-design-vue";
 
 const themeStore = useThemeStore();

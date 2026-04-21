@@ -9,7 +9,7 @@
 </template>
 <script setup lang="ts">
 import EasyTreeSelect from '@/components/easy-tree-select/index.vue'
-import {initDict} from "@/utils/Dict.ts"
+import {initDict} from "@/helpers/dict.ts"
 import {ref} from "vue";
 
 const {test_tree} = initDict("test_tree")

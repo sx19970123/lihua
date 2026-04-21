@@ -4,6 +4,7 @@ import com.lihua.common.utils.date.DateUtils;
 import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.security.model.LoginUserSession;
 import com.lihua.security.utils.SecurityUtils;
+import com.lihua.service.SysProfileService;
 import com.lihua.service.SysSettingService;
 import jakarta.annotation.Resource;
 import org.springframework.core.annotation.Order;
@@ -21,13 +22,19 @@ public class CheckUpdatePasswordStrategyImpl implements CheckLoginSettingStrateg
     @Resource
     private SysSettingService sysSettingService;
 
+    @Resource
+    private SysProfileService sysProfileService;
+
     final String COMPONENT_NAME = "LoginSettingResetPassword";
 
     @Override
     public String checkSetting(LoginUserSession loginUserSession) {
 
+        // 获取当前登录用户密码
+        String password = sysProfileService.getPassword();
+
         // 用户密码与默认密码相同
-        if (SecurityUtils.matchesPassword(sysSettingService.getDefaultPassword(), loginUserSession.getPassword())) {
+        if (SecurityUtils.matchesPassword(sysSettingService.getDefaultPassword(), password)) {
             return COMPONENT_NAME;
         }
 

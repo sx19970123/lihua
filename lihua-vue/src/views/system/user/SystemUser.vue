@@ -348,8 +348,8 @@ import {
   resetPassword,
   save,
   updateStatus
-} from "@/api/system/user/User.ts"
-import {initDict} from "@/utils/Dict.ts"
+} from "@/api/system/user/user.ts"
+import {initDict} from "@/helpers/dict.ts"
 import {h, onMounted, reactive, ref, useTemplateRef} from "vue";
 import SelectableCard from "@/components/selectable-card/index.vue"
 import PasswordInput from "@/components/password-input/index.vue"
@@ -357,25 +357,25 @@ import DictTag from "@/components/dict-tag/index.vue"
 import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
 import TableSetting from "@/components/table-setting/index.vue";
 import dayjs from "dayjs";
-import {getDeptOption} from "@/api/system/dept/Dept.ts";
-import {getRoleOption} from "@/api/system/role/Role.ts";
-import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
+import {getDeptOption} from "@/api/system/dept/dept.ts";
+import {getRoleOption} from "@/api/system/role/role.ts";
+import {getPostOptionByDeptId} from "@/api/system/post/post.ts";
 import {type FormInstance, message, Modal} from "ant-design-vue";
 import {cloneDeep} from 'lodash-es';
-import {traverse} from "@/utils/Tree.ts";
+import {traverse} from "@/utils/tree.ts";
 import type {Rule} from "ant-design-vue/es/form";
-import type {SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
-import type {SysRole} from "@/api/system/role/type/SysRole.ts";
-import type {SysPost} from "@/api/system/post/type/SysPost.ts";
+import type {SysUserDTO, SysUserVO} from "@/api/system/user/type/sys-user.ts";
+import type {SysDept} from "@/api/system/dept/type/sys-dept.ts";
+import type {SysRole} from "@/api/system/role/type/sys-role.ts";
+import type {SysPost} from "@/api/system/post/type/sys-post.ts";
 import type {UploadRequestOption} from "ant-design-vue/lib/vc-upload/interface";
 import Spin from "@/components/spin";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import {useSettingStore} from "@/stores/setting.ts";
-import {type BaseModalActiveType} from "@/api/global/Type.ts";
-import {download} from "@/utils/AttachmentDownload.ts";
+import {type BaseModalActiveType} from "@/api/global/type.ts";
+import {download} from "@/utils/attachment-download.ts";
 import {useUserStore} from "@/stores/user.ts";
-import {refreshUserData} from "@/utils/AppInit.ts";
+import {refreshApp} from "@/appInit.ts";
 import {useRoute} from "vue-router";
 
 const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")
@@ -682,7 +682,7 @@ const initSave = () => {
         modalActive.open = false
         // 保存的用户如果为当前用户，则触发刷新数据，否则重新查询页面
         if (userId === userStore.userId) {
-          await refreshUserData(route)
+          await refreshApp(route)
         } else {
           await initPage()
         }

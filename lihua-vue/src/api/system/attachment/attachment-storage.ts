@@ -1,5 +1,5 @@
-import request, {blobRequest} from "@/utils/Request.ts";
-import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
+import request, {blobRequest} from "@/utils/request.ts";
+import type {SysAttachment} from "@/api/system/attachment/type/sys-attachment.ts";
 
 // 根据md5查询附件是否存在
 export const existsAttachmentByMd5 = (md5: string, originFileName: string) => {

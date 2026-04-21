@@ -111,10 +111,10 @@ import {
   screenLock,
   screenLogout,
   screenUnlock
-} from "@/utils/LockScreenUtils.ts";
+} from "@/helpers/lock-screen.ts";
 import {message} from "ant-design-vue";
 import {throttle} from 'lodash-es'
-import {disableOverflowY, enableOverflowY} from "@/utils/Scrollbar.ts";
+import {disableOverflowY, enableOverflowY} from "@/utils/scrollbar.ts";
 
 const userStore = useUserStore();
 const router = useRouter()

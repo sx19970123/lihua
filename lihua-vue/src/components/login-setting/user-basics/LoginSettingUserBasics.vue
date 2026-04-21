@@ -40,13 +40,13 @@
 <script setup lang="ts">
 import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
 import {type FormInstance, message} from 'ant-design-vue';
-import {initDict} from "@/utils/Dict.ts";
+import {initDict} from "@/helpers/dict.ts";
 import {reactive, type Ref, ref, useTemplateRef} from "vue";
-import type {ProfileInfo} from "@/api/system/profile/type/SysProfile.ts";
+import type {ProfileInfo} from "@/api/system/profile/type/sys-profile.ts";
 import type {Rule} from "ant-design-vue/es/form";
-import {saveBasics} from "@/api/system/profile/Profile.ts";
+import {saveBasics} from "@/api/system/profile/profile.ts";
 import {useUserStore} from "@/stores/user.ts";
-import {ResponseError} from "@/api/global/Type.ts";
+import {ResponseError} from "@/api/global/type.ts";
 
 const userStore = useUserStore()
 const {user_gender} = initDict("user_gender")

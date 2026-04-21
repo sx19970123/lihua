@@ -73,11 +73,11 @@ import SysAvatar from "@/components/user-avatar/index.vue"
 import {useUserStore} from "@/stores/user";
 import {message, Modal} from 'ant-design-vue';
 import settings from "@/settings";
-import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
+import type {AvatarType} from "@/api/system/profile/type/sys-profile.ts";
 import {cloneDeep, debounce} from 'lodash-es'
 import {useThemeStore} from "@/stores/theme.ts";
-import {ResponseError} from "@/api/global/Type.ts";
-import {publicUpload} from "@/api/system/attachment/AttachmentStorage.ts";
+import {ResponseError} from "@/api/global/type.ts";
+import {publicUpload} from "@/api/system/attachment/attachment-storage.ts";
 import {v4 as uuidv4} from "uuid";
 
 const themeStore = useThemeStore()

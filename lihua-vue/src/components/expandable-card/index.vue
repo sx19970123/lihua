@@ -41,7 +41,7 @@ import Mask from "@/components/mask/index.vue"
 import {gsap} from 'gsap';
 import type {CSSProperties} from 'vue';
 import {nextTick, onMounted, onUnmounted, ref, useSlots, useTemplateRef, watch} from "vue";
-import {hiddenOverflowY} from "@/utils/Scrollbar.ts";
+import {hiddenOverflowY} from "@/utils/scrollbar.ts";
 // 是否使用具名插槽middle
 const slots = useSlots();
 const hasMiddleSlot = !!slots.middle

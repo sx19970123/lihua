@@ -1,6 +1,6 @@
-import request, {blobRequest} from "@/utils/Request.ts";
-import type {PageResponseType} from "@/api/global/Type.ts";
-import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/SysUser.ts";
+import request, {blobRequest} from "@/utils/request.ts";
+import type {PageResponseType} from "@/api/global/type.ts";
+import type {SysUser, SysUserDTO, SysUserVO} from "@/api/system/user/type/sys-user.ts";
 import type {RcFile} from "ant-design-vue/es/vc-upload/interface";
 
 // 分页查询列表

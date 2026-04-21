@@ -17,10 +17,10 @@ import Editor from '@tinymce/tinymce-vue'
 import {useThemeStore} from "@/stores/theme.ts";
 import {v4 as uuidv4} from "uuid";
 import {useRoute} from "vue-router";
-import {publicUpload} from "@/api/system/attachment/AttachmentStorage.ts";
-import type {SysAttachmentUrl} from "@/api/system/attachment/type/SysAttachmentUrl.ts";
+import {publicUpload} from "@/api/system/attachment/attachment-storage.ts";
+import type {SysAttachmentUrl} from "@/api/system/attachment/type/sys-attachment-url.ts";
 import {message} from "ant-design-vue";
-import {attachmentUrl} from "@/utils/AttachmentUrl.ts";
+import {attachmentUrl} from "@/utils/attachment-url.ts";
 
 const themeStore = useThemeStore();
 const router = useRoute()

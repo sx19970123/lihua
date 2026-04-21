@@ -5,7 +5,7 @@ import {
     enableSignUp,
     getDefaultPassword,
     getSysSettingByKey
-} from "@/api/system/setting/Setting.ts";
+} from "@/api/system/setting/setting.ts";
 import {message} from "ant-design-vue";
 
 export const useSettingStore = defineStore('setting', {

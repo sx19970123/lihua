@@ -22,12 +22,12 @@
 <script setup lang="ts">
 import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
-import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
+import type {SysSetting} from "@/api/system/setting/type/sys-setting.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
-import type {DefaultPassword} from "@/api/system/setting/type/DefaultPassword.ts";
+import type {DefaultPassword} from "@/api/system/setting/type/default-password.ts";
 import PasswordInput from "@/components/password-input/index.vue";
-import {save} from "@/api/system/setting/Setting.ts";
+import {save} from "@/api/system/setting/setting.ts";
 
 const settingStore = useSettingStore();
 const componentName = getCurrentInstance()?.type.__name

@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import {usePermissionStore} from "@/stores/permission";
 import {useThemeStore} from "@/stores/theme";
-import {useViewTabsStore} from "@/stores/viewTabs.ts";
+import {useViewTabsStore} from "@/stores/view-tabs.ts";
 import {useRoute, useRouter} from "vue-router";
 import {computed, nextTick, onMounted, reactive, watch} from "vue";
 import type {ItemType} from "ant-design-vue";

@@ -1,6 +1,6 @@
-import request from "@/utils/Request.ts";
-import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType.ts";
-import type {MapResponseType} from "@/api/global/Type.ts";
+import request from "@/utils/request.ts";
+import type {SysDictDataType} from "@/api/system/dict/type/sys-dict-data-type.ts";
+import type {MapResponseType} from "@/api/global/type.ts";
 
 /**
  * 列表查询

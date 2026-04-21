@@ -61,7 +61,7 @@
 import {inject, type Ref, ref, useTemplateRef} from "vue";
 import PasswordInput from "@/components/password-input/index.vue"
 import type {Rule} from "ant-design-vue/es/form";
-import {checkUserName, register} from "@/api/system/login/Login.ts";
+import {checkUserName, register} from "@/api/system/login/login.ts";
 import {message} from "ant-design-vue";
 import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
 import {useSettingStore} from "@/stores/setting.ts";

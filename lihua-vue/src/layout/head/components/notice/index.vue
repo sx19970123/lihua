@@ -109,18 +109,18 @@
 </template>
 
 <script setup lang="ts">
-import {addEventListener, removeEventListener} from "@/utils/WebSocket.ts";
+import {addEventListener, removeEventListener} from "@/utils/web-socket.ts";
 import NoticePreview from "@/components/notice-preview/index.vue"
 import DictTag from "@/components/dict-tag/index.vue"
-import type {SysNotice, SysNoticeDTO} from "@/api/system/notice/type/SysNotice.ts";
+import type {SysNotice, SysNoticeDTO} from "@/api/system/notice/type/sys-notice.ts";
 import {Button, message, notification} from "ant-design-vue";
 import {h, onMounted, onUnmounted, ref} from "vue";
 import {MessageOutlined, NotificationOutlined} from "@ant-design/icons-vue";
 import {useThemeStore} from "@/stores/theme.ts";
-import {getDictLabel, initDict} from "@/utils/Dict.ts";
-import {queryUnReadCount, read, star, userMessageList} from "@/api/system/notice/Notice.ts";
-import type {SysUserNoticeVO} from "@/api/system/notice/type/SysUserNotice.ts";
-import {handleTime} from "@/utils/HandleDate.ts";
+import {getDictLabel, initDict} from "@/helpers/dict.ts";
+import {queryUnReadCount, read, star, userMessageList} from "@/api/system/notice/notice.ts";
+import type {SysUserNoticeVO} from "@/api/system/notice/type/sys-user-notice.ts";
+import {handleTime} from "@/utils/handle-date.ts";
 import dayjs from "dayjs";
 
 const themeStore = useThemeStore();

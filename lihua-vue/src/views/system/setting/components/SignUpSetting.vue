@@ -87,20 +87,20 @@
 import {useThemeStore} from "@/stores/theme.ts";
 import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
-import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
-import type {SignUp} from "@/api/system/setting/type/SignUp.ts";
-import type {SysRole} from "@/api/system/role/type/SysRole.ts";
-import {getRoleOption} from "@/api/system/role/Role.ts";
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
-import {getDeptOption} from "@/api/system/dept/Dept.ts";
-import {traverse} from "@/utils/Tree.ts";
-import {getPostOptionByDeptId} from "@/api/system/post/Post.ts";
-import type {SysPost} from "@/api/system/post/type/SysPost.ts";
+import type {SysSetting} from "@/api/system/setting/type/sys-setting.ts";
+import type {SignUp} from "@/api/system/setting/type/sign-up.ts";
+import type {SysRole} from "@/api/system/role/type/sys-role.ts";
+import {getRoleOption} from "@/api/system/role/role.ts";
+import type {SysDept} from "@/api/system/dept/type/sys-dept.ts";
+import {getDeptOption} from "@/api/system/dept/dept.ts";
+import {traverse} from "@/utils/tree.ts";
+import {getPostOptionByDeptId} from "@/api/system/post/post.ts";
+import type {SysPost} from "@/api/system/post/type/sys-post.ts";
 import SelectableCard from "@/components/selectable-card/index.vue";
 import EasyTreeSelect from "@/components/easy-tree-select/index.vue"
 import {message} from "ant-design-vue";
-import {isAdmin} from "@/utils/Auth.ts";
-import {save} from "@/api/system/setting/Setting.ts";
+import {isAdmin} from "@/helpers/auth.ts";
+import {save} from "@/api/system/setting/setting.ts";
 
 const componentName = getCurrentInstance()?.type.__name
 const settingStore = useSettingStore();

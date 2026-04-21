@@ -132,14 +132,14 @@
 
 <script setup lang="ts">
 import {nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from "vue";
-import {useViewTabsStore} from "@/stores/viewTabs.ts";
+import {useViewTabsStore} from "@/stores/view-tabs.ts";
 import {usePermissionStore} from "@/stores/permission.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import {useRouter} from "vue-router";
-import {osType} from "@/utils/OS"
+import {osType} from "@/utils/os.ts"
 import SelectableCard from "@/components/selectable-card/index.vue";
-import type {RecentType, StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
-import {traverseWithPath} from "@/utils/Tree.ts";
+import type {RecentType, StarViewType} from "@/api/system/view-tab/type/sys-view-tab.ts";
+import {traverseWithPath} from "@/utils/tree.ts";
 import {cloneDeep, debounce, throttle} from "lodash-es"
 import type {ItemType} from "ant-design-vue";
 

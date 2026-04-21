@@ -59,13 +59,13 @@
 </template>
 
 <script setup lang="ts">
-import {useViewTabsStore} from "@/stores/viewTabs";
-import {viewTab} from "@/api/system/view-tab/ViewTab.ts";
+import {useViewTabsStore} from "@/stores/view-tabs.ts";
+import {viewTab} from "@/api/system/view-tab/view-tab.ts";
 import {message} from "ant-design-vue";
 import {LockOutlined, StarFilled, StarOutlined, UnlockOutlined} from '@ant-design/icons-vue';
 import {h, ref} from "vue";
-import type {ResponseType} from "@/api/global/Type.ts";
-import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
+import type {ResponseType} from "@/api/global/type.ts";
+import type {StarViewType} from "@/api/system/view-tab/type/sys-view-tab.ts";
 
 const viewTabsStore = useViewTabsStore()
 const tabPane = defineProps(['tab','index'])

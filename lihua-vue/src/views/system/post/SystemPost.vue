@@ -222,20 +222,20 @@
 
 <script setup lang="ts">
 
-import {getDeptOption} from "@/api/system/dept/Dept.ts";
+import {getDeptOption} from "@/api/system/dept/dept.ts";
 import {reactive, ref, useTemplateRef, watch} from "vue";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
-import {initDict} from "@/utils/Dict.ts";
-import {deleteData, exportExcel, queryById, queryPage, save, updateStatus} from "@/api/system/post/Post.ts";
+import {initDict} from "@/helpers/dict.ts";
+import {deleteData, exportExcel, queryById, queryPage, save, updateStatus} from "@/api/system/post/post.ts";
 import {useRoute} from "vue-router";
 import type {Rule} from "ant-design-vue/es/form";
-import {flattenTree} from "@/utils/Tree.ts";
+import {flattenTree} from "@/utils/tree.ts";
 import {type FormInstance, message} from "ant-design-vue";
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
-import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
+import type {SysDept} from "@/api/system/dept/type/sys-dept.ts";
+import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/sys-post.ts";
 import Spin from "@/components/spin";
-import {type BaseModalActiveType} from "@/api/global/Type.ts";
-import {download} from "@/utils/AttachmentDownload.ts";
+import {type BaseModalActiveType} from "@/api/global/type.ts";
+import {download} from "@/utils/attachment-download.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 
 const {sys_status} = initDict("sys_status")

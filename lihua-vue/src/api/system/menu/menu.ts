@@ -1,5 +1,5 @@
-import request from "@/utils/Request.ts";
-import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/SysMenu.ts";
+import request from "@/utils/request.ts";
+import type {SysMenu, SysMenuVO} from "@/api/system/menu/type/sys-menu.ts";
 
 /**
  * 列表查询

@@ -66,12 +66,12 @@
 <script setup lang="ts">
 import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
-import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
-import type {RestrictAccessIp} from "@/api/system/setting/type/RestrictAccessIp.ts";
+import type {SysSetting} from "@/api/system/setting/type/sys-setting.ts";
+import type {RestrictAccessIp} from "@/api/system/setting/type/restrict-access-ip.ts";
 import {message} from "ant-design-vue";
 import {useThemeStore} from "@/stores/theme.ts";
-import {isAdmin} from "@/utils/Auth.ts";
-import {save} from "@/api/system/setting/Setting.ts";
+import {isAdmin} from "@/helpers/auth.ts";
+import {save} from "@/api/system/setting/setting.ts";
 
 const themeStore = useThemeStore()
 const settingStore = useSettingStore();

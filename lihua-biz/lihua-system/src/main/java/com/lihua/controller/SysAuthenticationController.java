@@ -15,6 +15,7 @@ import com.lihua.security.model.AuthInfo;
 import com.lihua.security.model.CurrentDept;
 import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUserSession;
+import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysAuthenticationService;
 import com.lihua.service.SysSettingService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -161,5 +162,11 @@ public class SysAuthenticationController extends ApiResponseController {
             return ((SecondaryVerificationApplication) imageCaptchaApplication).secondaryVerification(captchaVerification);
         }
         return false;
+    }
+
+
+    public static void main(String[] args) {
+        String s = SecurityUtils.encryptPassword("#D3mV$DjO9n^HzQkx1Be");
+        System.out.println(s);
     }
 }

@@ -3,13 +3,10 @@ import NProgress from "nprogress"
 import 'nprogress/nprogress.css'
 import {useUserStore} from "@/stores/user"
 import {useThemeStore} from "@/stores/theme";
-import token from "@/utils/Token.ts"
-import Token from "@/utils/Token.ts"
-import {init} from "@/utils/AppInit.ts";
-import {hasRouteRole} from "@/utils/Auth.ts";
-import {closeConnect, connect} from "@/utils/WebSocket.ts";
-import {message} from "ant-design-vue";
-import {getLoginSetting} from "@/api/system/login/Login.ts";
+import token from "@/helpers/token.ts"
+import {initApp} from "@/appInit.ts";
+import {hasRouteRole} from "@/helpers/auth.ts";
+import {closeConnect, connect} from "@/utils/web-socket.ts";
 
 const { getToken } = token
 
@@ -24,22 +21,17 @@ router.beforeEach(async (to, from, next) => {
             // 判断是否已拉取用户信息
             if (!userStore.userInfo.id) {
                 // 拉取登录用户数据，并初始化 store
-                await init();
-                // 连接到websocket
-                await connect()
+                await initApp();
                 // 检查登录设置
-                if (to.fullPath === '/login' || !Token.getLoginSettingResult()) {
-                    const loginSettingResp = await getLoginSetting()
-                    if (loginSettingResp.code === 200) {
-                        const data = loginSettingResp.data
-                        if (data.length > 0) {
-                            next({ name: 'Login', state: {settingComponentNameList: data} });
-                        }
-                    } else {
-                        message.error(loginSettingResp.msg)
-                        next("/login");
+                if (to.name === 'Login') {
+                    const data = await userStore.checkUserAfterLogin()
+                    if (data.length > 0) {
+                        next(false)
+                        return
                     }
                 }
+                // 连接到websocket
+                await connect()
                 // 判断用户是否拥有静态路由中指定的角色
                 if (hasRouteRole(to?.meta?.role as string[])) {
                     // 已登录状态下，请求登录页面自动跳转到首页

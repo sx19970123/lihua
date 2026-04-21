@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import {getBrowserMajorVersion, getBrowserType} from "@/utils/Browser.ts"
+import {getBrowserMajorVersion, getBrowserType} from "@/utils/browser.ts"
 import {useThemeStore} from "@/stores/theme"
 import {usePermissionStore} from "@/stores/permission.ts";
 import {useSettingStore} from "@/stores/setting.ts";

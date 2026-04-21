@@ -124,10 +124,10 @@
 
 <script setup lang="ts">
 import SelectableCard from "@/components/selectable-card/index.vue"
-import {cacheInfo, cacheKeyGroups, cacheKeys, memoryInfo, remove} from "@/api/monitor/cache/Cache.ts";
+import {cacheInfo, cacheKeyGroups, cacheKeys, memoryInfo, remove} from "@/api/monitor/cache/cache.ts";
 import {onMounted, ref} from "vue";
 import {message} from "ant-design-vue";
-import type {CacheMonitor} from "@/api/monitor/cache/type/CacheMonitor.ts";
+import type {CacheMonitor} from "@/api/monitor/cache/type/cache-monitor.ts";
 // 内存占用大小
 const useMemory = ref<string>('')
 // 缓存类型集合

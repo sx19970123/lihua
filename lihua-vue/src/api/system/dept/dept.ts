@@ -1,5 +1,5 @@
-import request, {blobRequest} from "@/utils/Request.ts";
-import type {SysDept, SysDeptVO} from "@/api/system/dept/type/SysDept.ts";
+import request, {blobRequest} from "@/utils/request.ts";
+import type {SysDept, SysDeptVO} from "@/api/system/dept/type/sys-dept.ts";
 
 /**
  * 列表查询

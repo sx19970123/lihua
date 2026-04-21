@@ -19,10 +19,10 @@
 <script setup lang="ts">
 import UserAvatar from '@/components/user-avatar/index.vue'
 import {useUserStore} from "@/stores/user.ts";
-import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
+import type {AvatarType} from "@/api/system/profile/type/sys-profile.ts";
 import {ref} from "vue";
-import {publicAttachmentDownload} from "@/api/system/attachment/AttachmentStorage.ts";
-import {attachmentUrl, getTemporaryPath} from "@/utils/AttachmentUrl.ts";
+import {publicAttachmentDownload} from "@/api/system/attachment/attachment-storage.ts";
+import {attachmentUrl, getTemporaryPath} from "@/utils/attachment-url.ts";
 
 const userStore = useUserStore();
 

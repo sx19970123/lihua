@@ -68,15 +68,18 @@
 <script setup lang="ts">
 import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
 import {inject, onMounted, reactive, type Ref, ref, useTemplateRef} from "vue";
-import token from "@/utils/Token.ts"
-import {init} from "@/utils/AppInit.ts";
-import {getLoginSetting, login} from "@/api/system/login/Login.ts";
+import token from "@/helpers/token.ts"
+import {initApp} from "@/appInit.ts";
+import {getLoginSetting, login} from "@/api/system/login/login.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import {useRouter} from 'vue-router'
 import {useSettingStore} from "@/stores/setting.ts";
+import {useUserStore} from "@/stores/user.ts";
 // 系统设置
 const settingStore = useSettingStore();
+// 用户
+const userStore = useUserStore();
 
 const emit = defineEmits(["changeComponent","showLoginSetting"])
 
@@ -160,21 +163,19 @@ const userLogin = async (captchaVerification: string) => {
     clearRegisterUsername()
 
     // 检查是否需要登录后设置
-    const loginSettingResp = await getLoginSetting()
-    if (loginSettingResp.code === 200) {
-      // 登录后设置返回data为空，表示无需进行额外设置，进入首页
-      if (loginSettingResp.data.length === 0) {
-        message.success("登录成功")
-        await router.push("/index");
-      } else {
-        await init()
-        // 开始登录后配置
-        emit("showLoginSetting", loginSettingResp.data)
-      }
+    const data = await userStore.checkUserAfterLogin()
+    if (data && data.length === 0) {
+      message.success("登录成功")
+      await router.push("/index");
     } else {
-      message.error(loginSettingResp.msg)
+      await initApp()
+      // 开始登录后配置
+      emit("showLoginSetting", data)
     }
-
+  } catch (e) {
+    token.removeToken()
+    message.error("登录失败")
+    console.error(e)
   } finally {
     token.removeLoginSettingResult()
     loginLoading.value = false

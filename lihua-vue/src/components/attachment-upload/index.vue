@@ -86,7 +86,7 @@
 import {message, Modal, Upload, type UploadFile} from "ant-design-vue";
 import {createVNode, ref, watch} from "vue";
 import {useRoute} from "vue-router";
-import token from "@/utils/Token.ts";
+import token from "@/helpers/token.ts";
 import {
   chunksMerge,
   chunksUpload,
@@ -96,12 +96,12 @@ import {
   existsAttachmentByMd5,
   fastUpload,
   queryAttachmentInfoByIds
-} from "@/api/system/attachment/AttachmentStorage.ts";
-import {getDownloadURL} from "@/api/system/attachment/Attachment.ts";
-import {ResponseError} from "@/api/global/Type.ts";
-import {currentRequests} from "@/utils/Request.ts";
-import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment.ts";
-import {download} from "@/utils/AttachmentDownload.ts";
+} from "@/api/system/attachment/attachment-storage.ts";
+import {getDownloadURL} from "@/api/system/attachment/attachment.ts";
+import {ResponseError} from "@/api/global/type.ts";
+import {currentRequests} from "@/utils/request.ts";
+import type {SysAttachment} from "@/api/system/attachment/type/sys-attachment.ts";
+import {download} from "@/utils/attachment-download.ts";
 import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
 import {useThemeStore} from "@/stores/theme.ts";
 
@@ -600,7 +600,7 @@ const initChunkUpload = () => {
     const chunks = handleChunk(file, 10)
     return new Promise(resolve => {
       // 通过webWorker后台处理hash计算，防止ui阻塞
-      const worker = new Worker(new URL("./HashWorker.ts", import.meta.url), {type: "module"})
+      const worker = new Worker(new URL("./hash-worker.ts", import.meta.url), {type: "module"})
       // 接收hash计算完成后的结果
       worker.onmessage = (event) => {
         const resp = event.data

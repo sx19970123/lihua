@@ -1,6 +1,6 @@
-import request, {blobRequest} from "@/utils/Request.ts";
-import type {SysLog, SysLogDTO} from "@/api/system/log/type/SysLog.ts";
-import type {PageResponseType} from "@/api/global/Type.ts";
+import request, {blobRequest} from "@/utils/request.ts";
+import type {SysLog, SysLogDTO} from "@/api/system/log/type/sys-log.ts";
+import type {PageResponseType} from "@/api/global/type.ts";
 
 // 获取日志类型选项
 export const getLogTypeOption = () => {

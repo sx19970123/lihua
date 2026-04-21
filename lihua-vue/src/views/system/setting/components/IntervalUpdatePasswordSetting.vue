@@ -40,15 +40,15 @@
 </template>
 
 <script setup lang="ts">
-import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
+import type {SysSetting} from "@/api/system/setting/type/sys-setting.ts";
 import {useSettingStore} from "@/stores/setting.ts";
 import {getCurrentInstance, onMounted, ref} from "vue";
-import type {IntervalUpdatePassword} from "@/api/system/setting/type/IntervalUpdatePassword.ts";
+import type {IntervalUpdatePassword} from "@/api/system/setting/type/interval-update-password.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import {useThemeStore} from "@/stores/theme.ts";
-import {isAdmin} from "@/utils/Auth.ts";
-import {save} from "@/api/system/setting/Setting.ts";
+import {isAdmin} from "@/helpers/auth.ts";
+import {save} from "@/api/system/setting/setting.ts";
 
 const themeStore = useThemeStore()
 const componentName = getCurrentInstance()?.type.__name

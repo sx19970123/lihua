@@ -41,9 +41,9 @@
 
 <script setup lang="ts">
 import {message} from "ant-design-vue";
-import type {ServerInfo} from "@/api/monitor/server/type/ServerInfo.ts";
+import type {ServerInfo} from "@/api/monitor/server/type/server-info.ts";
 import {onMounted, ref} from "vue";
-import {serverInfo} from "@/api/monitor/server/Server.ts";
+import {serverInfo} from "@/api/monitor/server/server.ts";
 import dayjs from "dayjs";
 import Spin from "@/components/spin";
 

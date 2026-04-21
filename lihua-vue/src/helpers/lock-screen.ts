@@ -1,5 +1,5 @@
 import {useUserStore} from "@/stores/user.ts";
-import {decrypt, encrypt} from "@/utils/Crypto.ts";
+import {decrypt, encrypt} from "@/utils/crypto.ts";
 
 const LOCK_SCREEN_SETTING_KEY = "lihua_lock_screen_setting_"
 

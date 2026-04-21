@@ -58,12 +58,12 @@
 
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
-import {preview, queryReadInfo} from "@/api/system/notice/Notice.ts";
+import {preview, queryReadInfo} from "@/api/system/notice/notice.ts";
 import UserShow from "@/components/user-show/index.vue"
-import type {SysNoticeVO} from "@/api/system/notice/type/SysNotice.ts";
+import type {SysNoticeVO} from "@/api/system/notice/type/sys-notice.ts";
 import dayjs from "dayjs";
 import {message} from "ant-design-vue";
-import type {SysUser} from "@/api/system/user/type/SysUser.ts";
+import type {SysUser} from "@/api/system/user/type/sys-user.ts";
 
 const props = defineProps<{
   noticeId: string,

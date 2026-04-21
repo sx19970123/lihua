@@ -46,8 +46,8 @@ import LoginSetting from "@/components/login-setting/index.vue"
 import UserRegister from "@/views/login/components/Register.vue"
 import UserLogin from "@/views/login/components/Login.vue"
 import settings from "@/settings"
-import {screenUnlock} from "@/utils/LockScreenUtils.ts";
-import {enableOverflowY} from "@/utils/Scrollbar.ts";
+import {screenUnlock} from "@/helpers/lock-screen.ts";
+import {enableOverflowY} from "@/utils/scrollbar.ts";
 
 // 显示登录卡片
 const showCard = ref<boolean>(false)
@@ -105,10 +105,6 @@ const initLoginSetting = () => {
       settingComponentNames.value = settingComponentNameList
     }
   }
-  // 当需要登录后配置时，刷新页面读取路由携带参数，加载配置页面
-  const routerCheckLoginSetting = () => {
-    startLoginSetting(history.state.settingComponentNameList)
-  }
   // 从配置页面退回到登录页面
   const handleGoLogin = async () => {
     // 关闭设置页面
@@ -129,11 +125,10 @@ const initLoginSetting = () => {
     showSetting,
     settingComponentNames,
     startLoginSetting,
-    routerCheckLoginSetting,
     handleGoLogin
   }
 }
-const {showSetting, settingComponentNames, startLoginSetting, routerCheckLoginSetting, handleGoLogin} = initLoginSetting()
+const {showSetting, settingComponentNames, startLoginSetting, handleGoLogin} = initLoginSetting()
 
 // 显示卡片
 const handleShowCard = () => {
@@ -145,8 +140,6 @@ const handleShowCard = () => {
 onMounted(() => {
   // 默认显示login
   handleChangeComponent("login")
-  // 检查history.state中是否存在登录后配置
-  routerCheckLoginSetting()
   // 进入登录页的用户关闭锁屏
   screenUnlock()
   // 启用y轴滚动条，防止锁屏状态下登录失效后滚动条消失的问题

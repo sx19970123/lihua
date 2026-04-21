@@ -1,5 +1,5 @@
-import request from "@/utils/Request.ts";
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+import request from "@/utils/request.ts";
+import type {SysDept} from "@/api/system/dept/type/sys-dept.ts";
 
 export const saveTheme = (themeJson: string) => {
     return request({

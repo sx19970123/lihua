@@ -211,15 +211,15 @@
 
 <script setup lang="ts">
 import {onMounted, onUnmounted, reactive, ref} from "vue";
-import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/SysDictType";
-import {type BaseModalActiveType, type ResponseType} from "@/api/global/Type.ts"
+import type {SysDictType, SysDictTypeDTO, SysDictTypeVO} from "@/api/system/dict/type/sys-dict-type.ts";
+import {type BaseModalActiveType, type ResponseType} from "@/api/global/type.ts"
 import type {ColumnsType} from 'ant-design-vue/es/table/interface';
-import {deleteData, queryById, queryPage, reloadCache, save, updateStatus} from "@/api/system/dict/DictType.ts";
+import {deleteData, queryById, queryPage, reloadCache, save, updateStatus} from "@/api/system/dict/dict-type.ts";
 import dayjs from "dayjs";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import DictData from "./dictData/index.vue"
-import {initDict} from "@/utils/Dict.ts";
+import {initDict} from "@/helpers/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
 import TableSetting from "@/components/table-setting/index.vue";
 

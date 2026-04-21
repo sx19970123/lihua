@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import {onBeforeUnmount, watch} from "vue";
-import {hiddenOverflowY, showOverflowY} from "@/utils/Scrollbar.ts";
+import {hiddenOverflowY, showOverflowY} from "@/utils/scrollbar.ts";
 // 控制遮罩开关
 const {showMask, zIndex = 1000} = defineProps<{
   showMask: boolean,

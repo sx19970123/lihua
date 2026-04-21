@@ -279,13 +279,13 @@
 // 查询列表
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import {onUnmounted, ref} from "vue";
-import type {SysAttachment, SysAttachmentDTO, SysAttachmentVO} from "@/api/system/attachment/type/SysAttachment.ts";
+import type {SysAttachment, SysAttachmentDTO, SysAttachmentVO} from "@/api/system/attachment/type/sys-attachment.ts";
 import {message} from "ant-design-vue";
-import {deleteData, forceDeleteData, getDownloadURL, queryById, queryPage} from "@/api/system/attachment/Attachment.ts";
+import {deleteData, forceDeleteData, getDownloadURL, queryById, queryPage} from "@/api/system/attachment/attachment.ts";
 import dayjs from "dayjs";
-import {initDict} from "@/utils/Dict.ts";
+import {initDict} from "@/helpers/dict.ts";
 import DictTag from "@/components/dict-tag/index.vue"
-import {download} from "@/utils/AttachmentDownload.ts";
+import {download} from "@/utils/attachment-download.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import TableSetting from "@/components/table-setting/index.vue";
 

@@ -76,9 +76,9 @@ import settings from "@/settings";
 import {useUserStore} from "@/stores/user";
 import {useThemeStore} from "@/stores/theme";
 import {usePermissionStore} from "@/stores/permission.ts";
-import {useViewTabsStore} from "@/stores/viewTabs.ts";
+import {useViewTabsStore} from "@/stores/view-tabs.ts";
 import {onUnmounted, ref} from "vue";
-import {ResponseError} from "@/api/global/Type.ts";
+import {ResponseError} from "@/api/global/type.ts";
 import {message} from "ant-design-vue";
 
 const themeStore = useThemeStore()

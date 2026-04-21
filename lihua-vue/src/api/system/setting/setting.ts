@@ -1,5 +1,5 @@
-import request from "@/utils/Request.ts";
-import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
+import request from "@/utils/request.ts";
+import type {SysSetting} from "@/api/system/setting/type/sys-setting.ts";
 
 /**
  * 保存设置

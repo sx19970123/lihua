@@ -1,8 +1,8 @@
-import request from "@/utils/Request.ts"
-import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/notice/type/SysNotice.ts";
-import type {MapResponseType, PageResponseType} from "@/api/global/Type.ts";
-import type {SysUser} from "@/api/system/user/type/SysUser.ts";
-import type {SysUserNoticeVO} from "@/api/system/notice/type/SysUserNotice.ts";
+import request from "@/utils/request.ts"
+import type {SysNotice, SysNoticeDTO, SysNoticeVO} from "@/api/system/notice/type/sys-notice.ts";
+import type {MapResponseType, PageResponseType} from "@/api/global/type.ts";
+import type {SysUser} from "@/api/system/user/type/sys-user.ts";
+import type {SysUserNoticeVO} from "@/api/system/notice/type/sys-user-notice.ts";
 
 /**
  * 分页查询

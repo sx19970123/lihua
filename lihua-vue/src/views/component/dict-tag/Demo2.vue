@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import DictTag from "@/components/dict-tag/index.vue"
-import {initDict} from "@/utils/Dict.ts"
+import {initDict} from "@/helpers/dict.ts"
 
 const {test_tree} = initDict("test_tree")
 </script>

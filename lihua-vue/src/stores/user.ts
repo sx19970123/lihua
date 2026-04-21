@@ -1,19 +1,19 @@
 import {defineStore} from "pinia";
-import {logout} from "@/api/system/login/Login.ts";
-import {saveTheme} from "@/api/system/profile/Profile.ts";
-import token from "@/utils/Token.ts";
+import {getLoginSetting, logout} from "@/api/system/login/login.ts";
+import {saveTheme} from "@/api/system/profile/profile.ts";
+import token from "@/helpers/token.ts";
 import {message} from "ant-design-vue";
-import {queryAuthInfo} from "@/api/system/auth/Auth.ts";
-import {ResponseError, type ResponseType} from "@/api/global/Type.ts";
-import type {AvatarType} from "@/api/system/profile/type/SysProfile.ts";
-import type {AuthInfoType, UserInfoType} from "@/api/system/auth/type/AuthInfoType.ts";
-import type {SysRole} from "@/api/system/role/type/SysRole.ts";
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
-import type {SysPost} from "@/api/system/post/type/SysPost.ts";
-import type {StarViewType} from "@/api/system/view-tab/type/SysViewTab.ts";
-import {closeConnect} from "@/utils/WebSocket.ts";
+import {queryAuthInfo} from "@/api/system/auth/auth.ts";
+import {ResponseError, type ResponseType} from "@/api/global/type.ts";
+import type {AvatarType} from "@/api/system/profile/type/sys-profile.ts";
+import type {AuthInfoType, UserInfoType} from "@/api/system/auth/type/auth-info-type.ts";
+import type {SysRole} from "@/api/system/role/type/sys-role.ts";
+import type {SysDept} from "@/api/system/dept/type/sys-dept.ts";
+import type {SysPost} from "@/api/system/post/type/sys-post.ts";
+import type {StarViewType} from "@/api/system/view-tab/type/sys-view-tab.ts";
+import {closeConnect} from "@/utils/web-socket.ts";
 import router from "@/router";
-import {attachmentUrl, getTemporaryPath} from "@/utils/AttachmentUrl.ts";
+import {attachmentUrl, getTemporaryPath} from "@/utils/attachment-url.ts";
 
 export const useUserStore = defineStore('user', {
     state: () => {
@@ -117,6 +117,15 @@ export const useUserStore = defineStore('user', {
             this.clearUserInfo()
             router.push("/login")
             message.error(msg)
+        },
+        // 用户登录后检查必要配置
+        async checkUserAfterLogin(): Promise<string[]> {
+            const loginSettingResp= await getLoginSetting()
+            if (loginSettingResp.code === 200) {
+                return loginSettingResp.data
+            } else {
+                throw new Error(loginSettingResp.msg)
+            }
         },
         /**
          * 清空用户信息

@@ -1,4 +1,4 @@
-import request from "@/utils/Request.ts";
+import request from "@/utils/request.ts";
 
 // 用户登录
 export const login = (username: string, password: string, captchaVerification: string) => {

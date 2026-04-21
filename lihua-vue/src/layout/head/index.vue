@@ -22,6 +22,6 @@ import Notification from "@/layout/head/components/notice/index.vue"
 import DefaultDept from "@/layout/head/components/dept/index.vue"
 import MenuSearch from "@/layout/head/components/menu-search/index.vue"
 import LockScreen from "@/layout/head/components/lock-screen/index.vue"
-import {useViewTabsStore} from "@/stores/viewTabs.ts";
+import {useViewTabsStore} from "@/stores/view-tabs.ts";
 const viewTabsStore = useViewTabsStore()
 </script>

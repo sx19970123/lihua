@@ -1,6 +1,6 @@
-import request, {blobRequest} from "@/utils/Request.ts";
-import type {MapResponseType, PageResponseType} from "@/api/global/Type.ts";
-import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/SysPost.ts";
+import request, {blobRequest} from "@/utils/request.ts";
+import type {MapResponseType, PageResponseType} from "@/api/global/type.ts";
+import type {SysPost, SysPostDTO, SysPostVO} from "@/api/system/post/type/sys-post.ts";
 
 /**
  * 分页查询

@@ -1,6 +1,6 @@
-import request from "@/utils/Request.ts";
-import type {PageResponseType} from "@/api/global/Type.ts";
-import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/SysRole.ts";
+import request from "@/utils/request.ts";
+import type {PageResponseType} from "@/api/global/type.ts";
+import type {SysRole, SysRoleDTO, SysRoleVO} from "@/api/system/role/type/sys-role.ts";
 
 // 分页查询列表
 export const queryPage = (data: SysRoleDTO) => {

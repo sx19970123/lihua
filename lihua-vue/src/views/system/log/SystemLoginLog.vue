@@ -185,7 +185,7 @@
 </template>
 
 <script setup lang="ts">
-import {initDict} from "@/utils/Dict"
+import {initDict} from "@/helpers/dict.ts"
 import {ref} from "vue";
 import {
   clearLoginLog,
@@ -193,14 +193,14 @@ import {
   excelLoginExport,
   queryLoginById,
   queryLoginPage
-} from "@/api/system/log/Log.ts";
+} from "@/api/system/log/log.ts";
 import {message} from "ant-design-vue";
 import DictTag from "@/components/dict-tag/index.vue";
 import TableSetting from "@/components/table-setting/index.vue";
-import type {SysLog, SysLogDTO} from "@/api/system/log/type/SysLog.ts";
+import type {SysLog, SysLogDTO} from "@/api/system/log/type/sys-log.ts";
 import type {ColumnsType} from "ant-design-vue/es/table/interface";
 import dayjs from "dayjs";
-import {download} from "@/utils/AttachmentDownload.ts";
+import {download} from "@/utils/attachment-download.ts";
 import Spin from "@/components/spin";
 
 const {sys_log_status, sys_client_type} = initDict("sys_log_status", "sys_client_type")

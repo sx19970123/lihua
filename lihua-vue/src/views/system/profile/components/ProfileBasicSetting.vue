@@ -92,16 +92,16 @@ import {useUserStore} from "@/stores/user";
 import AvatarModifier from "@/views/system/profile/components/AvatarModifier.vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {type FormInstance, message} from "ant-design-vue";
-import type {ProfileInfo} from "@/api/system/profile/type/SysProfile.ts";
-import {saveBasics, setDefaultDept} from "@/api/system/profile/Profile.ts";
-import {initDict} from "@/utils/Dict.ts"
-import {ResponseError} from "@/api/global/Type.ts";
+import type {ProfileInfo} from "@/api/system/profile/type/sys-profile.ts";
+import {saveBasics, setDefaultDept} from "@/api/system/profile/profile.ts";
+import {initDict} from "@/helpers/dict.ts"
+import {ResponseError} from "@/api/global/type.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import DynamicBorderInput from "@/components/dynamic-border-input/index.vue"
 import DynamicBorderSelect from "@/components/dynamic-border-select/index.vue"
 import SelectableCard from "@/components/selectable-card/index.vue"
-import {flattenTree} from "@/utils/Tree"
-import type {SysDept} from "@/api/system/dept/type/SysDept.ts";
+import {flattenTree} from "@/utils/tree.ts"
+import type {SysDept} from "@/api/system/dept/type/sys-dept.ts";
 
 const userStore = useUserStore()
 const {user_gender} = initDict('user_gender')

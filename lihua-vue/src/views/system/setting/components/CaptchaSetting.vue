@@ -18,11 +18,11 @@
 
 <script setup lang="ts">
 import {getCurrentInstance, onMounted, ref} from "vue";
-import type {SysSetting} from "@/api/system/setting/type/SysSetting.ts";
-import type {Captcha} from "@/api/system/setting/type/Captcha.ts";
+import type {SysSetting} from "@/api/system/setting/type/sys-setting.ts";
+import type {Captcha} from "@/api/system/setting/type/captcha.ts";
 import {message} from "ant-design-vue";
-import {isAdmin} from "@/utils/Auth.ts";
-import {save} from "@/api/system/setting/Setting.ts";
+import {isAdmin} from "@/helpers/auth.ts";
+import {save} from "@/api/system/setting/setting.ts";
 import {useSettingStore} from "@/stores/setting.ts";
 
 const settingStore = useSettingStore();

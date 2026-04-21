@@ -1,4 +1,4 @@
-import type {SysPost} from "@/api/system/post/type/SysPost.ts";
+import type {SysPost} from "@/api/system/post/type/sys-post.ts";
 
 export interface SysDept {
   /**
