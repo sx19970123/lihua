@@ -1,4 +1,4 @@
-package com.lihua.strategy.checkloginsetting;
+package com.lihua.strategy.postlogincheck;
 
 import com.lihua.security.model.LoginUserSession;
 import org.springframework.core.annotation.Order;
@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Order(2)
-public class CheckNewUserBasicInfoStrategyImpl implements CheckLoginSettingStrategy {
+public class PostNewUserBasicInfoStrategyImpl implements PostLoginCheckStrategy {
 
-    final String COMPONENT_NAME = "LoginSettingUserBasics";
+    final String COMPONENT_NAME = "PostLoginCheckUserBasics";
 
     @Override
-    public String checkSetting(LoginUserSession loginUserSession) {
+    public String check(LoginUserSession loginUserSession) {
         String registerType = loginUserSession.getUser().getRegisterType();
 
         if ("0".equals(registerType)) {

@@ -1,5 +1,5 @@
 <template>
-  <login-setting-base-component title="安全"
+  <post-login-check-base-component title="安全"
                                 description="为了确保您的账号安全，请修改密码"
                                 icon="LockOutlined"
                                 skip-msg="可在个人中心 - 安全设置进行设置"
@@ -33,11 +33,11 @@
         </a-form>
       </div>
     </template>
-  </login-setting-base-component>
+  </post-login-check-base-component>
 </template>
 
 <script setup lang="ts">
-import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
+import PostLoginCheckBaseComponent from "@/components/post-login-check/PostLoginCheckBaseComponent.vue";
 import {reactive, type Ref, useTemplateRef} from "vue";
 import type {Rule} from "ant-design-vue/es/form";
 import {useUserStore} from "@/stores/user.ts";

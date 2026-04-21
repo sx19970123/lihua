@@ -1,5 +1,5 @@
 <template>
-  <login-setting-base-component
+  <post-login-check-base-component
       title="基础信息"
       icon="UserOutlined"
       description="新用户首次登录需要录入基础信息"
@@ -34,11 +34,11 @@
         </a-form-item>
       </a-form>
     </template>
-  </login-setting-base-component>
+  </post-login-check-base-component>
 </template>
 
 <script setup lang="ts">
-import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
+import PostLoginCheckBaseComponent from "@/components/post-login-check/PostLoginCheckBaseComponent.vue";
 import {type FormInstance, message} from 'ant-design-vue';
 import {initDict} from "@/helpers/dict.ts";
 import {reactive, type Ref, ref, useTemplateRef} from "vue";

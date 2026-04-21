@@ -69,8 +69,9 @@
 import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
 import {inject, onMounted, reactive, type Ref, ref, useTemplateRef} from "vue";
 import token from "@/helpers/token.ts"
-import {initApp} from "@/appInit.ts";
-import {getLoginSetting, login} from "@/api/system/login/login.ts";
+import remember from "@/helpers/remember.ts"
+import {initApp} from "@/app-init.ts";
+import {login} from "@/api/system/login/login.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import {useRouter} from 'vue-router'
@@ -85,7 +86,7 @@ const emit = defineEmits(["changeComponent","showLoginSetting"])
 
 const router = useRouter()
 const loginLoading = ref<boolean>()
-const rememberMe = ref<boolean>(token.enableRememberMe())
+const rememberMe = ref<boolean>(remember.enableRememberMe())
 const verifyRef = useTemplateRef<InstanceType<typeof TianaiCaptcha>>("tianaiCaptchaRef")
 const registerUsername = inject<Ref<string|undefined>>("registerUsername")
 const usernameTip = ref<boolean>(false)
@@ -103,7 +104,7 @@ const loginForm = reactive<LoginFormType>({
 // 启用记住账号后赋值账号密码
 const initRememberMe = () => {
   if (rememberMe.value) {
-    const usernamePassword = token.getUsernamePassword()
+    const usernamePassword = remember.getUsernamePassword()
     loginForm.username = usernamePassword.username
     loginForm.password = usernamePassword.password
   }
@@ -125,7 +126,7 @@ const checkRegister = () => {
     loginForm.username = registerUsername.value
     loginForm.password = ""
     rememberMe.value = false
-    token.forgetMe()
+    remember.forgetMe()
 
     // 开启关闭自动带入用户名提示
     setTimeout(() => usernameTip.value = true, 900)
@@ -154,9 +155,9 @@ const userLogin = async (captchaVerification: string) => {
     token.setToken(resp.data);
     // 记住我设置
     if (rememberMe.value) {
-      token.rememberMe(loginForm.username, loginForm.password)
+      remember.rememberMe(loginForm.username, loginForm.password)
     } else {
-      token.forgetMe()
+      remember.forgetMe()
     }
 
     // 清除注册用户名

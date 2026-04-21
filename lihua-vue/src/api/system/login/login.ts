@@ -43,10 +43,10 @@ export const register = (username: string, password: string, confirmPassword: st
     })
 }
 
-// 登录后必要信息校验
-export const getLoginSetting = () => {
+// 获取登录后确认步骤
+export const getLoginNextStep = () => {
     return request<string[]>({
-        url: '/system/checkLoginSetting',
+        url: '/system/postLoginCheck',
         method: 'get',
     })
 }

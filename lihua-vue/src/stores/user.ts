@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {getLoginSetting, logout} from "@/api/system/login/login.ts";
+import {getLoginNextStep, logout} from "@/api/system/login/login.ts";
 import {saveTheme} from "@/api/system/profile/profile.ts";
 import token from "@/helpers/token.ts";
 import {message} from "ant-design-vue";
@@ -120,7 +120,7 @@ export const useUserStore = defineStore('user', {
         },
         // 用户登录后检查必要配置
         async checkUserAfterLogin(): Promise<string[]> {
-            const loginSettingResp= await getLoginSetting()
+            const loginSettingResp= await getLoginNextStep()
             if (loginSettingResp.code === 200) {
                 return loginSettingResp.data
             } else {

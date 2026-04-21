@@ -22,7 +22,7 @@
           <a-card class="login-card">
             <transition name="form" mode="out-in" v-show="showCard">
               <!-- 用户登录/注册等卡片内表单在这儿通过组件形式切换 -->
-              <component :is="activeComponent" @change-component="handleChangeComponent" @show-login-setting="startLoginSetting"/>
+              <component :is="activeComponent" @change-component="handleChangeComponent" @show-login-setting="startPostLoginCheck"/>
             </transition>
           </a-card>
         </transition>
@@ -30,10 +30,10 @@
     </a-flex>
     <!--    登录设置-->
     <transition name="setting" mode="out-in">
-      <login-setting :component-names="settingComponentNames"
+      <post-login-check :component-names="settingComponentNames"
                      v-if="showSetting"
                      @go-login="handleGoLogin"
-      ></login-setting>
+      ></post-login-check>
     </transition>
   </a-flex>
 
@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import {markRaw, onMounted, provide, ref} from "vue"
 import HeadThemeSwitch from "@/components/light-dark-switch/index.vue"
-import LoginSetting from "@/components/login-setting/index.vue"
+import PostLoginCheck from "@/components/post-login-check/index.vue"
 import UserRegister from "@/views/login/components/Register.vue"
 import UserLogin from "@/views/login/components/Login.vue"
 import settings from "@/settings"
@@ -91,13 +91,13 @@ const initChangeComponent = () => {
 }
 const {activeComponent, handleChangeComponent} = initChangeComponent()
 
-const initLoginSetting = () => {
+const initPostLoginCheck = () => {
   // 是否显示setting组件
   const showSetting = ref<boolean>(false)
   // setting组件名
   const settingComponentNames = ref<string[]>([])
   // 登录后配置
-  const startLoginSetting = (settingComponentNameList: string[]) => {
+  const startPostLoginCheck = (settingComponentNameList: string[]) => {
     if (settingComponentNameList && settingComponentNameList.length > 0) {
       showTitle.value = false
       showCard.value = false
@@ -124,11 +124,11 @@ const initLoginSetting = () => {
   return {
     showSetting,
     settingComponentNames,
-    startLoginSetting,
+    startPostLoginCheck,
     handleGoLogin
   }
 }
-const {showSetting, settingComponentNames, startLoginSetting, handleGoLogin} = initLoginSetting()
+const {showSetting, settingComponentNames, startPostLoginCheck, handleGoLogin} = initPostLoginCheck()
 
 // 显示卡片
 const handleShowCard = () => {

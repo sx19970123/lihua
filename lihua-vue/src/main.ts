@@ -43,10 +43,10 @@ for (let path in modules) {
     });
 }
 
-// 导入登录后配置组件
-const loginSettingComponents = import.meta.glob("./components/login-setting/*/*.vue")
-for (const path in loginSettingComponents) {
-    loginSettingComponents[path]().then((module: any) => {
+// 导入登录后信息检查配置相关组件
+const postLoginCheckComponents = import.meta.glob("./components/post-login-check/*/*.vue")
+for (const path in postLoginCheckComponents) {
+    postLoginCheckComponents[path]().then((module: any) => {
         if (module && module.default) {
             // 组件名
             const match = path.match(/\/([^/]+)\.vue$/)

@@ -4,7 +4,7 @@ import 'nprogress/nprogress.css'
 import {useUserStore} from "@/stores/user"
 import {useThemeStore} from "@/stores/theme";
 import token from "@/helpers/token.ts"
-import {initApp} from "@/appInit.ts";
+import {initApp} from "@/app-init.ts";
 import {hasRouteRole} from "@/helpers/auth.ts";
 import {closeConnect, connect} from "@/utils/web-socket.ts";
 

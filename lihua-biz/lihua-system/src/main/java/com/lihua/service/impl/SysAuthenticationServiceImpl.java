@@ -19,7 +19,7 @@ import com.lihua.service.SysAuthenticationService;
 import com.lihua.service.SysProfileService;
 import com.lihua.service.SysSettingService;
 import com.lihua.strategy.cacheloginuser.CacheLoginUserStrategy;
-import com.lihua.strategy.checkloginsetting.CheckLoginSettingStrategy;
+import com.lihua.strategy.postlogincheck.PostLoginCheckStrategy;
 import com.lihua.strategy.saveuserregister.SaveRegisterUserAssociatedStrategy;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +62,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     private List<SaveRegisterUserAssociatedStrategy> saveRegisterUserAssociatedStrategieList;
 
     @Resource
-    private List<CheckLoginSettingStrategy> checkLoginSettingStrategyList;
+    private List<PostLoginCheckStrategy> postLoginCheckStrategyList;
 
 
     @Override
@@ -73,19 +73,19 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
 
     @Override
-    public List<String> checkLoginSetting(LoginUserSession loginUserSession) {
+    public List<String> postLoginCheck(LoginUserSession loginUserSession) {
         // 需要进行登录后设置的组件名集合
-        List<String> loginSettingComponentNameList = new ArrayList<>();
+        List<String> componentNameList = new ArrayList<>();
 
         // 循环检查是否需要进行登录后配置
-        checkLoginSettingStrategyList.forEach(strategy -> {
-            String componentName = strategy.checkSetting(loginUserSession);
+        postLoginCheckStrategyList.forEach(strategy -> {
+            String componentName = strategy.check(loginUserSession);
             if (StringUtils.hasText(componentName)) {
-                loginSettingComponentNameList.add(componentName);
+                componentNameList.add(componentName);
             }
         });
 
-        return loginSettingComponentNameList;
+        return componentNameList;
     }
 
 

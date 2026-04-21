@@ -1,5 +1,5 @@
 <template>
-  <login-setting-base-component title="默认部门"
+  <post-login-check-base-component title="默认部门"
                                 description="请设置您的默认部门"
                                 icon="ApartmentOutlined"
                                 skip-msg="可在系统顶部栏设置"
@@ -11,11 +11,11 @@
     <template #content>
       <default-dept @dept-select="handleChangeDept" :show-dept-code="false"/>
     </template>
-  </login-setting-base-component>
+  </post-login-check-base-component>
 </template>
 <script setup lang="ts">
 
-import LoginSettingBaseComponent from "@/components/login-setting/LoginSettingBaseComponent.vue";
+import PostLoginCheckBaseComponent from "@/components/post-login-check/PostLoginCheckBaseComponent.vue";
 import DefaultDept from "@/components/default-dept-select/index.vue"
 import type {Ref} from "vue";
 import {message} from "ant-design-vue";

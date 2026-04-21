@@ -375,7 +375,7 @@ import {useSettingStore} from "@/stores/setting.ts";
 import {type BaseModalActiveType} from "@/api/global/type.ts";
 import {download} from "@/utils/attachment-download.ts";
 import {useUserStore} from "@/stores/user.ts";
-import {refreshApp} from "@/appInit.ts";
+import {refreshApp} from "@/app-init.ts";
 import {useRoute} from "vue-router";
 
 const easyTreeSelectRef = useTemplateRef<InstanceType<typeof EasyTreeSelect>>("easyTreeSelectRef")

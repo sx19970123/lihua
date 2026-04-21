@@ -69,9 +69,9 @@ public class SysAuthenticationController extends ApiResponseController {
      * 检查登录配置
      */
     @Operation(summary = "检查登录配置")
-    @GetMapping("checkLoginSetting")
-    public ApiResponseModel<List<String>> checkLoginSetting() {
-        return success(sysAuthenticationService.checkLoginSetting(LoginUserContext.getLoginUser()));
+    @GetMapping("postLoginCheck")
+    public ApiResponseModel<List<String>> postLoginCheck() {
+        return success(sysAuthenticationService.postLoginCheck(LoginUserContext.getLoginUser()));
     }
 
     /**
@@ -162,11 +162,5 @@ public class SysAuthenticationController extends ApiResponseController {
             return ((SecondaryVerificationApplication) imageCaptchaApplication).secondaryVerification(captchaVerification);
         }
         return false;
-    }
-
-
-    public static void main(String[] args) {
-        String s = SecurityUtils.encryptPassword("#D3mV$DjO9n^HzQkx1Be");
-        System.out.println(s);
     }
 }

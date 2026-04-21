@@ -1,6 +1,6 @@
 <template>
-  <div class="login-setting scrollbar">
-    <a-carousel class="login-setting-carousel" :dots="false" ref="carouselRef">
+  <div class="post-login-check scrollbar">
+    <a-carousel class="post-login-check-carousel" :dots="false" ref="carouselRef">
       <template v-for="(component,index) in componentList" :key="index">
 <!--        防止移动端滑动和pc端通过修改css直接显示到最后一步，只加载当前显示的组件，由transition实现切换动画，keep-alive记录上一页的值-->
         <transition :name="transitionType" mode="out-in" v-if="activeComponent === component">
@@ -31,8 +31,8 @@ const emits = defineEmits(['goLogin'])
 
 // 需要加载的设置项集合
 const componentList = [
-  'LoginSettingStart',
-  'LoginSettingComplete'
+  'PostLoginCheckStart',
+  'PostLoginCheckComplete'
 ]
 // 接收需要加载的配置项
 const props = defineProps<{
@@ -45,7 +45,7 @@ const userStore = useUserStore();
 // 走马灯组件ref
 const carouselRef = useTemplateRef<CarouselRef>("carouselRef")
 // 显示的组件
-const activeComponent = ref<string>("LoginSettingStart")
+const activeComponent = ref<string>(componentList[0])
 // 动画类型
 const transitionType = ref<'next'|'back'>('next')
 // 是否完成
@@ -88,19 +88,19 @@ const handleGoLogin = async () => {
 </script>
 
 <style scoped>
-.login-setting{
+.post-login-check{
   position: fixed;
   margin: auto;
   max-height: 100vh;
 }
-.login-setting-carousel {
+.post-login-check-carousel {
   width: 600px;
   border: none;
   border-radius: var(--lihua-radius-sm);
 }
 
 @media screen and (max-width: 600px) {
-  .login-setting-carousel {
+  .post-login-check-carousel {
     width: calc(100vw - var(--lihua-space-xl));
     margin: auto;
   }

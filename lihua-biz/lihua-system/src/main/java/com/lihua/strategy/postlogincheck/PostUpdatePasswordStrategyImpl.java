@@ -1,4 +1,4 @@
-package com.lihua.strategy.checkloginsetting;
+package com.lihua.strategy.postlogincheck;
 
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.model.dto.SysSettingDTO;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  */
 @Component
 @Order(1)
-public class CheckUpdatePasswordStrategyImpl implements CheckLoginSettingStrategy {
+public class PostUpdatePasswordStrategyImpl implements PostLoginCheckStrategy {
 
     @Resource
     private SysSettingService sysSettingService;
@@ -25,10 +25,10 @@ public class CheckUpdatePasswordStrategyImpl implements CheckLoginSettingStrateg
     @Resource
     private SysProfileService sysProfileService;
 
-    final String COMPONENT_NAME = "LoginSettingResetPassword";
+    final String COMPONENT_NAME = "PostLoginCheckResetPassword";
 
     @Override
-    public String checkSetting(LoginUserSession loginUserSession) {
+    public String check(LoginUserSession loginUserSession) {
 
         // 获取当前登录用户密码
         String password = sysProfileService.getPassword();

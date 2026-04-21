@@ -1,4 +1,4 @@
-package com.lihua.strategy.checkloginsetting;
+package com.lihua.strategy.postlogincheck;
 
 import com.lihua.security.model.CurrentDept;
 import com.lihua.security.model.LoginUserSession;
@@ -12,12 +12,12 @@ import java.util.List;
  */
 @Component
 @Order(3)
-public class CheckDefaultDeptStrategyImpl implements CheckLoginSettingStrategy {
+public class PostDefaultDeptStrategyImpl implements PostLoginCheckStrategy {
 
-    final String COMPONENT_NAME = "LoginSettingDefaultDept";
+    final String COMPONENT_NAME = "PostLoginCheckDefaultDept";
 
     @Override
-    public String checkSetting(LoginUserSession loginUserSession) {
+    public String check(LoginUserSession loginUserSession) {
         List<CurrentDept> deptList = loginUserSession.getDeptList();
 
         // 没有配置部门的用户

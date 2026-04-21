@@ -57,7 +57,7 @@ import UserAvatar from "@/components/user-avatar/index.vue"
 import {useUserStore} from "@/stores/user";
 import {useRoute, useRouter} from "vue-router";
 import {message} from "ant-design-vue";
-import {refreshApp} from "@/appInit.ts";
+import {refreshApp} from "@/app-init.ts";
 import {ref} from "vue";
 
 const userStore = useUserStore()
