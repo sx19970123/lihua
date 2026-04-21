@@ -474,7 +474,7 @@ const initCheckPassword = () => {
     userStore.handleLogout().finally(() => {
       screenLogout()
       unlock()
-      router.push('/login')
+      router.push('/authentication')
     })
   }
 

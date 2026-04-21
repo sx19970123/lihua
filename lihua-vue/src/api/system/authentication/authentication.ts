@@ -43,10 +43,17 @@ export const register = (username: string, password: string, confirmPassword: st
     })
 }
 
-// 获取登录后确认步骤
-export const getLoginNextStep = () => {
-    return request<string[]>({
-        url: '/system/postLoginCheck',
-        method: 'get',
+export const reloadData = () => {
+    return request({
+        url: '/system/reloadData',
+        method: 'post'
+    })
+}
+
+// 获取一次性令牌
+export const getOnceToken = () => {
+    return request<string>({
+        url: '/system/onceToken',
+        method: 'get'
     })
 }

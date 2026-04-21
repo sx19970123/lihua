@@ -71,7 +71,7 @@ import {inject, onMounted, reactive, type Ref, ref, useTemplateRef} from "vue";
 import token from "@/helpers/token.ts"
 import remember from "@/helpers/remember.ts"
 import {initApp} from "@/app-init.ts";
-import {login} from "@/api/system/login/login.ts";
+import {login} from "@/api/system/authentication/authentication.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {message} from "ant-design-vue";
 import {useRouter} from 'vue-router'

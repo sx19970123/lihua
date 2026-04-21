@@ -4,7 +4,7 @@ import router from "@/router";
 import Layout from "@/layout/index.vue";
 import IFrame from "@/components/iframe/index.vue";
 import MiddleView from "@/components/middle-view/index.vue";
-import type {RouterType} from "@/api/system/auth/type/auth-info-type.ts";
+import type {RouterType} from "@/api/system/profile/type/auth-info-type.ts";
 import {h} from "vue";
 import Icon from "@/components/icon/index.vue";
 import type {ItemType} from "ant-design-vue";

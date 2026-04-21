@@ -16,10 +16,8 @@ import com.lihua.security.model.LoginUserSession;
 import com.lihua.security.utils.JwtUtils;
 import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysAuthenticationService;
-import com.lihua.service.SysProfileService;
 import com.lihua.service.SysSettingService;
 import com.lihua.strategy.cacheloginuser.CacheLoginUserStrategy;
-import com.lihua.strategy.postlogincheck.PostLoginCheckStrategy;
 import com.lihua.strategy.saveuserregister.SaveRegisterUserAssociatedStrategy;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -47,9 +45,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     private SysSettingService sysSettingService;
 
     @Resource
-    private SysProfileService sysProfileService;
-
-    @Resource
     private SysUserMapper sysUserMapper;
 
     @Resource
@@ -61,33 +56,11 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Resource
     private List<SaveRegisterUserAssociatedStrategy> saveRegisterUserAssociatedStrategieList;
 
-    @Resource
-    private List<PostLoginCheckStrategy> postLoginCheckStrategyList;
-
-
     @Override
     public LoginUserSession login(SysLoginUserDTO loginUserDTO) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDTO.getUsername(), loginUserDTO.getPassword()));
         return (LoginUserSession) authenticate.getPrincipal();
     }
-
-
-    @Override
-    public List<String> postLoginCheck() {
-        // 需要进行登录后设置的组件名集合
-        List<String> componentNameList = new ArrayList<>();
-        LoginUserSession loginUser = LoginUserContext.getLoginUser();
-        // 循环检查是否需要进行登录后配置
-        postLoginCheckStrategyList.forEach(strategy -> {
-            String componentName = strategy.check(loginUser);
-            if (StringUtils.hasText(componentName)) {
-                componentNameList.add(componentName);
-            }
-        });
-
-        return componentNameList;
-    }
-
 
     @Override
     public String cacheLoginUserInfo(LoginUserSession loginUserSession) {

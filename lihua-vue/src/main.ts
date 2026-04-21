@@ -44,7 +44,7 @@ for (let path in modules) {
 }
 
 // 导入登录后信息检查配置相关组件
-const postLoginCheckComponents = import.meta.glob("./components/post-login-check/*/*.vue")
+const postLoginCheckComponents = import.meta.glob("./components/post-authentication-check/*/*.vue")
 for (const path in postLoginCheckComponents) {
     postLoginCheckComponents[path]().then((module: any) => {
         if (module && module.default) {

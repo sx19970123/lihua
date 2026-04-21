@@ -13,11 +13,6 @@ public interface SysAuthenticationService {
     LoginUserSession login(SysLoginUserDTO loginUserDTO);
 
     /**
-     * 登录后必要信息校验，对应于前端 components/login-setting 下的组件进行处理
-     */
-    List<String> postLoginCheck();
-
-    /**
      * 缓存用户信息
      * @param loginUserSession 登录用户缓存数据
      * @return redis缓存key

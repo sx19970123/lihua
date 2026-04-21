@@ -3,12 +3,17 @@ package com.lihua.controller;
 import com.lihua.common.enums.ResultCodeEnum;
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.utils.tree.TreeUtils;
 import com.lihua.entity.SysUser;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysUpdatePasswordDTO;
 import com.lihua.model.validation.ProfileValidation;
+import com.lihua.security.manager.LoginUserContext;
+import com.lihua.security.model.AuthInfo;
 import com.lihua.security.model.CurrentDept;
+import com.lihua.security.model.CurrentUser;
+import com.lihua.security.model.LoginUserSession;
 import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysProfileService;
 import com.lihua.service.SysSettingService;
@@ -18,6 +23,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "个人中心")
 @RestController
@@ -85,6 +92,35 @@ public class SysProfileController extends ApiResponseController {
     @PostMapping("default/{id}")
     public ApiResponseModel<CurrentDept> setDefaultDept(@PathVariable("id") String id) {
         return success(sysUserDeptService.setDefaultDept(id));
+    }
+
+    /**
+     * 检查登录配置
+     */
+    @Operation(summary = "检查登录配置")
+    @GetMapping("postLoginCheck")
+    public ApiResponseModel<List<String>> postLoginCheck() {
+        return success(sysProfileService.postLoginCheck());
+    }
+
+    /**
+     * 从 SecurityContextHolder 中获取用户信息返回
+     */
+    @Operation(summary = "获取当前登录用户信息")
+    @GetMapping("info")
+    public ApiResponseModel<AuthInfo> getUserInfo() {
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+        // 前端 store 用户数据
+        AuthInfo authInfo = new AuthInfo();
+        authInfo.setUserInfo(loginUserSession.getUser() != null ? loginUserSession.getUser() : new CurrentUser());
+        authInfo.setDepts(TreeUtils.buildTree(loginUserSession.getDeptList()));
+        authInfo.setPosts(loginUserSession.getPostList());
+        authInfo.setRoles(loginUserSession.getRoleList());
+        authInfo.setPermissions(loginUserSession.getPermissionList().stream().filter(item -> !item.startsWith("ROLE_")).toList());
+        authInfo.setRouters(loginUserSession.getRouterList());
+        authInfo.setViewTabs(loginUserSession.getViewTabList());
+        authInfo.setDefaultDept(LoginUserContext.getDefaultDept() != null ? LoginUserContext.getDefaultDept() : new CurrentDept());
+        return success(authInfo);
     }
 
     /**

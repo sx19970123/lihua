@@ -1,4 +1,4 @@
-import {getOnceToken} from "@/api/system/auth/auth.ts";
+import {getOnceToken} from "@/api/system/authentication/authentication.ts";
 import {createBrowserId} from "@/utils/browser-id.ts";
 
 // 连接

@@ -1,12 +1,11 @@
 import {defineStore} from "pinia";
-import {getLoginNextStep, logout} from "@/api/system/login/login.ts";
-import {saveTheme} from "@/api/system/profile/profile.ts";
+import {logout} from "@/api/system/authentication/authentication.ts";
+import {getLoginNextStep, saveTheme, queryAuthInfo} from "@/api/system/profile/profile.ts";
 import token from "@/helpers/token.ts";
 import {message} from "ant-design-vue";
-import {queryAuthInfo} from "@/api/system/auth/auth.ts";
 import {ResponseError, type ResponseType} from "@/api/global/type.ts";
 import type {AvatarType} from "@/api/system/profile/type/sys-profile.ts";
-import type {AuthInfoType, UserInfoType} from "@/api/system/auth/type/auth-info-type.ts";
+import type {AuthInfoType, UserInfoType} from "@/api/system/profile/type/auth-info-type.ts";
 import type {SysRole} from "@/api/system/role/type/sys-role.ts";
 import type {SysDept} from "@/api/system/dept/type/sys-dept.ts";
 import type {SysPost} from "@/api/system/post/type/sys-post.ts";
@@ -115,7 +114,7 @@ export const useUserStore = defineStore('user', {
         // 认证失效
         authenticationFailure(msg: string) {
             this.clearUserInfo()
-            router.push("/login")
+            router.push("/authentication")
             message.error(msg)
         },
         // 用户登录后检查必要配置

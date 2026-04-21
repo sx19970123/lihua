@@ -5,9 +5,8 @@ import {useViewTabsStore} from "@/stores/view-tabs.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import {useDictStore} from "@/stores/dict.ts";
 import {cloneDeep} from 'lodash-es'
-import {reloadData} from "@/api/system/auth/auth.ts";
+import {reloadData} from "@/api/system/authentication/authentication.ts";
 import {message} from "ant-design-vue";
-import {ResponseError} from "@/api/global/type.ts";
 import {type RouteLocationNormalizedLoaded} from "vue-router";
 
 /**

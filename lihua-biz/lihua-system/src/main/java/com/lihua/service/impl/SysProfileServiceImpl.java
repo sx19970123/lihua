@@ -15,6 +15,7 @@ import com.lihua.security.model.LoginUserSession;
 import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysProfileService;
 import com.lihua.service.SysUserService;
+import com.lihua.strategy.postlogincheck.PostLoginCheckStrategy;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,6 +40,9 @@ public class SysProfileServiceImpl implements SysProfileService {
 
     @Resource
     private RedisCacheManager redisCacheManager;
+
+    @Resource
+    private List<PostLoginCheckStrategy> postLoginCheckStrategyList;
 
     @Override
     public String saveBasics(SysUser sysUser) {
@@ -181,6 +186,21 @@ public class SysProfileServiceImpl implements SysProfileService {
         return currentUser.getId();
     }
 
+    @Override
+    public List<String> postLoginCheck() {
+        // 需要进行登录后设置的组件名集合
+        List<String> componentNameList = new ArrayList<>();
+        LoginUserSession loginUser = LoginUserContext.getLoginUser();
+        // 循环检查是否需要进行登录后配置
+        postLoginCheckStrategyList.forEach(strategy -> {
+            String componentName = strategy.check(loginUser);
+            if (StringUtils.hasText(componentName)) {
+                componentNameList.add(componentName);
+            }
+        });
+
+        return componentNameList;
+    }
 
     /**
      * 验证手机号

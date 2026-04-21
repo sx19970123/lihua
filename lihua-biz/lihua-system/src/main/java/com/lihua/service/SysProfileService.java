@@ -2,6 +2,7 @@ package com.lihua.service;
 
 import com.lihua.entity.SysUser;
 import com.lihua.model.dto.SysCheckPasswordDTO;
+import java.util.List;
 
 public interface SysProfileService {
 
@@ -34,4 +35,9 @@ public interface SysProfileService {
      * 校验密码
      */
     Boolean checkPassword(SysCheckPasswordDTO sysCheckPasswordDTO);
+
+    /**
+     * 登录后必要信息校验，对应于前端 components/login-setting 下的组件进行处理
+     */
+    List<String> postLoginCheck();
 }
