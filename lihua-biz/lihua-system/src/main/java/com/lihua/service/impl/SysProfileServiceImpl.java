@@ -191,6 +191,7 @@ public class SysProfileServiceImpl implements SysProfileService {
         // 需要进行登录后设置的组件名集合
         List<String> componentNameList = new ArrayList<>();
         LoginUserSession loginUser = LoginUserContext.getLoginUser();
+        loginUser.getUser().setPassword(getPassword());
         // 循环检查是否需要进行登录后配置
         postLoginCheckStrategyList.forEach(strategy -> {
             String componentName = strategy.check(loginUser);
