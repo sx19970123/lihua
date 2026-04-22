@@ -148,7 +148,6 @@ const userLogin = async (captchaVerification: string) => {
     // 登录
     const resp = await login(loginForm.username, loginForm.password, captchaVerification);
     if (resp.code !== 200) {
-      message.error(resp.msg)
       return
     }
     // 设置token
@@ -179,7 +178,6 @@ const userLogin = async (captchaVerification: string) => {
     }
   } catch (e) {
     token.removeToken()
-    message.error("登录失败")
     console.error(e)
   } finally {
     loginLoading.value = false
