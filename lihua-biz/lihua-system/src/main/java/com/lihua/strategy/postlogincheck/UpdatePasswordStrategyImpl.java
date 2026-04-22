@@ -16,12 +16,12 @@ import java.time.LocalDateTime;
  */
 @Component
 @Order(1)
-public class PostUpdatePasswordStrategyImpl implements PostLoginCheckStrategy {
+public class UpdatePasswordStrategyImpl implements PostLoginCheckStrategy {
 
     @Resource
     private SysSettingService sysSettingService;
 
-    final String COMPONENT_NAME = "PostLoginCheckResetPassword";
+    final String COMPONENT_NAME = "UserSetupResetPassword";
 
     @Override
     public String check(LoginUserSession loginUserSession) {

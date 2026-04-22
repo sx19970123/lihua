@@ -1,5 +1,5 @@
 <template>
-  <post-login-check-base-component title="完 成"
+  <user-setup-base-component title="完 成"
                                 icon="CheckCircleOutlined"
                                 mainBtnTitle="进入系统"
                                 description="一切就绪！点击下方按钮进入系统。"
@@ -11,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-import PostLoginCheckBaseComponent from "@/components/post-login-check/PostLoginCheckBaseComponent.vue";
-
+import UserSetupBaseComponent from "@/components/user-setup/UserSetupBaseComponent.vue";
 const emits = defineEmits(['complete'])
 </script>

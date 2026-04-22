@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {logout} from "@/api/system/authentication/authentication.ts";
-import {getLoginNextStep, saveTheme, queryAuthInfo} from "@/api/system/profile/profile.ts";
+import {saveTheme, queryAuthInfo} from "@/api/system/profile/profile.ts";
 import token from "@/helpers/token.ts";
 import {message} from "ant-design-vue";
 import {ResponseError, type ResponseType} from "@/api/global/type.ts";
@@ -116,15 +116,6 @@ export const useUserStore = defineStore('user', {
             this.clearUserInfo()
             router.push("/authentication")
             message.error(msg)
-        },
-        // 用户登录后检查必要配置
-        async checkUserAfterLogin(): Promise<string[]> {
-            const loginSettingResp= await getLoginNextStep()
-            if (loginSettingResp.code === 200) {
-                return loginSettingResp.data
-            } else {
-                throw new Error(loginSettingResp.msg)
-            }
         },
         /**
          * 清空用户信息

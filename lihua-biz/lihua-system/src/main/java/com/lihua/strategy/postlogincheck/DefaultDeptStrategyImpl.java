@@ -12,9 +12,9 @@ import java.util.List;
  */
 @Component
 @Order(3)
-public class PostDefaultDeptStrategyImpl implements PostLoginCheckStrategy {
+public class DefaultDeptStrategyImpl implements PostLoginCheckStrategy {
 
-    final String COMPONENT_NAME = "PostLoginCheckDefaultDept";
+    final String COMPONENT_NAME = "UserSetupDefaultDept";
 
     @Override
     public String check(LoginUserSession loginUserSession) {

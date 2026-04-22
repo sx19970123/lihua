@@ -1,6 +1,6 @@
 <template>
-  <div class="post-login-check scrollbar">
-    <a-carousel class="post-login-check-carousel" :dots="false" ref="carouselRef">
+  <div class="user-setup scrollbar">
+    <a-carousel class="user-setup-carousel" :dots="false" ref="carouselRef">
       <template v-for="(component,index) in componentList" :key="index">
 <!--        防止移动端滑动和pc端通过修改css直接显示到最后一步，只加载当前显示的组件，由transition实现切换动画，keep-alive记录上一页的值-->
         <transition :name="transitionType" mode="out-in" v-if="activeComponent === component">
@@ -10,29 +10,28 @@
                        @skip="handleSkip"
                        @next="handleNext"
                        @complete="handleComplete"
-                       @goLogin="handleGoLogin"
+                       @go-login="handleGoLogin"
             />
           </keep-alive>
         </transition>
       </template>
     </a-carousel>
   </div>
-
 </template>
 
 <script setup lang="ts">
 import {ref, useTemplateRef} from "vue";
 import type {CarouselRef} from "ant-design-vue/es/carousel";
 import {useUserStore} from "@/stores/user.ts";
-import Token from "@/helpers/token.ts";
+import userSetup from "@/helpers/user-setup.ts"
 import router from "@/router";
 
 const emits = defineEmits(['goLogin'])
 
 // 需要加载的设置项集合
 const componentList = [
-  'PostLoginCheckStart',
-  'PostLoginCheckComplete'
+  'UserSetupStart',
+  'UserSetupComplete'
 ]
 // 接收需要加载的配置项
 const props = defineProps<{
@@ -60,7 +59,9 @@ const handleBack = () => {
 // 下一页
 const handleNext = (loading:boolean) => {
   if (!loading) {
-    activeComponent.value = componentList[componentList.indexOf(activeComponent.value) + 1]
+    const component = activeComponent.value
+    userSetup.removeDataItem(component)
+    activeComponent.value = componentList[componentList.indexOf(component) + 1]
     transitionType.value = 'next'
     carouselRef.value?.next()
   }
@@ -73,9 +74,9 @@ const handleSkip = (loading:boolean) => {
 
 // 完成
 const handleComplete = () => {
-  isComplete.value = true
-  Token.setLoginSettingResult()
   setTimeout(() => router.push("/index"), 200)
+  isComplete.value = true
+  userSetup.clearData()
 }
 
 // 退回登录
@@ -88,19 +89,19 @@ const handleGoLogin = async () => {
 </script>
 
 <style scoped>
-.post-login-check{
+.user-setup{
   position: fixed;
   margin: auto;
   max-height: 100vh;
 }
-.post-login-check-carousel {
+.user-setup-carousel {
   width: 600px;
   border: none;
   border-radius: var(--lihua-radius-sm);
 }
 
 @media screen and (max-width: 600px) {
-  .post-login-check-carousel {
+  .user-setup-carousel {
     width: calc(100vw - var(--lihua-space-xl));
     margin: auto;
   }

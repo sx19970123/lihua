@@ -91,9 +91,9 @@ const routers = [
       }
     ],
   },
-  // authentication
+  // login
   {
-    path: '/authentication',
+    path: '/login',
     name: 'Login',
     component: () => import("@/views/login/index.vue")
   },

@@ -62,9 +62,9 @@ export const queryAuthInfo = () => {
 }
 
 /**
- * 获取登录后确认步骤
+ * 获取登录后用户数据校验结果
  */
-export const getLoginNextStep = () => {
+export const queryPostLoginCheckData = () => {
     return request<string[]>({
         url: '/system/profile/postLoginCheck',
         method: 'get',

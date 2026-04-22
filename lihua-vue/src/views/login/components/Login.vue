@@ -66,23 +66,23 @@
 </template>
 
 <script setup lang="ts">
-import TianaiCaptcha from "@/components/tianai-captcha/index.vue";
-import {inject, onMounted, reactive, type Ref, ref, useTemplateRef} from "vue";
+import TianaiCaptcha from "@/components/tianai-captcha/index.vue"
+import {inject, onMounted, reactive, type Ref, ref, useTemplateRef} from "vue"
 import token from "@/helpers/token.ts"
 import remember from "@/helpers/remember.ts"
-import {initApp} from "@/app-init.ts";
-import {login} from "@/api/system/authentication/authentication.ts";
-import type {Rule} from "ant-design-vue/es/form";
-import {message} from "ant-design-vue";
+import userSetup from "@/helpers/user-setup.ts"
+import {initApp} from "@/app-init.ts"
+import {login} from "@/api/system/authentication/authentication.ts"
+import type {Rule} from "ant-design-vue/es/form"
+import {message} from "ant-design-vue"
 import {useRouter} from 'vue-router'
-import {useSettingStore} from "@/stores/setting.ts";
-import {useUserStore} from "@/stores/user.ts";
+import {useSettingStore} from "@/stores/setting.ts"
+import {queryPostLoginCheckData} from "@/api/system/profile/profile.ts"
+
 // 系统设置
 const settingStore = useSettingStore();
-// 用户
-const userStore = useUserStore();
 
-const emit = defineEmits(["changeComponent","showLoginSetting"])
+const emit = defineEmits(["changeComponent","startUserSetup"])
 
 const router = useRouter()
 const loginLoading = ref<boolean>()
@@ -163,22 +163,25 @@ const userLogin = async (captchaVerification: string) => {
     // 清除注册用户名
     clearRegisterUsername()
 
-    // 检查是否需要登录后设置
-    const data = await userStore.checkUserAfterLogin()
-    if (data && data.length === 0) {
-      message.success("登录成功")
-      await router.push("/index");
-    } else {
-      await initApp()
-      // 开始登录后配置
-      emit("showLoginSetting", data)
+    // 登录后用户数据校验
+    const loginCheckResp = await queryPostLoginCheckData()
+    if (loginCheckResp.code === 200) {
+      const checkItem = loginCheckResp.data
+      if (checkItem.length === 0) {
+        userSetup.clearData()
+        message.success("登录成功")
+        await router.push("/index");
+      } else {
+        await initApp()
+        userSetup.setData(checkItem)
+        emit("startUserSetup", checkItem)
+      }
     }
   } catch (e) {
     token.removeToken()
     message.error("登录失败")
     console.error(e)
   } finally {
-    token.removeLoginSettingResult()
     loginLoading.value = false
   }
 }

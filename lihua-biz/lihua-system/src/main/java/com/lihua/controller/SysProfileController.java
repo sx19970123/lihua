@@ -94,10 +94,7 @@ public class SysProfileController extends ApiResponseController {
         return success(sysUserDeptService.setDefaultDept(id));
     }
 
-    /**
-     * 检查登录配置
-     */
-    @Operation(summary = "检查登录配置")
+    @Operation(summary = "登录后用户数据校验")
     @GetMapping("postLoginCheck")
     public ApiResponseModel<List<String>> postLoginCheck() {
         return success(sysProfileService.postLoginCheck());

@@ -37,7 +37,8 @@ public interface SysProfileService {
     Boolean checkPassword(SysCheckPasswordDTO sysCheckPasswordDTO);
 
     /**
-     * 登录后必要信息校验，对应于前端 components/login-setting 下的组件进行处理
+     * 登录后用户数据校验
+     * 返回用于完善信息的前端组件名称
      */
     List<String> postLoginCheck();
 }

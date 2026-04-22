@@ -3,7 +3,7 @@ import {useStorage} from "@vueuse/core";
 
 const USERNAME_KEY: string = "lihua_username"
 const PASSWORD_KEY: string = "lihua_password"
-const REMEMBER_ME_KEY: string = "lihua_rememberMe"
+const REMEMBER_ME_KEY: string = "lihua_remember_me"
 
 const usernameStorage = useStorage<null | string>(USERNAME_KEY, null);
 const passwordStorage = useStorage<null | string>(PASSWORD_KEY, null);

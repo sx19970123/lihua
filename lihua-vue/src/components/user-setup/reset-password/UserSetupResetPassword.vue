@@ -1,12 +1,12 @@
 <template>
-  <post-login-check-base-component title="安全"
-                                description="为了确保您的账号安全，请修改密码"
-                                icon="LockOutlined"
-                                skip-msg="可在个人中心 - 安全设置进行设置"
-                                :skip="false"
-                                @next="handleNext"
-                                @skip="handleSkip"
-                                @back="emits('back')"
+  <user-setup-base-component title="安全"
+                            description="为了确保您的账号安全，请修改密码"
+                            icon="LockOutlined"
+                            skip-msg="可在个人中心 - 安全设置进行设置"
+                            :skip="false"
+                            @next="handleNext"
+                            @skip="handleSkip"
+                            @back="emits('back')"
   >
     <template #content>
       <div style="width: 280px">
@@ -33,21 +33,18 @@
         </a-form>
       </div>
     </template>
-  </post-login-check-base-component>
+  </user-setup-base-component>
 </template>
 
 <script setup lang="ts">
-import PostLoginCheckBaseComponent from "@/components/post-login-check/PostLoginCheckBaseComponent.vue";
+import UserSetupBaseComponent from "@/components/user-setup/UserSetupBaseComponent.vue";
 import {reactive, type Ref, useTemplateRef} from "vue";
 import type {Rule} from "ant-design-vue/es/form";
-import {useUserStore} from "@/stores/user.ts";
 import {type FormInstance, message} from "ant-design-vue";
 import PasswordInput from "@/components/password-input/index.vue";
-import {ResponseError} from "@/api/global/type.ts";
 import {updatePassword} from "@/api/system/profile/profile.ts";
 
 const resetPasswordRef = useTemplateRef<FormInstance>("resetPasswordRef")
-const userStore = useUserStore()
 // 向外抛出函数
 const emits = defineEmits(['back', 'skip', 'next'])
 
@@ -92,7 +89,6 @@ const rules: Record<string, Rule[]> = {
   ]
 }
 
-
 // 修改密码后进入下一步
 const handleNext = async (loading:Ref<boolean>) => {
   await resetPasswordRef.value?.validate()
@@ -105,16 +101,9 @@ const handleNext = async (loading:Ref<boolean>) => {
     } else {
       message.error(resp.msg)
     }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
-    }
   } finally {
     loading.value = false
   }
-
 }
 // 跳过
 const handleSkip = (loading:Ref<boolean>) => {

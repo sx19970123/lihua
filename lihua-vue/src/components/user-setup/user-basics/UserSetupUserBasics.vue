@@ -1,5 +1,5 @@
 <template>
-  <post-login-check-base-component
+  <user-setup-base-component
       title="基础信息"
       icon="UserOutlined"
       description="新用户首次登录需要录入基础信息"
@@ -34,11 +34,11 @@
         </a-form-item>
       </a-form>
     </template>
-  </post-login-check-base-component>
+  </user-setup-base-component>
 </template>
 
 <script setup lang="ts">
-import PostLoginCheckBaseComponent from "@/components/post-login-check/PostLoginCheckBaseComponent.vue";
+import UserSetupBaseComponent from "@/components/user-setup/UserSetupBaseComponent.vue";
 import {type FormInstance, message} from 'ant-design-vue';
 import {initDict} from "@/helpers/dict.ts";
 import {reactive, type Ref, ref, useTemplateRef} from "vue";
@@ -46,7 +46,6 @@ import type {ProfileInfo} from "@/api/system/profile/type/sys-profile.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {saveBasics} from "@/api/system/profile/profile.ts";
 import {useUserStore} from "@/stores/user.ts";
-import {ResponseError} from "@/api/global/type.ts";
 
 const userStore = useUserStore()
 const {user_gender} = initDict("user_gender")
@@ -109,12 +108,6 @@ const handleNext = async (loading:Ref<boolean>) => {
       emits('next', loading.value)
     } else {
       message.warn(resp.msg)
-    }
-  } catch (e) {
-    if (e instanceof ResponseError) {
-      message.error(e.msg)
-    } else {
-      console.error(e)
     }
   } finally {
     loading.value = false

@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Order(2)
-public class PostNewUserBasicInfoStrategyImpl implements PostLoginCheckStrategy {
+public class UserBasicInfoStrategyImpl implements PostLoginCheckStrategy {
 
-    final String COMPONENT_NAME = "PostLoginCheckUserBasics";
+    final String COMPONENT_NAME = "UserSetupUserBasics";
 
     @Override
     public String check(LoginUserSession loginUserSession) {
