@@ -72,15 +72,6 @@ public class SysAuthenticationController extends ApiResponseController {
     }
 
     /**
-     * 检查用户名是否重复
-     */
-    @Operation(summary = "检查用户名是否重复")
-    @PostMapping("checkUserName/{username}")
-    public ApiResponseModel<Boolean> checkUserName(@PathVariable("username") String username) {
-        return success(sysAuthenticationService.checkUserName(username));
-    }
-
-    /**
      * 用户注册
      */
     @Operation(summary = "用户注册")

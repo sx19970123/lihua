@@ -11,8 +11,6 @@ import com.lihua.common.utils.collection.CollectionUtils;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.*;
 import com.lihua.excel.exception.ExcelImportException;
-import com.lihua.mapper.SysDeptMapper;
-import com.lihua.mapper.SysRoleMapper;
 import com.lihua.mapper.SysUserMapper;
 import com.lihua.model.dto.ResetPasswordDTO;
 import com.lihua.model.dto.SysUserDTO;
@@ -28,7 +26,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -48,15 +45,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Resource
     private SysUserDeptService sysUserDeptService;
-
-    @Resource
-    private SysPostService sysPostService;
-
-    @Resource
-    private SysRoleMapper sysRoleMapper;
-
-    @Resource
-    private SysDeptMapper sysDeptMapper;
 
     @Resource
     private SysSettingService sysSettingService;
@@ -122,6 +110,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             sysUserVO.setDefaultDeptId(!list.isEmpty() ? list.get(0) : null);
         }
         return sysUserVO;
+    }
+
+    @Override
+    public boolean checkUserName(String username) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysUser::getUsername, username);
+        return !sysUserMapper.exists(queryWrapper);
+    }
+
+    @Override
+    public boolean checkPhoneNumber(String phoneNumber) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysUser::getPhoneNumber, phoneNumber);
+        return !sysUserMapper.exists(queryWrapper);
+    }
+
+    @Override
+    public boolean checkEmail(String email) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysUser::getEmail, email);
+        return !sysUserMapper.exists(queryWrapper);
     }
 
     @Override
@@ -273,8 +282,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     @Override
     public List<String> queryAllUserIds() {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().select(SysUser::getId)
-                .eq(SysUser::getDelFlag, "0");
+        queryWrapper.lambda().select(SysUser::getId).eq(SysUser::getDelFlag, "0");
         return sysUserMapper.selectList(queryWrapper).stream().map(SysUser::getId).toList();
     }
 
@@ -309,7 +317,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     // 新增用户
     private String insert(SysUser sysUser) {
-
         LocalDateTime now = DateUtils.now();
         // 密码加密
         sysUser.setPassword(SecurityUtils.encryptPassword(sysUser.getPassword()));

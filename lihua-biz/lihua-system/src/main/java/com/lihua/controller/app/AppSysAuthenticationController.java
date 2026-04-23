@@ -20,7 +20,6 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-
 /**
  * 用户身份验证/授权/登录数据获取/注册
  */
@@ -87,15 +86,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
     public ApiResponseModel<String> reloadData() {
         sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser());
         return success();
-    }
-
-    /**
-     * 检查用户名是否重复
-     */
-    @Operation(summary = "检查用户名是否重复")
-    @PostMapping("checkUserName/{username}")
-    public ApiResponseModel<Boolean> checkUserName(@PathVariable("username") String username) {
-        return success(sysAuthenticationService.checkUserName(username));
     }
 
     /**

@@ -20,6 +20,30 @@ export const queryById = (id: string) => {
     })
 }
 
+// 检查用户名是否可用
+export const checkUserName = (username: string) => {
+    return request<boolean>({
+        url: 'system/user/checkUserName/' + username,
+        method: 'get'
+    })
+}
+
+// 检查用户名是否可用
+export const checkPhoneNumber = (phoneNumber: string) => {
+    return request<boolean>({
+        url: 'system/user/checkPhoneNumber/' + phoneNumber,
+        method: 'get'
+    })
+}
+
+// 检查用户名是否可用
+export const checkEmail = (email: string) => {
+    return request<boolean>({
+        url: 'system/user/checkEmail/' + email,
+        method: 'get'
+    })
+}
+
 // 保存用户信息
 export const save = (data: SysUser) => {
     return request({

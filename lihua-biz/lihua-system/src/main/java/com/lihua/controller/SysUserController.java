@@ -23,7 +23,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +46,24 @@ public class SysUserController extends ApiResponseController {
     @GetMapping("{id}")
     public ApiResponseModel<SysUserVO> queryById(@PathVariable("id") String id) {
         return success(sysUserService.queryById(id));
+    }
+
+    @Operation(summary = "检查用户名是否重复")
+    @GetMapping("checkUserName/{username}")
+    public ApiResponseModel<Boolean> checkUserName(@PathVariable("username") String username) {
+        return success(sysUserService.checkUserName(username));
+    }
+
+    @Operation(summary = "检查手机号码是否重复")
+    @GetMapping("checkPhoneNumber/{phoneNumber}")
+    public ApiResponseModel<Boolean> checkPhoneNumber(@PathVariable("phoneNumber") String phoneNumber) {
+        return success(sysUserService.checkPhoneNumber(phoneNumber));
+    }
+
+    @Operation(summary = "检查邮箱是否重复")
+    @GetMapping("checkEmail/{email}")
+    public ApiResponseModel<Boolean> checkEmail(@PathVariable("email") String email) {
+        return success(sysUserService.checkEmail(email));
     }
 
     @Operation(summary = "保存用户数据")

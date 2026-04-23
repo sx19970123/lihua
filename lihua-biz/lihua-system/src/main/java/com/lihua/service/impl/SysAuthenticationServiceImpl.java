@@ -1,6 +1,5 @@
 package com.lihua.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysUser;
@@ -17,6 +16,7 @@ import com.lihua.security.utils.JwtUtils;
 import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysAuthenticationService;
 import com.lihua.service.SysSettingService;
+import com.lihua.service.SysUserService;
 import com.lihua.strategy.cacheloginuser.CacheLoginUserStrategy;
 import com.lihua.strategy.saveuserregister.SaveRegisterUserAssociatedStrategy;
 import jakarta.annotation.Resource;
@@ -37,6 +37,9 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
 
     @Resource
     private AuthenticationManager authenticationManager;
+
+    @Resource
+    private SysUserService sysUserService;
 
     @Resource
     private SysRoleMapper sysRoleMapper;
@@ -79,13 +82,6 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     }
 
     @Override
-    public boolean checkUserName(String username) {
-        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(SysUser::getUsername, username);
-        return !sysUserMapper.exists(queryWrapper);
-    }
-
-    @Override
     @Transactional
     public String register(String username, String password) {
 
@@ -96,7 +92,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         }
 
         // 校验用户名
-        boolean checked = checkUserName(username);
+        boolean checked = sysUserService.checkUserName(username);
         if (!checked) {
             throw new ServiceException("该用户名已存在");
         }

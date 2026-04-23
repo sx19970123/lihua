@@ -12,10 +12,10 @@
         <a-form-item name="nickname">
           <a-input class="form-item-width" placeholder="请输入用户昵称" v-model:value="profileInfo.nickname" allow-clear></a-input>
         </a-form-item>
-        <a-form-item name="phoneNumber">
+        <a-form-item name="phoneNumber" validate-first>
           <a-input class="form-item-width" placeholder="请输入手机号码（非必填）" v-model:value="profileInfo.phoneNumber" allow-clear></a-input>
         </a-form-item>
-        <a-form-item name="email">
+        <a-form-item name="email" validate-first>
           <a-auto-complete class="form-item-width" placeholder="请输入电子邮箱（非必填）"
                            v-model:value="profileInfo.email"
                            @search="emailHandleSearch"
@@ -46,6 +46,7 @@ import type {ProfileInfo} from "@/api/system/profile/type/sys-profile.ts";
 import type {Rule} from "ant-design-vue/es/form";
 import {saveBasics} from "@/api/system/profile/profile.ts";
 import {useUserStore} from "@/stores/user.ts";
+import {checkEmail, checkPhoneNumber} from "@/api/system/user/user.ts";
 
 const userStore = useUserStore()
 const {user_gender} = initDict("user_gender")
@@ -59,6 +60,38 @@ const init = () => {
     gender: '2'
   })
 
+  // 检查手机号码是否存在
+  const handleCheckPhoneNumber = async (_rule: Rule, value: string) => {
+    if (value) {
+      const resp = await checkPhoneNumber(value)
+      if (resp.code === 200) {
+        if (!resp.data) {
+          return Promise.reject('该手机号已存在')
+        } else {
+          return Promise.resolve();
+        }
+      } else {
+        return Promise.reject(resp.msg)
+      }
+    }
+  }
+
+  // 检查邮箱是否存在
+  const handleCheckEmail = async (_rule: Rule, value: string) => {
+    if (value) {
+      const resp = await checkEmail(value)
+      if (resp.code === 200) {
+        if (!resp.data) {
+          return Promise.reject('该邮箱已存在')
+        } else {
+          return Promise.resolve();
+        }
+      } else {
+        return Promise.reject(resp.msg)
+      }
+    }
+  }
+
   const userRoles = reactive<Record<string,Rule[]> >({
     nickname: [
       { required: true , message: '用户昵称不能为空'},
@@ -68,12 +101,12 @@ const init = () => {
       { required: true , message: '用户性别不能为空'}
     ],
     email: [
-      { required: false},
-      { pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, message: '请输入正确的邮箱'}
+      { pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, message: '请输入正确的邮箱', trigger: 'blur'},
+      {validator: handleCheckEmail, trigger: "blur"}
     ],
     phoneNumber: [
-      { required: false},
-      { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码'}
+      { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur'},
+      {validator: handleCheckPhoneNumber, trigger: "blur"}
     ]
   })
 

@@ -39,5 +39,10 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-base-doc</artifactId>
         </dependency>
+        <!--        web接口-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-web</artifactId>
+        </dependency>
     </dependencies>
 </project>

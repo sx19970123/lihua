@@ -21,6 +21,21 @@ public interface SysUserService {
     SysUserVO queryById(String id);
 
     /**
+     * 检查用户名是否重复
+     */
+    boolean checkUserName(String username);
+
+    /**
+     * 检查手机号是否重复
+     */
+    boolean checkPhoneNumber(String phoneNumber);
+
+    /**
+     * 检查邮箱是否重复
+     */
+    boolean checkEmail(String email);
+
+    /**
      * 用户信息保存
      */
     String save(SysUserDTO sysUserDTO);

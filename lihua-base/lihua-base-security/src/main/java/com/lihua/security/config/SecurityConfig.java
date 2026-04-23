@@ -57,7 +57,7 @@ public class SecurityConfig {
                         "/system/publicKey/**",                         // 获取公钥
                         "/system/attachment/storage/download/**",       // 附件下载
                         "/system/setting/GrayModelSetting",             // 灰色模式设置
-                        "/system/checkUserName/**",                     // 检查用户名
+                        "/system/user/checkUserName/**",                // 检查用户名
                         "/system/setting/base/**",                      // 基础设置
                         "/system/register/**"                           // 注册
                 ).permitAll()

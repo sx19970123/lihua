@@ -27,11 +27,6 @@ public interface SysAuthenticationService {
     String cacheAndCreateToken(LoginUserSession loginUserSession);
 
     /**
-     * 检查用户名是否重复
-     */
-    boolean checkUserName(String username);
-
-    /**
      * 用户注册
      */
     String register(String username, String password);
