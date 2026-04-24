@@ -3,7 +3,7 @@ import request from "@/utils/request.ts";
 // 用户登录
 export const login = (username: string, password: string, captchaVerification: string) => {
     return request<string>({
-        url: '/system/login',
+        url: '/system/auth/login',
         method: 'post',
         data: {
             username,
@@ -24,7 +24,7 @@ export const logout = () => {
 // 用户注册
 export const register = (username: string, password: string, confirmPassword: string, captchaVerification: string) => {
     return request<string>({
-        url: '/system/register',
+        url: '/system/auth/register',
         method: 'post',
         data: {
             username: username,
@@ -37,7 +37,7 @@ export const register = (username: string, password: string, confirmPassword: st
 
 export const reloadData = () => {
     return request({
-        url: '/system/reloadData',
+        url: '/system/auth/reloadData',
         method: 'post'
     })
 }
@@ -45,7 +45,7 @@ export const reloadData = () => {
 // 获取一次性令牌
 export const getOnceToken = () => {
     return request<string>({
-        url: '/system/onceToken',
+        url: '/system/auth/onceToken',
         method: 'get'
     })
 }

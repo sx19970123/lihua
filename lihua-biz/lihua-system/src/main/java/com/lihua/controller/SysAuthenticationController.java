@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Tag(name = "身份验证、注册接口")
 @RestController
-@RequestMapping("system")
+@RequestMapping("system/auth")
 public class SysAuthenticationController extends ApiResponseController {
 
     @Resource

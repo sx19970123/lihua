@@ -53,22 +53,20 @@ public class SecurityConfig {
                 .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
                 // 后台接口配置
                 .requestMatchers(
-                        "/system/login",                                // 登录
-                        "/system/publicKey/**",                         // 获取公钥
-                        "/system/attachment/storage/download/**",       // 附件下载
-                        "/system/setting/GrayModelSetting",             // 灰色模式设置
-                        "/system/user/checkUserName/**",                // 检查用户名
-                        "/system/setting/base/**",                      // 基础设置
-                        "/system/register/**"                           // 注册
+                        "/system/auth/login",                            // 登录
+                        "/system/auth/register/**",                      // 注册
+                        "/system/user/checkUserName/**",                 // 检查用户名
+                        "/system/attachment/storage/download/**",        // 附件下载
+                        "/system/setting/GrayModelSetting",              // 灰色模式设置
+                        "/system/setting/base/**"                        // 基础设置
                 ).permitAll()
                 // app接口配置
                 .requestMatchers(
-                        "/app/system/login",                                // 登录
-                        "/app/system/publicKey/**",                         // 获取公钥
+                        "/app/system/auth/login",                           // 登录
+                        "/app/system/auth/register/**",                     // 注册
+                        "/app/system/user/checkUserName/**",                // 检查用户名
                         "/app/system/attachment/storage/download/**",       // 附件下载
-                        "/app/system/checkUserName/**",                     // 检查用户名
-                        "/app/system/setting/base/**",                      // 基础设置
-                        "/app/system/register/**"                           // 注册
+                        "/app/system/setting/base/**"                       // 基础设置
                 ).permitAll()
                 // 系统其他接口配置
                 .requestMatchers(
