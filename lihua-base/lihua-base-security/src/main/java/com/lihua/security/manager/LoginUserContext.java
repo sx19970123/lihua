@@ -2,12 +2,12 @@ package com.lihua.security.manager;
 
 import com.lihua.common.utils.spring.SpringUtils;
 import com.lihua.common.utils.tree.TreeUtils;
-import com.lihua.common.utils.web.WebUtils;
 import com.lihua.ip.utils.IpUtils;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.model.*;
 import com.lihua.security.utils.TokenUtils;
+import com.lihua.web.utils.WebUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

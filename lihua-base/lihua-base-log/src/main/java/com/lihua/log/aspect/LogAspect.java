@@ -1,10 +1,10 @@
 package com.lihua.log.aspect;
 
 import com.lihua.common.utils.date.DateUtils;
-import com.lihua.common.utils.web.WebUtils;
 import com.lihua.ip.utils.IpUtils;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.handle.HandleRecodeLog;
+import com.lihua.web.utils.WebUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;

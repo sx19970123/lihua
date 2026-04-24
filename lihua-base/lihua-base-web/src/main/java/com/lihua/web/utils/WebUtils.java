@@ -1,4 +1,4 @@
-package com.lihua.common.utils.web;
+package com.lihua.web.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -16,22 +16,28 @@
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <!--        公共模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-base-common</artifactId>
         </dependency>
-        <!--        缓存模块-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-base-cache</artifactId>
-        </dependency>
         <!--        ip归属地-->
         <dependency>
             <groupId>org.lionsoul</groupId>
             <artifactId>ip2region</artifactId>
             <version>${ip2region.version}</version>
+        </dependency>
+        <!--        web模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-web</artifactId>
+        </dependency>
+        <!--        缓存模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-cache</artifactId>
         </dependency>
     </dependencies>
 

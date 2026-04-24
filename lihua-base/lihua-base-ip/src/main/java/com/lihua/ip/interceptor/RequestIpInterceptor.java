@@ -13,7 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import tools.jackson.core.type.TypeReference;
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import static com.lihua.cache.enums.RedisKeyPrefixEnum.SYSTEM_IP_BLACKLIST_REDIS_PREFIX;
@@ -28,6 +29,9 @@ public class RequestIpInterceptor implements HandlerInterceptor {
     @Resource
     private LocalCacheManager localCacheManager;
 
+    // ip匹配缓存
+    private final Map<String, Pattern> patternCache = new ConcurrentHashMap<>();
+
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         ipMatch();
@@ -38,24 +42,31 @@ public class RequestIpInterceptor implements HandlerInterceptor {
     private void ipMatch() {
         String key = SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue();
         List<String> prohibitIpList = localCacheManager.getWithFallback(key, new TypeReference<>(){}, () -> redisCacheManager.getCacheList(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue(), String.class));
-        if (!prohibitIpList.isEmpty()) {
-            String currentIp = IpUtils.getIpAddress();
-            prohibitIpList.forEach(ip -> {
 
-                String regex = ip
+        if (prohibitIpList == null || prohibitIpList.isEmpty()) {
+            return;
+        }
+
+        String currentIp = IpUtils.getIpAddress();
+        if (currentIp == null) {
+            return;
+        }
+
+        for (String ipRule : prohibitIpList) {
+            // 匹配并缓存黑名单ip
+            Pattern pattern = patternCache.computeIfAbsent(ipRule, rule -> {
+                String regex = rule
                         .replace(".", "\\.")
                         .replace("*", ".*")
                         .replace("?", ".");
-
                 regex = "^" + regex + "$";
-                Pattern compiledPattern = Pattern.compile(regex);
-                Matcher matcher = compiledPattern.matcher(currentIp);
-
-                if (matcher.matches()) {
-                    log.error("异常ip【{}】请求已拒绝", currentIp);
-                    throw new IpIllegalException();
-                }
+                return Pattern.compile(regex);
             });
+            // 匹配到的黑名单直接抛出异常
+            if (pattern.matcher(currentIp).matches()) {
+                log.error("异常ip【{}】请求已拒绝", currentIp);
+                throw new IpIllegalException();
+            }
         }
     }
 }

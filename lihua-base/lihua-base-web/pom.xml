@@ -18,6 +18,11 @@
     </properties>
 
     <dependencies>
+        <!--         web-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
         <!--        公共模块-->
         <dependency>
             <groupId>com.lihua</groupId>

@@ -3,7 +3,7 @@ package com.lihua.web.handle;
 import com.lihua.common.enums.ResultCodeEnum;
 import com.lihua.common.exception.BaseException;
 import com.lihua.common.model.response.basecontroller.StrResponseController;
-import com.lihua.common.utils.web.WebUtils;
+import com.lihua.web.utils.WebUtils;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
