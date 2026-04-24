@@ -117,7 +117,7 @@ const logout = async () => {
   box-shadow: var(--lihua-box-shadow);
 }
 .user-info {
-  max-width: 100px;
+  max-width: 120px;
 }
 .btn {
   padding: 0 0 0 8px
