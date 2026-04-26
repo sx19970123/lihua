@@ -1,6 +1,6 @@
-import {getOnceToken} from "@/api/system/auth/Auth";
+import {getOnceToken} from "@/api/system/authentication/authentication";
 import {getUUID} from "@/utils/uuid/uuid"
-import {getClientType} from '@/utils/Client'
+import {getClientType} from '@/utils/client'
 
 /**
  * webSocket连接具体实现逻辑
@@ -208,4 +208,4 @@ interface WebSocketMessage {
     timestamp: number;
 }
 
-export const websocket = new WebSocketManager()
+export const webSocket = new WebSocketManager()

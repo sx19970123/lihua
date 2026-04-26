@@ -60,11 +60,11 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { RegisterType } from '@/api/system/login/type/RegisterType'
-import {register, checkUserName} from '@/api/system/login/Login'
-import router from '@/router/Router'
+import type { RegisterType } from '@/api/system/authentication/type/register-type'
+import {register, checkUserName} from '@/api/system/authentication/authentication'
+import router from '@/router/router'
 import Captcha from '@/components/captcha/index.vue'
-import {toast} from '@/utils/Toast'
+import {toast} from '@/utils/toast'
 import {onShow, onHide, onLoad} from "@dcloudio/uni-app"
 import {cloneDeep} from "lodash-es"
 import PasswordInput from '@/components/password-input/index.vue'

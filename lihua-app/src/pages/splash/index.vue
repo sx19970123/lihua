@@ -3,7 +3,7 @@
 
 <script setup lang="ts">
 import { onMounted } from "vue"
-import router from "@/router/Router"
+import router from "@/router/router"
 /**
  * 跳转到首页
  */

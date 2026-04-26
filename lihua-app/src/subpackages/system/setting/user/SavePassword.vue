@@ -11,11 +11,11 @@
 
 <script setup lang="ts">
 import {reactive, ref, nextTick, onMounted} from 'vue';
-import router from '@/router/Router';
-import {toast} from '@/utils/Toast';
+import router from '@/router/router';
+import {toast} from '@/utils/toast';
 import PasswordInput from '@/components/password-input/index.vue'
-import type {passwordType} from "@/api/system/profile/type/PasswordType";
-import {updatePassword} from "@/api/system/profile/Profile";
+import type {passwordType} from "@/api/system/profile/type/password-type";
+import {updatePassword} from "@/api/system/profile/profile";
 
 // 自动聚焦
 const autoFocus = ref<boolean>(false)

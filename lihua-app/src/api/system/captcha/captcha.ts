@@ -1,5 +1,5 @@
-import request from "@/utils/Request";
-import type {CaptchaRequestData, CaptchaResponseData} from "@/api/system/captcha/type/CaptchaType"
+import request from "@/utils/request";
+import type {CaptchaRequestData, CaptchaResponseData} from "@/api/system/captcha/type/captcha-type"
 
 /**
  * 获取验证码数据

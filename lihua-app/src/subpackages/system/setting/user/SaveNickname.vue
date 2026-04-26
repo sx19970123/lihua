@@ -10,10 +10,9 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted} from 'vue';
 import { useUserStore } from '@/stores/user';
-import router from '@/router/Router';
-import {saveBasics} from '@/api/system/profile/Profile';
-import {toast} from '@/utils/Toast';
-import { ResponseError } from '@/api/global/Type';
+import router from '@/router/router';
+import {saveBasics} from '@/api/system/profile/profile';
+import {toast} from '@/utils/toast';
 
 const userStore = useUserStore()
 const nickName = ref<string>(userStore.$state.nickname)

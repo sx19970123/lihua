@@ -1,7 +1,7 @@
-import request from "@/utils/Request"
-import type {SysNoticeVO, SysNoticeDTO} from "@/api/system/notice/type/SysNotice";
-import type { PageResponseType } from "@/api/global/Type";
-import type {SysUserNoticeVO} from "@/api/system/notice/type/SysUserNotice";
+import request from "@/utils/request"
+import type {SysNoticeVO, SysNoticeDTO} from "@/api/system/notice/type/sys-notice";
+import type { PageResponseType } from "@/api/global/type";
+import type {SysUserNoticeVO} from "@/api/system/notice/type/sys-user-notice";
 /**
  * 查询预览
  * @param id

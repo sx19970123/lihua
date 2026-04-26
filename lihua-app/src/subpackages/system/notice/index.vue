@@ -24,14 +24,14 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 import NoticeList from '@/subpackages/system/notice/components/NoticeList.vue';
-import {userMessageList, star} from '@/api/system/notice/Notice';
-import type {SysUserNoticeVO} from "@/api/system/notice/type/SysUserNotice"
-import type { SysNoticeDTO } from '@/api/system/notice/type/SysNotice';
+import {userMessageList, star} from '@/api/system/notice/notice';
+import type {SysUserNoticeVO} from "@/api/system/notice/type/sys-user-notice"
+import type { SysNoticeDTO } from '@/api/system/notice/type/sys-notice';
 import { onLoad, onReachBottom, onPullDownRefresh } from '@dcloudio/uni-app';
-import { toast } from '@/utils/Toast';
+import { toast } from '@/utils/toast';
 import type { LoadMoreStatus } from 'sard-uniapp';
-import { ResponseError } from '@/api/global/Type';
-import router from "@/router/Router";
+import { ResponseError } from '@/api/global/type';
+import router from "@/router/router";
 import {useNoticeStore} from "@/stores/notice"
 
 const noticeStore = useNoticeStore()

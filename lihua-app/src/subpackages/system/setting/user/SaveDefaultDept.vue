@@ -16,14 +16,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
-import type { TreeExpose, TreeStateNode } from 'sard-uniapp'
+import { ref } from 'vue'
+import type { TreeExpose } from 'sard-uniapp'
 import { useUserStore } from '@/stores/user'
-import type { SysDept } from '@/api/system/dept/type/SysDept'
-import {traverse} from '@/utils/Tree'
-import router from '@/router/Router';
-import { ResponseError } from '@/api/global/Type'
-import {toast} from '@/utils/Toast';
+import type { SysDept } from '@/api/system/dept/type/sys-dept'
+import {traverse} from '@/utils/tree'
+import router from '@/router/router';
 
 const userStore = useUserStore()
 const keyword = ref<string>('')

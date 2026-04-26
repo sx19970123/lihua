@@ -9,8 +9,8 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue"
-import type { SysDictDataType } from "@/api/system/dict/type/SysDictDataType"
-import { traverseWithPath } from "@/utils/Tree"
+import type { SysDictDataType } from "@/api/system/dict/type/sys-dict-data-type"
+import { traverseWithPath } from "@/utils/tree"
 import { cloneDeep } from 'lodash-es'
 const props = withDefaults(
 	defineProps<{

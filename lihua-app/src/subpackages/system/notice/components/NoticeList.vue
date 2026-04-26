@@ -45,9 +45,9 @@
 <script setup lang="ts">
 import {ref, watch, nextTick} from 'vue'
 import DictTag from "@/components/dict-tag/index.vue"
-import type {SysUserNoticeVO} from "@/api/system/notice/type/SysUserNotice"
-import {initDict} from '@/utils/Dict'
-import {handleTime} from "@/utils/HandleDate"
+import type {SysUserNoticeVO} from "@/api/system/notice/type/sys-user-notice"
+import {initDict} from '@/helpers/dict'
+import {handleTime} from "@/utils/handle-date"
 // 加载字典
 const {sys_notice_priority} = initDict('sys_notice_priority')
 // 滑动状态

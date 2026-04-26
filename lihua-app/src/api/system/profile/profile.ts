@@ -1,6 +1,15 @@
-import request from "@/utils/Request";
-import type {SysDept} from "@/api/system/dept/type/SysDept";
-import type {passwordType} from "@/api/system/profile/type/PasswordType";
+import request from "@/utils/request";
+import type {SysDept} from "@/api/system/dept/type/sys-dept";
+import type {passwordType} from "@/api/system/profile/type/password-type";
+import type { AuthInfoType } from "@/api/system/profile/type/auth-info-type";
+
+// 获取用户信息
+export const queryAuthInfo = () => {
+    return request<AuthInfoType>({
+        url: 'app/system/profile/info',
+        method: 'GET'
+    })
+}
 
 /**
  * 保存基础信息

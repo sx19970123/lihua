@@ -1,8 +1,8 @@
 import { useDictStore } from "@/stores/dict";
-import { getDictDataOptionByCodeList} from "@/api/system/dict/DictData";
+import { getDictDataOptionByCodeList} from "@/api/system/dict/dict-data";
 import { ref, toRefs} from "vue";
-import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType";
-import {toast} from '@/utils/Toast'
+import type {SysDictDataType} from "@/api/system/dict/type/sys-dict-data-type";
+import {toast} from '@/utils/toast'
 
 // 初始化组件中需要的字典数据
 export const initDict = (...dictTypeCodes: string[]) => {

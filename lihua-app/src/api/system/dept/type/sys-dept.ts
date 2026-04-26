@@ -1,4 +1,4 @@
-import type {SysPost} from "@/api/system/post/type/SysPost";
+import type {SysPost} from "@/api/system/post/type/sys-post";
 
 export interface SysDept {
   /**

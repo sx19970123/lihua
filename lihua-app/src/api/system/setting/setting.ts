@@ -1,4 +1,4 @@
-import request from "@/utils/Request";
+import request from "@/utils/request";
 
 /**
  * 是否开启验证码

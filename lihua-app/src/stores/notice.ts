@@ -1,10 +1,11 @@
-import { defineStore } from "pinia"
-import { queryUnReadCount } from '@/api/system/notice/Notice'
-import {read} from '@/api/system/notice/Notice';
-import type {PreviewNotice} from '@/api/system/notice/type/PreviewNotice';
-import { preview } from '@/api/system/notice/Notice'
-import dayjs from "dayjs"
-import type {ResponseType} from "@/api/global/Type"
+import { defineStore } from 'pinia'
+import { queryUnReadCount } from '@/api/system/notice/notice'
+import {read} from '@/api/system/notice/notice'
+import type {PreviewNotice} from '@/api/system/notice/type/preview-notice'
+import { preview } from '@/api/system/notice/notice'
+import type {ResponseType} from '@/api/global/type'
+import dayjs from 'dayjs'
+
 
 /**
  * 消息通知

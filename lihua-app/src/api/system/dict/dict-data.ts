@@ -1,6 +1,6 @@
-import request from "@/utils/Request";
-import type {SysDictDataType} from "@/api/system/dict/type/SysDictDataType";
-import type {MapResponseType} from "@/api/global/Type";
+import request from "@/utils/request";
+import type {SysDictDataType} from "@/api/system/dict/type/sys-dict-data-type";
+import type {MapResponseType} from "@/api/global/type";
 
 export const getDictDataOptionByCodeList = (dictTypeCodeList: string[]) => {
   return request<MapResponseType<string, SysDictDataType>>({

@@ -1,9 +1,9 @@
 import { Router } from 'sard-uniapp'
-import { getToken } from '@/utils/Token'
+import { getToken } from '@/helpers/token'
 import { useUserStore } from '@/stores/user'
 import { useNoticeStore } from '@/stores/notice'
-import { websocket } from '@/utils/WebSocket'
-import { initDict } from '@/utils/Dict'
+import { webSocket } from '@/utils/web-socket'
+import { initDict } from '@/helpers/dict'
 const router = new Router()
 
 /**
@@ -37,7 +37,7 @@ router.beforeEach((to, from) => {
 		if (!userStore.userId) {
 			userStore.initUserInfo()
 			// 连接到websocket
-			websocket.connect()
+			webSocket.connect()
 			// 获取最新的未读消息
 			noticeStore.getUnreadCount()
 			// 缓存通知类型字典
@@ -47,7 +47,7 @@ router.beforeEach((to, from) => {
 		}
 	} else {
 		// 没有token断开websocket连接
-		websocket.closeConnect()
+		webSocket.closeConnect()
 		// 访问的页面是公开页面，可直接访问
 		if (publicRoutesList.includes(to.url)) {
 			return true

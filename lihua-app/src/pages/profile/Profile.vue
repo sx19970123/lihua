@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import {useUserStore} from '@/stores/user'
 import {useNoticeStore} from "@/stores/notice"
-import router from '@/router/Router'
+import router from '@/router/router'
 import UserAvatar from '@/components/user-avatar/index.vue'
 import { watch } from 'vue'
 

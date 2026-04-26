@@ -35,6 +35,7 @@ export const register = (username: string, password: string, confirmPassword: st
     })
 }
 
+// 重新加载数据
 export const reloadData = () => {
     return request({
         url: '/system/auth/reloadData',

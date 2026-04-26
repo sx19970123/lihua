@@ -21,10 +21,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import { toast } from '@/utils/Toast';
+import { toast } from '@/utils/toast';
 import MpHtml from "@/components/mp-html/mp-html.vue"
 import {useNoticeStore} from "@/stores/notice"
-import type {PreviewNotice} from '@/api/system/notice/type/PreviewNotice';
+import type {PreviewNotice} from '@/api/system/notice/type/preview-notice';
 const noticeStore = useNoticeStore()
 // 通知公告数据
 const noticeData = ref<PreviewNotice>({})

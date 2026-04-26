@@ -1,10 +1,10 @@
 import { Request} from 'sard-uniapp'
 import type {RequestConfig, Response} from 'sard-uniapp'
-import {type ResponseErrorType, ResponseError, type ResponseType} from "@/api/global/Type"
-import {getToken} from '@/utils/Token'
+import {type ResponseErrorType, ResponseError, type ResponseType} from "@/api/global/type"
+import {getToken} from '@/helpers/token'
 import {useUserStore} from '@/stores/user'
-import {getClientType} from '@/utils/Client'
- import {toast} from '@/utils/Toast'
+import {getClientType} from '@/utils/client'
+ import {toast} from '@/utils/toast'
 
 const service = new Request({
 	baseURL: import.meta.env.VITE_APP_BASE_API,
@@ -22,7 +22,7 @@ service.interceptors.request.use(
 		if (token) {
 			config.header['Authorization'] = "Bearer " + token
 		}
-		console.info("发送请求===>", config.url);
+		console.info("发送请求===>", config.baseURL, config.url);
 		return config
 	},
 	(error) => {

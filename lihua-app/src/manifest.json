@@ -100,32 +100,32 @@
             }
         }
     },
-	/* 鸿蒙app */
-	"app-harmony" : {
-		"darkmode" : true,
-		"themeLocation" : "theme.json",
-		"safearea" : {
-		    "background" : "#ffffff",
-		    "backgroundDark" : "#242628",
-		    "bottom" : {
-		        "offset" : "none"
-		    }
-		},
-	    "distribute" : {
-	        "bundleName" : "uni.app.UNI697415C",
-	        "signingConfigs" : {
-	            "default" : {
-	                "certpath" : "/Users/yukino/Library/Application Support/HBuilder X/extensions/launcher/agc-certs/1773807871513.cer",
-	                "keyAlias" : "debugKey",
-	                "keyPassword" : "0000001A7BD9E90410276512D336C9FA60030905BD08F949EFADA54EAF4307E3254C79EB3F16F3DBC2E6",
-	                "profile" : "/Users/yukino/Library/Application Support/HBuilder X/extensions/launcher/agc-certs/1773807871513.p7b",
-	                "signAlg" : "SHA256withECDSA",
-	                "storeFile" : "/Users/yukino/Library/Application Support/HBuilder X/extensions/launcher/agc-certs/1773807871513.p12",
-	                "storePassword" : "0000001A7BD9E90410276512D336C9FA60030905BD08F949EFADA54EAF4307E3254C79EB3F16F3DBC2E6"
-	            }
-	        }
-	    }
-	},
+    /* 鸿蒙app */
+    "app-harmony" : {
+        "darkmode" : true,
+        "themeLocation" : "theme.json",
+        "safearea" : {
+            "background" : "#ffffff",
+            "backgroundDark" : "#242628",
+            "bottom" : {
+                "offset" : "none"
+            }
+        },
+        "distribute" : {
+            "bundleName" : "uni.app.UNI697415C",
+            "signingConfigs" : {
+                "default" : {
+                    "certpath" : "/Users/yukino/Library/Application Support/HBuilder X/extensions/launcher/agc-certs/1773807871513.cer",
+                    "keyAlias" : "debugKey",
+                    "keyPassword" : "0000001A7BD9E90410276512D336C9FA60030905BD08F949EFADA54EAF4307E3254C79EB3F16F3DBC2E6",
+                    "profile" : "/Users/yukino/Library/Application Support/HBuilder X/extensions/launcher/agc-certs/1773807871513.p7b",
+                    "signAlg" : "SHA256withECDSA",
+                    "storeFile" : "/Users/yukino/Library/Application Support/HBuilder X/extensions/launcher/agc-certs/1773807871513.p12",
+                    "storePassword" : "0000001A7BD9E90410276512D336C9FA60030905BD08F949EFADA54EAF4307E3254C79EB3F16F3DBC2E6"
+                }
+            }
+        }
+    },
     /* 快应用特有相关 */
     "quickapp" : {},
     /* 小程序特有相关 */

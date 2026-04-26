@@ -87,10 +87,10 @@ import { ref, withDefaults, watch, nextTick } from 'vue'
 import type { UploadFileItem } from 'sard-uniapp'
 import { dialog } from 'sard-uniapp'
 import AttachmentCardList from '@/components/attachment-upload/AttachmentCardList.vue'
-import {toast} from '@/utils/Toast'
-import {getFileInfo} from '@/utils/attachment/AttachmentUtils'
-import {queryAttachmentInfoByIds, upload, fastUpload, existsAttachmentByMd5, deleteFromBusiness} from '@/api/system/attachment/AttachmentStorage'
-import { ResponseError } from '@/api/global/Type'
+import {toast} from '@/utils/toast'
+import {getFileInfo} from '@/utils/attachment/attachment-utils'
+import {queryAttachmentInfoByIds, upload, fastUpload, existsAttachmentByMd5, deleteFromBusiness} from '@/api/system/attachment/attachment-storage'
+import { ResponseError } from '@/api/global/type'
 // 记录双向绑定回显是否已经完成
 let modelValueInitComplete = false
 // 删除的id

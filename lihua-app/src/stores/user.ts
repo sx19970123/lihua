@@ -1,16 +1,16 @@
 import { defineStore } from "pinia";
-import type { AuthInfoType, UserInfoType } from "@/api/system/auth/type/AuthInfoType";
-import type { SysRole } from "@/api/system/role/type/SysRole";
-import type { SysDept } from "@/api/system/dept/type/SysDept";
-import type { SysPost } from "@/api/system/post/type/SysPost";
-import type { AvatarType } from "@/api/system/profile/type/AvatarType";
-import { logout } from "@/api/system/login/Login";
-import { removeToken } from "@/utils/Token";
-import { queryAuthInfo } from "@/api/system/auth/Auth";
-import {ResponseError, type ResponseType} from "@/api/global/Type";
-import {attachmentUrl, getFileTempPath} from "@/utils/attachment/AttachmentUtils";
-import { setDefaultDept } from "@/api/system/profile/Profile";
-import { websocket } from '@/utils/WebSocket'
+import type { AuthInfoType, UserInfoType } from "@/api/system/profile/type/auth-info-type";
+import type { SysRole } from "@/api/system/role/type/sys-role";
+import type { SysDept } from "@/api/system/dept/type/sys-dept";
+import type { SysPost } from "@/api/system/post/type/sys-post";
+import type { AvatarType } from "@/api/system/profile/type/avatar-type";
+import { logout } from "@/api/system/authentication/authentication";
+import { removeToken } from "@/helpers/token";
+import { queryAuthInfo } from "@/api/system/profile/profile";
+import {ResponseError, type ResponseType} from "@/api/global/type";
+import {attachmentUrl, getFileTempPath} from "@/utils/attachment/attachment-utils";
+import { setDefaultDept } from "@/api/system/profile/profile";
+import { webSocket } from '@/utils/web-socket'
 
 export const useUserStore = defineStore('user', {
 	state: () => {
@@ -70,7 +70,7 @@ export const useUserStore = defineStore('user', {
 		authenticationFailure() {
 			removeToken()
 			this.clearUserInfo()
-			websocket.closeConnect()
+			webSocket.closeConnect()
 			uni.reLaunch({
 				url: "/pages/login/Login"
 			})

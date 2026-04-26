@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Tag(name = "APP-身份验证、注册接口")
 @RestController
-@RequestMapping("app/system")
+@RequestMapping("app/system/auth")
 public class AppSysAuthenticationController extends ApiResponseController {
 
     @Resource
@@ -58,24 +58,6 @@ public class AppSysAuthenticationController extends ApiResponseController {
         sysAuthenticationService.checkSameAccount(token);
 
         return success(ResultCodeEnum.SUCCESS, token);
-    }
-
-    /**
-     * 从 SecurityContextHolder 中获取用户信息返回
-     */
-    @Operation(summary = "获取当前登录用户信息")
-    @GetMapping("info")
-    public ApiResponseModel<AuthInfo> getUserInfo() {
-        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
-        // 前端 store 用户数据
-        AuthInfo authInfo = new AuthInfo();
-        authInfo.setUserInfo(loginUserSession.getUser() != null ? loginUserSession.getUser() : new CurrentUser());
-        authInfo.setDepts(TreeUtils.buildTree(loginUserSession.getDeptList()));
-        authInfo.setPosts(loginUserSession.getPostList());
-        authInfo.setRoles(loginUserSession.getRoleList());
-        authInfo.setPermissions(loginUserSession.getPermissionList().stream().filter(item -> !item.startsWith("ROLE_")).toList());
-        authInfo.setDefaultDept(LoginUserContext.getDefaultDept() != null ? LoginUserContext.getDefaultDept() : new CurrentDept());
-        return success(authInfo);
     }
 
     /**

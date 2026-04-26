@@ -18,9 +18,8 @@
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted} from 'vue';
-import {checkPassword, accountDeactivate} from "@/api/system/profile/Profile";
-import {toast} from '@/utils/Toast';
-import { ResponseError } from '@/api/global/Type';
+import {checkPassword, accountDeactivate} from "@/api/system/profile/profile";
+import {toast} from '@/utils/toast';
 import { useUserStore } from '@/stores/user';
 
 const userStore = useUserStore()

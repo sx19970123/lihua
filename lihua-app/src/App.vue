@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import {watch, onMounted, ref} from 'vue'
+import {watch} from 'vue'
 import {onLaunch} from "@dcloudio/uni-app"
 import {useThemeStore} from "@/stores/theme"
 import {useNoticeStore} from "@/stores/notice"
 import {useRootRefStore} from "@/stores/root"
-import {websocket} from '@/utils/WebSocket'
-import type {NoticeMessage} from '@/api/system/notice/type/NoticeMessage'
-import router from "@/router/Router"
-import { initDict, getDictLabel } from '@/utils/Dict'
+import {webSocket} from '@/utils/web-socket'
+import type {NoticeMessage} from '@/api/system/notice/type/notice-message'
+import router from "@/router/router"
+import { initDict, getDictLabel } from '@/helpers/dict'
 
 // #ifdef APP-PLUS
 // 仅app支持原生消息通知
-import MessageNotify from '@/utils/MessageNotify'
+import MessageNotify from '@/utils/message-notify'
 // #endif
 
 const themeStore = useThemeStore()
@@ -28,7 +28,7 @@ onLaunch(() => {
 // 处理websocket消息通知监听
 const addNoticeEventListener = () => {
 	// 订阅notice通知消息
-	websocket.addEventListener("WS_NOTICE", (data: NoticeMessage) => {
+	webSocket.addEventListener("WS_NOTICE", (data: NoticeMessage) => {
 		// #ifdef APP-PLUS
 		// 全局通知推送（仅原生app）
 		showNotify(data)

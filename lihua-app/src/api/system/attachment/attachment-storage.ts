@@ -1,5 +1,5 @@
-import request, {attachmentUpload} from "@/utils/Request";
-import type {SysAttachment} from "@/api/system/attachment/type/SysAttachment";
+import request, {attachmentUpload} from "@/utils/request";
+import type {SysAttachment} from "@/api/system/attachment/type/sys-attachment";
 
 // 根据路径查询文件信息，用于附件组件数据回显
 export const queryAttachmentInfoByIds = (ids: string[]) => {

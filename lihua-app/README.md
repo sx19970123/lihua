@@ -6,3 +6,10 @@
 https://doc.lihua.xyz/
 ### AI 文档（DeepWiki）
 https://deepwiki.com/sx19970123/lihua
+
+## 启动狸花猫客户端
+
+### 安装依赖
+```sh
+npm install
+```

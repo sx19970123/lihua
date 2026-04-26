@@ -48,14 +48,15 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
-import { enableCaptcha, enableSignUp } from '@/api/system/setting/Setting'
-import type { LoginType } from '@/api/system/login/type/LoginType'
-import router from '@/router/Router'
+import { enableCaptcha, enableSignUp } from '@/api/system/setting/setting'
+import type { LoginType } from '@/api/system/authentication/type/login-type'
+import router from '@/router/router'
 import Captcha from '@/components/captcha/index.vue'
-import {toast} from '@/utils/Toast'
+import {toast} from '@/utils/toast'
 import {onShow, onHide} from '@dcloudio/uni-app'
-import {rememberMe, getRememberedInfo, setToken} from '@/utils/Token'
-import {login} from "@/api/system/login/Login";
+import {rememberMe, getRememberedInfo} from '@/helpers/remember'
+import {setToken} from '@/helpers/token'
+import {login} from "@/api/system/authentication/authentication";
 const captchaRef = ref<InstanceType<typeof Captcha>>()
 const serverConnectionFailed = ref<boolean>(false)
 /**

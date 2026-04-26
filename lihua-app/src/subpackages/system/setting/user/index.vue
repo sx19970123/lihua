@@ -30,12 +30,12 @@
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import UserAvatar from '@/components/user-avatar/index.vue'
-import router from '@/router/Router'
-import {toast} from '@/utils/Toast'
-import { reloadData } from '@/api/system/auth/Auth'
-import {getDictLabel, initDict} from '@/utils/Dict'
-import type {SysPost} from "@/api/system/post/type/SysPost";
-import type {SysRole} from "@/api/system/role/type/SysRole";
+import router from '@/router/router'
+import {toast} from '@/utils/toast'
+import { reloadData } from '@/api/system/authentication/authentication'
+import {getDictLabel, initDict} from '@/helpers/dict'
+import type {SysPost} from "@/api/system/post/type/sys-post";
+import type {SysRole} from "@/api/system/role/type/sys-role";
 
 const { user_gender } = initDict('user_gender')
 const userStore = useUserStore()

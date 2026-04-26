@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import router from '@/router/Router'
+import router from '@/router/router'
 import { dialog } from 'sard-uniapp'
 import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()

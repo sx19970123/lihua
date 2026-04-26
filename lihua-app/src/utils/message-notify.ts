@@ -1,4 +1,4 @@
-import {measureTextWidth} from '@/utils/TextUtils'
+import {measureTextWidth} from '@/utils/text-utils'
 
 type NotifyStyle = {height: number; width: number; top: number; left: number}
 type TouchEventData = {

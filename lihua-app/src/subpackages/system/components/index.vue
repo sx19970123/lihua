@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import router from '@/router/Router'
+import router from '@/router/router'
 const goComponentPage = (pageName: string) => {
 	const baseURL = "/subpackages/system/components/"
 	router.navigateTo({

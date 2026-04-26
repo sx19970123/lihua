@@ -36,8 +36,8 @@
 </template>
 
 <script setup lang="ts">
-import MessageNotify from '@/utils/MessageNotify'
-import {toast} from '@/utils/Toast'
+import MessageNotify from '@/utils/message-notify'
+import {toast} from '@/utils/toast'
 
 const show = (title: string, content: string, image?: string, duration?: number) => {
 	MessageNotify.show({title: title, content: content, duration: duration, image: image})

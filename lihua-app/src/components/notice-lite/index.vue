@@ -27,7 +27,7 @@
 import { ref, watch } from 'vue'
 import MpHtml from "@/components/mp-html/mp-html.vue"
 import {useNoticeStore} from "@/stores/notice"
-import type {PreviewNotice} from '@/api/system/notice/type/PreviewNotice';
+import type {PreviewNotice} from '@/api/system/notice/type/preview-notice';
 
 const noticeStore = useNoticeStore()
 // 显隐抽屉&通知id
