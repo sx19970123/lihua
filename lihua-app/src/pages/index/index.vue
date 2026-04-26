@@ -95,6 +95,16 @@ const showVersion = ref<boolean>(false)
 
 const versionInfo = [
 	{
+		version: '2.1.0',
+		updateDate: '2026-xx-xx',
+		updateContent: [
+			'1. 针对后台controller接口调整进行适配',
+			'2. 将utils包拆分出helpers用于存放业务相关工具代码',
+			'3. 项目中ts文件修改为全小写命名',
+			'4. 更新sard-uniapp版本到 1.29.3',
+		]
+	},
+	{
 		version: '2.0.1',
 		updateDate: '2026-04-07',
 		updateContent: [
