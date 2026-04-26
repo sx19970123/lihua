@@ -1,0 +1,58 @@
+/* ========== 登录|注册页样式 ========== */
+page {
+  position: fixed;
+  overflow: hidden;
+}
+
+.auth-body { 
+  padding: 48rpx;
+  margin-top: 40%;
+
+  .auth-title {
+    font-size: 48rpx;
+    margin-bottom: 32rpx;
+    font-weight: bold;
+    line-height: 40rpx;
+  }
+
+  .auth-item { 
+    height: 90rpx !important;
+    border-radius: 24rpx !important;
+
+    &.show-caret {
+      caret-color: var(--sar-primary-text);
+    }
+  }
+
+  .auth-btn { 
+    margin-top: 64rpx;
+  }
+
+  .auth-protocol { 
+    position: fixed;
+    bottom: 64rpx;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    color: var(--sar-tertiary-color);
+  }
+
+  .text-btn {
+    padding: 0 !important;
+  }
+
+  .text-font {
+    font-size: var(--sar-text-base);
+  }
+
+  /* #ifdef APP-PLUS */
+  .auth-content {
+    width: 100%;
+    transition: transform 0.3s ease;
+  }
+  .auth-item {
+	  caret-color: transparent;
+	  transition: caret-color 0.3s linear;
+  }
+  /* #endif */
+}

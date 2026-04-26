@@ -1,0 +1,213 @@
+{
+	// 主包
+	"pages": [
+		// 首屏页
+		{
+			"path": "pages/splash/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		// 登录页
+		{
+			"path": "pages/login/Login",
+			"style": {
+				"navigationStyle": "custom",
+				"app": {
+					"softinputMode": "adjustResize"
+				}
+			}
+		},
+		// 注册页
+		{
+			"path": "pages/login/Register",
+			"style": {
+				"navigationStyle": "custom",
+				"app": {
+					"softinputMode": "adjustResize"
+				}
+			}
+		},
+		// 首页
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		// 个人页
+		{
+			"path": "pages/profile/Profile",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		// 第三方连接跳转组件
+		{
+			"path": "pages/webview/index"
+		}
+	],
+	// 分包
+	"subPackages": [{
+		"root": "subpackages/system",
+		"pages": [{
+			"path": "protocol/PrivacyPolicy",
+			"style": {
+				"navigationBarTitleText": "隐私政策",
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
+		},{
+			"path": "protocol/UserAgreement",
+			"style": {
+				"navigationBarTitleText": "用户协议",
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
+		},{
+			"path": "setting/index",
+			"style": {
+				"navigationBarTitleText": "设置"
+			}
+		},{
+			"path": "setting/theme/index",
+			"style": {
+				"navigationBarTitleText": "系统主题"
+			}
+		},{
+			"path": "setting/user/index",
+			"style": {
+				"navigationBarTitleText": "用户设置"
+			}
+		},{
+			"path": "setting/user/SavePhoneNumber",
+			"style": {
+				"navigationBarTitleText": "修改手机号"
+			}
+		},{
+			"path": "setting/user/SaveNickname",
+			"style": {
+				"navigationBarTitleText": "修改昵称"
+			}
+		},{
+			"path": "setting/user/SaveGender",
+			"style": {
+				"navigationBarTitleText": "修改性别"
+			}
+		},{
+			"path": "setting/user/SaveEmail",
+			"style": {
+				"navigationBarTitleText": "修改邮箱"
+			}
+		},{
+			"path": "setting/user/SaveAvatar",
+			"style": {
+				"navigationBarTitleText": "修改头像"
+			}
+		},{
+			"path": "setting/user/SaveDefaultDept",
+			"style": {
+				"navigationBarTitleText": "修改默认部门"
+			}
+		},{
+			"path": "setting/user/SavePassword",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
+		},{
+			"path": "setting/user/AccountDeactivate",
+			"style": {
+				"navigationBarTitleText": "注销账号"
+			}
+		},{
+			"path": "notice/index",
+			"style": {
+				"enablePullDownRefresh": true,
+				"navigationBarTitleText": "消息通知"
+			}
+		},{
+			"path": "notice/Detail",
+			"style": {
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
+		},
+		// -----组件展示页面开始（此页面可完全删除）-----
+		{
+			"path": "components/index",
+			"style": {
+				"navigationBarTitleText": "系统组件"
+			}
+		},
+		{
+			"path": "components/attachment/index",
+			"style": {
+				"navigationBarTitleText": "附件上传"
+			}
+		},{
+			"path": "components/color-select/index",
+			"style": {
+				"navigationBarTitleText": "颜色选择"
+			}
+		},{
+			"path": "components/dict-tag/index",
+			"style": {
+				"navigationBarTitleText": "字典标签"
+			}
+		},{
+			"path": "components/icon-select/index",
+			"style": {
+				"navigationBarTitleText": "图标选择"
+			}
+		},{
+			"path": "components/notice/index",
+			"style": {
+				"navigationBarTitleText": "消息通知（原生）"
+			}
+		}
+		// -----组件展示页面结束-----
+		]
+	}],
+	"tabBar": {
+		"selectedColor": "#3b82f6",
+		"backgroundColor": "@bgColor",
+		"borderStyle": "@borderStyle",
+		"list": [
+			      {
+			        "pagePath": "pages/index/index",
+			        "text": "首页",
+					"iconPath": "@home-icon",
+					"selectedIconPath": "@home-selected-icon"
+			      },
+			      {
+			        "pagePath": "pages/profile/Profile",
+			        "text": "个人中心",
+					"iconPath": "@user-icon",
+					"selectedIconPath": "@user-selected-icon"
+			      }
+		]
+	},
+	"globalStyle": {
+		"navigationBarBackgroundColor": "@navBgColor",
+		"navigationBarTextStyle": "@navTxtStyle",
+		"backgroundColor": "@bgColor",
+		"backgroundTextStyle": "@bgTxtStyle",
+		"backgroundColorTop": "@bgColorTop",
+		"backgroundColorBottom": "@bgColorBottom"
+	},
+	"uniIdRouter": {},
+	"easycom": {
+		"custom": {
+		  "^sar-(.*)": "sard-uniapp/components/$1/$1.vue"
+		}
+	}
+}
