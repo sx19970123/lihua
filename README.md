@@ -57,14 +57,13 @@
 如不需要app端，直接删除即可，后端服务将app专用接口进行了拆分，可将controller/app包中接口一并删除。
 
 ``` bash
-lihua/
+lihua-cloud/
 ├── lihua-app/              # app 客户端
-├── lihua/            			# spring cloud 服务端
+├── lihua-cloud/            # spring boot 服务端
 ├── lihua-vue/              # web 客户端
-├── res/                    # 项目静态资源（数据库脚本、docker部署compose）
-├── .gitignore
+├── res/                    # 项目静态资源（数据库脚本、nacos配置、docker部署compose）
 ├── LICENSE
-└── README.md        
+└── README.md
 ```
 
 
