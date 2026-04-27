@@ -1,12 +1,12 @@
-package com.lihua.controller;
+package com.lihua.monitor.controller;
 
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.common.model.response.response.ApiResponse;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
-import com.lihua.model.LoggedUser;
-import com.lihua.service.MonitorLoggedUserService;
+import com.lihua.monitor.model.LoggedUser;
+import com.lihua.monitor.service.MonitorLoggedUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;

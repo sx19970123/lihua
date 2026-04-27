@@ -1,4 +1,4 @@
-package com.lihua.model;
+package com.lihua.monitor.model;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

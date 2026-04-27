@@ -1,26 +1,26 @@
-package com.lihua.model;
+package com.lihua.monitor.model;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class DiskMonitor {
+public class MemoryMonitor {
 
     /**
-     * 总数
+     * 总内存大小
      */
     private String total;
 
     /**
-     * 已使用
+     * 已使用大小
      */
     private String used;
 
     /**
-     * 空闲
+     * 空闲大小
      */
-    private String free;
+    private String available;
 
     /**
      * 使用率

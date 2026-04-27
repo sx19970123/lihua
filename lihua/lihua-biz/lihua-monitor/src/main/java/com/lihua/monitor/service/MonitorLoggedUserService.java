@@ -1,5 +1,5 @@
-package com.lihua.service;
-import com.lihua.model.LoggedUser;
+package com.lihua.monitor.service;
+import com.lihua.monitor.model.LoggedUser;
 
 import java.util.List;
 

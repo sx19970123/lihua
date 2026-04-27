@@ -1,6 +1,6 @@
-package com.lihua.service;
+package com.lihua.monitor.service;
 
-import com.lihua.model.CacheMonitor;
+import com.lihua.monitor.model.CacheMonitor;
 
 import java.util.List;
 import java.util.Set;

@@ -1,9 +1,9 @@
-package com.lihua.controller;
+package com.lihua.monitor.controller;
 
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
-import com.lihua.model.ServerInfo;
-import com.lihua.service.MonitorServerService;
+import com.lihua.monitor.model.ServerInfo;
+import com.lihua.monitor.service.MonitorServerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;

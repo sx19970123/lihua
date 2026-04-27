@@ -1,7 +1,7 @@
-package com.lihua.service.impl;
+package com.lihua.monitor.service.impl;
 
-import com.lihua.model.*;
-import com.lihua.service.MonitorServerService;
+import com.lihua.monitor.model.*;
+import com.lihua.monitor.service.MonitorServerService;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import oshi.SystemInfo;
