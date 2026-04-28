@@ -3,15 +3,16 @@ package com.lihua.web.utils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import java.util.Objects;
 
 /**
  * web相关工具类
  */
+@Slf4j
 public class WebUtils {
 
     /**
@@ -21,6 +22,7 @@ public class WebUtils {
     public static void renderJson(String json) {
         HttpServletResponse response = getCurrentResponse();
         if (response == null) {
+            log.error("响应数据写入失败，获取到的 HttpServletResponse 为空");
             return;
         }
         response.setStatus(200);
@@ -64,6 +66,9 @@ public class WebUtils {
      * 根据request获取客户端类型
      */
     public static String getClientType(HttpServletRequest request) {
+        if (request == null) {
+            return null;
+        }
         return request.getHeader("Client-Type");
     }
 

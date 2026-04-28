@@ -11,6 +11,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 public class LogoutSuccessHandlerImpl extends StrResponseController implements LogoutSuccessHandler {
@@ -21,7 +22,7 @@ public class LogoutSuccessHandlerImpl extends StrResponseController implements L
 
         LoginUserSession loginUserSession = LoginUserManager.getLoginUser(token);
 
-        if (loginUserSession != null) {
+        if (loginUserSession != null && StringUtils.hasText(token)) {
             LoginUserManager.removeLoginUserCache(token);
         }
 

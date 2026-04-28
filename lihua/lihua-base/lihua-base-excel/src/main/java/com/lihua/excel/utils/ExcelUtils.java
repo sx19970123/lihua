@@ -3,6 +3,7 @@ package com.lihua.excel.utils;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.excel.annotation.ExcelEnableComment;
 import com.lihua.excel.annotation.ExcelEnableDropdown;
+import com.lihua.excel.exception.ExcelExportException;
 import com.lihua.excel.handle.CommentHandler;
 import com.lihua.excel.handle.DropdownHandler;
 import com.lihua.web.utils.WebUtils;
@@ -14,7 +15,6 @@ import org.apache.fesod.sheet.context.AnalysisContext;
 import org.apache.fesod.sheet.read.listener.ReadListener;
 import org.apache.fesod.sheet.write.builder.ExcelWriterBuilder;
 import org.apache.fesod.sheet.write.handler.WriteHandler;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -104,7 +104,7 @@ public class ExcelUtils {
         // 处理响应信息
         HttpServletResponse response = WebUtils.getCurrentResponse();
         if (response == null) {
-            return  null;
+            throw new ExcelExportException("获取响应流异常");
         }
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");

@@ -3,9 +3,11 @@ package com.lihua.ip.utils;
 import com.lihua.common.utils.spring.SpringUtils;
 import com.lihua.web.utils.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.Searcher;
 import org.springframework.util.StringUtils;
 
+@Slf4j
 public class IpUtils {
 
     /**
@@ -13,7 +15,12 @@ public class IpUtils {
      * @return ip地址
      */
     public static String getIpAddress() {
-        return getIpAddress(WebUtils.getCurrentRequest());
+        HttpServletRequest currentRequest = WebUtils.getCurrentRequest();
+        if (currentRequest == null) {
+            log.error("获取ip地址失败，获取到的 HttpServletResponse 为空");
+            return "";
+        }
+        return getIpAddress(currentRequest);
     }
 
     /**

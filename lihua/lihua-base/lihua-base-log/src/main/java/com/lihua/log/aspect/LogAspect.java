@@ -9,13 +9,10 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -41,37 +38,31 @@ public class LogAspect {
         HttpServletRequest httpServletRequest = WebUtils.getCurrentRequest();
         // 记录开始时间
         LocalDateTime startTime = DateUtils.now();
+        // 记录返回值和异常
+        Object proceed = null;
+        Throwable exception = null;
         // 执行方法
-        Object proceed = proceedingJoinPoint.proceed();
-        // 处理记录log
-        handleRecodeLog.handleRecordLog(proceedingJoinPoint,
-                log,
-                Duration.between(startTime, DateUtils.now()).toMillis(),
-                proceed,
-                httpServletRequest.getRequestURI(),
-                httpServletRequest.getHeader("User-Agent"),
-                IpUtils.getIpAddress(),
-                WebUtils.getClientType(),
-                null);
+        try {
+            proceed = proceedingJoinPoint.proceed();
+            return proceed;
+        } catch (Throwable throwable) {
+            exception = throwable;
+            throw throwable;
+        } finally {
+            // 请求地址/用户关键字
+            String requestURI = httpServletRequest == null ? "" : httpServletRequest.getRequestURI();
+            String userAgent = httpServletRequest == null ? "" : httpServletRequest.getHeader("User-Agent");
 
-        return proceed;
-    }
-
-    /**
-     * 异常通知，当执行方法发生异常时记录日志
-     */
-    @AfterThrowing(pointcut = "@annotation(log)", throwing = "exception")
-    public void afterThrowing(JoinPoint joinPoint, Log log, Throwable exception) {
-        // 当前请求 httpServletRequest
-        HttpServletRequest httpServletRequest = WebUtils.getCurrentRequest();
-        handleRecodeLog.handleRecordLog(joinPoint,
-                log,
-                null,
-                null,
-                httpServletRequest.getRequestURI(),
-                httpServletRequest.getHeader("User-Agent"),
-                IpUtils.getIpAddress(),
-                WebUtils.getClientType(),
-                exception);
+            // 处理记录log
+            handleRecodeLog.handleRecordLog(proceedingJoinPoint,
+                    log,
+                    Duration.between(startTime, DateUtils.now()).toMillis(),
+                    proceed,
+                    requestURI,
+                    userAgent,
+                    IpUtils.getIpAddress(),
+                    WebUtils.getClientType(),
+                    exception);
+        }
     }
 }
