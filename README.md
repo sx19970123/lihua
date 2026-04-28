@@ -2,7 +2,7 @@
 
 > 一个基于 **Spring Boot + Vue + UniApp** 的现代化 RBAC 权限管理系统
 
-[![Gitee Stars](https://gitee.com/yukino_git/lihua/badge/star.svg?theme=dark)](https://gitee.com/yukino_git/lihua/stargazers)[![GitHub Stars](https://img.shields.io/github/stars/sx19970123/lihua)](https://github.com/sx19970123/lihua)<a href="https://gitcode.com/weixin_44118742/lihua" target="_blank"><img src="https://gitcode.com/weixin_44118742/lihua/star/badge.svg" alt="AtomGit Star"/></a>
+[![Gitee Stars](https://gitee.com/yukino_git/lihua/badge/star.svg?theme=dark)](https://gitee.com/yukino_git/lihua/stargazers) [![GitHub Stars](https://img.shields.io/github/stars/sx19970123/lihua)](https://github.com/sx19970123/lihua) <a href="https://gitcode.com/weixin_44118742/lihua" target="_blank"><img src="https://gitcode.com/weixin_44118742/lihua/star/badge.svg" alt="AtomGit Star"/></a>
 
 
 
@@ -57,7 +57,7 @@
 如不需要app端，直接删除即可，后端服务将app专用接口进行了拆分，可将controller/app包中接口一并删除。
 
 ``` bash
-lihua-cloud/
+lihua/
 ├── lihua-app/              # app 客户端
 ├── lihua-vue/              # web 客户端
 ├── lihua/                  # spring boot 服务端
