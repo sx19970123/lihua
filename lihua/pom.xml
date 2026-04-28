@@ -35,7 +35,7 @@
         <fesod.version>2.0.1-incubating</fesod.version>
         <oss.version>3.18.5</oss.version>
         <spring-doc.version>3.0.2</spring-doc.version>
-        <snail-job.version>1.10.0-beta1</snail-job.version>
+        <snail-job.version>1.10.0</snail-job.version>
     </properties>
 
     <dependencyManagement>
