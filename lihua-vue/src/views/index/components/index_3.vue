@@ -56,7 +56,6 @@
             <a-descriptions-item label="系统缓存">spring-boot-starter-data-redis</a-descriptions-item>
             <a-descriptions-item label="系统缓存">spring-integration-redis</a-descriptions-item>
             <a-descriptions-item label="令牌工具">java-jwt</a-descriptions-item>
-            <a-descriptions-item label="接口限流">guava</a-descriptions-item>
             <a-descriptions-item label="excel导入导出">fesod</a-descriptions-item>
             <a-descriptions-item label="表单验证">spring-boot-starter-validation</a-descriptions-item>
             <a-descriptions-item label="服务器信息">oshi-core</a-descriptions-item>

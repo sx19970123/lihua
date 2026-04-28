@@ -45,7 +45,6 @@
               <p style="text-indent: 2em">
                 基于「狸花猫后台管理系统」的业务扩展方案，uni-app 开发，适配 App 与微信小程序，与 Web 端能力保持一致。
                 基础框架为Vue 3 + TypeScript，内置pinia，支持请求路由拦截，与web端开发体验一致。
-                <a href="https://gitee.com/yukino_git/lihua-app" target="_blank">项目仓库</a>
               </p>
             </a-typography-text>
             <a-typography-title :level="5">
