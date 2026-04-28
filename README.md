@@ -25,11 +25,15 @@
 
 
 ## 🧩 项目仓库
-
+### 单体版
 - Gitee：https://gitee.com/yukino_git/lihua
 - GitHub：https://github.com/sx19970123/lihua
 - GitCode：https://gitcode.com/weixin_44118742/lihua
 
+### 微服务版
+- Gitee：https://gitee.com/yukino_git/lihua-cloud
+- GitHub：https://github.com/sx19970123/lihua-cloud
+- GitCode：https://gitcode.com/weixin_44118742/lihua-cloud
 
 
 ## 💬 交流反馈
