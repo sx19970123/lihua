@@ -3,6 +3,7 @@ import token from "@/helpers/token.ts"
 import {ResponseError, type ResponseType} from "@/api/global/type.ts"
 import {useUserStore} from "@/stores/user";
 import router from "@/router";
+import {message} from "ant-design-vue";
 
 const { getToken } = token
 // 当前正在进行的请求url集合
@@ -56,7 +57,6 @@ service.interceptors.response.use((resp) => {
 }, error => {
     // 处理错误响应
     if (error.response) {
-        // Nginx 返回的错误响应会带有状态码
         const status = error.response.status;
         let errMsg: string;
         switch (status) {
@@ -79,6 +79,7 @@ service.interceptors.response.use((resp) => {
                 errMsg = `其他错误 (${status})`
         }
         console.error(errMsg)
+        message.error(errMsg)
         return Promise.reject(new ResponseError(status, errMsg));
     } else {
         console.error(error);

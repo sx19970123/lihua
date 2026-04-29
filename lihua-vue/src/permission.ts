@@ -1,4 +1,4 @@
-import router from "./router/index";
+import router from "@/router/index";
 import NProgress from "nprogress"
 import 'nprogress/nprogress.css'
 import {useUserStore} from "@/stores/user"

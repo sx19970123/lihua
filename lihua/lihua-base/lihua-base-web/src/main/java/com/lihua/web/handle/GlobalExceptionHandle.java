@@ -90,4 +90,12 @@ public class GlobalExceptionHandle extends StrResponseController {
         WebUtils.renderJson(error(ResultCodeEnum.REQUEST_METHOD_ERROR));
     }
 
+    /**
+     * 系统异常处理
+     */
+    @ExceptionHandler(Exception.class)
+    public void handleException(Exception e) {
+        log.error(e.getMessage(),e);
+        WebUtils.renderJson(500, error(ResultCodeEnum.SYSTEM_ERROR));
+    }
 }

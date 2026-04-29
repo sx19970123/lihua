@@ -18,18 +18,25 @@ public class WebUtils {
     /**
      * 将 json 数据进行响应
      */
-    @SneakyThrows
     public static void renderJson(String json) {
+        renderJson(200, json);
+    }
+
+    /**
+     * 将 json 数据进行响应
+     */
+    @SneakyThrows
+    public static void renderJson(int code, String json) { {
         HttpServletResponse response = getCurrentResponse();
         if (response == null) {
             log.error("响应数据写入失败，获取到的 HttpServletResponse 为空");
             return;
         }
-        response.setStatus(200);
+        response.setStatus(code);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(json);
-    }
+    }}
 
     /**
      * 获取当前请求的 HttpServletRequest
