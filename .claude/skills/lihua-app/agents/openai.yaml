@@ -1,6 +1,6 @@
 interface:
   display_name: "狸花猫 App 开发"
-  short_description: "狸花猫 UniApp 移动端开发指南。"
+  short_description: "UniApp 移动端 API、页面、分包与路由开发指南。"
   default_prompt: "使用 $lihua-app 在本仓库实现一个移动端功能。"
 
 policy:
