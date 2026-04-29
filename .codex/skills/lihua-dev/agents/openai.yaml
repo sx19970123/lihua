@@ -1,0 +1,7 @@
+interface:
+  display_name: "狸花猫全栈开发"
+  short_description: "狸花猫跨端 AI 开发指南。"
+  default_prompt: "使用 $lihua-dev 在本仓库实现一个跨端业务功能。"
+
+policy:
+  allow_implicit_invocation: true

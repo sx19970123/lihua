@@ -1,0 +1,7 @@
+interface:
+  display_name: "狸花猫后端开发"
+  short_description: "狸花猫 Spring Boot 后端指南。"
+  default_prompt: "使用 $lihua-backend 在本仓库实现一个服务端功能。"
+
+policy:
+  allow_implicit_invocation: true
