@@ -96,7 +96,7 @@ const showVersion = ref<boolean>(false)
 const versionInfo = [
 	{
 		version: '2.1.0',
-		updateDate: '2026-xx-xx',
+		updateDate: '2026-05-01',
 		updateContent: [
 			'1. 针对后台controller接口调整进行适配',
 			'2. 将utils包拆分出helpers用于存放业务相关工具代码',
