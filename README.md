@@ -12,7 +12,7 @@
 
 👉 web体验地址： https://lihua.xyz
 
-👉 安卓apk下载：[狸花猫 APP 下载](https://gitee.com/yukino_git/lihua-app/releases/download/1.0.0/狸花猫APP.apk)
+👉 安卓apk下载：[狸花猫 APP 下载](https://gitee.com/yukino_git/lihua-assets/raw/master/apk/Lihua.apk)
 
 
 
