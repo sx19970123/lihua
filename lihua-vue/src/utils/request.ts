@@ -4,7 +4,6 @@ import {ResponseError, type ResponseType} from "@/api/global/type.ts"
 import {useUserStore} from "@/stores/user";
 import router from "@/router";
 import {message} from "ant-design-vue";
-
 const { getToken } = token
 // 当前正在进行的请求url集合
 export const currentRequests = new Set<string>([]);
@@ -57,7 +56,8 @@ service.interceptors.response.use((resp) => {
 }, error => {
     // 处理错误响应
     if (error.response) {
-        const status = error.response.status;
+        let status = error.response.status;
+        const errData = error.response.data;
         let errMsg: string;
         switch (status) {
             case 404:
@@ -66,14 +66,15 @@ service.interceptors.response.use((resp) => {
             case 413:
                 errMsg = "请求体超过限制大小 (413)"
                 break;
+            // 服务端抛出非业务预期异常时会写入http状态码为500
             case 500:
-                errMsg = "服务器异常 (500)"
+                status = errData.code ? errData.code : 500
+                errMsg = errData.msg ? errData.msg : "服务器异常 (500)"
                 break;
+            // 网关抛出异常时会写入http状态码为502
             case 502:
-                errMsg = "网关错误 (502)"
-                break;
-            case 504:
-                errMsg = "网关超时 (504)"
+                status = errData.code ? errData.code : 502
+                errMsg = errData.msg ? errData.msg : "网关错误 (502)"
                 break;
             default:
                 errMsg = `其他错误 (${status})`
