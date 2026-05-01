@@ -24,8 +24,8 @@ public enum ResultCodeEnum {
     // 后台业务异常，5xx开始
     ERROR (500,"业务异常"),
     SYSTEM_ERROR (501,"系统异常"),
-    SERVER_BAD_ERROR (502,"服务不可用"),
-    BAD_GATEWAY_ERROR (503,"网关异常"),
+    BAD_GATEWAY_ERROR (502,"网关异常"),
+    SERVER_BAD_ERROR (503,"服务不可用"),
     SERVER_UNAVAILABLE (504,"服务器维护中"),
     FILE_ERROR (505,"附件处理异常"),
     MAX_UPLOAD_SIZE_EXCEEDED_ERROR (506,"上传的附件超过了允许的最大大小限制"),
