@@ -197,23 +197,25 @@ const startBreathing = () => {
     return
   }
 
-  // 上下均匀呼吸：振幅 16px，完整周期 6s
-  const amplitude = 16
-  const period = 6000
-  breatheStartTime = performance.now()
+  setTimeout(() => {
+    // 上下均匀呼吸：振幅 16px，完整周期 6s
+    const amplitude = 16
+    const period = 6000
+    breatheStartTime = performance.now()
 
-  const frame = (time: number) => {
-    if (status.value !== 'reset' || mouseDown.value) {
-      breatheRafId = null
-      return
+    const frame = (time: number) => {
+      if (status.value !== 'reset' || mouseDown.value) {
+        breatheRafId = null
+        return
+      }
+
+      const progress = ((time - breatheStartTime) % period) / period
+      breatheOffsetY.value = Math.sin(progress * Math.PI * 2) * amplitude
+      breatheRafId = requestAnimationFrame(frame)
     }
 
-    const progress = ((time - breatheStartTime) % period) / period
-    breatheOffsetY.value = Math.sin(progress * Math.PI * 2) * amplitude
     breatheRafId = requestAnimationFrame(frame)
-  }
-
-  breatheRafId = requestAnimationFrame(frame)
+  }, 500)
 }
 
 // 停止预锁屏呼吸效果
@@ -639,7 +641,7 @@ onUnmounted(() => {
   left: 0;
   z-index: 2147483647;
   background: var(--lihua-backdrop-filter-on-color);
-  border-radius: var(--lihua-radius-base);
+  border-radius: var(--lihua-radius-sm);
   box-shadow: var(--lihua-secondary-box-shadow);
 }
 

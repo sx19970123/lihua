@@ -1,20 +1,9 @@
 // 下一版本更新记录
 const nextUpdate = [
     {
-        version: '2.1.0',
+        version: '2.1.1',
         record: [
-            '1. 后端新增微服务版lihua-cloud',
-            '2. 项目整合，将app整合进主项目',
-            '3. 客户端ts文件名统一修改为小写',
-            '4. 锁屏新增预锁屏期间的呼吸动画',
-            '5. 锁屏新增根据视口高度动态显示时钟',
-            '6. 修复锁屏状态下登录失效后再次登录导致的侧边滚动条消失的bug',
-            '7. 修复用户展示组件中无法显示图片头像的bug',
-            '8. 修复部门停用后，用户管理还可以查询到的bug',
-            '9. 修复点击数据刷新后部门数据不更新的bug',
-            '10. LoginUser更新为LoginUserSession',
-            '11. Security过滤器details存储当前请求上下文（ip、token、clientType）',
-            '12. 其他细节优化调整',
+
         ]
     }
 ]
@@ -28,6 +17,25 @@ export const versionInfo = {
     vueVersion: ' 3.5.31',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '2.1.0',
+            updateDate: '2026-05-01',
+            title: "🎉🎉2.1.0 新增微服务版后台，整合app到主项目，新增skills，统一客户端ts命名规范",
+            updateContent: [
+                '1. 后端新增微服务版lihua-cloud',
+                '2. 项目整合，将app整合进主项目',
+                '3. 客户端ts文件名统一修改为小写',
+                '4. 锁屏新增预锁屏期间的呼吸动画',
+                '5. 锁屏新增根据视口高度动态显示时钟',
+                '6. 修复锁屏状态下登录失效后再次登录导致的侧边滚动条消失的bug',
+                '7. 修复用户展示组件中无法显示图片头像的bug',
+                '8. 修复部门停用后，用户管理还可以查询到的bug',
+                '9. 修复点击数据刷新后部门数据不更新的bug',
+                '10. LoginUser更新为LoginUserSession',
+                '11. Security过滤器details存储当前请求上下文（ip、token、clientType）',
+                '12. 其他细节优化调整',
+            ]
+        },
         {
             version: '2.0.2',
             updateDate: '2026-04-03',
