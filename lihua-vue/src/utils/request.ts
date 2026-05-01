@@ -49,7 +49,7 @@ service.interceptors.response.use((resp) => {
         throw data.msg
     }
     // 服务器处理文件异常，提示异常信息
-    if (data.code === 501) {
+    if (data.code === 505) {
         new ResponseError(data.code, data.msg)
     }
     return resp;
