@@ -50,7 +50,7 @@ service.interceptors.response.use(
 		}
 		
 		// 服务器处理文件异常，提示异常信息
-		if (data.code === 501) {
+		if (data.code === 505) {
 			throw new ResponseError(data.code, data.msg)
 		}
 		
@@ -63,7 +63,7 @@ service.interceptors.response.use(
 	},
 	(error) => {
 		// 请求出现异常
-		throw new ResponseError(503, error.errMsg);
+		throw new ResponseError(500, error.errMsg);
 	}
 )
 
