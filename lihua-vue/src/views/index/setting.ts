@@ -3,7 +3,8 @@ const nextUpdate = [
     {
         version: '2.1.1',
         record: [
-
+            '1. app sard-uniapp 组件库更新到1.30.0版本',
+            '2. app 通知公告侧滑互斥效果替换为组件库实现'
         ]
     }
 ]
