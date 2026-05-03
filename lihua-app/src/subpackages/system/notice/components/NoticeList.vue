@@ -1,5 +1,5 @@
 <template>
-	<sar-swipe-action-group ref="groupRef">
+	<sar-swipe-action-group>
 		<sar-list card v-if="props.noticeData && props.noticeData.length > 0">
 			<sar-list-item v-for="(notice, index) in props.noticeData" :key="notice.noticeId" :root-style="{padding: index === 0 ? '0 0 0 0' :'1px 0 0 0'}" @click="handleClickItem(notice, index)">
 				<sar-swipe-action>
