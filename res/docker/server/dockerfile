@@ -1,4 +1,4 @@
-FROM openjdk:21
+FROM eclipse-temurin:21.0.10_7-jre-jammy
 LABEL author=yukino
 COPY ./lihua-admin-exec.jar /app/lihua-admin-exec.jar
 EXPOSE 8080
