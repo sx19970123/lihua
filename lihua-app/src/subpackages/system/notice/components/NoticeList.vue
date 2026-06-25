@@ -25,7 +25,7 @@
 						</template>
 						<!-- 优先级 -->
 						<template #value>
-							<dict-tag :dict-data-value="notice.priority" :dict-data-option="sys_notice_priority"></dict-tag>
+							<dict-tag :dict-data-value="notice.priority || ''" :dict-data-option="sys_notice_priority"></dict-tag>
 						</template>
 					</sar-list-item>
 					<!-- 侧滑标星 -->

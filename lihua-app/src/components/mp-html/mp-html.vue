@@ -10,7 +10,8 @@
   </view>
 </template>
 
-<script>
+<script lang="ts">
+// @ts-nocheck
 /**
  * mp-html v2.5.1
  * @description 富文本组件

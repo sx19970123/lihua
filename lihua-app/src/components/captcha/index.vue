@@ -430,13 +430,18 @@
 			})
 		}
 		// 点选
-		const recordClickItem = (e : TouchEvent) => {
+		const recordClickItem = (e : TouchEvent | PointerEvent) => {
 			if (!sliderImg.value.left || !sliderImg.value.top) {
 				return
 			}
 
-			const x = e.touches[0].pageX
-			const y = e.touches[0].pageY
+			const point = 'touches' in e ? (e.touches[0] || e.changedTouches[0]) : e
+			if (!point) {
+				return
+			}
+
+			const x = point.pageX
+			const y = point.pageY
 
 			const relativeX = sliderImg.value.left - x
 			const relativeY = sliderImg.value.top - y

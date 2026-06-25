@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import IconSelect from '@/components/icon-select/index.vue'
-const value = ref<string>()
+const value = ref<string>('')
 </script>
 
 <style scoped lang="scss">

@@ -12,7 +12,7 @@
 			
 			<sar-space direction="vertical">
 				<view class="title">自定义消失时间(10s)</view>
-				<sar-button @click="show('测试通知', '测试内容', undefind, 10000)"> 显示通知</sar-button>
+				<sar-button @click="show('测试通知', '测试内容', undefined, 10000)"> 显示通知</sar-button>
 			</sar-space>
 			
 			<sar-space direction="vertical">

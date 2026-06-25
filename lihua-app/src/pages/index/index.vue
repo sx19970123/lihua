@@ -95,6 +95,16 @@ const showVersion = ref<boolean>(false)
 
 const versionInfo = [
 	{
+		version: '2.2.0',
+		updateDate: '2026-06-25',
+		updateContent: [
+			'1. 统一 App 与后端、Web 版本为 2.2.0',
+			'2. 更新 UniApp/DCloud 到 5.07（3.0.0-5000720260410001）',
+			'3. 更新 sard-uniapp 到 1.30.3',
+			'4. Sass 保持 1.69.7 以兼容组件库',
+		]
+	},
+	{
 		version: '2.1.0',
 		updateDate: '2026-05-01',
 		updateContent: [

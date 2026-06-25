@@ -1,23 +1,24 @@
-// 下一版本更新记录
-const nextUpdate = [
-    {
-        version: '2.1.1',
-        record: [
-            '1. app sard-uniapp 组件库更新到1.30.0版本',
-            '2. app 通知公告侧滑互斥效果替换为组件库实现'
-        ]
-    }
-]
-
 /**
  * 首页展示版本日志
  * 项目开发可以将 views/index 中内容删除，在 router 中重新配置首页即可
  */
 export const versionInfo = {
-    springBootVersion: ' 4.0.5',
-    vueVersion: ' 3.5.31',
+    springBootVersion: ' 4.1.0',
+    vueVersion: ' 3.5.38',
     lihuaUpdateLog: [
         // 每次更新版本在集合头部新增一条
+        {
+            version: '2.2.0',
+            updateDate: '2026-06-25',
+            updateContent: [
+                '1. 统一后端 Maven 多模块、Web 管理端和 App 端版本为 2.2.0',
+                '2. 后端主要组件升级：Spring Boot 4.1.0、MySQL Connector/J 9.7.0、Redisson 4.6.1、Snail Job 2.0.0',
+                '3. Web 主要组件升级：Vue 3.5.38、Vite 8.1.0、Pinia 3.0.4、Vue Router 5.1.0',
+                '4. App 主要组件升级：UniApp/DCloud 5.07、sard-uniapp 1.30.3',
+                '5. 优化未配置锁屏密码时跳转个人中心锁屏设置，并修复滚动条残留问题',
+                '6. 其他依赖版本更新和细节优化',
+            ]
+        },
         {
             version: '2.1.0',
             updateDate: '2026-05-01',

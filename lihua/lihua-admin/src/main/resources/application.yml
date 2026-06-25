@@ -1,10 +1,10 @@
 server:
-  port: 8080
+  port: 8081
   forward-headers-strategy: framework
 spring:
   application:
     name: lihua
-    version: 2.1.0
+    version: 2.2.0
   profiles:
     # 切换开发/生产环境
     active: dev

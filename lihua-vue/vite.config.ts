@@ -1,10 +1,11 @@
 import {fileURLToPath, URL} from 'node:url'
 import {defineConfig, loadEnv} from 'vite'
+import type {UserConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import svgLoader from 'vite-svg-loader'
 import replaceAttrFill from "./plugins/svgo-plugin.ts"
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode }): UserConfig => {
   // 获取请求前缀
   const env = loadEnv(mode, process.cwd());
   const baseApi = env.VITE_APP_BASE_API
@@ -21,12 +22,12 @@ export default defineConfig(({ mode }) => {
       open: true,
       proxy: {
         [baseApi]: {
-          target: 'http://localhost:8080',
+          target: 'http://localhost:8081',
           changeOrigin: true,
           rewrite: (p:string) => p.replace(baseApi, '')
         },
         [wsBaseApi]: {
-          target: 'ws://localhost:8080',
+          target: 'ws://localhost:8081',
           changeOrigin: true,
           ws: true
         }
@@ -39,13 +40,13 @@ export default defineConfig(({ mode }) => {
         },
       }
     },
+    esbuild: {
+      drop: ['console', 'debugger'],
+    },
     build: {
       outDir: 'dist',
       target: 'esnext',
       minify: 'esbuild',
-      esbuild: {
-        drop: ['console', 'debugger'],
-      },
       chunkSizeWarningLimit: 2000,
     },
     plugins: [

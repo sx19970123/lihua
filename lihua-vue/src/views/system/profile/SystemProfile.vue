@@ -26,10 +26,17 @@ import Basic from './components/ProfileBasicSetting.vue'
 import Individuation from './components/ProfileIndividuation.vue'
 import ProfileSecurity from './components/ProfileSecurity.vue'
 import ProfileLockScreen from './components/ProfileLockScreen.vue'
-import {markRaw, ref} from "vue";
+import {markRaw, ref, watch} from "vue";
 import {useThemeStore} from "@/stores/theme"
+import {useRoute, useRouter} from "vue-router";
 
 const themeStore = useThemeStore()
+const route = useRoute()
+const router = useRouter()
+const profileTabs = ['Basic', 'Security', 'LockScreen', 'Individuation'] as const
+type ProfileTabKey = typeof profileTabs[number]
+const defaultProfileTab: ProfileTabKey = 'Basic'
+
 // 注册子组件
 const allComponents = ref([
   {
@@ -53,9 +60,31 @@ const allComponents = ref([
 const activeComponent = ref(markRaw(Basic))
 // 设置回显
 const selectedKeys = ref(['Basic'])
+
+const isProfileTabKey = (value: unknown): value is ProfileTabKey => {
+  return typeof value === 'string' && profileTabs.includes(value as ProfileTabKey)
+}
+
+const getProfileTabFromRoute = (): ProfileTabKey => {
+  const tab = route.query.tab
+  return isProfileTabKey(tab) ? tab : defaultProfileTab
+}
+
+const changeUserMenu = (key: ProfileTabKey) => {
+  const target = allComponents.value.filter(item => item.name === key)[0]
+  if (!target) return
+  selectedKeys.value = [key]
+  activeComponent.value = target.com
+}
+
+watch(() => route.query.tab, () => {
+  changeUserMenu(getProfileTabFromRoute())
+}, {immediate: true})
+
 // 点击菜单切换组件
 const handleChangeUserMenu = ({key}: {key: string}) => {
-  const target = allComponents.value.filter(item => item.name === key)[0]
-  activeComponent.value = target.com
+  const tab = isProfileTabKey(key) ? key : defaultProfileTab
+  changeUserMenu(tab)
+  router.replace({path: '/profile', query: {tab}})
 }
 </script>

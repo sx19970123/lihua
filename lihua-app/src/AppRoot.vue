@@ -13,11 +13,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { useNoticeStore } from '@/stores/notice'
 import NoticeLite from '@/components/notice-lite/index.vue'
-import { nextTick } from 'process'
 const noticeStore = useNoticeStore()
 /**
  * 根节点组件生命周期函数，在页面生命周期函数之前触发，避免处理复杂逻辑，详见：

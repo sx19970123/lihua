@@ -56,6 +56,7 @@ import IconSelect from '@/components/icon-select/index.vue'
 import {getFileInfo} from '@/utils/attachment/attachment-utils'
 
 const userStore = useUserStore()
+type EditableAvatarType = AvatarType & { value: string }
 
 // 头像背景颜色
 const colorSource = [
@@ -102,7 +103,10 @@ const colorSource = [
 ]
 
 // 头像数据
-const avatarData = ref<AvatarType>(cloneDeep(userStore.avatar))
+const avatarData = ref<EditableAvatarType>({
+	...cloneDeep(userStore.avatar),
+	value: userStore.avatar.value || ''
+})
 
 // 执行保存
 const handleSave = async (type ?: 'confirm' | 'cancel' | 'close') => {
