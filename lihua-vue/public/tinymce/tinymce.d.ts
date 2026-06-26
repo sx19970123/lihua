@@ -172,6 +172,7 @@ interface BlobInfoData {
     base64: string;
     blobUri?: string;
     uri?: string;
+    allowEmptyFile?: boolean;
 }
 interface BlobInfo {
     id: () => string;
@@ -227,7 +228,11 @@ interface UploadFailure {
     remove?: boolean;
 }
 type ProgressFn = (percent: number) => void;
-type UploadHandler = (blobInfo: BlobInfo, progress: ProgressFn) => Promise<string>;
+interface UploadFileData {
+    url: string;
+    fileName: string;
+}
+type UploadHandler<T extends UploadFileData | string = string> = (blobInfo: BlobInfo, progress: ProgressFn) => Promise<T>;
 interface UploadResult$2 {
     url: string;
     blobInfo: BlobInfo;
@@ -675,6 +680,11 @@ type CustomEditorSpec = CustomEditorOldSpec | CustomEditorNewSpec;
 interface DropZoneSpec extends FormComponentWithLabelSpec {
     type: 'dropzone';
     context?: string;
+    dropAreaLabel?: string;
+    buttonLabel?: string;
+    allowedFileTypes?: string;
+    allowedFileExtensions?: string[];
+    onInvalidFiles?: () => Promise<void>;
 }
 interface GridSpec {
     type: 'grid';
@@ -2028,6 +2038,10 @@ type ThemeInitFunc = (editor: Editor, elm: HTMLElement) => {
     iframeHeight?: number;
     api?: EditorUiApi;
 };
+interface DocumentsFileTypes {
+    readonly mimeType: string;
+    readonly extensions: Array<string>;
+}
 type SetupCallback = (editor: Editor) => void;
 type FilePickerCallback = (callback: (value: string, meta?: Record<string, any>) => void, value: string, meta: Record<string, any>) => void;
 type FilePickerValidationStatus = 'valid' | 'unknown' | 'invalid' | 'none';
@@ -2057,6 +2071,7 @@ interface BaseEditorOptions {
     allow_conditional_comments?: boolean;
     allow_html_data_urls?: boolean;
     allow_html_in_named_anchor?: boolean;
+    allow_noneditable?: boolean;
     allow_script_urls?: boolean;
     allow_svg_data_urls?: boolean;
     allow_unsafe_link_target?: boolean;
@@ -2086,6 +2101,7 @@ interface BaseEditorOptions {
     content_css_cors?: boolean;
     content_security_policy?: string;
     content_style?: string;
+    content_language?: string;
     content_langs?: ContentLanguage[];
     contextmenu?: string | string[] | false;
     contextmenu_never_use_native?: boolean;
@@ -2226,6 +2242,7 @@ interface BaseEditorOptions {
     submit_patch?: boolean;
     suffix?: string;
     user_id?: string;
+    content_id?: string;
     table_tab_navigation?: boolean;
     target?: HTMLElement;
     text_patterns?: RawPattern[] | false;
@@ -2257,6 +2274,7 @@ interface BaseEditorOptions {
     valid_elements?: string;
     valid_styles?: string | Record<string, string>;
     verify_html?: boolean;
+    view_show?: string;
     visual?: boolean;
     visual_anchor_class?: string;
     visual_table_class?: string;
@@ -2367,6 +2385,7 @@ interface EditorOptions extends NormalizedEditorOptions {
     width: number | string;
     xss_sanitization: boolean;
     disabled: boolean;
+    documents_file_types: DocumentsFileTypes[];
 }
 type Content = string | AstNode;
 type ContentFormat = 'raw' | 'text' | 'html' | 'tree';
@@ -2631,6 +2650,7 @@ declare class EditorCommands {
     addCommands(commandList: Record<string, EditorCommandsCallback>): void;
     addCommand<S>(command: string, callback: EditorCommandCallback<S>, scope: S): void;
     addCommand(command: string, callback: EditorCommandCallback<Editor>): void;
+    removeCommand(command: string, type?: 'exec' | 'state' | 'value'): void;
     queryCommandSupported(command: string): boolean;
     addQueryStateHandler<S>(command: string, callback: (this: S) => boolean, scope: S): void;
     addQueryStateHandler(command: string, callback: (this: Editor) => boolean): void;
@@ -2922,6 +2942,7 @@ interface Theme {
     getNotificationManagerImpl?: () => NotificationManagerImpl;
     getWindowManagerImpl?: () => WindowManagerImpl;
     getPromotionElement?: () => HTMLElement | null;
+    getSinkElement?: (type: 'dialog' | 'popup') => HTMLElement;
 }
 type ThemeManager = AddOnManager<void | Theme>;
 interface EditorConstructor {
