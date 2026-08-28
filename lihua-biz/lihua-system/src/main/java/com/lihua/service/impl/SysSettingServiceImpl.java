@@ -92,13 +92,14 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
             return false;
         }
         SysSettingDTO.GrayModelSetting grayModelSetting = JsonUtils.toObject(json, SysSettingDTO.GrayModelSetting.class);
+        // 未开启时直接返回
+        if (!grayModelSetting.isEnable()) {
+            return false;
+        }
         // 关闭时间
         LocalDateTime closeTime = grayModelSetting.getCloseTime();
-        // 指定的过期时间对比
-        if (grayModelSetting.isEnable() && closeTime != null && DateUtils.differenceMinute(DateUtils.now(), closeTime) > 0) {
-            return true;
-        }
-        return grayModelSetting.isEnable();
+        // 未设置关闭时间或还未到关闭时间视为开启中，到达关闭时间后视为已关闭
+        return closeTime == null || DateUtils.differenceMinute(DateUtils.now(), closeTime) > 0;
     }
 
     @Override
