@@ -107,6 +107,6 @@ public class GlobalExceptionHandle extends StrResponseController {
     @ExceptionHandler(Exception.class)
     public void handleException(Exception e) {
         log.error(e.getMessage(),e);
-        WebUtils.renderJson(500, error(ResultCodeEnum.SYSTEM_ERROR));
+        WebUtils.renderJson(500, error(ResultCodeEnum.SYSTEM_ERROR, e.getMessage()));
     }
 }
