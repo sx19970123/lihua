@@ -1,7 +1,7 @@
 package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.lihua.entity.SysUserRole;
 import com.lihua.mapper.SysUserRoleMapper;
 import com.lihua.service.SysUserRoleService;

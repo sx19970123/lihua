@@ -2,7 +2,7 @@ package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.lihua.attachment.config.AttachmentProperties;
 import com.lihua.attachment.enums.AttachmentEnum;
 import com.lihua.attachment.exception.AttachmentException;
