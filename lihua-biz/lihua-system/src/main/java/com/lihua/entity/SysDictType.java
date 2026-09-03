@@ -37,6 +37,11 @@ public class SysDictType extends BaseEntity {
     private String type;
 
     /**
+     * 业务域（取值 sys_dict_business_domain 字典）
+     */
+    private String businessDomain;
+
+    /**
      * 备注
      */
     private String remark;

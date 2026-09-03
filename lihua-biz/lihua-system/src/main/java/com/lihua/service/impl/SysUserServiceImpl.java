@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import com.lihua.common.enums.SysStatusEnum;
 
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  implements SysUserService {
@@ -175,7 +176,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     @Override
     public String updateStatus(String id, String currentStatus) {
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
-        String status = "0".equals(currentStatus) ? "1" : "0";
+        String status = SysStatusEnum.toggle(currentStatus);
         updateWrapper.lambda()
                 .set(SysUser::getStatus, status)
                 .set(SysUser::getUpdateId, LoginUserContext.getUserId())

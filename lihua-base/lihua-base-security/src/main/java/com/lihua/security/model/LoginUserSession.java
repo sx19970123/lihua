@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import com.lihua.common.enums.SysStatusEnum;
 
 @Data
 @Accessors(chain = true)
@@ -124,7 +125,7 @@ public class LoginUserSession implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return "0".equals(user.getStatus());
+        return SysStatusEnum.NORMAL.getValue().equals(user.getStatus());
     }
 
     public LoginUserSession(CurrentUser currentUser, LocalDateTime expirationTime) {

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import com.lihua.common.enums.SysStatusEnum;
 
 @Service
 public class SysMenuServiceImpl implements SysMenuService {
@@ -95,7 +96,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public String updateStatus(List<String> ids, String currentStatus) {
         UpdateWrapper<SysMenu> updateWrapper = new UpdateWrapper<>();
-        String status = "0".equals(currentStatus) ? "1" : "0";
+        String status = SysStatusEnum.toggle(currentStatus);
 
         updateWrapper.lambda()
                 .set(SysMenu::getStatus, status)

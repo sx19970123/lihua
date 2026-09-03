@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import com.lihua.common.enums.SysStatusEnum;
 
 @Service
 public class SysRoleServiceImpl implements SysRoleService {
@@ -143,7 +144,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public String updateStatus(String id, String currentStatus) {
         UpdateWrapper<SysRole> updateWrapper = new UpdateWrapper<>();
-        String status = "0".equals(currentStatus) ? "1" : "0";
+        String status = SysStatusEnum.toggle(currentStatus);
 
         updateWrapper.lambda()
                 .set(SysRole::getStatus, status)

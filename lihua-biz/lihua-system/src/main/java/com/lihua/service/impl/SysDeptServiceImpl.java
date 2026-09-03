@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import com.lihua.common.enums.SysStatusEnum;
 
 @Service
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
@@ -133,7 +134,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public String updateStatus(String id, String currentStatus) {
         UpdateWrapper<SysDept> updateWrapper = new UpdateWrapper<>();
-        String status = "0".equals(currentStatus) ? "1" : "0";
+        String status = SysStatusEnum.toggle(currentStatus);
 
         updateWrapper.lambda()
                 .set(SysDept::getStatus, status)

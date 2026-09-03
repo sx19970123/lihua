@@ -1,6 +1,5 @@
 package com.lihua.controller;
 
-import com.lihua.common.enums.ResultCodeEnum;
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.dict.model.DictDataModel;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,10 +30,7 @@ public class SysDictDataController extends ApiResponseController {
 
     @Operation(summary = "列表查询")
     @PostMapping("list")
-    public ApiResponseModel<List<SysDictData>> queryListByTypeCode(@RequestBody SysDictDataDTO dictDataDTO) {
-        if (!StringUtils.hasText(dictDataDTO.getDictTypeCode())) {
-            return error(ResultCodeEnum.ERROR,"数据字典类型id为空");
-        }
+    public ApiResponseModel<List<SysDictData>> queryListByTypeCode(@RequestBody @Validated SysDictDataDTO dictDataDTO) {
         return success(sysDictDataService.queryList(dictDataDTO));
     }
 
@@ -63,7 +58,7 @@ public class SysDictDataController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除字典数据", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> delete(@RequestBody @NotEmpty(message = "请选择字段数据") List<String> ids) {
+    public ApiResponseModel<String> delete(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
         sysDictDataService.deleteByIds(ids);
         return success();
     }

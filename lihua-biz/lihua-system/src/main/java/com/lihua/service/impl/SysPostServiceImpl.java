@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import com.lihua.common.enums.SysStatusEnum;
 
 @Service
 public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> implements SysPostService {
@@ -117,7 +118,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Override
     public String updateStatus(String id, String currentStatus) {
         UpdateWrapper<SysPost> updateWrapper = new UpdateWrapper<>();
-        String status = "0".equals(currentStatus) ? "1" : "0";
+        String status = SysStatusEnum.toggle(currentStatus);
 
         updateWrapper.lambda()
                 .set(SysPost::getStatus, status)

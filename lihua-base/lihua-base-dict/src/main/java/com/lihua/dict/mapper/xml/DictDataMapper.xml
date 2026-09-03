@@ -21,5 +21,6 @@
             <foreach collection="dictTypeCodeList" item="code" open="(" separator="," close=")">
                 #{code}
             </foreach>
+        ORDER BY sys_dict_data.sort ASC
     </select>
 </mapper>

@@ -50,8 +50,8 @@ public class SysDictTypeController extends ApiResponseController {
 
     @Operation(summary = "修改状态")
     @PreAuthorize("hasRole('ROLE_admin')")
-    @PostMapping("updateStatus/{id}/{currentStatus}")
-    @Log(description = "修在字典类型状态", type = LogTypeEnum.UPDATE_STATUS)
+    @PutMapping("status/{id}/{currentStatus}")
+    @Log(description = "更新字典类型状态", type = LogTypeEnum.UPDATE_STATUS)
     public ApiResponseModel<String> updateStatus(@PathVariable String id, @PathVariable String currentStatus) {
         return success(sysDictTypeService.updateStatus(id, currentStatus));
     }
@@ -60,13 +60,15 @@ public class SysDictTypeController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除字典类型数据", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> delete(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
+    public ApiResponseModel<String> delete(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
         sysDictTypeService.deleteByIds(ids);
         return success();
     }
 
     @Operation(summary = "刷新缓存")
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("reload/cache")
+    @Log(description = "刷新字典缓存", type = LogTypeEnum.OTHER)
     public ApiResponseModel<String> reloadCache() {
         sysDictTypeService.reloadCache();
         return success();

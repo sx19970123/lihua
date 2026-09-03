@@ -12,6 +12,7 @@ import java.util.List;
 public class SysDictTypeDTO extends BaseDTO {
     private String name;
     private String code;
+    private String businessDomain;
     private String status;
     private List<LocalDate> startEndTime;
 }

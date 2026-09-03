@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+import com.lihua.common.enums.SysStatusEnum;
 
 @Service
 public class SysDictTypeServiceImpl implements SysDictTypeService {
@@ -47,6 +48,12 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
             queryWrapper
                     .lambda()
                     .like(SysDictType::getCode,dictTypeDTO.getCode());
+        }
+        // 业务域
+        if (StringUtils.hasText(dictTypeDTO.getBusinessDomain())) {
+            queryWrapper
+                    .lambda()
+                    .eq(SysDictType::getBusinessDomain,dictTypeDTO.getBusinessDomain());
         }
         // 字典状态
         if (StringUtils.hasText(dictTypeDTO.getStatus())) {
@@ -122,7 +129,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     @Override
     public String updateStatus(String id, String currentStatus) {
         UpdateWrapper<SysDictType> updateWrapper = new UpdateWrapper<>();
-        String status = "0".equals(currentStatus) ? "1" : "0";
+        String status = SysStatusEnum.toggle(currentStatus);
 
         updateWrapper.lambda()
                 .set(SysDictType::getStatus, status)
@@ -131,9 +138,11 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
                 .eq(SysDictType::getId, id);
         sysDictTypeMapper.update(null, updateWrapper);
 
-        // 删除对应缓存
-        String code = sysDictTypeMapper.selectById(id).getCode();
-        DictUtils.removeDictCache(code);
+        // 删除对应缓存（id 无效时无行被更新，跳过缓存清理）
+        SysDictType dictType = sysDictTypeMapper.selectById(id);
+        if (dictType != null) {
+            DictUtils.removeDictCache(dictType.getCode());
+        }
 
         return status;
     }

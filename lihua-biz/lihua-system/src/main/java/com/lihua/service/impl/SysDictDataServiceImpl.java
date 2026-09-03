@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.lihua.enums.DictTypeEnum;
 
 @Service
 public class SysDictDataServiceImpl implements SysDictDataService {
@@ -50,7 +51,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
 
         // 树形结构需要构建子数据
-        if ("1".equals(dictDataDTO.getType())) {
+        if (DictTypeEnum.TREE.getValue().equals(dictDataDTO.getType())) {
             return TreeUtils.buildTree(sysDictData);
         }
 
@@ -116,15 +117,15 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         checkChildren(ids);
         checkStatus(ids);
 
-        // 删除数据
-        sysDictDataMapper.deleteByIds(ids);
-
-        // 查询删除数据对应的type code
+        // 先取得待删数据对应的字典类型编码：逻辑删除后全局过滤将查不到已删行，必须在删除前查询
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .in(SysDictData::getId,ids)
                 .select(SysDictData::getDictTypeCode);
         List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
+
+        // 删除数据
+        sysDictDataMapper.deleteByIds(ids);
 
         // 删除缓存
         if (!sysDictData.isEmpty()) {
@@ -150,8 +151,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
         queryWrapper
                 .lambda()
-                .in(SysDictData::getParentId,ids)
-                .eq(SysDictData::getDelFlag,"0");
+                .in(SysDictData::getParentId,ids);
         Long count = sysDictDataMapper.selectCount(queryWrapper);
         if (count != 0) {
             throw new ServiceException("存在子集不允许删除");
@@ -161,8 +161,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     private void checkStatus(List<String> ids) {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().in(SysDictData::getId,ids)
-                .eq(SysDictData::getStatus,"0")
-                .eq(SysDictData::getDelFlag,"0");
+                .eq(SysDictData::getStatus,"0");
         Long count = sysDictDataMapper.selectCount(queryWrapper);
         if (count != 0) {
             throw new ServiceException("字典数据状态正常不允许删除");
