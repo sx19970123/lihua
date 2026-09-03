@@ -2,6 +2,7 @@ package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.lihua.common.enums.SysStatusEnum;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.tree.TreeUtils;
@@ -161,7 +162,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     private void checkStatus(List<String> ids) {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().in(SysDictData::getId,ids)
-                .eq(SysDictData::getStatus,"0");
+                .eq(SysDictData::getStatus, SysStatusEnum.NORMAL.getValue());
         Long count = sysDictDataMapper.selectCount(queryWrapper);
         if (count != 0) {
             throw new ServiceException("字典数据状态正常不允许删除");

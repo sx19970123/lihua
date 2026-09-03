@@ -168,7 +168,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     private void checkStatus(List<String> ids) {
         QueryWrapper<SysDictType> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().in(SysDictType::getId,ids)
-                .eq(SysDictType::getStatus,"0");
+                .eq(SysDictType::getStatus, SysStatusEnum.NORMAL.getValue());
         Long count = sysDictTypeMapper.selectCount(queryWrapper);
         if (count != 0) {
             throw new ServiceException("字典状态正常不允许删除");
