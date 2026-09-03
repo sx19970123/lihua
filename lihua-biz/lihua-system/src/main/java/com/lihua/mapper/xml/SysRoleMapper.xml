@@ -30,6 +30,67 @@
         sys_role.status = '0' AND sys_role.del_flag = '0' and sys_user_role.user_id = #{userId}
     </select>
 
+    <select id="selectUserPageByRoleId" resultType="com.lihua.model.vo.SysRoleUserVO">
+        SELECT
+            sys_user.id,
+            sys_user.nickname,
+            sys_user.username,
+            sys_user.status,
+            sys_user.create_time,
+            IF(sys_user_role.user_id IS NOT NULL, 1, 0) AS authorized
+        FROM
+            sys_user
+            LEFT JOIN sys_user_role ON sys_user_role.user_id = sys_user.id AND sys_user_role.role_id = #{roleId}
+        WHERE
+            sys_user.del_flag = '0'
+            <if test="dto.nickname != null and dto.nickname != ''">
+                AND sys_user.nickname like concat('%', #{dto.nickname}, '%')
+            </if>
+            <if test="dto.username != null and dto.username != ''">
+                AND sys_user.username like concat('%', #{dto.username}, '%')
+            </if>
+            <if test="dto.status != null and dto.status != ''">
+                AND sys_user.status = #{dto.status}
+            </if>
+            <if test='dto.authorized != null and dto.authorized == "1"'>
+                AND sys_user_role.user_id IS NOT NULL
+            </if>
+            <if test='dto.authorized != null and dto.authorized == "0"'>
+                AND sys_user_role.user_id IS NULL
+            </if>
+            <if test="dto.deptIdList != null and dto.deptIdList.size() > 0">
+                AND EXISTS (SELECT 1 FROM sys_user_dept WHERE sys_user_dept.user_id = sys_user.id AND sys_user_dept.dept_id IN
+                <foreach collection="dto.deptIdList" item="deptId" open="(" separator="," close=")">
+                    #{deptId}
+                </foreach>
+                )
+            </if>
+        ORDER BY
+            authorized DESC,
+            sys_user.create_time DESC
+    </select>
+
+    <select id="selectUserIdsByRoleIdAndUserIds" resultType="java.lang.String">
+        SELECT user_id FROM sys_user_role WHERE role_id = #{roleId} AND user_id in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <insert id="insertUserRole">
+        INSERT INTO sys_user_role (role_id, user_id) VALUES
+        <foreach collection="userIds" item="userId" separator=",">
+            ( #{roleId}, #{userId} )
+        </foreach>
+    </insert>
+
+    <delete id="deleteUserRoleByRoleIdAndUserIds">
+        DELETE FROM sys_user_role WHERE role_id = #{roleId} AND user_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
     <select id="selectRoleMenuCountByRoleIds" resultType="java.lang.Long">
         SELECT count( 1 ) FROM sys_role_menu WHERE role_id in
         <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">

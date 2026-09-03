@@ -7,6 +7,8 @@ import com.lihua.entity.SysRole;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysRoleDTO;
+import com.lihua.model.dto.SysRoleUserDTO;
+import com.lihua.model.vo.SysRoleUserVO;
 import com.lihua.mybatis.model.validation.MaxPageSizeLimit;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.model.CurrentRole;
@@ -62,6 +64,30 @@ public class SysRoleController extends ApiResponseController {
     @Log(description = "删除角色数据", type = LogTypeEnum.DELETE)
     public ApiResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
         sysRoleService.deleteByIds(ids);
+        return success();
+    }
+
+    @Operation(summary = "已授权用户分页查询")
+    @PostMapping("user/{roleId}/page")
+    public ApiResponseModel<IPage<SysRoleUserVO>> queryUserPage(@PathVariable String roleId, @RequestBody @Validated(MaxPageSizeLimit.class) SysRoleUserDTO sysRoleUserDTO) {
+        return success(sysRoleService.queryUserPage(roleId, sysRoleUserDTO));
+    }
+
+    @Operation(summary = "批量授权用户")
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @PostMapping("user/{roleId}")
+    @Log(description = "角色分配用户", type = LogTypeEnum.SAVE)
+    public ApiResponseModel<String> saveUsers(@PathVariable String roleId, @RequestBody @NotEmpty(message = "请选中要授权的用户") List<String> userIds) {
+        sysRoleService.saveUsers(roleId, userIds);
+        return success();
+    }
+
+    @Operation(summary = "批量取消授权用户")
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @DeleteMapping("user/{roleId}")
+    @Log(description = "角色取消授权用户", type = LogTypeEnum.DELETE)
+    public ApiResponseModel<String> deleteUsers(@PathVariable String roleId, @RequestBody @NotEmpty(message = "请选中要取消授权的用户") List<String> userIds) {
+        sysRoleService.deleteUsers(roleId, userIds);
         return success();
     }
 

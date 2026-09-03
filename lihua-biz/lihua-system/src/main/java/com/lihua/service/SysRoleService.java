@@ -3,6 +3,8 @@ package com.lihua.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.entity.SysRole;
 import com.lihua.model.dto.SysRoleDTO;
+import com.lihua.model.dto.SysRoleUserDTO;
+import com.lihua.model.vo.SysRoleUserVO;
 
 import java.util.List;
 
@@ -36,4 +38,19 @@ public interface SysRoleService {
      * @return 更新后状态
      */
     String updateStatus(String id, String currentStatus);
+
+    /**
+     * 分页查询角色已授权用户
+     */
+    IPage<SysRoleUserVO> queryUserPage(String roleId, SysRoleUserDTO sysRoleUserDTO);
+
+    /**
+     * 批量授权用户
+     */
+    void saveUsers(String roleId, List<String> userIds);
+
+    /**
+     * 批量取消授权用户
+     */
+    void deleteUsers(String roleId, List<String> userIds);
 }

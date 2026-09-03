@@ -7,8 +7,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysRole;
+import com.lihua.entity.SysUser;
 import com.lihua.mapper.SysRoleMapper;
+import com.lihua.mapper.SysUserMapper;
 import com.lihua.model.dto.SysRoleDTO;
+import com.lihua.model.dto.SysRoleUserDTO;
+import com.lihua.model.vo.SysRoleUserVO;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.service.SysRoleService;
 import jakarta.annotation.Resource;
@@ -24,6 +28,9 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Resource
     private SysRoleMapper sysRoleMapper;
+
+    @Resource
+    private SysUserMapper sysUserMapper;
 
     @Override
     public IPage<SysRole> queryPage(SysRoleDTO sysRoleDTO) {
@@ -143,10 +150,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public String updateStatus(String id, String currentStatus) {
-        SysRole sysRole = sysRoleMapper.selectById(id);
-        if (sysRole == null) {
-            throw new ServiceException("角色不存在");
-        }
+        checkRoleExists(id);
         UpdateWrapper<SysRole> updateWrapper = new UpdateWrapper<>();
         String status = SysStatusEnum.toggle(currentStatus);
 
@@ -157,5 +161,41 @@ public class SysRoleServiceImpl implements SysRoleService {
                 .eq(SysRole::getId, id);
         sysRoleMapper.update(null, updateWrapper);
         return status;
+    }
+
+    @Override
+    public IPage<SysRoleUserVO> queryUserPage(String roleId, SysRoleUserDTO sysRoleUserDTO) {
+        checkRoleExists(roleId);
+        return sysRoleMapper.selectUserPageByRoleId(
+                new Page<>(sysRoleUserDTO.getPageNum(), sysRoleUserDTO.getPageSize()), roleId, sysRoleUserDTO);
+    }
+
+    @Override
+    public void saveUsers(String roleId, List<String> userIds) {
+        checkRoleExists(roleId);
+        List<String> distinctIds = userIds.stream().distinct().toList();
+        // 校验用户存在性，防止无效id写入脏关联
+        Long userCount = sysUserMapper.selectCount(new QueryWrapper<SysUser>().in("id", distinctIds));
+        if (userCount != distinctIds.size()) {
+            throw new ServiceException("包含无效用户");
+        }
+        // 已授权用户静默跳过，保证幂等
+        List<String> authorizedIds = sysRoleMapper.selectUserIdsByRoleIdAndUserIds(roleId, distinctIds);
+        List<String> newUserIds = distinctIds.stream().filter(id -> !authorizedIds.contains(id)).toList();
+        if (!newUserIds.isEmpty()) {
+            sysRoleMapper.insertUserRole(roleId, newUserIds);
+        }
+    }
+
+    @Override
+    public void deleteUsers(String roleId, List<String> userIds) {
+        checkRoleExists(roleId);
+        sysRoleMapper.deleteUserRoleByRoleIdAndUserIds(roleId, userIds.stream().distinct().toList());
+    }
+
+    private void checkRoleExists(String id) {
+        if (sysRoleMapper.selectById(id) == null) {
+            throw new ServiceException("角色不存在");
+        }
     }
 }
