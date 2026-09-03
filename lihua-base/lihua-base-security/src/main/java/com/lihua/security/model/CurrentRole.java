@@ -19,19 +19,4 @@ public class CurrentRole implements Serializable {
      * 角色编码
      */
     private String code;
-
-    /**
-     * 角色状态
-     */
-    private String status;
-
-    /**
-     * 逻辑删除标识
-     */
-    private String delFlag;
-
-    /**
-     * 备注
-     */
-    private String remark;
 }

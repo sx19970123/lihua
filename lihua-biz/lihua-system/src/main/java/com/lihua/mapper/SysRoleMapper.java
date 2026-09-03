@@ -12,10 +12,10 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     List<CurrentRole> selectSysRoleByUserId(String userId);
     // 查询角色信息（admin）
     List<CurrentRole> selectAllRole();
-    // 根据角色id查询角色菜单关联表数据量(key：关联表对应列名，ids 对应列的id集合)
-    Long selectRoleMenuCount(@Param("key") String key, @Param("ids") List<String> ids);
-    // 根据角色id查询角色用户关联表数据量(key：关联表对应列名，ids 对应列的id集合)
-    Long selectUserRoleCount(@Param("key") String key, @Param("ids") List<String> ids);
+    // 根据角色id查询角色菜单关联表数据量
+    Long selectRoleMenuCountByRoleIds(@Param("roleIds") List<String> roleIds);
+    // 根据角色id查询角色用户关联表数据量
+    Long selectUserRoleCountByRoleIds(@Param("roleIds") List<String> roleIds);
     // 根据角色id 删除角色菜单关联表
     Long deleteRoleMenuByRoleId(String roleId);
     // 根据菜单id 删除角色菜单关联表
@@ -26,6 +26,4 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     SysRole queryById(String roleId);
     // 根据用户id查询对应角色编码
     List<String> selectCodeByUserId(@Param("userId") String userId);
-    // 查询所有角色，包含已停用状态
-    List<SysRole> queryAllRole();
 }

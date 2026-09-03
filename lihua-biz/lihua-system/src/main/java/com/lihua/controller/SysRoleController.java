@@ -50,9 +50,9 @@ public class SysRoleController extends ApiResponseController {
 
     @Operation(summary = "更新状态")
     @PreAuthorize("hasRole('ROLE_admin')")
-    @PostMapping("updateStatus/{id}/{currentStatus}")
+    @PutMapping("status/{id}/{currentStatus}")
     @Log(description = "更新角色状态", type = LogTypeEnum.UPDATE_STATUS)
-    public ApiResponseModel<String> updateStatus(@PathVariable("id") String id, @PathVariable("currentStatus") String currentStatus) {
+    public ApiResponseModel<String> updateStatus(@PathVariable String id, @PathVariable String currentStatus) {
         return success(sysRoleService.updateStatus(id, currentStatus));
     }
 
@@ -60,7 +60,7 @@ public class SysRoleController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除角色数据", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
+    public ApiResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
         sysRoleService.deleteByIds(ids);
         return success();
     }

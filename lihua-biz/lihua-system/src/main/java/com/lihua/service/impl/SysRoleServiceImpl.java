@@ -126,14 +126,14 @@ public class SysRoleServiceImpl implements SysRoleService {
         QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .in(SysRole::getId,ids)
-                .eq(SysRole::getStatus,"0");
+                .eq(SysRole::getStatus, SysStatusEnum.NORMAL.getValue());
         Long count = sysRoleMapper.selectCount(queryWrapper);
         if (count > 0) {
             throw new ServiceException("角色状态为正常，不允许删除");
         }
 
-        Long menuCount = sysRoleMapper.selectRoleMenuCount("role_id",ids);
-        Long userCount = sysRoleMapper.selectUserRoleCount("role_id",ids);
+        Long menuCount = sysRoleMapper.selectRoleMenuCountByRoleIds(ids);
+        Long userCount = sysRoleMapper.selectUserRoleCountByRoleIds(ids);
         if (menuCount == 0 && userCount == 0) {
             sysRoleMapper.deleteByIds(ids);
         } else {
@@ -143,6 +143,10 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public String updateStatus(String id, String currentStatus) {
+        SysRole sysRole = sysRoleMapper.selectById(id);
+        if (sysRole == null) {
+            throw new ServiceException("角色不存在");
+        }
         UpdateWrapper<SysRole> updateWrapper = new UpdateWrapper<>();
         String status = SysStatusEnum.toggle(currentStatus);
 
