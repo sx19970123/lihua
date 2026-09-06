@@ -28,7 +28,7 @@ public class SysDeptController extends ApiResponseController {
     @Resource
     private SysDeptService sysDeptService;
 
-    @Operation(summary = "分页查询")
+    @Operation(summary = "列表查询")
     @PostMapping("list")
     public ApiResponseModel<List<SysDeptVO>> queryDeptPostList(@RequestBody SysDept sysDept) {
         List<SysDeptVO> deptPostList = sysDeptService.queryDeptPostList(sysDept);
@@ -51,7 +51,7 @@ public class SysDeptController extends ApiResponseController {
 
     @Operation(summary = "更新状态")
     @PreAuthorize("hasRole('ROLE_admin')")
-    @PostMapping("updateStatus/{id}/{currentStatus}")
+    @PutMapping("status/{id}/{currentStatus}")
     @Log(description = "更新部门状态", type = LogTypeEnum.UPDATE_STATUS)
     public ApiResponseModel<String> updateStatus(@PathVariable("id") String id, @PathVariable("currentStatus") String currentStatus) {
         return success(sysDeptService.updateStatus(id, currentStatus));
@@ -74,7 +74,7 @@ public class SysDeptController extends ApiResponseController {
 
     @Operation(summary = "导出部门数据")
     @PostMapping("export")
-    @Log(description = "批量导出部门", type = LogTypeEnum.EXPORT)
+    @Log(description = "导出部门数据", type = LogTypeEnum.EXPORT)
     public void exportExcel(@RequestBody SysDept sysDept) {
         List<SysDeptVO> sysDeptVOS = sysDeptService.exportExcel(sysDept);
         ExcelUtils.export(sysDeptVOS, SysDeptVO.class);

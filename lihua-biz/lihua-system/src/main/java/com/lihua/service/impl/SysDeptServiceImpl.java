@@ -126,13 +126,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public List<SysDept> deptTreeOption() {
         QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(SysDept::getStatus, "0").orderByAsc(SysDept::getSort);
+        queryWrapper.lambda().eq(SysDept::getStatus, SysStatusEnum.NORMAL.getValue()).orderByAsc(SysDept::getSort);
         List<SysDept> sysDeptList = sysDeptMapper.selectList(queryWrapper);
         return TreeUtils.buildTree(sysDeptList);
     }
 
     @Override
     public String updateStatus(String id, String currentStatus) {
+        checkDeptExists(id);
         UpdateWrapper<SysDept> updateWrapper = new UpdateWrapper<>();
         String status = SysStatusEnum.toggle(currentStatus);
 
@@ -149,15 +150,15 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     public List<SysDeptVO> exportExcel(SysDept sysDept) {
         // 查询部门岗位信息
         List<SysDeptVO> deptPostList = queryDeptPostList(sysDept);
+        Map<String, SysDeptVO> deptMap = deptPostList.stream().collect(Collectors.toMap(SysDeptVO::getId, dept -> dept));
         // 处理生成路径名称和岗位名称拼接
-        deptPostList.forEach(post -> {
+        deptPostList.forEach(dept -> {
             // 路径名称
-            String namePath = getNamePath(deptPostList, post.getId());
-            post.setNamePath(namePath);
+            dept.setNamePath(getNamePath(deptMap, dept.getId()));
             // 岗位名称
-            if (post.getSysPostList() != null && !post.getSysPostList().isEmpty()) {
-                List<String> postNameList = post.getSysPostList().stream().map(SysPost::getName).toList();
-                post.setPostNames(String.join("、", postNameList));
+            if (dept.getSysPostList() != null && !dept.getSysPostList().isEmpty()) {
+                List<String> postNameList = dept.getSysPostList().stream().map(SysPost::getName).toList();
+                dept.setPostNames(String.join("、", postNameList));
             }
         });
         return deptPostList;
@@ -167,7 +168,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     private void checkStatus(List<String> ids) {
         QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
-                .eq(SysDept::getStatus,"0")
+                .eq(SysDept::getStatus, SysStatusEnum.NORMAL.getValue())
                 .in(SysDept::getId,ids);
         Long count = sysDeptMapper.selectCount(queryWrapper);
         if (count > 0) {
@@ -249,21 +250,19 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         }
     }
 
-    // 获取名称路径
-    private String getNamePath(List<SysDeptVO> sysDeptList, String deptId) {
-        List<SysDeptVO> targetSingleList = sysDeptList.stream().filter(dept -> dept.getId().equals(deptId)).toList();
-        if (!targetSingleList.isEmpty()) {
-            // 获取到最末级（自己）
-            SysDeptVO sysDept = targetSingleList.get(0);
-            String name = sysDept.getName();
-            //  当前pid为 0 即为顶级部门，名称路径为自己部门名称
-            if ("0".equals(sysDept.getParentId())) {
-                return name;
-            } else {
-                String parentName = getNamePath(sysDeptList, sysDept.getParentId());
-                return parentName + "/" + name;
-            }
+    // 获取名称路径；父级不在当前集合（根节点，或被筛选/逻辑删除排除）时视为链头，返回自身名称
+    private String getNamePath(Map<String, SysDeptVO> deptMap, String deptId) {
+        SysDeptVO sysDept = deptMap.get(deptId);
+        if (sysDept == null) {
+            return null;
         }
-        return null;
+        String parentNamePath = getNamePath(deptMap, sysDept.getParentId());
+        return parentNamePath == null ? sysDept.getName() : parentNamePath + "/" + sysDept.getName();
+    }
+
+    private void checkDeptExists(String id) {
+        if (sysDeptMapper.selectById(id) == null) {
+            throw new ServiceException("部门不存在");
+        }
     }
 }
