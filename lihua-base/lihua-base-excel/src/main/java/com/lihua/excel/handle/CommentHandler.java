@@ -1,7 +1,6 @@
 package com.lihua.excel.handle;
 
 import com.lihua.excel.annotation.ExcelComment;
-import com.lihua.excel.enums.CommentUseEnum;
 import org.apache.fesod.sheet.metadata.Head;
 import org.apache.fesod.sheet.metadata.data.WriteCellData;
 import org.apache.fesod.sheet.write.handler.CellWriteHandler;
@@ -27,7 +26,7 @@ public class CommentHandler implements CellWriteHandler {
         ExcelComment annotation = field.getAnnotation(ExcelComment.class);
 
         // 检查是否添加批注
-        if (!checkAddComment(annotation, cell, relativeRowIndex, isHead)) {
+        if (!checkAddComment(annotation, relativeRowIndex, isHead)) {
             return;
         }
 
@@ -48,37 +47,13 @@ public class CommentHandler implements CellWriteHandler {
     }
 
     /**
-     * 检查是否提添加批注
+     * 批注为填表指引，仅挂表头行（多级表头按 headRowNum 定位）
      */
-    private boolean checkAddComment(ExcelComment annotation, Cell cell, int relativeRowIndex, Boolean isHead) {
-
-        if (annotation == null) {
+    private boolean checkAddComment(ExcelComment annotation, int relativeRowIndex, Boolean isHead) {
+        if (annotation == null || !isHead) {
             return false;
         }
 
-        CommentUseEnum use = annotation.use();
-
-        // 应用表头
-        if (use == CommentUseEnum.HEAD) {
-            if (!isHead) {
-                return false;
-            }
-
-            return relativeRowIndex == annotation.headRowNum();
-        }
-
-        // 应用全部
-        if (use == CommentUseEnum.ALL) {
-            if (isHead) {
-                return relativeRowIndex == annotation.headRowNum();
-            }
-        }
-
-        // 应用内容
-        if (use == CommentUseEnum.BODY) {
-            return !isHead;
-        }
-
-        return true;
+        return relativeRowIndex == annotation.headRowNum();
     }
 }

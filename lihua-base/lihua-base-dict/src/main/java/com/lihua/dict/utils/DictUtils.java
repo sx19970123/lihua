@@ -86,23 +86,29 @@ public class DictUtils {
 
     /**
      * 获取字典缓存数据
+     * Redis 空结果视为未命中（防新部署场景 DB 有数据而 Redis 未预热时被空结果阻断回源）；
+     * 查库也无数据时以空列表做本地负缓存，避免无数据字典每格回源 Redis/DB
      */
     public static List<DictDataModel> getDictData(String dictTypeCode) {
         String cacheKey = RedisKeyPrefixEnum.DICT_DATA_REDIS_PREFIX.getValue() + dictTypeCode;
-        // 获取本地缓存
-        List<DictDataModel> dictCache = LOCAL_CACHE_MANAGER.getWithFallback(cacheKey, new TypeReference<>(){}, () -> REDIS_CACHE_MANAGER.getCacheList(cacheKey, DictDataModel.class));
+        // 获取本地缓存（Redis 空集合按未命中处理）
+        List<DictDataModel> dictCache = LOCAL_CACHE_MANAGER.getWithFallback(cacheKey, new TypeReference<>(){}, () -> {
+            List<DictDataModel> redisList = REDIS_CACHE_MANAGER.getCacheList(cacheKey, DictDataModel.class);
+            return redisList == null || redisList.isEmpty() ? null : redisList;
+        });
 
-        // 缓存数据为空时，尝试从数据库再次获取，数据库未查询到数据时，返回空集合
-        // 查询到数据时，再次调用自身返回字典数据
-        if (dictCache == null || dictCache.isEmpty()) {
-            int i = resetCacheDict(dictTypeCode);
-            if (i == 0) {
-                return new ArrayList<>();
-            }
-            return getDictData(dictTypeCode);
+        if (dictCache != null) {
+            return dictCache;
         }
 
-        return dictCache;
+        // 本地未命中时查库重建缓存；查到数据时再次调用自身返回字典数据
+        int i = resetCacheDict(dictTypeCode);
+        if (i == 0) {
+            // 查无数据：空列表负缓存（本地 TTL 内不再回源；字典新增数据经 setDictCache 的 pub/sub 失效解除）
+            LOCAL_CACHE_MANAGER.setCache(cacheKey, new ArrayList<>());
+            return new ArrayList<>();
+        }
+        return getDictData(dictTypeCode);
     }
 
     /**

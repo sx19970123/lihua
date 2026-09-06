@@ -1,8 +1,6 @@
 package com.lihua.excel.utils;
 
 import com.lihua.common.exception.ServiceException;
-import com.lihua.excel.annotation.ExcelEnableComment;
-import com.lihua.excel.annotation.ExcelEnableDropdown;
 import com.lihua.excel.exception.ExcelExportException;
 import com.lihua.excel.handle.CommentHandler;
 import com.lihua.excel.handle.DropdownHandler;
@@ -17,6 +15,8 @@ import org.apache.fesod.sheet.write.builder.ExcelWriterBuilder;
 import org.apache.fesod.sheet.write.handler.WriteHandler;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,47 +28,53 @@ import java.util.List;
 public class ExcelUtils {
 
     /**
-     * excel 导出
+     * excel 导出（纯数据：流式写出，不携带批注与下拉）
      * @param exportData 需要导出的数据
      * @param clazz 导出的数据类型
      */
     public static void export(Collection<?> exportData, Class<?> clazz) {
-        export(exportData, clazz, null);
+        export(exportData, clazz, new WriteHandler[0]);
     }
 
     /**
-     * excel 导出
+     * excel 导出（纯数据：流式写出，不携带批注与下拉）
      * @param exportData 需要导出的数据
      * @param clazz 导出的数据类型
-     * @param mergeStrategy 单元格合并策略
+     * @param writeHandlers 写出处理器（如单元格合并策略），按序注册、可传多个
      */
-    public static <T extends WriteHandler> void export(Collection<?> exportData, Class<?> clazz, T mergeStrategy) {
+    public static void export(Collection<?> exportData, Class<?> clazz, WriteHandler... writeHandlers) {
+        ServletOutputStream outputStream = getOutputStream("export");
+        ExcelWriterBuilder write = FesodSheet.write(outputStream, clazz);
+
+        // 注册写出处理器（合并策略等）
+        if (writeHandlers != null) {
+            for (WriteHandler writeHandler : writeHandlers) {
+                write.registerWriteHandler(writeHandler);
+            }
+        }
+
         try {
-            ServletOutputStream outputStream = getExcelResponse().getOutputStream();
-            ExcelWriterBuilder write = FesodSheet.write(outputStream, clazz);
-
-            // 合并单元格
-            if (mergeStrategy != null) {
-                write.registerWriteHandler(mergeStrategy);
-            }
-
-            // 判断是否启用了单元格下拉
-            ExcelEnableDropdown excelEnableDropdown = clazz.getAnnotation(ExcelEnableDropdown.class);
-            if (excelEnableDropdown != null) {
-                write.registerWriteHandler(new DropdownHandler());
-            }
-
-            // 判断是否启用了单元格批注
-            ExcelEnableComment excelEnableComment = clazz.getAnnotation(ExcelEnableComment.class);
-            if (excelEnableComment != null) {
-                write.inMemory(true);
-                write.registerWriteHandler(new CommentHandler());
-            }
-
             write.sheet().doWrite(exportData);
+        } catch (Exception e) {
+            throw new ServiceException("excel 写出异常：" + e.getMessage());
+        }
+    }
 
-        } catch (IOException e) {
-            throw new ServiceException("获取输出流异常");
+    /**
+     * excel 导入模板导出（仅表头行，携带字段批注与下拉作为填表指引；
+     * 处理器对无注解字段自动跳过，POI 批注要求全内存写出）
+     * @param clazz 模板的数据类型
+     */
+    public static void exportTemplate(Class<?> clazz) {
+        ServletOutputStream outputStream = getOutputStream("template");
+        ExcelWriterBuilder write = FesodSheet.write(outputStream, clazz);
+        write.inMemory(true);
+        write.registerWriteHandler(new DropdownHandler());
+        write.registerWriteHandler(new CommentHandler());
+        try {
+            write.sheet().doWrite(new ArrayList<>());
+        } catch (Exception e) {
+            throw new ServiceException("excel 写出异常：" + e.getMessage());
         }
     }
 
@@ -97,10 +103,10 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取excel响应对象
-     * @return HttpServletResponse
+     * 获取 excel 响应输出流
+     * @param fileName 浏览器直接访问接口时的兜底文件名（前端 blob 下载自行命名，不消费此值）
      */
-    private static HttpServletResponse getExcelResponse() {
+    private static ServletOutputStream getOutputStream(String fileName) {
         // 处理响应信息
         HttpServletResponse response = WebUtils.getCurrentResponse();
         if (response == null) {
@@ -108,7 +114,12 @@ public class ExcelUtils {
         }
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
-        response.setHeader("Content-disposition", "attachment");
-        return response;
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''"
+                + URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20") + ".xlsx");
+        try {
+            return response.getOutputStream();
+        } catch (IOException e) {
+            throw new ServiceException("获取输出流异常");
+        }
     }
 }

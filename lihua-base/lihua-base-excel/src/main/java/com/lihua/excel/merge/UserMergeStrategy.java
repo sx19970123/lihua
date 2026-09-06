@@ -1,146 +1,94 @@
 package com.lihua.excel.merge;
 
 import org.apache.fesod.sheet.metadata.Head;
+import org.apache.fesod.sheet.write.handler.SheetWriteHandler;
+import org.apache.fesod.sheet.write.handler.context.SheetWriteHandlerContext;
 import org.apache.fesod.sheet.write.merge.AbstractMergeStrategy;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
- * 处理用户导出单元格合并策略
+ * 用户导出单元格合并策略：按用户名分组，分组列（username 等）的连续行合并。
+ * 合并区域先收集、sheet 写完后统一提交，且走 addMergedRegionUnsafe 免校验通道——
+ * 逐次 addMergedRegion 会全量校验既有区域（区域数大时呈平方级），而本策略的
+ * 区域按行分组连续划分、组内列互异，天然不重叠，校验本无必要
  */
-public final class UserMergeStrategy extends AbstractMergeStrategy {
+public class UserMergeStrategy extends AbstractMergeStrategy implements SheetWriteHandler {
 
     /**
-     * 导出的总行数
+     * 需要合并的列字段名
      */
-    private final int totalRows;
+    private static final Set<String> MERGE_FIELD_NAMES = Set.of("username", "nickname", "gender", "status", "registerType", "phoneNumber", "email", "roleName", "remark");
 
     /**
-     * 需要合并的字段属性
+     * 分组字段名（连续相同即同组）
      */
-    private final Set<String> mergeProperties = Set.of("username", "nickname", "gender", "status", "registerType", "phoneNumber", "email", "roleName", "remark");
+    private static final String GROUP_FIELD_NAME = "username";
 
     /**
-     * 当前正在扫描的用户名
+     * 已解析的待合并列坐标（首行各列回调时填充，集合大小凑满后不再判断）
      */
-    private String lastUsername;
+    private final Set<Integer> mergeColumnIndexSet = new HashSet<>();
 
     /**
-     * 用户名所在的列索引
+     * 收集待提交的合并区域
      */
-    private int usernameIndex = -1;
+    private final List<CellRangeAddress> pendingMergeRegions = new ArrayList<>();
 
     /**
-     * 列总数
+     * 当前分组值与起始行
      */
-    private int totalColumnIndex = -1;
+    private String groupValue;
+    private int groupStartRowIndex = -1;
 
     /**
-     * 合并开始行数
+     * 已处理到的最新行（收尾分组用）
      */
-    private int mergeStartNumber;
-
-    /**
-     * 可合并的列的索引集合
-     */
-    private final Set<Integer> mergePropertiesIndexSet = new HashSet<>();
+    private int lastRowIndex = -1;
 
     @Override
     protected void merge(Sheet sheet, Cell cell, Head head, Integer relativeRowIndex) {
-        // 表头行数
-        int headSize = head.getHeadNameList().size();
-        // 当前读取到数据的行数，当前rowIndex + 表头行数
-        int rowIndex = relativeRowIndex + headSize;
-        // 当前读取到的列数
-        int columnIndex = head.getColumnIndex();
+        // 首行解析各合并列坐标，凑满后跳过判断
+        if (mergeColumnIndexSet.size() != MERGE_FIELD_NAMES.size() && MERGE_FIELD_NAMES.contains(head.getFieldName())) {
+            mergeColumnIndexSet.add(head.getColumnIndex());
+        }
 
-        // 初始化公共属性
-        initMergeProperties(sheet, cell, head);
+        // 分组字段所在列的单元格回调时推进分组
+        if (GROUP_FIELD_NAME.equals(head.getFieldName())) {
+            int rowIndex = relativeRowIndex + head.getHeadNameList().size();
+            String username = cell.getStringCellValue();
+            if (!username.equals(groupValue)) {
+                closeGroup(rowIndex - 1);
+                groupValue = username;
+                groupStartRowIndex = rowIndex;
+            }
+            lastRowIndex = rowIndex;
+        }
+    }
 
-        // 读取第一行数据
-        if (columnIndex + 1 == totalColumnIndex) {
-            // 当前一行数据
-            Row currentRow = sheet.getRow(rowIndex);
-            // 当前行读到的用户名
-            String userName = currentRow.getCell(usernameIndex).getStringCellValue();
-            // 读取的数据第一行等于表头行数
-            if (rowIndex == headSize) {
-                lastUsername = userName;
-                mergeStartNumber = rowIndex;
-            }
-            // 读取最后一行数据
-            else if (rowIndex == totalRows - 1 + headSize) {
-                // 最后一行读取到的username与当前不同，表示需要处理上一个username的合并逻辑，最后一个username只有一个，无需处理
-                if (!userName.equals(lastUsername)) {
-                    handleMerge(sheet, mergeStartNumber, rowIndex - 1);
-                } else {
-                    // 相同则需要处理最后一条username的合并
-                    handleMerge(sheet, mergeStartNumber, rowIndex);
-                }
-            }
-            // 读取中间行数据
-            else {
-                if (!userName.equals(lastUsername)) {
-                    // rowIndex 为需要合并的下一行行号，需要 rowIndex - 1
-                    handleMerge(sheet, mergeStartNumber, rowIndex - 1);
-
-                    lastUsername = userName;
-                    mergeStartNumber = rowIndex;
-                }
-            }
+    @Override
+    public void afterSheetDispose(SheetWriteHandlerContext context) {
+        closeGroup(lastRowIndex);
+        Sheet sheet = context.getWriteSheetHolder().getSheet();
+        for (CellRangeAddress region : pendingMergeRegions) {
+            sheet.addMergedRegionUnsafe(region);
         }
     }
 
     /**
-     * 初始化公共属性
+     * 收尾当前分组：与起始行之间的连续行，在每个待合并列上生成合并区域
      */
-    private void initMergeProperties(Sheet sheet, Cell cell, Head head) {
-        // 当前读取到的字段是否需要被合并
-        String fieldName = head.getFieldName();
-
-        // 可被合并的列坐标集合，最终集合会与 mergeProperties 集合长度一致，当两集合长度相同时就跳过执行
-        if (mergePropertiesIndexSet.size() != mergeProperties.size()) {
-            if (mergeProperties.contains(fieldName)) {
-                mergePropertiesIndexSet.add(head.getColumnIndex());
-            }
-        }
-
-        // 唯一标识（用户名）列坐标
-        if (usernameIndex == -1 && "username".equals(fieldName)) {
-            usernameIndex = cell.getColumnIndex();
-        }
-
-        // 获取列总数
-        if (totalColumnIndex == -1) {
-            Row row = sheet.getRow(0);
-            if (row != null) {
-                totalColumnIndex = row.getLastCellNum();
-            } else {
-                totalColumnIndex = 0;
-            }
-        }
-
-    }
-
-    /**
-     * 处理合并单元格
-     */
-    private void handleMerge(Sheet sheet, int startRowIndex, int endRowIndex) {
-        // 开始与结束不能为同一单元格
-        if (startRowIndex == endRowIndex) {
+    private void closeGroup(int endRowIndex) {
+        if (groupStartRowIndex < 0 || groupStartRowIndex >= endRowIndex) {
             return;
         }
-
-        // 循环可合并列进行合并
-        mergePropertiesIndexSet.forEach(index -> sheet.addMergedRegion(new CellRangeAddress(startRowIndex, endRowIndex, index, index)));
-    }
-
-    public UserMergeStrategy(int totalRows) {
-        this.totalRows = totalRows;
+        mergeColumnIndexSet.forEach(columnIndex ->
+                pendingMergeRegions.add(new CellRangeAddress(groupStartRowIndex, endRowIndex, columnIndex, columnIndex)));
     }
 }

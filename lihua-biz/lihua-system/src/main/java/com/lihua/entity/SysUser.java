@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.lihua.excel.annotation.ExcelComment;
 import com.lihua.excel.annotation.ExcelDropdown;
-import com.lihua.excel.annotation.ExcelEnableComment;
-import com.lihua.excel.annotation.ExcelEnableDropdown;
 import com.lihua.excel.converter.ExcelDictConverter;
 import com.lihua.excel.enums.DropdownTypeEnum;
 import com.lihua.model.validation.ProfileValidation;
@@ -21,8 +19,6 @@ import org.apache.fesod.sheet.annotation.write.style.ColumnWidth;
 
 import java.time.LocalDateTime;
 
-@ExcelEnableComment
-@ExcelEnableDropdown
 @ExcelIgnoreUnannotated
 @EqualsAndHashCode(callSuper = true)
 @Data

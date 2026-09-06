@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lihua.common.enums.SysStatusEnum;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.date.DateUtils;
+import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.common.utils.tree.TreeUtils;
 import com.lihua.dict.model.DictDataModel;
 import com.lihua.dict.utils.DictUtils;
@@ -62,7 +63,9 @@ public class SysDictDataServiceImpl implements SysDictDataService {
     @Override
     public List<DictDataModel> queryDictOptionList(String dictTypeCode) {
         List<DictDataModel> dictData = DictUtils.getDictData(dictTypeCode);
-        return TreeUtils.buildTree(dictData);
+        // 构树会原地挂 children，须在副本上进行，避免把树结构写回缓存共享对象
+        List<DictDataModel> dictDataCopy = dictData.stream().map(JsonUtils::deepCopy).toList();
+        return TreeUtils.buildTree(dictDataCopy);
     }
 
     @Override

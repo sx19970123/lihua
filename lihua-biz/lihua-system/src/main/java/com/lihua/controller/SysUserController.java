@@ -24,7 +24,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "用户管理")
@@ -105,7 +104,7 @@ public class SysUserController extends ApiResponseController {
     @Operation(summary = "下载模板")
     @GetMapping("exportTemplate")
     public void exportTemplate() {
-        ExcelUtils.export(new ArrayList<>(), SysUser.class);
+        ExcelUtils.exportTemplate(SysUser.class);
     }
 
     @Operation(summary = "导出用户信息")
@@ -113,7 +112,7 @@ public class SysUserController extends ApiResponseController {
     @Log(description = "批量导出用户信息", type = LogTypeEnum.EXPORT)
     public void exportExcel(@RequestBody SysUserDTO sysUserDTO) {
         List<SysUserVO> sysUserVOS = sysUserService.exportExcel(sysUserDTO);
-        ExcelUtils.export(sysUserVOS, SysUserVO.class, new UserMergeStrategy(sysUserVOS.size()));
+        ExcelUtils.export(sysUserVOS, SysUserVO.class, new UserMergeStrategy());
     }
 
     @Operation(summary = "根据部门获取系统用户选项")

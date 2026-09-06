@@ -3,7 +3,6 @@ package com.lihua.model.vo;
 import com.lihua.excel.annotation.ExcelComment;
 import com.lihua.excel.annotation.ExcelDictType;
 import com.lihua.excel.converter.ExcelDictConverter;
-import com.lihua.excel.enums.CommentUseEnum;
 import com.lihua.mybatis.model.BaseEntity;
 import com.lihua.sensitive.annotation.Sensitive;
 import com.lihua.sensitive.enums.DesensitizedTypeEnum;
@@ -56,7 +55,7 @@ public class SysUserVO extends BaseEntity {
      */
     @ExcelProperty({"用户信息", "昵称"})
     @ColumnWidth(20)
-    @ExcelComment(value = "昵称，必填", use = CommentUseEnum.HEAD, headRowNum = 1)
+    @ExcelComment(value = "昵称，必填", headRowNum = 1)
     private String nickname;
 
     /**
@@ -65,7 +64,7 @@ public class SysUserVO extends BaseEntity {
     @ExcelProperty(value = {"用户信息", "性别"}, converter = ExcelDictConverter.class)
     @ExcelDictType("user_gender")
     @ColumnWidth(10)
-    @ExcelComment(value = "性别，字典数据", use = CommentUseEnum.BODY)
+    @ExcelComment(value = "性别，字典数据", headRowNum = 1)
     private String gender;
 
     /**

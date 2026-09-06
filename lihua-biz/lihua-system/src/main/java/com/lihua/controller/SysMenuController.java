@@ -58,7 +58,7 @@ public class SysMenuController extends ApiResponseController {
     public ApiResponseModel<String> savePage(@RequestBody @Validated(MenuValidation.MenuPageValidation.class) SysMenu sysMenu) {
         // 校验 query 是否为json参数
         if (StringUtils.hasText(sysMenu.getQuery())) {
-            JsonUtils.isJson(sysMenu.getQuery());
+            JsonUtils.validateJson(sysMenu.getQuery());
         }
 
         return success(sysMenuService.save(sysMenu));
