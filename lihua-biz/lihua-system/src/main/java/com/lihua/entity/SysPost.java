@@ -7,6 +7,7 @@ import com.lihua.excel.converter.ExcelDictConverter;
 import com.lihua.mybatis.model.BaseEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.fesod.sheet.annotation.ExcelProperty;
@@ -31,13 +32,14 @@ public class SysPost extends BaseEntity {
     /**
      * 部门编码
      */
-    @NotNull(message = "请选择所属部门")
+    @NotNull(message = "请选择所属部门编码")
     private String deptCode;
 
     /**
      * 岗位名称
      */
     @NotNull(message = "请输入岗位名称")
+    @Size(max = 60, message = "岗位名称长度不能超过60个字符")
     @ExcelProperty("岗位名称")
     @ColumnWidth(20)
     private String name;
@@ -46,6 +48,7 @@ public class SysPost extends BaseEntity {
      * 岗位编码
      */
     @NotNull(message = "请输入岗位编码")
+    @Size(max = 100, message = "岗位编码长度不能超过100个字符")
     @ExcelProperty("岗位编码")
     @ColumnWidth(20)
     private String code;
@@ -60,6 +63,7 @@ public class SysPost extends BaseEntity {
      * 岗位状态
      */
     @NotNull(message = "请选择状态")
+    @Pattern(regexp = "^[01]$", message = "岗位状态不合法")
     @ExcelProperty(value = "状态", converter = ExcelDictConverter.class)
     @ExcelDictType("sys_status")
     @ColumnWidth(10)
@@ -68,6 +72,7 @@ public class SysPost extends BaseEntity {
     /**
      * 岗位负责人姓名
      */
+    @Size(max = 30, message = "负责人长度不能超过30个字符")
     @ExcelProperty("负责人")
     @ColumnWidth(20)
     private String manager;
@@ -93,6 +98,7 @@ public class SysPost extends BaseEntity {
     /**
      * 岗位传真号码
      */
+    @Size(max = 60, message = "传真长度不能超过60个字符")
     @ExcelProperty("传真")
     @ColumnWidth(20)
     private String fax;
@@ -100,6 +106,7 @@ public class SysPost extends BaseEntity {
     /**
      * 备注
      */
+    @Size(max = 500, message = "备注长度不能超过500个字符")
     @ExcelProperty("备注")
     @ColumnWidth(20)
     private String remark;

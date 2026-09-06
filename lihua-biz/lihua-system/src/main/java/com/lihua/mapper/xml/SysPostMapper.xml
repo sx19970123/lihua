@@ -19,7 +19,7 @@
             sys_dept.NAME AS dept_name
         FROM
             sys_post
-        INNER JOIN sys_dept ON sys_dept.id = sys_post.dept_id
+        INNER JOIN sys_dept ON sys_dept.id = sys_post.dept_id AND sys_dept.del_flag = '0'
         ${ew.customSqlSegment}
     </select>
 

@@ -17,6 +17,6 @@ public class SysPostVO extends SysPost {
     @ColumnWidth(20)
     private String deptName;
 
-    // 对应用户id
+    // 持有该岗位的用户id（用户模块列表/导出按用户归并岗位时使用）
     private String userId;
 }

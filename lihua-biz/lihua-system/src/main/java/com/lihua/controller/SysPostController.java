@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "部门管理")
+@Tag(name = "岗位管理")
 @RestController
 @RequestMapping("system/post")
 @Validated
@@ -54,7 +54,7 @@ public class SysPostController extends ApiResponseController {
 
     @Operation(summary = "更新状态")
     @PreAuthorize("hasRole('ROLE_admin')")
-    @PostMapping("updateStatus/{id}/{currentStatus}")
+    @PutMapping("status/{id}/{currentStatus}")
     @Log(description = "更新岗位状态", type = LogTypeEnum.UPDATE_STATUS)
     public ApiResponseModel<String> updateStatus(@PathVariable("id") String id, @PathVariable("currentStatus") String currentStatus) {
         return success(sysPostService.updateStatus(id, currentStatus));
@@ -78,7 +78,7 @@ public class SysPostController extends ApiResponseController {
     @Operation(summary = "导出岗位数据")
     @PostMapping("export")
     @Log(description = "导出岗位数据", type = LogTypeEnum.EXPORT)
-    public void exportExcel(SysPostDTO dto) {
+    public void exportExcel(@RequestBody SysPostDTO dto) {
         List<SysPostVO> sysPostVOS = sysPostService.exportExcel(dto);
         ExcelUtils.export(sysPostVOS, SysPostVO.class);
     }

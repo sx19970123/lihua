@@ -72,7 +72,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     private void checkStatus(List<String> ids) {
         QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
-                .eq(SysPost::getStatus,"0")
+                .eq(SysPost::getStatus, SysStatusEnum.NORMAL.getValue())
                 .in(SysPost::getId,ids);
         Long count = sysPostMapper.selectCount(queryWrapper);
         if (count > 0) {
@@ -108,7 +108,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         QueryWrapper<SysPost> deptQueryWrapper = new QueryWrapper<>();
         deptQueryWrapper.lambda()
                 .in(SysPost::getDeptId, deptIds)
-                .eq(SysPost::getStatus,"0")
+                .eq(SysPost::getStatus, SysStatusEnum.NORMAL.getValue())
                 .orderByAsc(SysPost::getSort);
         List<SysPost> sysPosts = sysPostMapper.selectList(deptQueryWrapper);
 
@@ -117,6 +117,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     @Override
     public String updateStatus(String id, String currentStatus) {
+        checkPostExists(id);
         UpdateWrapper<SysPost> updateWrapper = new UpdateWrapper<>();
         String status = SysStatusEnum.toggle(currentStatus);
 
@@ -140,6 +141,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     private QueryWrapper<SysPost> getQueryWrapper(SysPostDTO dto) {
         QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
+        // 自定义 SQL 无逻辑删除拦截，主表过滤条件需在此指定
+        queryWrapper.eq("sys_post.del_flag", "0");
 
         // 岗位名称
         if (StringUtils.hasText(dto.getName())) {
@@ -151,14 +154,20 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         }
         // 岗位状态
         if (StringUtils.hasText(dto.getStatus())) {
-            queryWrapper.like("sys_post.status",dto.getStatus());
+            queryWrapper.eq("sys_post.status",dto.getStatus());
         }
         // 所属单位
         if (StringUtils.hasText(dto.getDeptId())) {
-            queryWrapper.like("sys_post.dept_id",dto.getDeptId());
+            queryWrapper.eq("sys_post.dept_id",dto.getDeptId());
         }
         queryWrapper.lambda().orderByAsc(SysPost::getSort);
         return queryWrapper;
+    }
+
+    private void checkPostExists(String id) {
+        if (sysPostMapper.selectById(id) == null) {
+            throw new ServiceException("岗位不存在");
+        }
     }
 
     private void checkPostCode(SysPost sysPost) {
