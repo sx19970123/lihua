@@ -78,6 +78,8 @@ public class LoginUserManager {
     public static String setLoginUserCache(LoginUserSession loginUserSession) {
         // 记录过期时间
         loginUserSession.setExpirationTime(DateUtils.now().plusMinutes(TOKEN_PROPERTIES.getTokenExpireTime()));
+        // 隐藏用户密码
+        loginUserSession.getUser().setPassword(null);
         // 登录客户端类型
         loginUserSession.setClientType(WebUtils.getClientType());
         // 当 loginUserSession 的 cacheKey 不存在，即为新登录用户，重新生成cacheKey，其余情况均为刷新缓存

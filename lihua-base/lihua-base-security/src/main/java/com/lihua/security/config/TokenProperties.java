@@ -12,10 +12,10 @@ public class TokenProperties {
     /**
      * manager 中 token 过期时间
      */
-    private Long tokenExpireTime;
+    private Long tokenExpireTime = 60L;
 
     /**
      * token 刷新阈值
      */
-    private Integer refreshThreshold;
+    private Integer refreshThreshold = 15;
 }

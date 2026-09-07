@@ -1,6 +1,6 @@
 package com.lihua.security.utils;
 
-import com.lihua.security.enums.TokenEnum;
+import com.lihua.common.enums.TokenEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.util.StringUtils;
 

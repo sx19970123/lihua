@@ -1,4 +1,4 @@
-package com.lihua.security.enums;
+package com.lihua.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
