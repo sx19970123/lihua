@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.lihua.common.enums.SysStatusEnum;
 
@@ -89,7 +90,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public List<SysMenu> menuTreeOption() {
         SysMenu sysMenu = new SysMenu();
-        sysMenu.setStatus("0");
+        sysMenu.setStatus(SysStatusEnum.NORMAL.getValue());
         return queryList(sysMenu);
     }
 
@@ -114,7 +115,6 @@ public class SysMenuServiceImpl implements SysMenuService {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .in(SysMenu::getParentId,ids)
-                .eq(SysMenu::getDelFlag,"0")
                 .select(SysMenu::getId);
         List<SysMenu> sysMenus = sysMenuMapper.selectList(queryWrapper);
 
@@ -123,7 +123,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
 
         // 对比以删除节点为父节点的数据，当这些数据全部与删除的数据相同，则要删除的数据中没有子节点存在
-        List<String> list = new java.util.ArrayList<>(sysMenus.stream().map(SysMenu::getId).toList());
+        List<String> list = new ArrayList<>(sysMenus.stream().map(SysMenu::getId).toList());
         list.removeAll(ids);
 
         if (!list.isEmpty()) {
@@ -144,7 +144,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     private void checkStatus(List<String> ids) {
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().in(SysMenu::getId,ids)
-                        .eq(SysMenu::getStatus,"0");
+                        .eq(SysMenu::getStatus, SysStatusEnum.NORMAL.getValue());
         Long count = sysMenuMapper.selectCount(queryWrapper);
         if (count > 0) {
             throw new ServiceException("菜单状态为正常不允许删除");

@@ -22,6 +22,11 @@ public class TreeUtils {
     private static final String DEFAULT_PARENT_ID = "ParentId";
     private static final String DEFAULT_CHILDREN = "Children";
 
+    /**
+     * 库表树根节点的父id约定值（如 sys_menu.parent_id = '0' 表示顶级节点）
+     */
+    public static final String ROOT_PARENT_ID = "0";
+
     // Set方法缓存
     private static final ConcurrentHashMap<Class<?>, Map<String, BiConsumer<Object, Object>>> SET_METHOD_CACHE = new ConcurrentHashMap<>();
     // Get方法缓存

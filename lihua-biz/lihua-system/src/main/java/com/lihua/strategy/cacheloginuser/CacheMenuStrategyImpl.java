@@ -1,6 +1,7 @@
 package com.lihua.strategy.cacheloginuser;
 
 import com.lihua.common.utils.tree.TreeUtils;
+import com.lihua.enums.MenuTypeEnum;
 import com.lihua.mapper.SysMenuMapper;
 import com.lihua.security.model.CurrentRouter;
 import com.lihua.security.model.CurrentViewTab;
@@ -69,7 +70,7 @@ public class CacheMenuStrategyImpl implements CacheLoginUserStrategy {
         // 不需要权限数据
         currentRouterList = currentRouterList
                 .stream()
-                .filter(vo -> !vo.getType().equals("perms"))
+                .filter(vo -> !MenuTypeEnum.PERMS.getValue().equals(vo.getType()))
                 .peek(vo -> {
                     // 使用正则表达式从组件路径中获取组件名称
                     String component = vo.getComponent();
@@ -97,7 +98,7 @@ public class CacheMenuStrategyImpl implements CacheLoginUserStrategy {
         for (CurrentRouter item : routerList) {
             String key = item.getPath().startsWith("/") ? item.getPath() : "/" + item.getPath();
             // 根据菜单层级关系设置key
-            if ("0".equals(item.getParentId())) {
+            if (TreeUtils.ROOT_PARENT_ID.equals(item.getParentId())) {
                 item.setKey(key);
             } else {
                 item.setKey(parentKey + key);
@@ -127,7 +128,7 @@ public class CacheMenuStrategyImpl implements CacheLoginUserStrategy {
     private List<String> getAuthorities(List<CurrentRouter> routerList) {
         return routerList
                 .stream()
-                .filter(router -> "perms".equals(router.getType()))
+                .filter(router -> MenuTypeEnum.PERMS.getValue().equals(router.getType()))
                 .map(CurrentRouter::getPerms)
                 .filter(StringUtils::hasText)
                 .distinct()

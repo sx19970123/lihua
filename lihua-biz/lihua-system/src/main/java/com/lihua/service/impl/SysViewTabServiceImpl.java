@@ -9,6 +9,7 @@ import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.CurrentRouter;
 import com.lihua.security.model.CurrentViewTab;
 import com.lihua.security.model.LoginUserSession;
+import com.lihua.enums.MenuTypeEnum;
 import com.lihua.service.SysViewTabService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class SysViewTabServiceImpl implements SysViewTabService {
         if (!routerVOList.isEmpty()) {
             menuIds = routerVOList
                     .stream()
-                    .filter(routerVO -> "page".equals(routerVO.getType()) || "link".equals(routerVO.getType()))
+                    .filter(routerVO -> MenuTypeEnum.PAGE.getValue().equals(routerVO.getType()) || MenuTypeEnum.LINK.getValue().equals(routerVO.getType()))
                     .map(CurrentRouter::getId)
                     .collect(Collectors.toSet());
         }
@@ -57,7 +58,7 @@ public class SysViewTabServiceImpl implements SysViewTabService {
         // 数据组合
         List<CurrentViewTab> viewVOS = new ArrayList<>();
         for (CurrentRouter route : routerVOList) {
-            if ("page".equals(route.getType()) || "link".equals(route.getType())) {
+            if (MenuTypeEnum.PAGE.getValue().equals(route.getType()) || MenuTypeEnum.LINK.getValue().equals(route.getType())) {
                 CurrentViewTab sysViewTabVO = new CurrentViewTab();
                 sysViewTabVO
                         .setLabel(route.getMeta().getLabel())
