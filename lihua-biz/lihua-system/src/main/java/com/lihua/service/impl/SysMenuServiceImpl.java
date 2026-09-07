@@ -8,6 +8,7 @@ import com.lihua.common.utils.tree.TreeUtils;
 import com.lihua.entity.SysMenu;
 import com.lihua.mapper.SysMenuMapper;
 import com.lihua.mapper.SysRoleMapper;
+import com.lihua.mybatis.utils.SortUtils;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.service.SysMenuService;
 import jakarta.annotation.Resource;
@@ -17,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import com.lihua.common.enums.SysStatusEnum;
 
 @Service
@@ -55,15 +57,25 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
+    @Transactional
     public String save(SysMenu sysMenu) {
         sysMenu.setTitle(sysMenu.getLabel());
         sysMenu.setPerms(StringUtils.hasText(sysMenu.getPerms()) ? sysMenu.getPerms() : sysMenu.getMenuType());
         // 菜单id为 null，执行insert
         if (!StringUtils.hasText(sysMenu.getId())) {
-           return insert(sysMenu);
+           insert(sysMenu);
+           SortUtils.normalize(sysMenuMapper, "parent_id", sysMenu.getParentId());
+           return sysMenu.getId();
         }
 
-        return update(sysMenu);
+        // 编辑可能跨父级移动：先记录原父级，保存后两组各自归位同级序号
+        SysMenu before = sysMenuMapper.selectById(sysMenu.getId());
+        update(sysMenu);
+        SortUtils.normalize(sysMenuMapper, "parent_id", sysMenu.getParentId());
+        if (before != null && !Objects.equals(before.getParentId(), sysMenu.getParentId())) {
+            SortUtils.normalize(sysMenuMapper, "parent_id", before.getParentId());
+        }
+        return sysMenu.getId();
     }
 
     private String insert(SysMenu sysMenu) {
@@ -81,10 +93,19 @@ public class SysMenuServiceImpl implements SysMenuService {
     public void deleteByIds(List<String> ids) {
         checkStatus(ids);
         checkChildren(ids);
+        // 收集被删行的父级（删除后行不可查，须先取）
+        List<SysMenu> beforeList = sysMenuMapper.selectList(new QueryWrapper<SysMenu>()
+                .lambda().in(SysMenu::getId, ids).select(SysMenu::getParentId));
         // 删除菜单
         sysMenuMapper.deleteByIds(ids);
         // 删除角色关联表数据
         deleteRoleMenu(ids);
+        // 归位同级序号（关缝）
+        beforeList.stream()
+                .map(SysMenu::getParentId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .forEach(parentId -> SortUtils.normalize(sysMenuMapper, "parent_id", parentId));
     }
 
     @Override

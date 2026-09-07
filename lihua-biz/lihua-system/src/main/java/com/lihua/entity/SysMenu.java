@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.lihua.model.validation.MenuValidation;
 import com.lihua.mybatis.model.BaseEntity;
+import com.lihua.mybatis.model.SortEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysMenu extends BaseEntity {
+public class SysMenu extends BaseEntity implements SortEntity {
     /**
      * 主键
      */
