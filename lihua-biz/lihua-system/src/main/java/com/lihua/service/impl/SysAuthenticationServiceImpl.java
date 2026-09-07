@@ -59,7 +59,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     private List<CacheLoginUserStrategy> cacheLoginUserStrategyList;
 
     @Resource
-    private List<SaveRegisterUserAssociatedStrategy> saveRegisterUserAssociatedStrategieList;
+    private List<SaveRegisterUserAssociatedStrategy> saveRegisterUserAssociatedStrategyList;
 
     @Override
     public LoginUserSession login(SysLoginUserDTO loginUserDTO) {
@@ -84,7 +84,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public String register(String username, String password) {
 
         SysSettingDTO.SignInSetting signInSetting = sysSettingService.getSignInSetting();
@@ -113,7 +113,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         sysUserMapper.insert(sysUser);
 
         // 通过用户注册配置类保存相关关联表数据
-        saveRegisterUserAssociatedStrategieList.forEach(strategy -> strategy.saveRegisterUserAssociated(sysUser.getId(), signInSetting));
+        saveRegisterUserAssociatedStrategyList.forEach(strategy -> strategy.saveRegisterUserAssociated(sysUser.getId(), signInSetting));
 
         return sysUser.getId();
     }
