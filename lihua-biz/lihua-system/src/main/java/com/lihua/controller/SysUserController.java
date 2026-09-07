@@ -78,7 +78,7 @@ public class SysUserController extends ApiResponseController {
 
     @Operation(summary = "更新状态")
     @PreAuthorize("hasRole('ROLE_admin')")
-    @PostMapping("updateStatus/{id}/{currentStatus}")
+    @PutMapping("status/{id}/{currentStatus}")
     @Log(description = "更新用户状态", type = LogTypeEnum.UPDATE_STATUS)
     public ApiResponseModel<String> updateStatus(@PathVariable("id") String id, @PathVariable("currentStatus") String currentStatus) {
         return success(sysUserService.updateStatus(id, currentStatus));

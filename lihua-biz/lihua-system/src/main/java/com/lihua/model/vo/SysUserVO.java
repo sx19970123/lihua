@@ -94,6 +94,7 @@ public class SysUserVO extends BaseEntity {
     /**
      * 邮箱
      */
+    @Sensitive(type = DesensitizedTypeEnum.EMAIL, ignoreRoleCodes = {})
     @ExcelProperty({"用户信息", "邮箱"})
     @ColumnWidth(30)
     private String email;

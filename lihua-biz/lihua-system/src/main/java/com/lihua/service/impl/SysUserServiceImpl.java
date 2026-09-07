@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import com.lihua.common.enums.RegisterTypeEnum;
 import com.lihua.common.enums.SysStatusEnum;
 
 @Service
@@ -262,7 +263,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         LocalDateTime now = DateUtils.now();
         // 批量插入
         sysUserList.forEach(sysUser -> {
-            sysUser.setRegisterType("2");
+            sysUser.setRegisterType(RegisterTypeEnum.IMPORT.getValue());
             sysUser.setPassword(SecurityUtils.encryptPassword(defaultPassword));
             sysUser.setPasswordUpdateTime(now);
         });
@@ -321,7 +322,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         LocalDateTime now = DateUtils.now();
         // 密码加密
         sysUser.setPassword(SecurityUtils.encryptPassword(sysUser.getPassword()));
-        sysUser.setRegisterType("0");
+        sysUser.setRegisterType(RegisterTypeEnum.ADMIN_CREATE.getValue());
         sysUser.setPasswordUpdateTime(now);
         sysUserMapper.insert(sysUser);
         return sysUser.getId();

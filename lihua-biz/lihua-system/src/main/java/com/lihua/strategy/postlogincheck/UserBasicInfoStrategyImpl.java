@@ -1,5 +1,6 @@
 package com.lihua.strategy.postlogincheck;
 
+import com.lihua.common.enums.RegisterTypeEnum;
 import com.lihua.security.model.LoginUserSession;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class UserBasicInfoStrategyImpl implements PostLoginCheckStrategy {
     public String check(LoginUserSession loginUserSession) {
         String registerType = loginUserSession.getUser().getRegisterType();
 
-        if ("0".equals(registerType)) {
+        if (RegisterTypeEnum.ADMIN_CREATE.getValue().equals(registerType)) {
             return null;
         }
 

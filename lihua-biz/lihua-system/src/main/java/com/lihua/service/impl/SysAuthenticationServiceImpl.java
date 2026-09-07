@@ -1,5 +1,7 @@
 package com.lihua.service.impl;
 
+import com.lihua.common.enums.RegisterTypeEnum;
+import com.lihua.common.enums.SysStatusEnum;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysUser;
@@ -103,8 +105,8 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         SysUser sysUser = new SysUser();
         sysUser.setUsername(username);
         sysUser.setPassword(SecurityUtils.encryptPassword(password));
-        sysUser.setStatus("0");
-        sysUser.setRegisterType("1");
+        sysUser.setStatus(SysStatusEnum.NORMAL.getValue());
+        sysUser.setRegisterType(RegisterTypeEnum.SELF_REGISTER.getValue());
         sysUser.setPasswordUpdateTime(now);
 
         // 保存用户基本信息
