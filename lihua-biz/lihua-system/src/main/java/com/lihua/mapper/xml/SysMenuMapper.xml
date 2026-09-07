@@ -60,7 +60,8 @@
     </sql>
 
     <select id="selectPermsByUserId" resultMap="selectPermsByUserId">
-        SELECT
+        SELECT DISTINCT
+        sys_menu.sort,
         <include refid="selectMenuItem"/>
         FROM
         sys_menu

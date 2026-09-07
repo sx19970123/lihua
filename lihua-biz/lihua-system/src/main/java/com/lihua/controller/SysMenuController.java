@@ -1,6 +1,7 @@
 package com.lihua.controller;
 
 import com.lihua.common.exception.ServiceException;
+import com.lihua.enums.MenuTypeEnum;
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.common.utils.json.JsonUtils;
@@ -49,7 +50,7 @@ public class SysMenuController extends ApiResponseController {
     @PostMapping("directory")
     @Log(description = "保存菜单数据", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> saveDirectory(@RequestBody @Validated(MenuValidation.MenuDirectoryValidation.class) SysMenu sysMenu) {
-        checkMenuTypeMatch(sysMenu, "directory");
+        checkMenuTypeMatch(sysMenu, MenuTypeEnum.DIRECTORY.getValue());
         return success(sysMenuService.save(sysMenu));
     }
 
@@ -58,7 +59,7 @@ public class SysMenuController extends ApiResponseController {
     @PostMapping("page")
     @Log(description = "保存页面数据", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> savePage(@RequestBody @Validated(MenuValidation.MenuPageValidation.class) SysMenu sysMenu) {
-        checkMenuTypeMatch(sysMenu, "page");
+        checkMenuTypeMatch(sysMenu, MenuTypeEnum.PAGE.getValue());
         // 校验 query 是否为json参数
         if (StringUtils.hasText(sysMenu.getQuery())) {
             JsonUtils.validateJson(sysMenu.getQuery());
@@ -72,7 +73,7 @@ public class SysMenuController extends ApiResponseController {
     @PostMapping("link")
     @Log(description = "保存链接数据", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> saveLink(@RequestBody @Validated(MenuValidation.MenuLinkValidation.class) SysMenu sysMenu) {
-        checkMenuTypeMatch(sysMenu, "link");
+        checkMenuTypeMatch(sysMenu, MenuTypeEnum.LINK.getValue());
         return success(sysMenuService.save(sysMenu));
     }
 
@@ -81,7 +82,7 @@ public class SysMenuController extends ApiResponseController {
     @PostMapping("perms")
     @Log(description = "保存权限数据", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> savePerms(@RequestBody @Validated(MenuValidation.MenuPermsValidation.class) SysMenu sysMenu) {
-        checkMenuTypeMatch(sysMenu, "perms");
+        checkMenuTypeMatch(sysMenu, MenuTypeEnum.PERMS.getValue());
         return success(sysMenuService.save(sysMenu));
     }
 
