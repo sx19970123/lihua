@@ -33,8 +33,10 @@ public @interface ExcelDropdown {
     String[] options() default {};
 
     /**
-     * 应用的最大行数
+     * 应用的最大行（0-based 结束行）。
+     * 默认 1048575 = Excel 单 sheet 最后一行，即下拉约束覆盖至整列末尾，
+     * 避免粘贴数据超过固定行数后失去校验；超出 Excel 行上限会生成非法 sqref 触发文件修复，勿调大
      */
-    int max() default 1000;
+    int max() default 1048575;
 
 }
