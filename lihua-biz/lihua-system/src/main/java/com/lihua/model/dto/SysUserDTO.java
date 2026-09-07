@@ -67,7 +67,4 @@ public class SysUserDTO extends BaseDTO {
 
     // 创建开始时间
     private List<LocalDate> createTimeList;
-
-    // 密码请求key
-    private String passwordRequestKey;
 }

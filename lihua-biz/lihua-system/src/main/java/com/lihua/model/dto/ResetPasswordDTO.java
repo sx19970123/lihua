@@ -20,9 +20,4 @@ public class ResetPasswordDTO {
     @Size(min = 6, max = 30, message = "密码长度6-30位")
     private String password;
 
-    /**
-     * 用户密码请求key
-     */
-    private String passwordRequestKey;
-
 }

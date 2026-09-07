@@ -83,15 +83,7 @@ public class AppSysAuthenticationController extends ApiResponseController {
             return error(ResultCodeEnum.CAPTCHA_ERROR);
         }
 
-        // 获取解密后的密码
         String password = sysRegisterDTO.getPassword();
-
-        // 密码长度校验
-        if (password.length() < 6 || password.length() >= 30 ) {
-            return error(ResultCodeEnum.ERROR, "密码长度6-30位");
-        }
-
-        // 获取解密后的确认密码
         String confirmPassword = sysRegisterDTO.getConfirmPassword();
 
         // 校验两次密码输入是否相同

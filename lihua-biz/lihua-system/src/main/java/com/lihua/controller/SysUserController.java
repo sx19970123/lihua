@@ -68,7 +68,7 @@ public class SysUserController extends ApiResponseController {
     @Operation(summary = "保存用户数据")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
-    @Log(description = "保存用户数据", type = LogTypeEnum.SAVE, excludeParams = {"password","passwordRequestKey"})
+    @Log(description = "保存用户数据", type = LogTypeEnum.SAVE, excludeParams = {"password"})
     public ApiResponseModel<String> save(@RequestBody @Validated SysUserDTO sysUserDTO) {
         if (!StringUtils.hasText(sysUserDTO.getId()) && !StringUtils.hasText(sysUserDTO.getPassword())) {
             return error(ResultCodeEnum.PARAMS_MISSING, "请输入密码");
@@ -96,7 +96,7 @@ public class SysUserController extends ApiResponseController {
     @Operation(summary = "重置密码")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("resetPassword")
-    @Log(description = "重置密码", type = LogTypeEnum.SAVE, excludeParams = {"password", "passwordRequestKey"})
+    @Log(description = "重置密码", type = LogTypeEnum.SAVE, excludeParams = {"password"})
     public ApiResponseModel<String> resetPassword(@RequestBody @Validated ResetPasswordDTO resetPasswordDTO) {
         return success(sysUserService.resetPassword(resetPasswordDTO));
     }
