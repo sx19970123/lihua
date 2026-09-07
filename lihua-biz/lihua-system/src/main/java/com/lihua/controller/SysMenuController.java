@@ -1,5 +1,6 @@
 package com.lihua.controller;
 
+import com.lihua.common.exception.ServiceException;
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.common.utils.json.JsonUtils;
@@ -48,6 +49,7 @@ public class SysMenuController extends ApiResponseController {
     @PostMapping("directory")
     @Log(description = "保存菜单数据", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> saveDirectory(@RequestBody @Validated(MenuValidation.MenuDirectoryValidation.class) SysMenu sysMenu) {
+        checkMenuTypeMatch(sysMenu, "directory");
         return success(sysMenuService.save(sysMenu));
     }
 
@@ -56,6 +58,7 @@ public class SysMenuController extends ApiResponseController {
     @PostMapping("page")
     @Log(description = "保存页面数据", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> savePage(@RequestBody @Validated(MenuValidation.MenuPageValidation.class) SysMenu sysMenu) {
+        checkMenuTypeMatch(sysMenu, "page");
         // 校验 query 是否为json参数
         if (StringUtils.hasText(sysMenu.getQuery())) {
             JsonUtils.validateJson(sysMenu.getQuery());
@@ -69,6 +72,7 @@ public class SysMenuController extends ApiResponseController {
     @PostMapping("link")
     @Log(description = "保存链接数据", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> saveLink(@RequestBody @Validated(MenuValidation.MenuLinkValidation.class) SysMenu sysMenu) {
+        checkMenuTypeMatch(sysMenu, "link");
         return success(sysMenuService.save(sysMenu));
     }
 
@@ -77,12 +81,13 @@ public class SysMenuController extends ApiResponseController {
     @PostMapping("perms")
     @Log(description = "保存权限数据", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> savePerms(@RequestBody @Validated(MenuValidation.MenuPermsValidation.class) SysMenu sysMenu) {
+        checkMenuTypeMatch(sysMenu, "perms");
         return success(sysMenuService.save(sysMenu));
     }
 
     @Operation(summary = "修改状态")
     @PreAuthorize("hasRole('ROLE_admin')")
-    @PostMapping("updateStatus/{currentStatus}")
+    @PutMapping("status/{currentStatus}")
     @Log(description = "更新菜单状态", type = LogTypeEnum.UPDATE_STATUS)
     public ApiResponseModel<String> updateStatus(@PathVariable("currentStatus") String currentStatus, @RequestBody List<String> ids) {
         return success(sysMenuService.updateStatus(ids, currentStatus));
@@ -101,5 +106,11 @@ public class SysMenuController extends ApiResponseController {
     @GetMapping("option")
     public ApiResponseModel<List<SysMenu>> menuTreeOption() {
         return success(sysMenuService.menuTreeOption());
+    }
+
+    private void checkMenuTypeMatch(SysMenu sysMenu, String endpointType) {
+        if (!endpointType.equals(sysMenu.getMenuType())) {
+            throw new ServiceException("菜单类型与请求地址不一致");
+        }
     }
 }
