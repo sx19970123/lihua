@@ -11,7 +11,6 @@ import com.lihua.security.model.CurrentUser;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Set;
 
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
@@ -32,15 +31,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     // 查询导出用户列表
     List<SysUserVO> queryExportData(@Param(Constants.WRAPPER) QueryWrapper<SysUser> queryWrapper);
-
-    // 查询已存在的用户名
-    Set<String> queryUsername(@Param("usernameSet") Set<String> usernameSet);
-
-    // 查询已存在的电话号码
-    Set<String> queryPhoneNumber(@Param("phoneNumberSet") Set<String> phoneNumberSet);
-
-    // 查询已存在的邮箱
-    Set<String> queryEmail(@Param("emailSet") Set<String> emailSet);
 
     // 根据deptId查询用户
     List<SysUser> queryOptionByDeptId(@Param("deptId") String deptId);

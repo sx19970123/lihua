@@ -65,7 +65,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
         // 部门id
         if (sysUserDTO.getDeptIdList() != null && !sysUserDTO.getDeptIdList().isEmpty()) {
-            queryWrapper.in("dept_id", sysUserDTO.getDeptIdList());
+            queryWrapper.in("sys_user_dept.dept_id", sysUserDTO.getDeptIdList());
         }
         // 昵称
         if (StringUtils.hasText(sysUserDTO.getNickname())) {
@@ -194,7 +194,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
         // 部门id
         if (sysUserDTO.getDeptIdList() != null && !sysUserDTO.getDeptIdList().isEmpty()) {
-            queryWrapper.in("sys_dept.dept_id", sysUserDTO.getDeptIdList());
+            queryWrapper.in("sys_user_dept.dept_id", sysUserDTO.getDeptIdList());
         }
         // 昵称
         if (StringUtils.hasText(sysUserDTO.getNickname())) {
@@ -213,8 +213,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             queryWrapper.eq("sys_user.status", sysUserDTO.getStatus());
         }
         // 创建时间
-        if (sysUserDTO.getCreateTimeList() != null && !sysUserDTO.getCreateTimeList().isEmpty()) {
-            queryWrapper.between("sys_user.create_time", sysUserDTO.getCreateTimeList().get(0),sysUserDTO.getCreateTimeList().get(1));
+        if (sysUserDTO.getCreateTimeList() != null && sysUserDTO.getCreateTimeList().size() == 2) {
+            queryWrapper.between("sys_user.create_time", sysUserDTO.getCreateTimeList().get(0),sysUserDTO.getCreateTimeList().get(1).plusDays(1L));
         }
 
         queryWrapper.eq("sys_user.del_flag","0").orderByDesc("sys_user.id");
@@ -328,7 +328,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         return sysUser.getId();
     }
 
-    // 更细用户信息
+    // 更新用户信息
     private String update(SysUser sysUser) {
         // 用户管理中无法更新用户密码。mp默认策略不更新null值数据
         sysUser.setPassword(null);
@@ -342,7 +342,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
         queryWrapper.lambda()
                 .in(SysUser::getId,ids)
-                .eq(SysUser::getStatus,"0");
+                .eq(SysUser::getStatus, SysStatusEnum.NORMAL.getValue());
         Long count = sysUserMapper.selectCount(queryWrapper);
 
         if (count > 0) {
@@ -452,7 +452,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             throw new ExcelImportException("数据为空");
         }
 
-        List<String> importErrMssageList = new ArrayList<>();
+        List<String> importErrorMessageList = new ArrayList<>();
 
         // 记录重复数据
         List<String> usernameList = new ArrayList<>();
@@ -509,13 +509,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             // 汇总错误信息
             if (!errItemList.isEmpty()) {
                 errItemList.set(0, "第" + (i + 1) + "行：" + errItemList.get(0));
-                importErrMssageList.add(String.join("，", errItemList));
+                importErrorMessageList.add(String.join("，", errItemList));
             }
         }
 
         // 必填｜格式校验不通过，抛出异常
-        if (!importErrMssageList.isEmpty()) {
-            throw new ExcelImportException(importErrMssageList);
+        if (!importErrorMessageList.isEmpty()) {
+            throw new ExcelImportException(importErrorMessageList);
         }
 
         // 获取单元格内重复的字段
@@ -525,29 +525,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
         // 重复的用户名
         if (!usernameSet.isEmpty()) {
-            importErrMssageList.add("重复用户名：" + String.join(",", usernameSet));
+            importErrorMessageList.add("重复用户名：" + String.join(",", usernameSet));
         }
 
         // 重复的手机号
         if (!phonenumberSet.isEmpty()) {
-            importErrMssageList.add("重复手机号：" + String.join(",", phonenumberSet));
+            importErrorMessageList.add("重复手机号：" + String.join(",", phonenumberSet));
         }
 
         // 重复的邮箱地址
         if (!emailSet.isEmpty()) {
-            importErrMssageList.add("重复邮箱：" + String.join(",", String.join(",", emailSet)));
+            importErrorMessageList.add("重复邮箱：" + String.join(",", emailSet));
         }
 
         // 单元格内存在重复数据，抛出异常
-        if (!importErrMssageList.isEmpty()) {
-            throw new ExcelImportException(importErrMssageList);
+        if (!importErrorMessageList.isEmpty()) {
+            throw new ExcelImportException(importErrorMessageList);
         }
 
         // 用户名不为空
         if (!usernameList.isEmpty()) {
             List<String> dbUsernameList = lambdaQuery().select(SysUser::getUsername).in(SysUser::getUsername, usernameList).list().stream().map(SysUser::getUsername).toList();
             if (!dbUsernameList.isEmpty()) {
-                importErrMssageList.add("数据库已存在的用户名：" + String.join(",", dbUsernameList));
+                importErrorMessageList.add("数据库已存在的用户名：" + String.join(",", dbUsernameList));
             }
         }
 
@@ -555,7 +555,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         if (!phonenumberList.isEmpty()) {
             List<String> dbPhonenumberList = lambdaQuery().select(SysUser::getPhoneNumber).in(SysUser::getPhoneNumber, phonenumberList).list().stream().map(SysUser::getPhoneNumber).toList();
             if (!dbPhonenumberList.isEmpty()) {
-                importErrMssageList.add("数据库已存在的手机号：" + String.join(",", dbPhonenumberList));
+                importErrorMessageList.add("数据库已存在的手机号：" + String.join(",", dbPhonenumberList));
             }
         }
 
@@ -563,13 +563,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         if (!emailList.isEmpty()) {
             List<String> dbEmailList = lambdaQuery().select(SysUser::getEmail).in(SysUser::getEmail, emailList).list().stream().map(SysUser::getEmail).toList();
             if (!dbEmailList.isEmpty()) {
-                importErrMssageList.add("数据库已存在的邮箱：" + String.join(",", dbEmailList));
+                importErrorMessageList.add("数据库已存在的邮箱：" + String.join(",", dbEmailList));
             }
         }
 
         // 数据库中存在的数据，抛出异常
-        if (!importErrMssageList.isEmpty()) {
-            throw new ExcelImportException(importErrMssageList);
+        if (!importErrorMessageList.isEmpty()) {
+            throw new ExcelImportException(importErrorMessageList);
         }
     }
 

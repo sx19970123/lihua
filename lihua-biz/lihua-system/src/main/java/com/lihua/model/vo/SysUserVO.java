@@ -6,7 +6,6 @@ import com.lihua.excel.converter.ExcelDictConverter;
 import com.lihua.mybatis.model.BaseEntity;
 import com.lihua.sensitive.annotation.Sensitive;
 import com.lihua.sensitive.enums.DesensitizedTypeEnum;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.fesod.sheet.annotation.ExcelIgnoreUnannotated;
@@ -38,7 +37,6 @@ public class SysUserVO extends BaseEntity {
     /**
      * 用户名
      */
-    @NotNull(message = "用户名不能为空")
     @ExcelProperty({"用户信息", "用户名"})
     @ColumnWidth(20)
     @ExcelComment(value = "用户名，全局唯一", headRowNum = 1)
@@ -47,7 +45,6 @@ public class SysUserVO extends BaseEntity {
     /**
      * 密码
      */
-    @NotNull(message = "密码不能为空")
     private String password;
 
     /**
