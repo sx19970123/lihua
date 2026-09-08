@@ -6,11 +6,7 @@ import com.lihua.excel.annotation.ExcelComment;
 import com.lihua.excel.annotation.ExcelDropdown;
 import com.lihua.excel.converter.ExcelDictConverter;
 import com.lihua.excel.enums.DropdownTypeEnum;
-import com.lihua.model.validation.ProfileValidation;
 import com.lihua.mybatis.model.BaseEntity;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.fesod.sheet.annotation.ExcelIgnoreUnannotated;
@@ -46,9 +42,6 @@ public class SysUser extends BaseEntity {
     /**
      * 用户昵称
      */
-    @Size(max = 20,
-        message = "用户昵称最大不能超过20字符",
-        groups = ProfileValidation.ProfileSaveValidation.class)
     @ExcelProperty("昵称")
     @ColumnWidth(20)
     @ExcelComment(value = "用户昵称必填")
@@ -80,16 +73,11 @@ public class SysUser extends BaseEntity {
     /**
      * 用户应用系统主题
      */
-    @NotNull(message = "主题描述字符串为空",
-            groups = ProfileValidation.ProfileThemeValidation.class)
     private String theme;
 
     /**
      * 邮箱
      */
-    @Pattern(regexp = "^(|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})$",
-            message = "请输入正确的邮箱地址",
-            groups = ProfileValidation.ProfileSaveValidation.class)
     @ExcelProperty("邮箱")
     @ColumnWidth(20)
     @ExcelComment(value = "邮箱选填，请注意格式")
@@ -98,9 +86,6 @@ public class SysUser extends BaseEntity {
     /**
      * 手机号码
      */
-    @Pattern(regexp = "^(|1[3-9]\\d{9})$",
-            message = "请输入正确的手机号码",
-            groups = ProfileValidation.ProfileSaveValidation.class)
     @ExcelProperty("手机号码")
     @ColumnWidth(20)
     @ExcelComment(value = "手机号码选填，请注意格式")

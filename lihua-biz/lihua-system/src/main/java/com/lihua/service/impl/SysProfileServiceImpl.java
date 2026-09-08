@@ -7,6 +7,7 @@ import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysUser;
 import com.lihua.mapper.SysUserMapper;
 import com.lihua.model.dto.SysCheckPasswordDTO;
+import com.lihua.model.dto.SysProfileBasicDTO;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
@@ -45,35 +46,35 @@ public class SysProfileServiceImpl implements SysProfileService {
     private List<PostLoginCheckStrategy> postLoginCheckStrategyList;
 
     @Override
-    public String saveBasics(SysUser sysUser) {
+    public String saveBasics(SysProfileBasicDTO sysProfileBasicDTO) {
         // 获取当前登录信息
         CurrentUser currentUser = LoginUserContext.getLoginUser().getUser();
         // 验证手机号码、邮箱
-        checkPhoneNumber(sysUser.getPhoneNumber(),currentUser.getId());
-        checkEmailNumber(sysUser.getEmail(),currentUser.getId());
+        checkPhoneNumber(sysProfileBasicDTO.getPhoneNumber(),currentUser.getId());
+        checkEmailNumber(sysProfileBasicDTO.getEmail(),currentUser.getId());
 
         // 修改
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
 
         // 头像
-        if (StringUtils.hasText(sysUser.getAvatar())) {
-            updateWrapper.lambda().set(SysUser::getAvatar,sysUser.getAvatar());
+        if (StringUtils.hasText(sysProfileBasicDTO.getAvatar())) {
+            updateWrapper.lambda().set(SysUser::getAvatar,sysProfileBasicDTO.getAvatar());
         }
         // 昵称
-        if (StringUtils.hasText(sysUser.getNickname())) {
-            updateWrapper.lambda().set(SysUser::getNickname,sysUser.getNickname());
+        if (StringUtils.hasText(sysProfileBasicDTO.getNickname())) {
+            updateWrapper.lambda().set(SysUser::getNickname,sysProfileBasicDTO.getNickname());
         }
         // 手机号码
-        if (sysUser.getPhoneNumber() != null) {
-            updateWrapper.lambda().set(SysUser::getPhoneNumber,sysUser.getPhoneNumber());
+        if (sysProfileBasicDTO.getPhoneNumber() != null) {
+            updateWrapper.lambda().set(SysUser::getPhoneNumber,sysProfileBasicDTO.getPhoneNumber());
         }
         // 邮箱
-        if (sysUser.getEmail() != null) {
-            updateWrapper.lambda().set(SysUser::getEmail,sysUser.getEmail());
+        if (sysProfileBasicDTO.getEmail() != null) {
+            updateWrapper.lambda().set(SysUser::getEmail,sysProfileBasicDTO.getEmail());
         }
         // 性别
-        if (StringUtils.hasText(sysUser.getGender())) {
-            updateWrapper.lambda().set(SysUser::getGender,sysUser.getGender());
+        if (StringUtils.hasText(sysProfileBasicDTO.getGender())) {
+            updateWrapper.lambda().set(SysUser::getGender,sysProfileBasicDTO.getGender());
         }
 
         // 更新时间/更新人
@@ -87,24 +88,24 @@ public class SysProfileServiceImpl implements SysProfileService {
         // 更新缓存
         if (update == 1) {
             // 头像
-            if (StringUtils.hasText(sysUser.getAvatar())) {
-                currentUser.setAvatar(sysUser.getAvatar());
+            if (StringUtils.hasText(sysProfileBasicDTO.getAvatar())) {
+                currentUser.setAvatar(sysProfileBasicDTO.getAvatar());
             }
             // 昵称
-            if (StringUtils.hasText(sysUser.getNickname())) {
-                currentUser.setNickname(sysUser.getNickname());
+            if (StringUtils.hasText(sysProfileBasicDTO.getNickname())) {
+                currentUser.setNickname(sysProfileBasicDTO.getNickname());
             }
             // 手机号码
-            if (sysUser.getPhoneNumber() != null) {
-                currentUser.setPhoneNumber(sysUser.getPhoneNumber());
+            if (sysProfileBasicDTO.getPhoneNumber() != null) {
+                currentUser.setPhoneNumber(sysProfileBasicDTO.getPhoneNumber());
             }
             // 邮箱
-            if (sysUser.getEmail() != null) {
-                currentUser.setEmail(sysUser.getEmail());
+            if (sysProfileBasicDTO.getEmail() != null) {
+                currentUser.setEmail(sysProfileBasicDTO.getEmail());
             }
             // 性别
-            if (StringUtils.hasText(sysUser.getGender())) {
-                currentUser.setGender(sysUser.getGender());
+            if (StringUtils.hasText(sysProfileBasicDTO.getGender())) {
+                currentUser.setGender(sysProfileBasicDTO.getGender());
             }
             LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
             loginUserSession.setUser(currentUser);

@@ -1,7 +1,7 @@
 package com.lihua.service;
 
-import com.lihua.entity.SysUser;
 import com.lihua.model.dto.SysCheckPasswordDTO;
+import com.lihua.model.dto.SysProfileBasicDTO;
 import java.util.List;
 
 public interface SysProfileService {
@@ -14,7 +14,7 @@ public interface SysProfileService {
     /**
      * 保存基础信息
      */
-    String saveBasics(SysUser sysUser);
+    String saveBasics(SysProfileBasicDTO sysProfileBasicDTO);
 
     /**
      * 修改密码
