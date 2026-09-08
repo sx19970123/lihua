@@ -18,8 +18,8 @@ public class SaveRoleStrategyImpl implements SaveRegisterUserAssociatedStrategy 
     private SysUserRoleService sysUserRoleService;
 
     @Override
-    public void saveRegisterUserAssociated(String userId, SysSettingDTO.SignInSetting signInSetting) {
-        List<String> roleIds = signInSetting.getRoleIds();
+    public void saveRegisterUserAssociated(String userId, SysSettingDTO.SignUpSetting signUpSetting) {
+        List<String> roleIds = signUpSetting.getRoleIds();
         // 用户角色关联表
         if (!roleIds.isEmpty()) {
             LocalDateTime now = DateUtils.now();

@@ -18,9 +18,9 @@ public class SavePostStrategyImpl implements SaveRegisterUserAssociatedStrategy 
     private SysUserPostService sysUserPostService;
 
     @Override
-    public void saveRegisterUserAssociated(String userId, SysSettingDTO.SignInSetting signInSetting) {
+    public void saveRegisterUserAssociated(String userId, SysSettingDTO.SignUpSetting signUpSetting) {
         // 用户岗位关联表
-        List<String> postIds = signInSetting.getPostIds();
+        List<String> postIds = signUpSetting.getPostIds();
         if (!postIds.isEmpty()) {
             LocalDateTime now = DateUtils.now();
             List<SysUserPost> sysUserPosts  = new ArrayList<>(postIds.size());

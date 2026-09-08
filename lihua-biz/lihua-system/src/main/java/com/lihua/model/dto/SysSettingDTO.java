@@ -63,7 +63,7 @@ public class SysSettingDTO implements Serializable {
      */
     @EqualsAndHashCode(callSuper = true)
     @Data
-    public static class SignInSetting extends SysSettingDTO {
+    public static class SignUpSetting extends SysSettingDTO {
         // 部门id集合
         private List<String> deptIds;
         // 默认部门id

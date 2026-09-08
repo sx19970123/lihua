@@ -11,7 +11,7 @@ public interface SaveRegisterUserAssociatedStrategy {
     /**
      * 用户注册保存用户关联表信息
      * @param userId 新用户id
-     * @param signInSetting 注册配置类
+     * @param signUpSetting 注册配置类
      */
-    void saveRegisterUserAssociated(String userId, SysSettingDTO.SignInSetting signInSetting);
+    void saveRegisterUserAssociated(String userId, SysSettingDTO.SignUpSetting signUpSetting);
 }

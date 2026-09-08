@@ -39,7 +39,7 @@ public interface SysSettingService {
     /**
      * 获取自助注册配置
      */
-    SysSettingDTO.SignInSetting getSignInSetting();
+    SysSettingDTO.SignUpSetting getSignUpSetting();
 
     /**
      * 获取定期修改密码配置

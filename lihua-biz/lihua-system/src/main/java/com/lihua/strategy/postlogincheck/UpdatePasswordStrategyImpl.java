@@ -1,6 +1,7 @@
 package com.lihua.strategy.postlogincheck;
 
 import com.lihua.common.utils.date.DateUtils;
+import com.lihua.entity.SysUser;
 import com.lihua.mapper.SysUserMapper;
 import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.security.model.LoginUserSession;
@@ -31,7 +32,11 @@ public class UpdatePasswordStrategyImpl implements PostLoginCheckStrategy {
     public String check(LoginUserSession loginUserSession) {
 
         // 用户密码与默认密码相同（密码哈希自查 DB，会话不携带密码）
-        if (SecurityUtils.matchesPassword(sysSettingService.getDefaultPassword(), sysUserMapper.selectById(loginUserSession.getUser().getId()).getPassword())) {
+        SysUser user = sysUserMapper.selectById(loginUserSession.getUser().getId());
+        if (user == null) {
+            return null;
+        }
+        if (SecurityUtils.matchesPassword(sysSettingService.getDefaultPassword(), user.getPassword())) {
             return COMPONENT_NAME;
         }
 
@@ -55,6 +60,11 @@ public class UpdatePasswordStrategyImpl implements PostLoginCheckStrategy {
         // 上次更新密码时间
         LocalDateTime passwordUpdateTime = loginUserSession.getUser().getPasswordUpdateTime();
 
+        // 配置或数据字段缺失时视为未启用检查（历史数据/手改库防御，避免 NPE 打断登录）
+        if (interval == null || unit == null || passwordUpdateTime == null) {
+            return null;
+        }
+
         LocalDateTime targetTime = null;
         switch (unit) {
             case "day": {
@@ -72,6 +82,10 @@ public class UpdatePasswordStrategyImpl implements PostLoginCheckStrategy {
             case "year": {
                 targetTime = passwordUpdateTime.plusYears(interval);
                 break;
+            }
+            // 未知周期单位视为未配置
+            default: {
+                return null;
             }
         }
 

@@ -17,12 +17,12 @@ public class SaveDeptStrategyImpl implements SaveRegisterUserAssociatedStrategy 
     private SysUserDeptService sysUserDeptService;
 
     @Override
-    public void saveRegisterUserAssociated(String userId, SysSettingDTO.SignInSetting signInSetting) {
+    public void saveRegisterUserAssociated(String userId, SysSettingDTO.SignUpSetting signUpSetting) {
         // 用户部门关联表
-        List<String> deptIds = signInSetting.getDeptIds();
+        List<String> deptIds = signUpSetting.getDeptIds();
         if (!deptIds.isEmpty()) {
             LocalDateTime now = DateUtils.now();
-            String defaultDeptId = signInSetting.getDefaultDeptId();
+            String defaultDeptId = signUpSetting.getDefaultDeptId();
             List<SysUserDept> sysUserDeptList  = new ArrayList<>(deptIds.size());
             deptIds.forEach(deptId -> sysUserDeptList.add(new SysUserDept(userId, deptId, now, null, deptId.equals(defaultDeptId) ? "0" : "1")));
             sysUserDeptService.save(sysUserDeptList);

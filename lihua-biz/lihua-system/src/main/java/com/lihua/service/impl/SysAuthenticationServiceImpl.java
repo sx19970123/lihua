@@ -87,9 +87,9 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     @Transactional(rollbackFor = Exception.class)
     public String register(String username, String password) {
 
-        SysSettingDTO.SignInSetting signInSetting = sysSettingService.getSignInSetting();
+        SysSettingDTO.SignUpSetting signUpSetting = sysSettingService.getSignUpSetting();
 
-        if (signInSetting == null || !signInSetting.isEnable()) {
+        if (signUpSetting == null || !signUpSetting.isEnable()) {
             throw new ServiceException("用户注册未开放");
         }
 
@@ -113,7 +113,7 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
         sysUserMapper.insert(sysUser);
 
         // 通过用户注册配置类保存相关关联表数据
-        saveRegisterUserAssociatedStrategyList.forEach(strategy -> strategy.saveRegisterUserAssociated(sysUser.getId(), signInSetting));
+        saveRegisterUserAssociatedStrategyList.forEach(strategy -> strategy.saveRegisterUserAssociated(sysUser.getId(), signUpSetting));
 
         return sysUser.getId();
     }

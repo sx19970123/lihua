@@ -23,7 +23,7 @@ public class SysSettingController extends ApiResponseController {
     @Operation(summary = "保存系统设置")
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
-    @Log(description = "保存系统配置", type = LogTypeEnum.SAVE)
+    @Log(description = "保存系统设置", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> insert(@RequestBody SysSetting sysSetting) {
         return success(sysSettingService.saveSetting(sysSetting));
     }
