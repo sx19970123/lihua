@@ -13,4 +13,22 @@
             AND sys_notice.status = '1'
             AND sys_notice.del_flag = '0'
     </select>
+
+    <!-- 分页查询已读/未读用户：过滤条件进 SQL 保证名单与计数口径一致（停用/删除用户两侧同步消失）；
+         read_time DESC 让已读侧按最近阅读排序，user_id 兜底保证未读侧（read_time 全 NULL）分页顺序稳定 -->
+    <select id="queryReadInfo" resultType="com.lihua.entity.SysUser">
+        SELECT
+            sys_user.id,
+            sys_user.username,
+            sys_user.nickname,
+            sys_user.avatar
+        FROM sys_user_notice
+        INNER JOIN sys_user ON sys_user.id = sys_user_notice.user_id
+        WHERE
+            sys_user_notice.notice_id = #{noticeId}
+            AND sys_user_notice.read_flag = #{readFlag}
+            AND sys_user.del_flag = '0'
+            AND sys_user.status = '0'
+        ORDER BY sys_user_notice.read_time DESC, sys_user_notice.user_id
+    </select>
 </mapper>

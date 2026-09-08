@@ -2,31 +2,26 @@ package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysUser;
 import com.lihua.entity.SysUserNotice;
 import com.lihua.mapper.SysUserNoticeMapper;
+import com.lihua.model.dto.NoticeReadInfoDTO;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.service.SysUserNoticeService;
-import com.lihua.service.SysUserService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class SysUserNoticeServiceImpl extends ServiceImpl<SysUserNoticeMapper, SysUserNotice> implements SysUserNoticeService {
 
     @Resource
     private SysUserNoticeMapper sysUserNoticeMapper;
-
-    @Resource
-    private SysUserService sysUserService;
 
     @Override
     public void save(List<SysUserNotice> sysUserNotices) {
@@ -51,30 +46,9 @@ public class SysUserNoticeServiceImpl extends ServiceImpl<SysUserNoticeMapper, S
     }
 
     @Override
-    public Map<String, List<SysUser>> queryReadInfo(String noticeId) {
-        Map<String, List<SysUser>> resultMap = new HashMap<>();
-
-        // 查询用户消息关联表
-        QueryWrapper<SysUserNotice> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda()
-                .eq(SysUserNotice::getNoticeId, noticeId)
-                .select(SysUserNotice::getUserId, SysUserNotice::getReadFlag);
-        List<SysUserNotice> sysUserNotices = sysUserNoticeMapper.selectList(queryWrapper);
-
-        // 根据已读未读分组获取分别获取用户id
-        Map<String, List<SysUserNotice>> groupByReadFlag = sysUserNotices.stream().collect(Collectors.groupingBy(SysUserNotice::getReadFlag));
-        List<String> unReadIds = groupByReadFlag.getOrDefault("0", new ArrayList<>()).stream().map(SysUserNotice::getUserId).collect(Collectors.toList());
-        List<String> readIds = groupByReadFlag.getOrDefault("1", new ArrayList<>()).stream().map(SysUserNotice::getUserId).collect(Collectors.toList());
-
-        // 分别获取已读未读用户信息
-        if (!unReadIds.isEmpty()) {
-            resultMap.put("0", sysUserService.userOption(unReadIds));
-        }
-        if (!readIds.isEmpty()) {
-            resultMap.put("1", sysUserService.userOption(readIds));
-        }
-
-        return resultMap;
+    public IPage<SysUser> queryReadInfo(NoticeReadInfoDTO readInfoDTO) {
+        return sysUserNoticeMapper.queryReadInfo(new Page<>(readInfoDTO.getPageNum(), readInfoDTO.getPageSize()),
+                readInfoDTO.getNoticeId(), readInfoDTO.getReadFlag());
     }
 
     @Override

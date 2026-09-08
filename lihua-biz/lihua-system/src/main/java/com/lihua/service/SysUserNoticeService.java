@@ -1,10 +1,11 @@
 package com.lihua.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.entity.SysUser;
 import com.lihua.entity.SysUserNotice;
+import com.lihua.model.dto.NoticeReadInfoDTO;
 
 import java.util.List;
-import java.util.Map;
 
 public interface SysUserNoticeService {
 
@@ -24,9 +25,9 @@ public interface SysUserNoticeService {
     List<String> queryUserIds(String noticeId);
 
     /**
-     * 获取notice已读未读用户
+     * 分页获取 notice 已读/未读用户（readFlag：0 未读 / 1 已读）
      */
-    Map<String,List<SysUser>> queryReadInfo(String noticeId);
+    IPage<SysUser> queryReadInfo(NoticeReadInfoDTO readInfoDTO);
 
     /**
      * 重制 notice 关联表状态

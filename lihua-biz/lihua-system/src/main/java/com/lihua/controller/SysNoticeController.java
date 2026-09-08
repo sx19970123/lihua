@@ -8,6 +8,7 @@ import com.lihua.entity.SysUser;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysNoticeDTO;
+import com.lihua.model.dto.NoticeReadInfoDTO;
 import com.lihua.model.vo.SysNoticeVO;
 import com.lihua.model.vo.SysUserNoticeVO;
 import com.lihua.mybatis.model.validation.MaxPageSizeLimit;
@@ -17,11 +18,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.groups.Default;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Tag(name = "通知公告")
 @RestController
@@ -88,10 +89,10 @@ public class SysNoticeController extends ApiResponseController {
         return success(sysNoticeService.userMessageList(sysNoticeDTO));
     }
 
-    @Operation(summary = "已读未读")
-    @GetMapping("readInfo/{noticeId}")
-    public ApiResponseModel<Map<String, List<SysUser>>> queryReadInfo(@PathVariable("noticeId") String noticeId) {
-        return success(sysUserNoticeService.queryReadInfo(noticeId));
+    @Operation(summary = "分页查询已读/未读用户")
+    @PostMapping("readInfo")
+    public ApiResponseModel<IPage<SysUser>> queryReadInfo(@RequestBody @Validated({Default.class, MaxPageSizeLimit.class}) NoticeReadInfoDTO readInfoDTO) {
+        return success(sysUserNoticeService.queryReadInfo(readInfoDTO));
     }
 
     @Operation(summary = "标星公告")
