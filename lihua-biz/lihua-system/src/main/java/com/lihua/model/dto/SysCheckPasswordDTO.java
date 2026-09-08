@@ -1,6 +1,6 @@
 package com.lihua.model.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
@@ -11,6 +11,6 @@ public class SysCheckPasswordDTO {
     /**
      * 密码
      */
-    @NotNull(message = "密码不能为空")
+    @NotBlank(message = "密码不能为空")
     private String password;
 }

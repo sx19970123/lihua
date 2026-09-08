@@ -49,6 +49,7 @@ public class SysProfileController extends ApiResponseController {
 
     @Operation(summary = "保存主题")
     @PostMapping("theme")
+    @Log(description = "保存主题", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> saveTheme(@RequestBody @Validated(ProfileValidation.ProfileThemeValidation.class) SysProfileBasicDTO sysProfileBasicDTO) {
         return success(sysProfileService.saveTheme(sysProfileBasicDTO.getTheme()));
     }
@@ -86,6 +87,7 @@ public class SysProfileController extends ApiResponseController {
 
     @Operation(summary = "设置默认部门")
     @PostMapping("default/{id}")
+    @Log(description = "设置默认部门", type = LogTypeEnum.SAVE)
     public ApiResponseModel<CurrentDept> setDefaultDept(@PathVariable("id") String id) {
         return success(sysUserDeptService.setDefaultDept(id));
     }
