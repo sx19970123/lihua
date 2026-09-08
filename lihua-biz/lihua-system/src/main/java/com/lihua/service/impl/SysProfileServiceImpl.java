@@ -2,12 +2,14 @@ package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.lihua.common.enums.SysStatusEnum;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysUser;
 import com.lihua.mapper.SysUserMapper;
 import com.lihua.model.dto.SysCheckPasswordDTO;
 import com.lihua.model.dto.SysProfileBasicDTO;
+import com.lihua.model.dto.SysUpdatePasswordDTO;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
@@ -15,6 +17,7 @@ import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUserSession;
 import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysProfileService;
+import com.lihua.service.SysSettingService;
 import com.lihua.service.SysUserService;
 import com.lihua.strategy.postlogincheck.PostLoginCheckStrategy;
 import jakarta.annotation.Resource;
@@ -38,6 +41,9 @@ public class SysProfileServiceImpl implements SysProfileService {
 
     @Resource
     private SysUserService sysUserService;
+
+    @Resource
+    private SysSettingService sysSettingService;
 
     @Resource
     private RedisCacheManager redisCacheManager;
@@ -116,7 +122,30 @@ public class SysProfileServiceImpl implements SysProfileService {
     }
 
     @Override
-    public String updatePassword(String newPassword) {
+    public String updatePassword(SysUpdatePasswordDTO sysUpdatePasswordDTO) {
+        String oldPassword = sysUpdatePasswordDTO.getOldPassword();
+        String newPassword = sysUpdatePasswordDTO.getNewPassword();
+        String confirmPassword = sysUpdatePasswordDTO.getConfirmPassword();
+
+        // 获取旧密码
+        String currentPassword = getPassword();
+
+        if (!SecurityUtils.matchesPassword(oldPassword, currentPassword)) {
+            throw new ServiceException("旧密码输入错误");
+        }
+
+        if (SecurityUtils.matchesPassword(newPassword, currentPassword)) {
+            throw new ServiceException("新密码不能与旧密码相同");
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            throw new ServiceException("两次输入的密码不一致");
+        }
+
+        if (isDefaultPassword(newPassword)) {
+            throw new ServiceException("新密码不能为默认密码");
+        }
+
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
         LocalDateTime now = DateUtils.now();
@@ -130,7 +159,6 @@ public class SysProfileServiceImpl implements SysProfileService {
         int update = sysUserMapper.update(updateWrapper);
         // 更新缓存
         if (update == 1) {
-            currentUser.setPassword(password);
             currentUser.setPasswordUpdateTime(now);
             LoginUserManager.setLoginUserCache(loginUserSession);
         }
@@ -156,8 +184,17 @@ public class SysProfileServiceImpl implements SysProfileService {
         }
 
         String userId = LoginUserContext.getUserId();
-        sysUserService.updateStatus(userId, "0");
+        // 注销用户当前必为启用态（停用用户无法登录），经 toggle 置为停用
+        sysUserService.updateStatus(userId, SysStatusEnum.NORMAL.getValue());
         sysUserService.deleteByIds(Collections.singletonList(userId));
+    }
+
+    /**
+     * 判断密码是否为默认密码
+     */
+    private boolean isDefaultPassword(String newPassword) {
+        String defaultPassword = sysSettingService.getDefaultPassword();
+        return defaultPassword.equals(newPassword);
     }
 
     @Override

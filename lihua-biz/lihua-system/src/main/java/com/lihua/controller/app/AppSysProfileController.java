@@ -1,23 +1,20 @@
 package com.lihua.controller.app;
 
-import com.lihua.common.enums.ResultCodeEnum;
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.common.utils.tree.TreeUtils;
+import com.lihua.security.manager.LoginUserContext;
+import com.lihua.security.model.AuthInfo;
+import com.lihua.security.model.CurrentUser;
+import com.lihua.security.model.LoginUserSession;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysCheckPasswordDTO;
 import com.lihua.model.dto.SysProfileBasicDTO;
 import com.lihua.model.dto.SysUpdatePasswordDTO;
 import com.lihua.model.validation.ProfileValidation;
-import com.lihua.security.manager.LoginUserContext;
-import com.lihua.security.model.AuthInfo;
 import com.lihua.security.model.CurrentDept;
-import com.lihua.security.model.CurrentUser;
-import com.lihua.security.model.LoginUserSession;
-import com.lihua.security.utils.SecurityUtils;
 import com.lihua.service.SysProfileService;
-import com.lihua.service.SysSettingService;
 import com.lihua.service.SysUserDeptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,9 +33,6 @@ public class AppSysProfileController extends ApiResponseController {
     @Resource
     private SysUserDeptService sysUserDeptService;
 
-    @Resource
-    private SysSettingService sysSettingService;
-
     @Operation(summary = "保存个人信息")
     @PostMapping("basics")
     @Log(description = "保存个人信息", type = LogTypeEnum.SAVE)
@@ -50,31 +44,7 @@ public class AppSysProfileController extends ApiResponseController {
     @PostMapping("password")
     @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword", "confirmPassword"})
     public ApiResponseModel<String> updatePassword(@RequestBody @Validated SysUpdatePasswordDTO sysUpdatePasswordDTO) {
-        // 密码、新密码、确认密码
-        String oldPassword = sysUpdatePasswordDTO.getOldPassword();
-        String newPassword = sysUpdatePasswordDTO.getNewPassword();
-        String confirmPassword = sysUpdatePasswordDTO.getConfirmPassword();
-
-        // 获取旧密码
-        String currentPassword = sysProfileService.getPassword();
-
-        if (!SecurityUtils.matchesPassword(oldPassword, currentPassword)) {
-            return error(ResultCodeEnum.ERROR,"旧密码输入错误");
-        }
-
-        if (SecurityUtils.matchesPassword(newPassword, currentPassword)) {
-            return error(ResultCodeEnum.ERROR,"新密码不能与旧密码相同");
-        }
-
-        if (!newPassword.equals(confirmPassword)) {
-            return error(ResultCodeEnum.ERROR, "两次输入的密码不一致");
-        }
-
-        if (isDefaultPassword(newPassword)) {
-            return error(ResultCodeEnum.ERROR,"新密码不能为默认密码");
-        }
-
-        return success(sysProfileService.updatePassword(newPassword));
+        return success(sysProfileService.updatePassword(sysUpdatePasswordDTO));
     }
 
     @Operation(summary = "设置默认部门")
@@ -114,14 +84,5 @@ public class AppSysProfileController extends ApiResponseController {
     @Log(description = "验证密码", type = LogTypeEnum.OTHER, excludeParams = {"password"})
     public ApiResponseModel<Boolean> checkPassword(@RequestBody @Validated SysCheckPasswordDTO sysCheckPasswordDTO) {
         return success(sysProfileService.checkPassword(sysCheckPasswordDTO));
-    }
-
-    /**
-     * 判断密码是否为默认密码
-     */
-    private boolean isDefaultPassword(String newPassword) {
-        String defaultPassword = sysSettingService.getDefaultPassword();
-        // 对比解密后的默认密码
-        return defaultPassword.equals(newPassword);
     }
 }

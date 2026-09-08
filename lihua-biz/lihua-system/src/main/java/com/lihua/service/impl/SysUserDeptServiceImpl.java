@@ -14,6 +14,7 @@ import com.lihua.security.model.LoginUserSession;
 import com.lihua.service.SysUserDeptService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,6 +51,7 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
     }
 
     @Override
+    @Transactional
     public CurrentDept setDefaultDept(String deptId) {
         LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
         String userId = loginUserSession.getUser().getId();
