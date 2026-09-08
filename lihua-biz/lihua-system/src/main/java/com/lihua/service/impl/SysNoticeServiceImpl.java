@@ -8,6 +8,8 @@ import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysNotice;
 import com.lihua.entity.SysUserNotice;
+import com.lihua.enums.NoticeStatusEnum;
+import com.lihua.enums.NoticeUserScopeEnum;
 import com.lihua.mapper.SysNoticeMapper;
 import com.lihua.model.dto.SysNoticeDTO;
 import com.lihua.model.vo.SysNoticeVO;
@@ -95,7 +97,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         BeanUtils.copyProperties(sysNotice, sysNoticeVO);
 
         // 用户范围为全部的情况下，直接返回
-        if ("0".equals(sysNotice.getUserScope())) {
+        if (NoticeUserScopeEnum.ALL.getValue().equals(sysNotice.getUserScope())) {
             return sysNoticeVO;
         }
         // 指定用户情况下，查询关联用户后返回
@@ -112,12 +114,12 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     @Override
     @Transactional
     public String save(SysNoticeDTO sysNoticeDTO) {
-        if ("1".equals(sysNoticeDTO.getUserScope()) &&
+        if (NoticeUserScopeEnum.DESIGNATED.getValue().equals(sysNoticeDTO.getUserScope()) &&
             (sysNoticeDTO.getUserIdList() == null || sysNoticeDTO.getUserIdList().isEmpty())) {
             throw new ServiceException("请指定接收用户");
         }
 
-        sysNoticeDTO.setStatus("0");
+        sysNoticeDTO.setStatus(NoticeStatusEnum.UNPUBLISHED.getValue());
         String id;
         if (!StringUtils.hasText(sysNoticeDTO.getId())) {
             id = insert(sysNoticeDTO);
@@ -125,7 +127,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             id = update(sysNoticeDTO);
         }
         // 指定用户范围时，保存关联表
-        if ("1".equals(sysNoticeDTO.getUserScope())) {
+        if (NoticeUserScopeEnum.DESIGNATED.getValue().equals(sysNoticeDTO.getUserScope())) {
             // 删除所有关联关系
             sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
             saveUserNotice(id, sysNoticeDTO.getUserIdList());
@@ -138,13 +140,13 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     @Transactional
     public String release(String id) {
         String status = getStatus(id);
-        if ("1".equals(status)) {
+        if (NoticeStatusEnum.RELEASED.getValue().equals(status)) {
             throw new ServiceException("该消息通知已发布");
         }
         // 更新状态等信息
         UpdateWrapper<SysNotice> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda().eq(SysNotice::getId, id)
-                        .set(SysNotice::getStatus, "1")
+                        .set(SysNotice::getStatus, NoticeStatusEnum.RELEASED.getValue())
                         .set(SysNotice::getReleaseTime, DateUtils.now())
                         .set(SysNotice::getReleaseId, LoginUserContext.getUserId());
         sysNoticeMapper.update(updateWrapper);
@@ -156,7 +158,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
                 .select(SysNotice::getId, SysNotice::getTitle, SysNotice::getType, SysNotice::getUserScope);
         SysNotice sysNotice = sysNoticeMapper.selectOne(queryWrapper);
 
-        if ("0".equals(sysNotice.getUserScope())) {
+        if (NoticeUserScopeEnum.ALL.getValue().equals(sysNotice.getUserScope())) {
             // 发送范围为全部用户时，删除所有关联关系批量插入
             sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
             saveUserNotice(id, sysUserService.queryAllUserIds());
@@ -177,14 +179,14 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     @Transactional
     public String revoke(String id) {
         String status = getStatus(id);
-        if (!"1".equals(status)) {
+        if (!NoticeStatusEnum.RELEASED.getValue().equals(status)) {
             throw new ServiceException("仅发布状态消息通知可撤销");
         }
 
         // 更新状态等信息
         UpdateWrapper<SysNotice> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda().eq(SysNotice::getId, id)
-                .set(SysNotice::getStatus, "2")
+                .set(SysNotice::getStatus, NoticeStatusEnum.REVOKED.getValue())
                 .set(SysNotice::getUpdateTime, DateUtils.now())
                 .set(SysNotice::getUpdateId, LoginUserContext.getUserId());
         sysNoticeMapper.update(updateWrapper);
@@ -196,7 +198,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     public void deleteByIds(List<String> ids) {
         QueryWrapper<SysNotice> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
-                .eq(SysNotice::getStatus, "1")
+                .eq(SysNotice::getStatus, NoticeStatusEnum.RELEASED.getValue())
                 .in(SysNotice::getId, ids);
 
         Long count = sysNoticeMapper.selectCount(queryWrapper);
@@ -215,7 +217,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
         IPage<SysUserNoticeVO> iPage = new Page<>(sysNoticeDTO.getPageNum(), sysNoticeDTO.getPageSize());
         QueryWrapper<SysUserNoticeVO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("sys_user_notice.user_id", LoginUserContext.getUserId())
-                        .eq("sys_notice.status", "1")
+                        .eq("sys_notice.status", NoticeStatusEnum.RELEASED.getValue())
                         .eq("sys_notice.del_flag", "0")
                         .orderByDesc("sys_notice.release_time");
         // 是否查询star
@@ -240,7 +242,7 @@ public class SysNoticeServiceImpl implements SysNoticeService {
      */
     private String update(SysNoticeDTO sysNoticeDTO) {
         String status = getStatus(sysNoticeDTO.getId());
-        if ("1".equals(status)) {
+        if (NoticeStatusEnum.RELEASED.getValue().equals(status)) {
             throw new ServiceException("已发布消息通知无法编辑");
         }
 
