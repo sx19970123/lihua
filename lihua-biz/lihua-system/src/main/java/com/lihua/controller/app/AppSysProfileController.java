@@ -50,7 +50,7 @@ public class AppSysProfileController extends ApiResponseController {
     @PostMapping("password")
     @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword", "confirmPassword"})
     public ApiResponseModel<String> updatePassword(@RequestBody @Validated SysUpdatePasswordDTO sysUpdatePasswordDTO) {
-        // 解密旧密码、新密码、确认密码
+        // 密码、新密码、确认密码
         String oldPassword = sysUpdatePasswordDTO.getOldPassword();
         String newPassword = sysUpdatePasswordDTO.getNewPassword();
         String confirmPassword = sysUpdatePasswordDTO.getConfirmPassword();
@@ -68,10 +68,6 @@ public class AppSysProfileController extends ApiResponseController {
 
         if (!newPassword.equals(confirmPassword)) {
             return error(ResultCodeEnum.ERROR, "两次输入的密码不一致");
-        }
-
-        if (newPassword.length() < 6 || newPassword.length() > 22) {
-            return error(ResultCodeEnum.ERROR, "密码长度为6-22字符");
         }
 
         if (isDefaultPassword(newPassword)) {

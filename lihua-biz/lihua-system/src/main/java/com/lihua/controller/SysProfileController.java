@@ -77,10 +77,6 @@ public class SysProfileController extends ApiResponseController {
             return error(ResultCodeEnum.ERROR, "两次输入的密码不一致");
         }
 
-        if (newPassword.length() < 6 || newPassword.length() > 22) {
-            return error(ResultCodeEnum.ERROR, "密码长度为6-22字符");
-        }
-
         if (isDefaultPassword(newPassword)) {
             return error(ResultCodeEnum.ERROR,"新密码不能为默认密码");
         }
