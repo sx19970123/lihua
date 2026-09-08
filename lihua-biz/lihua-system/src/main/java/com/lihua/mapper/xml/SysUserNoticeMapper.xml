@@ -6,7 +6,7 @@
         SELECT
             COUNT(1)
         FROM sys_notice
-        LEFT JOIN sys_user_notice ON sys_user_notice.notice_id = sys_notice.id
+        INNER JOIN sys_user_notice ON sys_user_notice.notice_id = sys_notice.id
         WHERE
             sys_user_notice.user_id = #{userId}
             AND sys_user_notice.read_flag = '0'

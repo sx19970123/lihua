@@ -93,6 +93,9 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     public SysNoticeVO queryById(String id) {
         // 查询 SysNotice 表
         SysNotice sysNotice = sysNoticeMapper.selectById(id);
+        if (sysNotice == null) {
+            throw new ServiceException("通知公告不存在");
+        }
         SysNoticeVO sysNoticeVO = new SysNoticeVO();
         BeanUtils.copyProperties(sysNotice, sysNoticeVO);
 
@@ -139,8 +142,15 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     @Override
     @Transactional
     public String release(String id) {
-        String status = getStatus(id);
-        if (NoticeStatusEnum.RELEASED.getValue().equals(status)) {
+        QueryWrapper<SysNotice> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(SysNotice::getId, id)
+                .select(SysNotice::getId, SysNotice::getTitle, SysNotice::getType, SysNotice::getStatus, SysNotice::getUserScope);
+        SysNotice sysNotice = sysNoticeMapper.selectOne(queryWrapper);
+        if (sysNotice == null) {
+            throw new ServiceException("通知公告不存在");
+        }
+        if (NoticeStatusEnum.RELEASED.getValue().equals(sysNotice.getStatus())) {
             throw new ServiceException("该消息通知已发布");
         }
         // 更新状态等信息
@@ -150,13 +160,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
                         .set(SysNotice::getReleaseTime, DateUtils.now())
                         .set(SysNotice::getReleaseId, LoginUserContext.getUserId());
         sysNoticeMapper.update(updateWrapper);
-
-        // 获取发送的消息 id title
-        QueryWrapper<SysNotice> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda()
-                .eq(SysNotice::getId, id)
-                .select(SysNotice::getId, SysNotice::getTitle, SysNotice::getType, SysNotice::getUserScope);
-        SysNotice sysNotice = sysNoticeMapper.selectOne(queryWrapper);
 
         if (NoticeUserScopeEnum.ALL.getValue().equals(sysNotice.getUserScope())) {
             // 发送范围为全部用户时，删除所有关联关系批量插入

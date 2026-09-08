@@ -67,9 +67,9 @@ public class SysNoticeController extends ApiResponseController {
         return success(sysNoticeService.release(id));
     }
 
-    @Operation(summary = "撤回通知公告")
+    @Operation(summary = "撤销通知公告")
     @PostMapping("revoke/{id}")
-    @Log(description = "撤回通知公告", type = LogTypeEnum.OTHER)
+    @Log(description = "撤销通知公告", type = LogTypeEnum.OTHER)
     public ApiResponseModel<String> revoke(@PathVariable("id") String id) {
         return success(sysNoticeService.revoke(id));
     }

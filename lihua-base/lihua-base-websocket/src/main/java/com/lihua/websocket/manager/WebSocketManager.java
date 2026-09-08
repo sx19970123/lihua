@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.ConcurrentWebSocketSessionDecorator;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
@@ -22,6 +23,10 @@ public class WebSocketManager extends TextWebSocketHandler {
 
     // 连接实例集合，外层key为userId，内层key为user_clientId_clientType
     private final Map<String, Map<String, WebSocketSession>> sessionMap = new ConcurrentHashMap<>();
+
+    // 单条消息允许的最长发送时间与发送缓冲上限，超限的慢消费端连接将被自动断开（缓冲上限对齐 WebSocketConfig 的消息 buffer 配置）
+    private static final int SEND_TIME_LIMIT_MS = 5 * 1000;
+    private static final int BUFFER_SIZE_LIMIT = 512 * 1024;
 
     /**
      * 向指定用户群发消息
@@ -87,7 +92,10 @@ public class WebSocketManager extends TextWebSocketHandler {
             if (map == null) {
                 map = new ConcurrentHashMap<>();
             }
-            WebSocketSession oldSession = map.put(sessionKey, session);
+            // 存储前装饰为线程安全的 session：并发写在装饰器内排队缓冲，
+            // 发送超时或缓冲超限的慢消费端连接由装饰器自动断开，避免阻塞推送线程
+            WebSocketSession decoratedSession = new ConcurrentWebSocketSessionDecorator(session, SEND_TIME_LIMIT_MS, BUFFER_SIZE_LIMIT);
+            WebSocketSession oldSession = map.put(sessionKey, decoratedSession);
             if (oldSession != null && oldSession.isOpen()) {
                 try {
                     oldSession.close();
@@ -110,18 +118,15 @@ public class WebSocketManager extends TextWebSocketHandler {
         String userId = attributes.get("userId").toString();
         String sessionKey = getSessionKey(attributes);
 
-        // 使用userId内层map
-        Map<String, WebSocketSession> map = sessionMap.get(userId);
-
-        if (map != null) {
-            // 根据 sessionKey 删除
-            map.remove(sessionKey);
-
-            // 删除后map为空则清空该userId下所有map
-            if (map.isEmpty()) {
-                sessionMap.remove(userId);
+        // 原子性清理：断连移除与并发的新连接写入竞争时，分两步"先 remove 再判空移除 userId"
+        // 会把新写入的 session 一并丢弃，导致该连接在断开重连前收不到任何推送
+        sessionMap.compute(userId, (uid, map) -> {
+            if (map == null) {
+                return null;
             }
-        }
+            map.remove(sessionKey);
+            return map.isEmpty() ? null : map;
+        });
 
         log.info("WebSocket连接断开成功: userId={}, sessionKey={}", userId, sessionKey);
     }

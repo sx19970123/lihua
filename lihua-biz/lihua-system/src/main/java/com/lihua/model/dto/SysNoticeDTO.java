@@ -58,11 +58,6 @@ public class SysNoticeDTO extends BaseDTO {
     private String content;
 
     /**
-     * 逻辑删除标识
-     */
-    private String delFlag;
-
-    /**
      * 备注
      */
     @Size(max = 500, message = "备注长度不能超过500个字符")
