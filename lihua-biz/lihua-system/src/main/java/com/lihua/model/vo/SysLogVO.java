@@ -2,6 +2,7 @@ package com.lihua.model.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lihua.excel.annotation.ExcelDictType;
 import com.lihua.excel.converter.ExcelDictConverter;
 import com.lihua.excel.converter.ExcelLocalDateTimeConverter;
@@ -163,8 +164,9 @@ public class SysLogVO implements Serializable {
 
 
     /**
-     * 删除标识
+     * 删除标识（逻辑删除载体，不下发前端）
      */
+    @JsonIgnore
     private String delFlag;
 
     /**

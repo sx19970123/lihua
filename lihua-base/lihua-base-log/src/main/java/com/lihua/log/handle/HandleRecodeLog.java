@@ -6,6 +6,7 @@ import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.ip.utils.IpUtils;
 import com.lihua.log.annotation.Log;
+import com.lihua.log.enums.LogStatusEnum;
 import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
@@ -85,7 +86,7 @@ public class HandleRecodeLog {
                 .setUserAgent(userAgent)
                 .setClientType(clientType)
                 .setExecuteTime(time)
-                .setExecuteStatus("0");
+                .setExecuteStatus(LogStatusEnum.SUCCESS.getValue());
 
         // 处理返回值
         String result = handleResult(resultObject);
@@ -99,7 +100,7 @@ public class HandleRecodeLog {
         if (exception != null) {
             logModel.setErrorMsg(exception.getMessage())
                     .setErrorStack(Arrays.toString(exception.getStackTrace()))
-                    .setExecuteStatus("1");
+                    .setExecuteStatus(LogStatusEnum.ERROR.getValue());
         } else {
             // 使用正则表达式来获取执行状态
             if (result != null) {
@@ -110,7 +111,7 @@ public class HandleRecodeLog {
                     if (msgMatcher.find()) {
                         logModel.setErrorMsg(msgMatcher.group(1))
                                 .setErrorStack("由业务判断返回ERROR，无堆栈信息")
-                                .setExecuteStatus("1");
+                                .setExecuteStatus(LogStatusEnum.ERROR.getValue());
                     }
 
                 }
@@ -120,9 +121,9 @@ public class HandleRecodeLog {
         // 日志插入数据库
         // 登录日志单独保存
         LoginUserSession loginUser = null;
-        if ("LOGIN".equals(type.getCode())) {
+        if (type == LogTypeEnum.LOGIN) {
             // 从登录成功的返回值中获取token，拿到用户信息
-            if (result != null && "0".equals(logModel.getExecuteStatus())) {
+            if (result != null && LogStatusEnum.SUCCESS.getValue().equals(logModel.getExecuteStatus())) {
                 Matcher matcher = DATA_PATTERN.matcher(result);
                 if (matcher.find()) {
                     loginUser = LoginUserManager.getLoginUser(matcher.group(1));

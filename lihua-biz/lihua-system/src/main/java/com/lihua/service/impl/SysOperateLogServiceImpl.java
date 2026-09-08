@@ -100,6 +100,23 @@ public class SysOperateLogServiceImpl implements SysLogService {
     public List<? extends SysLogVO> exportExcel(SysLogDTO sysLogDTO) {
         QueryWrapper<SysOperateLog> queryWrapper = new QueryWrapper<>();
 
+        // 查询列对齐导出列，不载入 errorStack 等非导出大字段
+        queryWrapper.lambda().select(SysOperateLog::getId,
+                SysOperateLog::getDescription,
+                SysOperateLog::getTypeMsg,
+                SysOperateLog::getExecuteStatus,
+                SysOperateLog::getClassName,
+                SysOperateLog::getMethodName,
+                SysOperateLog::getParams,
+                SysOperateLog::getResult,
+                SysOperateLog::getCreateName,
+                SysOperateLog::getCreateTime,
+                SysOperateLog::getExecuteTime,
+                SysOperateLog::getUrl,
+                SysOperateLog::getIpAddress,
+                SysOperateLog::getRegion,
+                SysOperateLog::getClientType);
+
         // 类型
         if (StringUtils.hasText(sysLogDTO.getTypeCode())) {
             queryWrapper.lambda().eq(SysLogVO::getTypeCode, sysLogDTO.getTypeCode());
@@ -115,14 +132,20 @@ public class SysOperateLogServiceImpl implements SysLogService {
             queryWrapper.lambda().eq(SysLogVO::getExecuteStatus, sysLogDTO.getExecuteStatus());
         }
 
+        // 客户端类型
+        if (StringUtils.hasText(sysLogDTO.getClientType())) {
+            queryWrapper.lambda().eq(SysLogVO::getClientType, sysLogDTO.getClientType());
+        }
+
         // 描述
         if (StringUtils.hasText(sysLogDTO.getDescription())) {
             queryWrapper.lambda().like(SysLogVO::getDescription, sysLogDTO.getDescription());
         }
 
         // 执行时间范围
-        if (sysLogDTO.getCreateTimeList() != null && !sysLogDTO.getCreateTimeList().isEmpty()) {
-            queryWrapper.lambda().between(SysLogVO::getCreateTime, sysLogDTO.getCreateTimeList().get(0), sysLogDTO.getCreateTimeList().get(1));
+        List<LocalDate> createTimeList = sysLogDTO.getCreateTimeList();
+        if (createTimeList != null && createTimeList.size() == 2) {
+            queryWrapper.lambda().between(SysLogVO::getCreateTime,createTimeList.get(0), createTimeList.get(1).plusDays(1L));
         }
 
         queryWrapper.lambda().orderByDesc(SysLogVO::getId);

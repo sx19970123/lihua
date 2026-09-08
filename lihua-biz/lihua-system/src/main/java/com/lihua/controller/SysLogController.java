@@ -41,7 +41,7 @@ public class SysLogController extends ApiResponseController {
     public ApiResponseModel<List<Map<String, String>>> getLogTypeOption() {
         List<Map<String, String>> maps = Arrays
                 .stream(LogTypeEnum.values())
-                .filter(value -> !"LOGIN".equals(value.getCode()))
+                .filter(value -> value != LogTypeEnum.LOGIN)
                 .map(value -> Map.of("value",  value.getCode(), "label", value.getMsg()))
                 .toList();
         return success(maps);

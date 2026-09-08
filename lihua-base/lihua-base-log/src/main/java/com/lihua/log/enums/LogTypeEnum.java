@@ -20,7 +20,7 @@ public enum LogTypeEnum {
      */
     SAVE("SAVE","保存数据"),
     /**
-     * 保存
+     * 更新状态
      */
     UPDATE_STATUS("UPDATE_STATUS","更新状态"),
     /**
@@ -35,22 +35,6 @@ public enum LogTypeEnum {
      * 删除
      */
     DELETE("DELETE","删除数据"),
-    /**
-     * 列表查询
-     */
-    QUERY_LIST("QUERY_LIST","列表查询"),
-    /**
-     * 分页查询
-     */
-    QUERY_PAGE("QUERY_PAGE","分页查询"),
-    /**
-     * 单条查询
-     */
-    QUERY_ONE("QUERY_ONE","单条查询"),
-    /**
-     * 附件下载
-     */
-    DOWNLOAD("DOWNLOAD","附件下载"),
     /**
      * 附件上传
      */

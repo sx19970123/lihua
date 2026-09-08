@@ -100,24 +100,47 @@ public class SysLoginLogServiceImpl implements SysLogService {
 
         QueryWrapper<SysLoginLog> queryWrapper = new QueryWrapper<>();
 
+        // 查询列对齐导出列，不载入 errorStack 等非导出大字段
+        queryWrapper.lambda().select(SysLoginLog::getId,
+                SysLoginLog::getDescription,
+                SysLoginLog::getTypeMsg,
+                SysLoginLog::getExecuteStatus,
+                SysLoginLog::getClassName,
+                SysLoginLog::getMethodName,
+                SysLoginLog::getParams,
+                SysLoginLog::getResult,
+                SysLoginLog::getCreateName,
+                SysLoginLog::getCreateTime,
+                SysLoginLog::getExecuteTime,
+                SysLoginLog::getUrl,
+                SysLoginLog::getIpAddress,
+                SysLoginLog::getRegion,
+                SysLoginLog::getClientType);
+
+        // 用户名
+        if (StringUtils.hasText(sysLogDTO.getUsername())) {
+            queryWrapper.lambda().like(SysLogVO::getUsername, sysLogDTO.getUsername());
+        }
+
         // 操作人姓名
         if (StringUtils.hasText(sysLogDTO.getCreateName())) {
             queryWrapper.lambda().like(SysLogVO::getCreateName, sysLogDTO.getCreateName());
         }
 
-        // 执行状态
+        // 登录状态
         if (StringUtils.hasText(sysLogDTO.getExecuteStatus())) {
             queryWrapper.lambda().eq(SysLogVO::getExecuteStatus, sysLogDTO.getExecuteStatus());
         }
 
-        // 描述
-        if (StringUtils.hasText(sysLogDTO.getDescription())) {
-            queryWrapper.lambda().like(SysLogVO::getDescription, sysLogDTO.getDescription());
+        // 客户端类型
+        if (StringUtils.hasText(sysLogDTO.getClientType())) {
+            queryWrapper.lambda().eq(SysLogVO::getClientType, sysLogDTO.getClientType());
         }
 
-        // 执行时间范围
-        if (sysLogDTO.getCreateTimeList() != null && !sysLogDTO.getCreateTimeList().isEmpty()) {
-            queryWrapper.lambda().between(SysLogVO::getCreateTime, sysLogDTO.getCreateTimeList().get(0), sysLogDTO.getCreateTimeList().get(1));
+        // 登录时间
+        List<LocalDate> createTimeList = sysLogDTO.getCreateTimeList();
+        if (createTimeList != null && createTimeList.size() == 2) {
+            queryWrapper.lambda().between(SysLogVO::getCreateTime,createTimeList.get(0), createTimeList.get(1).plusDays(1L));
         }
 
         queryWrapper.lambda().orderByDesc(SysLogVO::getId);
