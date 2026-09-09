@@ -33,7 +33,7 @@ public class JvmMonitor {
     /**
      * 运行时长
      */
-    private String RunningTime;
+    private String runningTime;
 
     /**
      * 运行参数

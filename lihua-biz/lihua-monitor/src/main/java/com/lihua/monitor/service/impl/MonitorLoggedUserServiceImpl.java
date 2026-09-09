@@ -30,7 +30,11 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
         // 取出所有登录用户信息
         List<LoginUserSession> loginUserSessions = new ArrayList<>();
         for (String key : keys) {
-            loginUserSessions.add(redisCacheManager.getCacheObject(key, LoginUserSession.class));
+            LoginUserSession loginUserSession = redisCacheManager.getCacheObject(key, LoginUserSession.class);
+            // 会话可能在 keys() 与读取之间过期，跳过已失效项
+            if (loginUserSession != null) {
+                loginUserSessions.add(loginUserSession);
+            }
         }
 
         // 根据用户名过滤

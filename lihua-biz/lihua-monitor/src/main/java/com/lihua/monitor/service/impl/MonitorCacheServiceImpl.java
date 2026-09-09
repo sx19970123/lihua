@@ -8,7 +8,6 @@ import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.monitor.service.MonitorCacheService;
 import jakarta.annotation.Resource;
-import lombok.SneakyThrows;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -41,26 +40,21 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
 
     @Override
     public Set<String> cacheKeys(String keyPrefix) {
-        if (!"OTHER".equals(keyPrefix)) {
+        if (!RedisKeyPrefixEnum.OTHER.getValue().equals(keyPrefix)) {
             return redisCacheManager.keys(keyPrefix);
         }
 
         Set<String> keys = redisCacheManager.keys();
         // 拿到非other的Key
         List<RedisKeyPrefixEnum> redisKeyPrefix = RedisKeyPrefixEnum.getRedisKeyPrefix();
-        List<String> notOtherKeys = redisKeyPrefix.stream().map(RedisKeyPrefixEnum::getValue).filter(key -> !"OTHER".equals(key)).toList();
+        List<String> notOtherKeys = redisKeyPrefix.stream().map(RedisKeyPrefixEnum::getValue).filter(key -> !RedisKeyPrefixEnum.OTHER.getValue().equals(key)).toList();
         // 从keys中减去非other的Key，拿到other的key
         return keys
                 .stream()
-                .filter(k -> {
-                    for (String prefix : notOtherKeys)
-                        if (k.startsWith(prefix)) return false;
-                    return true;
-                })
+                .filter(k -> notOtherKeys.stream().noneMatch(k::startsWith))
                 .collect(Collectors.toSet());
     }
 
-    @SneakyThrows
     @Override
     public CacheMonitor cacheInfo(String key) {
         CacheMonitor cacheMonitor = new CacheMonitor(null, key);
