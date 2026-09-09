@@ -2,6 +2,7 @@ package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.lihua.common.exception.ServiceException;
 import com.lihua.entity.SysViewTab;
 import com.lihua.mapper.SysViewTabMapper;
 import com.lihua.security.manager.LoginUserContext;
@@ -86,24 +87,22 @@ public class SysViewTabServiceImpl implements SysViewTabService {
 
     @Override
     public CurrentViewTab save(SysViewTab sysStarView) {
+        boolean hasAffix = StringUtils.hasText(sysStarView.getAffix());
+        boolean hasStar = StringUtils.hasText(sysStarView.getStar());
+
+        if (!hasAffix && !hasStar) {
+            throw new ServiceException("参数错误");
+        }
+
         UpdateWrapper<SysViewTab> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda()
                 .eq(SysViewTab::getUserId, LoginUserContext.getUserId())
                 .eq(SysViewTab::getMenuId,sysStarView.getMenuId());
-        boolean flag = true;
-
-        if (StringUtils.hasText(sysStarView.getAffix())) {
-            flag = false;
+        if (hasAffix) {
             updateWrapper.lambda().set(SysViewTab::getAffix,sysStarView.getAffix());
         }
-
-        if (StringUtils.hasText(sysStarView.getStar())) {
-            flag = false;
+        if (hasStar) {
             updateWrapper.lambda().set(SysViewTab::getStar,sysStarView.getStar());
-        }
-
-        if (flag) {
-            throw new RuntimeException("参数错误");
         }
 
         // 尝试更新数据，更新结果为0表示无数据，再执行插入
@@ -114,13 +113,18 @@ public class SysViewTabServiceImpl implements SysViewTabService {
             sysUserStarViewMapper.insert(sysStarView);
         }
 
-        // 重新设置loginUserContext
+        // 会话回写与库内更新同语义：仅回传的字段写会话，未传字段保留会话现值
+        // （单字段请求时另一侧不被抹成 false，避免会话与 DB 分叉）
         CurrentViewTab starView = null;
         LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
         for (CurrentViewTab starViewVO : loginUserSession.getViewTabList()) {
             if (starViewVO.getMenuId().equals(sysStarView.getMenuId())) {
-                starViewVO.setAffix(ViewTabFlagEnum.YES.getValue().equals(sysStarView.getAffix()))
-                        .setStar(ViewTabFlagEnum.YES.getValue().equals(sysStarView.getStar()));
+                if (hasAffix) {
+                    starViewVO.setAffix(ViewTabFlagEnum.YES.getValue().equals(sysStarView.getAffix()));
+                }
+                if (hasStar) {
+                    starViewVO.setStar(ViewTabFlagEnum.YES.getValue().equals(sysStarView.getStar()));
+                }
                 starView = starViewVO;
             }
         }
