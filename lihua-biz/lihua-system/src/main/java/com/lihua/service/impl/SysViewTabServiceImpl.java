@@ -10,6 +10,7 @@ import com.lihua.security.model.CurrentRouter;
 import com.lihua.security.model.CurrentViewTab;
 import com.lihua.security.model.LoginUserSession;
 import com.lihua.enums.MenuTypeEnum;
+import com.lihua.enums.ViewTabFlagEnum;
 import com.lihua.service.SysViewTabService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -49,9 +50,9 @@ public class SysViewTabServiceImpl implements SysViewTabService {
             queryWrapper.lambda()
                     .eq(SysViewTab::getUserId,userId)
                     .in(SysViewTab::getMenuId, menuIds)
-                    .and(wrapper -> wrapper.eq(SysViewTab::getAffix,"1")
+                    .and(wrapper -> wrapper.eq(SysViewTab::getAffix, ViewTabFlagEnum.YES.getValue())
                             .or()
-                            .eq(SysViewTab::getStar,"1"));
+                            .eq(SysViewTab::getStar, ViewTabFlagEnum.YES.getValue()));
             sysUserStarViews = sysUserStarViewMapper.selectList(queryWrapper);
         }
 
@@ -73,8 +74,8 @@ public class SysViewTabServiceImpl implements SysViewTabService {
                 sysUserStarViews.forEach(star -> {
                     if (star.getMenuId().equals(route.getId())) {
                         sysViewTabVO
-                                .setStar("1".equals(star.getStar()))
-                                .setAffix("1".equals(star.getAffix()));
+                                .setStar(ViewTabFlagEnum.YES.getValue().equals(star.getStar()))
+                                .setAffix(ViewTabFlagEnum.YES.getValue().equals(star.getAffix()));
                     }
                 });
                 viewVOS.add(sysViewTabVO);
@@ -118,8 +119,8 @@ public class SysViewTabServiceImpl implements SysViewTabService {
         LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
         for (CurrentViewTab starViewVO : loginUserSession.getViewTabList()) {
             if (starViewVO.getMenuId().equals(sysStarView.getMenuId())) {
-                starViewVO.setAffix("1".equals(sysStarView.getAffix()))
-                        .setStar("1".equals(sysStarView.getStar()));
+                starViewVO.setAffix(ViewTabFlagEnum.YES.getValue().equals(sysStarView.getAffix()))
+                        .setStar(ViewTabFlagEnum.YES.getValue().equals(sysStarView.getStar()));
                 starView = starViewVO;
             }
         }
