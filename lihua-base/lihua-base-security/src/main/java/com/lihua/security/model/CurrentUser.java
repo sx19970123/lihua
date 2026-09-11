@@ -35,6 +35,11 @@ public class CurrentUser implements Serializable {
     private String avatar;
 
     /**
+     * 头像可直接访问 URL（非图片类型为 null；服务端组装用户信息下发时填充，落库与缓存均不依赖该字段）
+     */
+    private String avatarUrl;
+
+    /**
      * 性别
      */
     private String gender;

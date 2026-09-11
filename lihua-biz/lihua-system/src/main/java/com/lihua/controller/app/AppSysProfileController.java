@@ -16,6 +16,7 @@ import com.lihua.model.validation.ProfileValidation;
 import com.lihua.security.model.CurrentDept;
 import com.lihua.service.SysProfileService;
 import com.lihua.service.SysUserDeptService;
+import com.lihua.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -32,6 +33,9 @@ public class AppSysProfileController extends ApiResponseController {
 
     @Resource
     private SysUserDeptService sysUserDeptService;
+
+    @Resource
+    private SysUserService sysUserService;
 
     @Operation(summary = "保存个人信息")
     @PostMapping("basics")
@@ -62,7 +66,10 @@ public class AppSysProfileController extends ApiResponseController {
         LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
         // 前端 store 用户数据
         AuthInfo authInfo = new AuthInfo();
-        authInfo.setUserInfo(loginUserSession.getUser() != null ? loginUserSession.getUser() : new CurrentUser());
+        CurrentUser userInfo = loginUserSession.getUser() != null ? loginUserSession.getUser() : new CurrentUser();
+        // 头像可直接访问 URL（非图片类型为 null；avatar 原值 JSON 串仍透传），直接填充在用户信息对象上随 userInfo 下发
+        userInfo.setAvatarUrl(sysUserService.resolveAvatarUrl(userInfo.getAvatar()));
+        authInfo.setUserInfo(userInfo);
         authInfo.setDepts(TreeUtils.buildTree(loginUserSession.getDeptList()));
         authInfo.setPosts(loginUserSession.getPostList());
         authInfo.setRoles(loginUserSession.getRoleList());

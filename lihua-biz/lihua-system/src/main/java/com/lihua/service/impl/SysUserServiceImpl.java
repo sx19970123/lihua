@@ -8,10 +8,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.collection.CollectionUtils;
+import com.lihua.attachment.config.AttachmentProperties;
+import com.lihua.attachment.utils.AttachmentUrlUtils;
 import com.lihua.common.utils.date.DateUtils;
+import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.entity.*;
 import com.lihua.excel.exception.ExcelImportException;
 import com.lihua.mapper.SysUserMapper;
+import com.lihua.model.AvatarModel;
 import com.lihua.model.dto.ResetPasswordDTO;
 import com.lihua.model.dto.SysUserDTO;
 import com.lihua.model.dto.SysUserDeptDTO;
@@ -38,6 +42,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Resource
     private SysUserMapper sysUserMapper;
+
+    @Resource
+    private AttachmentProperties attachmentProperties;
 
     @Resource
     private SysUserRoleService sysUserRoleService;
@@ -100,7 +107,34 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         // 为用户所属部门赋值(一对多分页会出问题，单独处理)
         handleUserDept(iPage.getRecords());
 
+        // 头像可直接访问 URL（列表预埋，非图片类型为 null）
+        iPage.getRecords().forEach(vo -> vo.setAvatarUrl(resolveAvatarUrl(vo.getAvatar())));
+
         return iPage;
+    }
+
+    @Override
+    public String getAvatarUrl(String userId) {
+        SysUser user = lambdaQuery().select(SysUser::getAvatar).eq(SysUser::getId, userId).one();
+        return user == null ? null : resolveAvatarUrl(user.getAvatar());
+    }
+
+    @Override
+    public String resolveAvatarUrl(String avatar) {
+        if (!StringUtils.hasText(avatar)) {
+            return null;
+        }
+        // 头像列为前端 AvatarType JSON 串，仅图片类型解析对象键（文字/图标头像无附件 URL）
+        AvatarModel avatarModel;
+        try {
+            avatarModel = JsonUtils.toObject(avatar, AvatarModel.class);
+        } catch (Exception e) {
+            return null;
+        }
+        if (avatarModel == null || !"image".equals(avatarModel.getType()) || !StringUtils.hasText(avatarModel.getValue())) {
+            return null;
+        }
+        return AttachmentUrlUtils.resolvePublicUrl(avatarModel.getValue(), attachmentProperties.getUrlBasePath());
     }
 
     @Override

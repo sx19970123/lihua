@@ -36,6 +36,11 @@ public class AttachmentProperties {
     private String downloadSignKey;
 
     /**
+     * 附件入口 URL 反代前缀（部署带反代前缀如 /api 时配置，拼在下载入口前；默认空）
+     */
+    private String urlBasePath = "";
+
+    /**
      * 下载链接默认时效（缺省 1 小时，调大调小由部署按场景决定；支持带单位写法如 1h/60m，裸数字按分钟）
      */
     @DurationUnit(ChronoUnit.MINUTES)

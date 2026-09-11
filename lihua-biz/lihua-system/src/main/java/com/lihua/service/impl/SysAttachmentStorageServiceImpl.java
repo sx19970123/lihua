@@ -6,9 +6,11 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.lihua.attachment.config.AttachmentProperties;
 import com.lihua.attachment.enums.AttachmentStatusEnum;
+import com.lihua.attachment.enums.AttachmentUploadModeEnum;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.model.AttachmentResponse;
 import com.lihua.attachment.strategy.AttachmentStorageStrategy;
+import com.lihua.attachment.utils.AttachmentUrlUtils;
 import com.lihua.attachment.utils.FileUtils;
 import com.lihua.attachment.utils.SignedUrlUtils;
 import com.lihua.common.enums.ResultCodeEnum;
@@ -79,9 +81,6 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     private static final long PUBLIC_CACHE_SECONDS = 300;
     private static final long REDIRECT_CACHE_SECONDS = 300;
 
-    // 下载入口相对路径（签发 entry URL 前缀，LOCAL/OSS 同形；App 版经网关加 /app 前缀）
-    private static final String DOWNLOAD_URL_PREFIX = "/system/attachment/storage/download";
-
     @Override
     public boolean existsAttachmentByMd5(String md5) {
         return findUploadableByMd5(md5) != null;
@@ -109,7 +108,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             SysAttachmentVO vo = new SysAttachmentVO();
             BeanUtils.copyProperties(attachment, vo);
             vo.setPath(Boolean.TRUE.equals(attachment.getIsPublic())
-                    ? DOWNLOAD_URL_PREFIX + "?fullPath=" + URLEncoder.encode(attachment.getPath(), StandardCharsets.UTF_8)
+                    ? AttachmentUrlUtils.resolvePublicUrl(attachment.getPath(), attachmentProperties.getUrlBasePath())
                     : getAttachmentURL(attachment.getPath(), attachment.getOriginalName(), null));
             voList.add(vo);
         });
@@ -133,7 +132,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setOriginalName(file.getOriginalFilename())
                 .setType(file.getContentType())
                 .setSize(String.valueOf(file.getSize()))
-                .setUploadMode("0")
+                .setUploadMode(AttachmentUploadModeEnum.NORMAL.getValue())
                 .setIsPublic(isPublic)
                 .setBusinessCode(uploadDTO.getBusinessCode())
                 .setBusinessName(StringUtils.hasText(uploadDTO.getBusinessName()) ? uploadDTO.getBusinessName() : uploadDTO.getBusinessCode());
@@ -163,7 +162,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         SysAttachment attachment = new SysAttachment()
                 .setOriginalName(fastUploadDTO.getOriginalName())
                 .setMd5(fastUploadDTO.getMd5())
-                .setUploadMode("2")
+                .setUploadMode(AttachmentUploadModeEnum.FAST.getValue())
                 .setIsPublic(isPublic)
                 .setPath(hitAttachment.getPath())
                 .setType(hitAttachment.getType())
@@ -190,7 +189,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setOriginalName(chunkStartDTO.getOriginalName())
                 .setMd5(chunkStartDTO.getMd5())
                 .setSize(String.valueOf(chunkStartDTO.getSize()))
-                .setUploadMode("1")
+                .setUploadMode(AttachmentUploadModeEnum.CHUNK.getValue())
                 .setIsPublic(Boolean.TRUE.equals(chunkStartDTO.getPublic()))
                 .setBusinessCode(chunkStartDTO.getBusinessCode())
                 .setBusinessName(StringUtils.hasText(chunkStartDTO.getBusinessName()) ? chunkStartDTO.getBusinessName() : chunkStartDTO.getBusinessCode())
@@ -304,7 +303,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         // 签发与存储模式无关：统一 HMAC 签名 entry 链；OSS 数据面在下载时 302 现场生成预签名
         long expirationTime = DateUtils.timeStamp(DateUtils.now().plusMinutes(resolveExpireTime(expireTime)));
         String key = SignedUrlUtils.sign(path, expirationTime, attachmentProperties.getDownloadSignKey());
-        return DOWNLOAD_URL_PREFIX + "?key=" + URLEncoder.encode(key, StandardCharsets.UTF_8)
+        return AttachmentUrlUtils.DOWNLOAD_URL_PREFIX + "?key=" + URLEncoder.encode(key, StandardCharsets.UTF_8)
                 + "&originName=" + URLEncoder.encode(originalName, StandardCharsets.UTF_8);
     }
 
@@ -440,7 +439,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     // 组装首次访问链接（公开=永久链，私密=时效签名链）
     private String buildUploadUrl(SysAttachment attachment, boolean isPublic) {
         return isPublic
-                ? DOWNLOAD_URL_PREFIX + "?fullPath=" + URLEncoder.encode(attachment.getPath(), StandardCharsets.UTF_8)
+                ? AttachmentUrlUtils.resolvePublicUrl(attachment.getPath(), attachmentProperties.getUrlBasePath())
                 : getAttachmentURL(attachment.getPath(), attachment.getOriginalName(), null);
     }
 

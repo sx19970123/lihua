@@ -142,6 +142,11 @@ public class SysUserVO extends BaseEntity {
     private String avatar;
 
     /**
+     * 头像可直接访问 URL（非图片类型为 null）
+     */
+    private String avatarUrl;
+
+    /**
      * 用户应用系统主题
      */
     private String theme;

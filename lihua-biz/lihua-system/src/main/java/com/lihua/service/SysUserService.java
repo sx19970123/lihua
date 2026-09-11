@@ -82,4 +82,14 @@ public interface SysUserService {
      * 重置密码
      */
     String resetPassword(ResetPasswordDTO resetPasswordDTO);
+
+    /**
+     * 获取用户头像可直接访问 URL（按用户 id 查询并解析；无头像/非图片类型返回 null）
+     */
+    String getAvatarUrl(String userId);
+
+    /**
+     * 解析头像配置为可直接访问 URL（头像列为前端 AvatarType JSON 串；仅图片类型解析对象键，其余返回 null）
+     */
+    String resolveAvatarUrl(String avatar);
 }
