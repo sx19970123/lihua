@@ -20,4 +20,8 @@ public class AttachmentException extends BaseException {
     public AttachmentException(ResultCodeEnum resultCodeEnum) {
         super(resultCodeEnum, null);
     }
+
+    public AttachmentException(ResultCodeEnum resultCodeEnum, String message) {
+        super(resultCodeEnum, message, null);
+    }
 }

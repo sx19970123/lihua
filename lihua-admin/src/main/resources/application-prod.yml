@@ -1,14 +1,18 @@
  # 系统配置
 token:
-  # 令牌过期时间（分钟）
-  tokenExpireTime: 1440
-  # 令牌刷新阈值（分钟）距令牌过期15分钟内时，有新请求时对令牌进行刷新
-  refreshThreshold: 15
+  # 令牌过期时间（Duration 带单位写法：s/m/h/d，裸数字按分钟）
+  tokenExpireTime: 24h
+  # 令牌刷新阈值（距令牌过期不足该阈值时，新请求触发刷新）
+  refreshThreshold: 15m
 
  # 附件配置
 attachment:
-  # 附件下载生成链接过期时间（分钟）
-  fileDownloadExpireTime: 30
+  # 下载链接签名密钥（HMAC-SHA256；无默认值——未注入环境变量即启动失败，禁止回退硬编码；建议 32+ 随机字符，如 openssl rand -hex 32，避免 $、#、空格等需转义字符）
+  downloadSignKey: ${ATTACHMENT_DOWNLOAD_SIGN_KEY}
+  # 下载链接默认时效（缺省 1 小时；Duration 带单位写法：s/m/h/d，如 1h、90m，裸数字按分钟）
+  downloadExpireTime: 1h
+  # 下载链接最大时效（缺省 30 天；Duration 带单位写法：s/m/h/d，如 30d、720h，裸数字按分钟）
+  downloadMaxExpireTime: 30d
   # 文件上传服务类型：LOCAL（传统本地上传）、MINIO（Minio对象存储）
   uploadFileModel: LOCAL
   # 公开文件的业务编码

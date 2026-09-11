@@ -14,7 +14,6 @@ import com.lihua.security.utils.JwtUtils;
 import com.lihua.web.utils.WebUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -58,7 +57,7 @@ public class LoginUserManager {
      */
     public static void verifyLoginUserCache() {
         LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
-        if (DateUtils.differenceMinute(DateUtils.now(), loginUserSession.getExpirationTime()) < TOKEN_PROPERTIES.getRefreshThreshold()) {
+        if (DateUtils.differenceMinute(DateUtils.now(), loginUserSession.getExpirationTime()) < TOKEN_PROPERTIES.getRefreshThreshold().toMinutes()) {
             refreshToken();
         }
     }
@@ -67,7 +66,7 @@ public class LoginUserManager {
      * 刷新token时间
      */
     public static void refreshToken() {
-        REDIS_CACHE_MANAGER.setExpire(LoginUserContext.getLoginUser().getCacheKey(), Duration.ofMinutes(TOKEN_PROPERTIES.getTokenExpireTime()));
+        REDIS_CACHE_MANAGER.setExpire(LoginUserContext.getLoginUser().getCacheKey(), TOKEN_PROPERTIES.getTokenExpireTime());
     }
 
     /**
@@ -77,7 +76,7 @@ public class LoginUserManager {
      */
     public static String setLoginUserCache(LoginUserSession loginUserSession) {
         // 记录过期时间
-        loginUserSession.setExpirationTime(DateUtils.now().plusMinutes(TOKEN_PROPERTIES.getTokenExpireTime()));
+        loginUserSession.setExpirationTime(DateUtils.now().plus(TOKEN_PROPERTIES.getTokenExpireTime()));
         // 隐藏用户密码
         loginUserSession.getUser().setPassword(null);
         // 登录客户端类型
@@ -93,7 +92,7 @@ public class LoginUserManager {
         // 设置缓存
         REDIS_CACHE_MANAGER.setCacheObject(cacheKey,
                 loginUserSession,
-                Duration.ofMinutes(TOKEN_PROPERTIES.getTokenExpireTime()));
+                TOKEN_PROPERTIES.getTokenExpireTime());
 
         // 缓存key
         return cacheKey;

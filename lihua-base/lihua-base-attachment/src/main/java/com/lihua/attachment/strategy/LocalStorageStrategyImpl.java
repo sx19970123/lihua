@@ -1,10 +1,9 @@
 package com.lihua.attachment.strategy;
 
 import com.lihua.attachment.config.AttachmentProperties;
-import com.lihua.attachment.enums.AttachmentEnum;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.utils.FileUtils;
-import com.lihua.common.utils.crypt.AesUtils;
+import com.lihua.attachment.utils.SignedUrlUtils;
 import com.lihua.common.utils.date.DateUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
@@ -181,10 +180,8 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     public String getDownloadURL(String fullFilePath, String originName, int expiryInMinutes) {
         // 获取过期时间
         long expirationTime = DateUtils.timeStamp(DateUtils.now().plusMinutes(expiryInMinutes));
-        // 附件路径和过期时间
-        String params = fullFilePath + "::" + expirationTime;
-        // 对链接参数进行加密
-        String key = AesUtils.encrypt(params, AttachmentEnum.ATTACHMENT_URL_KEY.getValue());
+        // 路径与时效明文携带 + HMAC-SHA256 签名防伪造防篡改（密钥外置 attachment.download-sign-key）
+        String key = SignedUrlUtils.sign(fullFilePath, expirationTime, attachmentProperties.getDownloadSignKey());
         // 返回附件url后缀
         return "/system/attachment/storage/download?key=" + URLEncoder.encode(key, StandardCharsets.UTF_8) + "&originName=" + URLEncoder.encode(originName, StandardCharsets.UTF_8);
     }

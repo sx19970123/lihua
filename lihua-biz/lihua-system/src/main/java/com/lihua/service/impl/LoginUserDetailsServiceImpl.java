@@ -29,7 +29,7 @@ public class LoginUserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("用户名未找到");
         }
         // 创建 LoginUserSession 包含登录的用户信息 和 过期时间
-        return new LoginUserSession(user, DateUtils.now().plusMinutes(tokenProperties.getTokenExpireTime()));
+        return new LoginUserSession(user, DateUtils.now().plus(tokenProperties.getTokenExpireTime()));
     }
 }
 

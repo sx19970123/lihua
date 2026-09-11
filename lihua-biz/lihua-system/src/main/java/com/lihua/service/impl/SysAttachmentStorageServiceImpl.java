@@ -3,13 +3,13 @@ package com.lihua.service.impl;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.lihua.attachment.config.AttachmentProperties;
-import com.lihua.attachment.enums.AttachmentEnum;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.model.AttachmentResponse;
 import com.lihua.attachment.strategy.AttachmentStorageStrategy;
 import com.lihua.attachment.utils.FileUtils;
+import com.lihua.attachment.utils.SignedUrlUtils;
+import com.lihua.common.enums.ResultCodeEnum;
 import com.lihua.common.exception.ServiceException;
-import com.lihua.common.utils.crypt.AesUtils;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysAttachment;
 import com.lihua.mapper.SysAttachmentMapper;
@@ -34,11 +34,11 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -269,7 +269,18 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     @Override
     public String getAttachmentURL(String path, String originalName, Integer expireTime) {
         AttachmentStorageStrategy strategy = getStrategy();
-        return strategy.getDownloadURL(path, originalName, expireTime != null && expireTime != 0 ? expireTime : attachmentProperties.getFileDownloadExpireTime());
+        return strategy.getDownloadURL(path, originalName, resolveExpireTime(expireTime));
+    }
+
+    // 时效归一（入参单位分钟）：缺省或非正值用默认时效（配置缺省 1 小时），显式超上限（配置缺省 30 天）拒绝
+    private int resolveExpireTime(Integer expireTime) {
+        if (expireTime == null || expireTime <= 0) {
+            return (int) attachmentProperties.getDownloadExpireTime().toMinutes();
+        }
+        if (Duration.ofMinutes(expireTime).compareTo(attachmentProperties.getDownloadMaxExpireTime()) > 0) {
+            throw new AttachmentException(ResultCodeEnum.PARAMS_ERROR, "分享时效超上限（最长 " + attachmentProperties.getDownloadMaxExpireTime().toMinutes() + " 分钟）");
+        }
+        return expireTime;
     }
 
 
@@ -278,28 +289,19 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         if (!"LOCAL".equals(attachmentProperties.getUploadFileModel())) {
             throw new AttachmentException("存储模式不受支持");
         }
-        String params;
-        try {
-            // 解密数据
-            String decode = URLDecoder.decode(URLEncoder.encode(key, StandardCharsets.UTF_8), StandardCharsets.UTF_8);
-            params = AesUtils.decryptToString(decode, AttachmentEnum.ATTACHMENT_URL_KEY.getValue());
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new AttachmentException();
+
+        // 验签：格式或签名不合法一律按非法链接拒绝，不区分具体原因（不为探测提供信息）
+        SignedUrlUtils.SignedToken signedToken = SignedUrlUtils.verify(key, attachmentProperties.getDownloadSignKey());
+        if (signedToken == null) {
+            throw new AttachmentException(ResultCodeEnum.PARAMS_ERROR, "非法的下载链接");
         }
 
-        // 附件路径::过期时间
-        String[] splitParams = params.split("::");
-
-        // 过期时间
-        String expirationTime = splitParams[1];
-
         // 当前时间戳大于过期时间，表示链接已过期
-        if (DateUtils.nowTimeStamp() > Long.parseLong(expirationTime)) {
+        if (DateUtils.nowTimeStamp() > signedToken.getExpireTimeMillis()) {
             throw new AttachmentException("当前链接已失效");
         }
 
-        String filePath = splitParams[0];
+        String filePath = signedToken.getPath();
 
         // 校验路径
         if (FileUtils.checkPath(filePath, attachmentProperties.getUploadFilePath())) {
