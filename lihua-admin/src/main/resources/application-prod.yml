@@ -15,8 +15,6 @@ attachment:
   downloadMaxExpireTime: 30d
   # 文件上传服务类型：LOCAL（传统本地上传）、MINIO（Minio对象存储）
   uploadFileModel: LOCAL
-  # 公开文件的业务编码
-  uploadPublicBusinessCode: [UserAvatar, SystemNotice, EditorIndex]
   # 上传文件路径，LOCAL模式下为服务器目录；ALIYUN-OSS模式下为桶下目录
   uploadFilePath: ${BASE_FILE_PATH}upload/
 

@@ -102,4 +102,9 @@ public class SysAttachment extends BaseEntity implements Serializable {
      * 上传客户端类型
      */
     private String clientType;
+
+    /**
+     * 是否公开访问（上传时物化，不可变）
+     */
+    private Boolean isPublic;
 }

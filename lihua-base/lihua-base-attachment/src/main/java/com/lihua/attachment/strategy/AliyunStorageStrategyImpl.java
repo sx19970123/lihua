@@ -3,7 +3,6 @@ package com.lihua.attachment.strategy;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.*;
 import com.lihua.attachment.exception.AttachmentException;
-import com.lihua.common.utils.date.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -20,6 +19,11 @@ import java.util.List;
 @Slf4j
 @Component("ALIYUN-OSS")
 public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
+
+    /**
+     * 302 重定向预签名时效（现场生成）
+     */
+    private static final Duration REDIRECT_PRESIGN_TTL = Duration.ofMinutes(10);
 
     @Autowired(required = false)
     private OSS ossClient;
@@ -144,24 +148,11 @@ public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     /**
-     * 获取带过期时间的下载 URL
+     * 下载数据面重定向（302 现场生成短时效预签名；302 响应的浏览器缓存时长必须短于该时效）
      */
     @Override
-    public String getDownloadURL(String fullFilePath, String originName, int expiryInMinutes) {
-        Date expiration = new Date(DateUtils.nowTimeStamp() + expiryInMinutes * 60L * 1000L);
-        URL url = ossClient.generatePresignedUrl(bucketName, fullFilePath, expiration);
-        return url.toString();
-    }
-
-    /**
-     * 下载文件
-     */
-    @Override
-    public InputStream download(String fullFilePath) {
-        try {
-            return ossClient.getObject(bucketName, fullFilePath).getObjectContent();
-        } catch (Exception e) {
-            throw new AttachmentException("OSS 文件下载失败");
-        }
+    public String getDownloadRedirectUrl(String fullFilePath) {
+        Date expiration = new Date(System.currentTimeMillis() + REDIRECT_PRESIGN_TTL.toMillis());
+        return ossClient.generatePresignedUrl(bucketName, fullFilePath, expiration).toString();
     }
 }

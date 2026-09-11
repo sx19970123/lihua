@@ -1,6 +1,7 @@
 -- ----------------------------------------------------------------------------
 -- 狸花猫 2.2.0 → 3.0.0 升级脚本（幂等，可重复执行）
 -- 内容：字典管理新增「业务域」字段 + sys_dict_business_domain 字典种子 + 存量字典归类
+--      附件表 is_public 行级公开标记 + 存量回填 + 热路径索引（4.9 附件域 S4/A5）
 -- 全新安装：先导入 lihua.sql（2.2.0 基线），再执行本脚本
 -- 执行完成后：请在「系统管理-字典管理」页点击「刷新缓存」
 -- ----------------------------------------------------------------------------
@@ -47,3 +48,67 @@ UPDATE `sys_dict_type` SET `business_domain` = 'notice'     WHERE `code` IN ('sy
 UPDATE `sys_dict_type` SET `business_domain` = 'attachment' WHERE `code` IN ('sys_attachment_status', 'sys_attachment_upload_mode');
 UPDATE `sys_dict_type` SET `business_domain` = 'monitor'    WHERE `code` IN ('sys_log_status');
 UPDATE `sys_dict_type` SET `business_domain` = 'test'       WHERE `code` IN ('test_tree');
+
+-- ----------------------------------------------------------------------------
+-- 4.9 附件域（is_public 行级公开标记 + 热路径索引）
+-- 类型说明：is_public 为纯布尔无字典值域，取 tinyint(1)（JDBC 原生映射 Boolean）；
+-- 库内 char(1) 标记列（status/del_flag）均为字典语义，不适用布尔场景
+-- ----------------------------------------------------------------------------
+
+-- 5. sys_attachment 加行级公开标记列（MySQL 无 ADD COLUMN IF NOT EXISTS，经 information_schema 判断）
+SET @col_exists = (
+    SELECT COUNT(*) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sys_attachment' AND COLUMN_NAME = 'is_public'
+);
+SET @ddl = IF(@col_exists = 0,
+    'ALTER TABLE `sys_attachment` ADD COLUMN `is_public` tinyint(1) NOT NULL DEFAULT 0 COMMENT ''是否公开访问（0=私密 1=公开，上传时物化，不可变）'' AFTER `client_type`',
+    'SELECT ''column is_public already exists, skip'' AS msg');
+PREPARE stmt FROM @ddl;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+-- 6. 存量回填：旧公开上传白名单三码（公开内容内生场景）→ 公开，其余保持私密（UPDATE 幂等）
+UPDATE `sys_attachment` SET `is_public` = 1
+WHERE `business_code` IN ('UserAvatar', 'SystemNotice', 'EditorIndex') AND `is_public` = 0;
+
+-- 7. 热路径索引 ×4（此前除主键外零二级索引；MySQL 无 CREATE INDEX IF NOT EXISTS，经 information_schema 判断）
+SET @idx_exists = (
+    SELECT COUNT(*) FROM information_schema.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sys_attachment' AND INDEX_NAME = 'idx_sys_attachment_md5'
+);
+SET @ddl = IF(@idx_exists = 0, 'CREATE INDEX `idx_sys_attachment_md5` ON `sys_attachment` (`md5`)', 'SELECT ''index idx_sys_attachment_md5 already exists, skip'' AS msg');
+PREPARE stmt FROM @ddl;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @idx_exists = (
+    SELECT COUNT(*) FROM information_schema.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sys_attachment' AND INDEX_NAME = 'idx_sys_attachment_upload_id'
+);
+SET @ddl = IF(@idx_exists = 0, 'CREATE INDEX `idx_sys_attachment_upload_id` ON `sys_attachment` (`upload_id`)', 'SELECT ''index idx_sys_attachment_upload_id already exists, skip'' AS msg');
+PREPARE stmt FROM @ddl;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @idx_exists = (
+    SELECT COUNT(*) FROM information_schema.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sys_attachment' AND INDEX_NAME = 'idx_sys_attachment_create_time'
+);
+SET @ddl = IF(@idx_exists = 0, 'CREATE INDEX `idx_sys_attachment_create_time` ON `sys_attachment` (`create_time`)', 'SELECT ''index idx_sys_attachment_create_time already exists, skip'' AS msg');
+PREPARE stmt FROM @ddl;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @idx_exists = (
+    SELECT COUNT(*) FROM information_schema.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sys_attachment' AND INDEX_NAME = 'idx_sys_attachment_path'
+);
+SET @ddl = IF(@idx_exists = 0, 'CREATE INDEX `idx_sys_attachment_path` ON `sys_attachment` (`path`)', 'SELECT ''index idx_sys_attachment_path already exists, skip'' AS msg');
+PREPARE stmt FROM @ddl;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+-- 8. 通知公告正文存量公开链迁移（/p 取消；REPLACE 天然幂等，无匹配行零影响；代理前缀 /dev-api /prod-api 保留）
+UPDATE `sys_notice`
+SET `content` = REPLACE(`content`, 'storage/download/p?fullPath=', 'storage/download?fullPath=')
+WHERE `content` LIKE '%storage/download/p?fullPath=%';

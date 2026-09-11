@@ -3,8 +3,6 @@ package com.lihua.attachment.strategy;
 import com.lihua.attachment.config.AttachmentProperties;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.utils.FileUtils;
-import com.lihua.attachment.utils.SignedUrlUtils;
-import com.lihua.common.utils.date.DateUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -12,9 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -177,26 +173,9 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
-    public String getDownloadURL(String fullFilePath, String originName, int expiryInMinutes) {
-        // 获取过期时间
-        long expirationTime = DateUtils.timeStamp(DateUtils.now().plusMinutes(expiryInMinutes));
-        // 路径与时效明文携带 + HMAC-SHA256 签名防伪造防篡改（密钥外置 attachment.download-sign-key）
-        String key = SignedUrlUtils.sign(fullFilePath, expirationTime, attachmentProperties.getDownloadSignKey());
-        // 返回附件url后缀
-        return "/system/attachment/storage/download?key=" + URLEncoder.encode(key, StandardCharsets.UTF_8) + "&originName=" + URLEncoder.encode(originName, StandardCharsets.UTF_8);
-    }
-
-    @Override
-    public InputStream download(String fullFilePath) {
-        try {
-            // 路径检查
-            if (FileUtils.checkPath(fullFilePath, attachmentProperties.getUploadFilePath())) {
-                return Files.newInputStream(Path.of(fullFilePath));
-            }
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
-        throw new AttachmentException("获取附件失败");
+    public String getDownloadRedirectUrl(String fullFilePath) {
+        // 本地存储直接流式下发，无重定向
+        return null;
     }
 
     // 项目启动时将TEMPORARY_PATH初始化

@@ -2,6 +2,8 @@ package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.lihua.attachment.config.AttachmentProperties;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.model.AttachmentResponse;
@@ -26,6 +28,8 @@ import com.lihua.security.manager.LoginUserContext;
 import com.lihua.service.SysAttachmentStorageService;
 import jakarta.annotation.Resource;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -34,9 +38,9 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Duration;
@@ -62,6 +66,19 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     @Resource
     private SysAttachmentMapper sysAttachmentMapper;
 
+    // 公开链行校验缓存：is_public 写入后不可变，长 TTL 无需主动失效
+    private static final Cache<String, Boolean> PUBLIC_PATH_CACHE = Caffeine.newBuilder()
+            .maximumSize(100_000)
+            .expireAfterWrite(Duration.ofDays(7))
+            .build();
+
+    // 公开链与 302 响应的浏览器缓存时长（302 缓存必须短于 OSS 预签名时效）
+    private static final long PUBLIC_CACHE_SECONDS = 300;
+    private static final long REDIRECT_CACHE_SECONDS = 300;
+
+    // 下载入口相对路径（签发 entry URL 前缀，LOCAL/OSS 同形；App 版经网关加 /app 前缀）
+    private static final String DOWNLOAD_URL_PREFIX = "/system/attachment/storage/download";
+
     @Override
     public boolean existsAttachmentByMd5(String md5) {
         return findUploadableByMd5(md5) != null;
@@ -71,7 +88,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     public List<SysAttachment> queryAttachmentInfoByIds(List<String> ids) {
         // 去重查询path和原附件名
         List<SysAttachment> sysAttachmentList = lambdaQuery()
-                .select(SysAttachment::getId, SysAttachment::getPath, SysAttachment::getOriginalName, SysAttachment::getType)
+                .select(SysAttachment::getId, SysAttachment::getPath, SysAttachment::getOriginalName, SysAttachment::getType, SysAttachment::getIsPublic)
                 .in(SysAttachment::getId, ids)
                 .eq(SysAttachment::getStatus, "0")
                 .list();
@@ -80,8 +97,10 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         List<String> dbIds = sysAttachmentList.stream().map(SysAttachment::getId).toList();
         ids.removeAll(dbIds);
 
-        // 获取附件访问路径
-        sysAttachmentList.forEach(sysAttachment -> sysAttachment.setPath(getAttachmentURL(sysAttachment.getPath(), sysAttachment.getOriginalName(), null)));
+        // 获取附件访问路径（按行公开性选链：公开=永久链，私密=时效签名链）
+        sysAttachmentList.forEach(sysAttachment -> sysAttachment.setPath(Boolean.TRUE.equals(sysAttachment.getIsPublic())
+                ? DOWNLOAD_URL_PREFIX + "?fullPath=" + URLEncoder.encode(sysAttachment.getPath(), StandardCharsets.UTF_8)
+                : getAttachmentURL(sysAttachment.getPath(), sysAttachment.getOriginalName(), null)));
 
         // 未查询出结果的数据集创建对象
         ids.forEach(id -> {
@@ -104,6 +123,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setType(file.getContentType())
                 .setSize(String.valueOf(file.getSize()))
                 .setUploadMode("0")
+                .setIsPublic(isPublic)
                 .setBusinessCode(uploadDTO.getBusinessCode())
                 .setBusinessName(StringUtils.hasText(uploadDTO.getBusinessName()) ? uploadDTO.getBusinessName() : uploadDTO.getBusinessCode());
         try {
@@ -133,6 +153,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setOriginalName(fastUploadDTO.getOriginalName())
                 .setMd5(fastUploadDTO.getMd5())
                 .setUploadMode("2")
+                .setIsPublic(isPublic)
                 .setPath(hitAttachment.getPath())
                 .setType(hitAttachment.getType())
                 .setSize(hitAttachment.getSize())
@@ -159,6 +180,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setMd5(chunkStartDTO.getMd5())
                 .setSize(String.valueOf(chunkStartDTO.getSize()))
                 .setUploadMode("1")
+                .setIsPublic(Boolean.TRUE.equals(chunkStartDTO.getPublic()))
                 .setBusinessCode(chunkStartDTO.getBusinessCode())
                 .setBusinessName(StringUtils.hasText(chunkStartDTO.getBusinessName()) ? chunkStartDTO.getBusinessName() : chunkStartDTO.getBusinessCode())
                 .setStatus("2");
@@ -205,7 +227,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         SysAttachment attachment = attachments.get(0);
         // 幂等：行已是成功态说明本 uploadId 已完成合并，重复提交直接返回
         if ("0".equals(attachment.getStatus())) {
-            return buildUploadVO(attachment, false);
+            return buildUploadVO(attachment, Boolean.TRUE.equals(attachment.getIsPublic()));
         }
         try {
             String fullFilePath = getChunksFullPathByUploadId(uploadId);
@@ -234,13 +256,13 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         }
     }
 
-    // 合并成功收尾（正常完成与并发复查命中共用）；公开性以 chunk/start 声明为准，行级 is_public 列落地前暂按私密回显
+    // 合并成功收尾（正常完成与并发复查命中共用）；公开性以 chunk/start 建行时物化的 is_public 为准
     private AttachmentUploadVO finishChunksMerge(SysAttachment attachment, AttachmentChunkMergeDTO chunkMergeDTO) {
         attachment.setOriginalName(chunkMergeDTO.getOriginalName())
                 .setMd5(chunkMergeDTO.getMd5())
                 .setStatus("0");
         saveAttachment(attachment);
-        return buildUploadVO(attachment, false);
+        return buildUploadVO(attachment, Boolean.TRUE.equals(attachment.getIsPublic()));
     }
 
     @Override
@@ -268,8 +290,11 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
     @Override
     public String getAttachmentURL(String path, String originalName, Integer expireTime) {
-        AttachmentStorageStrategy strategy = getStrategy();
-        return strategy.getDownloadURL(path, originalName, resolveExpireTime(expireTime));
+        // 签发与存储模式无关：统一 HMAC 签名 entry 链；OSS 数据面在下载时 302 现场生成预签名
+        long expirationTime = DateUtils.timeStamp(DateUtils.now().plusMinutes(resolveExpireTime(expireTime)));
+        String key = SignedUrlUtils.sign(path, expirationTime, attachmentProperties.getDownloadSignKey());
+        return DOWNLOAD_URL_PREFIX + "?key=" + URLEncoder.encode(key, StandardCharsets.UTF_8)
+                + "&originName=" + URLEncoder.encode(originalName, StandardCharsets.UTF_8);
     }
 
     // 时效归一（入参单位分钟）：缺省或非正值用默认时效（配置缺省 1 小时），显式超上限（配置缺省 30 天）拒绝
@@ -285,50 +310,65 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
 
 
     @Override
-    public ResponseEntity<StreamingResponseBody> localDownload(String key, String originName) {
-        if (!"LOCAL".equals(attachmentProperties.getUploadFileModel())) {
-            throw new AttachmentException("存储模式不受支持");
+    public ResponseEntity<StreamingResponseBody> download(String key, String fullPath, String originName) {
+        String path;
+        boolean publicLink;
+        if (StringUtils.hasText(key)) {
+            // 私密链：验签免查库放行；格式或签名不合法一律按非法链接拒绝，不区分具体原因（不为探测提供信息）
+            SignedUrlUtils.SignedToken signedToken = SignedUrlUtils.verify(key, attachmentProperties.getDownloadSignKey());
+            if (signedToken == null) {
+                throw new AttachmentException(ResultCodeEnum.PARAMS_ERROR, "非法的下载链接");
+            }
+            // 当前时间戳大于过期时间，表示链接已过期
+            if (DateUtils.nowTimeStamp() > signedToken.getExpireTimeMillis()) {
+                throw new AttachmentException("当前链接已失效");
+            }
+            path = signedToken.getPath();
+            publicLink = false;
+        } else if (StringUtils.hasText(fullPath)) {
+            // 公开链：entry URL=门牌非通行证，公开性以行级 is_public 为准（缓存 + path 索引兜底查行）
+            if (!Boolean.TRUE.equals(PUBLIC_PATH_CACHE.get(fullPath, this::queryPublicRowExists))) {
+                throw new AttachmentException(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
+            }
+            path = fullPath;
+            publicLink = true;
+        } else {
+            throw new AttachmentException(ResultCodeEnum.PARAMS_MISSING, "缺少下载参数");
         }
-
-        // 验签：格式或签名不合法一律按非法链接拒绝，不区分具体原因（不为探测提供信息）
-        SignedUrlUtils.SignedToken signedToken = SignedUrlUtils.verify(key, attachmentProperties.getDownloadSignKey());
-        if (signedToken == null) {
-            throw new AttachmentException(ResultCodeEnum.PARAMS_ERROR, "非法的下载链接");
-        }
-
-        // 当前时间戳大于过期时间，表示链接已过期
-        if (DateUtils.nowTimeStamp() > signedToken.getExpireTimeMillis()) {
-            throw new AttachmentException("当前链接已失效");
-        }
-
-        String filePath = signedToken.getPath();
-
-        // 校验路径
-        if (FileUtils.checkPath(filePath, attachmentProperties.getUploadFilePath())) {
-            return AttachmentResponse.success(new File(filePath), originName);
-        }
-
-        throw new AttachmentException("下载失败，路径不匹配");
+        return downloadDataPlane(path, StringUtils.hasText(originName) ? originName : FileUtils.getFileNameByPath(path), publicLink);
     }
 
-    @Override
-    public ResponseEntity<StreamingResponseBody> download(String fullPath) {
-        List<String> uploadPublicBusinessCode = attachmentProperties.getUploadPublicBusinessCode();
-        String uploadFilePath = attachmentProperties.getUploadFilePath();
-
-        Path targetPath = Paths.get(fullPath).normalize();
-
-        // 校验路径
-        boolean allow = uploadPublicBusinessCode.stream()
-                .map(code -> Paths.get(uploadFilePath, code).normalize())
-                .anyMatch(targetPath::startsWith);
-
-        if (!allow) {
-            throw new AttachmentException("未知的附件");
-        }
-
+    // 数据面：OSS 302 现场生成短时效预签名；LOCAL 流式下发（checkPath 兜底）
+    private ResponseEntity<StreamingResponseBody> downloadDataPlane(String fullPath, String originName, boolean publicLink) {
         AttachmentStorageStrategy strategy = getStrategy();
-        return AttachmentResponse.success(strategy.download(fullPath), FileUtils.getFileNameByPath(fullPath));
+        String redirectUrl = strategy.getDownloadRedirectUrl(fullPath);
+        if (redirectUrl != null) {
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create(redirectUrl))
+                    .cacheControl(CacheControl.maxAge(Duration.ofSeconds(REDIRECT_CACHE_SECONDS)))
+                    .build();
+        }
+        // 校验路径
+        if (!FileUtils.checkPath(fullPath, attachmentProperties.getUploadFilePath())) {
+            throw new AttachmentException("下载失败，路径不匹配");
+        }
+        ResponseEntity<StreamingResponseBody> response = AttachmentResponse.success(new File(fullPath), originName);
+        if (publicLink) {
+            // 公开内容允许浏览器缓存；私密时效链不下发缓存头
+            response.getHeaders().setCacheControl(CacheControl.maxAge(Duration.ofSeconds(PUBLIC_CACHE_SECONDS)).getHeaderValue());
+        }
+        return response;
+    }
+
+    // 按 path 查是否存在公开行（业务删除/逻辑删除的行不放行；dedup 共享物理文件由存活公开行放行）
+    private boolean queryPublicRowExists(String path) {
+        return lambdaQuery()
+                .eq(SysAttachment::getPath, path)
+                .eq(SysAttachment::getIsPublic, true)
+                .eq(SysAttachment::getDelFlag, "0")
+                .eq(SysAttachment::getStatus, "0")
+                .last("LIMIT 1")
+                .exists();
     }
 
     // 附件上传方法
@@ -390,7 +430,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     // 组装首次访问链接（公开=永久链，私密=时效签名链）
     private String buildUploadUrl(SysAttachment attachment, boolean isPublic) {
         return isPublic
-                ? "/system/attachment/storage/download/p?fullPath=" + URLEncoder.encode(attachment.getPath(), StandardCharsets.UTF_8)
+                ? DOWNLOAD_URL_PREFIX + "?fullPath=" + URLEncoder.encode(attachment.getPath(), StandardCharsets.UTF_8)
                 : getAttachmentURL(attachment.getPath(), attachment.getOriginalName(), null);
     }
 

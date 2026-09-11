@@ -93,16 +93,11 @@ public interface SysAttachmentStorageService {
     String getAttachmentURL(String path,String originalName, Integer expireTime);
 
     /**
-     * 本地附件下载（仅LOCAL模式下使用，其他存储方式中直接通过附件服务器获取）
-     * @param key 附件路径及过期时间密文
-     * @return 附件
+     * 附件下载单路由（key 私密签名链 / fullPath 公开链，二选一；permitAll 链接即凭证）
+     * @param key 私密链签名令牌
+     * @param fullPath 公开链对象键
+     * @param originName 可选，下载展示文件名
+     * @return 附件响应（LOCAL 流式 / OSS 302 预签名）
      */
-    ResponseEntity<StreamingResponseBody> localDownload(String key, String originName);
-
-    /**
-     * 根据路径获取附件
-     * @param fullPath 路径
-     * @return 附件
-     */
-    ResponseEntity<StreamingResponseBody> download(String fullPath);
+    ResponseEntity<StreamingResponseBody> download(String key, String fullPath, String originName);
 }

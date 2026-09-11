@@ -21,11 +21,6 @@ public class AttachmentProperties {
     private String uploadFileModel;
 
     /**
-     * 可公开下载附件的BusinessCode集合
-     */
-    private List<String> uploadPublicBusinessCode;
-
-    /**
      * 附件上传路径
      */
     private String uploadFilePath;

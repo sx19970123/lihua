@@ -2,7 +2,6 @@ package com.lihua.attachment.strategy;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -72,17 +71,9 @@ public interface AttachmentStorageStrategy {
     void delete(String fullFilePath);
 
     /**
-     * 获取下载地址（针对限时链接）
+     * 下载数据面重定向地址（对象存储 302 现场生成短时效预签名；返回 null 表示直接流式下发）
      * @param fullFilePath 附件全路径
-     * @param expiryInMinutes 过期时间（分钟）
-     * @return 下载地址
+     * @return 重定向地址，null 表示无重定向
      */
-    String getDownloadURL(String fullFilePath, String originName, int expiryInMinutes);
-
-    /**
-     * 通过路径进行附件下载
-     * @param fullFilePath 附件路径
-     * @return 下载的附件流
-     */
-    InputStream download(String fullFilePath);
+    String getDownloadRedirectUrl(String fullFilePath);
 }

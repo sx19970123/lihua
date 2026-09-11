@@ -65,10 +65,10 @@ public class AppSysAttachmentStorageController extends ApiResponseController {
         return success(sysAttachmentStorageService.fastUpload(fastUploadDTO));
     }
 
-    @Operation(summary = "本地附件下载")
+    @Operation(summary = "附件下载（key=私密签名链 / fullPath=公开链）")
     @GetMapping("download")
-    public ResponseEntity<StreamingResponseBody> download(String key, String originName) {
-        return sysAttachmentStorageService.localDownload(key, originName);
+    public ResponseEntity<StreamingResponseBody> download(String key, String fullPath, String originName) {
+        return sysAttachmentStorageService.download(key, fullPath, originName);
     }
 
 }
