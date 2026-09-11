@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
+import com.lihua.attachment.enums.AttachmentStatusEnum;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.entity.SysAttachment;
 import com.lihua.mapper.SysAttachmentMapper;
@@ -12,6 +13,7 @@ import com.lihua.model.vo.SysAttachmentVO;
 import com.lihua.service.SysAttachmentService;
 import com.lihua.service.SysAttachmentStorageService;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -29,7 +31,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     private SysAttachmentStorageService sysAttachmentStorageService;
 
     @Override
-    public IPage<SysAttachment> queryPage(SysAttachmentDTO sysAttachmentDTO) {
+    public IPage<SysAttachmentVO> queryPage(SysAttachmentDTO sysAttachmentDTO) {
         IPage<SysAttachment> iPage = new Page<>(sysAttachmentDTO.getPageNum(), sysAttachmentDTO.getPageSize());
         QueryWrapper<SysAttachment> queryWrapper = new QueryWrapper<>();
 
@@ -60,7 +62,14 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         }
         queryWrapper.lambda().orderByDesc(SysAttachment::getCreateTime);
         sysAttachmentMapper.selectPage(iPage, queryWrapper);
-        return iPage;
+        return iPage.convert(this::toVO);
+    }
+
+    // 实体转对外展示模型（字段白名单）
+    private SysAttachmentVO toVO(SysAttachment attachment) {
+        SysAttachmentVO vo = new SysAttachmentVO();
+        BeanUtils.copyProperties(attachment, vo);
+        return vo;
     }
 
     @Override
@@ -73,7 +82,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
     @Transactional
     public void deleteByIds(List<String> ids) {
         Long count = lambdaQuery()
-                .or(wrapper -> wrapper.eq(SysAttachment::getStatus, "1").or().eq(SysAttachment::getStatus, "3"))
+                .or(wrapper -> wrapper.eq(SysAttachment::getStatus, AttachmentStatusEnum.FAIL.getValue()).or().eq(SysAttachment::getStatus, AttachmentStatusEnum.BUSINESS_DELETED.getValue()))
                 .in(SysAttachment::getId, ids)
                 .count();
 
@@ -81,11 +90,12 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
             throw new ServiceException("上传成功、分片上传中状态附件不允许删除");
         }
 
-        // 调用强制删除
+        // 调用强制删除（同类自调用：外层事务已覆盖全部操作，无需代理调用）
         forceDelete(ids);
     }
 
     @Override
+    @Transactional
     public void forceDelete(List<String> ids) {
         // 根据ids获取可删除附件的路径
         List<String> deletablePathList = sysAttachmentMapper.queryDeletablePathByIds(ids);
@@ -103,7 +113,7 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
         SysAttachment sysAttachment = lambdaQuery()
                 .select(SysAttachment::getPath, SysAttachment::getOriginalName)
                 .eq(SysAttachment::getId, id)
-                .eq(SysAttachment::getStatus, "0")
+                .eq(SysAttachment::getStatus, AttachmentStatusEnum.SUCCESS.getValue())
                 .isNotNull(SysAttachment::getPath)
                 .one();
 

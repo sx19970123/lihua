@@ -8,6 +8,7 @@ import com.lihua.model.dto.AttachmentUploadDTO;
 import com.lihua.model.vo.AttachmentUploadVO;
 import com.lihua.model.vo.FastUploadResultVO;
 import com.lihua.model.vo.SysAttachmentChunkVO;
+import com.lihua.model.vo.SysAttachmentVO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -23,11 +24,11 @@ public interface SysAttachmentStorageService {
     boolean existsAttachmentByMd5(String md5);
 
     /**
-     * 根据路径查询附件信息，用于附件组件数据回显
+     * 根据路径查询附件信息，用于附件组件数据回显（对外字段白名单；缺失 id 回填占位行）
      * @param ids 附件id集合
      * @return 对应的附件信息
      */
-    List<SysAttachment> queryAttachmentInfoByIds(List<String> ids);
+    List<SysAttachmentVO> queryAttachmentInfoByIds(List<String> ids);
 
     /**
      * 上传附件（单管线：公开性由参数显式声明，业务附件恒私密）

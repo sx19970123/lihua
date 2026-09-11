@@ -94,11 +94,6 @@ public class SysAttachment extends BaseEntity implements Serializable {
     private String errorMsg;
 
     /**
-     * 原url（通过url上传有该字段）
-     */
-    private String url;
-
-    /**
      * 上传客户端类型
      */
     private String clientType;

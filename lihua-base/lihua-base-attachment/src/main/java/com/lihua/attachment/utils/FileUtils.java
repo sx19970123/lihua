@@ -1,10 +1,8 @@
 package com.lihua.attachment.utils;
 
-import com.lihua.attachment.config.AttachmentProperties;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.model.AttachmentStreamAndInfoModel;
 import com.lihua.common.enums.ResultCodeEnum;
-import com.lihua.common.utils.spring.SpringUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -34,52 +32,33 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 public class FileUtils {
 
-    private static final AttachmentProperties ATTACHMENT_PROPERTIES = SpringUtils.getBean(AttachmentProperties.class);
-
     private static final Map<String, Path> map = new ConcurrentHashMap<>();
-
-    /**
-     * 单附件上传
-     */
-    public static String upload(MultipartFile file) {
-        String fullFilePath = generateFullFilePath(file.getOriginalFilename());
-        return upload(file, fullFilePath);
-    }
 
     /**
      * 单附件上传
      * @param file 附件
      * @param fullFilePath 保存地址
+     * @param configPath 允许写入的根目录（写入侧路径校验基准）
      * @return 保存全路径名
      */
-    public static String upload(MultipartFile file, String fullFilePath) {
+    public static String upload(MultipartFile file, String fullFilePath, String configPath) {
         try {
-            return upload(file.getInputStream(), fullFilePath);
+            return upload(file.getInputStream(), fullFilePath, configPath);
         } catch (IOException e) {
             throw new AttachmentException("附件上传异常");
         }
     }
 
     /**
-     * 多附件上传
-     */
-    public static List<String> upload(MultipartFile[] files) {
-        List<String> fileFullPathList = new ArrayList<>(files.length);
-        for (MultipartFile file : files) {
-            fileFullPathList.add(upload(file));
-        }
-        return fileFullPathList;
-    }
-
-    /**
      * 附件上传
      * @param inputStream 输入流
      * @param fullFilePath 完整路径
+     * @param configPath 允许写入的根目录（写入侧路径校验基准）
      * @return 附件路径
      */
-    public static String upload(InputStream inputStream, String fullFilePath) {
+    public static String upload(InputStream inputStream, String fullFilePath, String configPath) {
         // 写入侧路径校验：目标必须落在配置的附件根目录之下（防路径穿越）
-        if (!checkWritePath(fullFilePath, ATTACHMENT_PROPERTIES.getUploadFilePath())) {
+        if (!checkWritePath(fullFilePath, configPath)) {
             throw new AttachmentException("非法的附件保存路径");
         }
         try {
@@ -125,11 +104,6 @@ public class FileUtils {
      * @param originFileName 附件名称
      * @return 附件路径+名称
      */
-    public static String generateFullFilePath(String originFileName) {
-        String fileName = generateUUIDFileName(originFileName);
-        return generateFilePath(fileName);
-    }
-
 
     /**
      * 附件下载
@@ -371,11 +345,5 @@ public class FileUtils {
         // 关闭当前 ZIP 附件条目
         zipOutputStream.closeEntry();
         inputStream.close();
-    }
-
-    // 生成附件路径，与附件名拼接
-    private static String generateFilePath(String fileName) {
-        // 业务编码为空时直接拼接日期和附件名
-        return Paths.get(ATTACHMENT_PROPERTIES.getUploadFilePath(), fileName).toString();
     }
 }

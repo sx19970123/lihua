@@ -27,7 +27,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
 
     @Override
     public void uploadFile(MultipartFile file, String fullFilePath) {
-        FileUtils.upload(file, fullFilePath);
+        FileUtils.upload(file, fullFilePath, attachmentProperties.getUploadFilePath());
     }
 
     @Override
@@ -44,7 +44,8 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     public List<Integer> getUploadedChunksIndex(String tempUploadFilePath, String uploadId) {
         try(Stream<Path> paths = Files.walk(Paths.get(TEMPORARY_PATH , uploadId))) {
             return paths.filter(Files::isRegularFile)
-                    // 确保保存的附件名为纯索引
+                    // 仅纯数字命名的分片索引参与返回，异常文件名（如 .DS_Store）容错跳过
+                    .filter(file -> file.getFileName().toString().matches("\\d+"))
                     .map(file -> Integer.valueOf(file.getFileName().toString()))
                     .toList();
         } catch (NoSuchFileException e) {
@@ -57,7 +58,7 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
 
     @Override
     public void chunksUploadFile(MultipartFile file, String fullFilePath, Integer index, String uploadId) {
-        FileUtils.upload(file, Paths.get(TEMPORARY_PATH, uploadId, String.valueOf(index)).toString());
+        FileUtils.upload(file, Paths.get(TEMPORARY_PATH, uploadId, String.valueOf(index)).toString(), attachmentProperties.getUploadFilePath());
     }
 
     @Override

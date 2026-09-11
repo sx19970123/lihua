@@ -112,3 +112,18 @@ DEALLOCATE PREPARE stmt;
 UPDATE `sys_notice`
 SET `content` = REPLACE(`content`, 'storage/download/p?fullPath=', 'storage/download?fullPath=')
 WHERE `content` LIKE '%storage/download/p?fullPath=%';
+
+-- 9. 附件域死代码清理（4.9 T3.8 B4）：url 列全库零读写（URL上传功能无后端实现，历史列恒 NULL）；
+--    「URL上传」字典值（sys_attachment_upload_mode value=3）无任何代码写入，一并清理
+SET @col_exists = (
+    SELECT COUNT(*) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sys_attachment' AND COLUMN_NAME = 'url'
+);
+SET @ddl = IF(@col_exists = 1,
+    'ALTER TABLE `sys_attachment` DROP COLUMN `url`',
+    'SELECT ''column url not exists, skip'' AS msg');
+PREPARE stmt FROM @ddl;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+DELETE FROM `sys_dict_data` WHERE `dict_type_code` = 'sys_attachment_upload_mode' AND `value` = '3';

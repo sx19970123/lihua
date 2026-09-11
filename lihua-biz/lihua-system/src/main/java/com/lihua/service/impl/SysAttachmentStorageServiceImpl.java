@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.lihua.attachment.config.AttachmentProperties;
+import com.lihua.attachment.enums.AttachmentStatusEnum;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.model.AttachmentResponse;
 import com.lihua.attachment.strategy.AttachmentStorageStrategy;
@@ -22,12 +23,14 @@ import com.lihua.model.dto.AttachmentUploadDTO;
 import com.lihua.model.vo.AttachmentUploadVO;
 import com.lihua.model.vo.FastUploadResultVO;
 import com.lihua.model.vo.SysAttachmentChunkVO;
+import com.lihua.model.vo.SysAttachmentVO;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.service.SysAttachmentStorageService;
 import jakarta.annotation.Resource;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,32 +88,40 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     }
 
     @Override
-    public List<SysAttachment> queryAttachmentInfoByIds(List<String> ids) {
-        // 去重查询path和原附件名
+    public List<SysAttachmentVO> queryAttachmentInfoByIds(List<String> ids) {
+        // 查询对外回显字段（白名单）
         List<SysAttachment> sysAttachmentList = lambdaQuery()
-                .select(SysAttachment::getId, SysAttachment::getPath, SysAttachment::getOriginalName, SysAttachment::getType, SysAttachment::getIsPublic)
+                .select(SysAttachment::getId, SysAttachment::getStorageName, SysAttachment::getPath, SysAttachment::getOriginalName,
+                        SysAttachment::getExtensionName, SysAttachment::getBusinessCode, SysAttachment::getBusinessName,
+                        SysAttachment::getSize, SysAttachment::getType, SysAttachment::getStatus, SysAttachment::getErrorMsg,
+                        SysAttachment::getUploadId, SysAttachment::getCreateTime, SysAttachment::getIsPublic)
                 .in(SysAttachment::getId, ids)
-                .eq(SysAttachment::getStatus, "0")
+                .eq(SysAttachment::getStatus, AttachmentStatusEnum.SUCCESS.getValue())
                 .list();
 
         // 获取未查询出结果的数据集
         List<String> dbIds = sysAttachmentList.stream().map(SysAttachment::getId).toList();
         ids.removeAll(dbIds);
 
+        List<SysAttachmentVO> voList = new ArrayList<>(sysAttachmentList.size() + ids.size());
         // 获取附件访问路径（按行公开性选链：公开=永久链，私密=时效签名链）
-        sysAttachmentList.forEach(sysAttachment -> sysAttachment.setPath(Boolean.TRUE.equals(sysAttachment.getIsPublic())
-                ? DOWNLOAD_URL_PREFIX + "?fullPath=" + URLEncoder.encode(sysAttachment.getPath(), StandardCharsets.UTF_8)
-                : getAttachmentURL(sysAttachment.getPath(), sysAttachment.getOriginalName(), null)));
-
-        // 未查询出结果的数据集创建对象
-        ids.forEach(id -> {
-            SysAttachment attachment = new SysAttachment();
-            String errMsg = "附件丢失（附件id：" + id + "）";
-            attachment.setId(id).setOriginalName(errMsg).setStatus("error").setErrorMsg(errMsg);
-            sysAttachmentList.add(attachment);
+        sysAttachmentList.forEach(attachment -> {
+            SysAttachmentVO vo = new SysAttachmentVO();
+            BeanUtils.copyProperties(attachment, vo);
+            vo.setPath(Boolean.TRUE.equals(attachment.getIsPublic())
+                    ? DOWNLOAD_URL_PREFIX + "?fullPath=" + URLEncoder.encode(attachment.getPath(), StandardCharsets.UTF_8)
+                    : getAttachmentURL(attachment.getPath(), attachment.getOriginalName(), null));
+            voList.add(vo);
         });
 
-        return sysAttachmentList;
+        // 未查询出结果的数据集回填占位行（按失败态提示附件丢失）
+        ids.forEach(id -> {
+            String errMsg = "附件丢失（附件id：" + id + "）";
+            voList.add(new SysAttachmentVO().setId(id).setOriginalName(errMsg)
+                    .setStatus(AttachmentStatusEnum.FAIL.getValue()).setErrorMsg(errMsg));
+        });
+
+        return voList;
     }
 
     @Override
@@ -129,12 +140,12 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         try {
             attachment.setMd5(computeMd5(file));
             String path = upload(file, attachment.getBusinessCode());
-            attachment.setPath(path).setStatus("0");
+            attachment.setPath(path).setStatus(AttachmentStatusEnum.SUCCESS.getValue());
             saveAttachment(attachment);
             return buildUploadVO(attachment, isPublic);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            attachment.setStatus("1").setErrorMsg(e.getMessage());
+            attachment.setStatus(AttachmentStatusEnum.FAIL.getValue()).setErrorMsg(e.getMessage());
             saveAttachment(attachment);
             throw new AttachmentException("附件上传失败");
         }
@@ -159,7 +170,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setSize(hitAttachment.getSize())
                 .setBusinessCode(fastUploadDTO.getBusinessCode())
                 .setBusinessName(StringUtils.hasText(fastUploadDTO.getBusinessName()) ? fastUploadDTO.getBusinessName() : fastUploadDTO.getBusinessCode())
-                .setStatus("0");
+                .setStatus(AttachmentStatusEnum.SUCCESS.getValue());
         saveAttachment(attachment);
         FastUploadResultVO resultVO = new FastUploadResultVO();
         resultVO.setId(attachment.getId())
@@ -183,7 +194,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setIsPublic(Boolean.TRUE.equals(chunkStartDTO.getPublic()))
                 .setBusinessCode(chunkStartDTO.getBusinessCode())
                 .setBusinessName(StringUtils.hasText(chunkStartDTO.getBusinessName()) ? chunkStartDTO.getBusinessName() : chunkStartDTO.getBusinessCode())
-                .setStatus("2");
+                .setStatus(AttachmentStatusEnum.CHUNK_UPLOADING.getValue());
         String path = buildUploadFilePath(attachment.getBusinessCode(), attachment.getOriginalName());
         attachment.setPath(path);
         try {
@@ -195,7 +206,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             return new SysAttachmentChunkVO(uploadId, attachmentId);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            attachment.setStatus("1").setErrorMsg(e.getMessage());
+            attachment.setStatus(AttachmentStatusEnum.FAIL.getValue()).setErrorMsg(e.getMessage());
             saveAttachment(attachment);
             throw new AttachmentException(e.getMessage());
         }
@@ -226,7 +237,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         }
         SysAttachment attachment = attachments.get(0);
         // 幂等：行已是成功态说明本 uploadId 已完成合并，重复提交直接返回
-        if ("0".equals(attachment.getStatus())) {
+        if (AttachmentStatusEnum.SUCCESS.getValue().equals(attachment.getStatus())) {
             return buildUploadVO(attachment, Boolean.TRUE.equals(attachment.getIsPublic()));
         }
         try {
@@ -247,7 +258,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 return finishChunksMerge(attachment, chunkMergeDTO);
             }
             log.error(e.getMessage(), e);
-            attachment.setStatus("1").setErrorMsg(e.getMessage());
+            attachment.setStatus(AttachmentStatusEnum.FAIL.getValue()).setErrorMsg(e.getMessage());
             saveAttachment(attachment);
             throw new AttachmentException("附件合并失败");
         } finally {
@@ -260,7 +271,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     private AttachmentUploadVO finishChunksMerge(SysAttachment attachment, AttachmentChunkMergeDTO chunkMergeDTO) {
         attachment.setOriginalName(chunkMergeDTO.getOriginalName())
                 .setMd5(chunkMergeDTO.getMd5())
-                .setStatus("0");
+                .setStatus(AttachmentStatusEnum.SUCCESS.getValue());
         saveAttachment(attachment);
         return buildUploadVO(attachment, Boolean.TRUE.equals(attachment.getIsPublic()));
     }
@@ -273,7 +284,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         UpdateWrapper<SysAttachment> updateWrapper = new UpdateWrapper<>();
         updateWrapper
                 .lambda()
-                .set(SysAttachment::getStatus, "3")
+                .set(SysAttachment::getStatus, AttachmentStatusEnum.BUSINESS_DELETED.getValue())
                 .in(SysAttachment::getId, ids);
         update(updateWrapper);
     }
@@ -360,13 +371,12 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         return response;
     }
 
-    // 按 path 查是否存在公开行（业务删除/逻辑删除的行不放行；dedup 共享物理文件由存活公开行放行）
+    // 按 path 查是否存在公开行（业务删除/逻辑删除的行不放行；dedup 共享物理文件由存活公开行放行；del_flag 由 MP 逻辑删除自动过滤）
     private boolean queryPublicRowExists(String path) {
         return lambdaQuery()
                 .eq(SysAttachment::getPath, path)
                 .eq(SysAttachment::getIsPublic, true)
-                .eq(SysAttachment::getDelFlag, "0")
-                .eq(SysAttachment::getStatus, "0")
+                .eq(SysAttachment::getStatus, AttachmentStatusEnum.SUCCESS.getValue())
                 .last("LIMIT 1")
                 .exists();
     }
@@ -476,13 +486,12 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         return uploadId;
     }
 
-    // 按 md5 查找物理文件仍存在的附件行（判存与秒传共用命中语义；同 md5 多行为常态——秒传复制行、重复上传各持文件，任一物理文件在即命中）
+    // 按 md5 查找物理文件仍存在的附件行（判存与秒传共用命中语义；同 md5 多行为常态——秒传复制行、重复上传各持文件，任一物理文件在即命中；del_flag 由 MP 逻辑删除自动过滤）
     private SysAttachment findUploadableByMd5(String md5) {
         AttachmentStorageStrategy strategy = getStrategy();
         List<SysAttachment> attachments = lambdaQuery()
                 .eq(SysAttachment::getMd5, md5)
-                .eq(SysAttachment::getDelFlag, "0")
-                .eq(SysAttachment::getStatus, "0")
+                .eq(SysAttachment::getStatus, AttachmentStatusEnum.SUCCESS.getValue())
                 .list();
         Set<String> checkedPaths = new HashSet<>();
         for (SysAttachment attachment : attachments) {
