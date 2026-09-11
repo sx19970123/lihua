@@ -58,6 +58,14 @@ public interface AttachmentStorageStrategy {
     void chunksMerge(String fullFilePath, String md5, String uploadId, Integer total);
 
     /**
+     * 清理分片上传的临时资源（放弃合并或复用已有同 md5 文件跳过合并时调用）
+     * <p>幂等：资源不存在时静默返回；清理失败不抛错（仅记录日志，残留由存储平台生命周期回收）
+     * @param fullFilePath 分片上传的目标全路径
+     * @param uploadId 分片上传id
+     */
+    void cleanChunks(String fullFilePath, String uploadId);
+
+    /**
      * 删除附件
      * @param fullFilePath 附件全路径
      */

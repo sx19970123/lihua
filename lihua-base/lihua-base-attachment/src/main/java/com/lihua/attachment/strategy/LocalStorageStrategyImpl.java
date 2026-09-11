@@ -167,6 +167,12 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     @Override
+    public void cleanChunks(String fullFilePath, String uploadId) {
+        // 本地分片即临时目录内容，递归删除（deleteDirectory 幂等，目录不存在直接返回）
+        deleteDirectory(Paths.get(TEMPORARY_PATH, uploadId));
+    }
+
+    @Override
     public void delete(String path) {
         FileUtils.delete(path);
     }

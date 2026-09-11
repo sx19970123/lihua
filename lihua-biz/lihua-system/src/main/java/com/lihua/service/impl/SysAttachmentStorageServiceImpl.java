@@ -203,17 +203,20 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             throw new AttachmentException("分片上传记录不存在");
         }
         SysAttachment attachment = attachments.get(0);
+        // 幂等：行已是成功态说明本 uploadId 已完成合并，重复提交直接返回
+        if ("0".equals(attachment.getStatus())) {
+            return buildUploadVO(attachment, false);
+        }
         try {
             String fullFilePath = getChunksFullPathByUploadId(uploadId);
             // 分片合并
             attachmentStorageStrategy.chunksMerge(fullFilePath, chunkMergeDTO.getMd5(), uploadId, total);
-            attachment.setOriginalName(chunkMergeDTO.getOriginalName())
-                    .setMd5(chunkMergeDTO.getMd5())
-                    .setStatus("0");
-            saveAttachment(attachment);
-            // 公开性以 chunk/start 声明为准；行级 is_public 列落地前暂按私密回显
-            return buildUploadVO(attachment, false);
+            return finishChunksMerge(attachment, chunkMergeDTO);
         } catch (Exception e) {
+            // 并发重复提交时另一路可能已完成物理合并：目标文件在存则按成功收尾，不把成功行覆盖成失败
+            if (attachmentStorageStrategy.isExists(getChunksFullPathByUploadId(uploadId))) {
+                return finishChunksMerge(attachment, chunkMergeDTO);
+            }
             log.error(e.getMessage(), e);
             attachment.setStatus("1").setErrorMsg(e.getMessage());
             saveAttachment(attachment);
@@ -222,6 +225,15 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             // 删除redis缓存
             redisCacheManager.delete(RedisKeyPrefixEnum.CHUNK_UPLOAD_ID_REDIS_PREFIX.getValue() + uploadId);
         }
+    }
+
+    // 合并成功收尾（正常完成与并发复查命中共用）；公开性以 chunk/start 声明为准，行级 is_public 列落地前暂按私密回显
+    private AttachmentUploadVO finishChunksMerge(SysAttachment attachment, AttachmentChunkMergeDTO chunkMergeDTO) {
+        attachment.setOriginalName(chunkMergeDTO.getOriginalName())
+                .setMd5(chunkMergeDTO.getMd5())
+                .setStatus("0");
+        saveAttachment(attachment);
+        return buildUploadVO(attachment, false);
     }
 
     @Override

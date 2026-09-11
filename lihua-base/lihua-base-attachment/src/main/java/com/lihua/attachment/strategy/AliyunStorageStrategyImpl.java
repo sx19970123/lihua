@@ -119,6 +119,19 @@ public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
     }
 
     /**
+     * 清理分片上传的临时资源（中止未完成的分片上传任务，已传分片随之中止释放）
+     */
+    @Override
+    public void cleanChunks(String fullFilePath, String uploadId) {
+        try {
+            ossClient.abortMultipartUpload(new AbortMultipartUploadRequest(bucketName, fullFilePath, uploadId));
+        } catch (Exception e) {
+            // 清理失败不阻断业务（残留分片由 OSS 生命周期策略回收）
+            log.warn("中止 OSS 分片上传失败：uploadId={}", uploadId, e);
+        }
+    }
+
+    /**
      * 删除文件
      */
     @Override
