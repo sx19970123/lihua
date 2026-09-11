@@ -78,6 +78,10 @@ public class FileUtils {
      * @return 附件路径
      */
     public static String upload(InputStream inputStream, String fullFilePath) {
+        // 写入侧路径校验：目标必须落在配置的附件根目录之下（防路径穿越）
+        if (!checkWritePath(fullFilePath, ATTACHMENT_PROPERTIES.getUploadFilePath())) {
+            throw new AttachmentException("非法的附件保存路径");
+        }
         try {
             Path targetPath = Path.of(fullFilePath);
             // 获取目标文件的父目录路径
@@ -322,6 +326,29 @@ public class FileUtils {
 
         // 需要下载的附件是否和配置文件中匹配
         return realPath.startsWith(config);
+    }
+
+    /**
+     * 检查写入路径是否合法（checkPath 的写侧变体：目标文件落盘前不存在，不做存在性与符号链接校验）
+     * @param path 待写入的附件全路径
+     * @param configPath 配置文件中记录的文件目录前缀
+     * @return 路径是否合法
+     */
+    public static boolean checkWritePath(String path, String configPath) {
+        if (path == null || path.isBlank()) {
+            return false;
+        }
+
+        // 拒绝包含空字节、回车或换行
+        if (path.contains("\0") || path.contains("\r") || path.contains("\n")) {
+            return false;
+        }
+
+        // 归一化后按路径组件做目录包含判定（normalize 消解 ../；首次写入前根目录可能尚未创建，不做 toRealPath）
+        Path config = Paths.get(configPath).toAbsolutePath().normalize();
+        Path targetPath = Paths.get(path).toAbsolutePath().normalize();
+
+        return targetPath.startsWith(config);
     }
 
     /**

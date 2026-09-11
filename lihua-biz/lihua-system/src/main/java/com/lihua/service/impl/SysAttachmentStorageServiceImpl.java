@@ -162,12 +162,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 .setBusinessCode(chunkStartDTO.getBusinessCode())
                 .setBusinessName(StringUtils.hasText(chunkStartDTO.getBusinessName()) ? chunkStartDTO.getBusinessName() : chunkStartDTO.getBusinessCode())
                 .setStatus("2");
-        String path = Paths.get(
-                attachmentProperties.getUploadFilePath(),
-                attachment.getBusinessCode(),
-                FileUtils.generateUUIDFileName(attachment.getOriginalName())
-        ).toString();
-        path = path.replace("\\", "/");
+        String path = buildUploadFilePath(attachment.getBusinessCode(), attachment.getOriginalName());
         attachment.setPath(path);
         try {
             // 获取附件id
@@ -318,14 +313,20 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     // 附件上传方法
     private String upload(MultipartFile file, String businessCode) {
         AttachmentStorageStrategy strategy = getStrategy();
-        // 获取新的附件名称
-        String uuidFileName = FileUtils.generateUUIDFileName(file.getOriginalFilename());
-        // 通过指定路径拼接附件全路径
-        String fullFilePath = Paths.get(attachmentProperties.getUploadFilePath(), businessCode, uuidFileName).toString();
-        fullFilePath = fullFilePath.replace("\\", "/");
+        String fullFilePath = buildUploadFilePath(businessCode, file.getOriginalFilename());
         // 附件上传
         strategy.uploadFile(file, fullFilePath);
         return fullFilePath;
+    }
+
+    // 构造附件落盘路径并做写侧校验：目标必须位于附件根目录内（防路径穿越），分隔符统一为 "/"
+    private String buildUploadFilePath(String businessCode, String originalName) {
+        String uuidFileName = FileUtils.generateUUIDFileName(originalName);
+        String fullFilePath = Paths.get(attachmentProperties.getUploadFilePath(), businessCode, uuidFileName).toString();
+        if (!FileUtils.checkWritePath(fullFilePath, attachmentProperties.getUploadFilePath())) {
+            throw new AttachmentException("非法的附件保存路径");
+        }
+        return fullFilePath.replace("\\", "/");
     }
 
     // 上传类型限制：可选配置 attachment.uploadAllowExtensions（空=不限制）；与附件公开性无关，由使用方按部署场景决定

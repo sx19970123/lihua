@@ -70,6 +70,9 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
 
         Path tempDir = Paths.get(TEMPORARY_PATH, uploadId);
         Path targetPath = Paths.get(fullFilePath);
+        // 先合并到临时名再移动到目标，目标文件只会以完整形态出现；
+        // 临时名带随机串避免并发合并互踩，放 temporary 根下而非 tempDir 内，以免混入分片索引枚举
+        Path mergedTemp = Paths.get(TEMPORARY_PATH, uploadId + "." + UUID.randomUUID() + ".merging");
 
         try {
             // 1. 校验临时目录是否存在
@@ -101,9 +104,9 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
                 Files.createDirectories(parent);
             }
 
-            // 4. 合并文件（零拷贝 + 循环保证完整）
+            // 4. 合并到临时文件（零拷贝 + 循环保证完整；分片保留至成功，失败可直接重试）
             try (FileChannel outChannel = FileChannel.open(
-                    targetPath,
+                    mergedTemp,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.WRITE,
                     StandardOpenOption.TRUNCATE_EXISTING
@@ -125,34 +128,37 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
                             position += transferred;
                         }
                     }
-
-                    // 删除分片文件
-                    Files.deleteIfExists(partPath);
                 }
             }
 
-            // 5. MD5 校验（强一致性）
+            // 5. MD5 校验（强一致性，通过前不触碰目标）
             if (md5 != null && !md5.isEmpty()) {
                 String fileMd5;
-                try (InputStream is = Files.newInputStream(targetPath)) {
+                try (InputStream is = Files.newInputStream(mergedTemp)) {
                     fileMd5 = org.apache.commons.codec.digest.DigestUtils.md5Hex(is);
                 }
 
                 if (!md5.equalsIgnoreCase(fileMd5)) {
-                    Files.deleteIfExists(targetPath);
                     throw new AttachmentException("文件校验失败，MD5不一致");
                 }
             }
 
-            // 6. 删除临时目录（递归）
+            // 6. 原子移动到目标（并发另一路已落同内容目标时为等价覆盖）
+            try {
+                Files.move(mergedTemp, targetPath, StandardCopyOption.ATOMIC_MOVE);
+            } catch (AtomicMoveNotSupportedException e) {
+                Files.move(mergedTemp, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            // 7. 删除临时分片目录（递归）
             deleteDirectory(tempDir);
 
         } catch (Exception e) {
-            // 7. 异常回滚（删除目标文件）
+            // 异常只清理本次合并的临时文件，不删目标——目标若已存在必为并发另一路的成功产物
             try {
-                Files.deleteIfExists(targetPath);
+                Files.deleteIfExists(mergedTemp);
             } catch (IOException ex) {
-                log.warn("删除失败文件异常: {}", targetPath, ex);
+                log.warn("删除合并临时文件异常: {}", mergedTemp, ex);
             }
 
             log.error("附件合并失败", e);
