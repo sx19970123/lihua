@@ -8,6 +8,7 @@ services:
       dockerfile: server/dockerfile
     environment:                                    # 配置环境变量
       - BASE_FILE_PATH=/lihua/data/                   # 文件上传目录（包含生成log路径及excel导出路径）
+      - ATTACHMENT_DOWNLOAD_SIGN_KEY=${ATTACHMENT_DOWNLOAD_SIGN_KEY}   # 下载链接签名密钥（在 .env 或部署环境提供，缺失启动失败）
       - DB_HOST=lihua-mysql                           # mysql地址，默认使用mysql容器名即可
       - DB_PORT=3306                                  # mysql端口，根据dockerfile暴露端口配置
       - DB_USERNAME=username                          # mysql用户名

@@ -13,6 +13,10 @@ attachment:
   downloadExpireTime: 1h
   # 下载链接最大时效（缺省 30 天；Duration 带单位写法：s/m/h/d，如 30d、720h，裸数字按分钟）
   downloadMaxExpireTime: 30d
+  # 附件入口 URL 反代前缀（部署带反代前缀如 /api 时配置；默认空）
+  urlBasePath: ""
+  # 允许上传的附件扩展名（小写、不带点，如 [jpg, pdf]；空=不限制，由使用方按部署场景决定）
+  # uploadAllowExtensions: [jpg, jpeg, png, gif, webp, bmp, pdf]
   # 文件上传服务类型：LOCAL（传统本地上传）、ALIYUN-OSS（阿里云oss）
   uploadFileModel: LOCAL
   # 上传文件路径，LOCAL模式下为服务器目录；ALIYUN-OSS模式下为桶下目录
