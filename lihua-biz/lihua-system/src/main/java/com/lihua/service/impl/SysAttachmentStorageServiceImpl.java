@@ -1,7 +1,6 @@
 package com.lihua.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.lihua.attachment.config.AttachmentProperties;
 import com.lihua.attachment.enums.AttachmentEnum;
@@ -14,18 +13,27 @@ import com.lihua.common.utils.crypt.AesUtils;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysAttachment;
 import com.lihua.mapper.SysAttachmentMapper;
+import com.lihua.model.dto.AttachmentChunkMergeDTO;
+import com.lihua.model.dto.AttachmentChunkStartDTO;
+import com.lihua.model.dto.AttachmentFastUploadDTO;
+import com.lihua.model.dto.AttachmentUploadDTO;
+import com.lihua.model.vo.AttachmentUploadVO;
+import com.lihua.model.vo.FastUploadResultVO;
 import com.lihua.model.vo.SysAttachmentChunkVO;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.service.SysAttachmentStorageService;
 import jakarta.annotation.Resource;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +41,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 
 @Service
@@ -53,26 +63,8 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     private SysAttachmentMapper sysAttachmentMapper;
 
     @Override
-    public boolean existsAttachmentByMd5(String md5, String originFileName) {
-        AttachmentStorageStrategy strategy = getStrategy();
-        // 根据md5查询附件是否存在
-        LambdaQueryChainWrapper<SysAttachment> wrapper =
-                lambdaQuery()
-                .eq(SysAttachment::getMd5, md5);
-        // 根据附件原名查询是否存在
-        if (StringUtils.hasText(originFileName)) {
-            wrapper.eq(SysAttachment::getOriginalName, originFileName);
-        }
-        SysAttachment attachment = queryOne(wrapper);
-        if (attachment == null || !StringUtils.hasText(attachment.getPath())) {
-            return false;
-        }
-        // 检查服务器附件是否存在
-        boolean exists = strategy.isExists(attachment.getPath());
-        if (exists) {
-            return true;
-        }
-        throw new AttachmentException("服务器附件与数据库记录不符，服务器无该附件");
+    public boolean existsAttachmentByMd5(String md5) {
+        return findUploadableByMd5(md5) != null;
     }
 
     @Override
@@ -103,67 +95,91 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     }
 
     @Override
-    public String uploadAttachment(MultipartFile file, SysAttachment sysAttachment) {
+    public AttachmentUploadVO uploadAttachment(AttachmentUploadDTO uploadDTO) {
+        MultipartFile file = uploadDTO.getFile();
+        boolean isPublic = Boolean.TRUE.equals(uploadDTO.getPublic());
+        checkUploadExtension(file.getOriginalFilename());
+        SysAttachment attachment = new SysAttachment()
+                .setOriginalName(file.getOriginalFilename())
+                .setType(file.getContentType())
+                .setSize(String.valueOf(file.getSize()))
+                .setUploadMode("0")
+                .setBusinessCode(uploadDTO.getBusinessCode())
+                .setBusinessName(StringUtils.hasText(uploadDTO.getBusinessName()) ? uploadDTO.getBusinessName() : uploadDTO.getBusinessCode());
         try {
-            fillParameters(file, sysAttachment);
-            String path = upload(file, sysAttachment.getBusinessCode());
-            sysAttachment.setPath(path).setStatus("0");
-            return saveAttachment(sysAttachment);
+            attachment.setMd5(computeMd5(file));
+            String path = upload(file, attachment.getBusinessCode());
+            attachment.setPath(path).setStatus("0");
+            saveAttachment(attachment);
+            return buildUploadVO(attachment, isPublic);
         } catch (Exception e) {
-            sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
-            saveAttachment(sysAttachment);
+            log.error(e.getMessage(), e);
+            attachment.setStatus("1").setErrorMsg(e.getMessage());
+            saveAttachment(attachment);
             throw new AttachmentException("附件上传失败");
         }
     }
 
     @Override
-    public String publicUpload(MultipartFile file, String businessCode) {
-        boolean contains = attachmentProperties.getUploadPublicBusinessCode().contains(businessCode);
-        if (!contains) {
-            log.error("请检查配置文件，是否将此业务编码 " + businessCode + " 配置在 uploadPublicBusinessCode");
-            throw new AttachmentException("当前附件业务编码不为公开访问附件，无法上传");
+    public FastUploadResultVO fastUpload(AttachmentFastUploadDTO fastUploadDTO) {
+        SysAttachment hitAttachment = findUploadableByMd5(fastUploadDTO.getMd5());
+        // 未命中：客户端转普通上传
+        if (hitAttachment == null) {
+            return new FastUploadResultVO().setUploaded(false);
         }
-
-        return upload(file, businessCode);
-    }
-
-    @Override
-    public String fastUpload(SysAttachment sysAttachment) {
-        SysAttachment attachment = queryOne(lambdaQuery().eq(SysAttachment::getMd5, sysAttachment.getMd5()));
-        if (attachment == null) {
-            return null;
-        }
-        // 完善其他字段
-        String path = attachment.getPath();
-        sysAttachment
-                .setPath(path)
-                .setType(attachment.getType())
+        boolean isPublic = Boolean.TRUE.equals(fastUploadDTO.getPublic());
+        // 复制命中行存储信息建新行（秒传=同 md5 已有物理文件，size/type 等由命中行回填，客户端不声明）
+        SysAttachment attachment = new SysAttachment()
+                .setOriginalName(fastUploadDTO.getOriginalName())
+                .setMd5(fastUploadDTO.getMd5())
+                .setUploadMode("2")
+                .setPath(hitAttachment.getPath())
+                .setType(hitAttachment.getType())
+                .setSize(hitAttachment.getSize())
+                .setBusinessCode(fastUploadDTO.getBusinessCode())
+                .setBusinessName(StringUtils.hasText(fastUploadDTO.getBusinessName()) ? fastUploadDTO.getBusinessName() : fastUploadDTO.getBusinessCode())
                 .setStatus("0");
-        // 插入新数据
-        saveAttachment(sysAttachment);
-        return sysAttachment.getId();
+        saveAttachment(attachment);
+        FastUploadResultVO resultVO = new FastUploadResultVO();
+        resultVO.setId(attachment.getId())
+                .setPath(attachment.getPath())
+                .setIsPublic(isPublic)
+                .setUrl(buildUploadUrl(attachment, isPublic))
+                .setOriginalName(attachment.getOriginalName())
+                .setType(attachment.getType());
+        resultVO.setUploaded(true);
+        return resultVO;
     }
 
     @Override
-    public SysAttachmentChunkVO chunksUploadAttachmentStart(SysAttachment sysAttachment) {
+    public SysAttachmentChunkVO chunksUploadAttachmentStart(AttachmentChunkStartDTO chunkStartDTO) {
+        checkUploadExtension(chunkStartDTO.getOriginalName());
+        SysAttachment attachment = new SysAttachment()
+                .setOriginalName(chunkStartDTO.getOriginalName())
+                .setMd5(chunkStartDTO.getMd5())
+                .setSize(String.valueOf(chunkStartDTO.getSize()))
+                .setUploadMode("1")
+                .setBusinessCode(chunkStartDTO.getBusinessCode())
+                .setBusinessName(StringUtils.hasText(chunkStartDTO.getBusinessName()) ? chunkStartDTO.getBusinessName() : chunkStartDTO.getBusinessCode())
+                .setStatus("2");
         String path = Paths.get(
                 attachmentProperties.getUploadFilePath(),
-                sysAttachment.getBusinessCode(),
-                FileUtils.generateUUIDFileName(sysAttachment.getOriginalName())
+                attachment.getBusinessCode(),
+                FileUtils.generateUUIDFileName(attachment.getOriginalName())
         ).toString();
         path = path.replace("\\", "/");
-        sysAttachment.setStatus("2").setPath(path);
+        attachment.setPath(path);
         try {
             // 获取附件id
             String uploadId = chunksGetUploadId(path);
-            sysAttachment.setUploadId(uploadId);
+            attachment.setUploadId(uploadId);
             // 保存附件信息
-            String attachmentId = saveAttachment(sysAttachment);
+            String attachmentId = saveAttachment(attachment);
             return new SysAttachmentChunkVO(uploadId, attachmentId);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
-            saveAttachment(sysAttachment);
+            attachment.setStatus("1").setErrorMsg(e.getMessage());
+            saveAttachment(attachment);
             throw new AttachmentException(e.getMessage());
         }
     }
@@ -177,24 +193,35 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     }
 
     @Override
-    public void chunksUpload(MultipartFile file, String uploadId, String index) {
+    public void chunksUpload(MultipartFile file, String uploadId, Integer index) {
         AttachmentStorageStrategy attachmentStorageStrategy = getStrategy();
-        attachmentStorageStrategy.chunksUploadFile(file, getChunksFullPathByUploadId(uploadId), Integer.parseInt(index), uploadId);
+        attachmentStorageStrategy.chunksUploadFile(file, getChunksFullPathByUploadId(uploadId), index, uploadId);
     }
 
     @Override
-    public String chunksMerge(SysAttachment sysAttachment, Integer total) {
+    public AttachmentUploadVO chunksMerge(AttachmentChunkMergeDTO chunkMergeDTO, Integer total) {
         AttachmentStorageStrategy attachmentStorageStrategy = getStrategy();
-        String uploadId = sysAttachment.getUploadId();
+        String uploadId = chunkMergeDTO.getUploadId();
+        // 按 uploadId 定位 chunk/start 建立的分片行（不信任客户端回传行 id）
+        List<SysAttachment> attachments = lambdaQuery().eq(SysAttachment::getUploadId, uploadId).list();
+        if (attachments.isEmpty()) {
+            throw new AttachmentException("分片上传记录不存在");
+        }
+        SysAttachment attachment = attachments.get(0);
         try {
             String fullFilePath = getChunksFullPathByUploadId(uploadId);
             // 分片合并
-            attachmentStorageStrategy.chunksMerge(fullFilePath, sysAttachment.getMd5(), uploadId, total);
-            sysAttachment.setStatus("0");
-            return saveAttachment(sysAttachment);
+            attachmentStorageStrategy.chunksMerge(fullFilePath, chunkMergeDTO.getMd5(), uploadId, total);
+            attachment.setOriginalName(chunkMergeDTO.getOriginalName())
+                    .setMd5(chunkMergeDTO.getMd5())
+                    .setStatus("0");
+            saveAttachment(attachment);
+            // 公开性以 chunk/start 声明为准；行级 is_public 列落地前暂按私密回显
+            return buildUploadVO(attachment, false);
         } catch (Exception e) {
-            sysAttachment.setStatus("1").setErrorMsg(e.getMessage());
-            saveAttachment(sysAttachment);
+            log.error(e.getMessage(), e);
+            attachment.setStatus("1").setErrorMsg(e.getMessage());
+            saveAttachment(attachment);
             throw new AttachmentException("附件合并失败");
         } finally {
             // 删除redis缓存
@@ -301,6 +328,50 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         return fullFilePath;
     }
 
+    // 上传类型限制：可选配置 attachment.uploadAllowExtensions（空=不限制）；与附件公开性无关，由使用方按部署场景决定
+    private void checkUploadExtension(String fileName) {
+        List<String> allowExtensions = attachmentProperties.getUploadAllowExtensions();
+        if (allowExtensions == null || allowExtensions.isEmpty()) {
+            return;
+        }
+        String extensionName = FileUtils.getExtensionNameByFileName(fileName);
+        String extension = extensionName == null ? "" : extensionName.substring(1).toLowerCase();
+        boolean allowed = allowExtensions.stream().anyMatch(item -> {
+            String normalized = item.startsWith(".") ? item.substring(1) : item;
+            return normalized.equalsIgnoreCase(extension);
+        });
+        if (!allowed) {
+            throw new ServiceException("不允许上传该类型附件，允许类型：" + String.join("/", allowExtensions));
+        }
+    }
+
+    // 服务端计算文件流 md5（秒传判存键以服务端计算为准，防客户端伪造）
+    private String computeMd5(MultipartFile file) {
+        try (InputStream inputStream = file.getInputStream()) {
+            return DigestUtils.md5Hex(inputStream);
+        } catch (IOException e) {
+            throw new AttachmentException("附件md5计算失败");
+        }
+    }
+
+    // 组装上传统一响应（url=首次链接：公开=永久链，私密=时效签名链）
+    private AttachmentUploadVO buildUploadVO(SysAttachment attachment, boolean isPublic) {
+        return new AttachmentUploadVO()
+                .setId(attachment.getId())
+                .setPath(attachment.getPath())
+                .setIsPublic(isPublic)
+                .setUrl(buildUploadUrl(attachment, isPublic))
+                .setOriginalName(attachment.getOriginalName())
+                .setType(attachment.getType());
+    }
+
+    // 组装首次访问链接（公开=永久链，私密=时效签名链）
+    private String buildUploadUrl(SysAttachment attachment, boolean isPublic) {
+        return isPublic
+                ? "/system/attachment/storage/download/p?fullPath=" + URLEncoder.encode(attachment.getPath(), StandardCharsets.UTF_8)
+                : getAttachmentURL(attachment.getPath(), attachment.getOriginalName(), null);
+    }
+
     // 保存附件
     private String saveAttachment(SysAttachment sysAttachment) {
         sysAttachment
@@ -342,18 +413,25 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         return uploadId;
     }
 
-    // 根据需要条件查询单条数据
-    private SysAttachment queryOne(LambdaQueryChainWrapper<SysAttachment> chainWrapper) {
-        List<SysAttachment> list = chainWrapper
+    // 按 md5 查找物理文件仍存在的附件行（判存与秒传共用命中语义；同 md5 多行为常态——秒传复制行、重复上传各持文件，任一物理文件在即命中）
+    private SysAttachment findUploadableByMd5(String md5) {
+        AttachmentStorageStrategy strategy = getStrategy();
+        List<SysAttachment> attachments = lambdaQuery()
+                .eq(SysAttachment::getMd5, md5)
                 .eq(SysAttachment::getDelFlag, "0")
                 .eq(SysAttachment::getStatus, "0")
                 .list();
-
-        if (list.isEmpty()) {
-            return null;
+        Set<String> checkedPaths = new HashSet<>();
+        for (SysAttachment attachment : attachments) {
+            String path = attachment.getPath();
+            if (!StringUtils.hasText(path) || !checkedPaths.add(path)) {
+                continue;
+            }
+            if (strategy.isExists(path)) {
+                return attachment;
+            }
         }
-
-        return list.get(0);
+        return null;
     }
 
     // 获取 AttachmentStorageStrategy 对应实现
@@ -364,17 +442,5 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             throw new ServiceException("获取附件实现策略失败");
         }
         return attachmentStorageStrategy;
-    }
-    // SysAttachment 参数填充
-    private void fillParameters(MultipartFile file, SysAttachment sysAttachment) {
-        if (!StringUtils.hasText(sysAttachment.getType())) {
-            sysAttachment.setType(file.getContentType());
-        }
-        if (!StringUtils.hasText(sysAttachment.getSize())) {
-            sysAttachment.setSize(String.valueOf(file.getSize()));
-        }
-        if (!StringUtils.hasText(sysAttachment.getOriginalName())) {
-            sysAttachment.setOriginalName(file.getOriginalFilename());
-        }
     }
 }

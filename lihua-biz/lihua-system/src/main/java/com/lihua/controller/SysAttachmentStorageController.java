@@ -5,7 +5,12 @@ import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.entity.SysAttachment;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
-import com.lihua.model.validation.AttachmentValidation;
+import com.lihua.model.dto.AttachmentChunkMergeDTO;
+import com.lihua.model.dto.AttachmentChunkStartDTO;
+import com.lihua.model.dto.AttachmentFastUploadDTO;
+import com.lihua.model.dto.AttachmentUploadDTO;
+import com.lihua.model.vo.AttachmentUploadVO;
+import com.lihua.model.vo.FastUploadResultVO;
 import com.lihua.model.vo.SysAttachmentChunkVO;
 import com.lihua.service.SysAttachmentStorageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,38 +42,30 @@ public class SysAttachmentStorageController extends ApiResponseController {
     }
 
     @Operation(summary = "附件是否存在")
-    @PostMapping("exists")
-    public ApiResponseModel<Boolean> existsAttachmentByMd5(@RequestBody @Validated(AttachmentValidation.AttachmentCheckMd5Validation.class) SysAttachment sysAttachment) {
-        return success(sysAttachmentStorageService.existsAttachmentByMd5(sysAttachment.getMd5(), sysAttachment.getOriginalName()));
-    }
-
-    @Operation(summary = "公开附件上传")
-    @PostMapping("public/upload")
-    @Log(description = "公开附件上传", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<String> publicUpload(@RequestParam("file") MultipartFile file, @RequestParam("businessCode") String businessCode) {
-        return success(sysAttachmentStorageService.publicUpload(file, businessCode));
+    @GetMapping("exists/{md5}")
+    public ApiResponseModel<Boolean> existsAttachmentByMd5(@PathVariable("md5") String md5) {
+        return success(sysAttachmentStorageService.existsAttachmentByMd5(md5));
     }
 
     @Operation(summary = "附件上传")
     @PostMapping("upload")
     @Log(description = "附件上传", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<String> upload(@RequestParam("file") MultipartFile file,
-                                           @ModelAttribute SysAttachment sysAttachment) {
-        return success(sysAttachmentStorageService.uploadAttachment(file, sysAttachment));
+    public ApiResponseModel<AttachmentUploadVO> upload(@ModelAttribute @Validated AttachmentUploadDTO uploadDTO) {
+        return success(sysAttachmentStorageService.uploadAttachment(uploadDTO));
     }
 
     @Operation(summary = "文件秒传")
     @PostMapping("fast/upload")
     @Log(description = "附件上传（秒传）", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<String> fastUpload(@RequestBody SysAttachment sysAttachment) {
-        return success(sysAttachmentStorageService.fastUpload(sysAttachment));
+    public ApiResponseModel<FastUploadResultVO> fastUpload(@RequestBody @Validated AttachmentFastUploadDTO fastUploadDTO) {
+        return success(sysAttachmentStorageService.fastUpload(fastUploadDTO));
     }
 
     @Operation(summary = "开始分片上传")
     @PostMapping("chunk/start")
     @Log(description = "附件上传（分片）", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<SysAttachmentChunkVO> chunksUploadStart(@RequestBody SysAttachment sysAttachment) {
-        return success(sysAttachmentStorageService.chunksUploadAttachmentStart(sysAttachment));
+    public ApiResponseModel<SysAttachmentChunkVO> chunksUploadStart(@RequestBody @Validated AttachmentChunkStartDTO chunkStartDTO) {
+        return success(sysAttachmentStorageService.chunksUploadAttachmentStart(chunkStartDTO));
     }
 
     @Operation(summary = "获取已上传分片的索引值")
@@ -81,16 +78,16 @@ public class SysAttachmentStorageController extends ApiResponseController {
     @PostMapping("chunk/upload/{uploadId}/{index}")
     public ApiResponseModel<String> chunksUpload(@RequestParam("file") MultipartFile file,
                                                  @PathVariable("uploadId") String uploadId,
-                                                 @PathVariable("index") String index) {
+                                                 @PathVariable("index") Integer index) {
         sysAttachmentStorageService.chunksUpload(file, uploadId, index);
         return success();
     }
 
     @Operation(summary = "合并分片")
     @PostMapping("chunk/merge/{total}")
-    public ApiResponseModel<String> chunksMerge(@RequestBody @Validated(AttachmentValidation.AttachmentChunksMergeUploadValidation.class) SysAttachment sysAttachment,
+    public ApiResponseModel<AttachmentUploadVO> chunksMerge(@RequestBody @Validated AttachmentChunkMergeDTO chunkMergeDTO,
                                                 @PathVariable("total") Integer total) {
-        return success(sysAttachmentStorageService.chunksMerge(sysAttachment, total));
+        return success(sysAttachmentStorageService.chunksMerge(chunkMergeDTO, total));
     }
 
     @Operation(summary = "业务删除")

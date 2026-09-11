@@ -1,6 +1,12 @@
 package com.lihua.service;
 
 import com.lihua.entity.SysAttachment;
+import com.lihua.model.dto.AttachmentChunkMergeDTO;
+import com.lihua.model.dto.AttachmentChunkStartDTO;
+import com.lihua.model.dto.AttachmentFastUploadDTO;
+import com.lihua.model.dto.AttachmentUploadDTO;
+import com.lihua.model.vo.AttachmentUploadVO;
+import com.lihua.model.vo.FastUploadResultVO;
 import com.lihua.model.vo.SysAttachmentChunkVO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,10 +17,10 @@ import java.util.List;
 public interface SysAttachmentStorageService {
 
     /**
-     * 附件是否存在（md5和原附件名均相同）
+     * 附件是否存在（仅按 md5 匹配，与秒传命中条件一致）
      * @return 是否存在
      */
-    boolean existsAttachmentByMd5(String md5, String originFileName);
+    boolean existsAttachmentByMd5(String md5);
 
     /**
      * 根据路径查询附件信息，用于附件组件数据回显
@@ -24,32 +30,25 @@ public interface SysAttachmentStorageService {
     List<SysAttachment> queryAttachmentInfoByIds(List<String> ids);
 
     /**
-     * 上传附件
-     * @param file 文件
-     * @param sysAttachment 附件对象
-     * @return 附件表id
+     * 上传附件（单管线：公开性由参数显式声明，业务附件恒私密）
+     * @param uploadDTO 上传参数
+     * @return 上传结果统一 VO（id/path/isPublic/url/originalName/type）
      */
-    String uploadAttachment(MultipartFile file, SysAttachment sysAttachment);
+    AttachmentUploadVO uploadAttachment(AttachmentUploadDTO uploadDTO);
 
     /**
-     * 上传公开附件，记录不入库，仅用作头像、富文本等可直接访问的附件
-     * @param file 文件
-     * @param businessCode 业务编码
-     * @return 存储地址
+     * 附件秒传（命中同 md5 且物理文件存在的附件行即复制建行，未命中返回 uploaded=false）
+     * @param fastUploadDTO 秒传参数
+     * @return 秒传结果（uploaded + 命中时平铺上传 VO 字段）
      */
-    String publicUpload(MultipartFile file, String businessCode);
+    FastUploadResultVO fastUpload(AttachmentFastUploadDTO fastUploadDTO);
 
     /**
-     * 附件秒传
-     * @return 附件id
-     */
-    String fastUpload(SysAttachment sysAttachment);
-
-    /**
-     * 分片上传开始
+     * 分片上传开始（建行 status=2 并返回 uploadId 与附件id）
+     * @param chunkStartDTO 分片启动参数
      * @return 分片上传唯一uploadId和附件表id对象
      */
-    SysAttachmentChunkVO chunksUploadAttachmentStart(SysAttachment sysAttachment);
+    SysAttachmentChunkVO chunksUploadAttachmentStart(AttachmentChunkStartDTO chunkStartDTO);
 
     /**
      * 通过 uploadId值获取已上传分片附件的索引值
@@ -61,17 +60,17 @@ public interface SysAttachmentStorageService {
     /**
      * 分片上传
      * @param file 分片附件
-     * @param uploadId 前端生成uploadId
-     * @param index 附件索引
+     * @param uploadId 分片上传会话id
+     * @param index 分片索引
      */
-    void chunksUpload(MultipartFile file, String uploadId, String index);
+    void chunksUpload(MultipartFile file, String uploadId, Integer index);
 
     /**
-     * 分片合并
-     * @param sysAttachment 附件对象
+     * 分片合并（按 uploadId 定位分片行，返回上传统一 VO）
+     * @param chunkMergeDTO 合并参数
      * @param total 分片总数
      */
-    String chunksMerge(SysAttachment sysAttachment, Integer total);
+    AttachmentUploadVO chunksMerge(AttachmentChunkMergeDTO chunkMergeDTO, Integer total);
 
     /**
      * 业务删除附件（仅做状态的修改）

@@ -1,9 +1,7 @@
 package com.lihua.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.lihua.model.validation.AttachmentValidation;
 import com.lihua.mybatis.model.BaseEntity;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -48,7 +46,6 @@ public class SysAttachment extends BaseEntity implements Serializable {
     /**
      * 分片上传id
      */
-    @NotNull(message = "uploadId为空", groups = { AttachmentValidation.AttachmentChunksMergeUploadValidation.class })
     private String uploadId;
 
     /**
@@ -89,7 +86,6 @@ public class SysAttachment extends BaseEntity implements Serializable {
     /**
      * md5值
      */
-    @NotNull(message = "md5值不能为空", groups = { AttachmentValidation.AttachmentCheckMd5Validation.class })
     private String md5;
 
     /**
@@ -100,7 +96,6 @@ public class SysAttachment extends BaseEntity implements Serializable {
     /**
      * 原url（通过url上传有该字段）
      */
-    @NotNull(message = "原URL为空", groups = { AttachmentValidation.AttachmentUrlUploadValidation.class })
     private String url;
 
     /**

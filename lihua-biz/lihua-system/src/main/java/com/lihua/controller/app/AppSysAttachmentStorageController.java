@@ -5,7 +5,10 @@ import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.entity.SysAttachment;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
-import com.lihua.model.validation.AttachmentValidation;
+import com.lihua.model.dto.AttachmentFastUploadDTO;
+import com.lihua.model.dto.AttachmentUploadDTO;
+import com.lihua.model.vo.AttachmentUploadVO;
+import com.lihua.model.vo.FastUploadResultVO;
 import com.lihua.service.SysAttachmentStorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.util.List;
@@ -44,31 +46,23 @@ public class AppSysAttachmentStorageController extends ApiResponseController {
     }
 
     @Operation(summary = "附件是否存在")
-    @PostMapping("exists")
-    public ApiResponseModel<Boolean> existsAttachmentByMd5(@RequestBody @Validated(AttachmentValidation.AttachmentCheckMd5Validation.class) SysAttachment sysAttachment) {
-        return success(sysAttachmentStorageService.existsAttachmentByMd5(sysAttachment.getMd5(), sysAttachment.getOriginalName()));
-    }
-
-    @Operation(summary = "公开附件上传")
-    @PostMapping("public/upload")
-    @Log(description = "公开附件上传", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<String> publicUpload(@RequestParam("file") MultipartFile file, @RequestParam("businessCode") String businessCode) {
-        return success(sysAttachmentStorageService.publicUpload(file, businessCode));
+    @GetMapping("exists/{md5}")
+    public ApiResponseModel<Boolean> existsAttachmentByMd5(@PathVariable("md5") String md5) {
+        return success(sysAttachmentStorageService.existsAttachmentByMd5(md5));
     }
 
     @Operation(summary = "附件上传")
     @PostMapping("upload")
     @Log(description = "附件上传", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<String> upload(@RequestParam("file") MultipartFile file,
-                                           @ModelAttribute SysAttachment sysAttachment) {
-        return success(sysAttachmentStorageService.uploadAttachment(file, sysAttachment));
+    public ApiResponseModel<AttachmentUploadVO> upload(@ModelAttribute @Validated AttachmentUploadDTO uploadDTO) {
+        return success(sysAttachmentStorageService.uploadAttachment(uploadDTO));
     }
 
     @Operation(summary = "文件秒传")
     @PostMapping("fast/upload")
     @Log(description = "附件上传（秒传）", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<String> fastUpload(@RequestBody SysAttachment sysAttachment) {
-        return success(sysAttachmentStorageService.fastUpload(sysAttachment));
+    public ApiResponseModel<FastUploadResultVO> fastUpload(@RequestBody @Validated AttachmentFastUploadDTO fastUploadDTO) {
+        return success(sysAttachmentStorageService.fastUpload(fastUploadDTO));
     }
 
     @Operation(summary = "本地附件下载")
