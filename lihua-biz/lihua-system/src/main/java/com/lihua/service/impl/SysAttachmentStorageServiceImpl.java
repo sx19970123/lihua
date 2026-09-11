@@ -209,6 +209,13 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         }
         try {
             String fullFilePath = getChunksFullPathByUploadId(uploadId);
+            // md5 复查：同 md5 物理文件已在存（另一路已完成同内容上传）则复用并清临时分片，跳过物理合并
+            SysAttachment existed = findUploadableByMd5(chunkMergeDTO.getMd5());
+            if (existed != null) {
+                attachmentStorageStrategy.cleanChunks(fullFilePath, uploadId);
+                attachment.setPath(existed.getPath());
+                return finishChunksMerge(attachment, chunkMergeDTO);
+            }
             // 分片合并
             attachmentStorageStrategy.chunksMerge(fullFilePath, chunkMergeDTO.getMd5(), uploadId, total);
             return finishChunksMerge(attachment, chunkMergeDTO);
@@ -389,7 +396,8 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     private String saveAttachment(SysAttachment sysAttachment) {
         sysAttachment
                 .setStorageName(FileUtils.getFileNameByPath(sysAttachment.getPath()))
-                .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getStorageName()))
+                // 扩展名跟随本行声明的原文件名（复用物理文件的行不跟随物理文件扩展名，如 jpg/jpeg 同格式双拼写）
+                .setExtensionName(FileUtils.getExtensionNameByFileName(sysAttachment.getOriginalName()))
                 .setStorageLocation(attachmentProperties.getUploadFileModel())
                 .setClientType(LoginUserContext.getClientType());
         // 保存附件信息
