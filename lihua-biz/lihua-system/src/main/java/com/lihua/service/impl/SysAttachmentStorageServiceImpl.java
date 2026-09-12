@@ -103,13 +103,14 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
         ids.removeAll(dbIds);
 
         List<SysAttachmentVO> voList = new ArrayList<>(sysAttachmentList.size() + ids.size());
-        // 获取附件访问路径（按行公开性选链：公开=永久链，私密=时效签名链）
+        // 附件访问链接按行选链（公开=永久链，私密=时效签名链）；path 以同值链接形态下发，供以 path 为链接的既有消费方使用
         sysAttachmentList.forEach(attachment -> {
             SysAttachmentVO vo = new SysAttachmentVO();
             BeanUtils.copyProperties(attachment, vo);
-            vo.setPath(Boolean.TRUE.equals(attachment.getIsPublic())
+            String url = Boolean.TRUE.equals(attachment.getIsPublic())
                     ? AttachmentUrlUtils.resolvePublicUrl(attachment.getPath(), attachmentProperties.getUrlBasePath())
-                    : getAttachmentURL(attachment.getPath(), attachment.getOriginalName(), null));
+                    : getAttachmentURL(attachment.getPath(), attachment.getOriginalName(), null);
+            vo.setUrl(url).setPath(url);
             voList.add(vo);
         });
 

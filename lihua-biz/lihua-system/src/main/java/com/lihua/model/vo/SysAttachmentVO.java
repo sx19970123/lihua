@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import java.time.LocalDateTime;
 
 /**
- * 附件管理展示模型（对外字段白名单：内部字段 delFlag/createId/updateId/updateTime/url 不下发）
+ * 附件管理展示模型（对外字段白名单：内部字段 delFlag/createId/updateId/updateTime 不下发）
  */
 @Data
 @Accessors(chain = true)
@@ -33,7 +33,7 @@ public class SysAttachmentVO {
     private String extensionName;
 
     /**
-     * 附件保存路径
+     * 附件保存路径（info 回显场景以链接形态下发，与 url 同值）
      */
     private String path;
 
@@ -91,6 +91,11 @@ public class SysAttachmentVO {
      * 是否公开访问
      */
     private Boolean isPublic;
+
+    /**
+     * 附件访问链接（按行选链：公开=永久链，私密=时效签名链）
+     */
+    private String url;
 
     /**
      * 上传客户端类型
