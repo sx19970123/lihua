@@ -1,0 +1,71 @@
+package com.lihua.controller;
+
+import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.log.annotation.Log;
+import com.lihua.log.enums.LogTypeEnum;
+import com.lihua.model.dto.AttachmentFastUploadDTO;
+import com.lihua.model.dto.AttachmentUploadDTO;
+import com.lihua.model.vo.AttachmentUploadVO;
+import com.lihua.model.vo.FastUploadResultVO;
+import com.lihua.model.vo.SysAttachmentVO;
+import com.lihua.service.SysAttachmentStorageService;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotEmpty;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+
+import java.util.List;
+
+/**
+ * 附件存储控制器基类：承载管理版与 App 版共有端点（对外行为双版本一致，差异仅在路由前缀与文档分组）；
+ * 分片上传族仅管理版提供，由管理版子类自行声明
+ */
+public abstract class BaseSysAttachmentStorageController extends ApiResponseController {
+
+    @Resource
+    protected SysAttachmentStorageService sysAttachmentStorageService;
+
+    @Operation(summary = "查询附件信息")
+    @PostMapping("info")
+    public ApiResponseModel<List<SysAttachmentVO>> queryAttachmentInfoByIds(@RequestBody @NotEmpty(message = "附件id为空") List<String> ids) {
+        return success(sysAttachmentStorageService.queryAttachmentInfoByIds(ids));
+    }
+
+    @Operation(summary = "附件是否存在")
+    @GetMapping("exists/{md5}")
+    public ApiResponseModel<Boolean> existsAttachmentByMd5(@PathVariable("md5") String md5) {
+        return success(sysAttachmentStorageService.existsAttachmentByMd5(md5));
+    }
+
+    @Operation(summary = "附件上传")
+    @PostMapping("upload")
+    @Log(description = "附件上传", type = LogTypeEnum.UPLOAD)
+    public ApiResponseModel<AttachmentUploadVO> upload(@ModelAttribute @Validated AttachmentUploadDTO uploadDTO) {
+        return success(sysAttachmentStorageService.uploadAttachment(uploadDTO));
+    }
+
+    @Operation(summary = "文件秒传")
+    @PostMapping("fast/upload")
+    @Log(description = "附件上传（秒传）", type = LogTypeEnum.UPLOAD)
+    public ApiResponseModel<FastUploadResultVO> fastUpload(@RequestBody @Validated AttachmentFastUploadDTO fastUploadDTO) {
+        return success(sysAttachmentStorageService.fastUpload(fastUploadDTO));
+    }
+
+    @Operation(summary = "业务删除")
+    @DeleteMapping("business")
+    @Log(description = "附件删除（业务）", type = LogTypeEnum.DELETE)
+    public ApiResponseModel<String> deleteFromBusiness(@RequestBody @NotEmpty(message = "附件id不存在") List<String> ids) {
+        sysAttachmentStorageService.deleteFromBusiness(ids);
+        return success();
+    }
+
+    @Operation(summary = "附件下载（key=私密签名链 / fullPath=公开链）")
+    @GetMapping("download")
+    public ResponseEntity<StreamingResponseBody> download(String key, String fullPath, String originName) {
+        return sysAttachmentStorageService.download(key, fullPath, originName);
+    }
+}
