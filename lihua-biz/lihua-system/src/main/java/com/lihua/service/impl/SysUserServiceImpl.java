@@ -15,7 +15,7 @@ import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.entity.*;
 import com.lihua.excel.exception.ExcelImportException;
 import com.lihua.mapper.SysUserMapper;
-import com.lihua.model.AvatarModel;
+import com.lihua.model.vo.AvatarVO;
 import com.lihua.model.dto.ResetPasswordDTO;
 import com.lihua.model.dto.SysUserDTO;
 import com.lihua.model.dto.SysUserDeptDTO;
@@ -125,9 +125,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             return null;
         }
         // 头像列为前端 AvatarType JSON 串，仅图片类型解析对象键（文字/图标头像无附件 URL）
-        AvatarModel avatarModel;
+        AvatarVO avatarModel;
         try {
-            avatarModel = JsonUtils.toObject(avatar, AvatarModel.class);
+            avatarModel = JsonUtils.toObject(avatar, AvatarVO.class);
         } catch (Exception e) {
             return null;
         }
