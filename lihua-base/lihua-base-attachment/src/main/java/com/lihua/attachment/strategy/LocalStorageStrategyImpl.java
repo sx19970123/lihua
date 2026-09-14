@@ -7,6 +7,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -179,9 +180,16 @@ public class LocalStorageStrategyImpl implements AttachmentStorageStrategy {
         return null;
     }
 
-    // 项目启动时将TEMPORARY_PATH初始化
+    // 项目启动时将TEMPORARY_PATH初始化；声明了存储角色的服务必须配置上传根目录（缺失启动失败），
+    // 未声明存储角色的服务（upload-file-model 为空）注册本策略但不使用，跳过初始化
     @PostConstruct
     void initTemporaryPath() {
+        if (!StringUtils.hasText(attachmentProperties.getUploadFileModel())) {
+            return;
+        }
+        if (!StringUtils.hasText(attachmentProperties.getUploadFilePath())) {
+            throw new IllegalStateException("附件存储服务必须配置 attachment.upload-file-path");
+        }
         TEMPORARY_PATH = Paths.get(attachmentProperties.getUploadFilePath(),"temporary").toString();
     }
 

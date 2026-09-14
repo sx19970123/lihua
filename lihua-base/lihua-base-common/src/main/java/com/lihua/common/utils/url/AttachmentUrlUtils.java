@@ -1,4 +1,4 @@
-package com.lihua.attachment.utils;
+package com.lihua.common.utils.url;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -14,12 +14,11 @@ public class AttachmentUrlUtils {
     public static final String DOWNLOAD_URL_PREFIX = "/system/attachment/storage/download";
 
     /**
-     * 公开链解析：[urlBasePath] + download?fullPath=<URL 编码>
+     * 公开链解析：download?fullPath=<URL 编码>（相对链；部署反代前缀由各端自行拼接，服务端不感知）
      * @param path 附件对象键
-     * @param urlBasePath 反代前缀（默认空，见 attachment.url-base-path）
-     * @return 可直接访问的入口 URL
+     * @return 下载入口相对 URL
      */
-    public static String resolvePublicUrl(String path, String urlBasePath) {
-        return (urlBasePath == null ? "" : urlBasePath) + DOWNLOAD_URL_PREFIX + "?fullPath=" + URLEncoder.encode(path, StandardCharsets.UTF_8);
+    public static String resolvePublicUrl(String path) {
+        return DOWNLOAD_URL_PREFIX + "?fullPath=" + URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
 }

@@ -3,10 +3,12 @@ package com.lihua.attachment.strategy;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.*;
 import com.lihua.attachment.exception.AttachmentException;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -28,8 +30,16 @@ public class AliyunStorageStrategyImpl implements AttachmentStorageStrategy {
     @Autowired(required = false)
     private OSS ossClient;
 
-    @Value("${aliyun.oss.bucket-name}")
+    @Value("${aliyun.oss.bucket-name:}")
     private String bucketName;
+
+    // OSS 模式激活（客户端 bean 在存）时桶名必配；非 OSS 服务注册本策略但不使用，不强制配置
+    @PostConstruct
+    void checkBucketName() {
+        if (ossClient != null && !StringUtils.hasText(bucketName)) {
+            throw new IllegalStateException("attachment.upload-file-model 为 ALIYUN-OSS 时，aliyun.oss.bucket-name 必须配置");
+        }
+    }
 
     /**
      * 普通文件上传

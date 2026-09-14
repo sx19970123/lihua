@@ -8,8 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.lihua.common.exception.ServiceException;
 import com.lihua.common.utils.collection.CollectionUtils;
-import com.lihua.attachment.config.AttachmentProperties;
-import com.lihua.attachment.utils.AttachmentUrlUtils;
+import com.lihua.common.utils.url.AttachmentUrlUtils;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.entity.*;
@@ -42,9 +41,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Resource
     private SysUserMapper sysUserMapper;
-
-    @Resource
-    private AttachmentProperties attachmentProperties;
 
     @Resource
     private SysUserRoleService sysUserRoleService;
@@ -134,7 +130,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         if (avatarModel == null || !"image".equals(avatarModel.getType()) || !StringUtils.hasText(avatarModel.getValue())) {
             return null;
         }
-        return AttachmentUrlUtils.resolvePublicUrl(avatarModel.getValue(), attachmentProperties.getUrlBasePath());
+        return AttachmentUrlUtils.resolvePublicUrl(avatarModel.getValue());
     }
 
     @Override

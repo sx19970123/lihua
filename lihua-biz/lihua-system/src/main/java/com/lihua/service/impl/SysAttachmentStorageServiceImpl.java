@@ -10,7 +10,7 @@ import com.lihua.attachment.enums.AttachmentUploadModeEnum;
 import com.lihua.attachment.exception.AttachmentException;
 import com.lihua.attachment.model.AttachmentResponse;
 import com.lihua.attachment.strategy.AttachmentStorageStrategy;
-import com.lihua.attachment.utils.AttachmentUrlUtils;
+import com.lihua.common.utils.url.AttachmentUrlUtils;
 import com.lihua.attachment.utils.FileUtils;
 import com.lihua.attachment.utils.SignedUrlUtils;
 import com.lihua.common.enums.ResultCodeEnum;
@@ -108,7 +108,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
             SysAttachmentVO vo = new SysAttachmentVO();
             BeanUtils.copyProperties(attachment, vo);
             String url = Boolean.TRUE.equals(attachment.getIsPublic())
-                    ? AttachmentUrlUtils.resolvePublicUrl(attachment.getPath(), attachmentProperties.getUrlBasePath())
+                    ? AttachmentUrlUtils.resolvePublicUrl(attachment.getPath())
                     : getAttachmentURL(attachment.getPath(), attachment.getOriginalName(), null);
             vo.setUrl(url).setPath(url);
             voList.add(vo);
@@ -308,13 +308,10 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
                 + "&originName=" + URLEncoder.encode(originalName, StandardCharsets.UTF_8);
     }
 
-    // 时效归一（入参单位分钟）：缺省或非正值用默认时效（配置缺省 1 小时），显式超上限（配置缺省 30 天）拒绝
+    // 时效归一（入参单位分钟）：缺省或非正值用默认时效（配置缺省 1 小时），显式值由业务方按需传入直取
     private int resolveExpireTime(Integer expireTime) {
         if (expireTime == null || expireTime <= 0) {
             return (int) attachmentProperties.getDownloadExpireTime().toMinutes();
-        }
-        if (Duration.ofMinutes(expireTime).compareTo(attachmentProperties.getDownloadMaxExpireTime()) > 0) {
-            throw new AttachmentException(ResultCodeEnum.PARAMS_ERROR, "分享时效超上限（最长 " + attachmentProperties.getDownloadMaxExpireTime().toMinutes() + " 分钟）");
         }
         return expireTime;
     }
@@ -440,7 +437,7 @@ public class SysAttachmentStorageServiceImpl extends ServiceImpl<SysAttachmentMa
     // 组装首次访问链接（公开=永久链，私密=时效签名链）
     private String buildUploadUrl(SysAttachment attachment, boolean isPublic) {
         return isPublic
-                ? AttachmentUrlUtils.resolvePublicUrl(attachment.getPath(), attachmentProperties.getUrlBasePath())
+                ? AttachmentUrlUtils.resolvePublicUrl(attachment.getPath())
                 : getAttachmentURL(attachment.getPath(), attachment.getOriginalName(), null);
     }
 
