@@ -2,6 +2,7 @@ package com.lihua.attachment.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -26,7 +27,7 @@ public class SignedUrlUtils {
      */
     public static String sign(String path, long expireTimeMillis, String secretKey) {
         String expire = String.valueOf(expireTimeMillis);
-        String mac = HmacUtils.hmacSha256Hex(secretKey.getBytes(StandardCharsets.UTF_8), signedContent(path, expire).getBytes(StandardCharsets.UTF_8));
+        String mac = hmacSha256Hex(secretKey, signedContent(path, expire));
         String encodedPath = Base64.getUrlEncoder().withoutPadding().encodeToString(path.getBytes(StandardCharsets.UTF_8));
         return expire + "." + encodedPath + "." + mac;
     }
@@ -62,7 +63,7 @@ public class SignedUrlUtils {
         } catch (IllegalArgumentException e) {
             return null;
         }
-        String expected = HmacUtils.hmacSha256Hex(secretKey.getBytes(StandardCharsets.UTF_8), signedContent(path, parts[0]).getBytes(StandardCharsets.UTF_8));
+        String expected = hmacSha256Hex(secretKey, signedContent(path, parts[0]));
         // 常量时间比较，防时序侧信道
         if (!MessageDigest.isEqual(expected.getBytes(StandardCharsets.UTF_8), parts[2].getBytes(StandardCharsets.UTF_8))) {
             return null;
@@ -72,6 +73,13 @@ public class SignedUrlUtils {
 
     private static String signedContent(String path, String expire) {
         return path + SIGN_SEPARATOR + expire;
+    }
+
+    /**
+     * HMAC-SHA256 摘要（64 位小写十六进制）；密钥与内容均按 UTF-8 取字节
+     */
+    private static String hmacSha256Hex(String secretKey, String content) {
+        return new HmacUtils(HmacAlgorithms.HMAC_SHA_256, secretKey.getBytes(StandardCharsets.UTF_8)).hmacHex(content.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
