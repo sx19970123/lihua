@@ -1,24 +1,19 @@
 package com.lihua.controller;
 
+import com.lihua.controller.base.BaseSysProfileController;
 import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.common.utils.tree.TreeUtils;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysProfileBasicDTO;
-import com.lihua.model.dto.SysUpdatePasswordDTO;
 import com.lihua.model.validation.ProfileValidation;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.model.AuthInfo;
 import com.lihua.security.model.CurrentDept;
 import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUserSession;
-import com.lihua.service.SysProfileService;
-import com.lihua.service.SysUserDeptService;
-import com.lihua.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,43 +22,13 @@ import java.util.List;
 @Tag(name = "个人中心")
 @RestController
 @RequestMapping("system/profile")
-public class SysProfileController extends ApiResponseController {
-
-    @Resource
-    private SysProfileService sysProfileService;
-
-    @Resource
-    private SysUserDeptService sysUserDeptService;
-
-    @Resource
-    private SysUserService sysUserService;
-
-    @Operation(summary = "保存个人信息")
-    @PostMapping("basics")
-    @Log(description = "保存个人信息", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> saveBasics(@RequestBody @Validated(ProfileValidation.ProfileSaveValidation.class) SysProfileBasicDTO sysProfileBasicDTO) {
-        return success(sysProfileService.saveBasics(sysProfileBasicDTO));
-    }
+public class SysProfileController extends BaseSysProfileController {
 
     @Operation(summary = "保存主题")
     @PostMapping("theme")
     @Log(description = "保存主题", type = LogTypeEnum.SAVE)
     public ApiResponseModel<String> saveTheme(@RequestBody @Validated(ProfileValidation.ProfileThemeValidation.class) SysProfileBasicDTO sysProfileBasicDTO) {
         return success(sysProfileService.saveTheme(sysProfileBasicDTO.getTheme()));
-    }
-
-    @Operation(summary = "修改密码")
-    @PostMapping("password")
-    @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword", "confirmPassword"})
-    public ApiResponseModel<String> updatePassword(@RequestBody @Validated SysUpdatePasswordDTO sysUpdatePasswordDTO) {
-        return success(sysProfileService.updatePassword(sysUpdatePasswordDTO));
-    }
-
-    @Operation(summary = "设置默认部门")
-    @PostMapping("default/{id}")
-    @Log(description = "设置默认部门", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<CurrentDept> setDefaultDept(@PathVariable("id") String id) {
-        return success(sysUserDeptService.setDefaultDept(id));
     }
 
     @Operation(summary = "登录后用户数据校验")

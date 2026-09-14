@@ -1,8 +1,8 @@
 package com.lihua.controller;
 
+import com.lihua.controller.base.BaseSysNoticeController;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
 import com.lihua.entity.SysNotice;
 import com.lihua.entity.SysUser;
 import com.lihua.log.annotation.Log;
@@ -10,13 +10,9 @@ import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysNoticeDTO;
 import com.lihua.model.dto.NoticeReadInfoDTO;
 import com.lihua.model.vo.SysNoticeVO;
-import com.lihua.model.vo.SysUserNoticeVO;
 import com.lihua.mybatis.model.validation.MaxPageSizeLimit;
-import com.lihua.service.SysNoticeService;
-import com.lihua.service.SysUserNoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.groups.Default;
 import org.springframework.validation.annotation.Validated;
@@ -28,13 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("system/notice")
 @Validated
-public class SysNoticeController extends ApiResponseController {
-
-    @Resource
-    private SysNoticeService sysNoticeService;
-
-    @Resource
-    private SysUserNoticeService sysUserNoticeService;
+public class SysNoticeController extends BaseSysNoticeController {
 
     @Operation(summary = "分页查询")
     @PostMapping("page")
@@ -46,12 +36,6 @@ public class SysNoticeController extends ApiResponseController {
     @GetMapping("{id}")
     public ApiResponseModel<SysNoticeVO> queryById(@PathVariable("id") String id) {
         return success(sysNoticeService.queryById(id));
-    }
-
-    @Operation(summary = "根据id预览公告")
-    @GetMapping("preview/{id}")
-    public ApiResponseModel<SysNoticeVO> preview(@PathVariable("id") String id) {
-        return success(sysNoticeService.preview(id));
     }
 
     @Operation(summary = "保存通知公告")
@@ -80,38 +64,12 @@ public class SysNoticeController extends ApiResponseController {
     @Log(description = "删除通知公告", type = LogTypeEnum.DELETE)
     public ApiResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysNoticeService.deleteByIds(ids);
-     return success();
-    }
-
-    @Operation(summary = "用户查询自己的通知公告")
-    @PostMapping("list")
-    public ApiResponseModel<IPage<SysUserNoticeVO>> userMessageList(@RequestBody SysNoticeDTO sysNoticeDTO) {
-        return success(sysNoticeService.userMessageList(sysNoticeDTO));
+        return success();
     }
 
     @Operation(summary = "分页查询已读/未读用户")
     @PostMapping("readInfo")
     public ApiResponseModel<IPage<SysUser>> queryReadInfo(@RequestBody @Validated({Default.class, MaxPageSizeLimit.class}) NoticeReadInfoDTO readInfoDTO) {
         return success(sysUserNoticeService.queryReadInfo(readInfoDTO));
-    }
-
-    @Operation(summary = "标星公告")
-    @PostMapping("star/{noticeId}/{star}")
-    public ApiResponseModel<String> changeStar(@PathVariable("noticeId") String noticeId, @PathVariable("star") String star) {
-        sysUserNoticeService.changeStar(noticeId, star);
-        return success();
-    }
-
-    @Operation(summary = "记录已读")
-    @PostMapping("read/{noticeId}")
-    public ApiResponseModel<String> changeRead(@PathVariable("noticeId") String noticeId) {
-        sysUserNoticeService.changeRead(noticeId);
-        return success();
-    }
-
-    @Operation(summary = "获取未读总数")
-    @GetMapping("unread/count")
-    public ApiResponseModel<Integer> queryUnReadCount() {
-        return success(sysUserNoticeService.queryUnReadCount());
     }
 }

@@ -1,4 +1,4 @@
-package com.lihua.controller;
+package com.lihua.controller.base;
 
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;

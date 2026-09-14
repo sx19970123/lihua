@@ -1,5 +1,6 @@
 package com.lihua.controller;
 
+import com.lihua.controller.base.BaseSysAttachmentStorageController;
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
