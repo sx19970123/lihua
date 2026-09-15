@@ -19,6 +19,14 @@ public class AttachmentUrlUtils {
      * @return 下载入口相对 URL
      */
     public static String resolvePublicUrl(String path) {
+        // 空值原样返回，不构造链（调用方对空 url 字段已有渲染兜底）
+        if (path == null || path.isBlank()) {
+            return path;
+        }
+        // 幂等保护：入参已是访问链（如会话缓存中残留的历史转换结果）时原样返回，避免二次包装
+        if (path.startsWith(DOWNLOAD_URL_PREFIX)) {
+            return path;
+        }
         return DOWNLOAD_URL_PREFIX + "?fullPath=" + URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
 }
