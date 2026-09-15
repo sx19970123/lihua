@@ -103,34 +103,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         // 为用户所属部门赋值(一对多分页会出问题，单独处理)
         handleUserDept(iPage.getRecords());
 
-        // 头像可直接访问 URL（列表预埋，非图片类型为 null）
-        iPage.getRecords().forEach(vo -> vo.setAvatarUrl(resolveAvatarUrl(vo.getAvatar())));
+        // 头像下发前转换：image 型 value 由对象键转为可直接访问的相对链
+        iPage.getRecords().forEach(vo -> vo.setAvatar(processAvatarUrl(vo.getAvatar())));
 
         return iPage;
     }
 
     @Override
-    public String getAvatarUrl(String userId) {
-        SysUser user = lambdaQuery().select(SysUser::getAvatar).eq(SysUser::getId, userId).one();
-        return user == null ? null : resolveAvatarUrl(user.getAvatar());
-    }
-
-    @Override
-    public String resolveAvatarUrl(String avatar) {
+    public String processAvatarUrl(String avatar) {
         if (!StringUtils.hasText(avatar)) {
-            return null;
+            return avatar;
         }
-        // 头像列为前端 AvatarType JSON 串，仅图片类型解析对象键（文字/图标头像无附件 URL）
+        // 头像列为前端 AvatarType JSON 串；image 型 value 为附件对象键，下发前转换为可直接访问的相对链（其余类型与解析失败原样返回）
         AvatarVO avatarModel;
         try {
             avatarModel = JsonUtils.toObject(avatar, AvatarVO.class);
         } catch (Exception e) {
-            return null;
+            return avatar;
         }
         if (avatarModel == null || !"image".equals(avatarModel.getType()) || !StringUtils.hasText(avatarModel.getValue())) {
-            return null;
+            return avatar;
         }
-        return AttachmentUrlUtils.resolvePublicUrl(avatarModel.getValue());
+        avatarModel.setValue(AttachmentUrlUtils.resolvePublicUrl(avatarModel.getValue()));
+        return JsonUtils.toJson(avatarModel);
     }
 
     @Override
@@ -303,12 +298,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Override
     public List<SysUser> userOption(String deptId) {
-        return sysUserMapper.queryOptionByDeptId(deptId);
+        List<SysUser> userOptionList = sysUserMapper.queryOptionByDeptId(deptId);
+        userOptionList.forEach(user -> user.setAvatar(processAvatarUrl(user.getAvatar())));
+        return userOptionList;
     }
 
     @Override
     public List<SysUser> userOption(List<String> userIdList) {
-        return sysUserMapper.queryOptionByUserIds(userIdList);
+        List<SysUser> userOptionList = sysUserMapper.queryOptionByUserIds(userIdList);
+        userOptionList.forEach(user -> user.setAvatar(processAvatarUrl(user.getAvatar())));
+        return userOptionList;
     }
 
     @Override

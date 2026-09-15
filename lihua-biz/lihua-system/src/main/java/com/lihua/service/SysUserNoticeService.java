@@ -25,7 +25,7 @@ public interface SysUserNoticeService {
     List<String> queryUserIds(String noticeId);
 
     /**
-     * 分页获取 notice 已读/未读用户（readFlag：0 未读 / 1 已读）
+     * 分页获取 notice 已读/未读用户（readFlag：0 未读 / 1 已读；头像 image 型 value 已转为可访问链）
      */
     IPage<SysUser> queryReadInfo(NoticeReadInfoDTO readInfoDTO);
 

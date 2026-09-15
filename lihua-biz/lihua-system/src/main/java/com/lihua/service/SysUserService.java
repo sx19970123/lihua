@@ -84,12 +84,7 @@ public interface SysUserService {
     String resetPassword(ResetPasswordDTO resetPasswordDTO);
 
     /**
-     * 获取用户头像可直接访问 URL（按用户 id 查询并解析；无头像/非图片类型返回 null）
+     * 转换头像 JSON：image 型 value 由附件对象键转换为可直接访问的相对链后回写 JSON 返回（text/icon 与解析失败原样返回；URL 结构由服务端统一维护，前端不再拼接）
      */
-    String getAvatarUrl(String userId);
-
-    /**
-     * 解析头像配置为可直接访问 URL（头像列为前端 AvatarType JSON 串；仅图片类型解析对象键，其余返回 null）
-     */
-    String resolveAvatarUrl(String avatar);
+    String processAvatarUrl(String avatar);
 }

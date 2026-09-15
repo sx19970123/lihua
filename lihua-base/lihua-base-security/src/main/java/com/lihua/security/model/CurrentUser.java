@@ -30,14 +30,9 @@ public class CurrentUser implements Serializable {
     private String nickname;
 
     /**
-     * 用户头像
+     * 用户头像（AvatarType JSON 串；下发前 image 型 value 已转换为可直接访问的相对链）
      */
     private String avatar;
-
-    /**
-     * 头像可直接访问 URL（非图片类型为 null；服务端组装用户信息下发时填充，落库与缓存均不依赖该字段）
-     */
-    private String avatarUrl;
 
     /**
      * 性别

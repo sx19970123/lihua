@@ -47,8 +47,8 @@ public class SysProfileController extends BaseSysProfileController {
         // 前端 store 用户数据
         AuthInfo authInfo = new AuthInfo();
         CurrentUser userInfo = loginUserSession.getUser() != null ? loginUserSession.getUser() : new CurrentUser();
-        // 头像可直接访问 URL（非图片类型为 null；avatar 原值 JSON 串仍透传），直接填充在用户信息对象上随 userInfo 下发
-        userInfo.setAvatarUrl(sysUserService.resolveAvatarUrl(userInfo.getAvatar()));
+        // 头像 JSON 下发前转换：image 型 value 由对象键转为可直接访问的相对链（单字段契约，前端不再拼接 URL）
+        userInfo.setAvatar(sysUserService.processAvatarUrl(userInfo.getAvatar()));
         authInfo.setUserInfo(userInfo);
         authInfo.setDepts(TreeUtils.buildTree(loginUserSession.getDeptList()));
         authInfo.setPosts(loginUserSession.getPostList());

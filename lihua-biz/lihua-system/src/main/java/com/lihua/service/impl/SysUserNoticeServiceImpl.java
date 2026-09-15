@@ -12,6 +12,7 @@ import com.lihua.mapper.SysUserNoticeMapper;
 import com.lihua.model.dto.NoticeReadInfoDTO;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.service.SysUserNoticeService;
+import com.lihua.service.SysUserService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ public class SysUserNoticeServiceImpl extends ServiceImpl<SysUserNoticeMapper, S
 
     @Resource
     private SysUserNoticeMapper sysUserNoticeMapper;
+
+    @Resource
+    private SysUserService sysUserService;
 
     @Override
     public void save(List<SysUserNotice> sysUserNotices) {
@@ -47,8 +51,11 @@ public class SysUserNoticeServiceImpl extends ServiceImpl<SysUserNoticeMapper, S
 
     @Override
     public IPage<SysUser> queryReadInfo(NoticeReadInfoDTO readInfoDTO) {
-        return sysUserNoticeMapper.queryReadInfo(new Page<>(readInfoDTO.getPageNum(), readInfoDTO.getPageSize()),
+        IPage<SysUser> iPage = sysUserNoticeMapper.queryReadInfo(new Page<>(readInfoDTO.getPageNum(), readInfoDTO.getPageSize()),
                 readInfoDTO.getNoticeId(), readInfoDTO.getReadFlag());
+        // 头像下发前转换：image 型 value 由对象键转为可直接访问的相对链
+        iPage.getRecords().forEach(user -> user.setAvatar(sysUserService.processAvatarUrl(user.getAvatar())));
+        return iPage;
     }
 
     @Override
