@@ -127,3 +127,7 @@ EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
 DELETE FROM `sys_dict_data` WHERE `dict_type_code` = 'sys_attachment_upload_mode' AND `value` = '3';
+
+-- 10. 「数据监控」（druid）菜单退役（web 体检 W-C5：后端无 druid 依赖、/druid/** 放行已删，监控页为死页一并下线；
+--     DELETE 天然幂等；菜单为 web 动态菜单，App 不消费）
+DELETE FROM `sys_menu` WHERE `id` = 1838036487672111105 AND `component_path` = '/monitor/druid/MonitorDruid.vue';
