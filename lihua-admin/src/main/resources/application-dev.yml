@@ -95,13 +95,13 @@ aliyun:
 
 # 定时任务
 # 如需启用需要从启动类【com/lihua/LiHuaApplication.java】中将 @EnableSnailJob 注释解除
-snail-job:
-  server:
-    host: 127.0.0.1
-    port: 17888
-  namespace: ''
-  group: ''
-  token: ''
+# snail-job:
+#   server:
+#     host: 127.0.0.1
+#     port: 17888
+#   namespace: ''
+#   group: ''
+#   token: ''
 
  # spring doc 接口文档
 springdoc:

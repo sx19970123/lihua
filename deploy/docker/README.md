@@ -31,7 +31,7 @@ lihua                 	                                // 项目工程目录
 > lihua-admin-exec.jar（后端打包后文件，注意切换application.yml 中 active 为 prod）
 > dockerfile（构建镜像）
 
-server构建使用openjdk:21，将lihua-admin-exec.jar复制到指定路径下。启动之执行`java -jar` 向外抛出8080端口
+server构建使用`eclipse-temurin:25.0.4_7-jre-noble`（与 Java 25 编译目标匹配；镜像内含 fontconfig 与 DejaVu 字体，满足验证码字体渲染），将lihua-admin-exec.jar复制到指定路径下。启动之执行`java -jar` 向外抛出8080端口
 `application-prod.yml` 中关键配置读取自变量，在部署时通过`compose.yaml`对环境变量进行配置
 
 

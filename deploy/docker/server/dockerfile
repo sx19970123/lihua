@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21.0.10_7-jre-jammy
+FROM eclipse-temurin:25.0.4_7-jre-noble
 LABEL author=yukino
 COPY ./lihua-admin-exec.jar /app/lihua-admin-exec.jar
 EXPOSE 8080

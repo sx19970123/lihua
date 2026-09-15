@@ -72,7 +72,6 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/captcha/**",                                  // 验证码
                         "/ws-connect/**",                               // websocket建立连接
-                        "/druid/**",                                    // druid数据库监控
                         "/swagger-ui/**",                               // spring-doc
                         "/v3/api-docs/**",                              // spring-doc
                         "/error"                                        // 当出现404等异常时spring内部会转发到/error，需要将其放过，否则会响应401
