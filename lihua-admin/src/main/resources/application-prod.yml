@@ -4,6 +4,8 @@ token:
   tokenExpireTime: 24h
   # 令牌刷新阈值（距令牌过期不足该阈值时，新请求触发刷新）
   refreshThreshold: 15m
+  # JWT 签发/验签密钥（HMAC-SHA256；无默认值——未注入环境变量即启动失败，禁止回退硬编码；建议 32+ 随机字符，如 openssl rand -hex 32；换值=全员重新登录）
+  tokenSecret: ${TOKEN_SECRET}
 
  # 附件配置
 attachment:
