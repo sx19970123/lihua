@@ -76,6 +76,6 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
 
     @Override
     public void forceLogout(List<String> cacheKeys) {
-        cacheKeys.forEach(cacheKey -> redisCacheManager.delete(cacheKey));
+        cacheKeys.forEach(LoginUserManager::removeLoginUserSession);
     }
 }

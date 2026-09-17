@@ -102,10 +102,17 @@ public class LoginUserManager {
      * 删除用户缓存
      */
     public static void removeLoginUserCache(String token) {
-        String decode = JwtUtils.decode(token);
+        removeLoginUserSession(JwtUtils.decode(token));
+    }
+
+    /**
+     * 按缓存 key 删除登录会话
+     * 登出持有 token 走 removeLoginUserCache；强退、挤下线等管理侧通道持有 cacheKey 走本方法
+     */
+    public static void removeLoginUserSession(String cacheKey) {
         // 发送缓存失效广播
-        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), decode);
-        REDIS_CACHE_MANAGER.delete(decode);
+        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), cacheKey);
+        REDIS_CACHE_MANAGER.delete(cacheKey);
     }
 
     /**

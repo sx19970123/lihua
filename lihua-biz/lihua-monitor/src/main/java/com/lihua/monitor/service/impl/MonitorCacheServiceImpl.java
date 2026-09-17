@@ -5,7 +5,9 @@ import com.lihua.common.model.bridge.setting.CacheBlackIp;
 import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.monitor.model.CacheMonitor;
 import com.lihua.cache.manager.RedisCacheManager;
+import com.lihua.cache.publisher.RedisPublisher;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
+import com.lihua.cache.enums.RedisTopicEnum;
 import com.lihua.monitor.service.MonitorCacheService;
 import jakarta.annotation.Resource;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,6 +24,9 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
 
     @Resource
     private RedisCacheManager redisCacheManager;
+
+    @Resource
+    private RedisPublisher redisPublisher;
 
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
@@ -87,6 +92,8 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
         }
 
         Set<String> keys = cacheKeys(keyPrefix);
+        // 发送缓存失效广播（订阅端按精确 key 失效本地缓存，前缀删除须逐 key 发送）
+        keys.forEach(key -> redisPublisher.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), key));
         redisCacheManager.delete(keys);
 
         // 重新刷新黑名单
