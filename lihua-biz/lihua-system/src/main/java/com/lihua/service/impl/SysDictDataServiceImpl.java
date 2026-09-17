@@ -95,7 +95,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
             id = insert(sysDictData);
         }
         // 删除缓存
-        DictUtils.removeDictCache(sysDictData.getDictTypeCode());
+        DictUtils.resetCacheDict(sysDictData.getDictTypeCode());
         return id;
     }
 
@@ -137,7 +137,7 @@ public class SysDictDataServiceImpl implements SysDictDataService {
                 .stream()
                 .map(SysDictData::getDictTypeCode)
                 .distinct()
-                .forEach(DictUtils::removeDictCache);
+                .forEach(DictUtils::resetCacheDict);
         }
     }
 

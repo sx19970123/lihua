@@ -105,8 +105,8 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
             sysDictDataService.updateDataTypeCode(oldDictType.getCode(),sysDictType.getCode());
         }
         // 修改后删除缓存数据
-        DictUtils.removeDictCache(oldDictType.getCode());
-        DictUtils.removeDictCache(sysDictType.getCode());
+        DictUtils.resetCacheDict(oldDictType.getCode());
+        DictUtils.resetCacheDict(sysDictType.getCode());
         return sysDictType.getId();
     }
 
@@ -123,7 +123,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
         // 删除数据库数据
         sysDictTypeMapper.deleteByIds(ids);
         // 删除redis数据
-        sysDictTypes.forEach(dictType -> DictUtils.removeDictCache(dictType.getCode()));
+        sysDictTypes.forEach(dictType -> DictUtils.resetCacheDict(dictType.getCode()));
     }
 
     @Override
@@ -141,7 +141,7 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
         // 删除对应缓存（id 无效时无行被更新，跳过缓存清理）
         SysDictType dictType = sysDictTypeMapper.selectById(id);
         if (dictType != null) {
-            DictUtils.removeDictCache(dictType.getCode());
+            DictUtils.resetCacheDict(dictType.getCode());
         }
 
         return status;

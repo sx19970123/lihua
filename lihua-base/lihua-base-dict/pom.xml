@@ -17,11 +17,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-        <!--        mybatis-plus 持久化-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-base-mybatis</artifactId>
-        </dependency>
         <!--        manager 缓存-->
         <dependency>
             <groupId>com.lihua</groupId>

@@ -31,6 +31,12 @@
             <artifactId>lihua-base-common</artifactId>
         </dependency>
 
+        <!--        web 工具（导出经 HttpServletResponse 写出流，此前经 base-dict→base-mybatis→base-ip 三层传递隐式获得）-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-web</artifactId>
+        </dependency>
+
         <!--        字典模块-->
         <dependency>
             <groupId>com.lihua</groupId>
