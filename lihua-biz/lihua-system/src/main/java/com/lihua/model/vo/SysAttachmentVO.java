@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import java.time.LocalDateTime;
 
 /**
- * 附件管理展示模型（对外字段白名单：内部字段 delFlag/createId/updateId/updateTime 不下发）
+ * 附件管理展示模型（对外字段白名单：内部字段 delFlag/updateId/updateTime 不下发）
  */
 @Data
 @Accessors(chain = true)
@@ -108,7 +108,7 @@ public class SysAttachmentVO {
     private LocalDateTime createTime;
 
     /**
-     * 上传用户昵称
+     * 上传用户 id（昵称由前端按 id 调用户详情接口展示，附件域不查 sys_user）
      */
-    private String uploadName;
+    private String createId;
 }

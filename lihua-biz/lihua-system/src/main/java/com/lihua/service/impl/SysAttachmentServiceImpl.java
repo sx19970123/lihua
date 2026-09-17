@@ -74,7 +74,8 @@ public class SysAttachmentServiceImpl extends ServiceImpl<SysAttachmentMapper, S
 
     @Override
     public SysAttachmentVO queryById(String id) {
-        return sysAttachmentMapper.queryById(id);
+        SysAttachment attachment = getById(id);
+        return attachment == null ? null : toVO(attachment);
     }
 
 

@@ -18,33 +18,5 @@
         HAVING count( 1 ) = 1
     </select>
 
-    <select id="queryById" resultType="com.lihua.model.vo.SysAttachmentVO">
-        SELECT
-            sys_attachment.id,
-            sys_attachment.`status`,
-            sys_attachment.create_time,
-            storage_name,
-            original_name,
-            extension_name,
-            path,
-            upload_id,
-            business_code,
-            business_name,
-            size,
-            type,
-            upload_mode,
-            storage_location,
-            md5,
-            is_public,
-            error_msg,
-            sys_user.nickname as uploadName,
-            client_type
-        FROM
-            sys_attachment
-        LEFT JOIN sys_user ON sys_user.id = sys_attachment.create_id
-        <!-- del_flag=0 排除已逻辑删除行（手写 XML 不走 MP 逻辑删除插件） -->
-        WHERE sys_attachment.id = #{id} AND sys_attachment.del_flag = '0'
-    </select>
-
 
 </mapper>
