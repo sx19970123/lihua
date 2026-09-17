@@ -87,6 +87,11 @@ public class LogModel implements Serializable {
     private String url;
 
     /**
+     * 链路追踪 id（入口生成，日志文件按此串联）
+     */
+    private String traceId;
+
+    /**
      * ip地址
      */
     private String ipAddress;

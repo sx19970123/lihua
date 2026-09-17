@@ -85,6 +85,10 @@ logging:
   level:
     com.lihua: debug
     org.springframework: info
+  # [traceId] 由 TraceIdFilter 写入 MDC 输出（cloud 侧网关生成、RPC 透传；mono 入口生成）
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} TraceId=[%X{traceId}] %5p [%thread] %-40.40logger{39} : %m%n%ex"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} TraceId=[%X{traceId}] %5p [%thread] %-40.40logger{39} : %m%n%ex"
 
 # oss
 # 需要attachment配置中uploadFileModel为【ALIYUN-OSS】，同配置项 uploadFilePath 为桶下目录

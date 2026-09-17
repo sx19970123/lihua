@@ -74,6 +74,11 @@ public class SysOperateLogServiceImpl implements SysLogService {
             queryWrapper.lambda().like(SysLogVO::getDescription, sysLogDTO.getDescription());
         }
 
+        // 链路追踪 id
+        if (StringUtils.hasText(sysLogDTO.getTraceId())) {
+            queryWrapper.lambda().eq(SysLogVO::getTraceId, sysLogDTO.getTraceId());
+        }
+
         // 执行时间范围
         List<LocalDate> createTimeList = sysLogDTO.getCreateTimeList();
         if (createTimeList != null && createTimeList.size() == 2) {
@@ -140,6 +145,11 @@ public class SysOperateLogServiceImpl implements SysLogService {
         // 描述
         if (StringUtils.hasText(sysLogDTO.getDescription())) {
             queryWrapper.lambda().like(SysLogVO::getDescription, sysLogDTO.getDescription());
+        }
+
+        // 链路追踪 id
+        if (StringUtils.hasText(sysLogDTO.getTraceId())) {
+            queryWrapper.lambda().eq(SysLogVO::getTraceId, sysLogDTO.getTraceId());
         }
 
         // 执行时间范围

@@ -44,6 +44,11 @@ public class SysLogDTO extends BaseDTO {
     private String clientType;
 
     /**
+     * 链路追踪 id（精确匹配）
+     */
+    private String traceId;
+
+    /**
      * 创建时间集合
      */
     private List<LocalDate> createTimeList;

@@ -131,3 +131,27 @@ DELETE FROM `sys_dict_data` WHERE `dict_type_code` = 'sys_attachment_upload_mode
 -- 10. 「数据监控」（druid）菜单退役（web 体检 W-C5：后端无 druid 依赖、/druid/** 放行已删，监控页为死页一并下线；
 --     DELETE 天然幂等；菜单为 web 动态菜单，App 不消费）
 DELETE FROM `sys_menu` WHERE `id` = 1838036487672111105 AND `component_path` = '/monitor/druid/MonitorDruid.vue';
+
+-- 11. 两日志表加链路追踪 id 列（cloud 体检 D9：traceId 落库，页面记录可按此串联日志文件完整调用链；
+--     存量记录空值正常，新记录起有值；无索引——按 trace_id 检索为低频排障操作）
+SET @col_exists = (
+    SELECT COUNT(*) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sys_operate_log' AND COLUMN_NAME = 'trace_id'
+);
+SET @ddl = IF(@col_exists = 0,
+    'ALTER TABLE `sys_operate_log` ADD COLUMN `trace_id` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT ''链路追踪id（入口生成，日志文件按此串联）'' AFTER `url`',
+    'SELECT ''column trace_id already exists, skip'' AS msg');
+PREPARE stmt FROM @ddl;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @col_exists = (
+    SELECT COUNT(*) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sys_login_log' AND COLUMN_NAME = 'trace_id'
+);
+SET @ddl = IF(@col_exists = 0,
+    'ALTER TABLE `sys_login_log` ADD COLUMN `trace_id` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT ''链路追踪id（入口生成，日志文件按此串联）'' AFTER `url`',
+    'SELECT ''column trace_id already exists, skip'' AS msg');
+PREPARE stmt FROM @ddl;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;

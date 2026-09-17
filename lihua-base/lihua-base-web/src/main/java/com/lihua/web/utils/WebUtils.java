@@ -1,5 +1,6 @@
 package com.lihua.web.utils;
 
+import com.lihua.common.enums.CustomHttpHeader;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
@@ -76,7 +77,7 @@ public class WebUtils {
         if (request == null) {
             return null;
         }
-        return request.getHeader("Client-Type");
+        return request.getHeader(CustomHttpHeader.CLIENT_TYPE.getValue());
     }
 
 }

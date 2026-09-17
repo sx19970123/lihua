@@ -71,6 +71,11 @@ public class SysLoginLogServiceImpl implements SysLogService {
             queryWrapper.lambda().eq(SysLogVO::getClientType, sysLogDTO.getClientType());
         }
 
+        // 链路追踪 id
+        if (StringUtils.hasText(sysLogDTO.getTraceId())) {
+            queryWrapper.lambda().eq(SysLogVO::getTraceId, sysLogDTO.getTraceId());
+        }
+
         // 登录时间
         List<LocalDate> createTimeList = sysLogDTO.getCreateTimeList();
         if (createTimeList != null && createTimeList.size() == 2) {
@@ -135,6 +140,11 @@ public class SysLoginLogServiceImpl implements SysLogService {
         // 客户端类型
         if (StringUtils.hasText(sysLogDTO.getClientType())) {
             queryWrapper.lambda().eq(SysLogVO::getClientType, sysLogDTO.getClientType());
+        }
+
+        // 链路追踪 id
+        if (StringUtils.hasText(sysLogDTO.getTraceId())) {
+            queryWrapper.lambda().eq(SysLogVO::getTraceId, sysLogDTO.getTraceId());
         }
 
         // 登录时间

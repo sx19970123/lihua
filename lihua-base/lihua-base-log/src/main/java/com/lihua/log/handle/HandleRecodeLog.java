@@ -4,6 +4,7 @@ import com.lihua.common.model.bridge.log.LogModel;
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.json.JsonUtils;
+import com.lihua.common.utils.trace.TraceIdUtils;
 import com.lihua.ip.utils.IpUtils;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogStatusEnum;
@@ -18,6 +19,7 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -83,6 +85,8 @@ public class HandleRecodeLog {
                 .setRegion(IpUtils.getRegion(ip))
                 .setParams(params)
                 .setUrl(requestURI)
+                // traceId 依赖 MdcTaskDecorator 将入口线程 MDC 传播进 @Async 线程（去掉装饰器此处将静默为 null）
+                .setTraceId(MDC.get(TraceIdUtils.MDC_KEY))
                 .setUserAgent(userAgent)
                 .setClientType(clientType)
                 .setExecuteTime(time)
