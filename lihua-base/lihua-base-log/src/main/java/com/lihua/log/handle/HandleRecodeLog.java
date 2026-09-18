@@ -85,7 +85,7 @@ public class HandleRecodeLog {
                 .setRegion(WebUtils.getRegion(ip))
                 .setParams(params)
                 .setUrl(requestURI)
-                // traceId 依赖 MdcTaskDecorator 将入口线程 MDC 传播进 @Async 线程（去掉装饰器此处将静默为 null）
+                // traceId 依赖 ContextCopyTaskDecorator 将入口线程 MDC 传播进 @Async 线程（去掉装饰器此处将静默为 null）
                 .setTraceId(MDC.get(TraceIdUtils.MDC_KEY))
                 .setUserAgent(userAgent)
                 .setClientType(clientType)

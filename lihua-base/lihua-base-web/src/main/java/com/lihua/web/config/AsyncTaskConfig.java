@@ -12,16 +12,17 @@ import org.springframework.context.annotation.Configuration;
 public class AsyncTaskConfig {
 
     /**
-     * @Async 默认线程池（applicationTaskExecutor）追加 MDC 上下文复制——异步日志行保留 traceId
+     * @Async 默认线程池（applicationTaskExecutor）追加上下文复制——异步日志行保留 traceId、
+     * 异步 RPC 透传保留用户身份；任意执行器形态（每任务新线程/池化复用）下均不丢不串
      * （按 Boot 4 customizer 形态两类 executor 各注册一个，池参数仍由自动配置管理）
      */
     @Bean
-    public SimpleAsyncTaskExecutorCustomizer mdcSimpleAsyncTaskExecutorCustomizer() {
-        return executor -> executor.setTaskDecorator(new MdcTaskDecorator());
+    public SimpleAsyncTaskExecutorCustomizer contextCopySimpleAsyncTaskExecutorCustomizer() {
+        return executor -> executor.setTaskDecorator(new ContextCopyTaskDecorator());
     }
 
     @Bean
-    public ThreadPoolTaskExecutorCustomizer mdcThreadPoolTaskExecutorCustomizer() {
-        return executor -> executor.setTaskDecorator(new MdcTaskDecorator());
+    public ThreadPoolTaskExecutorCustomizer contextCopyThreadPoolTaskExecutorCustomizer() {
+        return executor -> executor.setTaskDecorator(new ContextCopyTaskDecorator());
     }
 }

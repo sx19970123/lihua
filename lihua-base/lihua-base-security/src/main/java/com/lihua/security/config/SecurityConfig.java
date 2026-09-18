@@ -4,7 +4,6 @@ import com.lihua.security.filter.JwtAuthenticationTokenFilter;
 import com.lihua.security.handler.LogoutSuccessHandlerImpl;
 import com.lihua.security.handler.SecurityAccessDeniedHandler;
 import com.lihua.security.handler.SecurityAuthenticationEntryPoint;
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -111,13 +109,5 @@ public class SecurityConfig {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
         return new ProviderManager(daoAuthenticationProvider);
-    }
-
-    /**
-     * 程序启动后修改认证信息上下文存储策略，支持子线程中获取认证信息
-     */
-    @PostConstruct
-    public void setStrategyName() {
-        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
 }
