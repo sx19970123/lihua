@@ -12,6 +12,9 @@ public class TraceIdUtils {
      */
     public static final String MDC_KEY = "traceId";
 
+    private TraceIdUtils() {
+    }
+
     /**
      * 生成 16 位 hex 随机 traceId
      */

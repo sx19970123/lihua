@@ -115,7 +115,17 @@ public class FileUtils {
         }
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
-            return download(fileInputStream, StringUtils.hasText(fileName) ? fileName : file.getName(), String.valueOf(file.length()), autoDelete ? file : null);
+            try {
+                return download(fileInputStream, StringUtils.hasText(fileName) ? fileName : file.getName(), String.valueOf(file.length()), autoDelete ? file : null);
+            } catch (Exception buildException) {
+                // 正常返回后流的关闭责任移交 StreamingResponseBody（异步流式读取），仅同步构建失败时在此回收
+                try {
+                    fileInputStream.close();
+                } catch (IOException closeException) {
+                    buildException.addSuppressed(closeException);
+                }
+                throw buildException;
+            }
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             throw new AttachmentException(e.getMessage());
@@ -332,18 +342,20 @@ public class FileUtils {
      * @throws IOException io异常
      */
     private static void addToZipFile(InputStream inputStream, String fileOriginName,ZipOutputStream zipOutputStream) throws IOException {
-        // 创建 ZIP 附件条目
-        zipOutputStream.putNextEntry(new ZipEntry(fileOriginName));
+        // inputStream 由 try-with-resources 接管：putNextEntry/读写/closeEntry 任一异常路径均关闭
+        try (inputStream) {
+            // 创建 ZIP 附件条目
+            zipOutputStream.putNextEntry(new ZipEntry(fileOriginName));
 
-        // 将附件内容写入 ZIP 附件条目中
-        byte[] buffer = new byte[4096];
-        int length;
-        while ((length = inputStream.read(buffer)) > 0) {
-            zipOutputStream.write(buffer, 0, length);
+            // 将附件内容写入 ZIP 附件条目中
+            byte[] buffer = new byte[4096];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                zipOutputStream.write(buffer, 0, length);
+            }
+
+            // 关闭当前 ZIP 附件条目
+            zipOutputStream.closeEntry();
         }
-
-        // 关闭当前 ZIP 附件条目
-        zipOutputStream.closeEntry();
-        inputStream.close();
     }
 }
