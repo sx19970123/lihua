@@ -36,11 +36,9 @@ spring:
   jackson:
     default-property-inclusion: non_null
 
-# 运维探针（management 独立端口子上下文）：不经主端口 SecurityConfig 过滤链、不映射宿主机仅容器内网可达，
-# compose healthcheck 经此探活；/actuator/health 聚合 db/redis 指标
+# 运维探针：actuator health 挂主端口（/actuator/health）——本机/容器多服务形态均无独立端口冲突；
+# SecurityConfig 白名单放行 /actuator/health/**（show-details 默认 never 仅暴露整体状态）
 management:
-  server:
-    port: 9090
   endpoints:
     web:
       exposure:
@@ -51,6 +49,15 @@ management:
       # 非 k8s 环境不自动启用探针端点，显式开启
       probes:
         enabled: true
+
+# 登录失败锁定（账号与 ip 双维度：窗口内失败达阈值即锁定对应主体；enabled=false 关闭后验证码为唯一防线）
+login:
+  lock:
+    enabled: true
+    fail-threshold: 5
+    # Duration 带单位写法（15m），裸数字按分钟
+    fail-window: 15m
+    lock-duration: 10m
 
 mybatis-plus:
   global-config:

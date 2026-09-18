@@ -46,9 +46,9 @@ server构建使用`eclipse-temurin:25.0.4_7-jre-noble`（与 Java 25 编译目�
 
 ## 容器健康与自愈
 
-后端服务引入 actuator 探针（`management.server.port=9090` 独立端口，`application.yml` 的 `management` 段配置）——不占用业务端口、不映射宿主机，仅容器内网可达。compose 据此为每个容器配置了体检与自愈：
+后端服务引入 actuator 探针（健康端点挂主端口 `/actuator/health`，`application.yml` 的 `management` 段配置——无独立端口，不存在本机多服务端口冲突；SecurityConfig 白名单放行）。compose 据此为每个容器配置了体检与自愈：
 
-- **healthcheck 定时体检**：后端服务探 `9090/actuator/health`（聚合数据库/Redis 连通性）；mysql/redis 用各自官方命令探活。`docker compose ps` 的 STATUS 列显示 `(healthy)` 即体检通过。
+- **healthcheck 定时体检**：后端服务探主端口 `/actuator/health`（聚合数据库/Redis 连通性）；mysql/redis 用各自官方命令探活。`docker compose ps` 的 STATUS 列显示 `(healthy)` 即体检通过。
 - **depends_on 启动排序**：后端服务等 mysql/redis 全部 `(healthy)` 后才启动；前端等后端。
 - **restart: unless-stopped 宿主机重启自愈**：服务器重启后 Docker 自动拉起全部容器（手动 `docker compose stop` 停掉的不会被拉起）。
 - **资源与日志**：容器已设 `mem_limit`（JVM 堆经 `-XX:MaxRAMPercentage=75.0` 跟随容器限额），日志统一 json-file 轮转（单文件 10MB × 3 份）。

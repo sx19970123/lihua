@@ -7,10 +7,11 @@ x-logging: &default-logging
     max-size: "10m"
     max-file: "3"
 
-# JVM 服务统一探针：management 独立端口 9090 的全量 health（聚合 db/redis 指标）；
+# JVM 服务统一探针：主端口 /actuator/health 全量聚合（含 db/redis 指标）——主端口天然唯一；
+# 容器内经 $SERVER_PORT 环境变量寻址（$$ 为 compose 转义，留待容器 shell 展开）。
 # start_period 给足 JVM 启动窗口，期间失败不计入 retries
 x-java-healthcheck: &java-healthcheck
-  test: ["CMD", "curl", "-fsS", "http://localhost:9090/actuator/health"]
+  test: ["CMD-SHELL", "curl -fsS http://localhost:$${SERVER_PORT}/actuator/health"]
   interval: 15s
   timeout: 5s
   retries: 5
@@ -34,6 +35,8 @@ services:
       - REDIS_PORT=6379                               # redis端口，根据dockerfile暴露端口配置
       - REDIS_PASSWORD=password                       # redis密码
       - TZ=Asia/Shanghai                              # 设置容器时区
+      # 服务端口（healthcheck 寻址用；环境变量覆盖 application.yml 的 server.port）
+      - SERVER_PORT=8081
       # 堆上限 = 容器 mem_limit（1g）的 75%；OOM 治理：dump 堆快照到数据卷（事后排查；约等于堆大小，低频事件，手动清理）+ OOM 即退出（交 restart 自愈，防半死僵尸态）
       - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/lihua/data/ -XX:+ExitOnOutOfMemoryError
     depends_on:

@@ -69,6 +69,7 @@ public class SecurityConfig {
                 // 系统其他接口配置
                 .requestMatchers(
                         "/captcha/**",                                  // 验证码
+                        "/actuator/health/**",                          // 健康探针（compose healthcheck 经主端口探活；show-details 默认 never 仅暴露整体状态；网关无该前缀路由，仅内网/本机可达）
                         "/ws-connect/**",                               // websocket建立连接
                         "/swagger-ui/**",                               // spring-doc
                         "/v3/api-docs/**",                              // spring-doc

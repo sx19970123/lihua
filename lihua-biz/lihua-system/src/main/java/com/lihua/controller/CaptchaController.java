@@ -6,6 +6,7 @@ import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import com.lihua.captcha.enums.CaptchaTypeEnum;
 import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.web.annotation.RateLimit;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -24,6 +25,7 @@ public class CaptchaController extends ApiResponseController {
     private ImageCaptchaApplication imageCaptchaApplication;
 
     @Operation(summary = "获取验证码")
+    @RateLimit(rate = 1, interval = 1)
     @PostMapping("get")
     public ApiResponse<ImageCaptchaVO> getCaptcha() {
         // 随机获取验证码类型
@@ -31,6 +33,7 @@ public class CaptchaController extends ApiResponseController {
     }
 
     @Operation(summary = "验证码校验")
+    @RateLimit(rate = 1, interval = 1)
     @PostMapping("check")
     public ApiResponse<?> checkCaptcha(@RequestBody Data data) {
         ApiResponse<?> response = imageCaptchaApplication.matching(data.getId(), data.getData());

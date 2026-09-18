@@ -37,6 +37,12 @@ public enum RedisKeyPrefixEnum {
 
     ONCE_TOKEN_REDIS_PREFIX("REDIS_CACHE_ONCE_TOKEN:", "一次性令牌", null),
 
+    RATE_LIMIT_REDIS_PREFIX("RATE_LIMIT:", "接口限流（ip+接口 令牌桶）", null),
+
+    LOGIN_FAIL_COUNT_REDIS_PREFIX("LOGIN_FAIL_COUNT:", "登录失败计数（账号/ip）", null),
+
+    LOGIN_LOCK_REDIS_PREFIX("LOGIN_LOCK:", "登录锁定（账号/ip）", null),
+
     // 业务需要，非真实 manager key
     OTHER("OTHER", "其他", null);
 

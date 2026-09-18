@@ -3,6 +3,7 @@ package com.lihua.web.handle;
 import com.lihua.common.enums.ResultCodeEnum;
 import com.lihua.common.exception.BaseException;
 import com.lihua.common.model.response.basecontroller.StrResponseController;
+import com.lihua.web.exception.RateLimitException;
 import com.lihua.web.utils.WebUtils;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -100,6 +101,15 @@ public class GlobalExceptionHandle extends StrResponseController {
     public void handleBadCredentialsException(BadCredentialsException e) {
         log.error(e.getMessage(),e);
         WebUtils.renderJson(error(ResultCodeEnum.AUTHENTICATION_EXPIRED, e.getMessage()));
+    }
+
+    /**
+     * 处理接口限流异常（@RateLimit 窗口内超限，与重复提交同为频控 429）
+     */
+    @ExceptionHandler(RateLimitException.class)
+    public void handleRateLimitException(RateLimitException e) {
+        log.warn("接口限流触发: {}", e.getMessage());
+        WebUtils.renderJson(error(ResultCodeEnum.REPEAT_SUBMIT_ERROR));
     }
 
     /**
