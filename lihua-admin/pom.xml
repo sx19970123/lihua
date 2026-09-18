@@ -18,6 +18,11 @@
     </properties>
 
     <dependencies>
+        <!--        运维探针（compose healthcheck 经 management 独立端口探活）-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
         <!--            系统监控-->
         <dependency>
             <groupId>com.lihua</groupId>

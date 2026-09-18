@@ -1,4 +1,21 @@
 name: lihua
+
+# 日志轮转（所有容器统一）：单文件 10MB × 保留 3 份，防 json-file 无上限写爆磁盘
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+# JVM 服务统一探针：management 独立端口 9090 的全量 health（聚合 db/redis 指标）；
+# start_period 给足 JVM 启动窗口，期间失败不计入 retries
+x-java-healthcheck: &java-healthcheck
+  test: ["CMD", "curl", "-fsS", "http://localhost:9090/actuator/health"]
+  interval: 15s
+  timeout: 5s
+  retries: 5
+  start_period: 60s
+
 services:
   # 后端 java
   server:
@@ -17,6 +34,18 @@ services:
       - REDIS_PORT=6379                               # redis端口，根据dockerfile暴露端口配置
       - REDIS_PASSWORD=password                       # redis密码
       - TZ=Asia/Shanghai                              # 设置容器时区
+      # 堆上限 = 容器 mem_limit（1g）的 75%，其余留给元空间/线程栈/直接内存
+      - JAVA_OPTS=-XX:MaxRAMPercentage=75.0
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck: *java-healthcheck
+    stop_grace_period: 35s
+    mem_limit: 1g
+    logging: *default-logging
     networks:                                       # 同主机下共享的自定义网络
       - network
     volumes:                                        # 挂载卷
@@ -29,6 +58,18 @@ services:
     build:                                          # 通过./client中的dockerfile构建镜像
       context: client
       dockerfile: client/dockerfile
+    depends_on:
+      server:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    mem_limit: 128m
+    logging: *default-logging
     ports:                                          # 端口映射，将容器80端口映射到主机80端口
       - "80:80"
     networks:                                       # 同主机下共享的自定义网络
@@ -45,6 +86,15 @@ services:
     environment:                                    # 配置环境变量
       - MYSQL_ROOT_PASSWORD=password                # root用户密码
       - TZ=Asia/Shanghai                            # 设置容器时区
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    mem_limit: 1g
+    logging: *default-logging
     networks:                                       # 同主机下共享的自定义网络
       - network
     volumes:                                        # 挂载卷
@@ -56,6 +106,17 @@ services:
     container_name: lihua-redis                     # 启动容器名
     image: redis:7                                  # 通过官方redis:7最新版构建镜像
     command: redis-server --requirepass password    # 指定redis密码
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "password", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    mem_limit: 256m
+    logging: *default-logging
     networks:                                       # 同主机下共享的自定义网络
       - network
     volumes:                                        # 挂载卷

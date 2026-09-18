@@ -1,6 +1,9 @@
 server:
   port: 8081
   forward-headers-strategy: framework
+  # 优雅停机：停止接新请求、收尾在途请求再退出；compose stop_grace_period（35s）须大于下方 lifecycle 超时
+  shutdown: graceful
+
 spring:
   application:
     name: lihua
@@ -8,6 +11,9 @@ spring:
   profiles:
     # 切换开发/生产环境
     active: dev
+  lifecycle:
+    # 优雅停机各 phase 收尾超时（超时后强制退出）
+    timeout-per-shutdown-phase: 30s
   threads:
     virtual:
       # 开启虚拟线程
@@ -29,6 +35,22 @@ spring:
   # 如在 controller 中返回 String，则需要全局搜索：JsonUtils.toJsonIgnoreNulls(response(resultCodeEnum, msg, data)); JsonUtils.toJsonIgnoreNulls 修改为 JsonUtils.toJson
   jackson:
     default-property-inclusion: non_null
+
+# 运维探针（management 独立端口子上下文）：不经主端口 SecurityConfig 过滤链、不映射宿主机仅容器内网可达，
+# compose healthcheck 经此探活；/actuator/health 聚合 db/redis 指标
+management:
+  server:
+    port: 9090
+  endpoints:
+    web:
+      exposure:
+        # 仅暴露 health，其余端点（env/beans 等）一律关闭
+        include: health
+  endpoint:
+    health:
+      # 非 k8s 环境不自动启用探针端点，显式开启
+      probes:
+        enabled: true
 
 mybatis-plus:
   global-config:

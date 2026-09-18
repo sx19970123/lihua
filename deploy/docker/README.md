@@ -44,6 +44,17 @@ server构建使用`eclipse-temurin:25.0.4_7-jre-noble`（与 Java 25 编译目�
 
 **配置仅包含最基础的项目启动，更多需求请根据项目情况修改dockerfile和compose.yaml**
 
+## 容器健康与自愈
+
+后端服务引入 actuator 探针（`management.server.port=9090` 独立端口，`application.yml` 的 `management` 段配置）——不占用业务端口、不映射宿主机，仅容器内网可达。compose 据此为每个容器配置了体检与自愈：
+
+- **healthcheck 定时体检**：后端服务探 `9090/actuator/health`（聚合数据库/Redis 连通性）；mysql/redis 用各自官方命令探活。`docker compose ps` 的 STATUS 列显示 `(healthy)` 即体检通过。
+- **depends_on 启动排序**：后端服务等 mysql/redis 全部 `(healthy)` 后才启动；前端等后端。
+- **restart: unless-stopped 宿主机重启自愈**：服务器重启后 Docker 自动拉起全部容器（手动 `docker compose stop` 停掉的不会被拉起）。
+- **资源与日志**：容器已设 `mem_limit`（JVM 堆经 `-XX:MaxRAMPercentage=75.0` 跟随容器限额），日志统一 json-file 轮转（单文件 10MB × 3 份）。
+
+后端服务开启优雅停机（`server.shutdown=graceful`，收尾超时 30s，compose `stop_grace_period=35s` 兜底）：容器停止时先拒新请求、等待在途请求完成——大文件上传/流式下载等长请求超 30s 仍会被截断，更新版本安排在低峰期。
+
 ## 卷映射
 
 > 通过卷映射可以通过连接服务器直接修改docker容器中的文件

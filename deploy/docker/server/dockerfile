@@ -1,5 +1,8 @@
 FROM eclipse-temurin:25.0.4_7-jre-noble
 LABEL author=yukino
+# curl 供 compose healthcheck 探活使用（noble 最小镜像不含）
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 COPY ./lihua-admin-exec.jar /app/lihua-admin-exec.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/lihua-admin-exec.jar"]
+# sh -c 形态展开 JAVA_OPTS（JVM 内存参数由 compose 按容器限额注入，见 compose.yaml）
+ENTRYPOINT ["sh","-c","exec java $JAVA_OPTS -jar /app/lihua-admin-exec.jar"]
