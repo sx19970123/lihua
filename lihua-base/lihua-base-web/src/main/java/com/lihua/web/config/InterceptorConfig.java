@@ -1,6 +1,6 @@
-package com.lihua.ip.config;
+package com.lihua.web.config;
 
-import com.lihua.ip.interceptor.RequestIpInterceptor;
+import com.lihua.web.interceptor.RequestIpInterceptor;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

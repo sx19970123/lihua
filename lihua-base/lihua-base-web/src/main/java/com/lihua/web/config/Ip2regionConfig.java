@@ -1,4 +1,4 @@
-package com.lihua.ip.config;
+package com.lihua.web.config;
 
 import org.lionsoul.ip2region.xdb.LongByteArray;
 import org.lionsoul.ip2region.xdb.Searcher;

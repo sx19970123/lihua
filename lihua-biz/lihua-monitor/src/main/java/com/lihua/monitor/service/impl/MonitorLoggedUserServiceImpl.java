@@ -1,6 +1,6 @@
 package com.lihua.monitor.service.impl;
 
-import com.lihua.ip.utils.IpUtils;
+import com.lihua.web.utils.WebUtils;
 import com.lihua.monitor.model.LoggedUser;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
@@ -66,7 +66,7 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
             loggedUser.setUsername(currentUser.getUsername());
             loggedUser.setNickname(currentUser.getNickname());
             loggedUser.setIp(user.getIpAddress());
-            loggedUser.setRegion(IpUtils.getRegion(user.getIpAddress()));
+            loggedUser.setRegion(WebUtils.getRegion(user.getIpAddress()));
             loggedUser.setCacheKey(cacheKey);
             loggedUser.setLoginTime(LoginUserManager.getLoginTimeByCacheKey(cacheKey));
             loggedUser.setClientType(user.getClientType());

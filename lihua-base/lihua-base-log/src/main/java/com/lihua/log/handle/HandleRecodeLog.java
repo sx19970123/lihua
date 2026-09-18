@@ -5,7 +5,7 @@ import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.common.utils.trace.TraceIdUtils;
-import com.lihua.ip.utils.IpUtils;
+import com.lihua.web.utils.WebUtils;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogStatusEnum;
 import com.lihua.log.enums.LogTypeEnum;
@@ -82,7 +82,7 @@ public class HandleRecodeLog {
                 .setClassName(declaringTypeName)
                 .setMethodName(name)
                 .setIpAddress(ip)
-                .setRegion(IpUtils.getRegion(ip))
+                .setRegion(WebUtils.getRegion(ip))
                 .setParams(params)
                 .setUrl(requestURI)
                 // traceId 依赖 MdcTaskDecorator 将入口线程 MDC 传播进 @Async 线程（去掉装饰器此处将静默为 null）

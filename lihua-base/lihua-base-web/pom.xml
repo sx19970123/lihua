@@ -38,6 +38,22 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
         </dependency>
+        <!--        切面-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
+        </dependency>
+        <!--        缓存模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-cache</artifactId>
+        </dependency>
+        <!--        ip归属地-->
+        <dependency>
+            <groupId>org.lionsoul</groupId>
+            <artifactId>ip2region</artifactId>
+            <version>${ip2region.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

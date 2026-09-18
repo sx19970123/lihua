@@ -18,7 +18,6 @@
         <module>lihua-base-dict</module>
         <module>lihua-base-doc</module>
         <module>lihua-base-excel</module>
-        <module>lihua-base-ip</module>
         <module>lihua-base-job</module>
         <module>lihua-base-log</module>
         <module>lihua-base-mybatis</module>

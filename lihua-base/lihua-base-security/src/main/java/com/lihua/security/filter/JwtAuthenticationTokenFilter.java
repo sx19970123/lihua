@@ -1,10 +1,8 @@
 package com.lihua.security.filter;
 
-import com.lihua.ip.utils.IpUtils;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.LoginUserSession;
 import com.lihua.security.model.RequestContext;
-import com.lihua.security.utils.TokenUtils;
 import com.lihua.web.utils.WebUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,7 +28,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         // 获取token
-        String token = TokenUtils.getToken(request);
+        String token = WebUtils.getToken(request);
 
         if (StringUtils.hasText(token)) {
             LoginUserSession loginUserSession = LoginUserManager.getLoginUser(token);
@@ -40,7 +38,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                         null,
                         loginUserSession.getPermissionList().stream().map(SimpleGrantedAuthority::new).toList());
                 // 设置请求上下文信息
-                authentication.setDetails(new RequestContext(IpUtils.getIpAddress(request), WebUtils.getClientType(request), token));
+                authentication.setDetails(new RequestContext(WebUtils.getIpAddress(request), WebUtils.getClientType(request), token));
                 // 将用户信息存入上下文
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 // 判断过期时间进行重新缓存

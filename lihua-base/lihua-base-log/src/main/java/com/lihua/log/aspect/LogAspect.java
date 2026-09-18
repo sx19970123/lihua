@@ -1,7 +1,6 @@
 package com.lihua.log.aspect;
 
 import com.lihua.common.utils.date.DateUtils;
-import com.lihua.ip.utils.IpUtils;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.handle.HandleRecodeLog;
 import com.lihua.web.utils.WebUtils;
@@ -60,7 +59,7 @@ public class LogAspect {
                     proceed,
                     requestURI,
                     userAgent,
-                    IpUtils.getIpAddress(),
+                    WebUtils.getIpAddress(),
                     WebUtils.getClientType(),
                     exception);
         }

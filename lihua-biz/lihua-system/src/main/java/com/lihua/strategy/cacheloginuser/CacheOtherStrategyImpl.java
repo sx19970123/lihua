@@ -1,6 +1,6 @@
 package com.lihua.strategy.cacheloginuser;
 
-import com.lihua.ip.utils.IpUtils;
+import com.lihua.web.utils.WebUtils;
 import com.lihua.security.model.LoginUserSession;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +12,6 @@ public class CacheOtherStrategyImpl implements CacheLoginUserStrategy {
     @Override
     public void cacheLoginUser(LoginUserSession loginUserSession, boolean isAdmin) {
         // 设置用户ip
-        loginUserSession.setIpAddress(IpUtils.getIpAddress());
+        loginUserSession.setIpAddress(WebUtils.getIpAddress());
     }
 }

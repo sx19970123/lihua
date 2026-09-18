@@ -76,12 +76,6 @@
                 <artifactId>lihua-base-excel</artifactId>
                 <version>${project.version}</version>
             </dependency>
-<!--            ip处理模块 -->
-            <dependency>
-                <groupId>com.lihua</groupId>
-                <artifactId>lihua-base-ip</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 <!--            日志模块 -->
             <dependency>
                 <groupId>com.lihua</groupId>

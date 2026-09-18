@@ -44,10 +44,10 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-base-common</artifactId>
         </dependency>
-        <!--        ip处理模块-->
+        <!--        web模块-->
         <dependency>
             <groupId>com.lihua</groupId>
-            <artifactId>lihua-base-ip</artifactId>
+            <artifactId>lihua-base-web</artifactId>
         </dependency>
     </dependencies>
 

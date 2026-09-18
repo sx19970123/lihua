@@ -1,8 +1,8 @@
-package com.lihua.ip.interceptor;
+package com.lihua.web.interceptor;
 
 import com.lihua.cache.manager.LocalCacheManager;
-import com.lihua.ip.exception.IpIllegalException;
-import com.lihua.ip.utils.IpUtils;
+import com.lihua.web.exception.IpIllegalException;
+import com.lihua.web.utils.WebUtils;
 import com.lihua.cache.manager.RedisCacheManager;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,7 +47,7 @@ public class RequestIpInterceptor implements HandlerInterceptor {
             return;
         }
 
-        String currentIp = IpUtils.getIpAddress();
+        String currentIp = WebUtils.getIpAddress();
         if (currentIp == null) {
             return;
         }

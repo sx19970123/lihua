@@ -1,4 +1,4 @@
-package com.lihua.ip.exception;
+package com.lihua.web.exception;
 
 import com.lihua.common.enums.ResultCodeEnum;
 import com.lihua.common.exception.BaseException;

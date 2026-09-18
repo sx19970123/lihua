@@ -2,11 +2,9 @@ package com.lihua.security.manager;
 
 import com.lihua.common.utils.spring.SpringUtils;
 import com.lihua.common.utils.tree.TreeUtils;
-import com.lihua.ip.utils.IpUtils;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import com.lihua.security.model.*;
-import com.lihua.security.utils.TokenUtils;
 import com.lihua.web.utils.WebUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -199,7 +197,7 @@ public class LoginUserContext implements Serializable {
             return requestContext.getIpAddress();
         }
 
-        return IpUtils.getIpAddress();
+        return WebUtils.getIpAddress();
     }
 
     /**
@@ -211,7 +209,7 @@ public class LoginUserContext implements Serializable {
             return requestContext.getToken();
         }
 
-        return TokenUtils.getToken(WebUtils.getCurrentRequest());
+        return WebUtils.getToken(WebUtils.getCurrentRequest());
     }
 
     /**

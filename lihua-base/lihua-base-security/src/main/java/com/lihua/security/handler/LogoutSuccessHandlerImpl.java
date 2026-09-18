@@ -3,7 +3,6 @@ package com.lihua.security.handler;
 import com.lihua.common.model.response.basecontroller.StrResponseController;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.LoginUserSession;
-import com.lihua.security.utils.TokenUtils;
 import com.lihua.web.utils.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +17,7 @@ public class LogoutSuccessHandlerImpl extends StrResponseController implements L
 
     @Override
     public void onLogoutSuccess(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, Authentication authentication) {
-        String token = TokenUtils.getToken(request);
+        String token = WebUtils.getToken(request);
 
         LoginUserSession loginUserSession = LoginUserManager.getLoginUser(token);
 
