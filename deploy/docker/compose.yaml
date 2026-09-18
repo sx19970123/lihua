@@ -34,8 +34,8 @@ services:
       - REDIS_PORT=6379                               # redis端口，根据dockerfile暴露端口配置
       - REDIS_PASSWORD=password                       # redis密码
       - TZ=Asia/Shanghai                              # 设置容器时区
-      # 堆上限 = 容器 mem_limit（1g）的 75%，其余留给元空间/线程栈/直接内存
-      - JAVA_OPTS=-XX:MaxRAMPercentage=75.0
+      # 堆上限 = 容器 mem_limit（1g）的 75%；OOM 治理：dump 堆快照到数据卷（事后排查；约等于堆大小，低频事件，手动清理）+ OOM 即退出（交 restart 自愈，防半死僵尸态）
+      - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/lihua/data/ -XX:+ExitOnOutOfMemoryError
     depends_on:
       mysql:
         condition: service_healthy

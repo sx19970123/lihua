@@ -52,6 +52,7 @@ server构建使用`eclipse-temurin:25.0.4_7-jre-noble`（与 Java 25 编译目�
 - **depends_on 启动排序**：后端服务等 mysql/redis 全部 `(healthy)` 后才启动；前端等后端。
 - **restart: unless-stopped 宿主机重启自愈**：服务器重启后 Docker 自动拉起全部容器（手动 `docker compose stop` 停掉的不会被拉起）。
 - **资源与日志**：容器已设 `mem_limit`（JVM 堆经 `-XX:MaxRAMPercentage=75.0` 跟随容器限额），日志统一 json-file 轮转（单文件 10MB × 3 份）。
+- **OOM 行为**：JVM 内存溢出时异常栈进容器日志（`docker compose logs` 可见），堆快照 dump 到 server 数据卷（`java_pid*.hprof`，约等于堆大小——排查 OOM 的现场材料，低频事件手动清理），随后进程立即退出交由 restart 自愈。
 
 后端服务开启优雅停机（`server.shutdown=graceful`，收尾超时 30s，compose `stop_grace_period=35s` 兜底）：容器停止时先拒新请求、等待在途请求完成——大文件上传/流式下载等长请求超 30s 仍会被截断，更新版本安排在低峰期。
 
