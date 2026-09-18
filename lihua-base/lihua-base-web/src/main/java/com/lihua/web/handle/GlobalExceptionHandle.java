@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -99,6 +100,16 @@ public class GlobalExceptionHandle extends StrResponseController {
     public void handleBadCredentialsException(BadCredentialsException e) {
         log.error(e.getMessage(),e);
         WebUtils.renderJson(error(ResultCodeEnum.AUTHENTICATION_EXPIRED, e.getMessage()));
+    }
+
+    /**
+     * 处理认证过程中的系统级故障（如数据库故障）——与凭据失败分离，
+     * msg 固定枚举文案不透传 e.getMessage()（防底层细节外泄客户端），根因经日志排查
+     */
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public void handleInternalAuthenticationServiceException(InternalAuthenticationServiceException e) {
+        log.error(e.getMessage(),e);
+        WebUtils.renderJson(error(ResultCodeEnum.SERVER_BAD_ERROR));
     }
 
     /**
