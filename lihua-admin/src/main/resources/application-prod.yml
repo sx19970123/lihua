@@ -48,6 +48,10 @@ spring:
             idle-timeout: 120000
             # 连接生命时长（毫秒）
             max-lifetime: 1800000
+            # 空闲连接保活心跳（防 NAT/防火墙静默掐断空闲 TCP 借出僵尸连接报 Communications link failure；须小于 max-lifetime）
+            keepalive-timeout: 300000
+            # 连接借出超该时长未还打 WARN（带借用调用栈）——排查连接泄漏/长事务雷达；生产环境如介意可关闭
+            leak-detection-threshold: 60000
 # 多数据源配置，使用dynamic-datasource实现，具体文档请参考：https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611
 #        slave_1:
 #          driver-class-name: com.mysql.cj.jdbc.Driver
