@@ -7,9 +7,12 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
@@ -23,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -33,6 +38,9 @@ import java.util.zip.ZipOutputStream;
 public class FileUtils {
 
     private static final Map<String, Path> map = new ConcurrentHashMap<>();
+
+    // Range 头单区间形态（bytes=start-end / start- / -suffix）；多区间与非法形态不匹配，回退 200 全量
+    private static final Pattern RANGE_PATTERN = Pattern.compile("bytes=(?:(\\d+)-(\\d*)|-(\\d+))");
 
     /**
      * 单附件上传
@@ -106,17 +114,21 @@ public class FileUtils {
      */
 
     /**
-     * 附件下载
+     * 附件下载（支持 HTTP Range 区间请求：媒体元素进度条拖动/断点续传依赖 206 Partial Content，按请求头自动协商、与文件类型无关）
      * @param file 附件
      */
     public static ResponseEntity<StreamingResponseBody> download(File file, String fileName, boolean autoDelete) {
         if (file == null || !file.exists()) {
             throw new AttachmentException(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
         }
+        long fileSize = file.length();
+        long[] range = resolveRange(fileSize);
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             try {
-                return download(fileInputStream, StringUtils.hasText(fileName) ? fileName : file.getName(), String.valueOf(file.length()), autoDelete ? file : null);
+                // 206 时 Content-Length 为区间长度，200 时为全量长度
+                String contentLength = String.valueOf(range != null ? range[1] - range[0] + 1 : fileSize);
+                return download(fileInputStream, StringUtils.hasText(fileName) ? fileName : file.getName(), contentLength, autoDelete ? file : null, range, fileSize);
             } catch (Exception buildException) {
                 // 正常返回后流的关闭责任移交 StreamingResponseBody（异步流式读取），仅同步构建失败时在此回收
                 try {
@@ -177,16 +189,41 @@ public class FileUtils {
      * 附件下载
      */
     private static ResponseEntity<StreamingResponseBody> download(InputStream inputStream, String fileName, String size, File deleteFile) {
+        return download(inputStream, fileName, size, deleteFile, null, -1);
+    }
+
+    /**
+     * 附件下载（range 非 null 时响应 206 Partial Content，只发 [start,end] 闭区间字节——
+     * 视频 seek 与断点续传依赖；fileSize 为 Content-Range 总长，range 为 null 时不参与）
+     */
+    private static ResponseEntity<StreamingResponseBody> download(InputStream inputStream, String fileName, String size, File deleteFile, long[] range, long fileSize) {
         if (!StringUtils.hasText(fileName)) {
             throw new AttachmentException("请指定下载附件的名称");
         }
         fileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
         StreamingResponseBody stream = out -> {
             try {
+                // 区间请求先跳到起始偏移（skip 可能部分跳过，循环兜底）
+                long toSkip = range != null ? range[0] : 0;
+                while (toSkip > 0) {
+                    long skipped = inputStream.skip(toSkip);
+                    if (skipped <= 0) {
+                        throw new AttachmentException("定位下载区间失败");
+                    }
+                    toSkip -= skipped;
+                }
                 byte[] buffer = new byte[4096];
                 int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                long remaining = range != null ? range[1] - range[0] + 1 : -1;
+                while (remaining < 0 || remaining > 0) {
+                    int toRead = remaining < 0 ? buffer.length : (int) Math.min(buffer.length, remaining);
+                    if ((bytesRead = inputStream.read(buffer, 0, toRead)) == -1) {
+                        break;
+                    }
                     out.write(buffer, 0, bytesRead);
+                    if (remaining > 0) {
+                        remaining -= bytesRead;
+                    }
                 }
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
@@ -204,17 +241,63 @@ public class FileUtils {
             }
         };
 
-        // 构建返回对象
-        ResponseEntity.BodyBuilder bodyBuilder = ResponseEntity
-                .ok()
+        // 构建返回对象（区间命中 206 带 Content-Range；两形态均声明 Accept-Ranges 供客户端启用 seek/断点续传）
+        ResponseEntity.BodyBuilder bodyBuilder = range != null
+                ? ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
+                .header(HttpHeaders.CONTENT_RANGE, "bytes " + range[0] + "-" + range[1] + "/" + fileSize)
+                : ResponseEntity.ok();
+        bodyBuilder
+                .header(HttpHeaders.ACCEPT_RANGES, "bytes")
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename*=UTF-8''" + fileName)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM);
-        // 附件大小
+        // 附件大小（206 时为区间长度）
         if (StringUtils.hasText(size)) {
             bodyBuilder.header("Content-Length", size);
         }
 
         return bodyBuilder.body(stream);
+    }
+
+    /**
+     * 解析当前请求的 Range 头（单区间：start-end / start- / -suffix）。
+     * 无请求上下文、多区间、语法无效、不满足条件（start≥fileSize、suffix≤0、区间倒挂）一律返回 null 回退 200 全量（RFC 允许忽略 Range）
+     * @return 命中时 [start, end] 闭区间，end 已收敛到 fileSize-1
+     */
+    private static long[] resolveRange(long fileSize) {
+        if (fileSize <= 0 || !(RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attributes)) {
+            return null;
+        }
+        String rangeHeader = attributes.getRequest().getHeader(HttpHeaders.RANGE);
+        if (!StringUtils.hasText(rangeHeader)) {
+            return null;
+        }
+        Matcher matcher = RANGE_PATTERN.matcher(rangeHeader.trim());
+        if (!matcher.matches()) {
+            return null;
+        }
+        long start;
+        long end;
+        try {
+            if (matcher.group(1) != null) {
+                // bytes=start-end / bytes=start-（开放区间收敛到文件末尾）
+                start = Long.parseLong(matcher.group(1));
+                end = matcher.group(2) != null && !matcher.group(2).isEmpty() ? Long.parseLong(matcher.group(2)) : fileSize - 1;
+            } else {
+                // bytes=-suffix（末尾 suffix 字节）
+                long suffix = Long.parseLong(matcher.group(3));
+                if (suffix <= 0) {
+                    return null;
+                }
+                start = Math.max(fileSize - suffix, 0);
+                end = fileSize - 1;
+            }
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        if (start >= fileSize || start > end) {
+            return null;
+        }
+        return new long[]{start, Math.min(end, fileSize - 1)};
     }
 
 
