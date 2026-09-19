@@ -95,12 +95,13 @@ public class GlobalExceptionHandle extends StrResponseController {
 
 
     /**
-     * 处理认证失败异常
+     * 处理认证失败异常——凭据失败固定中文文案：getMessage() 为 Spring Security 默认英文
+     * （Bad credentials），且用户不存在已被防枚举掩盖为同类异常，不透传
      */
     @ExceptionHandler(BadCredentialsException.class)
     public void handleBadCredentialsException(BadCredentialsException e) {
         log.error(e.getMessage(),e);
-        WebUtils.renderJson(error(ResultCodeEnum.AUTHENTICATION_EXPIRED, e.getMessage()));
+        WebUtils.renderJson(error(ResultCodeEnum.AUTHENTICATION_EXPIRED, "用户名或密码错误"));
     }
 
     /**

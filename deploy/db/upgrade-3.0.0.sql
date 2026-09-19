@@ -2,6 +2,7 @@
 -- 狸花猫 2.2.0 → 3.0.0 升级脚本（幂等，可重复执行）
 -- 内容：字典管理新增「业务域」字段 + sys_dict_business_domain 字典种子 + 存量字典归类
 --      附件表 is_public 行级公开标记 + 存量回填 + 热路径索引（4.9 附件域 S4/A5）
+--      「系统组件」目录补「密码输入」演示页菜单种子（回归 WEB-083，动态路由缺种子致 404）
 -- 全新安装：先导入 lihua.sql（2.2.0 基线），再执行本脚本
 -- 执行完成后：请在「系统管理-字典管理」页点击「刷新缓存」
 -- ----------------------------------------------------------------------------
@@ -155,3 +156,10 @@ SET @ddl = IF(@col_exists = 0,
 PREPARE stmt FROM @ddl;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
+
+-- 12. 「系统组件」目录补「密码输入」演示页菜单（3.0 回归 WEB-083：password-input 前端演示页文件齐全，
+--     菜单种子缺记录致 web 动态路由未注册 404；与 lihua.sql 基线同一条记录；存在性按 router_path 判断；
+--     菜单 App 不消费，无 App 联动）
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`)
+SELECT 2101309446872371201, '1866101773239513090', '密码输入', '密码输入', 'page', '/password-input', '/component/password-input/PasswordInputIndex.vue', '0', '0', 'page', 'LockOutlined', 14, 1, NOW(), NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `router_path` = '/password-input' AND `del_flag` = '0');
