@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * 个人中心控制器基类：承载管理版与 App 版共有端点（对外行为双版本一致，差异仅在路由前缀与文档分组）；
- * 用户信息查询存在端侧差异（Web 版含路由与视图标签），由各子类自行声明；Web 主题、登录后校验仅管理版提供，
- * 注销与密码验证仅 App 版提供
+ * 用户信息查询存在端侧差异（Web 版含路由与视图标签），由各子类自行声明；Web 主题仅管理版提供，
+ * 登录后校验由管理版与 App 版各自提供，注销与密码验证仅 App 版提供
  */
 public abstract class BaseSysProfileController extends ApiResponseController {
 

@@ -17,6 +17,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * App 版个人中心：基本信息保存、修改密码与默认部门由基类提供；
  * 用户信息不含路由与视图标签（App 无 Web 菜单体系），注销与密码验证仅 App 版提供
@@ -45,6 +47,12 @@ public class AppSysProfileController extends BaseSysProfileController {
         authInfo.setPermissions(loginUserSession.getPermissionList().stream().filter(item -> !item.startsWith("ROLE_")).toList());
         authInfo.setDefaultDept(LoginUserContext.getDefaultDept() != null ? LoginUserContext.getDefaultDept() : new CurrentDept());
         return success(authInfo);
+    }
+
+    @Operation(summary = "登录后校验")
+    @GetMapping("postLoginCheck")
+    public ApiResponseModel<List<String>> postLoginCheck() {
+        return success(sysProfileService.postLoginCheck());
     }
 
     @Operation(summary = "用户注销")
