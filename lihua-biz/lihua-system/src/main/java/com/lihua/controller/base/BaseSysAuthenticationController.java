@@ -96,6 +96,11 @@ public abstract class BaseSysAuthenticationController extends ApiResponseControl
             return true;
         }
 
+        // 未携带验证码令牌直接判定失败（二次校验对空参抛 NPE）
+        if (captchaVerification == null || captchaVerification.isEmpty()) {
+            return false;
+        }
+
         if (imageCaptchaApplication instanceof SecondaryVerificationApplication) {
             return ((SecondaryVerificationApplication) imageCaptchaApplication).secondaryVerification(captchaVerification);
         }

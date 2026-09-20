@@ -34,8 +34,14 @@ public class LoginUserManager {
      * 根据 token 获取用户信息
      */
     public static LoginUserSession getLoginUser(String token) {
-
-        String decode = JwtUtils.decode(token);
+        // 畸形 token 解码失败视为未登录（返回 401），原样抛出会被全局异常处理成 500
+        String decode;
+        try {
+            decode = JwtUtils.decode(token);
+        } catch (Exception e) {
+            log.warn("token 解析失败，按未登录处理", e);
+            return null;
+        }
         log.debug("\ntoken：【{}】\ndecode：【{}】", token, decode);
 
         try {
