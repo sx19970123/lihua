@@ -53,7 +53,7 @@ management:
 # 登录失败锁定（账号与 ip 双维度：窗口内失败达阈值即锁定对应主体；enabled=false 关闭后验证码为唯一防线）
 login:
   lock:
-    enabled: true
+    enabled: false
     fail-threshold: 5
     # Duration 带单位写法（15m），裸数字按分钟
     fail-window: 15m
