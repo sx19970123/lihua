@@ -174,6 +174,7 @@ INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `valu
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (1995424806233780225, 0, 'sys_client_type', 'WEB', 'web', 1, NULL, '0', 1, '2025-12-01 17:28:42', NULL, NULL, '0', 'default');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (1995424807697592322, 0, 'sys_client_type', 'APP', 'app', 2, NULL, '0', 1, '2025-12-01 17:28:42', NULL, NULL, '0', 'processing');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (1995424809337565185, 0, 'sys_client_type', '微信小程序', 'wechat_mp', 3, NULL, '0', 1, '2025-12-01 17:28:42', NULL, NULL, '0', 'success');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2101975000000000001, 0, 'sys_client_type', 'APP-H5', 'app_h5', 4, NULL, '0', 1, '2026-09-21 12:00:00', NULL, NULL, '0', 'warning');
 COMMIT;
 
 -- ----------------------------

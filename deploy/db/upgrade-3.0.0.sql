@@ -163,3 +163,9 @@ DEALLOCATE PREPARE stmt;
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`)
 SELECT 2101309446872371201, '1866101773239513090', '密码输入', '密码输入', 'page', '/password-input', '/component/password-input/PasswordInputIndex.vue', '0', '0', 'page', 'LockOutlined', 14, 1, NOW(), NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner'
 WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `router_path` = '/password-input' AND `del_flag` = '0');
+
+-- 13. 客户端类型字典补 H5 项（App H5 适配 H-4：getClientType() 补 H5 分支发送 'app_h5'，
+--     在线用户/登录日志展示需要字典项；与 lihua.sql 基线同一条记录；存在性按 value 判断）
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`)
+SELECT 2101975000000000001, 0, 'sys_client_type', 'APP-H5', 'app_h5', 4, NULL, '0', 1, NOW(), NULL, NULL, '0', 'warning'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_type_code` = 'sys_client_type' AND `value` = 'app_h5');
