@@ -20,5 +20,11 @@ public enum WebSocketMsgTypeEnum implements Serializable {
     /**
      * 心跳，客户端向服务器发送
      */
-    WS_HEARTBEAT
+    WS_HEARTBEAT,
+
+    /**
+     * 权限数据更新提示：角色/菜单变更后定向推送给受影响在线用户，
+     * web 端引导点击「数据更新」重建会话，App 端提示重新登录生效
+     */
+    WS_REFRESH_PERMISSION
 }

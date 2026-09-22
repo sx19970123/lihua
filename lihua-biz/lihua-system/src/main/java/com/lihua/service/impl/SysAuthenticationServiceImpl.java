@@ -155,6 +155,9 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
     public String cacheLoginUserInfo(LoginUserSession loginUserSession) {
         // 当前用户是否为管理员
         boolean isAdmin = isAdmin(loginUserSession.getUser().getId());
+        // permissionList 由 role/menu 两个策略合并写入（null 则 set、非 null 则 addAll），
+        // 重复重载会在既有列表上继续追加造成条目累积，先清空保证每次全量重建
+        loginUserSession.setPermissionList(null);
         // 执行各个模块的缓存设置
         cacheLoginUserStrategyList.forEach(strategy -> strategy.cacheLoginUser(loginUserSession, isAdmin));
         // 设置redis缓存
