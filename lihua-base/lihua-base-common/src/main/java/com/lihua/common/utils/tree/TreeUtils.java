@@ -130,11 +130,12 @@ public class TreeUtils {
             if (children != null) {
                 List<T> child = getList(item, propChildrenName);
                 if (child == null) {
-                    set(item,propChildrenName,new ArrayList<>());
+                    set(item, propChildrenName, new ArrayList<>());
                     child = getList(item, propChildrenName);
-                    if (child != null) {
-                        child.addAll(children);
-                    }
+                }
+                // 挂载无条件执行：入参预初始化 children 或对已建树实体二次构建时，跳过挂载会整体丢子树
+                if (child != null) {
+                    child.addAll(children);
                 }
             }
 

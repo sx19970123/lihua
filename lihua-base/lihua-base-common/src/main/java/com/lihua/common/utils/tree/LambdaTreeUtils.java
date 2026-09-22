@@ -93,8 +93,9 @@ public class LambdaTreeUtils {
                 if (child == null) {
                     setterChildrenMethod.apply(item,new ArrayList<>());
                     child = getChildrenMethod.apply(item);
-                    child.addAll(children);
                 }
+                // 挂载无条件执行：入参预初始化 children 或对已建树实体二次构建时，跳过挂载会整体丢子树
+                child.addAll(children);
             }
 
             // 返回true 即删除集合中item 元素

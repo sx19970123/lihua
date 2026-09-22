@@ -122,7 +122,8 @@ public class SensitiveAspect {
                         throw new SensitiveException("取值异常，属性名称为：" + field.getName());
                     }
                     if (value == null) {
-                        return;
+                        // 跳过本字段而非中断整个循环：return 会让该对象后续所有脱敏字段明文外泄
+                        continue;
                     }
                     // 通过注解获取替换函数
                     Function<String, String> function = annotation.type().getFunction();

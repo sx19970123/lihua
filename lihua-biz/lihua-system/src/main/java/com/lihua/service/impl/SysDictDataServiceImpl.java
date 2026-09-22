@@ -91,6 +91,11 @@ public class SysDictDataServiceImpl implements SysDictDataService {
 
         String id;
         if (StringUtils.hasText(sysDictData.getId())) {
+            // dictTypeCode 被修改时双清：旧 code 的缓存仍滞留本行旧数据（照类型侧 old+new 双清先例）
+            SysDictData oldDictData = sysDictDataMapper.selectById(sysDictData.getId());
+            if (oldDictData != null && !oldDictData.getDictTypeCode().equals(sysDictData.getDictTypeCode())) {
+                DictUtils.resetCacheDict(oldDictData.getDictTypeCode());
+            }
             id = updateById(sysDictData);
         } else {
             id = insert(sysDictData);
