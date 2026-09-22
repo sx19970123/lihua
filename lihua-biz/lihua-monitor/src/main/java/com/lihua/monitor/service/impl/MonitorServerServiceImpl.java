@@ -67,19 +67,23 @@ public class MonitorServerServiceImpl implements MonitorServerService {
             .setInputArguments(runtimeMXBean.getInputArguments());
     }
 
-    // 获取磁盘空间信息
+    // 获取磁盘空间信息（多卷按聚合统计，单卷部署与原值一致；单卷粒度暂不展示）。
+    // free 用 getUsableSpace：getFreeSpace 不扣文件系统保留块，可用量虚高
     private DiskMonitor diskInfo() {
         DiskMonitor diskMonitor = new DiskMonitor();
-        File file = new File("/");
 
-        // 获取总空间、可用空间和已用空间
-        long totalSpace = file.getTotalSpace();
-        long freeSpace = file.getFreeSpace();
-        long usedSpace = totalSpace - freeSpace;
+        // 遍历全部根卷（Linux 容器/云主机常见独立数据盘挂载，仅统计 / 会漏盘）
+        long totalSpace = 0;
+        long usableSpace = 0;
+        for (File root : File.listRoots()) {
+            totalSpace += root.getTotalSpace();
+            usableSpace += root.getUsableSpace();
+        }
+        long usedSpace = totalSpace - usableSpace;
 
         return diskMonitor.setTotal(new DecimalFormat("#.##").format(totalSpace / convertConstant))
                 .setUsed(new DecimalFormat("#.##").format(usedSpace / convertConstant))
-                .setFree(new DecimalFormat("#.##").format(freeSpace / convertConstant))
+                .setFree(new DecimalFormat("#.##").format(usableSpace / convertConstant))
                 .setUsagePercentage(new DecimalFormat("#.##").format(Double.parseDouble(diskMonitor.getUsed())/Double.parseDouble(diskMonitor.getTotal()) * 100));
 
     }

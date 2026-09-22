@@ -18,6 +18,11 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisCacheManager {
 
+    /**
+     * 批量读取单批 key 数（MGET 分批，避免超长命令）
+     */
+    private static final int BATCH_READ_SIZE = 100;
+
     @Resource
     private RedissonClient redissonClient;
 
@@ -119,6 +124,30 @@ public class RedisCacheManager {
 
         // 使用 jsonMapper 转换为目标类型
         return jsonMapper.convertValue(value, clazz);
+    }
+
+    /**
+     * 批量获取基本对象（MGET 分批执行，替代逐 key GET 的 N+1 往返）
+     * @param keys redisKey 集合
+     * @param clazz 对象类型
+     * @return key -> 对象；过期/不存在的 key 不在结果中
+     */
+    public <T> Map<String, T> getCacheObjects(Collection<String> keys, Class<T> clazz) {
+        if (keys == null || keys.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, T> resultMap = new HashMap<>(keys.size());
+        List<String> keyList = new ArrayList<>(keys);
+        for (int i = 0; i < keyList.size(); i += BATCH_READ_SIZE) {
+            List<String> batch = keyList.subList(i, Math.min(i + BATCH_READ_SIZE, keyList.size()));
+            Map<String, Object> batchValues = redissonClient.getBuckets().get(batch.toArray(String[]::new));
+            batchValues.forEach((key, value) -> {
+                if (value != null) {
+                    resultMap.put(key, jsonMapper.convertValue(value, clazz));
+                }
+            });
+        }
+        return resultMap;
     }
 
 

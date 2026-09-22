@@ -12,6 +12,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -27,15 +28,9 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
         // 获取登录中用户所有key
         Set<String> keys = redisCacheManager.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue());
 
-        // 取出所有登录用户信息
-        List<LoginUserSession> loginUserSessions = new ArrayList<>();
-        for (String key : keys) {
-            LoginUserSession loginUserSession = redisCacheManager.getCacheObject(key, LoginUserSession.class);
-            // 会话可能在 keys() 与读取之间过期，跳过已失效项
-            if (loginUserSession != null) {
-                loginUserSessions.add(loginUserSession);
-            }
-        }
+        // 批量读取会话（MGET 分批，替代逐 key GET 的 N+1：千级会话从千余次往返降为约 1/100；
+        // 会话可能在扫描与读取之间过期，缺失 key 自然不在结果中）
+        List<LoginUserSession> loginUserSessions = new ArrayList<>(redisCacheManager.getCacheObjects(keys, LoginUserSession.class).values());
 
         // 根据用户名过滤
         if (StringUtils.hasText(username)) {
@@ -58,7 +53,7 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
                     .toList();
         }
 
-        // 转为 LoggedUser 对象返回
+        // 转为 LoggedUser 对象返回（按登录时间倒序：keys 哈希迭代序不稳定，不排序则每次刷新顺序漂移）
         return loginUserSessions.stream().map(user -> {
             String cacheKey = user.getCacheKey();
             CurrentUser currentUser = user.getUser();
@@ -71,7 +66,9 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
             loggedUser.setLoginTime(LoginUserManager.getLoginTimeByCacheKey(cacheKey));
             loggedUser.setClientType(user.getClientType());
             return loggedUser;
-        }).toList();
+        })
+        .sorted(Comparator.comparing(LoggedUser::getLoginTime, Comparator.nullsLast(Comparator.reverseOrder())))
+        .toList();
     }
 
     @Override
