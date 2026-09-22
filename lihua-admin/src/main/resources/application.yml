@@ -51,6 +51,7 @@ management:
         enabled: true
 
 # 登录失败锁定（账号与 ip 双维度：窗口内失败达阈值即锁定对应主体；enabled=false 关闭后验证码为唯一防线）
+# 双仓统一口径：cloud 侧 nacos lihua-system.yaml 同为 false——默认关闭，二开按需自行开启
 login:
   lock:
     enabled: false
