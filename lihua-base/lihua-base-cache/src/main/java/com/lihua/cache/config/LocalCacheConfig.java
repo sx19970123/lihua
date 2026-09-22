@@ -5,7 +5,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
 import org.jspecify.annotations.NonNull;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.concurrent.TimeUnit;
  * 本地缓存配置
  */
 @Component
-@Configurable
 public class LocalCacheConfig {
 
     // 初始化时排除本地缓存TTL为 null 的 redis Key

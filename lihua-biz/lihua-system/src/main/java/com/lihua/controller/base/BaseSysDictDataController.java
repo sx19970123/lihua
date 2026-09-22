@@ -6,8 +6,6 @@ import com.lihua.dict.model.DictDataModel;
 import com.lihua.service.SysDictDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -22,12 +20,6 @@ public abstract class BaseSysDictDataController extends ApiResponseController {
 
     @Resource
     protected SysDictDataService sysDictDataService;
-
-    @Operation(summary = "根据字典类型获取选项")
-    @GetMapping("option/{dictTypeCode}")
-    public ApiResponseModel<List<DictDataModel>> queryDictOptionList(@PathVariable("dictTypeCode") String dictTypeCode) {
-        return success(sysDictDataService.queryDictOptionList(dictTypeCode));
-    }
 
     @Operation(summary = "根据字典类型批量获取选项")
     @PostMapping("option")

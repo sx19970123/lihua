@@ -32,7 +32,7 @@ public class WebUtils {
      * 将 json 数据进行响应
      */
     @SneakyThrows
-    public static void renderJson(int code, String json) { {
+    public static void renderJson(int code, String json) {
         HttpServletResponse response = getCurrentResponse();
         if (response == null) {
             log.error("响应数据写入失败，获取到的 HttpServletResponse 为空");
@@ -42,7 +42,7 @@ public class WebUtils {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(json);
-    }}
+    }
 
     /**
      * 获取当前请求的 HttpServletRequest
@@ -68,7 +68,7 @@ public class WebUtils {
 
     /**
      * 获取客户端类型
-     * @return web ｜ app ｜ wechat_mp ｜ null
+     * @return web ｜ app ｜ app_h5 ｜ wechat_mp ｜ null
      */
     public static String getClientType() {
         HttpServletRequest request = getCurrentRequest();

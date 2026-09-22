@@ -23,9 +23,6 @@ import java.util.List;
 public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUserDept> implements SysUserDeptService {
 
     @Resource
-    private SysUserDeptMapper sysUserDeptMapper;
-
-    @Resource
     private SysDeptMapper sysDeptMapper;
 
 
@@ -42,8 +39,8 @@ public class SysUserDeptServiceImpl extends ServiceImpl<SysUserDeptMapper, SysUs
         remove(queryWrapper);
     }
 
-    @Override
-    public boolean hasDept(String deptId) {
+    // 判断当前登录用户是否属于该部门
+    private boolean hasDept(String deptId) {
         return lambdaQuery()
             .eq(SysUserDept::getDeptId, deptId)
             .eq(SysUserDept::getUserId, LoginUserContext.getUserId())

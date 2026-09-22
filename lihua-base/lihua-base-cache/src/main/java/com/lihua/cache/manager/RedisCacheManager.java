@@ -127,7 +127,7 @@ public class RedisCacheManager {
     }
 
     /**
-     * 批量获取基本对象（MGET 分批执行，替代逐 key GET 的 N+1 往返）
+     * 批量获取基本对象（MGET 分批执行，避免逐 key GET 的 N+1 往返）
      * @param keys redisKey 集合
      * @param clazz 对象类型
      * @return key -> 对象；过期/不存在的 key 不在结果中

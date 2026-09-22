@@ -8,11 +8,6 @@ import lombok.Getter;
 public enum TokenEnum {
 
     /**
-     * 从cookie 获取 token 的 key
-     */
-    COOKIE_TOKEN_KEY("lihua_token"),
-
-    /**
      * 从请求头 获取 token 的 key
      */
     TOKEN_KEY("Authorization"),

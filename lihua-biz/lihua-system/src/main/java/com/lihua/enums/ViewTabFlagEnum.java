@@ -13,12 +13,7 @@ public enum ViewTabFlagEnum {
     /**
      * 是
      */
-    YES("1"),
-
-    /**
-     * 否
-     */
-    NO("0");
+    YES("1");
 
     private final String value;
 }

@@ -29,7 +29,7 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
         // 获取登录中用户所有key
         Set<String> keys = redisCacheManager.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue());
 
-        // 批量读取会话（MGET 分批，替代逐 key GET 的 N+1：千级会话从千余次往返降为约 1/100；
+        // 批量读取会话（MGET 分批，避免逐 key GET 的 N+1：千级会话往返降为约 1/100；
         // 会话可能在扫描与读取之间过期，缺失 key 自然不在结果中）
         List<LoginUserSession> loginUserSessions = new ArrayList<>(redisCacheManager.getCacheObjects(keys, LoginUserSession.class).values());
 

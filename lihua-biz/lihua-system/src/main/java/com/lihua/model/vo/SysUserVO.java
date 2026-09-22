@@ -43,11 +43,6 @@ public class SysUserVO extends BaseEntity {
     private String username;
 
     /**
-     * 密码
-     */
-    private String password;
-
-    /**
      * 用户名称
      */
     @ExcelProperty({"用户信息", "昵称"})

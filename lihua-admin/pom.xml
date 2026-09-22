@@ -18,7 +18,7 @@
     </properties>
 
     <dependencies>
-        <!--        运维探针（compose healthcheck 经 management 独立端口探活）-->
+        <!--        运维探针（compose healthcheck 经主端口 /actuator/health 探活）-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>

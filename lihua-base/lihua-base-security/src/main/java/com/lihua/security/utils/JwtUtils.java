@@ -5,6 +5,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 /**
  * 简单 JWT 加密解密工具类（密钥由调用方传入——来自 TokenProperties.tokenSecret，不入代码）
+ * <p>
+ * 设计口径：token 仅作 cacheKey 的自包含载体，服务侧只 decode 不验签——
+ * 会话事实源在 Redis cacheKey，凭证不可猜测性由 128bit uuid 承担
  */
 public class JwtUtils {
 
@@ -23,15 +26,5 @@ public class JwtUtils {
      */
     public static String decode(String jwtToken) {
         return JWT.decode(jwtToken).getAudience().get(0);
-    }
-
-    /**
-     * 验证 jwt 是否合法
-     */
-    public static void verify(String jwtToken, String secret) {
-        JWT
-        .require(Algorithm.HMAC256(secret))
-        .build()
-        .verify(jwtToken);
     }
 }

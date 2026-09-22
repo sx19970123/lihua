@@ -56,7 +56,6 @@ public class SecurityConfig {
                         "/system/auth/register/**",                      // 注册
                         "/system/user/checkUserName/**",                 // 检查用户名
                         "/system/attachment/storage/download/**",        // 附件下载
-                        "/system/setting/GrayModelSetting",              // 灰色模式设置
                         "/system/setting/base/**"                        // 基础设置
                 ).permitAll()
                 // app接口配置
