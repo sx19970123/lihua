@@ -25,6 +25,7 @@ public class CaptchaController extends ApiResponseController {
     private ImageCaptchaApplication imageCaptchaApplication;
 
     @Operation(summary = "获取验证码")
+    @RateLimit
     @PostMapping("get")
     public ApiResponse<ImageCaptchaVO> getCaptcha() {
         // 随机获取验证码类型
@@ -32,6 +33,7 @@ public class CaptchaController extends ApiResponseController {
     }
 
     @Operation(summary = "验证码校验")
+    @RateLimit
     @PostMapping("check")
     public ApiResponse<?> checkCaptcha(@RequestBody Data data) {
         ApiResponse<?> response = imageCaptchaApplication.matching(data.getId(), data.getData());
