@@ -22,4 +22,9 @@ public @interface PreventDuplicateSubmit {
      */
     int interval() default 5;
 
+    /**
+     * 摘要前排除的参数字段名（与 @Log excludeParams 同源口径）——防止敏感字段（如密码）经幂等键进入 Redis 数据面
+     */
+    String[] excludeParams() default {};
+
 }

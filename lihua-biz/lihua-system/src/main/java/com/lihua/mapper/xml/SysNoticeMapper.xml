@@ -35,6 +35,6 @@
           LEFT JOIN sys_user AS create_user ON create_user.id = sys_notice.create_id
           LEFT JOIN sys_user AS release_user ON release_user.id = sys_notice.release_id
         WHERE
-          sys_notice.id = #{id} AND sys_notice.del_flag = '0'
+          sys_notice.id = #{id} AND sys_notice.del_flag = '0' AND sys_notice.status = '1'
     </select>
 </mapper>

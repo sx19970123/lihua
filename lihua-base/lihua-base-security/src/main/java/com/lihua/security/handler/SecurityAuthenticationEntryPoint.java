@@ -25,8 +25,8 @@ public class SecurityAuthenticationEntryPoint implements AuthenticationEntryPoin
         if (authException instanceof InsufficientAuthenticationException) {
             WebUtils.renderJson(StrResponse.error(ResultCodeEnum.AUTHENTICATION_EXPIRED));
         } else {
-            // 其他情况，返回security提示信息
-            WebUtils.renderJson(StrResponse.error(ResultCodeEnum.AUTHENTICATION_EXPIRED, authException.getMessage()));
+            // 其他认证异常同样返回默认文案：getMessage 可能携带内部细节，不透传客户端，详情已在上方日志留痕
+            WebUtils.renderJson(StrResponse.error(ResultCodeEnum.AUTHENTICATION_EXPIRED));
         }
     }
 }

@@ -42,7 +42,6 @@ public class LoginUserManager {
             log.warn("token 解析失败，按未登录处理", e);
             return null;
         }
-        log.debug("\ntoken：【{}】\ndecode：【{}】", token, decode);
 
         try {
             // 优先使用本地缓存

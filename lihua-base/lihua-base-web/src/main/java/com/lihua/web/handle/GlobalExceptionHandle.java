@@ -129,6 +129,7 @@ public class GlobalExceptionHandle extends StrResponseController {
     @ExceptionHandler(Exception.class)
     public void handleException(Exception e) {
         log.error(e.getMessage(),e);
-        WebUtils.renderJson(500, error(ResultCodeEnum.SYSTEM_ERROR, e.getMessage()));
+        // 固定枚举文案：e.getMessage 可能携带 NPE/SQL/文件路径等内部细节，不透传客户端（与 InternalAuthenticationServiceException 同口径），根因经日志排查
+        WebUtils.renderJson(500, error(ResultCodeEnum.SYSTEM_ERROR));
     }
 }

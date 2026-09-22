@@ -49,7 +49,7 @@ public class PreventDuplicateSubmitAspect {
 
     @Around("@annotation(preventDuplicateSubmit)")
     public Object around(ProceedingJoinPoint joinPoint, PreventDuplicateSubmit preventDuplicateSubmit) throws Throwable {
-        String key = buildKey(joinPoint);
+        String key = buildKey(joinPoint, preventDuplicateSubmit);
         RBucket<String> bucket = redissonClient.getBucket(key, StringCodec.INSTANCE);
         if (!bucket.setIfAbsent("1", Duration.ofSeconds(preventDuplicateSubmit.interval()))) {
             throw new DuplicateSubmitException();
@@ -57,11 +57,15 @@ public class PreventDuplicateSubmitAspect {
         return joinPoint.proceed();
     }
 
-    private String buildKey(JoinPoint joinPoint) {
+    private String buildKey(JoinPoint joinPoint, PreventDuplicateSubmit preventDuplicateSubmit) {
         HttpServletRequest request = WebUtils.getCurrentRequest();
         String identity = resolveIdentity(request);
         String uri = request == null ? "" : request.getRequestURI();
-        String argsDigest = md5Hex(JsonUtils.toJsonOrCanonicalName(filterArgs(joinPoint)));
+        // excludeParams 与 @Log 同源：摘要前剔除敏感字段，避免明文密码等经幂等键被离线碰撞
+        String argsJson = JsonUtils.excludeJsonKey(
+                JsonUtils.toJsonOrCanonicalName(filterArgs(joinPoint)),
+                Arrays.asList(preventDuplicateSubmit.excludeParams()));
+        String argsDigest = md5Hex(argsJson);
         return RedisKeyPrefixEnum.PREVENT_DUPLICATE_SUBMIT_REDIS_PREFIX.getValue()
                 + identity + ":" + uri + ":" + argsDigest;
     }

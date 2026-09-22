@@ -63,7 +63,7 @@ public abstract class BaseSysAuthenticationController extends ApiResponseControl
      */
     @Operation(summary = "用户注册")
     @PostMapping("register")
-    @PreventDuplicateSubmit
+    @PreventDuplicateSubmit(excludeParams = {"password", "confirmPassword"})
     @Log(description = "用户注册", type = LogTypeEnum.REGISTER, excludeParams = {"password", "confirmPassword"}, recordResult = false)
     public ApiResponseModel<String> register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO) {
         // 校验验证码
