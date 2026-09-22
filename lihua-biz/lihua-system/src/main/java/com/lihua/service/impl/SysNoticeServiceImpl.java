@@ -21,6 +21,7 @@ import com.lihua.service.SysUserService;
 import com.lihua.websocket.enums.WebSocketMsgTypeEnum;
 import com.lihua.websocket.manager.WebSocketManager;
 import com.lihua.websocket.model.WebSocketResult;
+import com.lihua.websocket.utils.TransactionSendUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -166,13 +167,13 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
             saveUserNotice(id, sysUserService.queryAllUserIds());
             // 向全部用户发送通知
-            webSocketManager.send(new WebSocketResult<>(WebSocketMsgTypeEnum.WS_NOTICE, sysNotice));
+            TransactionSendUtils.runAfterCommit(() -> webSocketManager.send(new WebSocketResult<>(WebSocketMsgTypeEnum.WS_NOTICE, sysNotice)));
         } else {
             // 发送范围为指定用户时，重置star和read状态
             sysUserNoticeService.resetStatus(id);
             // 向指定用户发送消息
             List<String> userIds = sysUserNoticeService.queryUserIds(id);
-            webSocketManager.send(userIds, new WebSocketResult<>(WebSocketMsgTypeEnum.WS_NOTICE, sysNotice));
+            TransactionSendUtils.runAfterCommit(() -> webSocketManager.send(userIds, new WebSocketResult<>(WebSocketMsgTypeEnum.WS_NOTICE, sysNotice)));
         }
 
         return id;

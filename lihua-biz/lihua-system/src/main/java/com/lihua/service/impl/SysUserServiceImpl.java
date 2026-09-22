@@ -198,6 +198,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     @Override
     @Transactional
     public void deleteByIds(List<String> ids) {
+        checkAdminUser(ids, "删除");
         checkStatus(ids);
         // 删除部门、岗位、角色 与用户的关联数据
         sysUserDeptService.deleteByUserIds(ids);
@@ -212,6 +213,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     @Override
     public String updateStatus(String id, String currentStatus) {
         checkUserExists(id);
+        checkAdminUser(List.of(id), "停用");
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         String status = SysStatusEnum.toggle(currentStatus);
         updateWrapper.lambda()
@@ -389,6 +391,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     private void checkUserExists(String id) {
         if (sysUserMapper.selectById(id) == null) {
             throw new ServiceException("用户不存在");
+        }
+    }
+
+    // 管理员账户保护：系统为单管理员设计（新建用户不可分配 admin 角色），停用/删除 admin 角色用户将使系统失去唯一管理员
+    private void checkAdminUser(List<String> ids, String operation) {
+        for (String id : ids) {
+            boolean isAdmin = sysRoleMapper.selectSysRoleByUserId(id).stream()
+                    .anyMatch(role -> "ROLE_admin".equals(role.getCode()));
+            if (isAdmin) {
+                throw new ServiceException("管理员账户不允许" + operation);
+            }
         }
     }
 

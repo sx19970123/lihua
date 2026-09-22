@@ -4,6 +4,7 @@ import com.lihua.web.utils.WebUtils;
 import com.lihua.monitor.model.LoggedUser;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.cache.enums.RedisKeyPrefixEnum;
+import com.lihua.common.exception.ServiceException;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUserSession;
@@ -73,6 +74,14 @@ public class MonitorLoggedUserServiceImpl implements MonitorLoggedUserService {
 
     @Override
     public void forceLogout(List<String> cacheKeys) {
+        // 白名单校验：合法会话 key 为登录会话前缀的四段结构（前缀:userId:时间戳:uuid），
+        // 防止任意 Redis key 被当作会话广播+删除（getUserIdByCacheKey 仅校验段数，此处叠加前缀）
+        cacheKeys.forEach(cacheKey -> {
+            if (!cacheKey.startsWith(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue())
+                    || cacheKey.split(":").length != 4) {
+                throw new ServiceException("无效的 cacheKey");
+            }
+        });
         cacheKeys.forEach(LoginUserManager::removeLoginUserSession);
     }
 }
