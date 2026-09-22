@@ -99,6 +99,9 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
     private String updateById(SysDictType sysDictType) {
         // 从数据库中查询旧数据，验证code是否有修改
         SysDictType oldDictType = sysDictTypeMapper.selectById(sysDictType.getId());
+        if (oldDictType == null) {
+            throw new ServiceException("字典类型不存在");
+        }
         sysDictTypeMapper.updateById(sysDictType);
         // 当code发生修改，更新dictData表中对应的DictTypeCode值
         if (!oldDictType.getCode().equals(sysDictType.getCode())) {

@@ -33,7 +33,7 @@ public class LoginUserSession implements UserDetails {
     /**
      * 权限集合，ROLE_开头为拥有的角色编码，其余为页面权限
      */
-    private List<String> permissionList;
+    private List<String> permissionList = new ArrayList<>();
 
     /**
      * 用户菜单信息

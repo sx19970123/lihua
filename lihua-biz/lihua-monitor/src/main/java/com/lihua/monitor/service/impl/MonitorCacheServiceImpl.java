@@ -64,8 +64,11 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
     @Override
     public CacheMonitor cacheInfo(String key) {
         CacheMonitor cacheMonitor = new CacheMonitor(null, key);
-        // 获取key在redis中对应的数据类型
+        // 获取key在redis中对应的数据类型（key 不存在/已过期时返回空串）
         String redisType = redisCacheManager.getRedisType(key);
+        if (redisType.isEmpty()) {
+            throw new ServiceException("缓存key已失效");
+        }
 
         switch (redisType) {
             case "object", "string": {

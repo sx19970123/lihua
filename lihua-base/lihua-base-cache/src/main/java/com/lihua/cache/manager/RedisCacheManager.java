@@ -235,11 +235,12 @@ public class RedisCacheManager {
 
     /**
      * 获取 key 对应的value在redis中对应的数据类型
-     * @return 返回值包括：string、list、set、hash、zset等
+     * @return 返回值包括：string、list、set、hash、zset等；key 不存在或已过期时返回空串
      */
     public String getRedisType(String key) {
         RKeys rKeys = redissonClient.getKeys();
-        return rKeys.getType(key).name().toLowerCase();
+        RType rType = rKeys.getType(key);
+        return rType == null ? "" : rType.name().toLowerCase();
     }
 
     /**

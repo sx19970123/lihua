@@ -137,6 +137,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Override
     public SysUserVO queryById(String id) {
+        checkUserExists(id);
         SysUserVO sysUserVO = sysUserMapper.queryById(id);
         // 设置默认部门id
         if (!sysUserVO.getDefaultDeptIdList().isEmpty()) {
@@ -210,6 +211,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Override
     public String updateStatus(String id, String currentStatus) {
+        checkUserExists(id);
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         String status = SysStatusEnum.toggle(currentStatus);
         updateWrapper.lambda()
@@ -265,6 +267,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         List<SysPostVO> sysPosts = sysUserPostService.queryPostByUserIds(userIdSet);
         Map<String, List<SysPostVO>> groupByDeptIdPostMap = sysPosts
                 .stream()
+                // sys_post.dept_id 允许 NULL（存量/脏数据），null key 会使 groupingBy 抛 NPE，且该岗位本就无法与用户部门匹配
+                .filter(sysPost -> sysPost.getDeptId() != null)
                 .collect(Collectors.groupingBy(SysPost::getDeptId));
 
         // 处理拼接角色名称
@@ -332,6 +336,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Override
     public String resetPassword(ResetPasswordDTO resetPasswordDTO) {
+        checkUserExists(resetPasswordDTO.getUserId());
         LocalDateTime now = DateUtils.now();
         UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
         updateWrapper.lambda()
@@ -378,6 +383,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         sysUser.setPassword(null);
         sysUserMapper.updateById(sysUser);
         return sysUser.getId();
+    }
+
+    // 校验用户是否存在
+    private void checkUserExists(String id) {
+        if (sysUserMapper.selectById(id) == null) {
+            throw new ServiceException("用户不存在");
+        }
     }
 
     // 检查状态

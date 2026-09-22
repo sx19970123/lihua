@@ -18,6 +18,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,9 +156,19 @@ public class SysDictDataServiceImpl implements SysDictDataService {
         QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
         queryWrapper
                 .lambda()
-                .in(SysDictData::getParentId,ids);
-        Long count = sysDictDataMapper.selectCount(queryWrapper);
-        if (count != 0) {
+                .in(SysDictData::getParentId,ids)
+                .select(SysDictData::getId);
+        List<SysDictData> sysDictDataList = sysDictDataMapper.selectList(queryWrapper);
+
+        if (sysDictDataList.isEmpty()) {
+            return;
+        }
+
+        // 对比以删除节点为父节点的数据，当这些数据全部与删除的数据相同，则要删除的数据中没有子节点存在
+        List<String> list = new ArrayList<>(sysDictDataList.stream().map(SysDictData::getId).toList());
+        list.removeAll(ids);
+
+        if (!list.isEmpty()) {
             throw new ServiceException("存在子集不允许删除");
         }
     }

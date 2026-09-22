@@ -160,7 +160,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         if (StringUtils.hasText(dto.getDeptId())) {
             queryWrapper.eq("sys_post.dept_id",dto.getDeptId());
         }
-        queryWrapper.lambda().orderByAsc(SysPost::getSort);
+        // sys_post 与 sys_dept 均有 sort 列，喂给 JOIN 自定义 SQL 的排序列必须限定表名
+        queryWrapper.orderByAsc("sys_post.sort");
         return queryWrapper;
     }
 
