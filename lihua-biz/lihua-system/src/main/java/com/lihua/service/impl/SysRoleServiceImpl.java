@@ -14,10 +14,8 @@ import com.lihua.model.dto.SysRoleDTO;
 import com.lihua.model.dto.SysRoleUserDTO;
 import com.lihua.model.vo.SysRoleUserVO;
 import com.lihua.security.manager.LoginUserContext;
+import com.lihua.security.utils.PermissionUpdateUtils;
 import com.lihua.service.SysRoleService;
-import com.lihua.websocket.enums.WebSocketMsgTypeEnum;
-import com.lihua.websocket.manager.WebSocketManager;
-import com.lihua.websocket.model.WebSocketResult;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +32,6 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Resource
     private SysUserMapper sysUserMapper;
-
-    @Resource
-    private WebSocketManager webSocketManager;
 
     @Override
     public IPage<SysRole> queryPage(SysRoleDTO sysRoleDTO) {
@@ -99,9 +94,8 @@ public class SysRoleServiceImpl implements SysRoleService {
         if (!menuIds.isEmpty()) {
             sysRoleMapper.insertRoleMenu(roleId,menuIds);
         }
-        // 菜单权限已变，定向提示受影响在线用户「数据更新」（会话保留，reloadData 重建后新权限生效）
-        webSocketManager.send(sysRoleMapper.selectUserIdsByRoleId(roleId),
-                new WebSocketResult<>(WebSocketMsgTypeEnum.WS_REFRESH_PERMISSION, null));
+        // 菜单权限已变：置红点标记 + WS 定向在线提示（会话保留，reloadData 重建后新权限生效）
+        PermissionUpdateUtils.markChanged(sysRoleMapper.selectUserIdsByRoleId(roleId));
     }
 
     private void checkRoleCode(SysRole sysRole) {
@@ -193,19 +187,18 @@ public class SysRoleServiceImpl implements SysRoleService {
         List<String> newUserIds = distinctIds.stream().filter(id -> !authorizedIds.contains(id)).toList();
         if (!newUserIds.isEmpty()) {
             sysRoleMapper.insertUserRole(roleId, newUserIds);
-            // 定向提示新授权的在线用户「数据更新」
-            webSocketManager.send(newUserIds,
-                    new WebSocketResult<>(WebSocketMsgTypeEnum.WS_REFRESH_PERMISSION, null));
+            // 置红点标记 + WS 定向在线提示
+            PermissionUpdateUtils.markChanged(newUserIds);
         }
     }
 
     @Override
     public void deleteUsers(String roleId, List<String> userIds) {
         checkRoleExists(roleId);
-        sysRoleMapper.deleteUserRoleByRoleIdAndUserIds(roleId, userIds.stream().distinct().toList());
-        // 定向提示取消授权的在线用户「数据更新」
-        webSocketManager.send(userIds.stream().distinct().toList(),
-                new WebSocketResult<>(WebSocketMsgTypeEnum.WS_REFRESH_PERMISSION, null));
+        List<String> distinctUserIds = userIds.stream().distinct().toList();
+        sysRoleMapper.deleteUserRoleByRoleIdAndUserIds(roleId, distinctUserIds);
+        // 置红点标记 + WS 定向在线提示
+        PermissionUpdateUtils.markChanged(distinctUserIds);
     }
 
     private void checkRoleExists(String id) {

@@ -24,7 +24,7 @@ public enum WebSocketMsgTypeEnum implements Serializable {
 
     /**
      * 权限数据更新提示：角色/菜单变更后定向推送给受影响在线用户，
-     * web 端引导点击「数据更新」重建会话，App 端提示重新登录生效
+     * 前端置「数据更新」红点（web），App 端提示重新登录生效；红点事实源在 Redis 标记
      */
     WS_REFRESH_PERMISSION
 }

@@ -14,6 +14,7 @@ import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.entity.*;
 import com.lihua.excel.exception.ExcelImportException;
 import com.lihua.mapper.SysUserMapper;
+import com.lihua.mapper.SysRoleMapper;
 import com.lihua.model.vo.AvatarVO;
 import com.lihua.model.dto.ResetPasswordDTO;
 import com.lihua.model.dto.SysUserDTO;
@@ -22,6 +23,8 @@ import com.lihua.model.vo.SysPostVO;
 import com.lihua.model.vo.SysUserVO;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
+import com.lihua.security.model.CurrentRole;
+import com.lihua.security.utils.PermissionUpdateUtils;
 import com.lihua.security.utils.SecurityUtils;
 import com.lihua.sensitive.annotation.ApplySensitive;
 import com.lihua.service.*;
@@ -54,6 +57,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
 
     @Resource
     private SysSettingService sysSettingService;
+
+    @Resource
+    private SysRoleMapper sysRoleMapper;
 
     // 校验手机号码
     private final String PHONE_NUMBER_PATTERN = "^1[3-9]\\d{9}$";
@@ -436,6 +442,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
     }
     // 保存用户角色关联表
     private void saveUserRole(String userId, List<String> roleIdList) {
+        // 变更前角色集合：与提交集合比对，角色确有变化才 bump 版本+WS 提示（昵称等普通编辑不产生红点）
+        Set<String> oldRoleIds = sysRoleMapper.selectSysRoleByUserId(userId).stream().map(CurrentRole::getId).collect(Collectors.toSet());
         // 删除所有角色
         sysUserRoleService.deleteByUserIds(Collections.singletonList(userId));
         // 保存角色
@@ -446,6 +454,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
             String loginUserId = LoginUserContext.getUserId();
             roleIdList.forEach(roleId -> sysUserRoles.add(new SysUserRole(userId, roleId, now, loginUserId)));
             sysUserRoleService.save(sysUserRoles);
+        }
+        // 角色集合变化：置红点标记 + WS 定向在线提示
+        Set<String> newRoleIds = roleIdList == null ? Set.of() : Set.copyOf(roleIdList);
+        if (!oldRoleIds.equals(newRoleIds)) {
+            PermissionUpdateUtils.markChanged(userId);
         }
     }
 

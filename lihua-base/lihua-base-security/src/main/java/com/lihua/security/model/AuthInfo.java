@@ -26,4 +26,6 @@ public class AuthInfo implements Serializable {
     CurrentDept defaultDept;
     // 岗位信息
     List<CurrentPost> posts;
+    // 权限数据是否已变更（会话版本快照落后于当前版本）：前端据此显示「数据更新」红点
+    Boolean permissionUpdate;
 }

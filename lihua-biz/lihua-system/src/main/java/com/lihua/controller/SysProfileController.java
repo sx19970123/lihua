@@ -8,6 +8,7 @@ import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysProfileBasicDTO;
 import com.lihua.model.validation.ProfileValidation;
 import com.lihua.security.manager.LoginUserContext;
+import com.lihua.security.utils.PermissionUpdateUtils;
 import com.lihua.security.model.AuthInfo;
 import com.lihua.security.model.CurrentDept;
 import com.lihua.security.model.CurrentUser;
@@ -57,6 +58,8 @@ public class SysProfileController extends BaseSysProfileController {
         authInfo.setRouters(loginUserSession.getRouterList());
         authInfo.setViewTabs(loginUserSession.getViewTabList());
         authInfo.setDefaultDept(LoginUserContext.getDefaultDept() != null ? LoginUserContext.getDefaultDept() : new CurrentDept());
+        // 权限数据已变更标记（「数据更新」红点数据源）：WS 推送负责在线即时提示，本标志覆盖离线/关浏览器重进场景
+        authInfo.setPermissionUpdate(PermissionUpdateUtils.hasChanged(userInfo.getId()));
         return success(authInfo);
     }
 }

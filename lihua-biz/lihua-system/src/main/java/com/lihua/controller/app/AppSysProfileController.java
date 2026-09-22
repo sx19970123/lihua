@@ -12,6 +12,7 @@ import com.lihua.security.model.AuthInfo;
 import com.lihua.security.model.CurrentDept;
 import com.lihua.security.model.CurrentUser;
 import com.lihua.security.model.LoginUserSession;
+import com.lihua.security.utils.PermissionUpdateUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
@@ -46,6 +47,8 @@ public class AppSysProfileController extends BaseSysProfileController {
         authInfo.setRoles(loginUserSession.getRoleList());
         authInfo.setPermissions(loginUserSession.getPermissionList().stream().filter(item -> !item.startsWith("ROLE_")).toList());
         authInfo.setDefaultDept(LoginUserContext.getDefaultDept() != null ? LoginUserContext.getDefaultDept() : new CurrentDept());
+        // 权限数据已变更标记（「数据更新」红点数据源）：WS 推送负责在线即时提示，本标志覆盖离线/冷启动场景
+        authInfo.setPermissionUpdate(PermissionUpdateUtils.hasChanged(userInfo.getId()));
         return success(authInfo);
     }
 
