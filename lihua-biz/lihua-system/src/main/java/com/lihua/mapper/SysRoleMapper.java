@@ -19,6 +19,8 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     IPage<SysRoleUserVO> selectUserPageByRoleId(IPage<SysRoleUserVO> page, @Param("roleId") String roleId, @Param("dto") SysRoleUserDTO dto);
     // 查询指定用户中已授权该角色的用户id（幂等过滤用）
     List<String> selectUserIdsByRoleIdAndUserIds(@Param("roleId") String roleId, @Param("userIds") List<String> userIds);
+    // 查询持有该角色的全部用户id（权限变更踢会话用）
+    List<String> selectUserIdsByRoleId(@Param("roleId") String roleId);
     // 向sys_user_role表中批量新增数据
     void insertUserRole(@Param("roleId") String roleId,@Param("userIds") List<String> userIds);
     // 根据角色id和用户id集合删除角色用户关联表数据

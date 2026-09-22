@@ -14,6 +14,7 @@ import com.lihua.model.dto.SysRoleDTO;
 import com.lihua.model.dto.SysRoleUserDTO;
 import com.lihua.model.vo.SysRoleUserVO;
 import com.lihua.security.manager.LoginUserContext;
+import com.lihua.security.manager.LoginUserManager;
 import com.lihua.service.SysRoleService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -93,6 +94,9 @@ public class SysRoleServiceImpl implements SysRoleService {
         if (!menuIds.isEmpty()) {
             sysRoleMapper.insertRoleMenu(roleId,menuIds);
         }
+        // 菜单权限已变，持有该角色的在线会话权限会滞后至重登——踢出强制重新登录获取新权限
+        sysRoleMapper.selectUserIdsByRoleId(roleId)
+                .forEach(userId -> LoginUserManager.removeUserSessions(userId, null));
     }
 
     private void checkRoleCode(SysRole sysRole) {
@@ -184,6 +188,8 @@ public class SysRoleServiceImpl implements SysRoleService {
         List<String> newUserIds = distinctIds.stream().filter(id -> !authorizedIds.contains(id)).toList();
         if (!newUserIds.isEmpty()) {
             sysRoleMapper.insertUserRole(roleId, newUserIds);
+            // 新授权用户的在线会话权限滞后至重登，踢出强制重取
+            newUserIds.forEach(userId -> LoginUserManager.removeUserSessions(userId, null));
         }
     }
 
@@ -191,6 +197,8 @@ public class SysRoleServiceImpl implements SysRoleService {
     public void deleteUsers(String roleId, List<String> userIds) {
         checkRoleExists(roleId);
         sysRoleMapper.deleteUserRoleByRoleIdAndUserIds(roleId, userIds.stream().distinct().toList());
+        // 取消授权用户的在线会话仍持旧权限，踢出强制重取
+        userIds.forEach(userId -> LoginUserManager.removeUserSessions(userId, null));
     }
 
     private void checkRoleExists(String id) {

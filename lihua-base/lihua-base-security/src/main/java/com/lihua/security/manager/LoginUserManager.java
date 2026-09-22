@@ -72,7 +72,10 @@ public class LoginUserManager {
      * 刷新token时间
      */
     public static void refreshToken() {
-        REDIS_CACHE_MANAGER.setExpire(LoginUserContext.getLoginUser().getCacheKey(), TOKEN_PROPERTIES.getTokenExpireTime());
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+        // 回写缓存对象内的过期时间：仅续 redis TTL 会让 expirationTime 停留初值，阈值判断持续触发重复刷新
+        loginUserSession.setExpirationTime(DateUtils.now().plus(TOKEN_PROPERTIES.getTokenExpireTime()));
+        REDIS_CACHE_MANAGER.setCacheObject(loginUserSession.getCacheKey(), loginUserSession, TOKEN_PROPERTIES.getTokenExpireTime());
     }
 
     /**
@@ -93,12 +96,11 @@ public class LoginUserManager {
             cacheKey = getLoginUserKey(loginUserSession.getUser().getId());
         }
         loginUserSession.setCacheKey(cacheKey);
-        // 发送缓存失效广播
-        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), cacheKey);
-        // 设置缓存
+        // 先落 redis 再广播失效：先广播会让订阅节点回源读到写前的旧值并重新本地缓存
         REDIS_CACHE_MANAGER.setCacheObject(cacheKey,
                 loginUserSession,
                 TOKEN_PROPERTIES.getTokenExpireTime());
+        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), cacheKey);
 
         // 缓存key
         return cacheKey;
@@ -116,9 +118,26 @@ public class LoginUserManager {
      * 登出持有 token 走 removeLoginUserCache；强退、挤下线等管理侧通道持有 cacheKey 走本方法
      */
     public static void removeLoginUserSession(String cacheKey) {
-        // 发送缓存失效广播
-        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), cacheKey);
+        // 先删 redis 再广播失效：先广播会让订阅节点回源读到删除前的旧值并重新本地缓存
         REDIS_CACHE_MANAGER.delete(cacheKey);
+        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), cacheKey);
+    }
+
+    /**
+     * 删除指定用户的全部登录会话：禁用/删除用户、重置密码、角色权限变更后调用，
+     * 受影响会话下次请求即 401，重新登录后拿到新状态/新权限
+     * @param userId 用户 id
+     * @param excludeCacheKey 需保留的会话缓存 key（如修改密码后保留当前会话），null 表示全部删除
+     */
+    public static void removeUserSessions(String userId, String excludeCacheKey) {
+        if (!StringUtils.hasText(userId)) {
+            return;
+        }
+        // 尾部冒号限定精确用户段：无冒号时 "1*" 会命中 1/10/11… 造成跨用户误删（checkSameAccount 同一陷阱）
+        String keyPrefix = RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId + ":";
+        REDIS_CACHE_MANAGER.keys(keyPrefix).stream()
+                .filter(cacheKey -> !cacheKey.equals(excludeCacheKey))
+                .forEach(LoginUserManager::removeLoginUserSession);
     }
 
     /**

@@ -77,6 +77,10 @@
         </foreach>
     </select>
 
+    <select id="selectUserIdsByRoleId" resultType="java.lang.String">
+        SELECT user_id FROM sys_user_role WHERE role_id = #{roleId}
+    </select>
+
     <insert id="insertUserRole">
         INSERT INTO sys_user_role (role_id, user_id) VALUES
         <foreach collection="userIds" item="userId" separator=",">

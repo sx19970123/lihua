@@ -21,6 +21,7 @@ import com.lihua.model.dto.SysUserDeptDTO;
 import com.lihua.model.vo.SysPostVO;
 import com.lihua.model.vo.SysUserVO;
 import com.lihua.security.manager.LoginUserContext;
+import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.utils.SecurityUtils;
 import com.lihua.sensitive.annotation.ApplySensitive;
 import com.lihua.service.*;
@@ -197,6 +198,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
         sysUserRoleService.deleteByUserIds(ids);
         // 删除用户信息
         sysUserMapper.deleteByIds(ids);
+        // 删除后清理在线会话
+        ids.forEach(id -> LoginUserManager.removeUserSessions(id, null));
     }
 
     @Override
@@ -209,6 +212,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                 .set(SysUser::getUpdateTime, DateUtils.now())
                 .eq(SysUser::getId, id);
         sysUserMapper.update(null, updateWrapper);
+        // 停用后踢出全部会话：会话缓存内 status 停留旧值，且活跃请求滑动续期会永不掉线
+        if (SysStatusEnum.DISABLED.getValue().equals(status)) {
+            LoginUserManager.removeUserSessions(id, null);
+        }
         return status;
     }
 
@@ -328,6 +335,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>  imp
                         .set(SysUser::getUpdateId, LoginUserContext.getUserId())
                         .set(SysUser::getUpdateTime, now);
         sysUserMapper.update(updateWrapper);
+        // 重置密码后旧会话全部失效，强制使用新密码重新登录
+        LoginUserManager.removeUserSessions(resetPasswordDTO.getUserId(), null);
         return resetPasswordDTO.getUserId();
     }
 

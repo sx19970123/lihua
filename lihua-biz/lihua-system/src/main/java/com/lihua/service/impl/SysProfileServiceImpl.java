@@ -161,6 +161,8 @@ public class SysProfileServiceImpl implements SysProfileService {
         if (update == 1) {
             currentUser.setPasswordUpdateTime(now);
             LoginUserManager.setLoginUserCache(loginUserSession);
+            // 改密后失效其他设备会话、保留当前会话：凭据已换，旧 token 不应继续长期有效
+            LoginUserManager.removeUserSessions(currentUser.getId(), loginUserSession.getCacheKey());
         }
         return currentUser.getId();
     }

@@ -218,8 +218,8 @@ public class SysAuthenticationServiceImpl implements SysAuthenticationService {
             throw new ServiceException("用户id不存在");
         }
 
-        // 获取所有用户登录 key
-        Set<String> keys = redisCacheManager.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId);
+        // 获取所有用户登录 key（尾冒号限定精确用户段，防止 1 命中 10/11… 跨用户误踢）
+        Set<String> keys = redisCacheManager.keys(RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId + ":");
 
         int count = keys.size() - limitSize;
         if (count < 0) {
