@@ -116,6 +116,11 @@ public class SysNoticeServiceImpl implements SysNoticeService {
     }
 
     @Override
+    public SysNoticeVO managePreview(String id) {
+        return sysNoticeMapper.managePreview(id);
+    }
+
+    @Override
     @Transactional
     public String save(SysNoticeDTO sysNoticeDTO) {
         if (NoticeUserScopeEnum.DESIGNATED.getValue().equals(sysNoticeDTO.getUserScope()) &&

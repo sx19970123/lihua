@@ -26,6 +26,11 @@ public interface SysNoticeService {
     SysNoticeVO preview(String id);
 
     /**
+     * 管理端预览通知公告（不限制公告状态）
+     */
+    SysNoticeVO managePreview(String id);
+
+    /**
      * 保存消息通知
      */
     String save(SysNoticeDTO sysNoticeDTO);

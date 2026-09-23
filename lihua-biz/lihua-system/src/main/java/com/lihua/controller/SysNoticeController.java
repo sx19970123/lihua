@@ -38,6 +38,12 @@ public class SysNoticeController extends BaseSysNoticeController {
         return success(sysNoticeService.queryById(id));
     }
 
+    @Operation(summary = "管理端预览通知公告（不限制公告状态）")
+    @GetMapping("managePreview/{id}")
+    public ApiResponseModel<SysNoticeVO> managePreview(@PathVariable("id") String id) {
+        return success(sysNoticeService.managePreview(id));
+    }
+
     @Operation(summary = "保存通知公告")
     @PostMapping
     @Log(description = "保存通知公告", type = LogTypeEnum.SAVE)

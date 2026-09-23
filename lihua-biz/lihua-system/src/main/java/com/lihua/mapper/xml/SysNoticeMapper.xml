@@ -32,9 +32,29 @@
           release_user.nickname AS releaseUser
         FROM
           sys_notice
-          LEFT JOIN sys_user AS create_user ON create_user.id = sys_notice.create_id
-          LEFT JOIN sys_user AS release_user ON release_user.id = sys_notice.release_id
+        LEFT JOIN sys_user AS create_user ON create_user.id = sys_notice.create_id
+        LEFT JOIN sys_user AS release_user ON release_user.id = sys_notice.release_id
         WHERE
           sys_notice.id = #{id} AND sys_notice.del_flag = '0' AND sys_notice.status = '1'
+    </select>
+
+    <!-- 管理端预览：与 preview 同构，仅去掉 status='1' 过滤（管理页需预览未发布/已撤销公告） -->
+    <select id="managePreview" resultType="com.lihua.model.vo.SysNoticeVO">
+        SELECT
+          sys_notice.id,
+          sys_notice.title,
+          sys_notice.type,
+          sys_notice.status,
+          sys_notice.priority,
+          sys_notice.content,
+          sys_notice.release_time,
+          create_user.nickname AS createUser,
+          release_user.nickname AS releaseUser
+        FROM
+          sys_notice
+        LEFT JOIN sys_user AS create_user ON create_user.id = sys_notice.create_id
+        LEFT JOIN sys_user AS release_user ON release_user.id = sys_notice.release_id
+        WHERE
+          sys_notice.id = #{id} AND sys_notice.del_flag = '0'
     </select>
 </mapper>

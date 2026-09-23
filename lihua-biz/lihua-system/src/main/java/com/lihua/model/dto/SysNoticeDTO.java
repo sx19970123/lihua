@@ -21,7 +21,7 @@ public class SysNoticeDTO extends BaseDTO {
      * 标题
      */
     @NotNull(message = "请输入标题")
-    @Size(max = 100, message = "标题长度不能超过100个字符")
+    @Size(max = 80, message = "标题长度不能超过80个字符")
     private String title;
 
     /**
