@@ -94,7 +94,12 @@ public class LambdaTreeUtils {
                     setterChildrenMethod.apply(item,new ArrayList<>());
                     child = getChildrenMethod.apply(item);
                 }
-                // 挂载无条件执行：入参预初始化 children 或对已建树实体二次构建时，跳过挂载会整体丢子树
+                // 挂载无条件执行：入参预初始化 children 或对已建树实体二次构建时，跳过挂载会整体丢子树；
+                // 且必须先清空——原地树化会污染调用方持有的对象（共享引用二次树化场景），
+                // 已有 children 的实体二次构建时不清空会逐轮 addAll 翻倍累积（同 TreeUtils，
+                // 见个人中心部门岗位每次刷新重复一批的事故）；清空后重挂对平铺输入为 no-op，
+                // 对已建树输入按当前父子关系全量重建（自愈幂等）
+                child.clear();
                 child.addAll(children);
             }
 

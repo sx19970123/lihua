@@ -133,10 +133,13 @@ public class TreeUtils {
                     set(item, propChildrenName, new ArrayList<>());
                     child = getList(item, propChildrenName);
                 }
-                // 挂载无条件执行：入参预初始化 children 或对已建树实体二次构建时，跳过挂载会整体丢子树
-                if (child != null) {
-                    child.addAll(children);
-                }
+                // 挂载无条件执行：入参预初始化 children 或对已建树实体二次构建时，跳过挂载会整体丢子树；
+                // 且必须先清空——原地树化会污染调用方持有的对象（如本地缓存共享的登录会话
+                // deptList，profile/info 每次树化同一引用），已有 children 的实体二次构建时
+                // 不清空会逐轮 addAll 翻倍累积（个人中心部门岗位每次刷新重复一批的根因）；
+                // 清空后重挂对平铺输入为 no-op，对已建树输入按当前父子关系全量重建（自愈幂等）
+                child.clear();
+                child.addAll(children);
             }
 
             // 返回true 即删除集合中item 元素
