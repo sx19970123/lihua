@@ -43,6 +43,12 @@
             LEFT JOIN sys_user_role ON sys_user_role.user_id = sys_user.id AND sys_user_role.role_id = #{roleId}
         WHERE
             sys_user.del_flag = '0'
+            <!-- 单管理员设计：超管不参与角色授权管理，授权列表直接排除 -->
+            AND NOT EXISTS (
+                SELECT 1 FROM sys_user_role admin_ur
+                INNER JOIN sys_role admin_role ON admin_role.id = admin_ur.role_id AND admin_role.code = 'ROLE_admin'
+                WHERE admin_ur.user_id = sys_user.id
+            )
             <if test="dto.nickname != null and dto.nickname != ''">
                 AND sys_user.nickname like concat('%', #{dto.nickname}, '%')
             </if>

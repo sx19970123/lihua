@@ -9,6 +9,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.ObjectError;
@@ -124,12 +125,22 @@ public class GlobalExceptionHandle extends StrResponseController {
     }
 
     /**
+     * 处理接口权限不足（@PreAuthorize 方法级鉴权失败，AuthorizationDeniedException 为其子类）
+     * ——固定枚举文案不透传内部细节（原兜底包装成系统异常）
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public void handleAccessDeniedException(AccessDeniedException e) {
+        log.warn("接口权限不足: {}", e.getMessage());
+        WebUtils.renderJson(error(ResultCodeEnum.ACCESS_ERROR));
+    }
+
+    /**
      * 系统异常处理
      */
     @ExceptionHandler(Exception.class)
     public void handleException(Exception e) {
         log.error(e.getMessage(),e);
         // 固定枚举文案：e.getMessage 可能携带 NPE/SQL/文件路径等内部细节，不透传客户端（与 InternalAuthenticationServiceException 同口径），根因经日志排查
-        WebUtils.renderJson(500, error(ResultCodeEnum.SYSTEM_ERROR));
+        WebUtils.renderJson(error(ResultCodeEnum.SYSTEM_ERROR));
     }
 }

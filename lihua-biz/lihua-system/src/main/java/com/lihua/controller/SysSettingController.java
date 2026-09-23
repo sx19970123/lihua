@@ -32,7 +32,6 @@ public class SysSettingController extends BaseSysSettingController {
 
     @Operation(summary = "获取默认密码")
     @GetMapping("defaultPassword")
-    @PreAuthorize("hasRole('ROLE_admin')")
     public ApiResponseModel<String> getDefaultPassword() {
         return success(sysSettingService.getDefaultPassword());
     }
