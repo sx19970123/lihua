@@ -64,6 +64,7 @@ public class SecurityConfig {
                         "/app/system/auth/register/**",                     // 注册
                         "/app/system/user/checkUserName/**",                // 检查用户名
                         "/app/system/attachment/storage/download/**",       // 附件下载
+                        "/app/system/app-version/check",                    // 检查更新（未登录也需可查）
                         "/app/system/setting/base/**"                       // 基础设置
                 ).permitAll()
                 // 系统其他接口配置

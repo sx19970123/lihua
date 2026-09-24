@@ -170,3 +170,111 @@ WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `router_path` = '/password-inpu
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`)
 SELECT 2101975000000000001, 0, 'sys_client_type', 'APP-H5', 'app_h5', 4, NULL, '0', 1, NOW(), NULL, NULL, '0', 'warning'
 WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_type_code` = 'sys_client_type' AND `value` = 'app_h5');
+
+-- ----------------------------------------------------------------------------
+-- App 版本管理（lihua-ani 移植：sys_app_version 表 + 字典 + web 菜单种子；
+-- App 检查更新接口 /app/system/app-version/check 匿名放行随 SecurityConfig 代码；
+-- download_url 存附件 path（android）或绝对外链（ios），端上按需补全；双仓共库一次生效）
+-- ----------------------------------------------------------------------------
+
+-- 14. 建表（全新安装由 lihua.sql 基线建立，存量库由此补齐；幂等）
+CREATE TABLE IF NOT EXISTS `sys_app_version` (
+  `id` bigint NOT NULL COMMENT '主键id（雪花）',
+  `version_name` varchar(20) NOT NULL COMMENT '版本名称（与 manifest.json versionName 一致，如 1.2.0）',
+  `version_code` int NOT NULL COMMENT '版本序号（与 manifest.json versionCode 一致，整数，如 10200）',
+  `platform` varchar(10) NOT NULL COMMENT '平台（字典 app_version_platform：android/ios）',
+  `download_url` varchar(500) NOT NULL COMMENT '主包地址（android=apk附件path或HTTP(S)直链；ios=外部跳转链接）',
+  `enable_wgt` char(1) NOT NULL DEFAULT '0' COMMENT '是否支持 wgt 热更新（0 否 / 1 是，ios 恒为 0）',
+  `wgt_download_url` varchar(500) DEFAULT NULL COMMENT '热更新地址（仅 android，enable_wgt=1 时必填附件path或HTTP(S)直链）',
+  `update_content` text COMMENT '更新说明（纯文本多行）',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '状态（字典 app_version_status：0草稿/1已发布/2已下线）',
+  `publish_time` datetime DEFAULT NULL COMMENT '发布时间',
+  `create_id` bigint DEFAULT NULL COMMENT '创建人id',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_id` bigint DEFAULT NULL COMMENT '更新人id',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除标志（0 存在 / 1 删除）',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_platform_status` (`platform`,`status`) USING BTREE,
+  KEY `idx_version_code` (`version_code`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='App版本发布记录';
+
+-- 15. 业务域字典补「App版本」选项（存在性按 value 判断）
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`)
+SELECT 2026092400000000303, 0, 'sys_dict_business_domain', 'App版本', 'app', 9, NULL, '0', 1, NOW(), NULL, NULL, '0', 'processing'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_type_code` = 'sys_dict_business_domain' AND `value` = 'app');
+
+-- 16. App 版本字典类型 ×2（存在性按 code 判断）
+INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `business_domain`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`)
+SELECT 2026092400000000301, 'App版本平台', 'app_version_platform', '0', 'app', 'App版本发布适用的平台', 1, NOW(), NULL, NULL, '0', '0'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_type` WHERE `code` = 'app_version_platform');
+
+INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `business_domain`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`)
+SELECT 2026092400000000302, 'App版本状态', 'app_version_status', '0', 'app', 'App版本发布记录的状态', 1, NOW(), NULL, NULL, '0', '0'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_type` WHERE `code` = 'app_version_status');
+
+-- 17. App 版本字典数据 ×5（存在性按 dict_type_code + value 逐条判断）
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`)
+SELECT 2026092400000000304, 0, 'app_version_platform', 'Android', 'android', 1, NULL, '0', 1, NOW(), NULL, NULL, '0', 'success'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_type_code` = 'app_version_platform' AND `value` = 'android');
+
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`)
+SELECT 2026092400000000305, 0, 'app_version_platform', 'iOS', 'ios', 2, NULL, '0', 1, NOW(), NULL, NULL, '0', 'processing'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_type_code` = 'app_version_platform' AND `value` = 'ios');
+
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`)
+SELECT 2026092400000000306, 0, 'app_version_status', '草稿', '0', 1, NULL, '0', 1, NOW(), NULL, NULL, '0', 'default'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_type_code` = 'app_version_status' AND `value` = '0');
+
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`)
+SELECT 2026092400000000307, 0, 'app_version_status', '已发布', '1', 2, NULL, '0', 1, NOW(), NULL, NULL, '0', 'success'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_type_code` = 'app_version_status' AND `value` = '1');
+
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`)
+SELECT 2026092400000000308, 0, 'app_version_status', '已下线', '2', 3, NULL, '0', 1, NOW(), NULL, NULL, '0', 'error'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_type_code` = 'app_version_status' AND `value` = '2');
+
+-- 18. web 菜单：App版本管理 page + 5 个按钮 perms（菜单 App 不消费；存在性按 router_path / id 判断）
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`)
+SELECT 2026092400000000101, '1775035631645659138', 'App版本管理', 'App版本管理', 'page', '/app-version', '/system/app-version/SystemAppVersion.vue', '0', '0', 'page', 'MobileOutlined', 9, 1, NOW(), NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `router_path` = '/app-version' AND `del_flag` = '0');
+
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`)
+SELECT 2026092400000000102, '2026092400000000101', '版本新增', '版本新增', 'perms', NULL, NULL, '0', '0', 'system:appVersion:create', NULL, 1, 1, NOW(), NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `id` = 2026092400000000102);
+
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`)
+SELECT 2026092400000000103, '2026092400000000101', '版本编辑', '版本编辑', 'perms', NULL, NULL, '0', '0', 'system:appVersion:update', NULL, 2, 1, NOW(), NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `id` = 2026092400000000103);
+
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`)
+SELECT 2026092400000000104, '2026092400000000101', '版本删除', '版本删除', 'perms', NULL, NULL, '0', '0', 'system:appVersion:delete', NULL, 3, 1, NOW(), NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `id` = 2026092400000000104);
+
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`)
+SELECT 2026092400000000105, '2026092400000000101', '版本发布', '版本发布', 'perms', NULL, NULL, '0', '0', 'system:appVersion:publish', NULL, 4, 1, NOW(), NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `id` = 2026092400000000105);
+
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`)
+SELECT 2026092400000000106, '2026092400000000101', '版本下线', '版本下线', 'perms', NULL, NULL, '0', '0', 'system:appVersion:offline', NULL, 5, 1, NOW(), NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `id` = 2026092400000000106);
+
+-- 19. App 热更新开关字典（enable_wgt 与 sys_whether 值集相同语义不同，独立建字典；配套枚举
+--     AppVersionEnableWgtEnum；存在性按 code / dict_type_code + value 判断）
+INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `business_domain`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`)
+SELECT 2026092400000000309, 'App热更新支持', 'app_version_enable_wgt', '0', 'app', 'App版本是否支持wgt热更新（与sys_whether值集相同语义不同，独立字典）', 1, NOW(), NULL, NULL, '0', '0'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_type` WHERE `code` = 'app_version_enable_wgt');
+
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`)
+SELECT 2026092400000000310, 0, 'app_version_enable_wgt', '否', '0', 1, NULL, '0', 1, NOW(), NULL, NULL, '0', 'default'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_type_code` = 'app_version_enable_wgt' AND `value` = '0');
+
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`)
+SELECT 2026092400000000311, 0, 'app_version_enable_wgt', '是', '1', 2, NULL, '0', 1, NOW(), NULL, NULL, '0', 'success'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_type_code` = 'app_version_enable_wgt' AND `value` = '1');
+
+-- 20. App 版本平台字典补鸿蒙项（配套枚举 AppPlatformEnum.HARMONYOS，value 取 uni-app 平台标识；
+--     鸿蒙与 iOS 同走外链跳转通道；存在性按 value 判断）
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`)
+SELECT 2026092400000000312, 0, 'app_version_platform', 'HarmonyOS', 'harmony', 3, NULL, '0', 1, NOW(), NULL, NULL, '0', 'warning'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_type_code` = 'app_version_platform' AND `value` = 'harmony');

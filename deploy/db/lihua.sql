@@ -18,6 +18,37 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+-- Table structure for sys_app_version
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_app_version`;
+CREATE TABLE `sys_app_version` (
+  `id` bigint NOT NULL COMMENT '主键id（雪花）',
+  `version_name` varchar(20) NOT NULL COMMENT '版本名称（与 manifest.json versionName 一致，如 1.2.0）',
+  `version_code` int NOT NULL COMMENT '版本序号（与 manifest.json versionCode 一致，整数，如 10200）',
+  `platform` varchar(10) NOT NULL COMMENT '平台（字典 app_version_platform：android/ios）',
+  `download_url` varchar(500) NOT NULL COMMENT '主包地址（android=apk附件path或HTTP(S)直链；ios=外部跳转链接）',
+  `enable_wgt` char(1) NOT NULL DEFAULT '0' COMMENT '是否支持 wgt 热更新（0 否 / 1 是，ios 恒为 0）',
+  `wgt_download_url` varchar(500) DEFAULT NULL COMMENT '热更新地址（仅 android，enable_wgt=1 时必填附件path或HTTP(S)直链）',
+  `update_content` text COMMENT '更新说明（纯文本多行）',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '状态（字典 app_version_status：0草稿/1已发布/2已下线）',
+  `publish_time` datetime DEFAULT NULL COMMENT '发布时间',
+  `create_id` bigint DEFAULT NULL COMMENT '创建人id',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_id` bigint DEFAULT NULL COMMENT '更新人id',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除标志（0 存在 / 1 删除）',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_platform_status` (`platform`,`status`) USING BTREE,
+  KEY `idx_version_code` (`version_code`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='App版本发布记录';
+
+-- ----------------------------
+-- Records of sys_app_version
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for sys_attachment
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_attachment`;
@@ -194,6 +225,15 @@ INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `valu
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2102687084240707585, 0, 'sys_dict_tag_style', '蓝', 'blue', 14, NULL, '0', 1, '2026-09-23 17:10:42', NULL, NULL, '0', 'blue');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2102687084500754434, 0, 'sys_dict_tag_style', '极客蓝', 'geekblue', 15, '无法映射为css颜色', '0', 1, '2026-09-23 17:10:42', 1, '2026-09-23 17:16:08', '0', 'geekblue');
 INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2102687084693692417, 0, 'sys_dict_tag_style', '紫', 'purple', 16, NULL, '0', 1, '2026-09-23 17:10:42', NULL, NULL, '0', 'purple');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2026092400000000303, 0, 'sys_dict_business_domain', 'App版本', 'app', 9, NULL, '0', 1, '2026-09-24 00:00:00', NULL, NULL, '0', 'processing');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2026092400000000304, 0, 'app_version_platform', 'Android', 'android', 1, NULL, '0', 1, '2026-09-24 00:00:00', NULL, NULL, '0', 'success');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2026092400000000305, 0, 'app_version_platform', 'iOS', 'ios', 2, NULL, '0', 1, '2026-09-24 00:00:00', NULL, NULL, '0', 'processing');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2026092400000000312, 0, 'app_version_platform', 'HarmonyOS', 'harmony', 3, NULL, '0', 1, '2026-09-24 00:00:00', NULL, NULL, '0', 'warning');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2026092400000000306, 0, 'app_version_status', '草稿', '0', 1, NULL, '0', 1, '2026-09-24 00:00:00', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2026092400000000307, 0, 'app_version_status', '已发布', '1', 2, NULL, '0', 1, '2026-09-24 00:00:00', NULL, NULL, '0', 'success');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2026092400000000308, 0, 'app_version_status', '已下线', '2', 3, NULL, '0', 1, '2026-09-24 00:00:00', NULL, NULL, '0', 'error');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2026092400000000310, 0, 'app_version_enable_wgt', '否', '0', 1, NULL, '0', 1, '2026-09-24 00:00:00', NULL, NULL, '0', 'default');
+INSERT INTO `sys_dict_data` (`id`, `parent_id`, `dict_type_code`, `label`, `value`, `sort`, `remark`, `del_flag`, `create_id`, `create_time`, `update_id`, `update_time`, `status`, `tag_style`) VALUES (2026092400000000311, 0, 'app_version_enable_wgt', '是', '1', 2, NULL, '0', 1, '2026-09-24 00:00:00', NULL, NULL, '0', 'success');
 COMMIT;
 
 -- ----------------------------
@@ -239,6 +279,9 @@ INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `business_domain`, `r
 INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `business_domain`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES (1892896049893941249, '上传方式', 'sys_attachment_upload_mode', '0', 'attachment', '系统附件上传方式', 1, '2025-02-21 19:16:01', NULL, NULL, '0', '0');
 INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `business_domain`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES (1995424677359595521, '客户端类型', 'sys_client_type', '0', 'user', '用于区分web｜app｜小程序', 1, '2025-12-01 17:28:11', NULL, NULL, '0', '0');
 INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `business_domain`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES (2095345643714088962, '业务域', 'sys_dict_business_domain', '0', 'dict', '在字典中指定业务域', 1, '2026-09-03 10:58:26', 1, '2026-09-17 16:04:23', '0', '0');
+INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `business_domain`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES (2026092400000000301, 'App版本平台', 'app_version_platform', '0', 'app', 'App版本发布适用的平台', 1, '2026-09-24 00:00:00', NULL, NULL, '0', '0');
+INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `business_domain`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES (2026092400000000302, 'App版本状态', 'app_version_status', '0', 'app', 'App版本发布记录的状态', 1, '2026-09-24 00:00:00', NULL, NULL, '0', '0');
+INSERT INTO `sys_dict_type` (`id`, `name`, `code`, `type`, `business_domain`, `remark`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `status`) VALUES (2026092400000000309, 'App热更新支持', 'app_version_enable_wgt', '0', 'app', 'App版本是否支持wgt热更新（与sys_whether值集相同语义不同，独立字典）', 1, '2026-09-24 00:00:00', NULL, NULL, '0', '0');
 COMMIT;
 
 -- ----------------------------
@@ -355,6 +398,12 @@ INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `route
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES (1897209872981360641, '1775035631645659138', '字典管理', '字典管理', 'page', '/dict', '/system/dict/SystemDict.vue', '0', '0', 'page', 'ReadOutlined', 6, NULL, NULL, '1', '2024-10-04 16:59:15', '0', NULL, '0', '22222', '', '0', 'new-page');
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES (1909264238680707073, '1866101773239513090', '表格设置', '表格设置', 'page', '/table-setting', '/component/table-setting/TableSetting.vue', '0', '0', 'page', 'TableOutlined', 13, 1, '2025-04-07 23:17:22', '1', '2025-04-12 20:15:01', '0', NULL, '0', NULL, NULL, '0', 'inner');
 INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES (2101309446872371201, '1866101773239513090', '密码强度', '密码强度', 'page', '/password-input', '/component/password-input/PasswordInputIndex.vue', '0', '0', 'page', 'LockOutlined', 14, 1, '2026-09-19 13:57:58', '1', '2026-09-19 22:23:53', '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES (2026092400000000101, '1775035631645659138', 'App版本管理', 'App版本管理', 'page', '/app-version', '/system/app-version/SystemAppVersion.vue', '0', '0', 'page', 'MobileOutlined', 9, 1, '2026-09-24 00:00:00', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES (2026092400000000102, '2026092400000000101', '版本新增', '版本新增', 'perms', NULL, NULL, '0', '0', 'system:appVersion:create', NULL, 1, 1, '2026-09-24 00:00:00', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES (2026092400000000103, '2026092400000000101', '版本编辑', '版本编辑', 'perms', NULL, NULL, '0', '0', 'system:appVersion:update', NULL, 2, 1, '2026-09-24 00:00:00', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES (2026092400000000104, '2026092400000000101', '版本删除', '版本删除', 'perms', NULL, NULL, '0', '0', 'system:appVersion:delete', NULL, 3, 1, '2026-09-24 00:00:00', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES (2026092400000000105, '2026092400000000101', '版本发布', '版本发布', 'perms', NULL, NULL, '0', '0', 'system:appVersion:publish', NULL, 4, 1, '2026-09-24 00:00:00', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
+INSERT INTO `sys_menu` (`id`, `parent_id`, `label`, `title`, `menu_type`, `router_path`, `component_path`, `visible`, `status`, `perms`, `icon`, `sort`, `create_id`, `create_time`, `update_id`, `update_time`, `del_flag`, `remark`, `cache`, `link_path`, `query`, `view_tab`, `link_open_type`) VALUES (2026092400000000106, '2026092400000000101', '版本下线', '版本下线', 'perms', NULL, NULL, '0', '0', 'system:appVersion:offline', NULL, 5, 1, '2026-09-24 00:00:00', NULL, NULL, '0', NULL, '0', NULL, NULL, '0', 'inner');
 COMMIT;
 
 -- ----------------------------
