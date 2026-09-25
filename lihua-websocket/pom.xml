@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.lihua</groupId>
-        <artifactId>lihua-base</artifactId>
+        <artifactId>lihua</artifactId>
         <version>3.0.0</version>
     </parent>
 
-    <artifactId>lihua-base-common</artifactId>
+    <artifactId>lihua-websocket</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -18,25 +18,21 @@
     </properties>
 
     <dependencies>
-        <!--        lombok-->
+        <!--         WS 消息边界（WsPushMessage 消息契约）-->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-ws</artifactId>
         </dependency>
-        <!--        spring-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <!--        事务同步（TransactionSendUtils 事务后执行）-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
-        <!--        jackson-->
+        <!--         websocket-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jackson</artifactId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <!--         缓存模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-cache</artifactId>
         </dependency>
     </dependencies>
+
 </project>

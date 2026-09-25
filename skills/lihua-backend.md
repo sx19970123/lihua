@@ -9,10 +9,12 @@ description: 指导 lihua 仓（单体后端，Maven 多模块 Spring Boot）的
 
 ## 仓库结构
 
-- Maven 父工程：本仓根 `pom.xml`，`<modules>` 为 `lihua-admin`、`lihua-base`、`lihua-biz`；编译版本 `java.version=25`（README 的 Java 版本描述仅是最低环境参考）。
+- Maven 父工程：本仓根 `pom.xml`，`<modules>` 为 `lihua-admin`、`lihua-base`、`lihua-websocket`、`lihua-biz`；编译版本 `java.version=25`（README 的 Java 版本描述仅是最低环境参考）。
 - 可运行应用：`lihua-admin`（入口 `LiHuaApplication`，`@MapperScan("com.lihua.**.mapper")` + `@ComponentScan("com.lihua.**")`——新增包必须保持 `com.lihua` 命名空间，否则组件/Mapper/配置类扫不到）。
 - 业务模块：`lihua-biz/lihua-system`（系统/RBAC/字典/配置/通知等核心业务）、`lihua-biz/lihua-monitor`。业务枚举包在 `lihua-biz/lihua-system/.../com/lihua/enums`；控制器在 `.../com/lihua/controller`（根包只放实际路由控制器，双版本基类放 `controller/base`，App 版放 `controller/app`）。
-- 基础模块（`lihua-base/`，14 个）：attachment、cache、captcha、common、dict、doc、excel、job、log、mybatis、security、sensitive、web、websocket。
+- 基础模块（`lihua-base/`，14 个）：attachment、cache、captcha、common、dict、doc、excel、job、log、mybatis、security、sensitive、web、**ws**。
+- **WS 消息面边界 `lihua-base-ws`**（base 下公共库，业务随手引）：包 `com.lihua.ws.push`（下行投递 `WebSocketPushUtils` + `WsPushMessage`）+ `com.lihua.ws.receive`（上行契约：SPI `WsMessageReceiver` + 回写通道 `WsReply` + 帧实体 `WsClientMessage`——连接层 handleTextMessage 解析帧后按 type 分发；内置心跳参考实现 `receive/impl/HeartbeatWsMessageReceiver`（客户端 30s 一跳 ping→服务端回 pong，不做超时踢线）。**处理器生效范围=连接所在进程**（引 lihua-websocket 的 JVM），业务服务进程注册的处理器收不到调用——跨服务上行业务处理预留 WS 上行 Redis topic 桥接，勿用进程内 event）。业务与连接层 `lihua-websocket` 的中间层，投递唯一入口；依赖 base-cache（Redis 原语）。
+- 顶层受控基建库 `lihua-websocket`（不在 base 下，与 cloud 仓同名同位）：WS 连接持有层（/ws-connect 端点、会话登记、Redis pub/sub 订阅器）。**业务模块零依赖**，仅由 `lihua-admin` 装配引入；Java 包名仍是 `com.lihua.websocket`。
 - 环境配置：`lihua-admin/src/main/resources/application.yml` / `-dev` / `-prod`（虚拟线程、multipart 限制、Jackson 忽略 null、MyBatis-Plus 逻辑删除 `delFlag`、mapper XML 扫描 `classpath*:com/lihua/**/mapper/**/*.xml`）；数据源 dynamic-datasource，Redis 用 Redisson + 项目自定义 `TypedJsonJacksonCodec`；验证码 tianai captcha（Redis key 前缀/过期/本地缓存/字体资源）；Snail Job 默认未启用（启用先查 `@EnableSnailJob` 注释与 yml `snail-job` 配置）。
 - 种子 SQL：`deploy/db/lihua.sql` 保持 2.2.0 基线不动；结构/种子变更走独立幂等脚本（DDL 用 information_schema+PREPARE 判存在，DML 用 WHERE NOT EXISTS 或天然幂等 UPDATE），**脚本按业务名称命名**放在 `deploy/db/` 下（3.0 迁移期统一在 `upgrade-3.0.0.sql`，二开业务如 `upgrade-<业务名>.sql`）；涉及双仓的业务双仓同名同文件同步。
 - 附件上传模式由 `attachment.uploadFileModel` 控制，已实现策略只有 `LOCAL` 与 `ALIYUN-OSS`——配置注释里的其他存储不是已实现能力，除非先确认代码已有对应策略组件。
@@ -23,7 +25,7 @@ description: 指导 lihua 仓（单体后端，Maven 多模块 Spring Boot）的
 1. **代码落位决策树**：①新增业务功能 → 在 `lihua-biz` 下新建子项目（同步上级聚合 pom 的 `<modules>` 与运行应用 `lihua-admin` 的依赖引入，版本走父工程 dependencyManagement）；②偏公共、需要单独引入某个依赖实现一类能力的组件（如工作流、消息队列）→ 在 `lihua-base` 下新建对应子项目，向外部暴露接口供业务调用（新增 base 模块同步父工程 dependencyManagement 与消费方依赖）；③简单公共实现（如通用字符串校验）→ 在 `lihua-base-common` 的 `utils` 包中添加，或在现有类基础上扩展；④轻量级工具方法**先查 base 有无对应实现**——没有先补齐公共方法再使用，有则直接调用，勿在业务模块手搓 base 已有能力。
 2. 遵循标准业务结构：`entity` / `model/dto` / `model/vo` / `mapper` + `mapper/xml` / `service` + `service/impl` / `controller` / `controller/app` / `controller/base`。查询分页入参不污染 Entity，优先 DTO；多表展示字段可继承 Entity 建 VO。
 3. 面向前端的 JSON API 继承 `ApiResponseController` 返回 `ApiResponseModel<T>`（正常 `success(...)`、明确错误 `error(ResultCodeEnum, msg)`），配 `@Tag`/`@Operation` 文档注解。
-4. 管理端写操作一律 `@PreAuthorize`（现有口径 `hasRole('ROLE_admin')` 粗粒度；细粒度 authorities 通道保留但不消费）+ `@Log(description=..., type=LogTypeEnum.*)`，密码等敏感参数排除出日志。操作日志用 `lihua-base-log` 注解能力，不临时写审计逻辑；实时通知投递用 `WebSocketPushUtils`（base-cache，Redis pub/sub 扇出，勿直调 WebSocketManager）——base-websocket（连接层）由 lihua-admin 装配引入，业务模块 pom 零依赖；安全判断用基础安全模块，不手写认证判断。
+4. 管理端写操作一律 `@PreAuthorize`（现有口径 `hasRole('ROLE_admin')` 粗粒度；细粒度 authorities 通道保留但不消费）+ `@Log(description=..., type=LogTypeEnum.*)`，密码等敏感参数排除出日志。操作日志用 `lihua-base-log` 注解能力，不临时写审计逻辑；实时通知投递用 `WebSocketPushUtils`（lihua-base-ws，Redis pub/sub 扇出，勿直调 WebSocketManager）——`lihua-websocket`（顶层连接层）由 lihua-admin 装配引入，业务模块 pom 零依赖；安全判断用基础安全模块，不手写认证判断。
 5. App 专用接口放 `controller/app`，路径 `app/...` 前缀（如 `app/system/profile`）；已有更窄 App 接口的领域不要让 App 复用管理端接口。
 6. 持久化用 MyBatis-Plus：分页 `POST /page` + `@Validated(MaxPageSizeLimit.class)` + BaseDTO（pageNum/pageSize 上限 999999/100），Service 返回 `IPage<VO>` 或 `IPage<Entity>`；简单 CRUD 用 Wrapper，只有复杂查询/多表/VO 投影才加 XML，XML 名与 Mapper 接口同名同层（`SysUserMapper.java` ↔ `mapper/xml/SysUserMapper.xml`）。
 7. 有逻辑消费的字典值一律经 `DictEnum` 枚举引用，禁止裸字面量与私有常量（详见「字典与枚举」）。
@@ -42,7 +44,7 @@ description: 指导 lihua 仓（单体后端，Maven 多模块 Spring Boot）的
 **一体感：照先例写代码**
 
 - 落笔前先在仓内找同类先例（最接近的 Controller/Service/Mapper 与前端页面），照其结构写——不引入第二套风格（自造返回包装、自拼分页、绕过字典工具都是破窗）。
-- 横切能力一律用平台现成实现，新增写端点配三件套（`@Tag`/`@Operation` 文档 + `@PreAuthorize` 权限 + `@Log` 操作日志）：统一返回 `ApiResponseController`、全局异常 `ServiceException` → `GlobalExceptionHandle`、参数校验 `@Validated` + 分组、分页 BaseDTO + `MaxPageSizeLimit`、登录态 `LoginUserContext`、字典 `DictEnum` + `DictUtils`、附件 base-attachment 全家、实时通知 `WebSocketPushUtils`（Redis pub/sub 扇出）+ `TransactionSendUtils.runAfterCommit`、防重提交 `@PreventDuplicateSubmit`、排序归一化 `SortUtils`、IP 归属地 `WebUtils`。
+- 横切能力一律用平台现成实现，新增写端点配三件套（`@Tag`/`@Operation` 文档 + `@PreAuthorize` 权限 + `@Log` 操作日志）：统一返回 `ApiResponseController`、全局异常 `ServiceException` → `GlobalExceptionHandle`、参数校验 `@Validated` + 分组、分页 BaseDTO + `MaxPageSizeLimit`、登录态 `LoginUserContext`、字典 `DictEnum` + `DictUtils`、附件 base-attachment 全家、实时通知 `WebSocketPushUtils`（lihua-base-ws，Redis pub/sub 扇出）+ `TransactionSendUtils.runAfterCommit`、防重提交 `@PreventDuplicateSubmit`、排序归一化 `SortUtils`、IP 归属地 `WebUtils`。
 - 表命名边界：平台表前缀 `sys_`；二开业务表用业务域自己的前缀，勿冒用 `sys_`。
 
 ## 字典与枚举
@@ -82,7 +84,7 @@ description: 指导 lihua 仓（单体后端，Maven 多模块 Spring Boot）的
 - **异步上下文接力唯一通道 = ContextCopyTaskDecorator**（base-web）：@Async 等经 Spring executor 提交的任务自动被装饰（提交时快照 MDC+SecurityContext、执行时覆盖恢复、finally 清理——池化执行器不串不漏，正确性与执行器形态解耦；写返回值的 @Async 方法同样被装饰）。**MODE_INHERITABLETHREADLOCAL 策略已下线勿恢复**——其正确性依赖「每任务新线程」形态，关虚拟线程回池化 executor 即从正确变串（静默数据错误）。**非 executor 线程（手动 new Thread/commonPool/parallelStream/@Scheduled/reactor 调度）明确无上下文**（SecurityContext 读到 null）——需要上下文时经 executor 提交或显式传参。setTaskDecorator 单槽（新载荷进 decorator 三段式各加一行，不做平行 decorator）。
 - **token/IP 取值唯一源头**：取 token/IP 一律经 `WebUtils.getToken/getIpAddress`（base-web，web 域唯一源头，getRegion 归属地查询也在此）或 `LoginUserContext`（security 上下文，兜底链已指向 WebUtils），任何新代码不得自行读 Authorization/Request-IP 头解析。base-ip 模块已整体并入 base-web、IpUtils 类已退休；mono 无网关头，IP 由 IpResolveUtils 三级直解。**防双击写接口挂 `@PreventDuplicateSubmit`**（base-web，唯一参数 `interval` 秒默认 5；幂等键=同会话 token（匿名退 IP）+URI+参数摘要，SET NX PX 占键、窗口期 TTL 自然过期不删键；重复抛 DuplicateSubmitException → REPEAT_SUBMIT_ERROR(511)「操作过于频繁，请稍后再试」）——参数变化生成新键不误伤修正重提，多端登录 token 不同互不影响。
 - **新表设计默认口径**：业务表继承 `BaseEntity`（base-mybatis，审计字段 + 逻辑删除 `delFlag`）；带状态语义的字段用字典 + 枚举承载（见「字典与枚举」）；有同组排序需求加 `sort` 列且实体 `implements SortEntity`（配套 SortUtils 归一化，见上）；char(1) 状态列配 `@Pattern`、varchar 按 DB 列长配 `@Size`（校验注解范式见「字典与枚举」）。
-- **跨模块解耦用领域事件**：`ApplicationEventPublisher` 发事件、监听器消费，勿跨模块直调内部实现。**事件载体统一放 `base-common` 的 `com.lihua.common.model.event/<业务域>/` 子包、类名统一 `Event` 后缀**——载体可携带数据（`event/log/LogEvent`，日志落库传参）也可为纯信号空类（`event/setting/CacheBlackIpEvent`，IP 黑名单缓存刷新）；同一业务域多个事件在域包内并列分类。先例：操作日志 = HandleRecodeLog 发布 LogEvent → SysLogService 监听落库。原「权限更新三件套」的进程内事件腿（PermissionUpdateEvent + PermissionUpdateEventListener）已退役：WS 实时推送统一 `WebSocketPushUtils.push`（base-cache，Redis pub/sub 扇出）；`PermissionUpdateUtils`（base-security）保留 Redis 标记（红点事实源，markChanged/hasChanged/clear）不变。事件不跨实例传播——红点等判定必须有独立事实源。事件监听侧需要异步时经 executor 提交（走 ContextCopyTaskDecorator 通道，见上条）。
+- **跨模块解耦用领域事件**：`ApplicationEventPublisher` 发事件、监听器消费，勿跨模块直调内部实现。**事件载体统一放 `base-common` 的 `com.lihua.common.model.event/<业务域>/` 子包、类名统一 `Event` 后缀**——载体可携带数据（`event/log/LogEvent`，日志落库传参）也可为纯信号空类（`event/setting/CacheBlackIpEvent`，IP 黑名单缓存刷新）；同一业务域多个事件在域包内并列分类。先例：操作日志 = HandleRecodeLog 发布 LogEvent → SysLogService 监听落库。原「权限更新三件套」的进程内事件腿（PermissionUpdateEvent + PermissionUpdateEventListener）已退役：WS 实时推送统一 `WebSocketPushUtils.push`（lihua-base-ws，Redis pub/sub 扇出）；`PermissionUpdateUtils`（base-security）保留 Redis 标记（红点事实源，markChanged/hasChanged/clear）不变。事件不跨实例传播——红点等判定必须有独立事实源。事件监听侧需要异步时经 executor 提交（走 ContextCopyTaskDecorator 通道，见上条）。
 - **事务后执行用 `TransactionSendUtils.runAfterCommit`**（base-common `utils/spring`，自 base-websocket 下沉）：当前存在活动事务则挂 afterCommit 执行、否则立即执行——事务内直接推送会先于数据提交到达，客户端收到消息立即回拉时读不到关联数据；凡「写库 + 推送/通知」组合一律包 runAfterCommit（**在发布点包裹，勿嵌套**——afterCommit 回调内事务同步仍激活，二次注册不会执行）。
 
 ## 红线与已否决方案
@@ -100,7 +102,7 @@ description: 指导 lihua 仓（单体后端，Maven 多模块 Spring Boot）的
 
 > 本节与 lihua-cloud 仓 `skills/lihua-cloud-backend.md` 的同名章节同文；**改任一处须同步另一处**。改 base 层/横切逻辑前必读；两仓 base 层改动遵循双同步原则（同 commit 粒度、行为一致）。
 
-- **直接复制即可**（源码级一致，仅包名差异）：base 的 attachment/captcha/doc/job/mybatis/sensitive/websocket 全部；`lihua-system` 绝大多数文件逐字节一致（@Log/@PreAuthorize/@Sensitive 用法同构）。cloud 多一个 `lihua-base-client`（远程调用基建），mono 无。
+- **直接复制即可**（源码级一致，仅包名差异）：base 的 attachment/captcha/doc/job/mybatis/sensitive/ws 全部 + 顶层 `lihua-websocket`（双仓同名同位的受控基建库）；`lihua-system` 绝大多数文件逐字节一致（@Log/@PreAuthorize/@Sensitive 用法同构）。cloud 多一个 `lihua-base-client`（远程调用基建），mono 无。
 - **需 cloud 特有处理的分叉点**：
   1. 认证/注册/验证码：mono 在 lihua-system，cloud 拆到独立 lihua-auth 服务且走 RPC（`lihua-api-system` 的 SysUserAuthClient + facade）；AuthenticationManager Bean 位置不同（mono 在 SecurityConfig，cloud 在 auth 服务 LoginConfig）。
   2. 附件：cloud 归 lihua-file 服务，配置在 nacos `lihua-file.yaml`（上传模式/100MB 限制/下载链接过期）。
@@ -109,7 +111,7 @@ description: 指导 lihua 仓（单体后端，Maven 多模块 Spring Boot）的
   5. SecurityConfig：cloud 多 3 条内部端点 permitAll（log insert / user auth / setting）。
   6. TokenEnum 位置：cloud 在 base-common，mono 在 base-security（值相同，硬编码 JWT 密钥）。
 - **配置双轨**：mono 用 application-dev/prod.yml，cloud 用 nacos（仓库导出 `deploy/nacos/nacos_config_export.zip`，目录=group）；token 参数唯一来源是 nacos `lihua-common.yaml`。
-- **WS 部署形态**：mono 单 jar WS 嵌 admin 进程（base-websocket 由 lihua-admin 显式引入，业务模块零依赖；推送投递经 Redis pub/sub 回本进程订阅器推送，mono 部署多份天然扇出）/ cloud 独立 `lihua-ws` 服务（无库、可多实例；gateway 路由 `/ws-connect/**` 指向 lihua-ws；system 已卸除 base-websocket）。两形态同构：base-websocket（连接持有方）与业务模块完全隔离、仅经 Redis 交互（WS_PUSH 投递/订阅 + once token 握手鉴权读写）；业务侧投递一律 `WebSocketPushUtils.push`（base-cache），禁止依赖 base-websocket/直调 WebSocketManager。
+- **WS 部署形态**：mono 单 jar WS 嵌 admin 进程（顶层 `lihua-websocket` 由 lihua-admin 显式引入，业务模块零依赖；推送投递经 Redis pub/sub 回本进程订阅器推送，mono 部署多份天然扇出）/ cloud 独立 `lihua-ws` 服务（无库、可多实例；gateway 路由 `/ws-connect/**` 指向 lihua-ws；system 已卸除 WS 连接层依赖）。两形态同构：`lihua-websocket`（连接持有方，与 cloud 的 `lihua-api` 同类的受控基建库）与业务模块完全隔离、仅经 Redis 交互（WS_PUSH 投递/订阅 + once token 握手鉴权读写）；业务侧投递一律 `WebSocketPushUtils.push`（lihua-base-ws），禁止依赖 lihua-websocket/直调 WebSocketManager。
 - **范式约定**：分页 `POST /page` + `@Validated(MaxPageSizeLimit.class)` + BaseDTO；权限维持 `hasRole('ROLE_admin')` 粗粒度（细粒度 authorities 通道保留但不消费，项目定位类若依脚手架）。
 
 ## 跨端协作（契约源头）

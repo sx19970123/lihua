@@ -24,8 +24,8 @@
         <module>lihua-base-cache</module>
         <module>lihua-base-security</module>
         <module>lihua-base-sensitive</module>
+        <module>lihua-base-ws</module>
         <module>lihua-base-web</module>
-        <module>lihua-base-websocket</module>
     </modules>
 
     <properties>

@@ -14,14 +14,13 @@ import com.lihua.mapper.SysNoticeMapper;
 import com.lihua.model.dto.SysNoticeDTO;
 import com.lihua.model.vo.SysNoticeVO;
 import com.lihua.model.vo.SysUserNoticeVO;
+import com.lihua.common.enums.WebSocketMsgTypeEnum;
+import com.lihua.common.utils.spring.TransactionSendUtils;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.service.SysNoticeService;
 import com.lihua.service.SysUserNoticeService;
 import com.lihua.service.SysUserService;
-import com.lihua.websocket.enums.WebSocketMsgTypeEnum;
-import com.lihua.websocket.manager.WebSocketManager;
-import com.lihua.websocket.model.WebSocketResult;
-import com.lihua.websocket.utils.TransactionSendUtils;
+import com.lihua.ws.push.WebSocketPushUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -45,9 +44,6 @@ public class SysNoticeServiceImpl implements SysNoticeService {
 
     @Resource
     private SysUserService sysUserService;
-
-    @Resource
-    private WebSocketManager webSocketManager;
 
 
     @Override
@@ -171,14 +167,14 @@ public class SysNoticeServiceImpl implements SysNoticeService {
             // 发送范围为全部用户时，删除所有关联关系批量插入
             sysUserNoticeService.deleteByNoticeIds(Collections.singletonList(id));
             saveUserNotice(id, sysUserService.queryAllUserIds());
-            // 向全部用户发送通知
-            TransactionSendUtils.runAfterCommit(() -> webSocketManager.send(new WebSocketResult<>(WebSocketMsgTypeEnum.WS_NOTICE, sysNotice)));
+            // 向全部用户投递通知（Redis pub/sub 扇出）
+            TransactionSendUtils.runAfterCommit(() -> WebSocketPushUtils.pushAll(WebSocketMsgTypeEnum.WS_NOTICE, sysNotice));
         } else {
             // 发送范围为指定用户时，重置star和read状态
             sysUserNoticeService.resetStatus(id);
-            // 向指定用户发送消息
+            // 向指定用户投递通知（Redis pub/sub 扇出）
             List<String> userIds = sysUserNoticeService.queryUserIds(id);
-            TransactionSendUtils.runAfterCommit(() -> webSocketManager.send(userIds, new WebSocketResult<>(WebSocketMsgTypeEnum.WS_NOTICE, sysNotice)));
+            TransactionSendUtils.runAfterCommit(() -> WebSocketPushUtils.push(userIds, WebSocketMsgTypeEnum.WS_NOTICE, sysNotice));
         }
 
         return id;

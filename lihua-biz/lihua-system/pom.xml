@@ -43,15 +43,15 @@
             <groupId>com.lihua</groupId>
             <artifactId>lihua-base-excel</artifactId>
         </dependency>
+        <!--            WS 消息边界（公告实时推送投递）-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-ws</artifactId>
+        </dependency>
         <!--            数据脱敏模块-->
         <dependency>
             <groupId>com.lihua</groupId>
             <artifactId>lihua-base-sensitive</artifactId>
-        </dependency>
-        <!--            websocket-->
-        <dependency>
-            <groupId>com.lihua</groupId>
-            <artifactId>lihua-base-websocket</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -1,5 +1,5 @@
 package com.lihua.websocket.model;
-import com.lihua.websocket.enums.WebSocketMsgTypeEnum;
+import com.lihua.common.enums.WebSocketMsgTypeEnum;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

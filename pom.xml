@@ -105,10 +105,16 @@
                 <artifactId>lihua-base-sensitive</artifactId>
                 <version>${project.version}</version>
             </dependency>
-<!--            websocket模块 -->
+<!--            websocket模块（顶层受控基建库：连接持有层，业务模块零依赖，由 lihua-admin 装配引入） -->
             <dependency>
                 <groupId>com.lihua</groupId>
-                <artifactId>lihua-base-websocket</artifactId>
+                <artifactId>lihua-websocket</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+<!--            WS 消息边界模块（业务投递唯一入口，业务服务与 lihua-websocket 的中间层） -->
+            <dependency>
+                <groupId>com.lihua</groupId>
+                <artifactId>lihua-base-ws</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!--            web模块 -->
@@ -141,6 +147,7 @@
     <modules>
         <module>lihua-admin</module>
         <module>lihua-base</module>
+        <module>lihua-websocket</module>
         <module>lihua-biz</module>
     </modules>
 

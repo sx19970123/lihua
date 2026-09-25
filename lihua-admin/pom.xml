@@ -23,6 +23,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!--        WS 连接层（嵌 admin 进程：/ws-connect 端点 + Redis pub/sub 订阅器；顶层受控基建库由 admin 装配引入，
+                    业务模块零依赖——业务推送一律经 base-cache 的 WebSocketPushUtils 投递）-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-websocket</artifactId>
+        </dependency>
         <!--            系统监控-->
         <dependency>
             <groupId>com.lihua</groupId>
