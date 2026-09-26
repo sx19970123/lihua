@@ -36,7 +36,7 @@ services:
       - REDIS_PASSWORD=password                       # redis密码
       - TZ=Asia/Shanghai                              # 设置容器时区
       # 服务端口（healthcheck 寻址用；环境变量覆盖 application.yml 的 server.port）
-      - SERVER_PORT=8081
+      - SERVER_PORT=8085
       # 堆上限 = 容器 mem_limit（1g）的 75%；OOM 治理：dump 堆快照到数据卷（事后排查；约等于堆大小，低频事件，手动清理）+ OOM 即退出（交 restart 自愈，防半死僵尸态）
       - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/lihua/data/ -XX:+ExitOnOutOfMemoryError
     depends_on:
