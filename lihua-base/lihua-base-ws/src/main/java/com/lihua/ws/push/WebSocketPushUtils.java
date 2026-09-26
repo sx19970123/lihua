@@ -10,8 +10,8 @@ import java.util.List;
 
 /**
  * WS 推送投递唯一入口（业务侧与 WS 连接层之间的消息边界）：业务侧经 Redis pub/sub 投递，
- * 所有订阅 {@link RedisTopicEnum#WS_PUSH} 的 WS 实例（mono 为嵌 WS 的 admin 进程、cloud 为 lihua-ws 服务）
- * 各收一次并推送本地会话——多实例部署天然扇出，投递方不持有任何连接、不依赖 lihua-websocket
+ * 所有订阅 {@link RedisTopicEnum#WS_PUSH} 的 WS 实例（mono 为嵌 WS 的 admin 进程、cloud 为
+ * lihua-websocket 服务）各收一次并推送本地会话——多实例部署天然扇出，投递方不持有任何连接、不依赖连接层模块
  * <p>
  * 铁纪律：禁止业务侧依赖 lihua-websocket、直调 WebSocketManager 或进程内事件触达——那是单实例语义，
  * 双实例部署时另一实例的连接将收不到推送（多实例扩展的验收前提）

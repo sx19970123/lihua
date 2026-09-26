@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  * 收到投递后各自查本地会话表、只推送本实例持有的连接——业务方一次投递即完成多实例扇出
  * <p>
  * mono 形态：WS 嵌在 admin 进程内，自发自收（publish 经 Redis 回本进程订阅器）；
- * cloud 形态：独立 lihua-ws 服务，可多实例水平扩展
+ * cloud 形态：独立 lihua-websocket 服务（连接层即服务本体），可多实例水平扩展
  * <p>
  * 推送为 fire-and-forget：回调内异常仅记日志，不重试不确认（可靠性靠持久层 + 客户端拉取兜底）
  */

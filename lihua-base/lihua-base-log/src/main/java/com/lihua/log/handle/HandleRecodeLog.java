@@ -1,6 +1,6 @@
 package com.lihua.log.handle;
 
-import com.lihua.common.model.bridge.log.LogModel;
+import com.lihua.common.model.event.log.LogEvent;
 import com.lihua.common.model.response.ApiResponseModel;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.json.JsonUtils;
@@ -75,7 +75,7 @@ public class HandleRecodeLog {
         // 全限定类名
         String declaringTypeName = signature.getDeclaringTypeName();
         // 构建LogVO对象
-        LogModel logModel = new LogModel();
+        LogEvent logModel = new LogEvent();
         logModel.setDescription(description)
                 .setTypeCode(type.getCode())
                 .setTypeMsg(type.getMsg())

@@ -46,7 +46,8 @@
 ``` bash
 lihua/
 ├── lihua-admin/            # 应用启动与打包入口
-├── lihua-base/             # 基础能力层（attachment / cache / captcha / common / dict / doc / excel / job / log / mybatis / security / sensitive / web / websocket）
+├── lihua-base/             # 基础能力层（attachment / cache / captcha / common / dict / doc / excel / job / log / mybatis / security / sensitive / web / ws）
+├── lihua-websocket/        # WebSocket 连接层（受控基建库，随 lihua-admin 装配）
 ├── lihua-biz/              # 业务层（lihua-system 系统业务 / lihua-monitor 系统监控）
 ├── deploy/                 # 数据库脚本、docker 部署编排
 ├── LICENSE

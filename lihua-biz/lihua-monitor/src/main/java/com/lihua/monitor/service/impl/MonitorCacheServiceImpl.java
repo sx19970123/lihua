@@ -1,7 +1,7 @@
 package com.lihua.monitor.service.impl;
 
 import com.lihua.common.exception.ServiceException;
-import com.lihua.common.model.bridge.setting.CacheBlackIp;
+import com.lihua.common.model.event.setting.CacheBlackIpEvent;
 import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.monitor.model.CacheMonitor;
 import com.lihua.cache.manager.RedisCacheManager;
@@ -97,7 +97,7 @@ public class MonitorCacheServiceImpl implements MonitorCacheService {
 
         // 黑名单走全量重建（重建侧先算后写，失败时旧名单保留且异常向上传播），不本地预删
         if (keyPrefix.startsWith(SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue())) {
-            applicationEventPublisher.publishEvent(new CacheBlackIp());
+            applicationEventPublisher.publishEvent(new CacheBlackIpEvent());
             return;
         }
 

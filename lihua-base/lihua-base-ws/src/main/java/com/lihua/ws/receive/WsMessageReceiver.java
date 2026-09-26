@@ -5,7 +5,7 @@ package com.lihua.ws.receive;
  * 实现放 @Component 即被宿主扫描注册
  * <p>
  * <b>生效范围</b>：处理器运行在连接所在进程（引 lihua-websocket 的 JVM——mono 为 admin、cloud 为
- * lihua-ws）。业务服务（cloud 的 system 等）进程内注册的处理器收不到调用——跨服务上行业务处理
+ * lihua-websocket 服务）。业务服务（cloud 的 system 等）进程内注册的处理器收不到调用——跨服务上行业务处理
  * 须经 WS 上行 Redis topic 桥接（{@code com.lihua.ws.receive} 预留方向），勿用进程内事件
  * （event 不跨进程）。内置参考实现：{@link com.lihua.ws.receive.impl.HeartbeatWsMessageReceiver}
  * <p>

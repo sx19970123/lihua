@@ -1,4 +1,4 @@
-package com.lihua.common.model.bridge.log;
+package com.lihua.common.model.event.log;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Accessors(chain = true)
-public class LogModel implements Serializable {
+public class LogEvent implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -3,7 +3,7 @@ package com.lihua.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lihua.common.model.bridge.log.LogModel;
+import com.lihua.common.model.event.log.LogEvent;
 import com.lihua.entity.SysLoginLog;
 import com.lihua.mapper.SysLoginLogMapper;
 import com.lihua.model.dto.SysLogDTO;
@@ -26,7 +26,7 @@ public class SysLoginLogServiceImpl implements SysLogService {
 
     @Override
     @EventListener(condition = "#logModel.typeCode == 'LOGIN'")
-    public void insert(LogModel logModel) {
+    public void insert(LogEvent logModel) {
         SysLoginLog sysLoginLog = new SysLoginLog();
         BeanUtils.copyProperties(logModel, sysLoginLog);
         sysLoginLogMapper.insert(sysLoginLog);

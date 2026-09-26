@@ -3,7 +3,7 @@ package com.lihua.service.impl;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.lihua.cache.enums.RedisTopicEnum;
 import com.lihua.cache.publisher.RedisPublisher;
-import com.lihua.common.model.bridge.setting.CacheBlackIp;
+import com.lihua.common.model.event.setting.CacheBlackIpEvent;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.entity.SysSetting;
@@ -183,7 +183,7 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
 
     // 缓存ip黑名单（缓存监控页触发的事件入口）
     @EventListener
-    public void cacheIpBlackList(CacheBlackIp cacheBlackIp) {
+    public void cacheIpBlackList(CacheBlackIpEvent cacheBlackIp) {
         cacheIpBlackList();
     }
 
