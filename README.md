@@ -12,14 +12,14 @@
 |------|------|------|
 | lihua | 后端 · Spring Boot 单体版（本仓库） | https://gitee.com/yukino_git/lihua |
 | lihua-cloud | 后端 · Spring Cloud 微服务版 | https://gitee.com/yukino_git/lihua-cloud |
-| lihua-web | 前端 · Vue3 管理端 | https://gitee.com/yukino_git/lihua-web |
+| lihua-web | 前端 · Vue3 管理端（Antdv Next 组件库） | https://gitee.com/yukino_git/lihua-web |
 | lihua-app | 移动端 · UniApp（Android / iOS / 鸿蒙 / 微信小程序） | https://gitee.com/yukino_git/lihua-app |
 
 > Web 端与移动端可同时对接单体版与微服务版后端，接口契约保持一致。
 
 ## 📚 文档
 
-- 📖 开发文档：https://doc.lihua.xyz/（含 1.0 / 2.0 / 3.0 全版本）
+- 📖 开发文档：https://doc.lihua.xyz（含 1.0 / 2.0 / 3.0 全版本）
 - 🤖 AI 文档（DeepWiki）：https://deepwiki.com/sx19970123/lihua
 - 🎥 功能介绍视频：https://www.bilibili.com/video/BV14Z1oY8EKh/
 
