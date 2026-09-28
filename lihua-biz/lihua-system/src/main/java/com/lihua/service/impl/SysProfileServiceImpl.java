@@ -1,0 +1,277 @@
+package com.lihua.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.lihua.common.enums.SysStatusEnum;
+import com.lihua.common.exception.ServiceException;
+import com.lihua.common.utils.date.DateUtils;
+import com.lihua.entity.SysUser;
+import com.lihua.mapper.SysUserMapper;
+import com.lihua.model.dto.SysCheckPasswordDTO;
+import com.lihua.model.dto.SysProfileBasicDTO;
+import com.lihua.model.dto.SysUpdatePasswordDTO;
+import com.lihua.cache.manager.RedisCacheManager;
+import com.lihua.security.manager.LoginUserContext;
+import com.lihua.security.manager.LoginUserManager;
+import com.lihua.security.model.CurrentUser;
+import com.lihua.security.model.LoginUserSession;
+import com.lihua.security.utils.SecurityUtils;
+import com.lihua.service.SysProfileService;
+import com.lihua.service.SysSettingService;
+import com.lihua.service.SysUserService;
+import com.lihua.strategy.postlogincheck.PostLoginCheckStrategy;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static com.lihua.cache.enums.RedisKeyPrefixEnum.CHECK_PASSWORD_REDIS_PREFIX;
+
+@Service
+public class SysProfileServiceImpl implements SysProfileService {
+
+    @Resource
+    private SysUserMapper sysUserMapper;
+
+    @Resource
+    private SysUserService sysUserService;
+
+    @Resource
+    private SysSettingService sysSettingService;
+
+    @Resource
+    private RedisCacheManager redisCacheManager;
+
+    @Resource
+    private List<PostLoginCheckStrategy> postLoginCheckStrategyList;
+
+    @Override
+    public String saveBasics(SysProfileBasicDTO sysProfileBasicDTO) {
+        // 获取当前登录信息
+        CurrentUser currentUser = LoginUserContext.getLoginUser().getUser();
+        // 验证手机号码、邮箱
+        checkPhoneNumber(sysProfileBasicDTO.getPhoneNumber(),currentUser.getId());
+        checkEmailNumber(sysProfileBasicDTO.getEmail(),currentUser.getId());
+
+        // 修改
+        UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
+
+        // 头像
+        if (StringUtils.hasText(sysProfileBasicDTO.getAvatar())) {
+            updateWrapper.lambda().set(SysUser::getAvatar,sysProfileBasicDTO.getAvatar());
+        }
+        // 昵称
+        if (StringUtils.hasText(sysProfileBasicDTO.getNickname())) {
+            updateWrapper.lambda().set(SysUser::getNickname,sysProfileBasicDTO.getNickname());
+        }
+        // 手机号码
+        if (sysProfileBasicDTO.getPhoneNumber() != null) {
+            updateWrapper.lambda().set(SysUser::getPhoneNumber,sysProfileBasicDTO.getPhoneNumber());
+        }
+        // 邮箱
+        if (sysProfileBasicDTO.getEmail() != null) {
+            updateWrapper.lambda().set(SysUser::getEmail,sysProfileBasicDTO.getEmail());
+        }
+        // 性别
+        if (StringUtils.hasText(sysProfileBasicDTO.getGender())) {
+            updateWrapper.lambda().set(SysUser::getGender,sysProfileBasicDTO.getGender());
+        }
+
+        // 更新时间/更新人
+        updateWrapper.lambda().eq(SysUser::getId,currentUser.getId())
+                .set(SysUser::getUpdateTime, DateUtils.now())
+                .set(SysUser::getUpdateId,currentUser.getId());
+
+        // 执行更新
+        int update = sysUserMapper.update(updateWrapper);
+
+        // 更新缓存
+        if (update == 1) {
+            // 头像
+            if (StringUtils.hasText(sysProfileBasicDTO.getAvatar())) {
+                currentUser.setAvatar(sysProfileBasicDTO.getAvatar());
+            }
+            // 昵称
+            if (StringUtils.hasText(sysProfileBasicDTO.getNickname())) {
+                currentUser.setNickname(sysProfileBasicDTO.getNickname());
+            }
+            // 手机号码
+            if (sysProfileBasicDTO.getPhoneNumber() != null) {
+                currentUser.setPhoneNumber(sysProfileBasicDTO.getPhoneNumber());
+            }
+            // 邮箱
+            if (sysProfileBasicDTO.getEmail() != null) {
+                currentUser.setEmail(sysProfileBasicDTO.getEmail());
+            }
+            // 性别
+            if (StringUtils.hasText(sysProfileBasicDTO.getGender())) {
+                currentUser.setGender(sysProfileBasicDTO.getGender());
+            }
+            LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+            loginUserSession.setUser(currentUser);
+            LoginUserManager.setLoginUserCache(loginUserSession);
+        }
+
+        return currentUser.getId();
+    }
+
+    @Override
+    public String updatePassword(SysUpdatePasswordDTO sysUpdatePasswordDTO) {
+        String oldPassword = sysUpdatePasswordDTO.getOldPassword();
+        String newPassword = sysUpdatePasswordDTO.getNewPassword();
+        String confirmPassword = sysUpdatePasswordDTO.getConfirmPassword();
+
+        // 获取旧密码
+        String currentPassword = getPassword();
+
+        if (!SecurityUtils.matchesPassword(oldPassword, currentPassword)) {
+            throw new ServiceException("旧密码输入错误");
+        }
+
+        if (SecurityUtils.matchesPassword(newPassword, currentPassword)) {
+            throw new ServiceException("新密码不能与旧密码相同");
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            throw new ServiceException("两次输入的密码不一致");
+        }
+
+        if (isDefaultPassword(newPassword)) {
+            throw new ServiceException("新密码不能为默认密码");
+        }
+
+        UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+        LocalDateTime now = DateUtils.now();
+        CurrentUser currentUser = loginUserSession.getUser();
+        String password = SecurityUtils.encryptPassword(newPassword);
+        updateWrapper.lambda().eq(SysUser::getId,currentUser.getId())
+                .set(SysUser::getPassword, password)
+                .set(SysUser::getUpdateTime, now)
+                .set(SysUser::getPasswordUpdateTime, now);
+
+        int update = sysUserMapper.update(updateWrapper);
+        // 更新缓存
+        if (update == 1) {
+            currentUser.setPasswordUpdateTime(now);
+            LoginUserManager.setLoginUserCache(loginUserSession);
+            // 改密后失效其他设备会话、保留当前会话：凭据已换，旧 token 不应继续长期有效
+            LoginUserManager.removeUserSessions(currentUser.getId(), loginUserSession.getCacheKey());
+        }
+        return currentUser.getId();
+    }
+
+    @Override
+    public String getPassword() {
+        return sysUserMapper.selectById(LoginUserContext.getUserId()).getPassword();
+    }
+
+    @Override
+    @Transactional
+    public void accountDeactivate() {
+        String cache = redisCacheManager.getCacheObject(CHECK_PASSWORD_REDIS_PREFIX.getValue() + LoginUserContext.getUserId(), String.class);
+
+        if (!StringUtils.hasText(cache)) {
+            throw new ServiceException("等待超时，请重新进行身份验证");
+        }
+
+        if (LoginUserContext.isAdmin()) {
+            throw new ServiceException("超级管理员无法注销");
+        }
+
+        String userId = LoginUserContext.getUserId();
+        // 注销用户当前必为启用态（停用用户无法登录），经 toggle 置为停用
+        sysUserService.updateStatus(userId, SysStatusEnum.NORMAL.getValue());
+        sysUserService.deleteByIds(Collections.singletonList(userId));
+    }
+
+    /**
+     * 判断密码是否为默认密码
+     */
+    private boolean isDefaultPassword(String newPassword) {
+        String defaultPassword = sysSettingService.getDefaultPassword();
+        return defaultPassword.equals(newPassword);
+    }
+
+    @Override
+    public Boolean checkPassword(SysCheckPasswordDTO sysCheckPasswordDTO) {
+        boolean checked = SecurityUtils.matchesPassword(sysCheckPasswordDTO.getPassword(), getPassword());
+
+        if (checked) {
+            // 验证成功后向redis记录1分钟缓存
+            redisCacheManager.setCacheObject(CHECK_PASSWORD_REDIS_PREFIX.getValue() + LoginUserContext.getUserId(), "1", Duration.ofMinutes(1));
+        }
+        return checked;
+    }
+
+    @Override
+    public String saveTheme(String theme) {
+        UpdateWrapper<SysUser> updateWrapper = new UpdateWrapper<>();
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+        CurrentUser currentUser = loginUserSession.getUser();
+        updateWrapper.lambda().eq(SysUser::getId,currentUser.getId())
+                .set(SysUser::getTheme,theme)
+                .set(SysUser::getUpdateTime, DateUtils.now());
+        int update = sysUserMapper.update(updateWrapper);
+        if (update == 1) {
+            currentUser.setTheme(theme);
+            LoginUserManager.setLoginUserCache(loginUserSession);
+        }
+        return currentUser.getId();
+    }
+
+    @Override
+    public List<String> postLoginCheck() {
+        // 需要进行登录后设置的组件名集合
+        List<String> componentNameList = new ArrayList<>();
+        LoginUserSession loginUser = LoginUserContext.getLoginUser();
+        // 循环检查是否需要进行登录后配置
+        postLoginCheckStrategyList.forEach(strategy -> {
+            String componentName = strategy.check(loginUser);
+            if (StringUtils.hasText(componentName)) {
+                componentNameList.add(componentName);
+            }
+        });
+
+        return componentNameList;
+    }
+
+    /**
+     * 验证手机号
+     */
+    private void checkPhoneNumber(String phoneNumber,String userId) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysUser::getPhoneNumber,phoneNumber);
+        List<SysUser> sysUsers = sysUserMapper.selectList(queryWrapper);
+        if (sysUsers.isEmpty()) {
+            return;
+        }
+        if (sysUsers.get(0).getId().equals(userId)) {
+            return;
+        }
+        throw new ServiceException("当前手机号码已存在");
+    }
+
+    /**
+     * 验证邮箱
+     */
+    private void checkEmailNumber(String email,String userId) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SysUser::getEmail,email);
+        List<SysUser> sysUsers = sysUserMapper.selectList(queryWrapper);
+        if (sysUsers.isEmpty()) {
+            return;
+        }
+        if (sysUsers.get(0).getId().equals(userId)) {
+            return;
+        }
+        throw new ServiceException("当前邮箱已存在");
+    }
+
+}

@@ -1,0 +1,31 @@
+package com.lihua.security.model;
+
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * 组合完成后交给前端store
+ */
+@Data
+public class AuthInfo implements Serializable {
+    // 权限信息（菜单权限编码，角色编码集合）
+    List<String> permissions;
+    // 所有路由信息
+    List<CurrentRouter> routers;
+    // 所有收藏固定的菜单信息
+    List<CurrentViewTab> viewTabs;
+    // 所有角色信息
+    List<CurrentRole> roles;
+    // 登录用户信息
+    CurrentUser userInfo;
+    // 部门信息
+    List<CurrentDept> depts;
+    // 默认部门
+    CurrentDept defaultDept;
+    // 岗位信息
+    List<CurrentPost> posts;
+    // 权限数据是否已变更（会话版本快照落后于当前版本）：前端据此显示「数据更新」红点
+    Boolean permissionUpdate;
+}

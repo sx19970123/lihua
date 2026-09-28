@@ -1,0 +1,133 @@
+ # 系统配置
+token:
+  # 令牌过期时间（Duration 带单位写法：s/m/h/d，裸数字按分钟）
+  tokenExpireTime: 24h
+  # 令牌刷新阈值（距令牌过期不足该阈值时，新请求触发刷新）
+  refreshThreshold: 15m
+  # JWT 签发/验签密钥（HMAC-SHA256；无默认值——未注入环境变量即启动失败，禁止回退硬编码；建议 32+ 随机字符，如 openssl rand -hex 32；换值=全员重新登录）
+  tokenSecret: ${TOKEN_SECRET}
+
+ # 附件配置
+attachment:
+  # 下载链接签名密钥（HMAC-SHA256；无默认值——未注入环境变量即启动失败，禁止回退硬编码；建议 32+ 随机字符，如 openssl rand -hex 32，避免 $、#、空格等需转义字符）
+  downloadSignKey: ${ATTACHMENT_DOWNLOAD_SIGN_KEY}
+  # 下载链接默认时效（缺省 1 小时；Duration 带单位写法：s/m/h/d，如 1h、90m，裸数字按分钟）
+  downloadExpireTime: 1h
+  # 允许上传的附件扩展名（小写、不带点，如 [jpg, pdf]；空=不限制，由使用方按部署场景决定）
+  # uploadAllowExtensions: [jpg, jpeg, png, gif, webp, bmp, pdf]
+  # 文件上传服务类型：LOCAL（传统本地上传）、ALIYUN-OSS（阿里云oss）
+  uploadFileModel: LOCAL
+  # 上传文件路径，LOCAL模式下为服务器目录；ALIYUN-OSS模式下为桶下目录
+  uploadFilePath: ${BASE_FILE_PATH}upload/
+
+# 处理因linux系统临时文件清理导致文件上传报错
+server:
+  tomcat:
+    basedir: ${BASE_FILE_PATH}temp
+
+# 数据源配置
+spring:
+  datasource:
+    dynamic:
+      primary: master
+      strict: false
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://${DB_HOST}:${DB_PORT}/lihua
+          username: ${DB_USERNAME}
+          password: ${DB_PASSWORD}
+          hikari:
+            # 最大连接数默认 10
+            maximum-pool-size: 20
+            # 最小空闲连接 默认10
+            minimum-idle: 5
+            # 等待连接池连接最大时长（毫秒）
+            connection-timeout: 5000
+            # 空闲连接最大时长（毫秒）
+            idle-timeout: 120000
+            # 连接生命时长（毫秒）
+            max-lifetime: 1800000
+            # 空闲连接保活心跳（防 NAT/防火墙静默掐断空闲 TCP 借出僵尸连接报 Communications link failure；须小于 max-lifetime）
+            keepalive-timeout: 300000
+            # 连接借出超该时长未还打 WARN（带借用调用栈）——排查连接泄漏/长事务雷达；生产环境如介意可关闭
+            leak-detection-threshold: 60000
+# 多数据源配置，使用dynamic-datasource实现，具体文档请参考：https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611
+#        slave_1:
+#          driver-class-name: com.mysql.cj.jdbc.Driver
+#          url: jdbc:mysql://localhost:3306/dynamic
+#          username: root
+#          password: 123456
+#          hikari:
+#            # 最大连接数默认 10
+#            maximum-pool-size: 30
+#            # 最小空闲连接 默认10
+#            minimum-idle: 30
+#            # 等待连接池连接最大时长（毫秒）
+#            connection-timeout: 5000
+#            # 空闲连接最大时长（毫秒）
+#            idle-timeout: 0
+#            # 连接生命时长（毫秒）
+#            max-lifetime: 25800
+
+  # redisson配置，官方文档：https://redisson.pro/docs/integration-with-spring/#spring-boot-starter
+  redis:
+    redisson:
+      config: |
+        singleServerConfig:
+          address: "redis://${REDIS_HOST}:${REDIS_PORT}"
+          password: ${REDIS_PASSWORD}
+          database: 0
+          # 命令超时时间
+          timeout: 3000
+          # 连接超时时间
+          connectTimeout: 10000
+          # 连接池最大连接数
+          connectionPoolSize: 64
+          # 最小空闲连接数
+          connectionMinimumIdleSize: 10
+        # 自定义序列化器
+        codec: !<com.lihua.cache.config.TypedJsonJacksonCodec> {}
+
+# 日志配置
+logging:
+  file:
+    name: ${BASE_FILE_PATH}logs/lihua.log
+  level:
+    com.lihua: debug
+    org.springframework: info
+  # [traceId] 由 TraceIdFilter 写入 MDC 输出（cloud 侧网关生成、RPC 透传；mono 入口生成）
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} TraceId=[%X{traceId}] %5p [%thread] %-40.40logger{39} : %m%n%ex"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} TraceId=[%X{traceId}] %5p [%thread] %-40.40logger{39} : %m%n%ex"
+
+# oss
+# 需要attachment配置中uploadFileModel为【ALIYUN-OSS】，同配置项 uploadFilePath 为桶下目录
+aliyun:
+  oss:
+    endpoint:
+    access-key-id:
+    access-key-secret:
+    bucket-name:
+
+# 定时任务
+# 如需启用需要从启动类【com/lihua/LiHuaApplication.java】中将 @EnableSnailJob 注释解除
+# snail-job:
+#   server:
+#     host:
+#     port:
+#   namespace:
+#   group:
+#   token:
+
+ # spring doc 接口文档
+springdoc:
+  api-docs:
+    enabled: false
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: false
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true

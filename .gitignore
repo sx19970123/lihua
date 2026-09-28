@@ -37,3 +37,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### 运行时上传目录（dev 配置 uploadFilePath: lihua 的落点，含上传附件/头像/临时文件，禁止入库） ###
+/lihua/

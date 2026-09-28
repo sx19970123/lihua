@@ -1,0 +1,141 @@
+name: lihua
+
+# 日志轮转（所有容器统一）：单文件 10MB × 保留 3 份，防 json-file 无上限写爆磁盘
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+# JVM 服务统一探针：主端口 /actuator/health 全量聚合（含 db/redis 指标）——主端口天然唯一；
+# 容器内经 $SERVER_PORT 环境变量寻址（$$ 为 compose 转义，留待容器 shell 展开）。
+# start_period 给足 JVM 启动窗口，期间失败不计入 retries
+x-java-healthcheck: &java-healthcheck
+  test: ["CMD-SHELL", "curl -fsS http://localhost:$${SERVER_PORT}/actuator/health"]
+  interval: 15s
+  timeout: 5s
+  retries: 5
+  start_period: 60s
+
+services:
+  # 后端 java
+  server:
+    container_name: lihua-web-server                # 启动容器名
+    build:                                          # 通过./server中的dockerfile构建镜像
+      context: server
+      dockerfile: server/dockerfile
+    environment:                                    # 配置环境变量
+      - BASE_FILE_PATH=/lihua/data/                   # 文件上传目录（包含生成log路径及excel导出路径）
+      - ATTACHMENT_DOWNLOAD_SIGN_KEY=${ATTACHMENT_DOWNLOAD_SIGN_KEY}   # 下载链接签名密钥（在 .env 或部署环境提供，缺失启动失败）
+      - DB_HOST=lihua-mysql                           # mysql地址，默认使用mysql容器名即可
+      - DB_PORT=3306                                  # mysql端口，根据dockerfile暴露端口配置
+      - DB_USERNAME=username                          # mysql用户名
+      - DB_PASSWORD=password                          # mysql密码
+      - REDIS_HOST=lihua-redis                        # redis地址，默认使用redis容器名即可
+      - REDIS_PORT=6379                               # redis端口，根据dockerfile暴露端口配置
+      - REDIS_PASSWORD=password                       # redis密码
+      - TZ=Asia/Shanghai                              # 设置容器时区
+      # 服务端口（healthcheck 寻址用；环境变量覆盖 application.yml 的 server.port）
+      - SERVER_PORT=8085
+      # 堆上限 = 容器 mem_limit（1g）的 75%；OOM 治理：dump 堆快照到数据卷（事后排查；约等于堆大小，低频事件，手动清理）+ OOM 即退出（交 restart 自愈，防半死僵尸态）
+      - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/lihua/data/ -XX:+ExitOnOutOfMemoryError
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck: *java-healthcheck
+    stop_grace_period: 35s
+    mem_limit: 1g
+    logging: *default-logging
+    networks:                                       # 同主机下共享的自定义网络
+      - network
+    volumes:                                        # 挂载卷
+      - server-data:/lihua/data/
+      - jar-resource:/app/
+
+  # 前端 vue
+  client:
+    container_name: lihua-web-client                # 启动容器名
+    build:                                          # 通过./client中的dockerfile构建镜像
+      context: client
+      dockerfile: client/dockerfile
+    depends_on:
+      server:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    mem_limit: 128m
+    logging: *default-logging
+    ports:                                          # 端口映射，将容器80端口映射到主机80端口
+      - "80:80"
+    networks:                                       # 同主机下共享的自定义网络
+      - network
+    volumes:
+      - dist-resource:/usr/share/nginx/html/
+
+  # mysql数据库
+  mysql:
+    container_name: lihua-mysql                     # 启动容器名
+    image: mysql:8.0                                # 通过官方mysql:8.0构建镜像
+    ports:                                          # 端口映射，将容器3306端口映射到主机3306端口
+      - "3306:3306"
+    environment:                                    # 配置环境变量
+      - MYSQL_ROOT_PASSWORD=password                # root用户密码
+      - TZ=Asia/Shanghai                            # 设置容器时区
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    mem_limit: 1g
+    logging: *default-logging
+    networks:                                       # 同主机下共享的自定义网络
+      - network
+    volumes:                                        # 挂载卷
+      - mysql-conf:/etc/mysql/
+      - mysql-data:/var/lib/mysql
+
+  # redis 缓存
+  redis:
+    container_name: lihua-redis                     # 启动容器名
+    image: redis:7                                  # 通过官方redis:7最新版构建镜像
+    command: redis-server --requirepass password    # 指定redis密码
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "password", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    mem_limit: 256m
+    logging: *default-logging
+    networks:                                       # 同主机下共享的自定义网络
+      - network
+    volumes:                                        # 挂载卷
+      - redis-data:/data/
+    ports:                                          # 端口映射，将容器6379端口映射到主机6379端口
+      - "6379:6379"
+
+# 容器间共享网络
+networks:
+  network:
+
+# 卷挂载
+volumes:
+  mysql-conf:
+  mysql-data:
+  redis-data:
+  server-data:
+  jar-resource:
+  dist-resource:

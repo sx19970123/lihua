@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.lihua</groupId>
+        <artifactId>lihua</artifactId>
+        <version>3.0.0</version>
+    </parent>
+
+    <artifactId>lihua-admin</artifactId>
+
+    <properties>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!--        运维探针（compose healthcheck 经主端口 /actuator/health 探活）-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!--        WS 连接层（嵌 admin 进程：/ws-connect 端点 + Redis pub/sub 订阅器；顶层受控基建库由 admin 装配引入，
+                    业务模块零依赖——业务推送一律经 base-cache 的 WebSocketPushUtils 投递）-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-websocket</artifactId>
+        </dependency>
+        <!--            系统监控-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-monitor</artifactId>
+        </dependency>
+        <!--            系统业务-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-system</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <classifier>exec</classifier>
+                    <finalName>${project.artifactId}</finalName>
+                    <mainClass>com.lihua.LiHuaApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

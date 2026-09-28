@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.lihua</groupId>
+        <artifactId>lihua</artifactId>
+        <version>3.0.0</version>
+    </parent>
+
+    <artifactId>lihua-biz</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
+        <module>lihua-monitor</module>
+        <module>lihua-system</module>
+    </modules>
+
+    <dependencies>
+        <!--        公共模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-common</artifactId>
+        </dependency>
+        <!--        日志模块-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-log</artifactId>
+        </dependency>
+        <!--        接口文档-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-doc</artifactId>
+        </dependency>
+        <!--        web接口-->
+        <dependency>
+            <groupId>com.lihua</groupId>
+            <artifactId>lihua-base-web</artifactId>
+        </dependency>
+    </dependencies>
+</project>

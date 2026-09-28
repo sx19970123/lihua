@@ -1,0 +1,193 @@
+package com.lihua.security.manager;
+
+import com.lihua.cache.enums.RedisTopicEnum;
+import com.lihua.cache.manager.LocalCacheManager;
+import com.lihua.cache.publisher.RedisPublisher;
+import com.lihua.common.exception.ServiceException;
+import com.lihua.common.utils.date.DateUtils;
+import com.lihua.common.utils.spring.SpringUtils;
+import com.lihua.cache.manager.RedisCacheManager;
+import com.lihua.cache.enums.RedisKeyPrefixEnum;
+import com.lihua.security.config.TokenProperties;
+import com.lihua.security.model.LoginUserSession;
+import com.lihua.security.utils.JwtUtils;
+import com.lihua.web.utils.WebUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.UUID;
+
+@Slf4j
+public class LoginUserManager {
+
+    private static final RedisCacheManager REDIS_CACHE_MANAGER = SpringUtils.getBean(RedisCacheManager.class);
+
+    private static final LocalCacheManager LOCAL_CACHE_MANAGER = SpringUtils.getBean(LocalCacheManager.class);
+
+    private static final RedisPublisher REDIS_PUBLISHER = SpringUtils.getBean(RedisPublisher.class);
+
+    private static final TokenProperties TOKEN_PROPERTIES = SpringUtils.getBean(TokenProperties.class);
+
+    /**
+     * 根据 token 获取用户信息
+     */
+    public static LoginUserSession getLoginUser(String token) {
+        // 畸形 token 解码失败视为未登录（返回 401），原样抛出会被全局异常处理成 500
+        String decode;
+        try {
+            decode = JwtUtils.decode(token);
+        } catch (Exception e) {
+            log.warn("token 解析失败，按未登录处理", e);
+            return null;
+        }
+
+        try {
+            // 优先使用本地缓存
+            LoginUserSession loginUserSession = LOCAL_CACHE_MANAGER.getWithFallback(decode, LoginUserSession.class, REDIS_CACHE_MANAGER::getCacheObject);
+            if (loginUserSession == null) {
+                return null;
+            }
+            loginUserSession.setCacheKey(decode);
+            return loginUserSession;
+        } catch (Exception e) {
+            log.error("从redis获取LoginUser发生异常，请检查redis状态", e);
+        }
+        return null;
+    }
+
+    /**
+     * 过期时间小于指定时间时进行刷新
+     */
+    public static void verifyLoginUserCache() {
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+        if (DateUtils.differenceMinute(DateUtils.now(), loginUserSession.getExpirationTime()) < TOKEN_PROPERTIES.getRefreshThreshold().toMinutes()) {
+            refreshToken();
+        }
+    }
+
+    /**
+     * 刷新token时间
+     */
+    public static void refreshToken() {
+        LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
+        // 回写缓存对象内的过期时间：仅续 redis TTL 会让 expirationTime 停留初值，阈值判断持续触发重复刷新
+        loginUserSession.setExpirationTime(DateUtils.now().plus(TOKEN_PROPERTIES.getTokenExpireTime()));
+        REDIS_CACHE_MANAGER.setCacheObject(loginUserSession.getCacheKey(), loginUserSession, TOKEN_PROPERTIES.getTokenExpireTime());
+    }
+
+    /**
+     * 设置 manager 缓存
+     * @param loginUserSession 登录用户信息
+     * @return redis缓存key
+     */
+    public static String setLoginUserCache(LoginUserSession loginUserSession) {
+        // 记录过期时间
+        loginUserSession.setExpirationTime(DateUtils.now().plus(TOKEN_PROPERTIES.getTokenExpireTime()));
+        // 隐藏用户密码
+        loginUserSession.getUser().setPassword(null);
+        // 登录客户端类型
+        loginUserSession.setClientType(WebUtils.getClientType());
+        // 当 loginUserSession 的 cacheKey 不存在，即为新登录用户，重新生成cacheKey，其余情况均为刷新缓存
+        String cacheKey = loginUserSession.getCacheKey();
+        if (!StringUtils.hasText(cacheKey)) {
+            cacheKey = getLoginUserKey(loginUserSession.getUser().getId());
+        }
+        loginUserSession.setCacheKey(cacheKey);
+        // 先落 redis 再广播失效：先广播会让订阅节点回源读到写前的旧值并重新本地缓存
+        REDIS_CACHE_MANAGER.setCacheObject(cacheKey,
+                loginUserSession,
+                TOKEN_PROPERTIES.getTokenExpireTime());
+        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), cacheKey);
+
+        // 缓存key
+        return cacheKey;
+    }
+
+    /**
+     * 删除用户缓存
+     */
+    public static void removeLoginUserCache(String token) {
+        removeLoginUserSession(JwtUtils.decode(token));
+    }
+
+    /**
+     * 按缓存 key 删除登录会话
+     * 登出持有 token 走 removeLoginUserCache；强退、挤下线等管理侧通道持有 cacheKey 走本方法
+     */
+    public static void removeLoginUserSession(String cacheKey) {
+        // 先删 redis 再广播失效：先广播会让订阅节点回源读到删除前的旧值并重新本地缓存
+        REDIS_CACHE_MANAGER.delete(cacheKey);
+        REDIS_PUBLISHER.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), cacheKey);
+    }
+
+    /**
+     * 删除指定用户的全部登录会话：禁用/删除用户、重置密码、角色权限变更后调用，
+     * 受影响会话下次请求即 401，重新登录后拿到新状态/新权限
+     * @param userId 用户 id
+     * @param excludeCacheKey 需保留的会话缓存 key（如修改密码后保留当前会话），null 表示全部删除
+     */
+    public static void removeUserSessions(String userId, String excludeCacheKey) {
+        if (!StringUtils.hasText(userId)) {
+            return;
+        }
+        // 尾部冒号限定精确用户段：无冒号时 "1*" 会命中 1/10/11… 造成跨用户误删（checkSameAccount 同一陷阱）
+        String keyPrefix = RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue() + userId + ":";
+        REDIS_CACHE_MANAGER.keys(keyPrefix).stream()
+                .filter(cacheKey -> !cacheKey.equals(excludeCacheKey))
+                .forEach(LoginUserManager::removeLoginUserSession);
+    }
+
+    /**
+     * 获取 manager 存储的用户key
+     * 用户key由四部分组成 1.固定前缀 2.用户id 3.当前时间戳 4.uuid随机数，中间由:连接
+     */
+    private static String getLoginUserKey(String userId) {
+        return RedisKeyPrefixEnum.LOGIN_USER_REDIS_PREFIX.getValue()
+                + userId + ":"
+                + DateUtils.nowTimeStamp() + ":"
+                + UUID.randomUUID().toString().replace("-", "");
+
+    }
+
+    /**
+     * 通过缓存cacheKey获取用户id
+     */
+    public static String getUserIdByCacheKey(String cacheKey) {
+        if (!StringUtils.hasText(cacheKey)) {
+            throw new ServiceException("空的 cacheKey");
+        }
+        String[] keySplit = cacheKey.split(":");
+
+        if (keySplit.length != 4) {
+            throw new ServiceException("无效的 cacheKey");
+        }
+
+        return keySplit[1];
+    }
+
+    /**
+     * 通过缓存key获取用户登录时间戳
+     */
+    public static long getLoginTimestampByCacheKey(String cacheKey) {
+        if (!StringUtils.hasText(cacheKey)) {
+            throw new ServiceException("空的 cacheKey");
+        }
+        String[] keySplit = cacheKey.split(":");
+
+        if (keySplit.length != 4) {
+            throw new ServiceException("无效的 cacheKey");
+        }
+
+        return Long.parseLong(keySplit[2]);
+    }
+
+    /**
+     * 通过缓存key获取用户登录时间
+     */
+    public static LocalDateTime getLoginTimeByCacheKey(String cacheKey) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(getLoginTimestampByCacheKey(cacheKey)), ZoneId.systemDefault());
+    }
+
+}

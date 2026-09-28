@@ -1,0 +1,231 @@
+package com.lihua.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.lihua.common.enums.SysStatusEnum;
+import com.lihua.common.exception.ServiceException;
+import com.lihua.common.utils.date.DateUtils;
+import com.lihua.common.utils.json.JsonUtils;
+import com.lihua.common.utils.tree.TreeUtils;
+import com.lihua.dict.model.DictDataModel;
+import com.lihua.dict.utils.DictUtils;
+import com.lihua.entity.SysDictData;
+import com.lihua.mapper.SysDictDataMapper;
+import com.lihua.model.dto.SysDictDataDTO;
+import com.lihua.security.manager.LoginUserContext;
+import com.lihua.service.SysDictDataService;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import com.lihua.enums.DictTypeEnum;
+
+@Service
+public class SysDictDataServiceImpl implements SysDictDataService {
+
+    @Resource
+    private SysDictDataMapper sysDictDataMapper;
+
+    @Override
+    public List<SysDictData> queryList(SysDictDataDTO dictDataDTO) {
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        // 类型id
+        if (StringUtils.hasText(dictDataDTO.getDictTypeCode())) {
+            queryWrapper.lambda().eq(SysDictData::getDictTypeCode,dictDataDTO.getDictTypeCode());
+        }
+        // 标签
+        if (StringUtils.hasText(dictDataDTO.getLabel())) {
+            queryWrapper.lambda().like(SysDictData::getLabel,dictDataDTO.getLabel());
+        }
+        // 值
+        if (StringUtils.hasText(dictDataDTO.getValue())) {
+            queryWrapper.lambda().like(SysDictData::getValue,dictDataDTO.getValue());
+        }
+        // 状态
+        if (StringUtils.hasText(dictDataDTO.getStatus())) {
+            queryWrapper.lambda().eq(SysDictData::getStatus,dictDataDTO.getStatus());
+        }
+        // 排序
+        queryWrapper.lambda().orderByAsc(SysDictData::getSort);
+        List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
+
+        // 树形结构需要构建子数据
+        if (DictTypeEnum.TREE.getValue().equals(dictDataDTO.getType())) {
+            return TreeUtils.buildTree(sysDictData);
+        }
+
+        return sysDictData;
+    }
+
+    @Override
+    public List<DictDataModel> queryDictOptionList(String dictTypeCode) {
+        List<DictDataModel> dictData = DictUtils.getDictData(dictTypeCode);
+        // 构树会原地挂 children，须在副本上进行，避免把树结构写回缓存共享对象
+        List<DictDataModel> dictDataCopy = dictData.stream().map(JsonUtils::deepCopy).toList();
+        return TreeUtils.buildTree(dictDataCopy);
+    }
+
+    @Override
+    public Map<String, List<DictDataModel>> queryDictOptionList(List<String> dictTypeCodeList) {
+        Map<String, List<DictDataModel>> map = new HashMap<>();
+        dictTypeCodeList.forEach(dictTypeCode -> {
+            List<DictDataModel> dictOptionList = queryDictOptionList(dictTypeCode);
+            map.put(dictTypeCode, dictOptionList);
+        });
+
+        return map;
+    }
+
+    @Override
+    public String save(SysDictData sysDictData) {
+        // 系统状态不允许修改
+        checkSysStatus(sysDictData);
+        // 检查字典值是否重复
+        checkValue(sysDictData);
+        // 检查字典名称是否重复
+        checkLabel(sysDictData);
+
+        String id;
+        if (StringUtils.hasText(sysDictData.getId())) {
+            // dictTypeCode 被修改时双清：旧 code 的缓存仍滞留本行旧数据（照类型侧 old+new 双清先例）
+            SysDictData oldDictData = sysDictDataMapper.selectById(sysDictData.getId());
+            if (oldDictData != null && !oldDictData.getDictTypeCode().equals(sysDictData.getDictTypeCode())) {
+                DictUtils.resetCacheDict(oldDictData.getDictTypeCode());
+            }
+            id = updateById(sysDictData);
+        } else {
+            id = insert(sysDictData);
+        }
+        // 删除缓存
+        DictUtils.resetCacheDict(sysDictData.getDictTypeCode());
+        return id;
+    }
+
+    @Override
+    public void updateDataTypeCode(String oldTypeCode, String newTypeCode) {
+        UpdateWrapper<SysDictData> updateWrapper = new UpdateWrapper<>();
+        updateWrapper
+                .lambda()
+                .set(SysDictData::getDictTypeCode,newTypeCode)
+                .set(SysDictData::getUpdateId, LoginUserContext.getUserId())
+                .set(SysDictData::getUpdateTime, DateUtils.now())
+                .eq(SysDictData::getDictTypeCode,oldTypeCode);
+        sysDictDataMapper.update(updateWrapper);
+    }
+
+    @Override
+    public List<String> typeIdsToDataIds(List<String> ids) {
+        return sysDictDataMapper.selectDataIdsByTypeIds(ids);
+    }
+
+    @Override
+    public void deleteByIds(List<String> ids) {
+        checkChildren(ids);
+        checkStatus(ids);
+
+        // 先取得待删数据对应的字典类型编码：逻辑删除后全局过滤将查不到已删行，必须在删除前查询
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .in(SysDictData::getId,ids)
+                .select(SysDictData::getDictTypeCode);
+        List<SysDictData> sysDictData = sysDictDataMapper.selectList(queryWrapper);
+
+        // 删除数据
+        sysDictDataMapper.deleteByIds(ids);
+
+        // 删除缓存
+        if (!sysDictData.isEmpty()) {
+            sysDictData
+                .stream()
+                .map(SysDictData::getDictTypeCode)
+                .distinct()
+                .forEach(DictUtils::resetCacheDict);
+        }
+    }
+
+    private String insert(SysDictData sysDictData) {
+        sysDictDataMapper.insert(sysDictData);
+        return sysDictData.getId();
+    }
+
+    private String updateById(SysDictData sysDictData) {
+        sysDictDataMapper.updateById(sysDictData);
+        return sysDictData.getId();
+    }
+
+    private void checkChildren(List<String> ids) {
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+                .lambda()
+                .in(SysDictData::getParentId,ids)
+                .select(SysDictData::getId);
+        List<SysDictData> sysDictDataList = sysDictDataMapper.selectList(queryWrapper);
+
+        if (sysDictDataList.isEmpty()) {
+            return;
+        }
+
+        // 对比以删除节点为父节点的数据，当这些数据全部与删除的数据相同，则要删除的数据中没有子节点存在
+        List<String> list = new ArrayList<>(sysDictDataList.stream().map(SysDictData::getId).toList());
+        list.removeAll(ids);
+
+        if (!list.isEmpty()) {
+            throw new ServiceException("存在子集不允许删除");
+        }
+    }
+
+    private void checkStatus(List<String> ids) {
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().in(SysDictData::getId,ids)
+                .eq(SysDictData::getStatus, SysStatusEnum.NORMAL.getValue());
+        Long count = sysDictDataMapper.selectCount(queryWrapper);
+        if (count != 0) {
+            throw new ServiceException("字典数据状态正常不允许删除");
+        }
+    }
+
+    private void checkValue(SysDictData sysDictData) {
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(SysDictData::getValue,sysDictData.getValue())
+                .eq(SysDictData::getDictTypeCode,sysDictData.getDictTypeCode());
+        List<SysDictData> sysDictDataList = sysDictDataMapper.selectList(queryWrapper);
+        if (!sysDictDataList.isEmpty()) {
+            if (sysDictDataList.size() > 1) {
+                throw new ServiceException("当前字典值已存在");
+            } else {
+                if (!sysDictDataList.get(0).getId().equals(sysDictData.getId())) {
+                    throw new ServiceException("当前字典值已存在");
+                }
+            }
+        }
+    }
+
+    private void checkLabel(SysDictData sysDictData) {
+        QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(SysDictData::getLabel,sysDictData.getLabel())
+                .eq(SysDictData::getDictTypeCode,sysDictData.getDictTypeCode());
+        List<SysDictData> sysDictDataList = sysDictDataMapper.selectList(queryWrapper);
+        if (!sysDictDataList.isEmpty()) {
+            if (sysDictDataList.size() > 1) {
+                throw new ServiceException("当前字典标签已存在");
+            } else {
+                if (!sysDictDataList.get(0).getId().equals(sysDictData.getId())) {
+                    throw new ServiceException("当前字典标签已存在");
+                }
+            }
+        }
+    }
+
+    // 系统状态标签不允许修改
+    private void checkSysStatus(SysDictData sysDictData) {
+        if ("sys_status".equals(sysDictData.getDictTypeCode())) {
+            throw new ServiceException("系统状态不允许修改");
+        }
+    }
+}
