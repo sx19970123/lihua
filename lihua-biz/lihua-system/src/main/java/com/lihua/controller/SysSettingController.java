@@ -25,7 +25,6 @@ public class SysSettingController extends BaseSysSettingController {
 
     @Operation(summary = "根据key获取系统设置")
     @GetMapping("{key}")
-    @PreAuthorize("hasRole('ROLE_admin')")
     public ApiResponseModel<SysSetting> getSysSettingByKey(@PathVariable("key") String key) {
         return success(sysSettingService.getSysSettingByKey(key));
     }
