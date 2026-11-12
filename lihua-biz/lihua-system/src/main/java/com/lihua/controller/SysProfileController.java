@@ -1,7 +1,7 @@
 package com.lihua.controller;
 
 import com.lihua.controller.base.BaseSysProfileController;
-import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.ResponseModel;
 import com.lihua.common.utils.tree.TreeUtils;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
@@ -28,13 +28,13 @@ public class SysProfileController extends BaseSysProfileController {
     @Operation(summary = "保存主题")
     @PostMapping("theme")
     @Log(description = "保存主题", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> saveTheme(@RequestBody @Validated(ProfileValidation.ProfileThemeValidation.class) SysProfileBasicDTO sysProfileBasicDTO) {
+    public ResponseModel<String> saveTheme(@RequestBody @Validated(ProfileValidation.ProfileThemeValidation.class) SysProfileBasicDTO sysProfileBasicDTO) {
         return success(sysProfileService.saveTheme(sysProfileBasicDTO.getTheme()));
     }
 
     @Operation(summary = "登录后用户数据校验")
     @GetMapping("postLoginCheck")
-    public ApiResponseModel<List<String>> postLoginCheck() {
+    public ResponseModel<List<String>> postLoginCheck() {
         return success(sysProfileService.postLoginCheck());
     }
 
@@ -43,7 +43,7 @@ public class SysProfileController extends BaseSysProfileController {
      */
     @Operation(summary = "获取当前登录用户信息")
     @GetMapping("info")
-    public ApiResponseModel<AuthInfo> getUserInfo() {
+    public ResponseModel<AuthInfo> getUserInfo() {
         LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
         // 前端 store 用户数据
         AuthInfo authInfo = new AuthInfo();

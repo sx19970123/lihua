@@ -1,6 +1,6 @@
 package com.lihua.controller.app;
 
-import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.ResponseModel;
 import com.lihua.common.utils.tree.TreeUtils;
 import com.lihua.controller.base.BaseSysProfileController;
 import com.lihua.log.annotation.Log;
@@ -34,7 +34,7 @@ public class AppSysProfileController extends BaseSysProfileController {
      */
     @Operation(summary = "获取当前登录用户信息")
     @GetMapping("info")
-    public ApiResponseModel<AuthInfo> getUserInfo() {
+    public ResponseModel<AuthInfo> getUserInfo() {
         LoginUserSession loginUserSession = LoginUserContext.getLoginUser();
         // 前端 store 用户数据
         AuthInfo authInfo = new AuthInfo();
@@ -54,14 +54,14 @@ public class AppSysProfileController extends BaseSysProfileController {
 
     @Operation(summary = "登录后校验")
     @GetMapping("postLoginCheck")
-    public ApiResponseModel<List<String>> postLoginCheck() {
+    public ResponseModel<List<String>> postLoginCheck() {
         return success(sysProfileService.postLoginCheck());
     }
 
     @Operation(summary = "用户注销")
     @Log(description = "用户注销", type = LogTypeEnum.DELETE)
     @DeleteMapping("deactivate")
-    public ApiResponseModel<String> accountDeactivate() {
+    public ResponseModel<String> accountDeactivate() {
         sysProfileService.accountDeactivate();
         return success();
     }
@@ -69,7 +69,7 @@ public class AppSysProfileController extends BaseSysProfileController {
     @Operation(summary = "验证密码")
     @PostMapping("checkPassword")
     @Log(description = "验证密码", type = LogTypeEnum.OTHER, excludeParams = {"password"})
-    public ApiResponseModel<Boolean> checkPassword(@RequestBody @Validated SysCheckPasswordDTO sysCheckPasswordDTO) {
+    public ResponseModel<Boolean> checkPassword(@RequestBody @Validated SysCheckPasswordDTO sysCheckPasswordDTO) {
         return success(sysProfileService.checkPassword(sysCheckPasswordDTO));
     }
 }

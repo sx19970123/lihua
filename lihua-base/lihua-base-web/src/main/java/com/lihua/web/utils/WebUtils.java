@@ -2,7 +2,9 @@ package com.lihua.web.utils;
 
 import com.lihua.common.enums.CustomHttpHeader;
 import com.lihua.common.enums.TokenEnum;
+import com.lihua.common.model.response.ResponseModel;
 import com.lihua.common.utils.ip.IpResolveUtils;
+import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.common.utils.spring.SpringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,17 +24,17 @@ import java.util.Objects;
 public class WebUtils {
 
     /**
-     * 将 json 数据进行响应
+     * 将响应模型以 json 数据进行响应
      */
-    public static void renderJson(String json) {
-        renderJson(200, json);
+    public static void renderJson(ResponseModel<?> model) {
+        renderJson(200, model);
     }
 
     /**
-     * 将 json 数据进行响应
+     * 将响应模型以 json 数据进行响应
      */
     @SneakyThrows
-    public static void renderJson(int code, String json) {
+    public static void renderJson(int code, ResponseModel<?> model) {
         HttpServletResponse response = getCurrentResponse();
         if (response == null) {
             log.error("响应数据写入失败，获取到的 HttpServletResponse 为空");
@@ -41,7 +43,7 @@ public class WebUtils {
         response.setStatus(code);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json);
+        response.getWriter().write(JsonUtils.toJsonIgnoreNulls(model));
     }
 
     /**

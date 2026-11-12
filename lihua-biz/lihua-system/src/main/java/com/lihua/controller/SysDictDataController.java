@@ -1,7 +1,7 @@
 package com.lihua.controller;
 
 import com.lihua.controller.base.BaseSysDictDataController;
-import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.ResponseModel;
 import com.lihua.entity.SysDictData;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
@@ -23,7 +23,7 @@ public class SysDictDataController extends BaseSysDictDataController {
 
     @Operation(summary = "列表查询")
     @PostMapping("list")
-    public ApiResponseModel<List<SysDictData>> queryListByTypeCode(@RequestBody @Validated SysDictDataDTO dictDataDTO) {
+    public ResponseModel<List<SysDictData>> queryListByTypeCode(@RequestBody @Validated SysDictDataDTO dictDataDTO) {
         return success(sysDictDataService.queryList(dictDataDTO));
     }
 
@@ -31,7 +31,7 @@ public class SysDictDataController extends BaseSysDictDataController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     @Log(description = "保存字典数据", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> save(@RequestBody @Validated SysDictData sysDictData) {
+    public ResponseModel<String> save(@RequestBody @Validated SysDictData sysDictData) {
         return success(sysDictDataService.save(sysDictData));
     }
 
@@ -39,7 +39,7 @@ public class SysDictDataController extends BaseSysDictDataController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除字典数据", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> delete(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
+    public ResponseModel<String> delete(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
         sysDictDataService.deleteByIds(ids);
         return success();
     }

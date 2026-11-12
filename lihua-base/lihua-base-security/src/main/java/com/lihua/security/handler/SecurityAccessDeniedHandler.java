@@ -1,7 +1,7 @@
 package com.lihua.security.handler;
 
 import com.lihua.common.enums.ResultCodeEnum;
-import com.lihua.common.model.response.response.StrResponse;
+import com.lihua.common.model.response.Responses;
 import com.lihua.web.utils.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +19,6 @@ public class SecurityAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) {
-        WebUtils.renderJson(StrResponse.error(ResultCodeEnum.ACCESS_ERROR));
+        WebUtils.renderJson(Responses.error(ResultCodeEnum.ACCESS_ERROR));
     }
 }

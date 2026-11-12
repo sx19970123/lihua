@@ -1,7 +1,7 @@
 package com.lihua.controller;
 
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.common.utils.tree.TreeUtils;
 import com.lihua.entity.SysDept;
 import com.lihua.excel.utils.ExcelUtils;
@@ -23,14 +23,14 @@ import java.util.List;
 @RestController
 @RequestMapping("system/dept")
 @Validated
-public class SysDeptController extends ApiResponseController {
+public class SysDeptController extends ResponseController {
 
     @Resource
     private SysDeptService sysDeptService;
 
     @Operation(summary = "列表查询")
     @PostMapping("list")
-    public ApiResponseModel<List<SysDeptVO>> queryDeptPostList(@RequestBody SysDept sysDept) {
+    public ResponseModel<List<SysDeptVO>> queryDeptPostList(@RequestBody SysDept sysDept) {
         List<SysDeptVO> deptPostList = sysDeptService.queryDeptPostList(sysDept);
         return success(TreeUtils.buildTree(deptPostList));
     }
@@ -39,13 +39,13 @@ public class SysDeptController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     @Log(description = "保存部门数据", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> save(@RequestBody @Validated SysDept sysDept) {
+    public ResponseModel<String> save(@RequestBody @Validated SysDept sysDept) {
         return success(sysDeptService.saveDept(sysDept));
     }
 
     @Operation(summary = "根据id查询详情")
     @GetMapping("{id}")
-    public ApiResponseModel<SysDept> queryById(@PathVariable("id") String id) {
+    public ResponseModel<SysDept> queryById(@PathVariable("id") String id) {
         return success(sysDeptService.queryById(id));
     }
 
@@ -53,7 +53,7 @@ public class SysDeptController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PutMapping("status/{id}/{currentStatus}")
     @Log(description = "更新部门状态", type = LogTypeEnum.UPDATE_STATUS)
-    public ApiResponseModel<String> updateStatus(@PathVariable("id") String id, @PathVariable("currentStatus") String currentStatus) {
+    public ResponseModel<String> updateStatus(@PathVariable("id") String id, @PathVariable("currentStatus") String currentStatus) {
         return success(sysDeptService.updateStatus(id, currentStatus));
     }
 
@@ -61,20 +61,20 @@ public class SysDeptController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除部门数据", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
+    public ResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysDeptService.deleteByIds(ids);
         return success();
     }
 
     @Operation(summary = "获取部门树选项")
     @GetMapping("option")
-    public ApiResponseModel<List<SysDept>> deptTreeOption() {
+    public ResponseModel<List<SysDept>> deptTreeOption() {
         return success(sysDeptService.deptTreeOption());
     }
 
     @Operation(summary = "获取部门树选项（含停用，注册配置页专用）")
     @GetMapping("option/all")
-    public ApiResponseModel<List<SysDept>> deptTreeOptionAll() {
+    public ResponseModel<List<SysDept>> deptTreeOptionAll() {
         return success(sysDeptService.deptTreeOptionAll());
     }
 

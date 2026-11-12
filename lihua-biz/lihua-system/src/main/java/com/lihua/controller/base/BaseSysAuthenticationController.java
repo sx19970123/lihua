@@ -3,8 +3,8 @@ package com.lihua.controller.base;
 import cloud.tianai.captcha.application.ImageCaptchaApplication;
 import cloud.tianai.captcha.spring.plugins.secondary.SecondaryVerificationApplication;
 import com.lihua.common.enums.ResultCodeEnum;
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysLoginUserDTO;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * 身份验证控制器基类：承载管理版与 App 版共有端点（对外行为双版本一致，差异仅在路由前缀与文档分组）；
  * 登录数据重载存在端侧差异（Web 版刷新 token 有效期），由各子类自行声明
  */
-public abstract class BaseSysAuthenticationController extends ApiResponseController {
+public abstract class BaseSysAuthenticationController extends ResponseController {
 
     @Resource
     protected SysAuthenticationService sysAuthenticationService;
@@ -41,7 +41,7 @@ public abstract class BaseSysAuthenticationController extends ApiResponseControl
     @Operation(summary = "用户登录")
     @PostMapping("login")
     @Log(description = "用户登录", type = LogTypeEnum.LOGIN, excludeParams = {"password"}, recordResult = false)
-    public ApiResponseModel<String> login(@RequestBody @Valid SysLoginUserDTO loginUserDTO) {
+    public ResponseModel<String> login(@RequestBody @Valid SysLoginUserDTO loginUserDTO) {
         // 校验验证码
         boolean checked = checkCaptcha(loginUserDTO.getCaptchaVerification());
         if (!checked) {
@@ -65,7 +65,7 @@ public abstract class BaseSysAuthenticationController extends ApiResponseControl
     @PostMapping("register")
     @PreventDuplicateSubmit(excludeParams = {"password", "confirmPassword"})
     @Log(description = "用户注册", type = LogTypeEnum.REGISTER, excludeParams = {"password", "confirmPassword"}, recordResult = false)
-    public ApiResponseModel<String> register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO) {
+    public ResponseModel<String> register(@RequestBody @Valid SysRegisterDTO sysRegisterDTO) {
         // 校验验证码
         boolean checked = checkCaptcha(sysRegisterDTO.getCaptchaVerification());
         if (!checked) {
@@ -86,7 +86,7 @@ public abstract class BaseSysAuthenticationController extends ApiResponseControl
 
     @Operation(summary = "获取一次性令牌")
     @GetMapping("onceToken")
-    public ApiResponseModel<String> getOnceToken() {
+    public ResponseModel<String> getOnceToken() {
         return success(sysAuthenticationService.getOnceToken());
     }
 

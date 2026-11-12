@@ -1,8 +1,8 @@
 package com.lihua.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.entity.SysRole;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
@@ -27,18 +27,18 @@ import java.util.List;
 @RestController
 @RequestMapping("system/role")
 @Validated
-public class SysRoleController extends ApiResponseController {
+public class SysRoleController extends ResponseController {
 
     @Resource
     private SysRoleService sysRoleService;
 
     @PostMapping("page")
-    public ApiResponseModel<IPage<SysRole>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysRoleDTO sysRoleDTO) {
+    public ResponseModel<IPage<SysRole>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysRoleDTO sysRoleDTO) {
         return success(sysRoleService.queryPage(sysRoleDTO));
     }
 
     @GetMapping("{id}")
-    public ApiResponseModel<SysRole> queryById(@PathVariable("id") String id) {
+    public ResponseModel<SysRole> queryById(@PathVariable("id") String id) {
         return success(sysRoleService.queryById(id));
     }
 
@@ -46,7 +46,7 @@ public class SysRoleController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     @Log(description = "保存角色信息", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> save(@RequestBody @Validated SysRole sysRole) {
+    public ResponseModel<String> save(@RequestBody @Validated SysRole sysRole) {
         return success(sysRoleService.save(sysRole));
     }
 
@@ -54,7 +54,7 @@ public class SysRoleController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PutMapping("status/{id}/{currentStatus}")
     @Log(description = "更新角色状态", type = LogTypeEnum.UPDATE_STATUS)
-    public ApiResponseModel<String> updateStatus(@PathVariable String id, @PathVariable String currentStatus) {
+    public ResponseModel<String> updateStatus(@PathVariable String id, @PathVariable String currentStatus) {
         return success(sysRoleService.updateStatus(id, currentStatus));
     }
 
@@ -62,14 +62,14 @@ public class SysRoleController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除角色数据", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
+    public ResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
         sysRoleService.deleteByIds(ids);
         return success();
     }
 
     @Operation(summary = "已授权用户分页查询")
     @PostMapping("user/{roleId}/page")
-    public ApiResponseModel<IPage<SysRoleUserVO>> queryUserPage(@PathVariable String roleId, @RequestBody @Validated(MaxPageSizeLimit.class) SysRoleUserDTO sysRoleUserDTO) {
+    public ResponseModel<IPage<SysRoleUserVO>> queryUserPage(@PathVariable String roleId, @RequestBody @Validated(MaxPageSizeLimit.class) SysRoleUserDTO sysRoleUserDTO) {
         return success(sysRoleService.queryUserPage(roleId, sysRoleUserDTO));
     }
 
@@ -77,7 +77,7 @@ public class SysRoleController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("user/{roleId}")
     @Log(description = "角色分配用户", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> saveUsers(@PathVariable String roleId, @RequestBody @NotEmpty(message = "请选中要授权的用户") List<String> userIds) {
+    public ResponseModel<String> saveUsers(@PathVariable String roleId, @RequestBody @NotEmpty(message = "请选中要授权的用户") List<String> userIds) {
         sysRoleService.saveUsers(roleId, userIds);
         return success();
     }
@@ -86,20 +86,20 @@ public class SysRoleController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping("user/{roleId}")
     @Log(description = "角色取消授权用户", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> deleteUsers(@PathVariable String roleId, @RequestBody @NotEmpty(message = "请选中要取消授权的用户") List<String> userIds) {
+    public ResponseModel<String> deleteUsers(@PathVariable String roleId, @RequestBody @NotEmpty(message = "请选中要取消授权的用户") List<String> userIds) {
         sysRoleService.deleteUsers(roleId, userIds);
         return success();
     }
 
     @Operation(summary = "获取角色选项")
     @GetMapping("option")
-    public ApiResponseModel<List<CurrentRole>> getRoleOption() {
+    public ResponseModel<List<CurrentRole>> getRoleOption() {
         return success(LoginUserContext.getRoleList().stream().filter(role -> !"ROLE_admin".equals(role.getCode())).toList());
     }
 
     @Operation(summary = "获取全部角色选项（含停用，注册配置页专用）")
     @GetMapping("option/all")
-    public ApiResponseModel<List<SysRole>> getAllRoleOption() {
+    public ResponseModel<List<SysRole>> getAllRoleOption() {
         return success(sysRoleService.queryAllOption());
     }
 }

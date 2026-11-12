@@ -2,8 +2,8 @@ package com.lihua.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.lihua.common.enums.ResultCodeEnum;
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.entity.SysUser;
 import com.lihua.excel.merge.UserMergeStrategy;
 import com.lihua.excel.utils.ExcelUtils;
@@ -30,38 +30,38 @@ import java.util.List;
 @RestController
 @RequestMapping("system/user")
 @Validated
-public class SysUserController extends ApiResponseController {
+public class SysUserController extends ResponseController {
 
     @Resource
     private SysUserService sysUserService;
 
     @Operation(summary = "分页查询")
     @PostMapping("page")
-    public ApiResponseModel<IPage<SysUserVO>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysUserDTO sysUserDTO) {
+    public ResponseModel<IPage<SysUserVO>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysUserDTO sysUserDTO) {
         return success(sysUserService.queryPage(sysUserDTO));
     }
 
     @Operation(summary = "根据id查询详情")
     @GetMapping("{id}")
-    public ApiResponseModel<SysUserVO> queryById(@PathVariable("id") String id) {
+    public ResponseModel<SysUserVO> queryById(@PathVariable("id") String id) {
         return success(sysUserService.queryById(id));
     }
 
     @Operation(summary = "检查用户名是否重复")
     @GetMapping("checkUserName/{username}")
-    public ApiResponseModel<Boolean> checkUserName(@PathVariable("username") String username) {
+    public ResponseModel<Boolean> checkUserName(@PathVariable("username") String username) {
         return success(sysUserService.checkUserName(username));
     }
 
     @Operation(summary = "检查手机号码是否重复")
     @GetMapping("checkPhoneNumber/{phoneNumber}")
-    public ApiResponseModel<Boolean> checkPhoneNumber(@PathVariable("phoneNumber") String phoneNumber) {
+    public ResponseModel<Boolean> checkPhoneNumber(@PathVariable("phoneNumber") String phoneNumber) {
         return success(sysUserService.checkPhoneNumber(phoneNumber));
     }
 
     @Operation(summary = "检查邮箱是否重复")
     @GetMapping("checkEmail/{email}")
-    public ApiResponseModel<Boolean> checkEmail(@PathVariable("email") String email) {
+    public ResponseModel<Boolean> checkEmail(@PathVariable("email") String email) {
         return success(sysUserService.checkEmail(email));
     }
 
@@ -69,7 +69,7 @@ public class SysUserController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     @Log(description = "保存用户数据", type = LogTypeEnum.SAVE, excludeParams = {"password"})
-    public ApiResponseModel<String> save(@RequestBody @Validated SysUserDTO sysUserDTO) {
+    public ResponseModel<String> save(@RequestBody @Validated SysUserDTO sysUserDTO) {
         if (!StringUtils.hasText(sysUserDTO.getId()) && !StringUtils.hasText(sysUserDTO.getPassword())) {
             return error(ResultCodeEnum.PARAMS_MISSING, "请输入密码");
         }
@@ -80,7 +80,7 @@ public class SysUserController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PutMapping("status/{id}/{currentStatus}")
     @Log(description = "更新用户状态", type = LogTypeEnum.UPDATE_STATUS)
-    public ApiResponseModel<String> updateStatus(@PathVariable("id") String id, @PathVariable("currentStatus") String currentStatus) {
+    public ResponseModel<String> updateStatus(@PathVariable("id") String id, @PathVariable("currentStatus") String currentStatus) {
         return success(sysUserService.updateStatus(id, currentStatus));
     }
 
@@ -88,7 +88,7 @@ public class SysUserController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除用户数据", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
+    public ResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysUserService.deleteByIds(ids);
         return success();
     }
@@ -97,7 +97,7 @@ public class SysUserController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("resetPassword")
     @Log(description = "重置密码", type = LogTypeEnum.SAVE, excludeParams = {"password"})
-    public ApiResponseModel<String> resetPassword(@RequestBody @Validated ResetPasswordDTO resetPasswordDTO) {
+    public ResponseModel<String> resetPassword(@RequestBody @Validated ResetPasswordDTO resetPasswordDTO) {
         return success(sysUserService.resetPassword(resetPasswordDTO));
     }
 
@@ -117,13 +117,13 @@ public class SysUserController extends ApiResponseController {
 
     @Operation(summary = "根据部门获取系统用户选项")
     @GetMapping("option/{deptId}")
-    public ApiResponseModel<List<SysUser>> userOption(@PathVariable("deptId") String deptId) {
+    public ResponseModel<List<SysUser>> userOption(@PathVariable("deptId") String deptId) {
         return success(sysUserService.userOption(deptId));
     }
 
     @Operation(summary = "根据id获取用户选项")
     @PostMapping("option")
-    public ApiResponseModel<List<SysUser>> userOption(@RequestBody @NotEmpty(message = "集合不能为空") List<String> userIds) {
+    public ResponseModel<List<SysUser>> userOption(@RequestBody @NotEmpty(message = "集合不能为空") List<String> userIds) {
         return success(sysUserService.userOption(userIds));
     }
 
@@ -131,7 +131,7 @@ public class SysUserController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("import")
     @Log(description = "批量导入用户信息", type = LogTypeEnum.IMPORT)
-    public ApiResponseModel<String> importExcel(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseModel<String> importExcel(@RequestParam("file") MultipartFile file) throws IOException {
         List<SysUser> sysUserList = ExcelUtils.excelImport(file.getInputStream(), SysUser.class);
         sysUserService.importExcel(sysUserList);
         return success();

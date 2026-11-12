@@ -5,7 +5,7 @@ import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import com.lihua.captcha.enums.CaptchaTypeEnum;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.web.annotation.RateLimit;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,7 +19,7 @@ import java.util.Collections;
 @Tag(name = "验证码")
 @RestController
 @RequestMapping("captcha")
-public class CaptchaController extends ApiResponseController {
+public class CaptchaController extends ResponseController {
 
     @Resource
     private ImageCaptchaApplication imageCaptchaApplication;

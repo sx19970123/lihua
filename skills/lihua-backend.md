@@ -23,7 +23,7 @@ description: 指导 lihua 仓（单体后端，Maven 多模块 Spring Boot）的
 
 1. **代码落位决策树**：①新增业务功能 → 在 `lihua-biz` 下新建子项目（同步上级聚合 pom 的 `<modules>` 与运行应用 `lihua-admin` 的依赖引入，版本走父工程 dependencyManagement）；②偏公共、需要单独引入某个依赖实现一类能力的组件（如工作流、消息队列）→ 在 `lihua-base` 下新建对应子项目，向外部暴露接口供业务调用（新增 base 模块同步父工程 dependencyManagement 与消费方依赖）；③简单公共实现（如通用字符串校验）→ 在 `lihua-base-common` 的 `utils` 包中添加，或在现有类基础上扩展；④轻量级工具方法**先查 base 有无对应实现**——没有先补齐公共方法再使用，有则直接调用，勿在业务模块手搓 base 已有能力。
 2. 遵循标准业务结构：`entity` / `model/dto` / `model/vo` / `mapper` + `mapper/xml` / `service` + `service/impl` / `controller` / `controller/app` / `controller/base`。查询分页入参不污染 Entity，优先 DTO；多表展示字段可继承 Entity 建 VO。
-3. 面向前端的 JSON API 继承 `ApiResponseController` 返回 `ApiResponseModel<T>`（正常 `success(...)`、明确错误 `error(ResultCodeEnum, msg)`），配 `@Tag`/`@Operation` 文档注解。
+3. 面向前端的 JSON API 继承 `ResponseController` 返回 `ResponseModel<T>`（正常 `success(...)`、明确错误 `error(ResultCodeEnum, msg)`），配 `@Tag`/`@Operation` 文档注解。
 4. 管理端写操作一律 `@PreAuthorize`（现有口径 `hasRole('ROLE_admin')` 粗粒度；细粒度 authorities 通道保留但不消费）+ `@Log(description=..., type=LogTypeEnum.*)`，密码等敏感参数排除出日志。操作日志用 `lihua-base-log` 注解能力，不临时写审计逻辑；实时通知投递走 `WebSocketPushUtils`（唯一入口，见「WebSocket」节）；安全判断用基础安全模块，不手写认证判断。
 5. App 专用接口放 `controller/app`，路径 `app/...` 前缀（如 `app/system/profile`）；已有更窄 App 接口的领域不要让 App 复用管理端接口。
 6. 持久化用 MyBatis-Plus：分页 `POST /page` + `@Validated(MaxPageSizeLimit.class)` + BaseDTO（pageNum/pageSize 上限 999999/100），Service 返回 `IPage<VO>` 或 `IPage<Entity>`；简单 CRUD 用 Wrapper，只有复杂查询/多表/VO 投影才加 XML，XML 名与 Mapper 接口同名同层（`SysUserMapper.java` ↔ `mapper/xml/SysUserMapper.xml`）。
@@ -43,7 +43,7 @@ description: 指导 lihua 仓（单体后端，Maven 多模块 Spring Boot）的
 **一体感：照先例写代码**
 
 - 落笔前先在仓内找同类先例（最接近的 Controller/Service/Mapper 与前端页面），照其结构写——不引入第二套风格（自造返回包装、自拼分页、绕过字典工具都是破窗）。
-- 横切能力一律用平台现成实现，新增写端点配三件套（`@Tag`/`@Operation` 文档 + `@PreAuthorize` 权限 + `@Log` 操作日志）：统一返回 `ApiResponseController`、全局异常 `ServiceException` → `GlobalExceptionHandle`、参数校验 `@Validated` + 分组、分页 BaseDTO + `MaxPageSizeLimit`、登录态 `LoginUserContext`、字典 `DictEnum` + `DictUtils`、附件 base-attachment 全家、实时通知 `WebSocketPushUtils` + `TransactionSendUtils.runAfterCommit`（见「WebSocket」节）、防重提交 `@PreventDuplicateSubmit`、排序归一化 `SortUtils`、IP 归属地 `WebUtils`。
+- 横切能力一律用平台现成实现，新增写端点配三件套（`@Tag`/`@Operation` 文档 + `@PreAuthorize` 权限 + `@Log` 操作日志）：统一返回 `ResponseController`、全局异常 `ServiceException` → `GlobalExceptionHandle`、参数校验 `@Validated` + 分组、分页 BaseDTO + `MaxPageSizeLimit`、登录态 `LoginUserContext`、字典 `DictEnum` + `DictUtils`、附件 base-attachment 全家、实时通知 `WebSocketPushUtils` + `TransactionSendUtils.runAfterCommit`（见「WebSocket」节）、防重提交 `@PreventDuplicateSubmit`、排序归一化 `SortUtils`、IP 归属地 `WebUtils`。
 - 表命名边界：平台表前缀 `sys_`；二开业务表用业务域自己的前缀，勿冒用 `sys_`。
 
 ## 字典与枚举
@@ -76,7 +76,7 @@ description: 指导 lihua 仓（单体后端，Maven 多模块 Spring Boot）的
 
 ## 通用契约
 
-- **响应码比较必须 equals**：`ResultCodeEnum.code` 与 `ApiResponseModel.code` 均为 Integer——字面量 `200 == resp.getCode()` 走拆箱值比较合法，但换成枚举常量 `SUCCESS.getCode() == ...` 后变为引用比较（200 超出 Integer 缓存 −128~127 必不相等，编译器不报错、运行期静默判否）——远程响应码判断一律 `ResultCodeEnum.SUCCESS.getCode().equals(resp.getCode())`。
+- **响应码比较必须 equals**：`ResultCodeEnum.code` 与 `ResponseModel.code` 均为 Integer——字面量 `200 == resp.getCode()` 走拆箱值比较合法，但换成枚举常量 `SUCCESS.getCode() == ...` 后变为引用比较（200 超出 Integer 缓存 −128~127 必不相等，编译器不报错、运行期静默判否）——远程响应码判断一律 `ResultCodeEnum.SUCCESS.getCode().equals(resp.getCode())`。
 - **校验链下沉 Service 判据**：控制器 `error(ResultCodeEnum.ERROR, msg)` 改抛 `ServiceException(msg)` 的前提是全局异常处理器（`GlobalExceptionHandle` 的 BaseException 通道）返回同构响应（HTTP 200 + 业务码 + msg），前端 `resp.code !== 200` 分支行为等价；副作用为业务失败多记一条 error 日志（全库既有模式，可接受）。
 - **save 接口 Entity 直收 body 是全库既定口径**（dict/post/dept/role/menu/setting + @Validated/分组校验），BaseEntity 字段（delFlag/审计字段）经 body 可注入的面已接受为已知口径——后续体检不再提议收窄 DTO；notice/profile/log/user/attachment 的 DTO 形态是各自模块历史定稿，非全库规范。
 - **双版本控制器去重**：管理版与 App 版（`controller/app`）方法体逐行相同时，共有端点收抽象基类（形态如 `BaseSysAttachmentStorageController`：无 @RestController/@RequestMapping/@Tag，`@Resource protected` 注入 Service，方法注解随方法留基类，Spring 继承扫描自动注册路由；**基类统一落 `controller/base` 子包**——根包只留实际路由控制器，与 controller/app 端侧分组对称）。子类只挂各自 `@RequestMapping` 前缀与 `@Tag` 分组；管理版独有端点族由管理版子类声明、App 子类可为空壳；**对外行为双版本一致是去重前提**，端点集差异必须保留在子类侧。推广判据：仅 `@Operation` summary 措辞差异视为可抽；端侧逻辑差异端点一律留子类、不引入钩子方法；注解差异经拍板统一=接受行为对齐；**同路径 HTTP 动词分叉（如 App POST vs Web GET）不可抽**——同一基类方法无法双动词，强抽必改一端契约；子类/基类跨包必须显式 import（漏 import 编译期才暴露）。

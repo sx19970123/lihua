@@ -1,7 +1,7 @@
 package com.lihua.monitor.controller;
 
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.monitor.model.ServerInfo;
 import com.lihua.monitor.service.MonitorServerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "服务监控")
 @RestController
 @RequestMapping("monitor/server")
-public class MonitorServerController extends ApiResponseController {
+public class MonitorServerController extends ResponseController {
 
     @Resource
     private MonitorServerService monitorServerService;
 
     @Operation(summary = "服务信息")
     @GetMapping
-    public ApiResponseModel<ServerInfo> serverInfo() {
+    public ResponseModel<ServerInfo> serverInfo() {
         return success(monitorServerService.serverInfo());
     }
 }
