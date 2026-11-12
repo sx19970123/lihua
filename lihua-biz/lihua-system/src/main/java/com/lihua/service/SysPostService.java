@@ -22,6 +22,11 @@ public interface SysPostService {
     SysPost queryById(String id);
 
     /**
+     * 查询给定 id 集合中未删除的 id（全局逻辑删除自动滤 del_flag）
+     */
+    List<String> queryExistIds(List<String> ids);
+
+    /**
      * 保存岗位
      */
     String savePost(SysPost sysPost);

@@ -10,9 +10,11 @@ import com.lihua.common.utils.date.DateUtils;
 import com.lihua.entity.SysPost;
 import com.lihua.mapper.SysPostMapper;
 import com.lihua.model.dto.SysPostDTO;
+import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.model.vo.SysPostVO;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.service.SysPostService;
+import com.lihua.service.SysSettingService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -28,6 +30,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Resource
     private SysPostMapper sysPostMapper;
 
+    @Resource
+    private SysSettingService sysSettingService;
+
     @Override
     public IPage<SysPostVO> queryPage(SysPostDTO dto) {
         IPage<SysPostVO> iPage = new Page<>(dto.getPageNum(), dto.getPageSize());
@@ -39,6 +44,16 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Override
     public SysPost queryById(String id) {
         return sysPostMapper.selectById(id);
+    }
+
+    @Override
+    public List<String> queryExistIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return List.of();
+        }
+        QueryWrapper<SysPost> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().select(SysPost::getId).in(SysPost::getId, ids);
+        return sysPostMapper.selectList(queryWrapper).stream().map(SysPost::getId).toList();
     }
 
     @Override
@@ -66,7 +81,21 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         checkStatus(ids);
         // 数据下没有分配用户
         checkUser(ids);
+        // 数据未被自助注册配置引用
+        checkSignUpSetting(ids);
         sysPostMapper.deleteByIds(ids);
+    }
+
+    private void checkSignUpSetting(List<String> ids) {
+        SysSettingDTO.SignUpSetting signUpSetting = sysSettingService.getSignUpSetting();
+        if (signUpSetting == null) {
+            return;
+        }
+
+        List<String> postIds = signUpSetting.getPostIds();
+        if (postIds != null && ids.stream().anyMatch(postIds::contains)) {
+            throw new ServiceException("岗位已被自助注册配置引用，请先在「自助注册设置」中移除");
+        }
     }
 
     private void checkStatus(List<String> ids) {

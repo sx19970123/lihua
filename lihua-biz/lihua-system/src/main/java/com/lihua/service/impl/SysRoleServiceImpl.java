@@ -12,10 +12,12 @@ import com.lihua.mapper.SysRoleMapper;
 import com.lihua.mapper.SysUserMapper;
 import com.lihua.model.dto.SysRoleDTO;
 import com.lihua.model.dto.SysRoleUserDTO;
+import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.model.vo.SysRoleUserVO;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.utils.PermissionUpdateUtils;
 import com.lihua.service.SysRoleService;
+import com.lihua.service.SysSettingService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,9 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Resource
     private SysUserMapper sysUserMapper;
+
+    @Resource
+    private SysSettingService sysSettingService;
 
     @Override
     public IPage<SysRole> queryPage(SysRoleDTO sysRoleDTO) {
@@ -59,6 +64,16 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public SysRole queryById(String id) {
         return sysRoleMapper.queryById(id);
+    }
+
+    @Override
+    public List<String> queryExistIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return List.of();
+        }
+        QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().select(SysRole::getId).in(SysRole::getId, ids);
+        return sysRoleMapper.selectList(queryWrapper).stream().map(SysRole::getId).toList();
     }
 
     @Transactional
@@ -144,10 +159,23 @@ public class SysRoleServiceImpl implements SysRoleService {
 
         Long menuCount = sysRoleMapper.selectRoleMenuCountByRoleIds(ids);
         Long userCount = sysRoleMapper.selectUserRoleCountByRoleIds(ids);
+        checkSignUpSetting(ids);
         if (menuCount == 0 && userCount == 0) {
             sysRoleMapper.deleteByIds(ids);
         } else {
             throw new ServiceException("角色已绑定菜单/用户，不允许删除");
+        }
+    }
+
+    private void checkSignUpSetting(List<String> ids) {
+        SysSettingDTO.SignUpSetting signUpSetting = sysSettingService.getSignUpSetting();
+        if (signUpSetting == null) {
+            return;
+        }
+
+        List<String> roleIds = signUpSetting.getRoleIds();
+        if (roleIds != null && ids.stream().anyMatch(roleIds::contains)) {
+            throw new ServiceException("角色已被自助注册配置引用，请先在「自助注册设置」中移除");
         }
     }
 
