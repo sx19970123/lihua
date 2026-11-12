@@ -76,6 +76,14 @@ public class SysRoleServiceImpl implements SysRoleService {
         return sysRoleMapper.selectList(queryWrapper).stream().map(SysRole::getId).toList();
     }
 
+    @Override
+    public List<SysRole> queryAllOption() {
+        // 不过滤状态：包含停用角色（注册配置页标记停用状态用，全局逻辑删除仍自动滤 del_flag）；排除超级管理员角色
+        QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().ne(SysRole::getCode, "ROLE_admin").orderByDesc(SysRole::getCreateTime);
+        return sysRoleMapper.selectList(queryWrapper);
+    }
+
     @Transactional
     @Override
     public String save(SysRole sysRole) {

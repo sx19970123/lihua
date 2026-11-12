@@ -145,6 +145,18 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     @Override
+    public Map<String, List<SysPost>> getPostOptionAllByDeptId(List<String> deptIds) {
+        // 不过滤状态：包含停用岗位（注册配置页标记停用状态用，全局逻辑删除仍自动滤 del_flag）
+        QueryWrapper<SysPost> deptQueryWrapper = new QueryWrapper<>();
+        deptQueryWrapper.lambda()
+                .in(SysPost::getDeptId, deptIds)
+                .orderByAsc(SysPost::getSort);
+        List<SysPost> sysPosts = sysPostMapper.selectList(deptQueryWrapper);
+
+        return sysPosts.stream().collect(Collectors.groupingBy(SysPost::getDeptId));
+    }
+
+    @Override
     public String updateStatus(String id, String currentStatus) {
         checkPostExists(id);
         UpdateWrapper<SysPost> updateWrapper = new UpdateWrapper<>();

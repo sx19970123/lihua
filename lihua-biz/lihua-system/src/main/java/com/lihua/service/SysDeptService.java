@@ -46,6 +46,11 @@ public interface SysDeptService {
     List<SysDept> deptTreeOption();
 
     /**
+     * 获取部门树选项（含停用，注册配置页专用）
+     */
+    List<SysDept> deptTreeOptionAll();
+
+    /**
      * 修改部门状态
      */
     String updateStatus(String id, String currentStatus);

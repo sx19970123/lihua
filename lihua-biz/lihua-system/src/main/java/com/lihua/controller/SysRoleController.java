@@ -96,4 +96,10 @@ public class SysRoleController extends ApiResponseController {
     public ApiResponseModel<List<CurrentRole>> getRoleOption() {
         return success(LoginUserContext.getRoleList().stream().filter(role -> !"ROLE_admin".equals(role.getCode())).toList());
     }
+
+    @Operation(summary = "获取全部角色选项（含停用，注册配置页专用）")
+    @GetMapping("option/all")
+    public ApiResponseModel<List<SysRole>> getAllRoleOption() {
+        return success(sysRoleService.queryAllOption());
+    }
 }

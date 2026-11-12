@@ -75,6 +75,12 @@ public class SysPostController extends ApiResponseController {
         return success(sysPostService.getPostOptionByDeptId(deptIds));
     }
 
+    @Operation(summary = "获取岗位选项（含停用，注册配置页专用）")
+    @PostMapping("option/all")
+    public ApiResponseModel<Map<String, List<SysPost>>> getPostOptionAllByDeptId(@RequestBody @NotEmpty(message = "部门集合为空") List<String> deptIds) {
+        return success(sysPostService.getPostOptionAllByDeptId(deptIds));
+    }
+
     @Operation(summary = "导出岗位数据")
     @PostMapping("export")
     @Log(description = "导出岗位数据", type = LogTypeEnum.EXPORT)

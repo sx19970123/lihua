@@ -72,6 +72,12 @@ public class SysDeptController extends ApiResponseController {
         return success(sysDeptService.deptTreeOption());
     }
 
+    @Operation(summary = "获取部门树选项（含停用，注册配置页专用）")
+    @GetMapping("option/all")
+    public ApiResponseModel<List<SysDept>> deptTreeOptionAll() {
+        return success(sysDeptService.deptTreeOptionAll());
+    }
+
     @Operation(summary = "导出部门数据")
     @PostMapping("export")
     @Log(description = "导出部门数据", type = LogTypeEnum.EXPORT)

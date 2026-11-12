@@ -165,6 +165,15 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
+    public List<SysDept> deptTreeOptionAll() {
+        // 不过滤状态：包含停用部门（注册配置页标记停用状态用，全局逻辑删除仍自动滤 del_flag）
+        QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().orderByAsc(SysDept::getSort);
+        List<SysDept> sysDeptList = sysDeptMapper.selectList(queryWrapper);
+        return TreeUtils.buildTree(sysDeptList);
+    }
+
+    @Override
     public String updateStatus(String id, String currentStatus) {
         checkDeptExists(id);
         UpdateWrapper<SysDept> updateWrapper = new UpdateWrapper<>();

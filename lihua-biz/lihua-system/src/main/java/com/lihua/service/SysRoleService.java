@@ -26,6 +26,11 @@ public interface SysRoleService {
     List<String> queryExistIds(List<String> ids);
 
     /**
+     * 获取全部角色选项（含停用，注册配置页专用）
+     */
+    List<SysRole> queryAllOption();
+
+    /**
      * 保存角色信息
      */
     String save(SysRole sysRole);

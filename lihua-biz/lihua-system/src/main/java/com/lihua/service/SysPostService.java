@@ -52,6 +52,11 @@ public interface SysPostService {
     Map<String, List<SysPost>> getPostOptionByDeptId(List<String> deptIds);
 
     /**
+     * 根据部门id查询岗位集合（含停用，注册配置页专用）
+     */
+    Map<String, List<SysPost>> getPostOptionAllByDeptId(List<String> deptIds);
+
+    /**
      * 修改状态
      */
     String updateStatus(String id, String currentStatus);
