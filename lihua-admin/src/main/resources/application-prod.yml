@@ -77,7 +77,8 @@ spring:
         singleServerConfig:
           address: "redis://${REDIS_HOST}:${REDIS_PORT}"
           password: ${REDIS_PASSWORD}
-          database: 0
+          # redis 库编号（占位符供部署侧分库隔离，如与同机其他系统共用 redis 实例时设 1/2…）
+          database: ${REDIS_DATABASE:0}
           # 命令超时时间
           timeout: 3000
           # 连接超时时间
