@@ -7,6 +7,7 @@ import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import com.lihua.captcha.enums.CaptchaTypeEnum;
 import com.lihua.common.model.response.ResponseController;
 import com.lihua.common.model.response.ResponseModel;
+import com.lihua.service.SysSettingService;
 import com.lihua.web.annotation.RateLimit;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,12 +29,15 @@ public class CaptchaController extends ResponseController {
     @Resource
     private ImageCaptchaApplication imageCaptchaApplication;
 
+    @Resource
+    private SysSettingService sysSettingService;
+
     @Operation(summary = "获取验证码")
     @RateLimit
     @PostMapping("get")
     public ApiResponse<ImageCaptchaVO> getCaptcha() {
-        // 随机获取验证码类型
-        return imageCaptchaApplication.generateCaptcha(CaptchaTypeEnum.randomType());
+        // 按当前端配置的类型池随机（空池回退全类型）
+        return imageCaptchaApplication.generateCaptcha(CaptchaTypeEnum.randomType(sysSettingService.getCaptchaTypes()));
     }
 
     @Operation(summary = "验证码校验")

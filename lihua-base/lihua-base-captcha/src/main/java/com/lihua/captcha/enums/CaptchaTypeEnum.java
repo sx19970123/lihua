@@ -34,6 +34,14 @@ public enum CaptchaTypeEnum {
     // 随机获取验证码类型
     public static String randomType() {
         List<String> allValue = allValue();
-        return allValue.get(ThreadLocalRandom.current().nextInt(allValue.size()));
+        return randomType(allValue);
+    }
+
+    // 从指定类型池随机获取验证码类型，池为空时回退全类型
+    public static String randomType(List<String> types) {
+        if (types == null || types.isEmpty()) {
+            return randomType();
+        }
+        return types.get(ThreadLocalRandom.current().nextInt(types.size()));
     }
 }
