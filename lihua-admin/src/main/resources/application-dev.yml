@@ -124,3 +124,5 @@ springdoc:
     operations-sorter: method
     tags-sorter: alpha
     display-request-duration: true
+  # 围栏层内部转发端点不进文档
+  paths-to-exclude: /fence/response
