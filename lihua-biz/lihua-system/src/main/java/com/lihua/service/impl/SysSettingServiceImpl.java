@@ -3,13 +3,16 @@ package com.lihua.service.impl;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.lihua.cache.enums.RedisTopicEnum;
 import com.lihua.cache.publisher.RedisPublisher;
+import com.lihua.common.enums.ClientTypeEnum;
 import com.lihua.common.model.event.setting.CacheBlackIpEvent;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.json.JsonUtils;
+import com.lihua.web.utils.WebUtils;
 import com.lihua.entity.SysSetting;
 import com.lihua.enums.SysSettingEnum;
 import com.lihua.mapper.SysSettingMapper;
 import com.lihua.model.dto.SysSettingDTO;
+import com.lihua.cache.manager.LocalCacheManager;
 import com.lihua.cache.manager.RedisCacheManager;
 import com.lihua.service.SysSettingService;
 import jakarta.annotation.Resource;
@@ -34,14 +37,24 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
     @Resource
     private RedisPublisher redisPublisher;
 
+    @Resource
+    private LocalCacheManager localCacheManager;
+
     private final String REDIS_SETTING_KEY = SYSTEM_SETTING_REDIS_PREFIX.getValue();
 
     private final String IP_BLACKLIST_KEY = SYSTEM_IP_BLACKLIST_REDIS_PREFIX.getValue();
+
+    // 验证码配置本地缓存 key（登录链+取码高频读取，本地缓存挡 Redis）
+    private final String CAPTCHA_SETTING_CACHE_KEY = REDIS_SETTING_KEY + SysSettingEnum.CAPTCHA.getKey();
 
     @Override
     public String saveSetting(SysSetting sysSetting) {
         // 保存数据
         saveOrUpdate(sysSetting);
+        // 验证码配置变更时广播失效各实例本地缓存
+        if (SysSettingEnum.CAPTCHA.getKey().equals(sysSetting.getSettingKey())) {
+            redisPublisher.send(RedisTopicEnum.INVALIDATE_LOCAL_CACHE.getValue(), CAPTCHA_SETTING_CACHE_KEY);
+        }
         // 删除 manager map 中对应属性
         redisCacheManager.removeMapItem(REDIS_SETTING_KEY, sysSetting.getSettingKey());
         // 修改黑名单相关配置时，重新缓存ip黑名单
@@ -69,17 +82,41 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
 
     @Override
     public boolean enableCaptcha() {
+        SysSettingDTO.CaptchaClientSetting clientSetting = getCaptchaClientSetting();
+        // 未配置视为需要验证码
+        return clientSetting == null || clientSetting.isEnable();
+    }
+
+    @Override
+    public List<String> getCaptchaTypes() {
+        SysSettingDTO.CaptchaClientSetting clientSetting = getCaptchaClientSetting();
+        return clientSetting == null || clientSetting.getTypes() == null ? List.of() : clientSetting.getTypes();
+    }
+
+    /**
+     * 按当前请求客户端类型解析对应端验证码配置（app 族走 app 端，其余走 web 端）；
+     * 双端结构整体走本地缓存，未配置时以空实例负缓存
+     */
+    private SysSettingDTO.CaptchaClientSetting getCaptchaClientSetting() {
+        SysSettingDTO.CaptchaSetting setting = localCacheManager.getWithFallback(CAPTCHA_SETTING_CACHE_KEY, SysSettingDTO.CaptchaSetting.class,
+                (key, clazz) -> loadCaptchaSetting());
+        return ClientTypeEnum.of(WebUtils.getClientType()).isApp() ? setting.getApp() : setting.getWeb();
+    }
+
+    /**
+     * 从系统设置加载并解析验证码配置，未配置返回空实例（web/app 为 null 视为未配置）
+     */
+    private SysSettingDTO.CaptchaSetting loadCaptchaSetting() {
         SysSetting captchaSetting = getSysSettingByKey(SysSettingEnum.CAPTCHA.getKey());
         if (captchaSetting == null) {
-            return true;
+            return new SysSettingDTO.CaptchaSetting();
         }
-        // 出现任何值为空都认为需要验证码
         String json = captchaSetting.getJson();
         if (!StringUtils.hasText(json)) {
-            return true;
+            return new SysSettingDTO.CaptchaSetting();
         }
-        SysSettingDTO sysSettingDTO = JsonUtils.toObject(json, SysSettingDTO.class);
-        return sysSettingDTO.isEnable();
+        SysSettingDTO.CaptchaSetting setting = JsonUtils.toObject(json, SysSettingDTO.CaptchaSetting.class);
+        return setting == null ? new SysSettingDTO.CaptchaSetting() : setting;
     }
 
     @Override

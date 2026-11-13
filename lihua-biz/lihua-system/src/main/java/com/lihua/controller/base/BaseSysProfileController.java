@@ -1,7 +1,7 @@
 package com.lihua.controller.base;
 
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.SysProfileBasicDTO;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * 用户信息查询存在端侧差异（Web 版含路由与视图标签），由各子类自行声明；Web 主题仅管理版提供，
  * 登录后校验由管理版与 App 版各自提供，注销与密码验证仅 App 版提供
  */
-public abstract class BaseSysProfileController extends ApiResponseController {
+public abstract class BaseSysProfileController extends ResponseController {
 
     @Resource
     protected SysProfileService sysProfileService;
@@ -37,21 +37,21 @@ public abstract class BaseSysProfileController extends ApiResponseController {
     @Operation(summary = "保存个人信息")
     @PostMapping("basics")
     @Log(description = "保存个人信息", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> saveBasics(@RequestBody @Validated(ProfileValidation.ProfileSaveValidation.class) SysProfileBasicDTO sysProfileBasicDTO) {
+    public ResponseModel<String> saveBasics(@RequestBody @Validated(ProfileValidation.ProfileSaveValidation.class) SysProfileBasicDTO sysProfileBasicDTO) {
         return success(sysProfileService.saveBasics(sysProfileBasicDTO));
     }
 
     @Operation(summary = "修改密码")
     @PostMapping("password")
     @Log(description = "修改密码", type = LogTypeEnum.SAVE, excludeParams = {"oldPassword", "newPassword", "confirmPassword"})
-    public ApiResponseModel<String> updatePassword(@RequestBody @Validated SysUpdatePasswordDTO sysUpdatePasswordDTO) {
+    public ResponseModel<String> updatePassword(@RequestBody @Validated SysUpdatePasswordDTO sysUpdatePasswordDTO) {
         return success(sysProfileService.updatePassword(sysUpdatePasswordDTO));
     }
 
     @Operation(summary = "设置默认部门")
     @PostMapping("default/{id}")
     @Log(description = "设置默认部门", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<CurrentDept> setDefaultDept(@PathVariable("id") String id) {
+    public ResponseModel<CurrentDept> setDefaultDept(@PathVariable("id") String id) {
         return success(sysUserDeptService.setDefaultDept(id));
     }
 }

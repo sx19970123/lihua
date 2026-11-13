@@ -1,7 +1,7 @@
 package com.lihua.controller;
 
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.entity.SysViewTab;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "多任务栏")
 @RestController
 @RequestMapping("system/viewTab")
-public class SysViewTabController extends ApiResponseController {
+public class SysViewTabController extends ResponseController {
 
     @Resource
     private SysViewTabService sysViewTabService;
@@ -27,7 +27,7 @@ public class SysViewTabController extends ApiResponseController {
     @Operation(summary = "变更收藏、锁定")
     @PostMapping
     @Log(description = "变更收藏/锁定", type = LogTypeEnum.OTHER)
-    public ApiResponseModel<CurrentViewTab> save(@RequestBody @Validated SysViewTab sysViewTab) {
+    public ResponseModel<CurrentViewTab> save(@RequestBody @Validated SysViewTab sysViewTab) {
         return success(sysViewTabService.save(sysViewTab));
     }
 }

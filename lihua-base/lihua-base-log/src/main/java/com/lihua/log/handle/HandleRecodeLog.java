@@ -1,7 +1,7 @@
 package com.lihua.log.handle;
 
 import com.lihua.common.model.event.log.LogEvent;
-import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.ResponseModel;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.common.utils.trace.TraceIdUtils;
@@ -199,7 +199,7 @@ public class HandleRecodeLog {
             return stringResult;
         }
 
-        if (resultObject instanceof ApiResponseModel<?> apiResponse) {
+        if (resultObject instanceof ResponseModel<?> apiResponse) {
             return JsonUtils.toJsonIgnoreNulls(apiResponse);
         }
 

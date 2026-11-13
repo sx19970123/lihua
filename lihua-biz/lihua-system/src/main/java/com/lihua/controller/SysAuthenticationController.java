@@ -1,7 +1,7 @@
 package com.lihua.controller;
 
 import com.lihua.controller.base.BaseSysAuthenticationController;
-import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.ResponseModel;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.security.manager.LoginUserManager;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +23,7 @@ public class SysAuthenticationController extends BaseSysAuthenticationController
      */
     @Operation(summary = "重新加载当前登录用户信息")
     @PostMapping("reloadData")
-    public ApiResponseModel<String> reloadData() {
+    public ResponseModel<String> reloadData() {
         sysAuthenticationService.cacheLoginUserInfo(LoginUserContext.getLoginUser());
         LoginUserManager.refreshToken();
         return success();

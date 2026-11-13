@@ -1,7 +1,7 @@
 package com.lihua.controller;
 
 import com.lihua.controller.base.BaseSysAttachmentStorageController;
-import com.lihua.common.model.response.ApiResponseModel;
+import com.lihua.common.model.response.ResponseModel;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
 import com.lihua.model.dto.AttachmentChunkMergeDTO;
@@ -24,20 +24,20 @@ public class SysAttachmentStorageController extends BaseSysAttachmentStorageCont
     @Operation(summary = "开始分片上传")
     @PostMapping("chunk/start")
     @Log(description = "附件上传（分片）", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<SysAttachmentChunkVO> chunksUploadStart(@RequestBody @Validated AttachmentChunkStartDTO chunkStartDTO) {
+    public ResponseModel<SysAttachmentChunkVO> chunksUploadStart(@RequestBody @Validated AttachmentChunkStartDTO chunkStartDTO) {
         return success(sysAttachmentStorageService.chunksUploadAttachmentStart(chunkStartDTO));
     }
 
     @Operation(summary = "获取已上传分片的索引值")
     @GetMapping("chunk/uploadedIndex/{uploadId}")
-    public ApiResponseModel<List<Integer>> chunksUploadedIndex(@PathVariable("uploadId") String uploadId) {
+    public ResponseModel<List<Integer>> chunksUploadedIndex(@PathVariable("uploadId") String uploadId) {
         return success(sysAttachmentStorageService.chunksUploadedIndex(uploadId));
     }
 
     @Operation(summary = "上传分片")
     @PostMapping("chunk/upload/{uploadId}/{index}")
     @Log(description = "附件上传（分片单元）", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<String> chunksUpload(@RequestParam("file") MultipartFile file,
+    public ResponseModel<String> chunksUpload(@RequestParam("file") MultipartFile file,
                                                  @PathVariable("uploadId") String uploadId,
                                                  @PathVariable("index") Integer index) {
         sysAttachmentStorageService.chunksUpload(file, uploadId, index);
@@ -47,7 +47,7 @@ public class SysAttachmentStorageController extends BaseSysAttachmentStorageCont
     @Operation(summary = "合并分片")
     @PostMapping("chunk/merge/{total}")
     @Log(description = "附件上传（分片合并）", type = LogTypeEnum.UPLOAD)
-    public ApiResponseModel<AttachmentUploadVO> chunksMerge(@RequestBody @Validated AttachmentChunkMergeDTO chunkMergeDTO,
+    public ResponseModel<AttachmentUploadVO> chunksMerge(@RequestBody @Validated AttachmentChunkMergeDTO chunkMergeDTO,
                                                 @PathVariable("total") Integer total) {
         return success(sysAttachmentStorageService.chunksMerge(chunkMergeDTO, total));
     }

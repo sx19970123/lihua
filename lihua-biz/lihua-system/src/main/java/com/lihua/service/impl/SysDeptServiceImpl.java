@@ -9,10 +9,12 @@ import com.lihua.common.utils.tree.TreeUtils;
 import com.lihua.entity.SysDept;
 import com.lihua.entity.SysPost;
 import com.lihua.mapper.SysDeptMapper;
+import com.lihua.model.dto.SysSettingDTO;
 import com.lihua.model.vo.SysDeptVO;
 import com.lihua.security.manager.LoginUserContext;
 import com.lihua.service.SysDeptService;
 import com.lihua.service.SysPostService;
+import com.lihua.service.SysSettingService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     @Resource
     private SysPostService sysPostService;
+
+    @Resource
+    private SysSettingService sysSettingService;
 
     @Override
     public List<SysDept> queryList(SysDept sysDept) {
@@ -110,6 +115,16 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
+    public List<String> queryExistIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return List.of();
+        }
+        QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().select(SysDept::getId).in(SysDept::getId, ids);
+        return sysDeptMapper.selectList(queryWrapper).stream().map(SysDept::getId).toList();
+    }
+
+    @Override
     public void deleteByIds(List<String> ids) {
         // 数据是否为停用状态
         checkStatus(ids);
@@ -119,14 +134,41 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         checkPost(ids);
         // 数据下没有分配用户
         checkUser(ids);
+        // 数据未被自助注册配置引用
+        checkSignUpSetting(ids);
 
         sysDeptMapper.deleteByIds(ids);
+    }
+
+    private void checkSignUpSetting(List<String> ids) {
+        SysSettingDTO.SignUpSetting signUpSetting = sysSettingService.getSignUpSetting();
+        if (signUpSetting == null) {
+            return;
+        }
+
+        // 部门 id 集合与默认部门一并检查
+        List<String> deptIds = signUpSetting.getDeptIds();
+        String defaultDeptId = signUpSetting.getDefaultDeptId();
+        boolean referenced = (deptIds != null && ids.stream().anyMatch(deptIds::contains))
+                || (defaultDeptId != null && ids.contains(defaultDeptId));
+        if (referenced) {
+            throw new ServiceException("部门已被自助注册配置引用，请先在「自助注册设置」中移除");
+        }
     }
 
     @Override
     public List<SysDept> deptTreeOption() {
         QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(SysDept::getStatus, SysStatusEnum.NORMAL.getValue()).orderByAsc(SysDept::getSort);
+        List<SysDept> sysDeptList = sysDeptMapper.selectList(queryWrapper);
+        return TreeUtils.buildTree(sysDeptList);
+    }
+
+    @Override
+    public List<SysDept> deptTreeOptionAll() {
+        // 不过滤状态：包含停用部门（注册配置页标记停用状态用，全局逻辑删除仍自动滤 del_flag）
+        QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().orderByAsc(SysDept::getSort);
         List<SysDept> sysDeptList = sysDeptMapper.selectList(queryWrapper);
         return TreeUtils.buildTree(sysDeptList);
     }

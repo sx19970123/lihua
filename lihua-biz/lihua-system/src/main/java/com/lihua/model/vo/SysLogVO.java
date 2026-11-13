@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lihua.excel.annotation.ExcelDictType;
 import com.lihua.excel.converter.ExcelDictConverter;
-import com.lihua.excel.converter.ExcelLocalDateTimeConverter;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.fesod.sheet.annotation.ExcelIgnoreUnannotated;
@@ -107,7 +106,7 @@ public class SysLogVO implements Serializable {
     /**
      * 创建时间（操作时间）
      */
-    @ExcelProperty(value = "操作时间", converter = ExcelLocalDateTimeConverter.class)
+    @ExcelProperty("操作时间")
     @ColumnWidth(25)
     private LocalDateTime createTime;
 

@@ -2,8 +2,8 @@ package com.lihua.controller;
 
 import com.lihua.common.exception.ServiceException;
 import com.lihua.enums.MenuTypeEnum;
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.common.utils.json.JsonUtils;
 import com.lihua.entity.SysMenu;
 import com.lihua.log.annotation.Log;
@@ -28,20 +28,20 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("system/menu")
-public class SysMenuController extends ApiResponseController {
+public class SysMenuController extends ResponseController {
 
     @Resource
     private SysMenuService sysMenuService;
 
     @Operation(summary = "列表查询")
     @PostMapping("list")
-    public ApiResponseModel<List<SysMenu>> queryList(@RequestBody SysMenu sysMenu) {
+    public ResponseModel<List<SysMenu>> queryList(@RequestBody SysMenu sysMenu) {
         return success(sysMenuService.queryList(sysMenu));
     }
 
     @Operation(summary = "根据id查询详情")
     @GetMapping("{id}")
-    public ApiResponseModel<SysMenu> queryById(@PathVariable("id") @NotNull(message = "请选择数据") String id) {
+    public ResponseModel<SysMenu> queryById(@PathVariable("id") @NotNull(message = "请选择数据") String id) {
         return success(sysMenuService.queryById(id));
     }
 
@@ -49,7 +49,7 @@ public class SysMenuController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("directory")
     @Log(description = "保存菜单数据", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> saveDirectory(@RequestBody @Validated(MenuValidation.MenuDirectoryValidation.class) SysMenu sysMenu) {
+    public ResponseModel<String> saveDirectory(@RequestBody @Validated(MenuValidation.MenuDirectoryValidation.class) SysMenu sysMenu) {
         checkMenuTypeMatch(sysMenu, MenuTypeEnum.DIRECTORY.getValue());
         return success(sysMenuService.save(sysMenu));
     }
@@ -58,7 +58,7 @@ public class SysMenuController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("page")
     @Log(description = "保存页面数据", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> savePage(@RequestBody @Validated(MenuValidation.MenuPageValidation.class) SysMenu sysMenu) {
+    public ResponseModel<String> savePage(@RequestBody @Validated(MenuValidation.MenuPageValidation.class) SysMenu sysMenu) {
         checkMenuTypeMatch(sysMenu, MenuTypeEnum.PAGE.getValue());
         // 校验 query 是否为json参数
         if (StringUtils.hasText(sysMenu.getQuery())) {
@@ -72,7 +72,7 @@ public class SysMenuController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("link")
     @Log(description = "保存链接数据", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> saveLink(@RequestBody @Validated(MenuValidation.MenuLinkValidation.class) SysMenu sysMenu) {
+    public ResponseModel<String> saveLink(@RequestBody @Validated(MenuValidation.MenuLinkValidation.class) SysMenu sysMenu) {
         checkMenuTypeMatch(sysMenu, MenuTypeEnum.LINK.getValue());
         return success(sysMenuService.save(sysMenu));
     }
@@ -81,7 +81,7 @@ public class SysMenuController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("perms")
     @Log(description = "保存权限数据", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> savePerms(@RequestBody @Validated(MenuValidation.MenuPermsValidation.class) SysMenu sysMenu) {
+    public ResponseModel<String> savePerms(@RequestBody @Validated(MenuValidation.MenuPermsValidation.class) SysMenu sysMenu) {
         checkMenuTypeMatch(sysMenu, MenuTypeEnum.PERMS.getValue());
         return success(sysMenuService.save(sysMenu));
     }
@@ -90,7 +90,7 @@ public class SysMenuController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PutMapping("status/{currentStatus}")
     @Log(description = "更新菜单状态", type = LogTypeEnum.UPDATE_STATUS)
-    public ApiResponseModel<String> updateStatus(@PathVariable("currentStatus") String currentStatus, @RequestBody List<String> ids) {
+    public ResponseModel<String> updateStatus(@PathVariable("currentStatus") String currentStatus, @RequestBody List<String> ids) {
         return success(sysMenuService.updateStatus(ids, currentStatus));
     }
 
@@ -98,14 +98,14 @@ public class SysMenuController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除菜单数据", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
+    public ResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选择数据") List<String> ids) {
         sysMenuService.deleteByIds(ids);
         return success();
     }
 
     @Operation(summary = "获取菜单树选项")
     @GetMapping("option")
-    public ApiResponseModel<List<SysMenu>> menuTreeOption() {
+    public ResponseModel<List<SysMenu>> menuTreeOption() {
         return success(sysMenuService.menuTreeOption());
     }
 

@@ -1,7 +1,7 @@
 package com.lihua.controller.app;
 
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.model.vo.SysAppVersionVO;
 import com.lihua.service.SysAppVersionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "APP-App版本管理")
 @RestController
 @RequestMapping("app/system/app-version")
-public class AppSysAppVersionController extends ApiResponseController {
+public class AppSysAppVersionController extends ResponseController {
 
     @Resource
     private SysAppVersionService sysAppVersionService;
 
     @Operation(summary = "检查更新（platform：android/ios；versionCode：当前客户端版本序号，无更新时 data 为空）")
     @GetMapping("check")
-    public ApiResponseModel<SysAppVersionVO> checkUpdate(
+    public ResponseModel<SysAppVersionVO> checkUpdate(
             @RequestParam("platform") String platform,
             @RequestParam("versionCode") @NotNull(message = "versionCode 不能为空") Integer versionCode) {
         return success(sysAppVersionService.checkUpdate(platform, versionCode));

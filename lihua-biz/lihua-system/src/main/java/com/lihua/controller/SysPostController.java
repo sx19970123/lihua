@@ -1,8 +1,8 @@
 package com.lihua.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.entity.SysPost;
 import com.lihua.excel.utils.ExcelUtils;
 import com.lihua.log.annotation.Log;
@@ -26,7 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("system/post")
 @Validated
-public class SysPostController extends ApiResponseController {
+public class SysPostController extends ResponseController {
 
     @Resource
     private SysPostService sysPostService;
@@ -34,13 +34,13 @@ public class SysPostController extends ApiResponseController {
 
     @Operation(summary = "分页查询")
     @PostMapping("page")
-    public ApiResponseModel<IPage<SysPostVO>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysPostDTO dto) {
+    public ResponseModel<IPage<SysPostVO>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysPostDTO dto) {
         return success(sysPostService.queryPage(dto));
     }
 
     @Operation(summary = "根据id查询详情")
     @GetMapping("{id}")
-    public ApiResponseModel<SysPost> queryById(@PathVariable("id") String id) {
+    public ResponseModel<SysPost> queryById(@PathVariable("id") String id) {
         return success(sysPostService.queryById(id));
     }
 
@@ -48,7 +48,7 @@ public class SysPostController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     @Log(description = "保存岗位信息", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> save(@RequestBody @Validated SysPost sysPost) {
+    public ResponseModel<String> save(@RequestBody @Validated SysPost sysPost) {
         return success(sysPostService.savePost(sysPost));
     }
 
@@ -56,7 +56,7 @@ public class SysPostController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PutMapping("status/{id}/{currentStatus}")
     @Log(description = "更新岗位状态", type = LogTypeEnum.UPDATE_STATUS)
-    public ApiResponseModel<String> updateStatus(@PathVariable("id") String id, @PathVariable("currentStatus") String currentStatus) {
+    public ResponseModel<String> updateStatus(@PathVariable("id") String id, @PathVariable("currentStatus") String currentStatus) {
         return success(sysPostService.updateStatus(id, currentStatus));
     }
 
@@ -64,15 +64,21 @@ public class SysPostController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除岗位数据", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
+    public ResponseModel<String> deleteByIds(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
         sysPostService.deleteByIds(ids);
         return success();
     }
 
     @Operation(summary = "获取岗位选项")
     @PostMapping("option")
-    public ApiResponseModel<Map<String, List<SysPost>>> getPostOptionByDeptId(@RequestBody @NotEmpty(message = "部门集合为空") List<String> deptIds) {
+    public ResponseModel<Map<String, List<SysPost>>> getPostOptionByDeptId(@RequestBody @NotEmpty(message = "部门集合为空") List<String> deptIds) {
         return success(sysPostService.getPostOptionByDeptId(deptIds));
+    }
+
+    @Operation(summary = "获取岗位选项（含停用，注册配置页专用）")
+    @PostMapping("option/all")
+    public ResponseModel<Map<String, List<SysPost>>> getPostOptionAllByDeptId(@RequestBody @NotEmpty(message = "部门集合为空") List<String> deptIds) {
+        return success(sysPostService.getPostOptionAllByDeptId(deptIds));
     }
 
     @Operation(summary = "导出岗位数据")

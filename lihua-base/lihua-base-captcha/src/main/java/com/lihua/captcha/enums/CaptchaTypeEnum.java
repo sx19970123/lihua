@@ -15,7 +15,8 @@ public enum CaptchaTypeEnum {
     SLIDER( "滑块", CaptchaTypeConstant.SLIDER),
     CONCAT("拼接", CaptchaTypeConstant.CONCAT),
     ROTATE("旋转", CaptchaTypeConstant.ROTATE),
-    WORD_IMAGE_CLICK("点选", CaptchaTypeConstant.WORD_IMAGE_CLICK);
+    WORD_IMAGE_CLICK("点选", CaptchaTypeConstant.WORD_IMAGE_CLICK),
+    POW("工作量证明", CaptchaTypeConstant.POW);
 
     // 类型名称
     private final String name;
@@ -33,6 +34,14 @@ public enum CaptchaTypeEnum {
     // 随机获取验证码类型
     public static String randomType() {
         List<String> allValue = allValue();
-        return allValue.get(ThreadLocalRandom.current().nextInt(allValue.size()));
+        return randomType(allValue);
+    }
+
+    // 从指定类型池随机获取验证码类型，池为空时回退全类型
+    public static String randomType(List<String> types) {
+        if (types == null || types.isEmpty()) {
+            return randomType();
+        }
+        return types.get(ThreadLocalRandom.current().nextInt(types.size()));
     }
 }

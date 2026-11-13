@@ -2,9 +2,9 @@ package com.lihua.web.handle;
 
 import com.lihua.common.enums.ResultCodeEnum;
 import com.lihua.common.exception.BaseException;
-import com.lihua.common.model.response.basecontroller.StrResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.Responses;
 import com.lihua.web.exception.RateLimitException;
-import com.lihua.web.utils.WebUtils;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -27,22 +27,22 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @Configuration
 @Slf4j
-public class GlobalExceptionHandle extends StrResponseController {
+public class GlobalExceptionHandle {
 
     /**
      * 通用业务异常处理
      */
     @ExceptionHandler(BaseException.class)
-    public String handleBaseException(BaseException e) {
+    public ResponseModel<?> handleBaseException(BaseException e) {
         log.error(e.getMessage(),e);
-        return error(e.getResultCodeEnum(), e.getMessage(), e.getData());
+        return Responses.error(e.getResultCodeEnum(), e.getMessage(), e.getData());
     }
 
     /**
      * 捕获全局spring validation 异常信息
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseModel<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String errMessages = e
                 .getBindingResult()
                 .getAllErrors()
@@ -50,48 +50,48 @@ public class GlobalExceptionHandle extends StrResponseController {
                 .map(ObjectError::getDefaultMessage)
                 .distinct()
                 .collect(Collectors.joining("；"));
-        return error(ResultCodeEnum.PARAMS_MISSING, errMessages);
+        return Responses.error(ResultCodeEnum.PARAMS_MISSING, errMessages);
     }
 
     /**
      * 全局捕获直接在controller中校验的 validation 异常信息
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public String handleConstraintViolationException(ConstraintViolationException e) {
+    public ResponseModel<?> handleConstraintViolationException(ConstraintViolationException e) {
         String errMessages = Arrays.stream(e.getMessage().split(","))
                 .map(item -> item.split(":"))
                 .filter(item -> item.length > 1)
                 .map(item -> item[1].trim())
                 .distinct()
                 .collect(Collectors.joining("；"));
-        return error(ResultCodeEnum.PARAMS_MISSING, String.join("、", errMessages));
+        return Responses.error(ResultCodeEnum.PARAMS_MISSING, String.join("、", errMessages));
     }
 
     /**
      * 处理spring mvc 参数格式异常信息
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public String handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+    public ResponseModel<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.error(e.getMessage(),e);
-        return error(ResultCodeEnum.PARAMS_ERROR,e.getMessage());
+        return Responses.error(ResultCodeEnum.PARAMS_ERROR,e.getMessage());
     }
 
     /**
      * 处理404异常
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public void handleNoHandlerFoundException(NoHandlerFoundException e) {
+    public ResponseModel<?> handleNoHandlerFoundException(NoHandlerFoundException e) {
         log.error(e.getMessage(),e);
-        WebUtils.renderJson(error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR));
+        return Responses.error(ResultCodeEnum.RESOURCE_NOT_FOUND_ERROR);
     }
 
     /**
      * 处理405请求方法异常
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public void handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public ResponseModel<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error(e.getMessage(),e);
-        WebUtils.renderJson(error(ResultCodeEnum.REQUEST_METHOD_ERROR));
+        return Responses.error(ResultCodeEnum.REQUEST_METHOD_ERROR);
     }
 
 
@@ -100,18 +100,18 @@ public class GlobalExceptionHandle extends StrResponseController {
      * （Bad credentials），且用户不存在已被防枚举掩盖为同类异常，不透传
      */
     @ExceptionHandler(BadCredentialsException.class)
-    public void handleBadCredentialsException(BadCredentialsException e) {
+    public ResponseModel<?> handleBadCredentialsException(BadCredentialsException e) {
         log.error(e.getMessage(),e);
-        WebUtils.renderJson(error(ResultCodeEnum.AUTHENTICATION_EXPIRED, "用户名或密码错误"));
+        return Responses.error(ResultCodeEnum.AUTHENTICATION_EXPIRED, "用户名或密码错误");
     }
 
     /**
      * 处理接口限流异常（@RateLimit 窗口内超限，与重复提交同为频控 429）
      */
     @ExceptionHandler(RateLimitException.class)
-    public void handleRateLimitException(RateLimitException e) {
+    public ResponseModel<?> handleRateLimitException(RateLimitException e) {
         log.warn("接口限流触发: {}", e.getMessage());
-        WebUtils.renderJson(error(ResultCodeEnum.REPEAT_SUBMIT_ERROR));
+        return Responses.error(ResultCodeEnum.REPEAT_SUBMIT_ERROR);
     }
 
     /**
@@ -119,9 +119,9 @@ public class GlobalExceptionHandle extends StrResponseController {
      * msg 固定枚举文案不透传 e.getMessage()（防底层细节外泄客户端），根因经日志排查
      */
     @ExceptionHandler(InternalAuthenticationServiceException.class)
-    public void handleInternalAuthenticationServiceException(InternalAuthenticationServiceException e) {
+    public ResponseModel<?> handleInternalAuthenticationServiceException(InternalAuthenticationServiceException e) {
         log.error(e.getMessage(),e);
-        WebUtils.renderJson(error(ResultCodeEnum.SERVER_BAD_ERROR));
+        return Responses.error(ResultCodeEnum.SERVER_BAD_ERROR);
     }
 
     /**
@@ -129,18 +129,18 @@ public class GlobalExceptionHandle extends StrResponseController {
      * ——固定枚举文案不透传内部细节（原兜底包装成系统异常）
      */
     @ExceptionHandler(AccessDeniedException.class)
-    public void handleAccessDeniedException(AccessDeniedException e) {
+    public ResponseModel<?> handleAccessDeniedException(AccessDeniedException e) {
         log.warn("接口权限不足: {}", e.getMessage());
-        WebUtils.renderJson(error(ResultCodeEnum.ACCESS_ERROR));
+        return Responses.error(ResultCodeEnum.ACCESS_ERROR);
     }
 
     /**
      * 系统异常处理
      */
     @ExceptionHandler(Exception.class)
-    public void handleException(Exception e) {
+    public ResponseModel<?> handleException(Exception e) {
         log.error(e.getMessage(),e);
         // 固定枚举文案：e.getMessage 可能携带 NPE/SQL/文件路径等内部细节，不透传客户端（与 InternalAuthenticationServiceException 同口径），根因经日志排查
-        WebUtils.renderJson(error(ResultCodeEnum.SYSTEM_ERROR));
+        return Responses.error(ResultCodeEnum.SYSTEM_ERROR);
     }
 }

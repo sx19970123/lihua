@@ -1,8 +1,8 @@
 package com.lihua.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.entity.SysDictType;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
@@ -23,20 +23,20 @@ import java.util.List;
 @RestController
 @RequestMapping("system/dictType")
 @Validated
-public class SysDictTypeController extends ApiResponseController {
+public class SysDictTypeController extends ResponseController {
 
     @Resource
     private SysDictTypeService sysDictTypeService;
 
     @Operation(summary = "分页查询")
     @PostMapping("page")
-    public ApiResponseModel<IPage<SysDictType>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysDictTypeDTO dictTypeDTO) {
+    public ResponseModel<IPage<SysDictType>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysDictTypeDTO dictTypeDTO) {
         return success(sysDictTypeService.queryPage(dictTypeDTO));
     }
 
     @Operation(summary = "根据id查询详情")
     @GetMapping("{id}")
-    public ApiResponseModel<SysDictType> queryById(@PathVariable String id) {
+    public ResponseModel<SysDictType> queryById(@PathVariable String id) {
         return success(sysDictTypeService.queryById(id));
     }
 
@@ -44,7 +44,7 @@ public class SysDictTypeController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     @Log(description = "保存字典类型", type = LogTypeEnum.SAVE)
-    public ApiResponseModel<String> save(@RequestBody @Validated SysDictType sysDictType) {
+    public ResponseModel<String> save(@RequestBody @Validated SysDictType sysDictType) {
         return success(sysDictTypeService.save(sysDictType));
     }
 
@@ -52,7 +52,7 @@ public class SysDictTypeController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PutMapping("status/{id}/{currentStatus}")
     @Log(description = "更新字典类型状态", type = LogTypeEnum.UPDATE_STATUS)
-    public ApiResponseModel<String> updateStatus(@PathVariable String id, @PathVariable String currentStatus) {
+    public ResponseModel<String> updateStatus(@PathVariable String id, @PathVariable String currentStatus) {
         return success(sysDictTypeService.updateStatus(id, currentStatus));
     }
 
@@ -60,7 +60,7 @@ public class SysDictTypeController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping
     @Log(description = "删除字典类型数据", type = LogTypeEnum.DELETE)
-    public ApiResponseModel<String> delete(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
+    public ResponseModel<String> delete(@RequestBody @NotEmpty(message = "请选中要删除的数据") List<String> ids) {
         sysDictTypeService.deleteByIds(ids);
         return success();
     }
@@ -69,7 +69,7 @@ public class SysDictTypeController extends ApiResponseController {
     @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping("reload/cache")
     @Log(description = "刷新字典缓存", type = LogTypeEnum.OTHER)
-    public ApiResponseModel<String> reloadCache() {
+    public ResponseModel<String> reloadCache() {
         sysDictTypeService.reloadCache();
         return success();
     }

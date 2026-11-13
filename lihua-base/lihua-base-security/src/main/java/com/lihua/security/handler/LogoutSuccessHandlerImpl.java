@@ -1,9 +1,10 @@
 package com.lihua.security.handler;
 
-import com.lihua.common.model.response.basecontroller.StrResponseController;
+import com.lihua.common.model.response.Responses;
 import com.lihua.security.manager.LoginUserManager;
 import com.lihua.security.model.LoginUserSession;
 import com.lihua.web.utils.WebUtils;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
@@ -12,11 +13,13 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
+
 @Component
-public class LogoutSuccessHandlerImpl extends StrResponseController implements LogoutSuccessHandler {
+public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
 
     @Override
-    public void onLogoutSuccess(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, Authentication authentication) {
+    public void onLogoutSuccess(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String token = WebUtils.getToken(request);
 
         LoginUserSession loginUserSession = LoginUserManager.getLoginUser(token);
@@ -25,7 +28,7 @@ public class LogoutSuccessHandlerImpl extends StrResponseController implements L
             LoginUserManager.removeLoginUserCache(token);
         }
 
-        WebUtils.renderJson(success("退出成功"));
+        WebUtils.renderResponse(Responses.success("退出成功"));
     }
 
 }

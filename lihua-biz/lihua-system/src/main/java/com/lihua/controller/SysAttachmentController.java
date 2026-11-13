@@ -1,8 +1,8 @@
 package com.lihua.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.lihua.common.model.response.ApiResponseModel;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.common.model.response.ResponseController;
 import com.lihua.entity.SysAttachment;
 import com.lihua.log.annotation.Log;
 import com.lihua.log.enums.LogTypeEnum;
@@ -26,20 +26,20 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("system/attachment")
-public class SysAttachmentController extends ApiResponseController {
+public class SysAttachmentController extends ResponseController {
 
     @Resource
     private SysAttachmentService sysAttachmentService;
 
     @Operation(summary = "分页查询")
     @PostMapping("page")
-    public ApiResponseModel<IPage<SysAttachmentVO>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysAttachmentDTO sysAttachmentDTO) {
+    public ResponseModel<IPage<SysAttachmentVO>> queryPage(@RequestBody @Validated(MaxPageSizeLimit.class) SysAttachmentDTO sysAttachmentDTO) {
         return success(sysAttachmentService.queryPage(sysAttachmentDTO));
     }
 
     @Operation(summary = "根据id查询")
     @GetMapping("{id}")
-    public ApiResponseModel<SysAttachmentVO> queryById(@PathVariable("id") String id) {
+    public ResponseModel<SysAttachmentVO> queryById(@PathVariable("id") String id) {
         return success(sysAttachmentService.queryById(id));
     }
 
@@ -47,7 +47,7 @@ public class SysAttachmentController extends ApiResponseController {
     @DeleteMapping
     @Log(description = "附件删除", type = LogTypeEnum.DELETE)
     @PreAuthorize("hasRole('ROLE_admin')")
-    public ApiResponseModel<String> delete(@RequestBody @NotEmpty(message = "附件id为空") List<String> ids) {
+    public ResponseModel<String> delete(@RequestBody @NotEmpty(message = "附件id为空") List<String> ids) {
         sysAttachmentService.deleteByIds(ids);
         return success();
     }
@@ -56,14 +56,14 @@ public class SysAttachmentController extends ApiResponseController {
     @DeleteMapping("force/{id}")
     @Log(description = "附件删除（强制）", type = LogTypeEnum.DELETE)
     @PreAuthorize("hasRole('ROLE_admin')")
-    public ApiResponseModel<String> forceDelete(@PathVariable("id") String id) {
+    public ResponseModel<String> forceDelete(@PathVariable("id") String id) {
         sysAttachmentService.forceDelete(Collections.singletonList(id));
         return success();
     }
 
     @Operation(summary = "获取下载链接")
     @GetMapping("url/{id}")
-    public ApiResponseModel<String> getDownloadURL(@PathVariable("id") String id, Integer expireTime) {
+    public ResponseModel<String> getDownloadURL(@PathVariable("id") String id, Integer expireTime) {
         return success(sysAttachmentService.getDownloadURL(id, expireTime));
     }
 }

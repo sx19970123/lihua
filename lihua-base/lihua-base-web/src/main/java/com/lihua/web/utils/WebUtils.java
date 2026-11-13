@@ -2,17 +2,20 @@ package com.lihua.web.utils;
 
 import com.lihua.common.enums.CustomHttpHeader;
 import com.lihua.common.enums.TokenEnum;
+import com.lihua.common.model.response.ResponseModel;
 import com.lihua.common.utils.ip.IpResolveUtils;
 import com.lihua.common.utils.spring.SpringUtils;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.Searcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -22,26 +25,23 @@ import java.util.Objects;
 public class WebUtils {
 
     /**
-     * 将 json 数据进行响应
+     * 围栏层响应端点路由及模型 attribute key，与 FenceResponseController 共同构成转发协议
      */
-    public static void renderJson(String json) {
-        renderJson(200, json);
-    }
+    public static final String FENCE_PATH = "/fence/response";
+    public static final String FENCE_MODEL_ATTR = "fenceResponseModel";
 
     /**
-     * 将 json 数据进行响应
+     * 将响应模型经 forward 转入 FenceResponseController，由消息转换管线完成内容协商写出
      */
-    @SneakyThrows
-    public static void renderJson(int code, String json) {
+    public static void renderResponse(ResponseModel<?> model) throws IOException, ServletException {
+        HttpServletRequest request = getCurrentRequest();
         HttpServletResponse response = getCurrentResponse();
-        if (response == null) {
-            log.error("响应数据写入失败，获取到的 HttpServletResponse 为空");
+        if (request == null || response == null) {
+            log.error("响应数据写入失败，获取到的 HttpServletRequest/Response 为空");
             return;
         }
-        response.setStatus(code);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json);
+        request.setAttribute(FENCE_MODEL_ATTR, model);
+        request.getRequestDispatcher(FENCE_PATH).forward(request, response);
     }
 
     /**

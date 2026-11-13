@@ -4,6 +4,7 @@ import com.lihua.security.filter.JwtAuthenticationTokenFilter;
 import com.lihua.security.handler.LogoutSuccessHandlerImpl;
 import com.lihua.security.handler.SecurityAccessDeniedHandler;
 import com.lihua.security.handler.SecurityAuthenticationEntryPoint;
+import com.lihua.web.utils.WebUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
@@ -74,7 +75,8 @@ public class SecurityConfig {
                         "/ws-connect/**",                               // websocket建立连接
                         "/swagger-ui/**",                               // spring-doc
                         "/v3/api-docs/**",                              // spring-doc
-                        "/error"                                        // 当出现404等异常时spring内部会转发到/error，需要将其放过，否则会响应401
+                        "/error",                                       // 当出现404等异常时spring内部会转发到/error，需要将其放过，否则会响应401
+                        WebUtils.FENCE_PATH                             // 围栏层响应端点：401/403/登出模型经 forward 转入消息转换管线（FORWARD dispatch 默认不重穿本链，防御性放行）
                 ).permitAll()
                 .anyRequest().authenticated());
 

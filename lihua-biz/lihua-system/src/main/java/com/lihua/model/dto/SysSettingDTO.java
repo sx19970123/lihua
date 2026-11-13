@@ -83,4 +83,26 @@ public class SysSettingDTO implements Serializable {
         // 自动关闭时间
         private LocalDateTime closeTime;
     }
+
+    /**
+     * 验证码（web/app 双端独立配置）
+     */
+    @Data
+    public static class CaptchaSetting implements Serializable {
+        // web 端配置
+        private CaptchaClientSetting web;
+        // app 端配置
+        private CaptchaClientSetting app;
+    }
+
+    /**
+     * 单端验证码配置
+     */
+    @Data
+    public static class CaptchaClientSetting implements Serializable {
+        // 是否启用
+        private boolean enable;
+        // 随机验证类型池（CaptchaTypeEnum 的 value）
+        private List<String> types;
+    }
 }

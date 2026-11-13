@@ -28,6 +28,11 @@ public interface SysDeptService {
      */
     SysDept queryById(String id);
 
+    /**
+     * 查询给定 id 集合中未删除的 id（全局逻辑删除自动滤 del_flag）
+     */
+    List<String> queryExistIds(List<String> ids);
+
 
     /**
      * 根据ids 删除单位部门
@@ -39,6 +44,11 @@ public interface SysDeptService {
      * 获取部门树option
      */
     List<SysDept> deptTreeOption();
+
+    /**
+     * 获取部门树选项（含停用，注册配置页专用）
+     */
+    List<SysDept> deptTreeOptionAll();
 
     /**
      * 修改部门状态

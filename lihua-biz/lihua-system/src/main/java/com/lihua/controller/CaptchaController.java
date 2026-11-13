@@ -5,31 +5,39 @@ import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import com.lihua.captcha.enums.CaptchaTypeEnum;
-import com.lihua.common.model.response.basecontroller.ApiResponseController;
+import com.lihua.common.model.response.ResponseController;
+import com.lihua.common.model.response.ResponseModel;
+import com.lihua.service.SysSettingService;
 import com.lihua.web.annotation.RateLimit;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Tag(name = "验证码")
 @RestController
 @RequestMapping("captcha")
-public class CaptchaController extends ApiResponseController {
+public class CaptchaController extends ResponseController {
 
     @Resource
     private ImageCaptchaApplication imageCaptchaApplication;
+
+    @Resource
+    private SysSettingService sysSettingService;
 
     @Operation(summary = "获取验证码")
     @RateLimit
     @PostMapping("get")
     public ApiResponse<ImageCaptchaVO> getCaptcha() {
-        // 随机获取验证码类型
-        return imageCaptchaApplication.generateCaptcha(CaptchaTypeEnum.randomType());
+        // 按当前端配置的类型池随机（空池回退全类型）
+        return imageCaptchaApplication.generateCaptcha(CaptchaTypeEnum.randomType(sysSettingService.getCaptchaTypes()));
     }
 
     @Operation(summary = "验证码校验")
@@ -43,11 +51,29 @@ public class CaptchaController extends ApiResponseController {
         return response;
     }
 
+    @Operation(summary = "获取验证码类型选项")
+    @GetMapping("type/options")
+    public ResponseModel<List<CaptchaTypeOption>> getCaptchaTypeOptions() {
+        return success(Arrays.stream(CaptchaTypeEnum.values())
+                .map(type -> new CaptchaTypeOption(type.getValue(), type.getName()))
+                .toList());
+    }
+
     // 验证码接收内部类
     @lombok.Data
     public static class Data {
         private String  id;
         private ImageCaptchaTrack data;
+    }
+
+    // 验证码类型选项
+    @lombok.AllArgsConstructor
+    @lombok.Data
+    public static class CaptchaTypeOption {
+        // 类型值
+        private String value;
+        // 类型名称
+        private String name;
     }
 
 }

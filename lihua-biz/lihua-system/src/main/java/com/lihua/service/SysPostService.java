@@ -22,6 +22,11 @@ public interface SysPostService {
     SysPost queryById(String id);
 
     /**
+     * 查询给定 id 集合中未删除的 id（全局逻辑删除自动滤 del_flag）
+     */
+    List<String> queryExistIds(List<String> ids);
+
+    /**
      * 保存岗位
      */
     String savePost(SysPost sysPost);
@@ -45,6 +50,11 @@ public interface SysPostService {
      * 根据部门id查询岗位集合
      */
     Map<String, List<SysPost>> getPostOptionByDeptId(List<String> deptIds);
+
+    /**
+     * 根据部门id查询岗位集合（含停用，注册配置页专用）
+     */
+    Map<String, List<SysPost>> getPostOptionAllByDeptId(List<String> deptIds);
 
     /**
      * 修改状态
