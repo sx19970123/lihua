@@ -625,7 +625,7 @@ CREATE TABLE `sys_setting` (
 -- Records of sys_setting
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_setting` (`setting_key`, `json`, `create_time`, `create_id`, `update_time`, `update_id`, `del_flag`) VALUES ('CaptchaSetting', '{\"enable\":false}', '2026-08-27 20:37:38', 1, '2026-09-23 19:16:37', 1, '0');
+INSERT INTO `sys_setting` (`setting_key`, `json`, `create_time`, `create_id`, `update_time`, `update_id`, `del_flag`) VALUES ('CaptchaSetting', '{\"web\":{\"enable\":false,\"types\":[]},\"app\":{\"enable\":false,\"types\":[]}}', '2026-08-27 20:37:38', 1, '2026-11-13 14:00:00', 1, '0');
 INSERT INTO `sys_setting` (`setting_key`, `json`, `create_time`, `create_id`, `update_time`, `update_id`, `del_flag`) VALUES ('DefaultPasswordSetting', '{\"defaultPassword\":\"123456\"}', '2026-04-21 10:35:36', 1, '2026-09-24 00:17:49', 1, '0');
 INSERT INTO `sys_setting` (`setting_key`, `json`, `create_time`, `create_id`, `update_time`, `update_id`, `del_flag`) VALUES ('GrayModelSetting', '{\"enable\":false}', '2026-04-23 13:26:15', 1, '2026-09-23 19:22:59', 1, '0');
 INSERT INTO `sys_setting` (`setting_key`, `json`, `create_time`, `create_id`, `update_time`, `update_id`, `del_flag`) VALUES ('IntervalUpdatePasswordSetting', '{\"enable\":false,\"unit\":\"month\"}', '2026-08-27 20:37:25', 1, '2026-09-23 19:15:37', 1, '0');

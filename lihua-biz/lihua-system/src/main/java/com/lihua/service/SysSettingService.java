@@ -16,7 +16,7 @@ public interface SysSettingService {
     SysSetting getSysSettingByKey(String key);
 
     /**
-     * 是否启用验证码
+     * 当前请求端是否启用验证码（app 族客户端走 app 端配置，其余走 web 端）
      */
     boolean enableCaptcha();
 

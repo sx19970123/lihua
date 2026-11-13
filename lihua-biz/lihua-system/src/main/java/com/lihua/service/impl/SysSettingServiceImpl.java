@@ -3,9 +3,11 @@ package com.lihua.service.impl;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.lihua.cache.enums.RedisTopicEnum;
 import com.lihua.cache.publisher.RedisPublisher;
+import com.lihua.common.enums.ClientTypeEnum;
 import com.lihua.common.model.event.setting.CacheBlackIpEvent;
 import com.lihua.common.utils.date.DateUtils;
 import com.lihua.common.utils.json.JsonUtils;
+import com.lihua.web.utils.WebUtils;
 import com.lihua.entity.SysSetting;
 import com.lihua.enums.SysSettingEnum;
 import com.lihua.mapper.SysSettingMapper;
@@ -69,17 +71,28 @@ public class SysSettingServiceImpl extends ServiceImpl<SysSettingMapper, SysSett
 
     @Override
     public boolean enableCaptcha() {
+        SysSettingDTO.CaptchaClientSetting clientSetting = getCaptchaClientSetting();
+        // 未配置视为需要验证码
+        return clientSetting == null || clientSetting.isEnable();
+    }
+
+    /**
+     * 按当前请求客户端类型解析对应端验证码配置（app 族走 app 端，其余走 web 端）
+     */
+    private SysSettingDTO.CaptchaClientSetting getCaptchaClientSetting() {
         SysSetting captchaSetting = getSysSettingByKey(SysSettingEnum.CAPTCHA.getKey());
         if (captchaSetting == null) {
-            return true;
+            return null;
         }
-        // 出现任何值为空都认为需要验证码
         String json = captchaSetting.getJson();
         if (!StringUtils.hasText(json)) {
-            return true;
+            return null;
         }
-        SysSettingDTO sysSettingDTO = JsonUtils.toObject(json, SysSettingDTO.class);
-        return sysSettingDTO.isEnable();
+        SysSettingDTO.CaptchaSetting setting = JsonUtils.toObject(json, SysSettingDTO.CaptchaSetting.class);
+        if (setting == null) {
+            return null;
+        }
+        return ClientTypeEnum.of(WebUtils.getClientType()).isApp() ? setting.getApp() : setting.getWeb();
     }
 
     @Override
