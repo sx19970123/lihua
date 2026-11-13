@@ -15,7 +15,8 @@ public enum CaptchaTypeEnum {
     SLIDER( "滑块", CaptchaTypeConstant.SLIDER),
     CONCAT("拼接", CaptchaTypeConstant.CONCAT),
     ROTATE("旋转", CaptchaTypeConstant.ROTATE),
-    WORD_IMAGE_CLICK("点选", CaptchaTypeConstant.WORD_IMAGE_CLICK);
+    WORD_IMAGE_CLICK("点选", CaptchaTypeConstant.WORD_IMAGE_CLICK),
+    POW("工作量证明", CaptchaTypeConstant.POW);
 
     // 类型名称
     private final String name;
